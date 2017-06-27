@@ -96,6 +96,8 @@
         
             <li><a href="%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html">机器学习</a></li>
         
+            <li><a href="Python%E7%A7%91%E5%AD%A6%E8%AE%A1%E7%AE%97%E4%B8%89%E7%BB%B4%E5%8F%AF%E8%A7%86%E5%8C%96.html">Python科学计算三维可视化</a></li>
+        
             <li><a href="Linux%20%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B.html">Linux 系统编程</a></li>
          
 
@@ -135,7 +137,7 @@ n = number of features<br/>
 
 <p>The multivariable form of the hypothesis function accommodating these multiple features is as follows:</p>
 
-<p>\[h_θ(x)=θ_0+θ_1x_1+θ_2x_2+θ_3x_3+⋯+θ_nx_n=\theta^Tx\]</p>
+<p>\[h_θ(x)=θ_0+θ_1x_1+θ_2x_2+θ_3x_3+⋯+θ_nx_n=\theta^Tx\] (\(n+1\)- dimensional vector)</p>
 
 <p>For convenience of notation, define \(x_0=1\)</p>
 
@@ -153,7 +155,68 @@ n = number of features<br/>
 <p><strong>Gradient descent</strong>:<br/>
 Repeat until converge{</p>
 
-<p>\(\theta_j := \theta_j -\alpha\frac{\partial}{\partial \theta_j}J(\theta)\)  (simultaneously update for every j= 0,1,...,n)</p>
+<p>\(\theta_j := \theta_j -\alpha\frac{\partial}{\partial \theta_j}J(\theta)=\theta_j -\alpha\frac{1}{m}(h_\theta(x^{(i)})-y^{(i)})x_j^{(i)}\)  (simultaneously update for every j= 0,1,...,n)</p>
+
+<h3 id="toc_2">Feature Scaling</h3>
+
+<p>Idea: Make sure features are on a similar scale.</p>
+
+<p>E.g. \(x_1\) = size (0-2000 feet\(^2\))<br/>
+\(x_2\) = number of bedrooms(1-5)</p>
+
+<p>Get every feature into approximately a \(-1 &lt;= x_i &lt;= 1\) range</p>
+
+<p><strong>Mean normalization</strong> Replace \(x_i\) with \( x_i \mu_i\) to make features have approximately zero mean (Do not apply to \(x_0=1\), \(\mu_i\) is average value of \(x_i\) in training set.</p>
+
+<p>or \[\frac{x_i = x_i - \mu_i}{S_i}\]</p>
+
+<p>where \(S_i\) is the range (max-min) of \(x_i\)</p>
+
+<p>E.g. \[x_1=\frac{size-1000}{2000}\]<br/>
+\[x_2=\frac{\#bedrooms-2}{5}\]</p>
+
+<p><strong>Debugging</strong>: How to make sure gradient descent is working correctly.</p>
+
+<p>-- How to choose learning rate \(\alpha\).</p>
+
+<p>Gradient descent is working correctly if \(J(\theta)\) decreases after every iteration.</p>
+
+<p>Use smaller \(\alpha\). For sufficiently small \(\alpha\), \(J(\theta)\) should decrease on every iteration.</p>
+
+<p>Summary:</p>
+
+<ul>
+<li>If  \(\alpha\)  is too small: slow convergence.</li>
+<li>If \(\alpha\) is too large: may not decrease on every iteration; may not converge.</li>
+</ul>
+
+<h3 id="toc_3">Normal equation:</h3>
+
+<p>Method to solve for \(\theta\) analytically.</p>
+
+<p>\[\theta = (X^TX)^{-1}X^Ty\]</p>
+
+<p>Matlab: </p>
+
+<pre><code class="language-Matlab">pinv(X&#39;*X)*X&#39;*y
+</code></pre>
+
+<p>where <code>pinv</code> is <code>peudoinversion</code> of matrix. It is different to <code>inv</code>.</p>
+
+<h3 id="toc_4">Gradient descent v.s. Normal equation</h3>
+
+<p><img src="media/14972614146835/Screen%20Shot%202017-06-27%20at%202.00.33%20PM.png" alt="Screen Shot 2017-06-27 at 2.00.33 P"/></p>
+
+<h3 id="toc_5">What if \(X^TX\) is non-invertible?</h3>
+
+<ul>
+<li><p>Redundant features( linearly dependent)<br/>
+E.g. \(x_1\) = size in feet\(^2\), \(x_2\) = size in m\(^2\)</p></li>
+<li><p>Too many features(e.g. \(m&lt;=n\)).<br/>
+-- Delete some features, or use regularization.</p></li>
+</ul>
+
+<p>where \(m\) is the number of training examples, \(n\) is the number of features.</p>
 
                         
                       </div>
@@ -414,6 +477,8 @@ repeat until converge{</p>
         
             <a href="%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html"><strong>机器学习</strong></a>
         
+            <a href="Python%E7%A7%91%E5%AD%A6%E8%AE%A1%E7%AE%97%E4%B8%89%E7%BB%B4%E5%8F%AF%E8%A7%86%E5%8C%96.html"><strong>Python科学计算三维可视化</strong></a>
+        
             <a href="Linux%20%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B.html"><strong>Linux 系统编程</strong></a>
          
         </p>
@@ -429,6 +494,12 @@ repeat until converge{</p>
                 <div class="side-content">
                 <ul class="posts-list">
 	      
+		      
+			      <li class="post">
+			        <a href="14985240916710.html">Python科学计算三维可视化</a>
+			      </li>
+		     
+		  
 		      
 			      <li class="post">
 			        <a href="14974355508816.html">MySql 数据库</a>
@@ -450,12 +521,6 @@ repeat until converge{</p>
 		      
 			      <li class="post">
 			        <a href="14973620419454.html">魔法方法(一)：自定义序列</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="14973464173252.html">Hash table and Python dictionary</a>
 			      </li>
 		     
 		  
