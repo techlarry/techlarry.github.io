@@ -15,7 +15,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  口语 - techlarry
+  Machine Learning (4): Overfitting - techlarry
   
   </title>
   
@@ -123,14 +123,14 @@
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>口语</h1>
+          <h1>Machine Learning (4): Overfitting</h1>
      
         <div class="read-more clearfix">
           <span class="date">2017/6/29</span>
 
           <span>posted in&nbsp;</span> 
           
-              <span class="posted-in"><a href='English.html'>English</a></span>
+              <span class="posted-in"><a href='%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html'>机器学习</a></span>
            
          
           <span class="comments">
@@ -143,21 +143,60 @@
       </div><!-- article -->
 
       <div class="article-content">
-      <ol>
-<li>发音 native</li>
-<li>流畅度</li>
-<li>地道的语料</li>
-</ol>
+      <ul>
+<li>
+<a href="#toc_0">The problem of Overfitting</a>
+</li>
+<li>
+<a href="#toc_1">Regularization</a>
+</li>
+<li>
+<a href="#toc_2">Regularized Linear Regression</a>
+</li>
+<li>
+<a href="#toc_3">Regularized Logistic Regression</a>
+</li>
+</ul>
 
-<p>方法</p>
+
+<h2 id="toc_0">The problem of Overfitting</h2>
+
+<p><strong>Underfitting</strong>, or <strong>high bias</strong>, is when the form of our hypothesis function \(h\) maps poorly to the trend of the data. It is usually caused by a function that is too simple or uses too few features. </p>
+
+<p><strong>Overfitting</strong>, or <strong>high variance</strong>, is caused by a hypothesis function that fits the available data but does not generalize well to predict new data. It is usually caused by a complicated function that creates a lot of unnecessary curves and angles unrelated to the data.</p>
+
+<p>There are two main options to address the issue of overfitting:</p>
 
 <ol>
-<li>逐句跟读   <strong>不看原文</strong></li>
-<li>影子跟读</li>
-<li>全文复数  用到关键词句</li>
+<li><p><strong><em>Reduce the number of features</em></strong>:<br/>
+Manually select which features to keep.<br/>
+(Use a model selection algorithm).</p></li>
+<li><p><strong><em>Regularization</em></strong><br/>
+Keep all the features, but reduce the magnitude of parameters \(\theta_j\). Regularization works well when we have a lot of slightly useful features.</p></li>
 </ol>
 
-<p>每天2个小时，1个小时跟读，1个小时背诵和跟读</p>
+<p><img src="media/14985711297859/14987109337751.png" alt="sd"/></p>
+
+<p>The figure above shows the Underfitting, Normal, Overfitting.</p>
+
+<h2 id="toc_1">Regularization</h2>
+
+<p>We regularize all of theta parameters in a single summation as:</p>
+
+<p>\[min_\theta\ \dfrac{1}{2m}\  \sum_{i=1}^m (h_\theta(x^{(i)}) - y^{(i)})^2 + \lambda\ \sum_{j=1}^n \theta_j^2\]</p>
+
+<p>where the \(\lambda\), or lambda, is the <strong>regularization parameter</strong>. It determines how much the costs of our theta parameters are inflated.  If \(\lambda\) is chosen to be too large, it may smooth out the function too much and cause underfitting. </p>
+
+<h2 id="toc_2">Regularized Linear Regression</h2>
+
+<p>The corresponding gradient descent is</p>
+
+<p>\[\begin{align*} &amp; \text{Repeat}\ \lbrace \newline &amp; \ \ \ \ \theta_0 := \theta_0 - \alpha\ \frac{1}{m}\ \sum_{i=1}^m (h_\theta(x^{(i)}) - y^{(i)})x_0^{(i)} \newline &amp; \ \ \ \ \theta_j := \theta_j - \alpha\ \left[ \left( \frac{1}{m}\ \sum_{i=1}^m (h_\theta(x^{(i)}) - y^{(i)})x_j^{(i)} \right) + \frac{\lambda}{m}\theta_j \right] &amp;\ \ \ \ \ \ \ \ \ \ j \in \lbrace 1,2...n\rbrace\newline &amp; \rbrace \end{align*}\]</p>
+
+<p>With some manipulation our update rule can also be represented as:<br/>
+\[\theta_j := \theta_j(1 - \alpha\frac{\lambda}{m}) - \alpha\frac{1}{m}\sum_{i=1}^m(h_\theta(x^{(i)}) - y^{(i)})x_j^{(i)}\]</p>
+
+<h2 id="toc_3">Regularized Logistic Regression</h2>
 
 
     
@@ -168,16 +207,13 @@
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="14987114340830.html" 
-          title="Previous Post: Machine Learning (4): Overfitting">&laquo; Machine Learning (4): Overfitting</a>
-      
         </p>
         </div>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="14985711297859.html" 
-          title="Next Post: Machine Learning (3): Classification">Machine Learning (3): Classification &raquo;</a>
+          <a  href="14987012023353.html" 
+          title="Next Post: 口语">口语 &raquo;</a>
       
       </p>
         </div>
