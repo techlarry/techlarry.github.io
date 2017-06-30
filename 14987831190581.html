@@ -154,6 +154,9 @@
 <li>
 <a href="#toc_3">Examples and Intuitions</a>
 </li>
+<li>
+<a href="#toc_4">Multiclass Classification</a>
+</li>
 </ul>
 
 
@@ -193,9 +196,9 @@ Output wire: Axon</p>
 
 <p>\[\begin{align*} a_1^{(2)} = g(\Theta_{10}^{(1)}x_0 + \Theta_{11}^{(1)}x_1 + \Theta_{12}^{(1)}x_2 + \Theta_{13}^{(1)}x_3) \newline a_2^{(2)} = g(\Theta_{20}^{(1)}x_0 + \Theta_{21}^{(1)}x_1 + \Theta_{22}^{(1)}x_2 + \Theta_{23}^{(1)}x_3) \newline a_3^{(2)} = g(\Theta_{30}^{(1)}x_0 + \Theta_{31}^{(1)}x_1 + \Theta_{32}^{(1)}x_2 + \Theta_{33}^{(1)}x_3) \newline h_\Theta(x) = a_1^{(3)} = g(\Theta_{10}^{(2)}a_0^{(2)} + \Theta_{11}^{(2)}a_1^{(2)} + \Theta_{12}^{(2)}a_2^{(2)} + \Theta_{13}^{(2)}a_3^{(2)}) \newline \end{align*}\]</p>
 
-<p>If network has \(s_j\) units in layer \(j\) and \(s_j+1\) units in layer \(j+1\), then \(\Theta^{(j)}\) will be of dimension \(s_{j+1}×(s_j+1)\). The \(+1\) comes from the addition in \(\Theta^{(j)}\) of the <code>bias nodes</code>, \(x_0\) and \(\Theta^{(j)}_0\). In other words the output nodes will not include the bias nodes while the inputs will. </p>
+<p>If network has \(s_j\) units in layer \(j\) and \(s_{j+1}\) units in layer \(j+1\), then \(\Theta^{(j)}\) will be of dimension \(s_{j+1}×(s_j+1)\). The \(+1\) comes from the addition in \(\Theta^{(j)}\) of the <code>bias nodes</code>, \(x_0\) and \(\Theta^{(j)}_0\). In other words the output nodes will not include the bias nodes while the inputs will. </p>
 
-<p>We&#39;re going to define a new variable \(z^{(j)}_k\) that encompasses the parameters inside our g function. In our previous example if we replaced by the variable \(z\) for all the parameters we would get:</p>
+<p>We&#39;re going to define a new variable \(z^{(j)}_k\) that encompasses the parameters inside our \(g\) function. In our previous example if we replaced by the variable \(z\) for all the parameters we would get:</p>
 
 <p>\[\begin{align*}a_1^{(2)} = g(z_1^{(2)}) \newline a_2^{(2)} = g(z_2^{(2)}) \newline a_3^{(2)} = g(z_3^{(2)}) \newline \end{align*}\]</p>
 
@@ -230,7 +233,7 @@ Output wire: Axon</p>
 
 <p>For the transition between the first and second layer, we&#39;ll use a \(\Theta(1)\) matrix that combines the values for AND and NOR:</p>
 
-<p>\Theta<sup>{(1)}</sup> =\begin{bmatrix}-30 &amp; 20 &amp; 20 \newline 10 &amp; -20 &amp; -20\end{bmatrix}</p>
+<p>\[\Theta^{(1)} =\begin{bmatrix}-30 &amp; 20 &amp; 20 \newline 10 &amp; -20 &amp; -20\end{bmatrix}\]</p>
 
 <p>For the transition between the second and third layer, we&#39;ll use a \(\Theta(2)\) matrix that uses the value for OR:</p>
 
@@ -239,6 +242,26 @@ Output wire: Axon</p>
 <p>Let&#39;s write out the values for all our nodes:</p>
 
 <p>\[\begin{align*}&amp; a^{(2)} = g(\Theta^{(1)} \cdot x) \newline&amp; a^{(3)} = g(\Theta^{(2)} \cdot a^{(2)}) \newline&amp; h_\Theta(x) = a^{(3)}\end{align*}\]</p>
+
+<h2 id="toc_4">Multiclass Classification</h2>
+
+<p>To classify data into multiple classes, we let our hypothesis function return a vector of values. Say we wanted to classify our data into one of four categories. We will use the following example to see how this classification is done. This algorithm takes as input an image and classifies it accordingly:</p>
+
+<p><img src="media/14987831190581/14987929949268.png" alt=""/></p>
+
+<p>We can define our set of resulting classes as \(y\):</p>
+
+<p><img src="media/14987831190581/14987930862309.png" alt=""/></p>
+
+<p>Each \(y(i)\) represents a different image corresponding to either a car, pedestrian, truck, or motorcycle. The inner layers, each provide us with some new information which leads to our final hypothesis function. The setup looks like:</p>
+
+<p><img src="media/14987831190581/14987931059100.png" alt=""/></p>
+
+<p>Our resulting hypothesis for one set of inputs may look like:</p>
+
+<p>\[h_\Theta(x) =\begin{bmatrix}0 \newline 0 \newline 1 \newline 0 \newline\end{bmatrix}\]</p>
+
+<p>In which case our resulting class is the third one down, or \(h_\Theta(x)_3\), which represents the motorcycle.</p>
 
 
     
