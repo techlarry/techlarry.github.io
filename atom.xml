@@ -4,13 +4,121 @@
   <title><![CDATA[techlarry]]></title>
   <link href="http://larryim.cc/atom.xml" rel="self"/>
   <link href="http://larryim.cc/"/>
-  <updated>2017-06-29T15:32:56+08:00</updated>
+  <updated>2017-06-29T16:18:36+08:00</updated>
   <id>http://larryim.cc/</id>
   <author>
     <name><![CDATA[]]></name>
     
   </author>
   <generator uri="http://www.mweb.im/">MWeb</generator>
+  
+  <entry>
+    <title type="html"><![CDATA[Machine Learning (5): Neural Networks]]></title>
+    <link href="http://larryim.cc/14987831190581.html"/>
+    <updated>2017-06-30T08:38:39+08:00</updated>
+    <id>http://larryim.cc/14987831190581.html</id>
+    <content type="html"><![CDATA[
+<ul>
+<li>
+<a href="#toc_0">Why Neural Networks</a>
+</li>
+<li>
+<a href="#toc_1">Background of Neural Networks</a>
+</li>
+<li>
+<a href="#toc_2">Model Representation</a>
+</li>
+<li>
+<a href="#toc_3">Examples and Intuitions</a>
+</li>
+</ul>
+
+
+<h2 id="toc_0">Why Neural Networks</h2>
+
+<p>Number of quadratic features closes to \(\frac{n^2}{2}\), it is computationally expensive.</p>
+
+<p>Number of cubic features closes to \(O(n^3)\), it is more computationally expensive.</p>
+
+<p>Computer vision problem looks at matrixes. Because dimensions of pixel images often large (e.g. n= 7500 for 50\(\times\)50 pixel images(RGB)), the number of quadratic features for the problem are 3 million.</p>
+
+<h2 id="toc_1">Background of Neural Networks</h2>
+
+<p><strong>Origins</strong>: Algorithms that try to mimic the brain. It was very widely used in 80s and early 90s; popularity diminished in late 90s. It is now a state of the art technique for many application, because its expensive computation can be meet.</p>
+
+<p>Input wire: Dendrite<br/>
+Output wire: Axon</p>
+
+<h2 id="toc_2">Model Representation</h2>
+
+<p>At a very simple level, neurons are basically computational units that take inputs (<code>dendrites</code>) as electrical inputs (<code>spikes</code>) that are channeled to outputs (<code>axons</code>). </p>
+
+<p>In our model, dendrites are like the input features \(x_1⋯x_n\), and the output is the result of our hypothesis function. In this model our \(x_0\) input node is sometimes called the <code>bias unit</code>. It is always equal to 1. In neural networks, we use the same logistic function as in classification, \(\frac{1}{1+e^{-\theta^Tx}}\), yet we sometimes call it a sigmoid (logistic) activation function. In this situation, our &quot;theta&quot; parameters are sometimes called <code>weights</code>.</p>
+
+<p><strong>Visually, a simplistic representation looks like:</strong><br/>
+\[\begin{bmatrix}x_0 \newline x_1 \newline x_2 \newline \end{bmatrix}\rightarrow\begin{bmatrix}\ \ \ \newline \end{bmatrix}\rightarrow h_\theta(x)\]</p>
+
+<p>Input nodes (layer 1), also known as the <code>input layer</code>, go into another node (layer 2), which finally outputs the hypothesis function, known as the <code>output layer</code>.</p>
+
+<p>We can have intermediate layers of nodes between the input and output layers called the <code>hidden layers</code>.</p>
+
+<p>In this example, we label these intermediate or hidden layer nodes \(a^2_0⋯a^2_n\) and call them <code>activation units</code>.</p>
+
+<p>\[\begin{align*}&amp; a_i^{(j)} = \text{&quot;activation&quot; of unit $i$ in layer $j$} \newline&amp; \Theta^{(j)} = \text{matrix of weights controlling function mapping from layer $j$ to layer $j+1$}\end{align*}\]</p>
+
+<p>The values for each of the &quot;activation&quot; nodes is obtained as follows:</p>
+
+<p>\[\begin{align*} a_1^{(2)} = g(\Theta_{10}^{(1)}x_0 + \Theta_{11}^{(1)}x_1 + \Theta_{12}^{(1)}x_2 + \Theta_{13}^{(1)}x_3) \newline a_2^{(2)} = g(\Theta_{20}^{(1)}x_0 + \Theta_{21}^{(1)}x_1 + \Theta_{22}^{(1)}x_2 + \Theta_{23}^{(1)}x_3) \newline a_3^{(2)} = g(\Theta_{30}^{(1)}x_0 + \Theta_{31}^{(1)}x_1 + \Theta_{32}^{(1)}x_2 + \Theta_{33}^{(1)}x_3) \newline h_\Theta(x) = a_1^{(3)} = g(\Theta_{10}^{(2)}a_0^{(2)} + \Theta_{11}^{(2)}a_1^{(2)} + \Theta_{12}^{(2)}a_2^{(2)} + \Theta_{13}^{(2)}a_3^{(2)}) \newline \end{align*}\]</p>
+
+<p>If network has \(s_j\) units in layer \(j\) and \(s_j+1\) units in layer \(j+1\), then \(\Theta^{(j)}\) will be of dimension \(s_{j+1}×(s_j+1)\). The \(+1\) comes from the addition in \(\Theta^{(j)}\) of the <code>bias nodes</code>, \(x_0\) and \(\Theta^{(j)}_0\). In other words the output nodes will not include the bias nodes while the inputs will. </p>
+
+<p>We&#39;re going to define a new variable \(z^{(j)}_k\) that encompasses the parameters inside our g function. In our previous example if we replaced by the variable \(z\) for all the parameters we would get:</p>
+
+<p>\[\begin{align*}a_1^{(2)} = g(z_1^{(2)}) \newline a_2^{(2)} = g(z_2^{(2)}) \newline a_3^{(2)} = g(z_3^{(2)}) \newline \end{align*}\]</p>
+
+<p>In other words, for layer \(j=2\) and node \(k\), the variable \(z\) will be:</p>
+
+<p>\[z_k^{(2)} = \Theta_{k,0}^{(1)}x_0 + \Theta_{k,1}^{(1)}x_1 + \cdots + \Theta_{k,n}^{(1)}x_n\]</p>
+
+<p>The vector representation of \(x\) and \(z_j\) is:</p>
+
+<p>\[\begin{align*}x = \begin{bmatrix}x_0 \newline x_1 \newline\cdots \newline x_n\end{bmatrix} &amp;z^{(j)} = \begin{bmatrix}z_1^{(j)} \newline z_2^{(j)} \newline\cdots \newline z_n^{(j)}\end{bmatrix}\end{align*}\]</p>
+
+<p>Setting \(x=a^{(1)}\), we can rewrite the equation as:</p>
+
+<p>\[z^{(j)} = \Theta^{(j-1)}a^{(j-1)}\]</p>
+
+<p>Now we can get a vector of our activation nodes for layer \(j\) as follows:</p>
+
+<p>\[a^{(j)} = g(z^{(j)})\]</p>
+
+<p>Last Step:<br/>
+\[h_\Theta(x) = a^{(j+1)} = g(z^{(j+1)})\]</p>
+
+<h2 id="toc_3">Examples and Intuitions</h2>
+
+<p>The \(\Theta^{(1)}\) matrices for AND, NOR, and OR are:</p>
+
+<p>\[\begin{align*}AND:\newline\Theta^{(1)} &amp;=\begin{bmatrix}-30 &amp; 20 &amp; 20\end{bmatrix} \newline NOR:\newline\Theta^{(1)} &amp;= \begin{bmatrix}10 &amp; -20 &amp; -20\end{bmatrix} \newline OR:\newline\Theta^{(1)} &amp;= \begin{bmatrix}-10 &amp; 20 &amp; 20\end{bmatrix} \newline\end{align*}\]</p>
+
+<p>We can combine these to get the \(XNOR\) logical operator (which gives 1 if \(x_1\) and \(x_2\) are both 0 or both 1).</p>
+
+<p>\[\begin{align*}\begin{bmatrix}x_0 \newline x_1 \newline x_2\end{bmatrix} \rightarrow\begin{bmatrix}a_1^{(2)} \newline a_2^{(2)} \end{bmatrix} \rightarrow\begin{bmatrix}a^{(3)}\end{bmatrix} \rightarrow h_\Theta(x)\end{align*}\]</p>
+
+<p>For the transition between the first and second layer, we&#39;ll use a \(\Theta(1)\) matrix that combines the values for AND and NOR:</p>
+
+<p>\Theta<sup>{(1)}</sup> =\begin{bmatrix}-30 &amp; 20 &amp; 20 \newline 10 &amp; -20 &amp; -20\end{bmatrix}</p>
+
+<p>For the transition between the second and third layer, we&#39;ll use a \(\Theta(2)\) matrix that uses the value for OR:</p>
+
+<p>\[\Theta^{(2)} =\begin{bmatrix}-10 &amp; 20 &amp; 20\end{bmatrix}\]</p>
+
+<p>Let&#39;s write out the values for all our nodes:</p>
+
+<p>\[\begin{align*}&amp; a^{(2)} = g(\Theta^{(1)} \cdot x) \newline&amp; a^{(3)} = g(\Theta^{(2)} \cdot a^{(2)}) \newline&amp; h_\Theta(x) = a^{(3)}\end{align*}\]</p>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Machine Learning (4): Overfitting and normalization]]></title>
@@ -2692,183 +2800,6 @@ class SingleCycleLinkList(object):
 
 <p>在Python的官方实现中，list实现采用了如下的策略：<br/>
 <strong>在建立空表（或者很小的表）时，系统分配一块能容纳8个元素的存储区；在执行插入操作（insert或append）时，如果元素存储区满就换一块4倍大的存储区。但如果此时的表已经很大（目前的阀值为50000），则改变策略，采用加一倍的方法。引入这种改变策略的方式，是为了避免出现过多空闲的存储位置。</strong></p>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[迭代器与生成器]]></title>
-    <link href="http://larryim.cc/14969760398302.html"/>
-    <updated>2017-06-09T10:40:39+08:00</updated>
-    <id>http://larryim.cc/14969760398302.html</id>
-    <content type="html"><![CDATA[
-<ul>
-<li>
-<a href="#toc_0">可迭代对象</a>
-<ul>
-<li>
-<a href="#toc_1">判断是否可以迭代</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_2">迭代器</a>
-<ul>
-<li>
-<a href="#toc_3">手动访问迭代器中的元素</a>
-</li>
-<li>
-<a href="#toc_4">将可迭代对象转换成迭代器</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_5">生成器</a>
-<ul>
-<li>
-<a href="#toc_6">生成器表达式</a>
-</li>
-<li>
-<a href="#toc_7">生成器函数</a>
-</li>
-<li>
-<a href="#toc_8">next()方法运行流程</a>
-</li>
-<li>
-<a href="#toc_9">send()方法</a>
-</li>
-</ul>
-</li>
-</ul>
-
-
-<p>迭代是Python中最强有力的特性之一。</p>
-
-<h2 id="toc_0">可迭代对象</h2>
-
-<p>迭代是访问集合元素的一种方式。迭代器是一个可以记住遍历的位置的对象。迭代器对象从集合的第一个元素开始访问，直到所有的元素被访问完结束。迭代器只能往前不会后退。</p>
-
-<p>以直接作用于for循环的数据类型有以下几种：</p>
-
-<p>一类是集合数据类型，如list, tuple, dict, set, str等；<br/>
-一类是generator,包括生成器和带yield的生成器函数(generator function).</p>
-
-<p>这些可以直接作用于for循环的对象统称为可迭代对象：<code>Iterable</code></p>
-
-<h3 id="toc_1">判断是否可以迭代</h3>
-
-<p>可以使用<code>isinstance()</code>判断一个对象是否是<code>Iterable</code>对象：</p>
-
-<pre><code class="language-python">from collections import Iterable
-
-isinstance([], Iterable)
-</code></pre>
-
-<h2 id="toc_2">迭代器</h2>
-
-<p>可以被<code>next()</code>函数调用并不断返回下一个值的对象称为迭代器：Iterator。</p>
-
-<h3 id="toc_3">手动访问迭代器中的元素</h3>
-
-<p>要手动访问可迭代对象中的元素，可以使用<code>next()</code>函数，然后自己编写代码来捕获<code>StopIteration</code>异常。例如，下面这个例子采用手工方式从文件中读取文本行：</p>
-
-<pre><code class="language-python"># 打印hosts文件
-with open(&#39;/etc/hosts&#39;) as f:
-    try:
-        while True:
-            line = next(f)
-            print(line, end=&#39;&#39;)
-    except: StopIteration:
-        pass
-</code></pre>
-
-<p>可以使用<code>isinstance()</code>判断一个对象是否是<code>Iterator</code>对象：</p>
-
-<pre><code class="language-python">from collections import Iterator
-isinstance((x for x in ragne(10)), Iterator)
-</code></pre>
-
-<h3 id="toc_4">将可迭代对象转换成迭代器</h3>
-
-<p>把list, dict, str等可迭代对象变成迭代器，可以使用<code>iter()</code>函数</p>
-
-<pre><code class="language-python">&gt;&gt;&gt; a = [11,22,33,44]
-&gt;&gt;&gt; type(a)
-&lt;class &#39;list&#39;&gt;
-&gt;&gt;&gt; b=iter(a)
-&gt;&gt;&gt; b
-&lt;list_iterator object at 0x109ba3278&gt;
-</code></pre>
-
-<h2 id="toc_5">生成器</h2>
-
-<p>如果列表元素可以按照某种算法推算出来，从而节省大量空间，即保存计算生成的方式，当需要时才生成。</p>
-
-<p>生成器可以通过next()获得生成器的下一个返回值。</p>
-
-<p>生成器的特点：<br/>
-1. 节约内存<br/>
-2. 迭代到下一次的调用时，所使用的参数都是第一次所保留下的</p>
-
-<h3 id="toc_6">生成器表达式</h3>
-
-<p><code>生成器表达式(generator expression)</code>: An expression that returns an iterator.</p>
-
-<pre><code class="language-python">&gt;&gt;&gt;&gt; a = ( x for x in range(1,100))
-&gt;&gt;&gt;&gt; a
-&gt;&gt;&gt;&gt; &lt;generator object &lt;genexpr&gt; at 0x10ce60f10&gt; # 生成器表达式
-</code></pre>
-
-<h3 id="toc_7">生成器函数</h3>
-
-<p>如果想实现一种新的迭代模式，可使用<code>生成器函数</code>来定义。函数中只要出现了<code>yield</code>语句就会讲其转变成一个生成器。一旦执行到<code>yield</code>语句，生成器函数返回，迭代停止。</p>
-
-<pre><code class="language-python">def fib(times):
-     &quot;&quot;&quot;
-     斐波那契数列
-     &quot;&quot;&quot;
-     
-     n =0
-     a,b = 0,1
-     while n&lt; times:
-        yield b    #与函数的唯一区别是yield语句
-        a,b = b, a+b
-        n+=1
-     return &#39;done&#39;
-
-for n in fib(5):
-    print(n)
-</code></pre>
-
-<h3 id="toc_8">next()方法运行流程</h3>
-
-<p>当第一次调用生成器的<code>next</code>方法时，生成器开始执行生成器函数，从第一行代码开始执行，一直执行到<code>yield</code>语句后，生成器函数返回<code>yield</code>表达式的值。之后每一次调用生成器的<code>next</code>方法时，生成器从<code>yield</code>语句的下一句开始执行，直到再次遇到<code>yield</code>语句返回。</p>
-
-<h3 id="toc_9">send()方法</h3>
-
-<p>生成器对象首先是一个迭代器，但比一般迭代器对象多了一些方法，包括<code>send()</code>,<code>throw()</code>,<code>close()</code>方法；这些方法主要用与生成器对象的交互。</p>
-
-<p>对于生成器，使用<code>send()</code>时，第一次需要<code>send(None)</code>，因为没有<code>yield</code>语句来接受参数。（<code>yield</code>执行完就跳出，对应变量没有赋值，看下面的例子）</p>
-
-<p><code>send()</code>方法和<code>next()</code>方法类似，不同的是<code>send()</code>可以向生成器传参数。当<br/>
-第一次调用生成器的<code>send()</code>方法时，从生成器函数的第一行代码开始执行，一直执行到yield语句后，生成器函数返回。注意这个过程中，变量一直没有赋值。当下一次运行时，变量才赋值，赋值的值来源于这一次的<code>send()</code>方法（不是上一次！而且第一次都是<code>None</code>），但并不执行yield部分，直到再次遇到<code>yield</code>语句返回。</p>
-
-<pre><code class="language-python">&gt;&gt;&gt; def gen():
-...     while True:
-...         s = yield
-...         print(s)
-...
-&gt;&gt;&gt; g = gen()
-&gt;&gt;&gt; g.send()
-Traceback (most recent call last):
-  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
-TypeError: send() takes exactly one argument (0 given)
-&gt;&gt;&gt; g.send(None)  # 第一次需要传入参数None
-&gt;&gt;&gt; g.send(&#39;Kiss&#39;) # 将参数赋值给变量s
-Kiss
-</code></pre>
-
-<p><strong>注意： 不能将一个非None的值传给初始的生成器</strong></p>
 
 ]]></content>
   </entry>
