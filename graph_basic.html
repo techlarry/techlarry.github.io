@@ -15,7 +15,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  顺序表 - techlarry
+  Graph - techlarry
   
   </title>
   
@@ -123,10 +123,10 @@
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>顺序表</h1>
+          <h1>Graph</h1>
      
         <div class="read-more clearfix">
-          <span class="date">2017/6/9</span>
+          <span class="date">2017/6/30</span>
 
           <span>posted in&nbsp;</span> 
           
@@ -143,63 +143,112 @@
       </div><!-- article -->
 
       <div class="article-content">
-      <h3 id="toc_0">顺序表的结构</h3>
+      <p>Definition: A graph can be represented by G where \(G=(V,E)\). For the graph \(G\), \(V\) is a set of vertices and \(E\) is a set of edges. Each edge is a tuple \((v,w)\) where \(w, v \in V\). </p>
 
-<p>一个顺序表的完整信息包括两部分，<br/>
-* 数据区，表中的元素集合<br/>
-* 信息区，是为实现正确操作而需记录的信息，即有关表的整体情况的信息，主要包括元素存储区的容量和当前表中已有的元素个数两项。</p>
-
-<h3 id="toc_1">顺序表的两种基本实现形式</h3>
+<h2 id="toc_0">Vocabulary and Definitions</h2>
 
 <ul>
-<li><p><strong>一体式结构</strong>：存储表信息的单元与元素存储区以连续的方式安排在一块存储区里，两部分数据的整体形成一个完整的顺序表对象。</p></li>
-<li><p><strong>分离式结构</strong>：表对象里只保存与整个表有关的信息（即容量和元素个数），实际数据元素存放在另一个独立的元素存储区里，通过链接与基本表对象关联。</p></li>
+<li><p>Vertex<br/>
+A <code>vertex</code> ( also a <code>node</code>) is a fundamental part of a graph. It can have a name &#39;key&#39;. A vertex may also have additional information called <code>payload</code>.</p></li>
+<li><p>Edge<br/>
+An <code>Edge</code> (also an <code>arc</code>) connects two vertices, and may be one-way(<code>directed graph</code>) or two-way(<code>undirected graph</code>).</p></li>
+<li><p>Weight<br/>
+Edges may be weighted to show that there is a cost to go from one vertex to another. E.g. the distance between the two cities.</p></li>
+<li><p>Path<br/>
+A <code>path</code> in a graph is a sequence of vertices that are connected by edges. Formally we could define a path as \(w_1, w_2,...,w_n\) such that \((w_i,w_{i+1}) \in E\) for all \(1 \le i &lt;\le n-1\). The weighted path length is the sum of the weights of the edges in the path. </p></li>
+<li><p>Cycle<br/>
+A <code>cycle</code> in a directed graph is a graph that starts and ends at the same vertex.  A graph with no cycles is called an <code>acyclic graph</code>. A directed graph with no cycles is called a <code>directed acyclic graph</code> or a <code>DAG</code>.</p></li>
 </ul>
 
-<p>当申请内存空间不够时，只能向操作系统重新申请内存空间： 对于一体式结构，则意味着表头也需要重新申请<br/>
-------&gt;一体式结构由于顺序表信息区与数据区连续存储在一起，所以若想更换数据区，则只能整体搬迁，即整个顺序表对象改变了；对于分离式结构，只需将表信息区中的数据区链接地址更新即可，该顺序表对象不变。</p>
+<h2 id="toc_1">Representation</h2>
 
-<h3 id="toc_2">顺序表扩充</h3>
+<p>Adjacency Matrix<br/>
+Adjacency List<br/>
+Edge List<br/>
+<img src="media/14988021902558/Screen%20Shot%202017-06-30%20at%202.06.25%20PM.png" alt="Screen Shot 2017-06-30 at 2.06.25 P"/></p>
 
-<p>顺序表扩充的两种策略</p>
+<p>A <code>path</code> in a graph \(G\) is a sequence of vertices \(v_0,v_1,...,v_n\) so that for all \(i, (v_i,v_{i+1})\) is an edge of \(G\).</p>
+
+<h2 id="toc_2">The graph ADT</h2>
+
+<p>The graph abstract data type(ADT) is defined as follows:</p>
 
 <ul>
-<li>每次扩充增加固定数目的存储位置，如每次扩充增加10个元素位置，这种策略可称为线性增长
-特点：节省空间，但是扩充操作频繁，操作次数多</li>
-<li>每次扩充容量加倍，如每次扩充增加一倍存储空间，倍增
-特点：减少了扩充次数，但可能会浪费空间资源。以空间换时间，推荐的方式。</li>
+<li><code>Graph()</code> creates a new, empty graph.</li>
+<li><code>addVertex(vert)</code> adds an instance of <code>Vertex</code> to the graph.</li>
+<li><code>addEdge(fromVert, toVert)</code>Adds a new, directed edge to the graph that connects two vertices.</li>
+<li><code>addEdge(fromVert, toVert, weight)</code> Adds a new, weighted, directed edge to the graph that connects two vertices.</li>
+<li><code>getVertex(vertKey)</code> finds the vertex in the graph named vertKey.</li>
+<li><code>getVertices()</code> returns the list of all vertices in the graph.</li>
+<li><code>in</code> returns <code>True</code> for a statement of the form vertex in graph, if the given vertex is in the graph,<code>False</code> otherwise.</li>
 </ul>
 
-<h3 id="toc_3">顺序表增加/删除元素</h3>
+<h2 id="toc_3">Implementation</h2>
 
-<p>增加元素<br/>
-* 尾端加入元素，时间复杂度为O(1)<br/>
-* 非保序的加入元素(不常见)，时间复杂度为O(1)<br/>
-* 保序的元素删除，时间复杂度为O(n) (常用，基本）</p>
+<p>We will create two classes, <code>Graph</code>, which holds the master list of vertices, and <code>Vertex</code>, which will represent each vertex in the graph.</p>
 
-<p>删除元素<br/>
-* 删除表尾元素，时间复杂度为O(1)<br/>
-* 非保序的元素删除（不常见），时间复杂度为O(1)<br/>
-* 保序的元素删除，时间复杂度为O(n)</p>
+<p>Each <code>Vertex</code> uses a dictionary to keep track of the vertices to which it is connected, and the weight of each edge. This dictionary is called <code>connectedTo</code>. The listing below shows the code for the <code>Vertex</code> class. The constructor simply initializes the <code>id</code>, which will typically be a string, and the <code>connectedTo</code> dictionary. The <code>addNeighbor</code> method is used add a connection from this vertex to another. The g<code>etConnections</code> method returns all of the vertices in the adjacency list, as represented by the <code>connectedTo</code>instance variable. The <code>getWeight</code> method returns the weight of the edge from this vertex to the vertex passed as a parameter.</p>
 
-<h2 id="toc_4">python中的顺序表</h2>
+<pre><code class="language-python">class Vertex:
+    def __init__(self,key):
+        self.id = key
+        self.connectedTo = {}
 
-<p>Python 中的list和tuple两种类型采用了顺序表的实现技术。tuple是不可变类型，其他方面与list类似。</p>
+    def addNeighbor(self,nbr,weight=0):
+        self.connectedTo[nbr] = weight
 
-<h3 id="toc_5">list的基本实现技术</h3>
+    def __str__(self):
+        return str(self.id) + &#39; connectedTo: &#39; + str([x.id for x in self.connectedTo])
 
-<p>基于下标（位置）的高效元素访问和更新，时间复杂度是O(1)；</p>
+    def getConnections(self):
+        return self.connectedTo.keys()
 
-<p>为满足该特征，应该采用顺序表技术，表中元素保存在一块连续的存储区中。</p>
+    def getId(self):
+        return self.id
 
-<p>允许任意加入元素，而且在不断加入元素的过程中，表对象的标识（函数id得到的值）不变。</p>
+    def getWeight(self,nbr):
+        return self.connectedTo[nbr]
+</code></pre>
 
-<p>为满足该特征，就必须能更换元素存储区，并且为保证更换存储区时list对象的标识id不变，只能采用分离式实现技术。</p>
+<p>The <code>Graph</code> class, shown in the next listing, contains a dictionary that maps vertex names to vertex objects. <code>Graph</code> also provides methods for adding vertices to a graph and connecting one vertex to another. The <code>getVertices</code> method returns the names of all of the vertices in the graph. In addition, we have implemented the <code>__iter__</code> method to make it easy to iterate over all the vertex objects in a particular graph. Together, the two methods allow you to iterate over the vertices in a graph by name, or by the objects themselves.</p>
 
-<p>在Python的官方实现中，list就是一种采用分离式技术实现的动态顺序表。这就是为什么用list.append(x) （或 list.insert(len(list), x)，即尾部插入）比在指定位置插入元素效率高的原因。</p>
+<pre><code class="language-python">class Graph:
+    def __init__(self):
+        self.vertList = {}
+        self.numVertices = 0
 
-<p>在Python的官方实现中，list实现采用了如下的策略：<br/>
-<strong>在建立空表（或者很小的表）时，系统分配一块能容纳8个元素的存储区；在执行插入操作（insert或append）时，如果元素存储区满就换一块4倍大的存储区。但如果此时的表已经很大（目前的阀值为50000），则改变策略，采用加一倍的方法。引入这种改变策略的方式，是为了避免出现过多空闲的存储位置。</strong></p>
+    def addVertex(self,key):
+        self.numVertices = self.numVertices + 1
+        newVertex = Vertex(key)
+        self.vertList[key] = newVertex
+        return newVertex
+
+    def getVertex(self,n):
+        if n in self.vertList:
+            return self.vertList[n]
+        else:
+            return None
+
+    def __contains__(self,n):
+        return n in self.vertList
+
+    def addEdge(self,f,t,cost=0):
+        if f not in self.vertList:
+            nv = self.addVertex(f)
+        if t not in self.vertList:
+            nv = self.addVertex(t)
+        self.vertList[f].addNeighbor(self.vertList[t], cost)
+
+    def getVertices(self):
+        return self.vertList.keys()
+
+    def __iter__(self):
+        return iter(self.vertList.values())
+    ```
+
+
+
+</code></pre>
 
 
     
@@ -210,16 +259,16 @@
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="%E9%93%BE%E8%A1%A8.html" 
-          title="Previous Post: 链表">&laquo; 链表</a>
+          <a href="14992350772045.html" 
+          title="Previous Post: 首先有一个概念：回溯">&laquo; 首先有一个概念：回溯</a>
       
         </p>
         </div>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="14969760398302.html" 
-          title="Next Post: 迭代器与生成器">迭代器与生成器 &raquo;</a>
+          <a  href="14987831190581.html" 
+          title="Next Post: Machine Learning (5): Neural Networks">Machine Learning (5): Neural Networks &raquo;</a>
       
       </p>
         </div>
