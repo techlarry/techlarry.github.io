@@ -153,9 +153,31 @@
 </li>
 <li>
 <a href="#toc_6">SQL Operators</a>
+<ul>
+<li>
+<a href="#toc_7">Logical Operators</a>
 </li>
 <li>
-<a href="#toc_7">Resources</a>
+<a href="#toc_8">LIKE</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_9">Functions</a>
+</li>
+<li>
+<a href="#toc_10">Subqueires</a>
+</li>
+<li>
+<a href="#toc_11">Joining Tables</a>
+<ul>
+<li>
+<a href="#toc_12">Types of Join</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_13">Resources</a>
 </li>
 </ul>
 
@@ -466,13 +488,132 @@ WHERE column_name operator value;
 </tbody>
 </table>
 
-<p><code>BETWEEN</code> Operator:<br/>
-<code>SQL<br/>
-SELECT * FROM customers<br/>
-WHERE ID BETWEEN 3 AND 7;<br/>
-</code></p>
+<p><code>BETWEEN</code> Operator:</p>
 
-<h2 id="toc_7">Resources</h2>
+<pre><code class="language-SQL">SELECT * FROM customers
+WHERE ID BETWEEN 3 AND 7;
+</code></pre>
+
+<h3 id="toc_7">Logical Operators</h3>
+
+<p>Logical operators can be used to combine two Boolean values and return a result of <strong>true</strong>, <strong>false</strong>, or <strong>null</strong>.</p>
+
+<p>The following operators exists in SQL:</p>
+
+<table>
+<thead>
+<tr>
+<th>Operator</th>
+<th>Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>AND</td>
+<td>TRUE if both expressions are TRUE</td>
+</tr>
+<tr>
+<td>OR</td>
+<td>TRUE if either expression is TRUE</td>
+</tr>
+<tr>
+<td>IN</td>
+<td>TRUE if the operand is equal to one of a list of expressions</td>
+</tr>
+<tr>
+<td>NOT</td>
+<td>Returns TRUE if expression is not TRUE</td>
+</tr>
+</tbody>
+</table>
+
+<p>The <code>IN</code> Operator:</p>
+
+<pre><code class="language-SQL">SELECT * FROM customers 
+WHERE City IN (&#39;New York&#39;, &#39;Los Angeles&#39;, &#39;Chicago&#39;);
+</code></pre>
+
+<p>The <code>NOT IN</code> Operator:</p>
+
+<pre><code class="language-SQL">SELECT * FROM customers 
+WHERE City NOT IN (&#39;New York&#39;, &#39;Los Angeles&#39;, &#39;Chicago&#39;);
+</code></pre>
+
+<h3 id="toc_8">LIKE</h3>
+
+<p>The <code>Like</code> keyword is useful when specifying a <code>search condition</code> within <code>WHERE</code> clause.</p>
+
+<pre><code class="language-SQL">SELECT column_name(s)
+FROM table_name
+WHERE column_name LIKE pattern;
+</code></pre>
+
+<p>SQL <code>pattern</code> matching enables you to use <code>_</code> to match any single character and <code>%</code> to match an arbitrary number of characters (including zero characters).</p>
+
+<h2 id="toc_9">Functions</h2>
+
+<p>The <code>UPPER</code> function converts all letters in the specified string to uppercase. <br/>
+The <code>LOWER</code> function converts the string to lowercase.</p>
+
+<p>The following SQL query selects all <em>Lastnames</em> as uppercase:</p>
+
+<pre><code class="language-SQL">SELECT FirstName, UPPER(LastName) AS LastName 
+FROM employees;
+</code></pre>
+
+<p>The <code>SQRT</code> function returns the square root of given value in the argument.<br/>
+Similarly, the <code>AVG</code> function returns the average value of a numeric column.<br/>
+The <code>SUM</code> function is used to calculate the sum for a column&#39;s values.</p>
+
+<p>The <code>MIN</code> function is used to return the minimum value of an expression in a <code>SELECT</code> statement.</p>
+
+<p>E.g. you might wish to know the minimum salary among the employees:</p>
+
+<pre><code class="language-SQL">SELECT MIN(salary) AS Salary FROM employees;
+</code></pre>
+
+<h2 id="toc_10">Subqueires</h2>
+
+<p>A subquery is a query within another query. Enclose the subquery in parentheses. </p>
+
+<p>E.g.</p>
+
+<pre><code class="language-SQL">SELECT FirstName, Salary FROM employees 
+WHERE  Salary &gt; (SELECT AVG(Salary) FROM employees) 
+ORDER BY Salary DESC;
+</code></pre>
+
+<h2 id="toc_11">Joining Tables</h2>
+
+<p>SQL can combine data from multiple tables. In SQL, &#39;joining tables&#39; means combining data from two or more tables. A table join creates a <code>temporary table</code> showing the data from the joined tables.</p>
+
+<p>To join tables, specify them as a comma-separated list in the <code>FROM</code> clause:</p>
+
+<pre><code class="language-SQL">SELECT customers.ID, customers.Name, orders.Name, orders.Amount FROM customers, orders
+WHERE customers.ID = orders.Customer_ID
+ORDER BY customers.ID
+</code></pre>
+
+<h3 id="toc_12">Types of Join</h3>
+
+<p>The following are types of <code>JOIN</code> that can be used in SQL:<br/>
+* <code>INNER JOIN</code>: returns rows when there is a match between the tables.<br/>
+* <code>LEFT JOIN</code>: returns rows from the left table, even if there are no matches in the right table.</p>
+
+<pre><code class="language-SQL">SELECT table1.column1, table2.column2...
+FROM table1 LEFT JOIN table2
+ON table1.column_name = table2.column_name;
+</code></pre>
+
+<p>If no match is found for a particular row,<code>NULL</code>is returned.</p>
+
+<ul>
+<li><code>RIGHT JOIN</code>
+Just like <code>LEFT JOIN</code></li>
+</ul>
+
+<h2 id="toc_13">Resources</h2>
 
 <ol>
 <li><p><a href="https://www.codecademy.com/courses/learn-sql/lessons/manipulation/exercises/relational-databases?action=lesson_resume">Codecademy</a></p></li>
