@@ -125,7 +125,61 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="14999996305333.html">
+                <a class="clearlink" href="dijkstra_algorithm.html">
+                
+                  <h1>Dijkstra's algorithm</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p><code>Dijkstra&#39;s algorithm</code> is an iterative algorithm that provides us with the shortest path from one particular starting node to all other nodes in the graph.</p>
+
+<p>The algorithm iterates once for every vertex in the graph. The order that we iterate over the vertices is controlled by a priority queue. When a vertex is first created <code>dist</code> is set to a very large number(<code>sys.maxsize</code>)</p>
+
+<pre><code class="language-python">from pythonds.graphs import PriorityQueue, Graph, Vertex
+def dijkstra(aGraph,start):
+    pq = PriorityQueue()
+    start.setDistance(0)
+    pq.buildHeap([(v.getDistance(),v) for v in aGraph])
+    while not pq.isEmpty():
+        currentVert = pq.delMin()
+        for nextVert in currentVert.getConnections():
+            newDist = currentVert.getDistance() \
+                    + currentVert.getWeight(nextVert)
+            if newDist &lt; nextVert.getDistance():
+                nextVert.setDistance( newDist )
+                nextVert.setPred(currentVert)
+                pq.decreaseKey(nextVert,newDist)
+
+</code></pre>
+
+<p>It is important to note that Dijkstra&#39;s algorithm works only when the weights are all positive. If you introduced a negative weight on one of the edges to the graph that the algorithm would never exit.</p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/7/14</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html'>Python数据结构与算法</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="testing.html">
                 
                   <h1>Testing</h1>
                   <div class="a-content">
@@ -136,7 +190,7 @@
 
 <h2 id="toc_0">Test-driven programming</h2>
 
-<p>&quot;Test first and code later&quot; practice, known as test-driven programming, instead of test after code.</p>
+<p>&quot;<strong>Test first and code later</strong>&quot; practice, known as test-driven programming, instead of test after code.</p>
 
 <h3 id="toc_1">Requirement Specification</h3>
 
@@ -232,38 +286,11 @@ if __name__ == &quot;__main__&quot;:
     unittest.main()
 </code></pre>
 
+<p>Another example to test <code>dijkstra&#39;s algorithm</code> see <a href="http://larryim.cc/dijkstra_algorith.html">here</a>.</p>
+
 <p>Methods such as <code>failUnless</code> check a condition to determine whether the given test succeeds or fails. </p>
 
 <p>The <code>unittest</code> module distinguishes between <code>errors</code>, where an exception is raised, and <code>failures</code>, which result from calls to <code>failUnless</code> and the like. </p>
-
-<p>Another Example to test <code>PriorityQueue</code> (<a href="http://larryim.cc/priority_queue.html">Souce code</a>): </p>
-
-<pre><code>import unittest
-
-class TestBinHeap(unittest.TestCase):
-    def setUp(self):
-        self.theHeap = PriorityQueue()
-        self.theHeap.add((2, &#39;x&#39;))
-        self.theHeap.add((3, &#39;y&#39;))
-        self.theHeap.add((5, &#39;z&#39;))
-        self.theHeap.add((6, &#39;a&#39;))
-        self.theHeap.add((4, &#39;d&#39;))
-
-    def testInsert(self):
-        assert self.theHeap.currentSize == 5
-
-    def testDelmin(self):
-        assert self.theHeap.delMin() == &#39;x&#39;
-        assert self.theHeap.delMin() == &#39;y&#39;
-
-    def testDecKey(self):
-        self.theHeap.decreaseKey(&#39;d&#39;, 1)
-        assert self.theHeap.delMin() == &#39;d&#39;
-
-
-if __name__ == &#39;__main__&#39;:
-    unittest.main()
-</code></pre>
 
 <h2 id="toc_6">Source Code Checking</h2>
 
@@ -273,20 +300,7 @@ if __name__ == &#39;__main__&#39;:
 
 <p><code>Pylint</code> can be integrated with <code>Pycharm</code>, see <a href="https://pylint.readthedocs.io/en/latest/user_guide/ide-integration.html#pylint-in-pycharm">detail</a>.</p>
 
-<h2 id="toc_7">Profiling</h2>
-
-<p><strong>When in doubt, use brute force</strong>: If you really care about speed and want to optimize your program (only do this if it’s absolutely necessary), you should profile it first. Use the profile (or hotshot) module to find bottlenecks in your code.</p>
-
-<p>The standard library includes a nice profiler module called <code>profile</code>(and a faster drop-in version, called <code>hotspot</code>)</p>
-
-<pre><code class="language-python">&gt;&gt;&gt; import profile
-&gt;&gt;&gt; from my_math import square
-&gt;&gt;&gt; profile.run(&#39;square(2)&#39;)
-</code></pre>
-
-<p>The &#39;timeit&#39; module in Python is simple way of timing small snippets of Python code, usually be a nice tool when all you want to do is figure out how much time a piece of code takes to execute.</p>
-
-<h2 id="toc_8">Resources</h2>
+<h2 id="toc_7">Resources</h2>
 
 <ul>
 <li><a href="https://www.ibm.com/developerworks/cn/linux/l-cn-pylint/index.html">如何使用 Pylint 来规范 Python 代码风格</a></li>
@@ -324,7 +338,7 @@ if __name__ == &#39;__main__&#39;:
                       
                       <div class="a-content-text">
                         
-                        	<p><a href="https://www.continuum.io/why-anaconda">Anaconda </a>(/ˌænə&#39;kɑndə/)是一个用于科学计算的python发行版，支持各种系统，提供了包管理和环境管理的功能。Anaconda利用<code>conda</code>来进行package和environment的管理。</p>
+                        	<p><a href="https://www.continuum.io/why-anaconda">Anaconda </a>(/ˌænə&#39;kɑndə/)是一个用于科学计算的python发行版，支持各种系统，提供了包管理和环境管理的功能。Anaconda 利用<code>conda</code>来进行package和environment的管理。</p>
 
 <h2 id="toc_0">Conda的包管理</h2>
 
@@ -928,20 +942,27 @@ Just like <code>LEFT JOIN</code></li>
 
 <pre><code class="language-python">class PriorityQueue:
     def __init__(self):
-        self.heapArray = [(0,0)]
+        self.heapArray = [(0, 0)]
         self.currentSize = 0
 
-    def buildHeap(self,alist):
+    def buildHeap(self, alist):
+        &quot;&quot;&quot;
+        &quot;&quot;&quot;从一个包含元素的列表创建新堆&quot;&quot;&quot;
+        :param alist: a list
+        &quot;&quot;&quot;
         self.currentSize = len(alist)
-        self.heapArray = [(0,0)]
+        self.heapArray = [(0, 0)]
         for i in alist:
             self.heapArray.append(i)
-        i = len(alist) // 2            
+        i = len(alist) // 2
         while (i &gt; 0):
             self.percDown(i)
             i = i - 1
-                        
-    def percDown(self,i):
+
+    def percDown(self, i):
+        &quot;&quot;&quot;
+        Percolate the ith node down the tree
+        &quot;&quot;&quot;
         while (i * 2) &lt;= self.currentSize:
             mc = self.minChild(i)
             if self.heapArray[i][0] &gt; self.heapArray[mc][0]:
@@ -949,49 +970,65 @@ Just like <code>LEFT JOIN</code></li>
                 self.heapArray[i] = self.heapArray[mc]
                 self.heapArray[mc] = tmp
             i = mc
-                
-    def minChild(self,i):
-        if i*2 &gt; self.currentSize:
+
+    def minChild(self, i):
+        &quot;&quot;&quot;
+        Find the smallest child
+        &quot;&quot;&quot;
+        if i * 2 &gt; self.currentSize:
             return -1
         else:
-            if i*2 + 1 &gt; self.currentSize:
-                return i*2
+            if i * 2 + 1 &gt; self.currentSize:
+                return i * 2
             else:
-                if self.heapArray[i*2][0] &lt; self.heapArray[i*2+1][0]:
-                    return i*2
+                if self.heapArray[i * 2][0] &lt; self.heapArray[i * 2 + 1][0]:
+                    return i * 2
                 else:
-                    return i*2+1
+                    return i * 2 + 1
 
-    def percUp(self,i):
+    def percUp(self, i):
+        &quot;&quot;&quot;
+        Percolate the ith node up the tree
+        &quot;&quot;&quot;
         while i // 2 &gt; 0:
-            if self.heapArray[i][0] &lt; self.heapArray[i//2][0]:
-               tmp = self.heapArray[i//2]
-               self.heapArray[i//2] = self.heapArray[i]
-               self.heapArray[i] = tmp
-            i = i//2
- 
-    def add(self,k):
+            if self.heapArray[i][0] &lt; self.heapArray[i // 2][0]:
+                tmp = self.heapArray[i // 2]
+                self.heapArray[i // 2] = self.heapArray[i]
+                self.heapArray[i] = tmp
+            i = i // 2
+
+    def add(self, k):
         self.heapArray.append(k)
         self.currentSize = self.currentSize + 1
         self.percUp(self.currentSize)
 
     def delMin(self):
+        &quot;&quot;&quot;
+        delete the min-vertex of heap array, which always in the first position.
+        &quot;&quot;&quot;
         retval = self.heapArray[1][1]
         self.heapArray[1] = self.heapArray[self.currentSize]
         self.currentSize = self.currentSize - 1
         self.heapArray.pop()
         self.percDown(1)
         return retval
-        
+
     def isEmpty(self):
+        &quot;&quot;&quot;
+        return true if the heapArray is empty
+        &quot;&quot;&quot;
         if self.currentSize == 0:
             return True
         else:
             return False
 
-    def decreaseKey(self,val,amt):
-        # this is a little wierd, but we need to find the heap thing to decrease by
-        # looking at its value
+    def decreaseKey(self, val, amt):
+        &quot;&quot;&quot;
+        Decrease the key of the specific vertex (here, val)
+
+        First, find its position in the heapArray: myKey
+        Second, set its position to the right
+        &quot;&quot;&quot;
         done = False
         i = 1
         myKey = 0
@@ -1002,10 +1039,13 @@ Just like <code>LEFT JOIN</code></li>
             else:
                 i = i + 1
         if myKey &gt; 0:
-            self.heapArray[myKey] = (amt,self.heapArray[myKey][1])
+            self.heapArray[myKey] = (amt, self.heapArray[myKey][1])
             self.percUp(myKey)
-            
-    def __contains__(self,vtx):
+
+    def __contains__(self, vtx):
+        &quot;&quot;&quot;
+        Built-in Magic method
+        &quot;&quot;&quot;
         for pair in self.heapArray:
             if pair[1] == vtx:
                 return True
@@ -5701,7 +5741,13 @@ test2()
 	      
 		      
 			      <li class="post">
-			        <a href="14999996305333.html">Testing</a>
+			        <a href="dijkstra_algorithm.html">Dijkstra's algorithm</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="testing.html">Testing</a>
 			      </li>
 		     
 		  
@@ -5720,12 +5766,6 @@ test2()
 		      
 			      <li class="post">
 			        <a href="priority_queue.html">Priority queue</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="heap.html">Heap</a>
 			      </li>
 		     
 		  

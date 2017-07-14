@@ -15,7 +15,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  Linux 系统编程 - techlarry
+  Testing - techlarry
   
   </title>
   
@@ -116,84 +116,215 @@
        
 
  <script type="text/javascript">
-	$(function(){
-		$('#menu_item_index').addClass('is_active');
-	});
+  $(function(){
+    $('#menu_item_index').addClass('is_active');
+  });
 </script>
 <div class="row">
-	<div class="large-8 medium-8 columns">
-		<div class="markdown-body home-categories">
-		
-			<div class="article">
-                <a class="clearlink" href="14970832553234.html">
-                
-                  <h1>调试</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h2 id="toc_0">pdb</h2>
+  <div class="large-8 medium-8 columns">
+      <div class="markdown-body article-wrap">
+       <div class="article">
+          
+          <h1>Testing</h1>
+     
+        <div class="read-more clearfix">
+          <span class="date">2017/7/14</span>
 
-<p>pdb是基于命令行的调试工具，是Python的调试器，非常类似GNU的GDB（调试c/c++）</p>
+          <span>posted in&nbsp;</span> 
+          
+              <span class="posted-in"><a href='Python%E7%BC%96%E7%A8%8B%E6%8A%80%E5%B7%A7.html'>Python编程技巧</a></span>
+           
+         
+          <span class="comments">
+            
 
-<pre><code class="language-python">python -m pdb some.py # -m是模块的意思, pdb模块
-</code></pre>
+            
+          </span>
 
-<h3 id="toc_1">命令</h3>
+        </div>
+      </div><!-- article -->
+
+      <div class="article-content">
+      <p><a href="https://en.wikipedia.org/wiki/Unit_testing">Unit testing</a> is a software testing method by which individual units of source code, sets of one or more computer program modules together with associated control data, usage procedures, and operating procedures, are tested to determine whether they are fit for use.</p>
+
+<h2 id="toc_0">Test-driven programming</h2>
+
+<p>&quot;<strong>Test first and code later</strong>&quot; practice, known as test-driven programming, instead of test after code.</p>
+
+<h3 id="toc_1">Requirement Specification</h3>
+
+<p>When developing a piece of software, you must first know what problem the software will solve—what objectives it will meet. You can clarify your goals for the program by writing a <strong>requirement specification</strong>, a document (or just some quick notes) describing requirements the program must satisfy. </p>
+
+<h3 id="toc_2">The 1-2-3-4 of Testing</h3>
+
+<p>Here’s a breakdown of the test-driven development process:</p>
 
 <ul>
-<li>输入命令<code>l</code> (list) 查看代码</li>
-<li>输入命令<code>n</code> (next) 可以单步执行代码</li>
-<li>输入命令<code>c</code> (continue) 继续执行代码</li>
-<li>输入命令<code>b</code> (break) 添加断点</li>
-<li>输入命令<code>clear</code> 清除断点</li>
-<li>输入命令<code>p</code> (print) 打印一个变量的值</li>
-<li>输入命令<code>s</code> (step) 进入到一个函数</li>
-<li>输入命令<code>a</code> (args) 打印所有的形参数据</li>
-<li>输入命令<code>r</code> (return) 快速执行到函数的最后一行</li>
-<li>输入命令<code>q</code> quit 退出调试</li>
+<li>Figure out the new feature you want. Possibly document it, and then write a test for it.</li>
+<li>Write some skeleton code for the feature, so that you program runs without any syntax errors. See your test fail.</li>
+<li>Write dummy code for skeleton code, just to appease the test.</li>
+<li>Rewrite the code so that it actually pass the test.</li>
 </ul>
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/6/10</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Linux%20%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B.html'>Linux 系统编程</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
+<h2 id="toc_3">Testing Tools</h2>
 
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-              
+<p>Two brilliant modules are available to automate the testing process:</p>
+
+<ul>
+<li><code>unittest</code>: A generic testing framework.</li>
+<li><code>doctest</code>: A simpler module, designed for checking documentation, but excellent for writing unit tests as well.</li>
+</ul>
+
+<h3 id="toc_4">doctest</h3>
+
+<p>The <code>testmod</code> function checks both the module docstring and function docstring.</p>
+
+<p>E.g.</p>
+
+<pre><code class="language-python">def square(x):
+    &quot;&quot;&quot;
+    squares a number and returns the result.
+    &gt;&gt;&gt; square(2)
+    4
+    &gt;&gt;&gt; square(3)
+    9
+    &quot;&quot;&quot;
+    return x*x
+
+if __name__ == &quot;__main__&quot;:
+    import doctest, doc_test_example
+    doctest.testmod(doc_test_example)
+</code></pre>
+
+<p>Run the example. To get some more output, just add <code>-v</code>(for verbose)</p>
+
+<pre><code class="language-bash">$ python doc_test_example.py -v
+Trying:
+    square(2)
+Expecting:
+    4
+ok
+Trying:
+    square(3)
+Expecting:
+    9
+ok
+1 items had no tests:
+    doc_test_example
+1 items passed all tests:
+   2 tests in doc_test_example.square
+2 tests in 2 items.
+2 passed and 0 failed.
+Test passed.
+</code></pre>
+
+<h3 id="toc_5">unittest</h3>
+
+<p><code>unittest</code> which is based on the popular test framework <code>JUnit</code>, is more flexible and powerful. It allows to write very large and thorough test sets in a more structured manner.</p>
+
+<p><strong>注意： 测试方法应该以test_为前缀命名</strong></p>
+
+<p>E.g.</p>
+
+<pre><code class="language-python">import unittest
+import doc_test_example as my_math
+
+class ProductTestCase(unittest.TestCase):
+
+    def testIntegers(self):
+        for x in xrange(-10,10):
+            p = my_math.square(x)
+            self.failUnless(p == x*x, &#39;Integer multiplication failed&#39;)
+
+    def testFloats(self):
+        for x in xrange(-10,10):
+            x = x/10.0
+            p = my_math.square(x)
+            self.failUnless(p == x*x, &#39;Float multiplication failed&#39;)
 
 
-			<div class="row">
-			  <div class="large-6 columns">
-			  <p class="text-left" style="padding-top:25px;">
-			   
-			  </p>
-			  </div>
-			  <div class="large-6 columns">
-			<p class="text-right" style="padding-top:25px;">
-			
-			</p>
-			  </div>
-			</div>
-		</div>
-	</div><!-- large 8 -->
+if __name__ == &quot;__main__&quot;:
+    unittest.main()
+</code></pre>
+
+<p>Another example to test <code>dijkstra&#39;s algorithm</code> see <a href="http://larryim.cc/dijkstra_algorith.html">here</a>.</p>
+
+<p>Methods such as <code>failUnless</code> check a condition to determine whether the given test succeeds or fails. </p>
+
+<p>The <code>unittest</code> module distinguishes between <code>errors</code>, where an exception is raised, and <code>failures</code>, which result from calls to <code>failUnless</code> and the like. </p>
+
+<h2 id="toc_6">Source Code Checking</h2>
+
+<p><a href="https://www.pylint.org">Pylint</a> and PyChecker are good tools for checking Python source code, looking for mistakes.</p>
+
+<p><code>Pylint</code> is a tool that checks for errors in Python code, tries to enforce a coding standard and looks for code smells. It can also look for certain type errors, it can recommend suggestions about how particular blocks can be refactored and can offer you details about the code’s complexity.</p>
+
+<p><code>Pylint</code> can be integrated with <code>Pycharm</code>, see <a href="https://pylint.readthedocs.io/en/latest/user_guide/ide-integration.html#pylint-in-pycharm">detail</a>.</p>
+
+<h2 id="toc_7">Resources</h2>
+
+<ul>
+<li><a href="https://www.ibm.com/developerworks/cn/linux/l-cn-pylint/index.html">如何使用 Pylint 来规范 Python 代码风格</a></li>
+<li><a href="https://www.python.org/dev/peps/pep-0008/">Style Guide for Python Code</a></li>
+</ul>
+
+
+    
+
+      </div>
+
+      <div class="row">
+        <div class="large-6 columns">
+        <p class="text-left" style="padding:15px 0px;">
+      
+          <a href="dijkstra_algorithm.html" 
+          title="Previous Post: Dijkstra's algorithm">&laquo; Dijkstra's algorithm</a>
+      
+        </p>
+        </div>
+        <div class="large-6 columns">
+      <p class="text-right" style="padding:15px 0px;">
+      
+          <a  href="anaconda.html" 
+          title="Next Post: Anaconda">Anaconda &raquo;</a>
+      
+      </p>
+        </div>
+      </div>
+      <div class="comments-wrap">
+        <div class="share-comments">
+          <div id="disqus_thread"></div>
+<script>
+
+/**
+*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+/*
+var disqus_config = function () {
+this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+};
+*/
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = 'https://techlarry-1.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+                                
+
+          
+
+          
+        </div>
+      </div>
+    </div><!-- article-wrap -->
+  </div><!-- large 8 -->
+
+
+
 
  <div class="large-4 medium-4 columns">
   <div class="hide-for-small">
