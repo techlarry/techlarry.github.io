@@ -236,6 +236,35 @@ if __name__ == &quot;__main__&quot;:
 
 <p>The <code>unittest</code> module distinguishes between <code>errors</code>, where an exception is raised, and <code>failures</code>, which result from calls to <code>failUnless</code> and the like. </p>
 
+<p>Another Example to test <code>PriorityQueue</code> (<a href="priority_queue.html">Souce code</a>): </p>
+
+<pre><code>import unittest
+
+class TestBinHeap(unittest.TestCase):
+    def setUp(self):
+        self.theHeap = PriorityQueue()
+        self.theHeap.add((2, &#39;x&#39;))
+        self.theHeap.add((3, &#39;y&#39;))
+        self.theHeap.add((5, &#39;z&#39;))
+        self.theHeap.add((6, &#39;a&#39;))
+        self.theHeap.add((4, &#39;d&#39;))
+
+    def testInsert(self):
+        assert self.theHeap.currentSize == 5
+
+    def testDelmin(self):
+        assert self.theHeap.delMin() == &#39;x&#39;
+        assert self.theHeap.delMin() == &#39;y&#39;
+
+    def testDecKey(self):
+        self.theHeap.decreaseKey(&#39;d&#39;, 1)
+        assert self.theHeap.delMin() == &#39;d&#39;
+
+
+if __name__ == &#39;__main__&#39;:
+    unittest.main()
+</code></pre>
+
 <h2 id="toc_6">Source Code Checking</h2>
 
 <p><a href="https://www.pylint.org">Pylint</a> and PyChecker are good tools for checking Python source code, looking for mistakes.</p>
