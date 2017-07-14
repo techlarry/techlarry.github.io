@@ -15,7 +15,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  Graph - techlarry
+  Testing - techlarry
   
   </title>
   
@@ -125,14 +125,14 @@
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>Graph</h1>
+          <h1>Testing</h1>
      
         <div class="read-more clearfix">
-          <span class="date">2017/6/30</span>
+          <span class="date">2017/7/14</span>
 
           <span>posted in&nbsp;</span> 
           
-              <span class="posted-in"><a href='Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html'>Python数据结构与算法</a></span>
+              <span class="posted-in"><a href='Python%E7%BC%96%E7%A8%8B%E6%8A%80%E5%B7%A7.html'>Python编程技巧</a></span>
            
          
           <span class="comments">
@@ -145,108 +145,124 @@
       </div><!-- article -->
 
       <div class="article-content">
-      <p>Definition: A graph can be represented by \(G\) where \(G=(V,E)\). For the graph \(G\), \(V\) is a set of vertices and \(E\) is a set of edges. Each edge is a tuple \((v,w)\) where \(w, v \in V\). </p>
+      <p><a href="https://en.wikipedia.org/wiki/Unit_testing">Unit testing</a> is a software testing method by which individual units of source code, sets of one or more computer program modules together with associated control data, usage procedures, and operating procedures, are tested to determine whether they are fit for use.</p>
 
-<h2 id="toc_0">Vocabulary and Definitions</h2>
+<h2 id="toc_0">test-driven programming</h2>
 
-<ul>
-<li><p>Vertex<br/>
-A <code>vertex</code> ( also a <code>node</code>) is a fundamental part of a graph. It can have a name <code>key</code>. A vertex may also have additional information called <code>payload</code>.</p></li>
-<li><p>Edge<br/>
-An <code>Edge</code> (also an <code>arc</code>) connects two vertices, and may be one-way(<code>directed graph</code>) or two-way(<code>undirected graph</code>).</p></li>
-<li><p>Weight<br/>
-Edges may be weighted to show that there is a cost (<code>weight</code>)to go from one vertex to another. E.g. the distance between the two cities.</p></li>
-<li><p>Path<br/>
-A <code>path</code> in a graph is a sequence of vertices that are connected by edges. Formally we could define a path as \(w_1, w_2,...,w_n\) such that \((w_i,w_{i+1}) \in E\) for all \(1 \le i \le  n-1\). The weighted path length is the sum of the weights of the edges in the path. </p></li>
-<li><p>Cycle<br/>
-A <code>cycle</code> in a directed graph is a graph that starts and ends at the same vertex.  A graph with no cycles is called an <code>acyclic graph</code>. A directed graph with no cycles is called a <code>directed acyclic graph</code> or a <code>DAG</code>.</p></li>
-</ul>
+<p>&quot;Test first and code later&quot; practice, known as test-driven programming, instead of test after code.</p>
 
-<h2 id="toc_1">Representation</h2>
+<h2 id="toc_1">Requirement Specification</h2>
 
-<p>Adjacency Matrix<br/>
-Adjacency List<br/>
-Edge List<br/>
-<img src="media/14988021902558/Screen%20Shot%202017-06-30%20at%202.06.25%20PM.png" alt="Screen Shot 2017-06-30 at 2.06.25 P"/></p>
+<p>When developing a piece of software, you must first know what problem the software will solve—what objectives it will meet. You can clarify your goals for the program by writing a <strong>requirement specification</strong>, a document (or just some quick notes) describing requirements the program must satisfy. </p>
 
-<p>A <code>path</code> in a graph \(G\) is a sequence of vertices \(v_0,v_1,...,v_n\) so that for all \(i, (v_i,v_{i+1})\) is an edge of \(G\).</p>
+<h3 id="toc_2">The 1-2-3-4 of Testing</h3>
 
-<h2 id="toc_2">The graph ADT</h2>
-
-<p>The graph abstract data type (ADT) is defined as follows:</p>
+<p>Here’s a breakdown of the test-driven development process:</p>
 
 <ul>
-<li><code>Graph()</code> creates a new, empty graph.</li>
-<li><code>addVertex(vert)</code> adds an instance of <code>Vertex</code> to the graph.</li>
-<li><code>addEdge(fromVert, toVert)</code>Adds a new, directed edge to the graph that connects two vertices.</li>
-<li><code>addEdge(fromVert, toVert, weight)</code> Adds a new, weighted, directed edge to the graph that connects two vertices.</li>
-<li><code>getVertex(vertKey)</code> finds the vertex in the graph named vertKey.</li>
-<li><code>getVertices()</code> returns the list of all vertices in the graph.</li>
-<li><code>in</code> returns <code>True</code> for a statement of the form vertex in graph, if the given vertex is in the graph,<code>False</code> otherwise.</li>
+<li>Figure out the new feature you want. Possibly document it, and then write a test for it.</li>
+<li>Write some skeleton code for the feature, so that you program runs without any syntax errors. See your test fail.</li>
+<li>Write dummy code for skeleton code, just to appease the test.</li>
+<li>Rewrite the code so that it actually pass the test.</li>
 </ul>
 
-<h2 id="toc_3">Implementation</h2>
+<h2 id="toc_3">Testing Tools</h2>
 
-<p>We will create two classes, <code>Graph</code>, which holds the master list of vertices, and <code>Vertex</code>, which will represent each vertex in the graph.</p>
+<p>Two brilliant modules are available to automate the testing process:</p>
 
-<p>Each <code>Vertex</code> uses a dictionary to keep track of the vertices to which it is connected, and the weight of each edge. This dictionary is called <code>connectedTo</code>. The listing below shows the code for the <code>Vertex</code> class. The constructor simply initializes the <code>id</code>, which will typically be a string, and the <code>connectedTo</code> dictionary. The <code>addNeighbor</code> method is used add a connection from this vertex to another. The g<code>etConnections</code> method returns all of the vertices in the adjacency list, as represented by the <code>connectedTo</code>instance variable. The <code>getWeight</code> method returns the weight of the edge from this vertex to the vertex passed as a parameter.</p>
+<ul>
+<li><code>unittest</code>: A generic testing framework.</li>
+<li><code>doctest</code>: A simpler module, designed for checking documentation, but excellent for writing unit tests as well.</li>
+</ul>
 
-<pre><code class="language-python">class Vertex:
-    def __init__(self,key):
-        self.id = key
-        self.connectedTo = {}
+<h3 id="toc_4">testmod</h3>
 
-    def addNeighbor(self,nbr,weight=0):
-        self.connectedTo[nbr] = weight
+<p>The <code>testmod</code> function checks both the module docstring and function docstring.</p>
 
-    def __str__(self):
-        return str(self.id) + &#39; connectedTo: &#39; + str([x.id for x in self.connectedTo])
+<p>E.g.</p>
 
-    def getConnections(self):
-        return self.connectedTo.keys()
+<pre><code class="language-python">def square(x):
+    &quot;&quot;&quot;
+    squares a number and returns the result.
+    &gt;&gt;&gt; square(2)
+    4
+    &gt;&gt;&gt; square(3)
+    9
+    &quot;&quot;&quot;
+    return x*x
 
-    def getId(self):
-        return self.id
-
-    def getWeight(self,nbr):
-        return self.connectedTo[nbr]
+if __name__ == &quot;__main__&quot;:
+    import doctest, doc_test_example
+    doctest.testmod(doc_test_example)
 </code></pre>
 
-<p>The <code>Graph</code> class, shown in the next listing, contains a dictionary that maps vertex names to vertex objects. <code>Graph</code> also provides methods for adding vertices to a graph and connecting one vertex to another. The <code>getVertices</code> method returns the names of all of the vertices in the graph. In addition, we have implemented the <code>__iter__</code> method to make it easy to iterate over all the vertex objects in a particular graph. Together, the two methods allow you to iterate over the vertices in a graph by name, or by the objects themselves.</p>
+<p>Run the example. To get some more output, just add <code>-v</code>(for verbose)</p>
 
-<pre><code class="language-python">class Graph:
-    def __init__(self):
-        self.vertList = {}
-        self.numVertices = 0
-
-    def addVertex(self,key):
-        self.numVertices = self.numVertices + 1
-        newVertex = Vertex(key)
-        self.vertList[key] = newVertex
-        return newVertex
-
-    def getVertex(self,n):
-        if n in self.vertList:
-            return self.vertList[n]
-        else:
-            return None
-
-    def __contains__(self,n):
-        return n in self.vertList
-
-    def addEdge(self,f,t,cost=0):
-        if f not in self.vertList:
-            nv = self.addVertex(f)
-        if t not in self.vertList:
-            nv = self.addVertex(t)
-        self.vertList[f].addNeighbor(self.vertList[t], cost)
-
-    def getVertices(self):
-        return self.vertList.keys()
-
-    def __iter__(self):
-        return iter(self.vertList.values())
+<pre><code class="language-bash">$ python doc_test_example.py -v
+Trying:
+    square(2)
+Expecting:
+    4
+ok
+Trying:
+    square(3)
+Expecting:
+    9
+ok
+1 items had no tests:
+    doc_test_example
+1 items passed all tests:
+   2 tests in doc_test_example.square
+2 tests in 2 items.
+2 passed and 0 failed.
+Test passed.
 </code></pre>
+
+<h3 id="toc_5">unittest</h3>
+
+<p><code>unittest</code> which is based on the popular test framework <code>JUnit</code>, is more flexible and powerful. It allows to write very large and thorough test sets in a more structured manner.</p>
+
+<p>E.g.</p>
+
+<pre><code class="language-python">import unittest
+import doc_test_example as my_math
+
+class ProductTestCase(unittest.TestCase):
+
+    def testIntegers(self):
+        for x in xrange(-10,10):
+            p = my_math.square(x)
+            self.failUnless(p == x*x, &#39;Integer multiplication failed&#39;)
+
+    def testFloats(self):
+        for x in xrange(-10,10):
+            x = x/10.0
+            p = my_math.square(x)
+            self.failUnless(p == x*x, &#39;Float multiplication failed&#39;)
+
+
+if __name__ == &quot;__main__&quot;:
+    unittest.main()
+</code></pre>
+
+<p>Methods such as <code>failUnless</code> check a condition to determine whether the given test succeeds or fails. </p>
+
+<p>The <code>unittest</code> module distinguishes between <code>errors</code>, where an exception is raised, and <code>failures</code>, which result from calls to <code>failUnless</code> and the like. </p>
+
+<h2 id="toc_6">Source Code Checking</h2>
+
+<p><a href="https://www.pylint.org">Pylint</a> and PyChecker are good tools for checking Python source code, looking for mistakes.</p>
+
+<p><code>Pylint</code> is a tool that checks for errors in Python code, tries to enforce a coding standard and looks for code smells. It can also look for certain type errors, it can recommend suggestions about how particular blocks can be refactored and can offer you details about the code’s complexity.</p>
+
+<p><code>Pylint</code> can be integrated with <code>Pycharm</code>, see <a href="https://pylint.readthedocs.io/en/latest/user_guide/ide-integration.html#pylint-in-pycharm">detail</a>.</p>
+
+<h2 id="toc_7">Resources</h2>
+
+<ul>
+<li><a href="https://www.ibm.com/developerworks/cn/linux/l-cn-pylint/index.html">如何使用 Pylint 来规范 Python 代码风格</a></li>
+<li><a href="https://www.python.org/dev/peps/pep-0008/">Style Guide for Python Code</a></li>
+</ul>
 
 
     
@@ -257,16 +273,13 @@ Edge List<br/>
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="14992350772045.html" 
-          title="Previous Post: 首先有一个概念：回溯">&laquo; 首先有一个概念：回溯</a>
-      
         </p>
         </div>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="14987831190581.html" 
-          title="Next Post: Machine Learning (5): Neural Networks">Machine Learning (5): Neural Networks &raquo;</a>
+          <a  href="anaconda.html" 
+          title="Next Post: Anaconda">Anaconda &raquo;</a>
       
       </p>
         </div>
