@@ -15,7 +15,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  Python 高级 - techlarry
+  Database System Concept (1): Introduction - techlarry
   
   </title>
   
@@ -125,14 +125,14 @@
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>Python 高级</h1>
+          <h1>Database System Concept (1): Introduction</h1>
      
         <div class="read-more clearfix">
-          <span class="date">2017/4/9</span>
+          <span class="date">2017/7/17</span>
 
           <span>posted in&nbsp;</span> 
           
-              <span class="posted-in"><a href='Python%E7%BC%96%E7%A8%8B%E6%8A%80%E5%B7%A7.html'>Python编程技巧</a></span>
+              <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E5%BA%93.html'>数据库</a></span>
            
          
           <span class="comments">
@@ -145,115 +145,99 @@
       </div><!-- article -->
 
       <div class="article-content">
-      <h2 id="toc_0">模块重新导入</h2>
+      <p>A <code>database-management system</code> (DBMS，数据库管理系统) is a collection of interrelated data and a set of programs to access those data.  The collection of data, usually referred to as the <code>database</code>. The primary goal of a DBMS is to provide a way to store and retrieve database information that is both <code>convenient</code> and <code>efficient</code>.</p>
 
-<p>模块导入： import xxx, from xxx import xxxx<br/>
-增加路径 <br/>
-<code>python<br/>
-import sys<br/>
-sys.path.append(path)<br/>
-</code><br/>
-模块重新导入<br/>
-<code>python<br/>
-from imp import reload<br/>
-reload(module name)<br/>
-</code></p>
+<h2 id="toc_0">Purpose of Database System</h2>
 
-<h2 id="toc_1">02 模块循环导入问题</h2>
-
-<p>不可以循环导入，不能在模块之间相互调用</p>
-
-<p>怎样避免循环导入：导入语句放在后面需要导入时再倒入，例如放在函数体内导入</p>
-
-<h2 id="toc_2">03/04 ==与is的区别</h2>
+<p>Keeping organizational information in a file-processing system has a number of major disadvantages:</p>
 
 <ul>
-<li>== 判断值是否相等</li>
-<li>Is  id(a), id(b)是否相等，<strong>比较两个引用是否指向了同一个对象（引用比较）</strong></li>
-</ul>
-
-<h2 id="toc_3">05-07 深拷贝与浅拷贝</h2>
+<li>Data redundancy and inconsistency
 
 <ul>
-<li>浅拷贝是一个对象的顶层拷贝，拷贝了引用，并没有拷贝内容
-= 就是浅拷贝</li>
-<li>深拷贝是对于一个对象所有层次的拷贝（递归）
-<code>python
-import copy
-c = copy.deepcopy(a)
-</code>
-copy.deepcopy深拷贝会把引用都拷贝出来（递归）
-copy.copy() 
-使用copy模块的copy功能的时候，它会根据当前拷贝的数据类型是可变类型还是不可变类型，有不同的处理方式：如果拷贝可变类型，只能识别第一层拷贝；如果拷贝不可变类型，是浅拷贝</li>
-</ul>
-
-<h2 id="toc_4">08 不同进制的讲解</h2>
-
-<p>略</p>
-
-<h2 id="toc_5">09 原码，反码，补码，进制的转换</h2>
-
-<p>有符号数和无符号数的概念<br/>
-规则：把二进制数中的最高位（最左边的那位）用作符号位</p>
-
-<p>对于有符号数，最高位被计算机系统规定为符号位（0为正，1为负）<br/>
-对于无符号数，最高位被计算机系统规定为数据位</p>
-
-<p>数字在计算机中，是用二进制补码的形式来保存的，因此-1+1需要按照补码进行相加才是正确的结果</p>
-
-<p>1）如何计算补码？<br/>
-正数：原码=反码=补码<br/>
-负数：反码=符号位不变，其他位取反<br/>
-      补码=反码+1<br/>
-溢出：越界<br/>
-    2) 从补码转回原码<br/>
-    负数补码转换原码的规则：<br/>
-    原码=补码的符号位不变，数据位取反，尾+1</p>
-
-<p>进制的转换 bin, int, oct, hex</p>
-
-<p>0b 二进制<br/>
-0o八进制<br/>
-0x十六进制</p>
-
-<p>转换成十进制 int(&quot;&quot;,16/8/2)</p>
-
-<h2 id="toc_6">10 位运算</h2>
-
-<p>把一个数的各位整体向左移动一个位，就变成原来的2倍</p>
-
-<h3 id="toc_7">位运算的介绍</h3>
+<li>Users of one program may be unaware of potentially useful data held by other programs.</li>
+</ul></li>
+<li>Difficulty in accessing data
 
 <ul>
-<li>&amp; 按位于</li>
-<li>|按位或</li>
-<li><sup>按位异或</sup></li>
-<li>～按位取反</li>
-<li>&lt;&lt;按位左移 &gt;&gt;按位右移</li>
-</ul>
-
-<h3 id="toc_8">位运算</h3>
+<li>Programs are written to satisfy particular functions.<br/></li>
+<li>Any new requirement needs a new program.</li>
+</ul></li>
+<li>Data isolation
 
 <ul>
-<li>按位与： 全1才1否则0：只有对应的两个二进位均为1时，结果位才为1，否则为0</li>
-<li>按位或：有1就1： 只要对应的二个二进位有一个位1时，结果位就为1，否则为0</li>
-<li>按位异或：不同为1: 当对应的二进位不相同时，结果为1，否则为0</li>
+<li>Same data is held by different programs </li>
+<li>Each program maintains its own set of data</li>
+</ul></li>
+<li>Integrity problems</li>
+<li>Atomicity problems</li>
+<li>Concurrent-access anomalies</li>
+<li>Security problems</li>
 </ul>
 
-<h2 id="toc_9">12 私有化</h2>
+<h2 id="toc_1">View of data</h2>
 
-<p>属性的名字前面加上下划线，属于私有属性，不能从外部调用的<br/>
-方法：setNum(), getNum() 设置两个方法，一个设置属性，一个获取数据</p>
+<h3 id="toc_2">Data Abstraction</h3>
+
+<p>The need for efficiency has led designers to use complex data structures to represent data in the database.</p>
 
 <ul>
-<li>xx: 公有变量</li>
-<li>_xx: 单前置下划线，私有化属性或方法，from somemodule import * 禁止导入，类对象和子类可以访问</li>
-<li>__xx__: 双前后下划线，用于名字空间的魔法对象或属性。例如：__init__</li>
-<li>__xx: 双前置下划线，私有，无法在外部直接访问（名子重整所以访问不到）</li>
-<li>xx_: 单后置下划线，用于避免与python关键词的冲突</li>
+<li><code>Physical level</code>. The lowest level of abstraction <em>how</em> the data are actually stored</li>
+<li><code>Logical level</code>. The next-higher level of abstraction describes <em>what</em> data are stored in the database, and what relationships exist among those data. Each record is described by a type definition, and the interrelationship of these record types is defined as well.</li>
+<li><code>View level</code>. The highest level of abstraction describes only part of the entire data. The system may provide many views for the same database. Computer users see a set of application programs that hide details of the data types.</li>
 </ul>
 
-<p>通过name mangling （名字重整）,目的是防止类意外重写基类的方法或者属性：__classname__privateatribute</p>
+<p><img src="media/15002564768282/Screen%20Shot%202017-07-17%20at%2010.08.36%20AM.png" alt="The three views of data abstraction"/></p>
+
+<h3 id="toc_3">Instances and Schemas</h3>
+
+<ul>
+<li><code>Instance</code>: the collection of information stored in the database at a particular moment</li>
+<li><code>schema</code>: the overall design of the database.</li>
+</ul>
+
+<p>Database systems have several schemas, partitioned according to the levels of abstraction. The <code>Physical schema</code> describes the database design at the physical level, while the <code>logical schema</code> describes the database design at the logical level.</p>
+
+<p>Applications programs are said to exhibit <code>physical data independence</code> if they do not depend on the <code>physical schema</code>, and thus need not be rewritten if the physical schema changes.</p>
+
+<h3 id="toc_4">Data Models</h3>
+
+<p><code>Data Model</code>(数据库): a collection of conceptual tools for describing data, data relationships, data semantics, and consistency constraints.</p>
+
+<ul>
+<li><code>Relational Model</code>(关系数据库)</li>
+<li><code>Entity-Relationship Model</code> (实体对象模型)</li>
+<li><code>Object-Based Data Model</code> (基于对象的数据模型)</li>
+<li><code>Semistructed Data Model</code></li>
+</ul>
+
+<h2 id="toc_5">Database Language</h2>
+
+<p>A database system provides a <code>data-definition language</code>(DDL) to specify the database schema and a <code>data-manipulation language</code>(DML) to express database queries and updates.</p>
+
+<h2 id="toc_6">Data Storage and Querying</h2>
+
+<p>A database system is partitioned into modules that deal with each of the responsibilities of the overall system. The functional components of a database system can be broadly divided into the <code>storage manager</code> and the <code>query processor</code></p>
+
+<p>The <code>storage manager</code> is the component of a database system that provides the interface between the low-level data stored in the database and the application programs and queries submitted to the system. it is responsible for storing, retrieving, and updating data in the database. The storage manager translates the various DML statement into low-level file-system commands.</p>
+
+<p>The <code>query processor</code> includes:</p>
+
+<ul>
+<li><code>DDL interpreter</code>, which interprets DDL statements and records the definitions in the data dictionary.</li>
+<li><code>DML compiler</code>, which translates DML statements in a query language into an evaluation plan consisting of low-level instructions that the query evaluation engine understands.</li>
+<li><code>Query evaluation engine</code>, which executes low-level instructions generated by the DML compiler.</li>
+</ul>
+
+<h2 id="toc_7">Transaction management</h2>
+
+<p><code>Transaction management</code> ensures that the database remains in a consistent (correct) state despite system failures. The transaction manager ensures that concurrent transaction executions proceed without conflicting.</p>
+
+<h2 id="toc_8">Database Architecture</h2>
+
+<p>The architecture of a database system is greatly influenced by the underlying computer system on which the database system runs. Database system can be centralized, or client-server, where one server machine executes work on behalf of multiple client machines.</p>
+
+<p><img src="media/15002564768282/Screen%20Shot%202017-07-17%20at%2010.55.20%20AM.png" alt="System Structure"/></p>
 
 
     
@@ -264,16 +248,13 @@ copy.copy()
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="14970764330712.html" 
-          title="Previous Post: 属性@property的使用">&laquo; 属性@property的使用</a>
-      
         </p>
         </div>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="14969760668045.html" 
-          title="Next Post: 闭包，装饰器">闭包，装饰器 &raquo;</a>
+          <a  href="recursion_iteration.html" 
+          title="Next Post: Recursion Iteration Performace">Recursion Iteration Performace &raquo;</a>
       
       </p>
         </div>
