@@ -15,7 +15,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  Machine Learning (3): Classification - techlarry
+  Recursion Iteration Performace - techlarry
   
   </title>
   
@@ -125,14 +125,14 @@
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>Machine Learning (3): Classification</h1>
+          <h1>Recursion Iteration Performace</h1>
      
         <div class="read-more clearfix">
-          <span class="date">2017/6/27</span>
+          <span class="date">2017/7/17</span>
 
           <span>posted in&nbsp;</span> 
           
-              <span class="posted-in"><a href='%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html'>机器学习</a></span>
+              <span class="posted-in"><a href='Python%E7%BC%96%E7%A8%8B%E6%8A%80%E5%B7%A7.html'>Python编程技巧</a></span>
            
          
           <span class="comments">
@@ -145,151 +145,54 @@
       </div><!-- article -->
 
       <div class="article-content">
-      <ul>
-<li>
-<a href="#toc_0">Binary Classification</a>
-<ul>
-<li>
-<a href="#toc_1">Examples</a>
-</li>
-<li>
-<a href="#toc_2">Hypothesis Representation</a>
-</li>
-<li>
-<a href="#toc_3">Decision boundary</a>
-</li>
-<li>
-<a href="#toc_4">Cost Function</a>
-</li>
-<li>
-<a href="#toc_5">Gradient Descent</a>
-</li>
-<li>
-<a href="#toc_6">Advanced Optimization</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_7">Multiclass classification</a>
-<ul>
-<li>
-<a href="#toc_8">Example</a>
-</li>
-<li>
-<a href="#toc_9">Method</a>
-</li>
-</ul>
-</li>
-</ul>
+      <p>The performance of <code>Recursion</code> v.s. <code>Iteration</code> depends on the language being used.</p>
 
+<p>In <code>Java</code>, <code>C</code>, and <code>Python</code>, <code>recursion</code> is fairly expensive compared to <code>iteration</code> (in general) because it requires the allocation of a new <code>stack frame</code>. In some C compilers, one can use a compiler flag to eliminate this overhead, which transforms certain types of recursion (actually, certain types of tail calls) into jumps instead of function calls.</p>
 
-<p>The classification problem is just like the regression problem, except that the values y we now want to predict take on only a small number of discrete values.</p>
+<h2 id="toc_0">Stack Frame</h2>
 
-<h2 id="toc_0">Binary Classification</h2>
+<p>When a function is called in Python, a <code>stack frame</code> is allocated to handle the local variables of the function. When the function returns, the return value is left on the top of the stack for the calling function to access.</p>
 
-<p><strong>Binary classification problem</strong> : y can take on only two values, 0 and 1.</p>
+<p>The stack frame provide a <code>scope</code> for the variables used by the function. Even though we are calling the same function over and over, each call creates a new scope for the variables that are local to the function.</p>
 
-<h3 id="toc_1">Examples</h3>
+<h3 id="toc_1">Get Stack Frame</h3>
 
-<ul>
-<li>Email: Spam/Not Spam?</li>
-<li>Online Transaction: Fraudulent(Yes/NO)?</li>
-<li>Tumor: Malignant/ Benign?</li>
-</ul>
+<p>The &#39;inspect&#39; module in <code>python</code> provides several useful functions to help get information about live objects such as modules, classes, methods, functions, tracebacks, <code>frame objects</code>, and code objects.</p>
 
-<p>Given \(x(i)\), the corresponding \(y(i)\) is also called the <strong>label</strong> for the training example.</p>
+<pre><code class="language-python">import inspect
 
-<h3 id="toc_2">Hypothesis Representation</h3>
+def f1():
+    names = []
+    # inpect.currentframe
+    # Return the frame object for the caller’s stack frame.
+    frame = inspect.currentframe()
+  
+    ## Keep moving to next outer frame
+    while True:
+        try:
+            frame = frame.f_back # next outer frame object (this frame’s caller)
+            name = frame.f_code.co_name # name with which this code object was defined
+            names.append(name)
+        except:
+            break
+    return names
+    
+def f2():
+   return f1()
 
-<p>It doesn&#39;t make sense for \(h_\theta(x)\) to take values larger than 1 or smaller than0, when we know that \( y\in \{0,1\}\). To fix this, let&#39;s change the form for our hypotheses \(h_\theta(x)\) to satisfy \(0\leq_\theta(x)\leq 1\). This is accomplished by plugging \(\theta^Tx\) into the Logistic Function.</p>
+def f3():
+   return f2()
 
-<p><strong>Logistic Function</strong>:<br/>
-also called sigmoid (/&#39;sɪgmɔɪd/) function<br/>
-   \[\begin{align*}&amp; h_\theta (x) = g ( \theta^T x ) \newline \newline&amp; z = \theta^T x \newline&amp; g(z) = \dfrac{1}{1 + e^{-z}}\end{align*}\]</p>
+def f4():
+   return f3()
 
-<ol>
-<li><p>The sigmoid function g(z), maps any real number to the (0, 1) interval, making it useful for transforming an arbitrary-valued function into a function better suited for classification.</p></li>
-<li><p>\(h_\theta(x)\) gives us the probability that our output is 1. Probability that prediction is 0 is just the complement of probability that it is 1:</p></li>
-</ol>
+print(f4())
+</code></pre>
 
-<p>\[\begin{align*}&amp; h_\theta(x) = P(y=1 | x ; \theta) = 1 - P(y=0 | x ; \theta) \newline&amp; P(y = 0 | x;\theta) + P(y = 1 | x ; \theta) = 1\end{align*}\]</p>
+<p>The results shows:</p>
 
-<h3 id="toc_3">Decision boundary</h3>
-
-<p>The <strong>decision boundary</strong> is the line that separates the area where y = 0 and where y = 1. It is defined by hypothesis function.</p>
-
-<h3 id="toc_4">Cost Function</h3>
-
-<p>We cannot use the same cost function that we use for linear regression because the Logistic Function will cause the output to be wary, causing many local optima.</p>
-
-<p>Instead, our cost function for logistic regression looks like:</p>
-
-<p>\[\begin{align*}&amp; J(\theta) = \dfrac{1}{m} \sum_{i=1}^m \mathrm{Cost}(h_\theta(x^{(i)}),y^{(i)}) \newline &amp; \mathrm{Cost}(h_\theta(x),y) = -\log(h_\theta(x)) \; &amp; \text{if y = 1} \newline &amp; \mathrm{Cost}(h_\theta(x),y) = -\log(1-h_\theta(x)) \; &amp; \text{if y = 0}\end{align*}\]</p>
-
-<p>Cost function&#39;s two conditional cases can be compressed into one case:<br/>
-\[Cost(h_\theta(x),y)= -y \log(h_\theta(x))-(1-y) \log(1-h_\theta(x))\]</p>
-
-<p>The entire cost function can be written as follows:</p>
-
-<p>\[ J(\theta) = -\dfrac{1}{m} \sum_{i=1}^m[ y ^{(i)}\log(h_\theta(x^{(i)}))+(1-y^{(i)}) \log(1-h_\theta(x^{(i)}))]\]</p>
-
-<p>A vectorized implementation is:<br/>
-\[h=g(X\theta)\]<br/>
-\[J(\theta)=\frac{1}{m}(-y^T\log(h)-(1-y)^T\log(1-h))\]</p>
-
-<p>And the gradient of the cost is a vector of the same length as \(\theta\) where the \(j^{th}\) element is defined as follows:</p>
-
-<p>\[\frac{\partial J(\theta)}{\partial \theta_j}=\frac{1}{m}\Sigma_{i=1}^m(h_\theta(x^{(i)})-y^{(i)})x^{(i)}_j\]</p>
-
-<p>A vectorized implementation is:<br/>
-\[\frac{\partial J(\theta)}{\partial \theta_j}=\frac{1}{m}(h-y)^TX\]</p>
-
-<h3 id="toc_5">Gradient Descent</h3>
-
-<p>Repeat until {</p>
-
-<p>\[\theta_j:=\theta_j-\frac{\alpha}{m}\Sigma^m_{i=1}(h_\theta(x^{(i)})-y^{(i)})x^{(i)}_j\]<br/>
-}</p>
-
-<p>A vectorized implementation is:</p>
-
-<p>\[\theta:=\theta-\frac{\alpha}{m}X^T(g(X\theta)-y)\]</p>
-
-<h3 id="toc_6">Advanced Optimization</h3>
-
-<p>There are more sophisticated, faster ways to optimize \(\theta\) that can be used instead of gradient descent:</p>
-
-<ul>
-<li>Conjugate gradient</li>
-<li>BFGS</li>
-<li>L-BFGS</li>
-</ul>
-
-<p>You should not write these algorithms yourself, but use the libraries provided by Octave and Matlab instead.</p>
-
-<h2 id="toc_7">Multiclass classification</h2>
-
-<h3 id="toc_8">Example</h3>
-
-<ul>
-<li>Email foldering/tagging: Work, friends, family, hobby</li>
-<li>Medical diagrams: Not ill, Cold, Flu</li>
-<li>Weather: Sunny, Cloudy, Rain, Snow</li>
-</ul>
-
-<h3 id="toc_9">Method</h3>
-
-<p>Since \(y = \{0,1...n\}\), we divide our problem into \(n+1\) (+1 because the index starts at 0) binary classification problems; in each one, we predict the probability that &#39;y&#39; is a member of one of our classes.</p>
-
-<p>We are basically choosing one class and then lumping all the others into a single second class. We do this repeatedly, applying binary logistic regression to each case, and then use the hypothesis that returned the highest value as our prediction.</p>
-
-<p>\[\begin{align*}&amp; y \in \lbrace0, 1 ... n\rbrace \newline&amp; h_\theta^{(0)}(x) = P(y = 0 | x ; \theta) \newline&amp; h_\theta^{(1)}(x) = P(y = 1 | x ; \theta) \newline&amp; \cdots \newline&amp; h_\theta^{(n)}(x) = P(y = n | x ; \theta) \newline&amp; \mathrm{prediction} = \max_i( h_\theta ^{(i)}(x) )\newline\end{align*}\]</p>
-
-<p><strong>To summarize</strong>:</p>
-
-<p>Train a logistic regression classifier hθ(x) for each class to predict the probability that  \(y = i\) .</p>
-
-<p>To make a prediction on a new x, pick the class that maximizes \(h_\theta(x)\)</p>
+<pre><code class="language-python">[&#39;f2&#39;, &#39;f3&#39;, &#39;f4&#39;, &#39;&lt;module&gt;&#39;]
+</code></pre>
 
 
     
@@ -300,16 +203,13 @@ also called sigmoid (/&#39;sɪgmɔɪd/) function<br/>
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="14987012023353.html" 
-          title="Previous Post: 口语">&laquo; 口语</a>
-      
         </p>
         </div>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="14985240916710.html" 
-          title="Next Post: Python科学计算三维可视化">Python科学计算三维可视化 &raquo;</a>
+          <a  href="dijkstra_algorithm.html" 
+          title="Next Post: Dijkstra's algorithm">Dijkstra's algorithm &raquo;</a>
       
       </p>
         </div>
