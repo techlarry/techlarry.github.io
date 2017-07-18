@@ -125,6 +125,118 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="magic_method_item_access.html">
+                
+                  <h1>Magic Methods: Item Access</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>Useful magic methods allows you to create objects that behave like sequences or mappings.</p>
+
+<h2 id="toc_0">Sequence and Mapping Protocol</h2>
+
+<p>&#39;protocol&#39; in Python usually describe the rules governing some form of behavior. The <code>protocol</code> states which methods you should implement and what those methods should do. So, to be a sequence means,  to follow the sequence protocol.</p>
+
+<ul>
+<li><code>__len__(self)</code>: This method should return the number of items contained in the collection. For a sequence, this would simply be the number of elements. For a mapping, it would be the number of key-value pairs. If <code>__len__</code> returns zero (and you don’t implement <code>__nonzero__</code>, which overrides this behavior), the object is treated as false in a Boolean context (as with empty lists, tuples, strings, and dictionaries).</li>
+<li><code>__getitem__(self, key)</code>: This should return the value corresponding to the given key. For a sequence, the key should be an integer from \(0\) to \(n–1\) (or, it could be negative, as noted later), where \(n\) is the length of the sequence. For a mapping, you could really have any kind of keys.</li>
+<li><code>__setitem__(self, key, value)</code>: This should store value in a manner associated with key, so it can later be retrieved with <code>__getitem__</code>. Of course, you define this method only for mutable objects.</li>
+<li><code>__delitem__(self, key)</code>: This is called when someone uses the <code>del</code> statement on a part of the object, and should delete the element associated with key. Again, only mutable objects (and not all of them—only those for which you want to let items be removed) should define this method.</li>
+</ul>
+
+<h2 id="toc_1">Example</h2>
+
+<pre><code class="language-python">def checkIndex(key):
+    &quot;&quot;&quot;
+    Is the given key an acceptable index?
+    To be acceptable, the key should be a non-negative integer. If it
+    is not an integer, a TypeError is raised; if it is negative, an
+    IndexError is raised (since the sequence is of infinite length).
+    &quot;&quot;&quot;
+    if not isinstance(key, int):
+        raise TypeError
+    if key &lt; 0:
+        raise IndexError
+
+
+class ArithmeticSequence:
+    def __init__(self, start=0, step=1):
+        &quot;&quot;&quot;
+        Initialize the arithmetic sequence.
+        start   - the first value in the sequence
+        step    - the difference between two adjacent values
+        changed - a dictionary of values that have been modified by the user
+        &quot;&quot;&quot;
+        self.start = start
+        self.step = step
+        self.changed = {}
+
+    def __getitem__(self, key):
+        &quot;&quot;&quot;
+        Get an item from the arithmetic sequence.
+        &quot;&quot;&quot;
+        checkIndex(key)
+        try:
+            return self.changed[key]
+        except KeyError:
+            return self.start + key*self.step
+    # Store the start value
+    # Store the step value
+    # No items have been modified
+    # Modified?
+    # otherwise...
+    # ...calculate the value
+
+    def __setitem__(self, key, value):
+        &quot;&quot;&quot;
+        Change an item in the arithmetic sequence.
+        &quot;&quot;&quot;
+        checkIndex(key)
+        self.changed[key] = value                 # Store the changed value
+
+    def __delitem__(self, key):
+        &quot;&quot;&quot;
+        Delete the key provided from sequence
+        &quot;&quot;&quot;
+        checkIndex(key)
+        del self.changed[key]
+
+
+
+if __name__ == &quot;__main__&quot;:
+    s = ArithmeticSequence(1, 2)
+    print(s[4])
+    s[4]=3
+    print(s[4])
+    del s[4]
+    print(s[4])
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/7/18</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python%E7%BC%96%E7%A8%8B%E6%8A%80%E5%B7%A7.html'>Python编程技巧</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15002606936534.html">
                 
                   <h1>Database System Concept (2): Introduction to Relational Model</h1>
@@ -6043,6 +6155,12 @@ test2()
 	      
 		      
 			      <li class="post">
+			        <a href="magic_method_item_access.html">Magic Methods: Item Access</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15002606936534.html">Database System Concept (2): Introduction to Relational Model</a>
 			      </li>
 		     
@@ -6062,12 +6180,6 @@ test2()
 		      
 			      <li class="post">
 			        <a href="dijkstra_algorithm.html">Dijkstra's algorithm</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="testing.html">Testing</a>
 			      </li>
 		     
 		  

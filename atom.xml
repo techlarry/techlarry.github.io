@@ -4,13 +4,103 @@
   <title><![CDATA[techlarry]]></title>
   <link href="http://larryim.cc/atom.xml" rel="self"/>
   <link href="http://larryim.cc/"/>
-  <updated>2017-07-17T11:04:33+08:00</updated>
+  <updated>2017-07-18T13:18:22+08:00</updated>
   <id>http://larryim.cc/</id>
   <author>
     <name><![CDATA[]]></name>
     
   </author>
   <generator uri="http://www.mweb.im/">MWeb</generator>
+  
+  <entry>
+    <title type="html"><![CDATA[Magic Methods: Item Access]]></title>
+    <link href="http://larryim.cc/magic_method_item_access.html"/>
+    <updated>2017-07-18T12:54:51+08:00</updated>
+    <id>http://larryim.cc/magic_method_item_access.html</id>
+    <content type="html"><![CDATA[
+<p>Useful magic methods allows you to create objects that behave like sequences or mappings.</p>
+
+<h2 id="toc_0">Sequence and Mapping Protocol</h2>
+
+<p>&#39;protocol&#39; in Python usually describe the rules governing some form of behavior. The <code>protocol</code> states which methods you should implement and what those methods should do. So, to be a sequence means,  to follow the sequence protocol.</p>
+
+<ul>
+<li><code>__len__(self)</code>: This method should return the number of items contained in the collection. For a sequence, this would simply be the number of elements. For a mapping, it would be the number of key-value pairs. If <code>__len__</code> returns zero (and you don’t implement <code>__nonzero__</code>, which overrides this behavior), the object is treated as false in a Boolean context (as with empty lists, tuples, strings, and dictionaries).</li>
+<li><code>__getitem__(self, key)</code>: This should return the value corresponding to the given key. For a sequence, the key should be an integer from \(0\) to \(n–1\) (or, it could be negative, as noted later), where \(n\) is the length of the sequence. For a mapping, you could really have any kind of keys.</li>
+<li><code>__setitem__(self, key, value)</code>: This should store value in a manner associated with key, so it can later be retrieved with <code>__getitem__</code>. Of course, you define this method only for mutable objects.</li>
+<li><code>__delitem__(self, key)</code>: This is called when someone uses the <code>del</code> statement on a part of the object, and should delete the element associated with key. Again, only mutable objects (and not all of them—only those for which you want to let items be removed) should define this method.</li>
+</ul>
+
+<h2 id="toc_1">Example</h2>
+
+<pre><code class="language-python">def checkIndex(key):
+    &quot;&quot;&quot;
+    Is the given key an acceptable index?
+    To be acceptable, the key should be a non-negative integer. If it
+    is not an integer, a TypeError is raised; if it is negative, an
+    IndexError is raised (since the sequence is of infinite length).
+    &quot;&quot;&quot;
+    if not isinstance(key, int):
+        raise TypeError
+    if key &lt; 0:
+        raise IndexError
+
+
+class ArithmeticSequence:
+    def __init__(self, start=0, step=1):
+        &quot;&quot;&quot;
+        Initialize the arithmetic sequence.
+        start   - the first value in the sequence
+        step    - the difference between two adjacent values
+        changed - a dictionary of values that have been modified by the user
+        &quot;&quot;&quot;
+        self.start = start
+        self.step = step
+        self.changed = {}
+
+    def __getitem__(self, key):
+        &quot;&quot;&quot;
+        Get an item from the arithmetic sequence.
+        &quot;&quot;&quot;
+        checkIndex(key)
+        try:
+            return self.changed[key]
+        except KeyError:
+            return self.start + key*self.step
+    # Store the start value
+    # Store the step value
+    # No items have been modified
+    # Modified?
+    # otherwise...
+    # ...calculate the value
+
+    def __setitem__(self, key, value):
+        &quot;&quot;&quot;
+        Change an item in the arithmetic sequence.
+        &quot;&quot;&quot;
+        checkIndex(key)
+        self.changed[key] = value                 # Store the changed value
+
+    def __delitem__(self, key):
+        &quot;&quot;&quot;
+        Delete the key provided from sequence
+        &quot;&quot;&quot;
+        checkIndex(key)
+        del self.changed[key]
+
+
+
+if __name__ == &quot;__main__&quot;:
+    s = ArithmeticSequence(1, 2)
+    print(s[4])
+    s[4]=3
+    print(s[4])
+    del s[4]
+    print(s[4])
+</code></pre>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Database System Concept (2): Introduction to Relational Model]]></title>
@@ -2467,46 +2557,6 @@ print(&#39;result = %d&#39; %postorder_eval(pt))
 </ul>
 
 <p>三种遍历模式的代码已经包括在<code>BinaryTree</code>类中（参见<code>节点和引用</code>一节）。</p>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[魔法方法(一)：自定义序列]]></title>
-    <link href="http://larryim.cc/14973620419454.html"/>
-    <updated>2017-06-13T21:54:01+08:00</updated>
-    <id>http://larryim.cc/14973620419454.html</id>
-    <content type="html"><![CDATA[
-<p>Python中的魔法方法可以理解为对类中的内置方法的重载。</p>
-
-<h2 id="toc_0">自定义序列</h2>
-
-<p>有许多办法可以让Python类表现得像是内建序列类型(字典，元组，列表，字符串等)。</p>
-
-<h3 id="toc_1">预备知识</h3>
-
-<p>协议类似某些语言中的接口，里面包含的是一些必须实现的方法。在Python中，协议完全是非正式的，也不需要显式的声明，事实上，它们更像是一种参考标准。</p>
-
-<p>在Python中实现自定义容器类型需要用到一些协议。首先，不可变容器类型有如下协议：想实现一个不可变容器，你需要定义 <code>__len__</code> 和 <code>__getitem__</code> (后面会具体说明）。可变容器的协议除了上面提到的两个方法之外，还需要定义 <code>__setitem__</code> 和 <code>__delitem__</code> 。最后，如果你想让你的对象可以迭代，你需要定义 <code>__iter__</code> ，这个方法返回一个迭代器。迭代器必须遵守迭代器协议，需要定义 <code>__iter__</code> （返回它自己）和 <code>next</code> 方法。</p>
-
-<h3 id="toc_2">容器背后的魔法方法</h3>
-
-<ul>
-<li><p><code>__len__(self)</code><br/>
-返回容器的长度，可变和不可变类型都需要实现。</p></li>
-<li><p><code>__getitem__(self, key)</code><br/>
-定义对容器中某一项使用 self[key] 的方式进行读取操作时的行为。这也是可变和不可变容器类型都需要实现的一个方法。它应该在键的类型错误式产生 <code>TypeError</code> 异常，同时在没有与键值相匹配的内容时产生 <code>KeyError</code> 异常。</p></li>
-<li><p><code>__setitem__(self, key)</code><br/>
-定义对容器中某一项使用 self[key] 的方式进行赋值操作时的行为。它是可变容器类型必须实现的一个方法，同样应该在合适的时候产生 <code>KeyError</code> 和 <code>TypeError</code> 异常。</p></li>
-<li><p><code>__iter__(self, key)</code><br/>
-它应该返回当前容器的一个迭代器。迭代器以一连串内容的形式返回，最常见的是使用<code>iter()</code>函数调用，以及在类似 for x in container: 的循环中被调用。迭代器是他们自己的对象，需要定义 <code>__iter__</code>方法并在其中返回自己。</p></li>
-<li><p><code>__reversed__(self)</code><br/>
-定义了对容器使用<code>reversed()</code>内建函数时的行为。它应该返回一个反转之后的序列。当你的序列类是有序时，类似列表和元组，再实现这个方法，</p></li>
-<li><p><code>__contains__(self, item)</code><br/>
-<code>__contains__</code>定义了使用<code>in</code>和<code>not in</code>进行成员测试时类的行为。你可能好奇为什么这个方法不是序列协议的一部分，原因是，如果<code>__contains__</code>没有定义，Python就会迭代整个序列，如果找到了需要的一项就返回<code>True</code>。</p></li>
-<li><p><code>__missing__(self ,key)</code><br/>
-<code>__missing__</code>在字典的子类中使用，它定义了当试图访问一个字典中不存在的键时的行为（目前为止是指字典的实例，例如我有一个字典 d ， “george” 不是字典中的一个键，当试图访问 d[“george’] 时就会调用 d.__missing__(“george”))。</p></li>
-</ul>
 
 ]]></content>
   </entry>
