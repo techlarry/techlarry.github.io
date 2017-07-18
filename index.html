@@ -136,7 +136,7 @@
 
 <h2 id="toc_0">Sequence and Mapping Protocol</h2>
 
-<p>&#39;protocol&#39; in Python usually describe the rules governing some form of behavior. The <code>protocol</code> states which methods you should implement and what those methods should do. So, to be a sequence means,  to follow the sequence protocol.</p>
+<p><code>protocol</code> in Python usually describe the rules governing some form of behavior. The <code>protocol</code> states which methods you should implement and what those methods should do. So, to be a sequence means,  to follow the sequence protocol.</p>
 
 <ul>
 <li><code>__len__(self)</code>: This method should return the number of items contained in the collection. For a sequence, this would simply be the number of elements. For a mapping, it would be the number of key-value pairs. If <code>__len__</code> returns zero (and you don’t implement <code>__nonzero__</code>, which overrides this behavior), the object is treated as false in a Boolean context (as with empty lists, tuples, strings, and dictionaries).</li>
@@ -474,6 +474,157 @@ print(f4())
               </div><!-- article -->
         
 			<div class="article">
+                <a class="clearlink" href="hash_table_2.html">
+                
+                  <h1>Hashing (2): Using hashing to implement Map ADT</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>The <code>map</code> abstract data type is an unordered collection of associations between a key and a data value (just like a dictionary in Python). The <code>keys</code> in a map are all unique so that there is a one-to-one relationship between a key and a value.</p>
+
+<p>The operations are given below:</p>
+
+<ul>
+<li><code>Map()</code> Create a new, empty map. If the key is already in the map, then replace the old value with the new value</li>
+<li><code>put(key, val)</code> Add a new key-value pair to the map. If the key is already in the map, then replace the old value with the new value.</li>
+<li><code>get(key)</code> Given a key, return the value stored in the map or None otherwise.</li>
+<li><code>del</code> Delete the key-value pair from the map using a statement of the form <code>del map[key]</code></li>
+<li><code>len()</code> Return the number of key-value pairs stored in the map</li>
+<li><code>in</code> Return <code>True</code> for a statement of the form <code>key in map</code>, if the given key is in the map, <code>False</code> otherwise.</li>
+</ul>
+
+<p>It would be better to use a hash table  than a list with binary search since looking up an item in a hash table can approach \(O(1)\) performance.</p>
+
+<p>Two list, are used to create <code>HashTable</code> class that implement the Map abstract data type. One called <code>slots</code> which will hold the key items; another called <code>data</code> which will hold the data values. It is important that the size of the hash table be a prime number so that the collision resolution algorithm can be as efficient as possible. </p>
+
+<p><code>hash_function</code> implements the hash function by simple <code>remainder method</code>. The collision resolution is linear probing. The <code>put</code> function assumes that there will eventually be an empty slot unless the key is already present in the <code>self.slots</code></p>
+
+<pre><code class="language-python">
+
+class HashTable:
+    &quot;&quot;&quot;
+    &gt;&gt;&gt; h=HashTable()
+    &gt;&gt;&gt; h[54]=&quot;cat&quot;
+    &gt;&gt;&gt; h[26]=&quot;dog&quot;
+    &gt;&gt;&gt; h[93]=&quot;lion&quot;
+    &gt;&gt;&gt; h[77]=&quot;bird&quot;
+    &gt;&gt;&gt; h[31]=&quot;cow&quot;
+    &gt;&gt;&gt; h[44]=&quot;goat&quot;
+    &gt;&gt;&gt; h.slots
+    [77, 44, None, None, 26, 93, None, None, None, 31, 54]
+    &gt;&gt;&gt; h.data
+    [&#39;goat&#39;, None, None, None, &#39;dog&#39;, &#39;lion&#39;, None, None, None, &#39;cow&#39;, &#39;cat&#39;]
+    &quot;&quot;&quot;
+    def __init__(self):
+        self.size = 11
+        self.slots = [None] * self.size
+        self.data = [None]* self.size
+
+    def put(self, key, data):
+        hash_value = self.hash_function(key, len(self.slots))
+        if self.slots[hash_value] is None:
+            self.slots[hash_value] = key
+            self.data[hash_value] = data
+        elif self.slots[hash_value] == key:
+            self.data[hash_value] = data
+        else:
+            # rehash
+            next_slot = self.rehash(hash_value, len(self.slots))
+            while self.slots[next_slot] is not None and self.slots[next_slot] != key:
+                next_slot = self.rehash(hash_value, len(self.slots))
+
+            if self.slots[next_slot] is None:
+                self.slots[next_slot] = key
+                self.data[hash_value] = data
+            else:
+                self.data[hash_value] = data
+
+    def hash_function(self, key, size):
+        &quot;&quot;&quot;
+        hash_function implements the simple remainder method
+        &quot;&quot;&quot;
+        return key % size
+
+    def rehash(self, old_hash, size):
+        &quot;&quot;&quot;
+        linear probing with a plus 1
+        &quot;&quot;&quot;
+        return (old_hash+1) % size
+
+    def get(self, key):
+        start_slot = self.hash_function(key, len(self.slots))
+        data = None
+        stop = False
+        found = False
+        position = start_slot
+        while self.slots[position] is not None and \
+                not found and not stop:
+            if self.slots[position] == key:
+                found = True
+                data = self.data[position]
+            else:
+                position = self.rehash(position, len(self.slots))
+            if position == start_slot:
+                stop = True
+        return data
+
+    def __getitem__(self, key):
+        return self.get(key)
+
+    def __setitem__(self, key, data):
+        self.put(key, data)
+
+    def __len__(self):
+        &quot;&quot;&quot;
+        return length
+        &quot;&quot;&quot;
+        count = 0
+        for item in self.slots:
+            if item is not None:
+                count += 1
+
+        return count
+
+    def __contains__(self, item):
+        &quot;&quot;&quot;
+        定义了使用in和not in进行成员测试时类的行为
+        &quot;&quot;&quot;
+        for key in self.slots:
+            if key == item:
+                return True
+
+        return False
+
+if __name__ == &quot;__main__&quot;:
+    import doctest
+    doctest.testmod(verbose=True)
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/7/17</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html'>Python数据结构与算法</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="dijkstra_algorithm.html">
                 
                   <h1>Dijkstra's algorithm</h1>
@@ -621,7 +772,7 @@ if __name__ == &#39;__main__&#39;:
 
 if __name__ == &quot;__main__&quot;:
     import doctest, doc_test_example
-    doctest.testmod(doc_test_example)
+    doctest.testmod(doc_test_example, verbose=True)
 </code></pre>
 
 <p>Run the example. To get some more output, just add <code>-v</code>(for verbose)</p>
@@ -2505,12 +2656,13 @@ s = tvtk.CubeSource()</p>
 			<div class="article">
                 <a class="clearlink" href="14974279917175.html">
                 
-                  <h1>Python树(二)：二叉搜索树</h1>
+                  <h1>Python树(二)：Binary Search Tree</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	
+                        	<p>A binary search tree is a tree that keys that are less than the parent are found in the left subtree, and keys that are greater than the parent are found in the right subtree.</p>
+
                         
                       </div>
                   </div>
@@ -3172,9 +3324,9 @@ print(&#39;result = %d&#39; %postorder_eval(pt))
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="14973464173252.html">
+                <a class="clearlink" href="hash_table_1.html">
                 
-                  <h1>Hash table and Python dictionary</h1>
+                  <h1>Hashing (1): Introduction</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
@@ -3252,138 +3404,6 @@ Delete(T,x)
 
 <p>Using chaining, the average number of comparisons is \(1+\lambda/2\) for the successful case, and simply \(\lambda\) comparisons if the search is unsuccessful.</p>
 
-<h2 id="toc_8"><code>Map</code> ADT</h2>
-
-<p>Here, we try to define an abstract data type <code>map</code>, which is an unordered collections of associations between keys and values. The operation are given below:</p>
-
-<ul>
-<li><code>Map()</code> create a new, empty map. It returns an empty map collection.</li>
-<li><code>put(key, val)</code> Add a new key-value pair to the map. If the key is already in the map then replace the old value with the new value.</li>
-<li><code>get(key)</code> Given a key, return the values stored in the map or None otherwise.</li>
-<li><code>del</code> Delete the key-value pair from the map using a statement of the form del map[key]</li>
-<li><code>len()</code> Return the number of key-value pairs stored in the map</li>
-<li><code>in</code> Return <code>True</code> for a statement of the form key in map, if the given key is in the map, <code>False</code> otherwise.</li>
-</ul>
-
-<p>Using two lists, <code>slots</code> which holds the key items, and <code>data</code> which holds the data values, we implements the <code>Map</code> ADT.</p>
-
-<p><code>hash_function</code> implements the hash function by simple <code>remainder method</code>. The collision resolution is linear probing. The <code>put</code> function assumes that there will eventually be an empty slot unless the key is already present in the <code>self.slots</code></p>
-
-<pre><code class="language-python">
-class HashTable(object):
-    &quot;&quot;&quot;
-    Hash Table
-    &quot;&quot;&quot;
-    def __init__(self):
-        self.size = 11
-        self.slots = [None]*self.size
-        self.data = [None]*self.size
-
-    def hash_function(self, key, size):
-        &quot;&quot;&quot;
-        Hash function: simple remainder method
-        &quot;&quot;&quot;
-        return key%size
-
-    def rehash(self, old_hash, size):
-        &quot;&quot;&quot;
-        Rehash function: linear probing, just add 1 every time
-        &quot;&quot;&quot;
-        return (old_hash+1)%size
-
-    def put(self, key, data):
-        &quot;&quot;&quot;
-        Put data into table
-        &quot;&quot;&quot;
-
-        # generate a slot based on hash_function
-        hash_value = self.hash_function(key, self.size)
-
-        # check hash_value
-        if self.slots[hash_value] is None:
-            self.slots[hash_value] = key
-            self.data[hash_value] = data
-        else:
-            
-            # replace data
-            if self.slots[hash_value] == key:
-                self.data[hash_value] = data
-
-            # re-hash until empty slots
-            next_slot = self.rehash(hash_value, self.size)
-            while self.slots[next_slot] is not None and self.slots[next_slot] != key:
-                next_slot = self.rehash(next_slot, self.size)
-
-            if self.slots[next_slot] is None:
-                self.slots[next_slot] = key
-                self.data[next_slot] = data
-            else:
-                self.data[next_slot] = data
-
-    def get(self, key):
-        start = self.hash_function(key, self.size)
-
-        if self.slots[start] == key:
-            return self.data[start]
-
-        while self.slots[start] is not None:
-            if self.slots[start] == key:
-                return self.data[start]
-            start = self.rehash(start, self.size)
-
-        return False
-
-    def __getitem__(self, key):
-        return self.get(key)
-
-    def __setitem__(self, key, data):
-        self.put(key, data)
-
-    def __len__(self):
-        &quot;&quot;&quot;
-        返回长度
-        &quot;&quot;&quot;
-        count = 0
-        for item in self.slots:
-            if item is not None:
-                count +=1
-
-        return count
-
-    def __contains__(self, item):
-        &quot;&quot;&quot;
-        定义了使用in和not in进行成员测试时类的行为
-        &quot;&quot;&quot;
-        for key in self.slots:
-            if key == item:
-                return True
-
-        return False
-
-
-
-
-if __name__== &quot;__main__&quot;:
-    h=HashTable()
-    h.put(54, &quot;cat&quot;)
-    print(len(h))
-    h.put(26, &quot;dog&quot;)
-    h.put(93, &quot;lion&quot;)
-    h.put(17, &quot;tiger&quot;)
-    h.put(77, &quot;bird&quot;)
-    h.put(31, &quot;cow&quot;)
-    h.put(44, &quot;goat&quot;)
-    h.put(55, &quot;pig&quot;)
-    h.put(20, &quot;chicken&quot;)
-    print(h.slots)
-    print(h.data)
-    h[20] = &quot;duck&quot;  # replace
-    print(h.data)
-    print(len(h))
-    print( 4 in h)
-    print( 17 in h)
-</code></pre>
-
 <p>其中出现的魔法方法可以参见<a href="http://larryim.cc/14973620419454.html">Link</a></p>
 
                         
@@ -3396,7 +3416,7 @@ if __name__== &quot;__main__&quot;:
                     <span class="date">2017/6/13</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Python%E7%BC%96%E7%A8%8B%E6%8A%80%E5%B7%A7.html'>Python编程技巧</a></span>
+          					    <span class="posted-in"><a href='Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html'>Python数据结构与算法</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -6179,7 +6199,7 @@ test2()
 		  
 		      
 			      <li class="post">
-			        <a href="dijkstra_algorithm.html">Dijkstra's algorithm</a>
+			        <a href="hash_table_2.html">Hashing (2): Using hashing to implement Map ADT</a>
 			      </li>
 		     
 		  
