@@ -128,7 +128,7 @@
           <h1>Python树(三)：Binary Search Tree</h1>
      
         <div class="read-more clearfix">
-          <span class="date">2017/6/14</span>
+          <span class="date">2017/7/19</span>
 
           <span>posted in&nbsp;</span> 
           
@@ -158,6 +158,40 @@
 <li><code>del</code> Delete the key-value pair from the map using a statement of the form <code>del map[key]</code>.</li>
 <li><code>len()</code> Return the number of key-value pairs stored in the map.</li>
 <li><code>in</code> Return <code>True</code> for a statement of the form <code>key in map</code>, if the given key is in the map.</li>
+</ul>
+
+<p>To implement the binary search tree,  the method of <code>the nodes and references approached</code> similar to <code>binary tree</code>(<a href="http://larryim.cc/tree_2.html">Link</a>) The <code>BinarySearchTree</code> class has a reference to the <code>TreeNode</code> that is the root of the binary search tree. </p>
+
+<h3 id="toc_1"><code>delete</code> method</h3>
+
+<p>Once we’ve found the node containing the key we want to delete, there are three cases that we must consider:</p>
+
+<ul>
+<li>The node to be deleted has no children.</li>
+<li>The node to be deleted has only one child.</li>
+<li>The node to be deleted has two children.</li>
+</ul>
+
+<p>The first case is straightforward. If the current node has no children all we need to do is delete the node and remove the reference to this node in the parent. The code for this case is shown in here.</p>
+
+<p>The second case is only slightly more complicated. If a node has only a single child, then we can simply promote the child to take the place of its parent. The code for this case is shown in the next listing. As you look at this code you will see that there are six cases to consider. Since the cases are symmetric with respect to either having a left or right child we will just discuss the case where the current node has a left child. The decision proceeds as follows:</p>
+
+<ul>
+<li>If the current node is a left child then we only need to update the parent reference of the left child to point to the parent of the current node, and then update the left child reference of the parent to point to the current node’s left child.</li>
+<li>If the current node is a right child then we only need to update the parent reference of the left child to point to the parent of the current node, and then update the right child reference of the parent to point to the current node’s left child.</li>
+<li>If the current node has no parent, it must be the root. In this case we will just replace the key, payload, leftChild, and rightChild data by calling the <code>replaceNodeData</code> method on the root.</li>
+</ul>
+
+<p>The third case is the most difficult case to handle. If a node has two children, then it is unlikely that we can simply promote one of them to take the node’s place. We can, however, search the tree for a node that can be used to replace the one scheduled for deletion. What we need is a node that will preserve the binary search tree relationships for both of the existing left and right subtrees. The node that will do this is the node that has the next-largest key in the tree. We call this node the <code>successor</code>, and we will look at a way to find the successor shortly. The successor is guaranteed to have no more than one child, so we know how to remove it using the two cases for deletion that we have already implemented. Once the successor has been removed, we simply put it in the tree in place of the node to be deleted.</p>
+
+<h3 id="toc_2"><code>successor</code> Method</h3>
+
+<p>The code to find the successor is a method of the <code>TreeNode</code> class. This code makes use of the same properties of binary search trees that cause an <code>inorder traversal</code> to print out the nodes in the tree from smallest to largest. There are three cases to consider when looking for the successor:</p>
+
+<ul>
+<li>If the node has a right child, then the successor is the smallest key in the right subtree.</li>
+<li>If the node has no right child and is the left child of its parent, then the parent is the successor.</li>
+<li>If the node is the right child of its parent, and itself has no right child, then the successor to this node is the successor of its parent, excluding this node.</li>
 </ul>
 
 <pre><code class="language-python">
@@ -417,16 +451,13 @@ class TreeNode:
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="14974355508816.html" 
-          title="Previous Post: MySql 数据库">&laquo; MySql 数据库</a>
-      
         </p>
         </div>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="tree_1.html" 
-          title="Next Post: Python树(一)：介绍">Python树(一)：介绍 &raquo;</a>
+          <a  href="tree_2.html" 
+          title="Next Post: Python树(二)：二叉树的实现">Python树(二)：二叉树的实现 &raquo;</a>
       
       </p>
         </div>
@@ -531,6 +562,12 @@ s.setAttribute('data-timestamp', +new Date());
 	      
 		      
 			      <li class="post">
+			        <a href="binary_search_tree.html">Python树(三)：Binary Search Tree</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="tree_2.html">Python树(二)：二叉树的实现</a>
 			      </li>
 		     
@@ -550,12 +587,6 @@ s.setAttribute('data-timestamp', +new Date());
 		      
 			      <li class="post">
 			        <a href="15002564768282.html">Database System Concept (1): Introduction</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="recursion_iteration.html">Recursion Iteration Performace</a>
 			      </li>
 		     
 		  
