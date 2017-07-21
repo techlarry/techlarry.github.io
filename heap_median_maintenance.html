@@ -15,7 +15,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  调试 - techlarry
+  Heap (2): Median Maintenance - techlarry
   
   </title>
   
@@ -125,14 +125,14 @@
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>调试</h1>
+          <h1>Heap (2): Median Maintenance</h1>
      
         <div class="read-more clearfix">
-          <span class="date">2017/6/10</span>
+          <span class="date">2017/7/21</span>
 
           <span>posted in&nbsp;</span> 
           
-              <span class="posted-in"><a href='Linux%20%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B.html'>Linux 系统编程</a></span>
+              <span class="posted-in"><a href='Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html'>Python数据结构与算法</a></span>
            
          
           <span class="comments">
@@ -145,27 +145,261 @@
       </div><!-- article -->
 
       <div class="article-content">
-      <h2 id="toc_0">pdb</h2>
+      <p>Problem Statement: The goal of this problem is to implement the <code>Median Maintenance</code> algorithm. The text file contains a list of the integers; you should treat this as a stream of numbers, arriving one by one. Letting \(x_i\) denote the \(i\)th number of the file, the \(k\)th median \(m_k\) is defined as the median of the numbers \(x_1,…,x_k\). (So, if \(k\) is odd, then \(m_k\) is \(((k+1)/2)\)th smallest number among \(x_1,…,x_k\); if \(k\) is even, then \(m_k\) is the \((k/2)\)th smallest number among \(x_1,…,x_k\).)</p>
 
-<p>pdb是基于命令行的调试工具，是Python的调试器，非常类似GNU的GDB（调试c/c++）</p>
+<h1 id="toc_0">Solution</h1>
 
-<pre><code class="language-python">python -m pdb some.py # -m是模块的意思, pdb模块
+<p>We might use a max heap to represent elements that are less than the median, and a min heap to represent elements that are greater than the median.</p>
+
+<p>After balance the heaps, the number of elements in two heaps differs at most by 1. </p>
+
+<pre><code class="language-python">Step 1: Add next item to one of the heaps
+
+   if next item &lt; maxHeap root:
+        add it to maxHeap
+   else:
+        add it to minHeap
+
+Step 2: Balance the heaps (after this step heaps will be either balanced or
+   one of them will contain 1 more item)
+
+   if number of elements in one of the heaps is greater than the other by
+   more than 1:
+        remove the root element from the one containing more elements 
+        and add to the other one
+
+Step 3: Then at any given time you can calculate median:
+
+   if the heaps contain equal amount of elements:
+        median = root of maxHeap
+   else:
+        median = root of the heap with more elements
 </code></pre>
 
-<h3 id="toc_1">命令</h3>
+<h2 id="toc_1">Implementation</h2>
 
-<ul>
-<li>输入命令<code>l</code> (list) 查看代码</li>
-<li>输入命令<code>n</code> (next) 可以单步执行代码</li>
-<li>输入命令<code>c</code> (continue) 继续执行代码</li>
-<li>输入命令<code>b</code> (break) 添加断点</li>
-<li>输入命令<code>clear</code> 清除断点</li>
-<li>输入命令<code>p</code> (print) 打印一个变量的值</li>
-<li>输入命令<code>s</code> (step) 进入到一个函数</li>
-<li>输入命令<code>a</code> (args) 打印所有的形参数据</li>
-<li>输入命令<code>r</code> (return) 快速执行到函数的最后一行</li>
-<li>输入命令<code>q</code> quit 退出调试</li>
-</ul>
+<pre><code class="language-python">import doctest
+import sys
+
+class MinHeap(object):
+    &quot;&quot;&quot;
+    Min Heap
+    &gt;&gt;&gt; bh = MinHeap()
+    &gt;&gt;&gt; bh.buildHeap([9,5,14,18,-17,27,33,19,11,21])
+    &gt;&gt;&gt; bh.findMin()
+    -17
+    &gt;&gt;&gt; bh.delMin()
+    -17
+    &gt;&gt;&gt; bh.list[1:]
+    [5, 9, 14, 11, 21, 27, 33, 19, 18]
+    &gt;&gt;&gt; bh.insert(-100)
+    &gt;&gt;&gt; bh.delMin()
+    -100
+    &quot;&quot;&quot;
+
+    def __init__(self):
+        &quot;&quot;&quot;
+        add self.list 0 with initialization in order to divide
+        &quot;&quot;&quot;
+        self.list = [-sys.maxsize]
+        self.size = 0
+
+
+    def insert(self, k):
+        &quot;&quot;&quot;
+        Insert element to the MinBinaryHeap
+        &quot;&quot;&quot;
+        self.list.append(k)
+        self.size += 1
+        self.perc_up(self.size)
+
+
+    def findMin(self):
+        &quot;&quot;&quot;
+        Find the min element and return it
+        &quot;&quot;&quot;
+        return self.list[1]
+
+
+    def delMin(self):
+        &quot;&quot;&quot;
+        Delete the min element
+        and return it
+        &quot;&quot;&quot;
+        retrival = self.list[1]
+        self.size -= 1
+        self.list[1] = self.list[-1]
+        self.list.pop()
+        self.perc_down(1)
+
+        return retrival
+
+
+    def isEmpty(self):
+        &quot;&quot;&quot;
+        Return if the MinBinaryHeap is empty
+        &quot;&quot;&quot;
+        return self.size == 0
+
+    def __len__(self):
+        &quot;&quot;&quot;
+        Magic Method: return the length of MinBinaryHeap
+        &quot;&quot;&quot;
+        return self.size
+
+
+    def buildHeap(self, alist):
+        &quot;&quot;&quot;
+        Build a MinBinaryHeap from alist which is a collection of data
+        &quot;&quot;&quot;
+        self.list.extend(alist)
+        self.size = len(alist)
+
+        i = self.size//2
+        while i &gt; 0:
+            self.perc_down(i)
+            i -= 1
+
+    def perc_up(self, i):
+        &quot;&quot;&quot;&quot;
+        perc_up i
+        &quot;&quot;&quot;
+        while i//2&gt;0:
+            if self.list[i] &lt; self.list[i // 2]:
+                self.list[i], self.list[i // 2] = self.list[i // 2], self.list[i]
+            i = i // 2
+
+    def perc_down(self, i):
+        &quot;&quot;&quot;
+        perc down i
+        &quot;&quot;&quot;
+        while (i * 2) &lt;= self.size:
+            mc = self.minChild(i)
+            if self.list[i] &gt; self.list[mc]:
+                self.list[i], self.list[mc] = self.list[mc], self.list[i]
+            i = mc
+
+    def minChild(self, i):
+        &quot;&quot;&quot;
+        find the min child
+        &quot;&quot;&quot;
+        if i * 2 + 1 &gt; self.size:
+            return i * 2
+        else:
+            if self.list[i * 2] &lt; self.list[i * 2 + 1]:
+                return i * 2
+            else:
+                return i * 2 + 1
+
+    def __iter__(self):
+        return iter(self.list[1:])
+
+
+class MaxHeap(object):
+    &quot;&quot;&quot;
+    Max Heap
+    &gt;&gt;&gt; bh = MaxHeap()
+    &gt;&gt;&gt; bh.buildHeap([9,5,14,18,-17,27,33,19,11,21])
+    &gt;&gt;&gt; bh.delMax()
+    33
+    &gt;&gt;&gt; bh.insert(100)
+    &gt;&gt;&gt; bh.delMax()
+    100
+    &gt;&gt;&gt; len(bh)
+    9
+    &quot;&quot;&quot;
+
+    def __init__(self):
+        self.heap = MinHeap()
+
+    def insert(self, k):
+        self.heap.insert(-k)
+
+    def delMax(self):
+        return -self.heap.delMin()
+
+    def buildHeap(self, alist):
+        for i in range(len(alist)):
+            alist[i] = -alist[i]
+        self.heap.buildHeap(alist)
+
+    def findMax(self):
+        return -self.heap.findMin()
+
+    def __len__(self):
+        return self.heap.size
+
+    def __iter__(self):
+        for i in range(1, self.heap.size+1):
+            yield -self.heap.list[i]
+
+
+def median_maintenance(textfile):
+
+    min_heap = MinHeap()  # &gt; medium
+    max_heap = MaxHeap()  # &lt; medium
+
+    medians = []
+    count = 0
+
+    with open(textfile) as infile:
+        for line in infile:
+            item = int(line)
+            count += 1
+
+            # Step 1: Add next item to one of the hepas
+            # special case: initialize
+            if count == 1:
+                max_heap.insert(item)
+            else:
+                if item &lt; max_heap.findMax():
+                    max_heap.insert(item)
+                else:
+                    min_heap.insert(item)
+
+            # Step2: Balance the heap
+            if abs(len(max_heap) - len(min_heap)) &gt; 1:
+                if len(max_heap) &gt; len(min_heap):
+                    min_heap.insert(max_heap.delMax())
+                else:
+                    max_heap.insert(min_heap.delMin())
+
+            # Step3: calculate median
+            if len(max_heap) == len(min_heap):
+                median = max_heap.findMax()
+            else:
+                if len(max_heap) &gt; len(min_heap):
+                    median = max_heap.findMax()
+                else:
+                    median = min_heap.findMin()
+
+            medians.append(median)
+
+            # test
+            #for element in max_heap:
+            #    print(element, end=&#39; &#39;)
+            #for element in min_heap:
+            #    print(element, end=&#39; &#39;)
+            #print(&#39;total elem:&#39;,len(max_heap)+len(min_heap))
+
+
+    return medians
+
+if __name__ == &#39;__main__&#39;:
+    # doctest.testmod(verbose=True)
+    #textfile = &#39;SmallTest.txt&#39;
+    textfile = &#39;Median.txt&#39;
+    medians = median_maintenance(textfile)
+    answer = sum(medians)%10000
+    print(answer)
+</code></pre>
+
+<h2 id="toc_2">Resources</h2>
+
+<ol>
+<li><a href="https://stackoverflow.com/questions/14189540/python-topn-max-heap-use-heapq-or-self-implement">max heap implementation</a></li>
+<li><a href="https://stackoverflow.com/questions/10657503/find-running-median-from-a-stream-of-integers">median maintenance</a></li>
+</ol>
 
 
     
@@ -176,16 +410,13 @@
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="14970886401689.html" 
-          title="Previous Post: Machine Learning (1): Introduction to Machine Learning">&laquo; Machine Learning (1): Introduction to Machine Learning</a>
-      
         </p>
         </div>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="14970829036232.html" 
-          title="Next Post: Python排序">Python排序 &raquo;</a>
+          <a  href="binary_search_tree.html" 
+          title="Next Post: Python树(三)：Binary Search Tree">Python树(三)：Binary Search Tree &raquo;</a>
       
       </p>
         </div>
