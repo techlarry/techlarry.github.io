@@ -15,7 +15,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  Python 类属性与实例属性 - techlarry
+  Hashing (3): A variant of 2-Sum Algorithm - techlarry
   
   </title>
   
@@ -125,14 +125,14 @@
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>Python 类属性与实例属性</h1>
+          <h1>Hashing (3): A variant of 2-Sum Algorithm</h1>
      
         <div class="read-more clearfix">
-          <span class="date">2017/6/9</span>
+          <span class="date">2017/7/23</span>
 
           <span>posted in&nbsp;</span> 
           
-              <span class="posted-in"><a href='Python%E7%BC%96%E7%A8%8B%E6%8A%80%E5%B7%A7.html'>Python编程技巧</a></span>
+              <span class="posted-in"><a href='Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html'>Python数据结构与算法</a></span>
            
          
           <span class="comments">
@@ -145,34 +145,88 @@
       </div><!-- article -->
 
       <div class="article-content">
-      <p>Python属于动态语言，类属性很好体现了python动态语言这一特性。<br/>
-对于属性，通常可以通过类属性和实例属性的形式调用。<br/>
-看一个例子：</p>
+      <h2 id="toc_0">Problem Statement</h2>
 
-<pre><code class="language-python">class AAA():
-    aaa = 10
-    
-obj1 = AAA()
-obj2 = AAA()
-print(obj1.aaa, obj2.aaa, AAA.aaa) # result: 10 10 10
+<p>The goal of the problem is to implement a variant of the <code>2-SUM algorithm</code>.</p>
 
-obj1.aaa += 2
-print(obj1.aaa, obj2.aaa, AAA.aaa) # result: 12 10 10
+<p>The file contains 1 million integers, both positive and negative (there might be some repetitions!). This is your array of integers, with the \(i\)th row of the file specifying the \(i\)th entry of the array.</p>
 
-AAA.aaa += 4
-print(obj1.aaa,obj2.aaa,AAA.aaa)  # result: 12 14 14
+<p>Your task is to compute the number of target values \(t\) in the interval \([-10000,10000]\)(inclusive) such that there are distinct numbers \(x,y\) in the input file that satisfy \(x+y=t\). </p>
+
+<h2 id="toc_1">Implementation</h2>
+
+<p>The key process lies in the <code>hash function</code>, which might be set to appropriate small value based on the origin value:<br/>
+\[\text{hash_function}= \frac{\text{number}}{\text{factor}}\]</p>
+
+<p>The <code>factor</code> is selected based on the number of <code>slots</code> needed in the algorithm. i.e.<br/>
+\[\frac{\text{the range of keys}}{\text{factor}}\approx \text{the number of slots} &lt; \text{the number of keys}\]</p>
+
+<p>There, factor is \(\frac{\text{the number of key}}{2}\)</p>
+
+<pre><code class="language-python">class HashTable(object):
+
+    def __init__(self):
+
+        self.size = 5000000
+        self.slots = [set() for i in range(self.size)]
+        self.data = set()
+
+    def put(self, key, data):
+
+        hash_value = self.hash_function(key)
+        self.slots[hash_value].add(data)
+        self.data.add(data)
+
+    def hash_function(self, key):
+
+        return key//(self.size//2)
+
+    def get(self, key):
+        &quot;&quot;&quot;
+        there key == data
+        &quot;&quot;&quot;
+        slot = self.hash_function(key)
+        if key in self.slots[slot]:
+            return key
+        else:
+            return None
+
+    def buildfromfile(self, textfile):
+
+        with open(text_file, &#39;r&#39;) as infile:
+            for line in infile.readlines():
+                self.put(int(line), int(line))
+
+    def two_sum_count(self):
+        &quot;&quot;&quot;
+        Compute the number of target values t in the interval[low, high] (inclusive),
+        such that there are distinct numbers x, y that satisfy x+y = t
+        &quot;&quot;&quot;
+        sums = set()
+
+        for key1 in self.data:
+            left = self.hash_function(-key1-10000)
+            right = self.hash_function(-key1+10000)
+
+            for slot in self.slots[left:right+1]:
+
+                for key2 in slot:
+
+                    if 10000 &gt; key1 + key2 &gt; -10000:
+                        sums.add(key1+key2)
+
+        return len(sums)
+
+
+if __name__ == &quot;__main__&quot;:
+
+    # target files for counting
+    text_file = &#39;two_sum.txt&#39;
+
+    hashnumber = HashTable()
+    hashnumber.buildfromfile(text_file)
+    print(hashnumber.two_sum_count())
 </code></pre>
-
-<p>上例中，<code>AAA.aaa</code>就属于<strong>类属性</strong>形式，<code>obj1.aaa</code>属于<strong>实例属性</strong>的形式</p>
-
-<h2 id="toc_0">属性查找机制</h2>
-
-<p>Python中属性查找是一个向上查找的机制，具体可参考下图所示：<br/>
-       <img src="media/14969929726510/Screen%20Shot%202017-06-09%20at%203.39.06%20PM.png" alt="Screen Shot 2017-06-09 at 3.39.06 P"/></p>
-
-<p>所以<br/>
-* 当调用类属性<code>AAA.aaa</code>时，直接从<code>AAA</code>获取其属性<code>aaa</code><br/>
-* 当调用实例属性<code>obj1.aaa</code>时，python按照由下到上的顺序查找属性，当<code>job1</code>和<code>job2</code>没有时，到类<code>AAA</code>中去查找</p>
 
 
     
@@ -183,16 +237,16 @@ print(obj1.aaa,obj2.aaa,AAA.aaa)  # result: 12 14 14
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="14970829036232.html" 
-          title="Previous Post: Python排序">&laquo; Python排序</a>
+          <a href="15007792533636.html" 
+          title="Previous Post: Hashing (4): Universal Hashing">&laquo; Hashing (4): Universal Hashing</a>
       
         </p>
         </div>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="14969804243106.html" 
-          title="Next Post: 栈与队列">栈与队列 &raquo;</a>
+          <a  href="heap_median_maintenance.html" 
+          title="Next Post: Heap (2): Median Maintenance">Heap (2): Median Maintenance &raquo;</a>
       
       </p>
         </div>

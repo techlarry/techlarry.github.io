@@ -125,6 +125,167 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15007792533636.html">
+                
+                  <h1>Hashing (4): Universal Hashing</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>In short, you can generate family of hash functions using following simple equation:</p>
+
+<pre><code class="language-python">h(x,a,b) = ((ax+b) mod p) mod m
+</code></pre>
+
+<p>\(x\) is key you want to hash<br/>
+\(a\) is any number you can choose between \(1\) to \(p-1\) inclusive.<br/>
+\(b\) is any number you can choose between \(0\) to \(p-1\) inclusive.<br/>
+\(p\) is a prime number that is greater than max possible value of \(x\)<br/>
+\(m\) is a max possible value you want for hash code + 1<br/>
+By selecting different values of a and b you can generate many hash codes that are independent of each other.</p>
+
+<h2 id="toc_0">Resources</h2>
+
+<p>1.<a href="https://www.cse.iitb.ac.in/%7Esri/cs213/lec-Hashing.pdf">Hash Functions and Hash Tables</a></p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/7/23</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html'>Python数据结构与算法</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="hashing_3.html">
+                
+                  <h1>Hashing (3): A variant of 2-Sum Algorithm</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h2 id="toc_0">Problem Statement</h2>
+
+<p>The goal of the problem is to implement a variant of the <code>2-SUM algorithm</code>.</p>
+
+<p>The file contains 1 million integers, both positive and negative (there might be some repetitions!). This is your array of integers, with the \(i\)th row of the file specifying the \(i\)th entry of the array.</p>
+
+<p>Your task is to compute the number of target values \(t\) in the interval \([-10000,10000]\)(inclusive) such that there are distinct numbers \(x,y\) in the input file that satisfy \(x+y=t\). </p>
+
+<h2 id="toc_1">Implementation</h2>
+
+<p>The key process lies in the <code>hash function</code>, which might be set to appropriate small value based on the origin value:<br/>
+\[\text{hash_function}= \frac{\text{number}}{\text{factor}}\]</p>
+
+<p>The <code>factor</code> is selected based on the number of <code>slots</code> needed in the algorithm. i.e.<br/>
+\[\frac{\text{the range of keys}}{\text{factor}}\approx \text{the number of slots} &lt; \text{the number of keys}\]</p>
+
+<p>There, factor is \(\frac{\text{the number of key}}{2}\)</p>
+
+<pre><code class="language-python">class HashTable(object):
+
+    def __init__(self):
+
+        self.size = 5000000
+        self.slots = [set() for i in range(self.size)]
+        self.data = set()
+
+    def put(self, key, data):
+
+        hash_value = self.hash_function(key)
+        self.slots[hash_value].add(data)
+        self.data.add(data)
+
+    def hash_function(self, key):
+
+        return key//(self.size//2)
+
+    def get(self, key):
+        &quot;&quot;&quot;
+        there key == data
+        &quot;&quot;&quot;
+        slot = self.hash_function(key)
+        if key in self.slots[slot]:
+            return key
+        else:
+            return None
+
+    def buildfromfile(self, textfile):
+
+        with open(text_file, &#39;r&#39;) as infile:
+            for line in infile.readlines():
+                self.put(int(line), int(line))
+
+    def two_sum_count(self):
+        &quot;&quot;&quot;
+        Compute the number of target values t in the interval[low, high] (inclusive),
+        such that there are distinct numbers x, y that satisfy x+y = t
+        &quot;&quot;&quot;
+        sums = set()
+
+        for key1 in self.data:
+            left = self.hash_function(-key1-10000)
+            right = self.hash_function(-key1+10000)
+
+            for slot in self.slots[left:right+1]:
+
+                for key2 in slot:
+
+                    if 10000 &gt; key1 + key2 &gt; -10000:
+                        sums.add(key1+key2)
+
+        return len(sums)
+
+
+if __name__ == &quot;__main__&quot;:
+
+    # target files for counting
+    text_file = &#39;two_sum.txt&#39;
+
+    hashnumber = HashTable()
+    hashnumber.buildfromfile(text_file)
+    print(hashnumber.two_sum_count())
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/7/23</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html'>Python数据结构与算法</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="heap_median_maintenance.html">
                 
                   <h1>Heap (2): Median Maintenance</h1>
@@ -6829,6 +6990,18 @@ test2()
 	      
 		      
 			      <li class="post">
+			        <a href="15007792533636.html">Hashing (4): Universal Hashing</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="hashing_3.html">Hashing (3): A variant of 2-Sum Algorithm</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="heap_median_maintenance.html">Heap (2): Median Maintenance</a>
 			      </li>
 		     
@@ -6842,18 +7015,6 @@ test2()
 		      
 			      <li class="post">
 			        <a href="tree_2.html">Python树(二)：二叉树的实现</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="magic_method_item_access.html">Magic Methods: Item Access</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15002606936534.html">Database System Concept (2): Introduction to Relational Model</a>
 			      </li>
 		     
 		  
