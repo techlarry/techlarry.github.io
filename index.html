@@ -92,7 +92,7 @@
         
             <li><a href="Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html">Python数据结构与算法</a></li>
         
-            <li><a href="Python%E7%BC%96%E7%A8%8B%E6%8A%80%E5%B7%A7.html">Python编程技巧</a></li>
+            <li><a href="Python%E7%89%B9%E6%80%A7.html">Python特性</a></li>
         
             <li><a href="%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html">机器学习</a></li>
         
@@ -124,6 +124,195 @@
 	<div class="large-8 medium-8 columns">
 		<div class="markdown-body home-categories">
 		
+			<div class="article">
+                <a class="clearlink" href="generator.html">
+                
+                  <h1>Generator</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>Any function that contains a <code>yield</code> statement is called a <code>generator</code>.</p>
+
+<h3 id="toc_0">yield statement</h3>
+
+<p>Each time a value is yielded (with <code>yield</code>), the function <code>freezes</code>; that is, it stops its execution at exactly that point and waits to be reawakened.</p>
+
+<h3 id="toc_1">generator comprehension</h3>
+
+<p><code>Generator comprehension</code> works in the same way as <code>list comprehension</code>, except that a list isn&#39;t constructed. Instead, a generator is returned.</p>
+
+<pre><code class="language-python">&gt;&gt;&gt; h = (i for i in range(10))
+&gt;&gt;&gt; h
+&lt;generator object &lt;genexpr&gt; at 0x104d76ba0&gt;
+&gt;&gt;&gt; list(h)
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+</code></pre>
+
+<p>When using <code>generator comprehension</code>, if there already exists parentheses, you don&#39;t need to add another pair.</p>
+
+<pre><code class="language-python">&gt;&gt;&gt; sorted(100-i for i in range(10))
+[91, 92, 93, 94, 95, 96, 97, 98, 99, 100]
+</code></pre>
+
+<h3 id="toc_2">Recursive Generator</h3>
+
+<p>A <code>recursive generator</code> could be used to flatten a nested list.</p>
+
+<pre><code class="language-python">def flatten(nested):
+    &quot;&quot;&quot;
+    When flatten is called, you have two possibilites: the base case and the recursive case.
+
+    In the base case, the function is told to flatten a single element.
+    In the recursive case, flatten it.
+
+    &gt;&gt;&gt; list(flatten([[[1], 2], 3, 4, [5, [6, 7]], 8]))
+    [1, 2, 3, 4, 5, 6, 7, 8]
+    &gt;&gt;&gt; list(flatten([&#39;foo&#39;, [&#39;bar&#39;, [&#39;baz&#39;]]]))
+    [&#39;foo&#39;, &#39;bar&#39;, &#39;baz&#39;]
+    &quot;&quot;&quot;
+    try:
+        try:
+            nested + &#39; &#39;
+        except TypeError:
+            pass
+        else:
+            raise TypeError
+        
+        for sublist in nested:
+            for element in flatten(sublist):
+                yield element
+
+    except TypeError:
+        yield nested
+
+
+if __name__ == &quot;__main__&quot;:
+    import doctest
+    doctest.testmod(verbose=True)
+</code></pre>
+
+<p>An <code>inorder traversal</code> (also <code>postoder traversal</code> and <code>preorder traversal</code>) of a <code>binary search tree</code> might use the <code>recursive generator</code>, detailed code here <a href="http://larryim.cc/binary_search_tree.html">Binary Search Tree</a></p>
+
+<h3 id="toc_3">Generator methods</h3>
+
+<p>We may supply generators with values after they have started running, by using a communications channel between the <code>generator</code> and the “outside world,” with the following two end points:</p>
+
+<ul>
+<li><p>The outside world has access to a method on the generator called <code>send</code>, which works just like <code>next</code>, except that it takes a single argument (the “message” to send—an arbitrary object).</p></li>
+<li><p>Inside the suspended generator, <strong><code>yield</code> may now be used as an <code>expression</code>, rather than a <code>statement</code></strong>. In other words, when the generator is resumed, yield returns a value—the value sent from the outside through send. If next was used, yield returns None.</p></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/7/23</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15008043857420.html">
+                
+                  <h1>Iterators</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>An object that implements the <code>__iter__</code> method is <code>iterable</code>, and the object implementing <code>next</code> is the <code>iterator</code>.</p>
+
+<p>Why Iterator?<br/>
+<strong>not overkill, and more general, simpler, elegant</strong></p>
+
+<p>It is recommended that iterators implement an <code>__iter__</code>method of their own in addition (returning self), so they themselves can be used directly in <code>for</code> loops.</p>
+
+<p>Here an example of Fibonacci numbers.</p>
+
+<pre><code class="language-python">
+class Fibs:
+    &quot;&quot;&quot;
+    Fibonacci numbers
+    &quot;&quot;&quot;
+
+    def __init__(self):
+        self.a = 0
+        self.b = 1
+
+    def __next__(self):
+        self.a, self.b = self.b, self.a + self.b
+        if self.a &gt; 1000:
+            raise StopIteration
+        return self.a
+
+    def __iter__(self):
+        return self
+
+if __name__ == &quot;__main__&quot;:
+    fibs = Fibs()
+    for f in fibs:
+        print(f)
+</code></pre>
+
+<h3 id="toc_0">iterable to iterator</h3>
+
+<p>The built-in function <code>iter</code> can be used to get an iterator from an <code>iterable</code> object.</p>
+
+<pre><code class="language-python">&gt;&gt;&gt; iterable = [1,2,3]
+&gt;&gt;&gt; iterator = iter(iterable)
+&gt;&gt;&gt; next(iterator)
+1
+</code></pre>
+
+<h3 id="toc_1">iterator to sequence</h3>
+
+<p>Using the <code>list</code> constructor, an iterator can be easily converted to a sequence.</p>
+
+<hr/>
+
+<pre><code class="language-python">&gt;&gt;&gt; h = Fibs
+&gt;&gt;&gt; h = Fibs()
+&gt;&gt;&gt; list(h)
+[1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987]
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/7/23</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
 			<div class="article">
                 <a class="clearlink" href="15007792533636.html">
                 
@@ -179,15 +368,13 @@ By selecting different values of a and b you can generate many hash codes that a
                       
                       <div class="a-content-text">
                         
-                        	<h2 id="toc_0">Problem Statement</h2>
+                        	<p>The goal of the arcticle is to implement a variant of the <code>2-SUM algorithm</code>.</p>
 
-<p>The goal of the problem is to implement a variant of the <code>2-SUM algorithm</code>.</p>
+<p>The file contains 1 million integers, both positive and negative (repetitions exists!). This is your array of integers, with the \(i\)th row of the file specifying the \(i\)th entry of the array.</p>
 
-<p>The file contains 1 million integers, both positive and negative (there might be some repetitions!). This is your array of integers, with the \(i\)th row of the file specifying the \(i\)th entry of the array.</p>
+<p>The task is to compute the number of target values \(t\) in the interval \([-10000,10000]\)(inclusive) such that there are distinct numbers \(x,y\) in the input file that satisfy \(x+y=t\). </p>
 
-<p>Your task is to compute the number of target values \(t\) in the interval \([-10000,10000]\)(inclusive) such that there are distinct numbers \(x,y\) in the input file that satisfy \(x+y=t\). </p>
-
-<h2 id="toc_1">Implementation</h2>
+<h2 id="toc_0">Implementation</h2>
 
 <p>The key process lies in the <code>hash function</code>, which might be set to appropriate small value based on the origin value:<br/>
 \[\text{hash_function}= \frac{\text{number}}{\text{factor}}\]</p>
@@ -1483,7 +1670,7 @@ if __name__ == &quot;__main__&quot;:
                     <span class="date">2017/7/18</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Python%E7%BC%96%E7%A8%8B%E6%8A%80%E5%B7%A7.html'>Python编程技巧</a></span>
+          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -1720,7 +1907,7 @@ print(f4())
                     <span class="date">2017/7/17</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Python%E7%BC%96%E7%A8%8B%E6%8A%80%E5%B7%A7.html'>Python编程技巧</a></span>
+          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -1892,6 +2079,15 @@ if __name__ == &quot;__main__&quot;:
                         	<p><code>Dijkstra&#39;s algorithm</code> is an iterative algorithm that provides us with the shortest path from one particular starting node to all other nodes in the graph.</p>
 
 <p>The algorithm iterates once for every vertex in the graph. The order that iterates over the vertices is controlled by a <code>priority queue</code>. When a vertex is first created <code>dist</code> is set to a very large number(<code>sys.maxsize</code>)</p>
+
+<pre><code>Dijkstra(G, w, s)
+INITIALIZE-SINGLE-SOURCE(G, s)
+Q=G.V
+while Q:
+    u = EXTRACT-MIN(Q)
+    for each vertex in adjacent
+        RELAX(u,v,w)
+</code></pre>
 
 <pre><code class="language-python">from priorityqueue import PriorityQueue
 from graph import Graph, Vertex
@@ -2134,7 +2330,7 @@ if __name__ == &quot;__main__&quot;:
                     <span class="date">2017/7/14</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Python%E7%BC%96%E7%A8%8B%E6%8A%80%E5%B7%A7.html'>Python编程技巧</a></span>
+          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -2210,7 +2406,7 @@ conda remove --name python27 --all
                     <span class="date">2017/7/13</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Python%E7%BC%96%E7%A8%8B%E6%8A%80%E5%B7%A7.html'>Python编程技巧</a></span>
+          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -4124,7 +4320,7 @@ s = tvtk.CubeSource()</p>
                     <span class="date">2017/6/13</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Python%E7%BC%96%E7%A8%8B%E6%8A%80%E5%B7%A7.html'>Python编程技巧</a></span>
+          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -4262,7 +4458,7 @@ Delete(T,x)
                     <span class="date">2017/6/13</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Python%E7%BC%96%E7%A8%8B%E6%8A%80%E5%B7%A7.html'>Python编程技巧</a></span>
+          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -5057,7 +5253,7 @@ print(obj1.aaa,obj2.aaa,AAA.aaa)  # result: 12 14 14
                     <span class="date">2017/6/9</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Python%E7%BC%96%E7%A8%8B%E6%8A%80%E5%B7%A7.html'>Python编程技巧</a></span>
+          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -6095,7 +6291,7 @@ Kiss
                     <span class="date">2017/6/9</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Python%E7%BC%96%E7%A8%8B%E6%8A%80%E5%B7%A7.html'>Python编程技巧</a></span>
+          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -6147,7 +6343,7 @@ Kiss
                     <span class="date">2017/6/9</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Python%E7%BC%96%E7%A8%8B%E6%8A%80%E5%B7%A7.html'>Python编程技巧</a></span>
+          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -6386,7 +6582,7 @@ print(&#39;pop end&#39;, pop_end.timeit(1000))
                     <span class="date">2017/6/6</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Python%E7%BC%96%E7%A8%8B%E6%8A%80%E5%B7%A7.html'>Python编程技巧</a></span>
+          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -6487,7 +6683,7 @@ p.score = 100
                     <span class="date">2017/6/6</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Python%E7%BC%96%E7%A8%8B%E6%8A%80%E5%B7%A7.html'>Python编程技巧</a></span>
+          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -6589,7 +6785,7 @@ s.salary = -1000
                     <span class="date">2017/5/10</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Python%E7%BC%96%E7%A8%8B%E6%8A%80%E5%B7%A7.html'>Python编程技巧</a></span>
+          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -6731,7 +6927,7 @@ copy.copy()
                     <span class="date">2017/4/9</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Python%E7%BC%96%E7%A8%8B%E6%8A%80%E5%B7%A7.html'>Python编程技巧</a></span>
+          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -6894,7 +7090,7 @@ test2()
                     <span class="date">2017/4/5</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Python%E7%BC%96%E7%A8%8B%E6%8A%80%E5%B7%A7.html'>Python编程技巧</a></span>
+          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -6963,7 +7159,7 @@ test2()
         
             <a href="Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html"><strong>Python数据结构与算法</strong></a>
         
-            <a href="Python%E7%BC%96%E7%A8%8B%E6%8A%80%E5%B7%A7.html"><strong>Python编程技巧</strong></a>
+            <a href="Python%E7%89%B9%E6%80%A7.html"><strong>Python特性</strong></a>
         
             <a href="%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html"><strong>机器学习</strong></a>
         
@@ -6990,6 +7186,18 @@ test2()
 	      
 		      
 			      <li class="post">
+			        <a href="generator.html">Generator</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15008043857420.html">Iterators</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15007792533636.html">Hashing (4): Universal Hashing</a>
 			      </li>
 		     
@@ -7003,18 +7211,6 @@ test2()
 		      
 			      <li class="post">
 			        <a href="heap_median_maintenance.html">Heap (2): Median Maintenance</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="binary_search_tree.html">Python树(三)：Binary Search Tree</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="tree_2.html">Python树(二)：二叉树的实现</a>
 			      </li>
 		     
 		  
