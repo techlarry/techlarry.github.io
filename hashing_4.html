@@ -15,7 +15,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  魔法方法(一)：自定义序列 - techlarry
+  Hashing (4): Universal Hashing - techlarry
   
   </title>
   
@@ -125,14 +125,14 @@
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>魔法方法(一)：自定义序列</h1>
+          <h1>Hashing (4): Universal Hashing</h1>
      
         <div class="read-more clearfix">
-          <span class="date">2017/6/13</span>
+          <span class="date">2017/7/23</span>
 
           <span>posted in&nbsp;</span> 
           
-              <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
+              <span class="posted-in"><a href='Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html'>Python数据结构与算法</a></span>
            
          
           <span class="comments">
@@ -145,36 +145,156 @@
       </div><!-- article -->
 
       <div class="article-content">
-      <p>Python中的魔法方法可以理解为对类中的内置方法的重载。</p>
+      <p>In short, you can generate family of hash functions using following simple equation:</p>
 
-<h2 id="toc_0">自定义序列</h2>
+<pre><code class="language-python">h(x,a,b) = ((ax+b) mod p) mod m
+</code></pre>
 
-<p>有许多办法可以让Python类表现得像是内建序列类型(字典，元组，列表，字符串等)。</p>
+<p>\(x\) is key you want to hash<br/>
+\(a\) is any number you can choose between \(1\) to \(p-1\) inclusive.<br/>
+\(b\) is any number you can choose between \(0\) to \(p-1\) inclusive.<br/>
+\(p\) is a prime number that is greater than max possible value of \(x\)<br/>
+\(m\) is a max possible value you want for hash code + 1<br/>
+By selecting different values of \(a\) and \(b\) you can generate many hash codes that are independent of each other.</p>
 
-<h3 id="toc_1">预备知识</h3>
+<h2 id="toc_0">Implementation</h2>
 
-<p>协议类似某些语言中的接口，里面包含的是一些必须实现的方法。在Python中，协议完全是非正式的，也不需要显式的声明，事实上，它们更像是一种参考标准。</p>
+<pre><code class="language-python">import random
 
-<p>在Python中实现自定义容器类型需要用到一些协议。首先，不可变容器类型有如下协议：想实现一个不可变容器，你需要定义 <code>__len__</code> 和 <code>__getitem__</code> (后面会具体说明）。可变容器的协议除了上面提到的两个方法之外，还需要定义 <code>__setitem__</code> 和 <code>__delitem__</code> 。最后，如果你想让你的对象可以迭代，你需要定义 <code>__iter__</code> ，这个方法返回一个迭代器。迭代器必须遵守迭代器协议，需要定义 <code>__iter__</code> （返回它自己）和 <code>next</code> 方法。</p>
 
-<h3 id="toc_2">容器背后的魔法方法</h3>
+class UniversalHash:
+    &quot;&quot;&quot;
+    &gt;&gt;&gt; h=UniversalHash()
+    &gt;&gt;&gt; h[54]=&quot;cat&quot;
+    &gt;&gt;&gt; h[26]=&quot;dog&quot;
+    &gt;&gt;&gt; h[93]=&quot;lion&quot;
+    &gt;&gt;&gt; h[77]=&quot;bird&quot;
+    &gt;&gt;&gt; h[31]=&quot;cow&quot;
+    &gt;&gt;&gt; h[44]=&quot;goat&quot;
+    &gt;&gt;&gt; 54 in h
+    True
+    &quot;&quot;&quot;
+    def __init__(self):
+        self.size = 100
+        self.slots = [None] * self.size
+        self.data = [None] * self.size
+        (self.p, self.a, self.b) = self.generate_hash_constants()
 
-<ul>
-<li><p><code>__len__(self)</code><br/>
-返回容器的长度，可变和不可变类型都需要实现。</p></li>
-<li><p><code>__getitem__(self, key)</code><br/>
-定义对容器中某一项使用 self[key] 的方式进行读取操作时的行为。这也是可变和不可变容器类型都需要实现的一个方法。它应该在键的类型错误式产生 <code>TypeError</code> 异常，同时在没有与键值相匹配的内容时产生 <code>KeyError</code> 异常。</p></li>
-<li><p><code>__setitem__(self, key)</code><br/>
-定义对容器中某一项使用 self[key] 的方式进行赋值操作时的行为。它是可变容器类型必须实现的一个方法，同样应该在合适的时候产生 <code>KeyError</code> 和 <code>TypeError</code> 异常。</p></li>
-<li><p><code>__iter__(self, key)</code><br/>
-它应该返回当前容器的一个迭代器。迭代器以一连串内容的形式返回，最常见的是使用<code>iter()</code>函数调用，以及在类似 for x in container: 的循环中被调用。迭代器是他们自己的对象，需要定义 <code>__iter__</code>方法并在其中返回自己。</p></li>
-<li><p><code>__reversed__(self)</code><br/>
-定义了对容器使用<code>reversed()</code>内建函数时的行为。它应该返回一个反转之后的序列。当你的序列类是有序时，类似列表和元组，再实现这个方法，</p></li>
-<li><p><code>__contains__(self, item)</code><br/>
-<code>__contains__</code>定义了使用<code>in</code>和<code>not in</code>进行成员测试时类的行为。你可能好奇为什么这个方法不是序列协议的一部分，原因是，如果<code>__contains__</code>没有定义，Python就会迭代整个序列，如果找到了需要的一项就返回<code>True</code>。</p></li>
-<li><p><code>__missing__(self ,key)</code><br/>
-<code>__missing__</code>在字典的子类中使用，它定义了当试图访问一个字典中不存在的键时的行为（目前为止是指字典的实例，例如我有一个字典 d ， “george” 不是字典中的一个键，当试图访问 d[“george’] 时就会调用 d.__missing__(“george”))。</p></li>
-</ul>
+
+    def generate_hash_constants(self):
+        &quot;&quot;&quot;
+        generate a, b, p for universal hashing
+        &quot;&quot;&quot;
+        p = self._get_prime()  # set p a  random prime number
+        a = random.randint(1, p - 1)  # A has a random value between 1 and p - 1.
+        b = random.randint(1, p - 1)  # B has a random value between 1 and p - 1
+        return p, a, b
+
+    def put(self, key, data):
+        hash_value = self.hash_function(key)
+        if self.slots[hash_value] is None:
+            self.slots[hash_value] = key
+            self.data[hash_value] = data
+        elif self.slots[hash_value] == key:
+            self.data[hash_value] = data
+        else:
+            # rehash
+            next_slot = self.rehash(hash_value, len(self.slots))
+            while self.slots[next_slot] is not None and self.slots[next_slot] != key:
+                next_slot = self.rehash(hash_value, len(self.slots))
+
+            if self.slots[next_slot] is None:
+                self.slots[next_slot] = key
+                self.data[hash_value] = data
+            else:
+                self.data[hash_value] = data
+
+    def hash_function(self, key):
+        &quot;&quot;&quot;
+        hash_function implements the simple remainder method
+        &quot;&quot;&quot;
+        return round(self.a * key + self.b) % self.p % self.size
+
+    def rehash(self, old_hash, size):
+        &quot;&quot;&quot;
+        linear probing with a plus 1
+        &quot;&quot;&quot;
+        return (old_hash+1) % size
+
+    def get(self, key):
+        start_slot = self.hash_function(key)
+        data = None
+        stop = False
+        found = False
+        position = start_slot
+        while self.slots[position] is not None and \
+                not found and not stop:
+            if self.slots[position] == key:
+                found = True
+                data = self.data[position]
+            else:
+                position = self.rehash(position, len(self.slots))
+            if position == start_slot:
+                stop = True
+        return data
+
+    def _is_prime(self,n):
+        if n &lt;= 2 or n%2 == 0:
+            return False
+
+        return not any((n%i == 0 for i in range(3, n-1)))
+
+    def _get_prime(self, p=0):
+        &quot;&quot;&quot;
+        get a prime number
+        &quot;&quot;&quot;
+        if p == 0:
+            p = random.randint(1000000,10000000)
+        while not self._is_prime(p):
+            p += 1
+
+        return p
+
+    def __getitem__(self, key):
+        return self.get(key)
+
+    def __setitem__(self, key, data):
+        self.put(key, data)
+
+    def __len__(self):
+        &quot;&quot;&quot;
+        return length
+        &quot;&quot;&quot;
+        count = 0
+        for item in self.slots:
+            if item is not None:
+                count += 1
+
+        return count
+
+    def __contains__(self, item):
+        &quot;&quot;&quot;
+        定义了使用in和not in进行成员测试时类的行为
+        &quot;&quot;&quot;
+        return self.get(item) is not None
+
+    def __iter__(self):
+        &quot;&quot;&quot;
+        iterator
+        &quot;&quot;&quot;
+        for item in self.slots:
+            if item is not None:
+                yield item
+
+if __name__ == &quot;__main__&quot;:
+    import doctest
+    doctest.testmod(verbose=True)
+
+</code></pre>
+
+<h2 id="toc_1">Resources</h2>
+
+<p>1.<a href="https://www.cse.iitb.ac.in/%7Esri/cs213/lec-Hashing.pdf">Hash Functions and Hash Tables</a></p>
 
 
     
@@ -185,16 +305,16 @@
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="tree_1.html" 
-          title="Previous Post: Python树(一)：介绍">&laquo; Python树(一)：介绍</a>
+          <a href="15008043857420.html" 
+          title="Previous Post: Iterators">&laquo; Iterators</a>
       
         </p>
         </div>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="hash_table_1.html" 
-          title="Next Post: Hashing (1): Introduction">Hashing (1): Introduction &raquo;</a>
+          <a  href="hashing_3.html" 
+          title="Next Post: Hashing (3): A variant of 2-Sum Algorithm">Hashing (3): A variant of 2-Sum Algorithm &raquo;</a>
       
       </p>
         </div>
