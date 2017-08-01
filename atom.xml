@@ -4,7 +4,7 @@
   <title><![CDATA[techlarry]]></title>
   <link href="http://larryim.cc/atom.xml" rel="self"/>
   <link href="http://larryim.cc/"/>
-  <updated>2017-07-31T21:22:21+08:00</updated>
+  <updated>2017-08-01T16:24:38+08:00</updated>
   <id>http://larryim.cc/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -37,7 +37,32 @@
 
 <h3 id="toc_1">Greedy Exchange</h3>
 
-<h2 id="toc_2">References</h2>
+<p><code>Greedy Exchange</code> is one of the techniques used in proving the correctness of greedy algorithms. The idea of a greedy exchange proof is to morph a solution produced by an optimal algorithm into the solution produced by your greedy algorithm in a way that doesn&#39;t worsen the solution&#39;s quality. This shows that any optimal solution is no better than the greedy solution, which proves that greedy does in fact return an optimal solution.</p>
+
+<h3 id="toc_2">Proof</h3>
+
+<h4 id="toc_3">Step1: label algorithm&#39;s solution and an optimal solution</h4>
+
+<p>Let \(\sigma\) be greedy schedule, and \(\sigma^*\) be optimal schedule. </p>
+
+<h4 id="toc_4">Step2: Compare greedy with optimal</h4>
+
+<p>Greedy schedule \(\sigma\) is just \(1,2,3,...,n\). And if optimal schedule \(\sigma^* \ne \sigma \), then \(\exists\) consecutive jobs \(i,j\), which \(i&gt;j\).</p>
+
+<h4 id="toc_5">Step3: Exchange</h4>
+
+<p>Suppose we exchange order of \(i,j\) in \(\sigma\):</p>
+
+<ul>
+<li>the cost of exchange \(w_jl_j\)</li>
+<li>the benefit of exchange is \(w_jl_i\)</li>
+</ul>
+
+<p>Note: <br/>
+\[i &gt;j \rightarrow w_i/l_i &lt;wj/lj \rightarrow w_il_j &lt; w_jl_i \]<br/>
+\[\rightarrow  \text{COST &lt;BENEFIT}\rightarrow \text{Swap improves σ∗, contradicts optimality of} σ∗\]</p>
+
+<h2 id="toc_6">References</h2>
 
 <ol>
 <li><a href="http://www.cs.cornell.edu/courses/cs482/2003su/handouts/greedy_exchange.pdf">Greedy exchange</a></li>
@@ -288,9 +313,15 @@ if __name__ == &quot;__main__&quot;:
     <updated>2017-07-23T11:07:33+08:00</updated>
     <id>http://larryim.cc/hashing_4.html</id>
     <content type="html"><![CDATA[
-<p>Let \(H\) be a finite collection of hash functions that map a given universe \(U\) of keys into the range \(\{0,1,...,m-1\}\). Such a collection is said to be universal if for each pair of distinct keys \(k,l \in U\), the number of hash function \(h \in H\) for which \(h(k) = h(l)\) is at most \(\frac{|H|}{m}\)</p>
+<p>Let \(H\) be a finite collection of hash functions that map a given universe \(U\) of keys into the range \(\{0,1,...,m-1\}\). Such a collection is said to be <code>universal</code> if for each pair of distinct keys \(k,l \in U\), the number of <code>hash function</code> \(h \in H\) for which \(h(k) = h(l)\) is at most \(\frac{|H|}{m}\), i.e.</p>
 
-<h2 id="toc_0">Designing a universal class of hash functions</h2>
+<p>\[ \forall k,l \in U, k\ne l: \Pr_{h\in H }[h(x)=h(y)]\le \frac{1}{m}  \]</p>
+
+<h2 id="toc_0">Why Universal Hashing?</h2>
+
+<p>Some malicious adversary might chooses the keys which all hash to the same slot, yielding an average retrieval time of \(\Theta(n)\). Instead of fixed hash functions, randomly chosen hash functions can yield good performance on average.</p>
+
+<h2 id="toc_1">Designing a universal class of hash functions</h2>
 
 <p>In short, you can generate family of hash functions using following simple equation:</p>
 
@@ -304,7 +335,7 @@ if __name__ == &quot;__main__&quot;:
 \(m\) is a max possible value you want for hash code + 1<br/>
 By selecting different values of \(a\) and \(b\) you can generate many hash codes that are independent of each other.</p>
 
-<h2 id="toc_1">Implementation</h2>
+<h2 id="toc_2">Implementation</h2>
 
 <pre><code class="language-python">import random
 
@@ -439,7 +470,7 @@ if __name__ == &quot;__main__&quot;:
 
 </code></pre>
 
-<h2 id="toc_2">Resources</h2>
+<h2 id="toc_3">Resources</h2>
 
 <ol>
 <li><a href="https://www.cse.iitb.ac.in/%7Esri/cs213/lec-Hashing.pdf">Hash Functions and Hash Tables</a></li>
