@@ -172,18 +172,10 @@
 <a href="#toc_0">Linked-List Implementation</a>
 </li>
 <li>
-<a href="#toc_1">Forest-of-Trees Implementation</a>
-<ul>
-<li>
-<a href="#toc_2">Union by rank</a>
+<a href="#toc_1">Forest Implementation of Disjoint-Set</a>
 </li>
 <li>
-<a href="#toc_3">Path compression</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_4">Reference</a>
+<a href="#toc_2">Reference</a>
 </li>
 </ul>
 
@@ -204,14 +196,13 @@
 
 <p>Each set is represented by its own <strong>linked list</strong>. The object for each set has attributes <em>head</em>, pointing to the first object in the list, and <em>tail</em>, pointing to the last object. Each object in the linked list contains a set member, a pointer to the next object in the list, and a pointer back to the set object.</p>
 
+<p><img src="media/15017471539381/Screen%20Shot%202017-08-03%20at%209.21.43%20PM.png" alt="Linked List implementaion"/></p>
+
 <p><strong>Weighted-Union Heuristic</strong>: And each linked list also includes the length of the list and we always append the shorter list onto the longer.</p>
 
 <p>Using the linked-list representation of disjoint sets and the weighted-union heuristic, a sequence of \(m\) MAKE-SET, UNION, and FIND-SET, \(n\) of which are MAKE-SET operations, takes \(O(m+n\lg n)\) time.</p>
 
-<pre><code class="language-python">import unittest
-
-
-class Node:
+<pre><code class="language-python">class Node:
     &quot;&quot;&quot;
     class Node for double liked list
     &quot;&quot;&quot;
@@ -318,107 +309,21 @@ class DisjointSet:
     def __len__(self):
         return len(self.sets)
 
-
-class TestNode(unittest.TestCase):
-
-    def test_hash(self):
-        nodes1 = Node(5)
-        nodes2 = Node(6)
-        dic_test = {}
-        dic_test[nodes1] = &#39;saf&#39;
-        dic_test[nodes2] = &#39;4sf&#39;
-
-
-class TestLinkedList(unittest.TestCase):
-
-    def tests_add(self):
-        alist = LinkedList()
-        for elem in range(10):
-            alist.add(Node(elem))
-
-    def test_iter(self):
-        alist = LinkedList()
-        for elem in range(10):
-            alist.add(Node(elem))
-        to_test = []
-        for node in alist:
-            to_test.append(node.elem)
-        self.assertEqual(to_test, [ i for i in range(10)])
-
-    def test_length(self):
-        alist = LinkedList()
-        for elem in range(10):
-            alist.add(Node(elem))
-        self.assertEqual(len(alist), 10)
-        alist.set_length(100)
-        self.assertEqual(len(alist), 100)
-
-
-class TestDisjointSet(unittest.TestCase):
-
-    def test_make_set(self):
-        to_test = DisjointSet()
-        for elem in range(10):
-            newnode = Node(elem)
-            to_test.make_set(newnode)
-        self.assertEqual(len(to_test), 10)
-
-    def test_find_set(self):
-        to_test = DisjointSet()
-        elems = [i for i in range(10)]
-        elems_to = {}
-        for elem in elems:
-            newnode = Node(elem)
-            elems_to[elem] = newnode
-            to_test.make_set(newnode)
-
-        to_test2 = LinkedList()
-        to_test2.add(elems_to[5])
-
-        self.assertEqual(to_test.find_set(elems_to[5]), to_test2)
-
-    def test_union(self):
-        to_test = DisjointSet()
-        elems = [i for i in range(10)]
-        elems_to = {}
-        for elem in elems:
-            newnode = Node(elem)
-            elems_to[elem] = newnode
-            to_test.make_set(newnode)
-
-        x = elems_to[1]
-        y = elems_to[2]
-        to_test.union(x, y)
-        self.assertEqual(to_test.find_set(x), to_test.find_set(y))
-
-    def test_connected_components(self):
-        to_test = DisjointSet()
-        elems = [i for i in range(10)]
-        elems_to = {}
-        for elem in elems:
-            newnode = Node(elem)
-            elems_to[elem] = newnode
-            to_test.make_set(newnode)
-
-        to_test.union(elems_to[2], elems_to[4])
-        to_test.union(elems_to[5], elems_to[1])
-        to_test.union(elems_to[8], elems_to[0])
-        to_test.union(elems_to[4], elems_to[0])
-
-        to_test.connected_components()
-
-
-if __name__ == &quot;__main__&quot;:
-    unittest.main()
 </code></pre>
 
-<h2 id="toc_1">Forest-of-Trees Implementation</h2>
+<h2 id="toc_1">Forest Implementation of Disjoint-Set</h2>
 
-<h3 id="toc_2">Union by rank</h3>
+<p><code>Disjoint-set forest</code>, a faster implementation of disjoint sets, uses rooted trees represent sets, with each node containing one member and each tree representing one set. In a <code>disjoint-set forest</code>, each member points only to its parents. The root of each tree contains the representative and is its own parent.</p>
 
-<h3 id="toc_3">Path compression</h3>
+<p><img src="media/15017471539381/15017663990040.png" alt="disjoint set forest"/></p>
 
-<h2 id="toc_4">Reference</h2>
+<p><strong>Union by Rank</strong>: For each node, we maintain a <code>rank</code>, which is an upper bound on the hight of the node. We make the root with smaller rank point to the root with larger rank during a <code>Union</code> operation.</p>
+
+<p><strong>Path Compression</strong>: When we call <code>find_set</code>, we traverse the path from a node up to its root. Instead of just returning root, we will link all the nodes in this path directly to root. </p>
+
+<p><img src="media/15017471539381/15017663772888.png" alt="path compression"/></p>
+
+<h2 id="toc_2">Reference</h2>
 
 <ol>
 <li>Cormen, Leiserson, Rivest, and Stein. 2009. Introduction to Algorithms (3rd edition)</li>
