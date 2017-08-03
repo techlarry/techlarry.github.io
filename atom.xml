@@ -4,13 +4,301 @@
   <title><![CDATA[techlarry]]></title>
   <link href="http://larryim.cc/atom.xml" rel="self"/>
   <link href="http://larryim.cc/"/>
-  <updated>2017-08-03T12:34:17+08:00</updated>
+  <updated>2017-08-03T16:10:26+08:00</updated>
   <id>http://larryim.cc/</id>
   <author>
     <name><![CDATA[]]></name>
     
   </author>
   <generator uri="http://www.mweb.im/">MWeb</generator>
+  
+  <entry>
+    <title type="html"><![CDATA[Hashing (5): Hashable]]></title>
+    <link href="http://larryim.cc/hashing_5.html"/>
+    <updated>2017-08-03T17:06:19+08:00</updated>
+    <id>http://larryim.cc/hashing_5.html</id>
+    <content type="html"><![CDATA[
+<p>To make items hashable, you should implement <code>__hash__</code>. You should also implement <code>__eq__</code> in a compatible way -- items that are equivalent should hash the same.</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Kruskal's algorithm]]></title>
+    <link href="http://larryim.cc/15017473061789.html"/>
+    <updated>2017-08-03T16:01:46+08:00</updated>
+    <id>http://larryim.cc/15017473061789.html</id>
+    <content type="html"><![CDATA[
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Disjoint-Set Data Structure]]></title>
+    <link href="http://larryim.cc/15017471539381.html"/>
+    <updated>2017-08-03T15:59:13+08:00</updated>
+    <id>http://larryim.cc/15017471539381.html</id>
+    <content type="html"><![CDATA[
+<ul>
+<li>
+<a href="#toc_0">Linked-List Implementation</a>
+</li>
+<li>
+<a href="#toc_1">Forest-of-Trees Implementation</a>
+<ul>
+<li>
+<a href="#toc_2">Union by rank</a>
+</li>
+<li>
+<a href="#toc_3">Path compression</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_4">Reference</a>
+</li>
+</ul>
+
+
+<p>In order to keep track of the connected components of a minimum spanning tree when implementing <code>Kruskal&#39;s algorithm</code>, a disjoint-set data structure should be used.</p>
+
+<p><code>Disjoint-set</code> data structure, also called <code>union-find</code> data structure, is a data structure that keeps track of a set of elements partitioned into a number of disjoint subsets.</p>
+
+<p>A <code>disjoint-set</code> data structure supports following operations:</p>
+
+<ul>
+<li><code>MAKE-SET(x)</code> creates a new set whose only member is \(x\)</li>
+<li><code>UNION(x,y)</code> unites the dynamic sets that contains \(x\) and \(y\), into a new set that is the union of these two sets.</li>
+<li><code>FIND-SET(x)</code> returns the representative of the set containing \(x\).</li>
+</ul>
+
+<h2 id="toc_0">Linked-List Implementation</h2>
+
+<p>Each set is represented by its own <strong>linked list</strong>. The object for each set has attributes <em>head</em>, pointing to the first object in the list, and <em>tail</em>, pointing to the last object. Each object in the linked list contains a set member, a pointer to the next object in the list, and a pointer back to the set object.</p>
+
+<p><strong>Weighted-Union Heuristic</strong>: And each linked list also includes the length of the list and we always append the shorter list onto the longer.</p>
+
+<p>Using the linked-list representation of disjoint sets and the weighted-union heuristic, a sequence of \(m\) MAKE-SET, UNION, and FIND-SET, \(n\) of which are MAKE-SET operations, takes \(O(m+n\lg n)\) time.</p>
+
+<pre><code class="language-python">import unittest
+
+
+class Node:
+    &quot;&quot;&quot;
+    class Node for double liked list
+    &quot;&quot;&quot;
+    def __init__(self, elem):
+        self.prev = None
+        self.elem = elem
+        self.next = None
+
+    def __hash__(self):
+        return hash(self.elem)
+
+    def __eq__(self, x, y):
+        return x.elem == y.elem
+
+
+class LinkedList:
+
+    def __init__(self):
+        self.head = None
+        self.tail = None
+        self.length = 0
+
+    def add(self, node):
+        &quot;&quot;&quot;
+        add element to disjoint set
+        &quot;&quot;&quot;
+        if self.head:
+            node.prev = self
+            self.tail.next = node
+            self.tail = node
+        else:
+            self.head = node
+            self.tail = node
+            node.prev = self
+        self.length += 1
+
+    def __len__(self):
+        return self.length
+
+    def set_length(self, l):
+        self.length = l
+
+    def __iter__(self):
+        next_node = self.head
+        while next_node:
+            yield next_node
+            next_node = next_node.next
+
+
+            
+
+class DisjointSet:
+
+    def __init__(self):
+        self.sets = []
+
+    def make_set(self, node):
+        &quot;&quot;&quot; 
+        creates a new set whose only member (and thus representative) is x.
+        &quot;&quot;&quot;
+        alist = LinkedList()
+        alist.add(node)
+        self.sets.append(alist)
+        return alist
+
+    def union(self, nodex, nodey):
+        &quot;&quot;&quot;
+        unites the dynamic sets that contain x and y, into a new set that is the union of these two sets.
+        &quot;&quot;&quot;
+        listx = self.find_set(nodex)
+        listy = self.find_set(nodey)
+        
+        # append the shorter list onto the longer.
+        if len(listx) &gt; len(listy):
+            listx.tail.next = listy.head
+            for y in listy:
+                y.prev = listx
+            listx.tail = listy.tail
+            listx.set_length = len(listx) + len(listy)
+            self.sets.remove(listy)
+        else:
+            listy.tail.next = listx.head
+            for x in listx:
+                x.prev = listy
+            listy.tail = listx.tail
+            listy.setlength = len(listx) + len(listy)
+            self.sets.remove(listx)
+
+
+
+    def find_set(self, node):
+        &quot;&quot;&quot;
+        returns the representative of the set containing x
+        &quot;&quot;&quot;
+        return node.prev
+
+    def connected_components(self):
+        for link_list in self.sets:
+            print(&#39;( &#39;, end=&#39;&#39;)
+            for node in link_list:
+                print(node.elem, end=&#39; &#39;)
+            print(&#39;) &#39;, end=&#39;&#39;)
+
+    def __len__(self):
+        return len(self.sets)
+
+
+class TestNode(unittest.TestCase):
+
+    def test_hash(self):
+        nodes1 = Node(5)
+        nodes2 = Node(6)
+        dic_test = {}
+        dic_test[nodes1] = &#39;saf&#39;
+        dic_test[nodes2] = &#39;4sf&#39;
+
+
+class TestLinkedList(unittest.TestCase):
+
+    def tests_add(self):
+        alist = LinkedList()
+        for elem in range(10):
+            alist.add(Node(elem))
+
+    def test_iter(self):
+        alist = LinkedList()
+        for elem in range(10):
+            alist.add(Node(elem))
+        to_test = []
+        for node in alist:
+            to_test.append(node.elem)
+        self.assertEqual(to_test, [ i for i in range(10)])
+
+    def test_length(self):
+        alist = LinkedList()
+        for elem in range(10):
+            alist.add(Node(elem))
+        self.assertEqual(len(alist), 10)
+        alist.set_length(100)
+        self.assertEqual(len(alist), 100)
+
+
+class TestDisjointSet(unittest.TestCase):
+
+    def test_make_set(self):
+        to_test = DisjointSet()
+        for elem in range(10):
+            newnode = Node(elem)
+            to_test.make_set(newnode)
+        self.assertEqual(len(to_test), 10)
+
+    def test_find_set(self):
+        to_test = DisjointSet()
+        elems = [i for i in range(10)]
+        elems_to = {}
+        for elem in elems:
+            newnode = Node(elem)
+            elems_to[elem] = newnode
+            to_test.make_set(newnode)
+
+        to_test2 = LinkedList()
+        to_test2.add(elems_to[5])
+
+        self.assertEqual(to_test.find_set(elems_to[5]), to_test2)
+
+    def test_union(self):
+        to_test = DisjointSet()
+        elems = [i for i in range(10)]
+        elems_to = {}
+        for elem in elems:
+            newnode = Node(elem)
+            elems_to[elem] = newnode
+            to_test.make_set(newnode)
+
+        x = elems_to[1]
+        y = elems_to[2]
+        to_test.union(x, y)
+        self.assertEqual(to_test.find_set(x), to_test.find_set(y))
+
+    def test_connected_components(self):
+        to_test = DisjointSet()
+        elems = [i for i in range(10)]
+        elems_to = {}
+        for elem in elems:
+            newnode = Node(elem)
+            elems_to[elem] = newnode
+            to_test.make_set(newnode)
+
+        to_test.union(elems_to[2], elems_to[4])
+        to_test.union(elems_to[5], elems_to[1])
+        to_test.union(elems_to[8], elems_to[0])
+        to_test.union(elems_to[4], elems_to[0])
+
+        to_test.connected_components()
+
+
+if __name__ == &quot;__main__&quot;:
+    unittest.main()
+</code></pre>
+
+<h2 id="toc_1">Forest-of-Trees Implementation</h2>
+
+<h3 id="toc_2">Union by rank</h3>
+
+<h3 id="toc_3">Path compression</h3>
+
+<h2 id="toc_4">Reference</h2>
+
+<ol>
+<li>Cormen, Leiserson, Rivest, and Stein. 2009. Introduction to Algorithms (3rd edition)</li>
+<li><a href="https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-046j-design-and-analysis-of-algorithms-spring-2012/lecture-notes/MIT6_046JS12_lec16.pdf">Disjoint-set Data Structure MIT</a></li>
+</ol>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Character encoding]]></title>
@@ -48,6 +336,25 @@
     <updated>2017-08-02T10:26:19+08:00</updated>
     <id>http://larryim.cc/15016407791054.html</id>
     <content type="html"><![CDATA[
+<ul>
+<li>
+<a href="#toc_0">client and server</a>
+</li>
+<li>
+<a href="#toc_1">basic command</a>
+</li>
+<li>
+<a href="#toc_2">GUI</a>
+</li>
+<li>
+<a href="#toc_3">Starting to Explore Databases</a>
+</li>
+<li>
+<a href="#toc_4">Python</a>
+</li>
+</ul>
+
+
 <p>MySQL is an open source, multithread, relational database management system.</p>
 
 <h2 id="toc_0">client and server</h2>
@@ -83,7 +390,7 @@
 <pre><code class="language-SQL">USE database_name
 </code></pre>
 
-<h3 id="toc_4">Python</h3>
+<h2 id="toc_4">Python</h2>
 
 <p>To use Python with MySQL, you can use the MySQL Connector/Python (<a href="https://dev.mysql.com/downloads/connector/python/">Download Here</a>). For those with anaconda, just install with <code>conda</code>:</p>
 
@@ -2302,291 +2609,6 @@ if __name__ == &quot;__main__&quot;:
     import doctest
     doctest.testmod(verbose=True)
 </code></pre>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Dijkstra's algorithm]]></title>
-    <link href="http://larryim.cc/dijkstra_algorithm.html"/>
-    <updated>2017-07-14T14:35:59+08:00</updated>
-    <id>http://larryim.cc/dijkstra_algorithm.html</id>
-    <content type="html"><![CDATA[
-<p><code>Dijkstra&#39;s algorithm</code> is an iterative algorithm that provides us with the shortest path from one particular starting node to all other nodes in the graph.</p>
-
-<p>The algorithm iterates once for every vertex in the graph. The order that iterates over the vertices is controlled by a <code>priority queue</code>. When a vertex is first created <code>dist</code> is set to a very large number(<code>sys.maxsize</code>)</p>
-
-<pre><code>Dijkstra(G, w, s)
-INITIALIZE-SINGLE-SOURCE(G, s)
-Q=G.V
-while Q:
-    u = EXTRACT-MIN(Q)
-    for each vertex in adjacent
-        RELAX(u,v,w)
-</code></pre>
-
-<pre><code class="language-python">from priorityqueue import PriorityQueue
-from graph import Graph, Vertex
-import sys
-import unittest
-
-def dijkstra(aGraph, start):
-    &quot;&quot;&quot;
-    Find Single-Source shortest-paths on a weighted, directed graph
-    Return shortest path
-    aGraph: class Graph
-    start: class Vertex
-    &quot;&quot;&quot;
-    pq = PriorityQueue()
-    start.setDistance(0)
-    pq.buildHeap([(v.getDistance(), v) for v in aGraph])
-    while not pq.isEmpty():
-        u = pq.delMin()
-        for adjacent in u.getConnections():
-            newDist = u.dist + u.getWeight(adjacent)
-            if adjacent.dist &gt; newDist:
-                adjacent.setDistance(newDist)
-                adjacent.setPred(u)
-                pq.decreaseKey(adjacent, newDist)
-
-
-class TestDijkstra(unittest.TestCase):
-
-
-    def testShortest(self):
-
-        aGraph = Graph()
-        with open(&#39;dijkstraData.txt&#39;) as infile:
-            for line in infile:
-                numbers = [number for number in line.split()]
-                from_v = int(numbers[0])
-
-                for to_v_cost in numbers[1:]:
-                    to_v, cost = to_v_cost.split(&#39;,&#39;)
-                    aGraph.addEdge(from_v, int(to_v), int(cost))
-
-        dijkstra(aGraph, aGraph.getVertex(1))
-
-        dists = []
-        for vertex_id in [7, 37, 59, 82, 99, 115, 133, 165, 188, 197]:
-            dist = aGraph.getVertex(vertex_id).getDistance()
-            if dist == sys.maxsize:
-                dist = 100000
-            dists.append(dist)
-        assert dists == [2599, 2610, 2947, 2052, 2367, 2399, 2029, 2442, 2505, 3068]
-
-
-if __name__ == &#39;__main__&#39;:
-    unittest.main()
-</code></pre>
-
-<p>It is important to note that <code>Dijkstra&#39;s algorithm</code> works only when the weights are all positive. If you introduced a negative weight on one of the edges to the graph that the algorithm would never exit.</p>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Testing]]></title>
-    <link href="http://larryim.cc/testing.html"/>
-    <updated>2017-07-14T10:33:50+08:00</updated>
-    <id>http://larryim.cc/testing.html</id>
-    <content type="html"><![CDATA[
-<p><a href="https://en.wikipedia.org/wiki/Unit_testing">Unit testing</a> is a software testing method by which individual units of source code, sets of one or more computer program modules together with associated control data, usage procedures, and operating procedures, are tested to determine whether they are fit for use.</p>
-
-<h2 id="toc_0">Test-driven programming</h2>
-
-<p>&quot;<strong>Test first and code later</strong>&quot; practice, known as test-driven programming, instead of test after code.</p>
-
-<h3 id="toc_1">Requirement Specification</h3>
-
-<p>When developing a piece of software, you must first know what problem the software will solve—what objectives it will meet. You can clarify your goals for the program by writing a <strong>requirement specification</strong>, a document (or just some quick notes) describing requirements the program must satisfy. </p>
-
-<h3 id="toc_2">The 1-2-3-4 of Testing</h3>
-
-<p>Here’s a breakdown of the test-driven development process:</p>
-
-<ul>
-<li>Figure out the new feature you want. Possibly document it, and then write a test for it.</li>
-<li>Write some skeleton code for the feature, so that you program runs without any syntax errors. See your test fail.</li>
-<li>Write dummy code for skeleton code, just to appease the test.</li>
-<li>Rewrite the code so that it actually pass the test.</li>
-</ul>
-
-<h2 id="toc_3">Testing Tools</h2>
-
-<p>Two brilliant modules are available to automate the testing process:</p>
-
-<ul>
-<li><code>unittest</code>: A generic testing framework.</li>
-<li><code>doctest</code>: A simpler module, designed for checking documentation, but excellent for writing unit tests as well.</li>
-</ul>
-
-<h3 id="toc_4">doctest</h3>
-
-<p>The <code>testmod</code> function checks both the module docstring and function docstring.</p>
-
-<p>E.g.</p>
-
-<pre><code class="language-python">def square(x):
-    &quot;&quot;&quot;
-    squares a number and returns the result.
-    &gt;&gt;&gt; square(2)
-    4
-    &gt;&gt;&gt; square(3)
-    9
-    &quot;&quot;&quot;
-    return x*x
-
-if __name__ == &quot;__main__&quot;:
-    import doctest, doc_test_example
-    doctest.testmod(doc_test_example, verbose=True)
-</code></pre>
-
-<p>Run the example. To get some more output, just add <code>-v</code>(for verbose)</p>
-
-<pre><code class="language-bash">$ python doc_test_example.py -v
-Trying:
-    square(2)
-Expecting:
-    4
-ok
-Trying:
-    square(3)
-Expecting:
-    9
-ok
-1 items had no tests:
-    doc_test_example
-1 items passed all tests:
-   2 tests in doc_test_example.square
-2 tests in 2 items.
-2 passed and 0 failed.
-Test passed.
-</code></pre>
-
-<h3 id="toc_5">unittest</h3>
-
-<p><code>unittest</code> which is based on the popular test framework <code>JUnit</code>, is more flexible and powerful. It allows to write very large and thorough test sets in a more structured manner.</p>
-
-<p><strong>注意： 测试方法应该以test为前缀命名</strong></p>
-
-<p>E.g.</p>
-
-<pre><code class="language-python">import unittest
-import doc_test_example as my_math
-
-class ProductTestCase(unittest.TestCase):
-
-    def testIntegers(self):
-        for x in xrange(-10,10):
-            p = my_math.square(x)
-            self.failUnless(p == x*x, &#39;Integer multiplication failed&#39;)
-
-    def testFloats(self):
-        for x in xrange(-10,10):
-            x = x/10.0
-            p = my_math.square(x)
-            self.failUnless(p == x*x, &#39;Float multiplication failed&#39;)
-
-
-if __name__ == &quot;__main__&quot;:
-    unittest.main()
-</code></pre>
-
-<p>Another example to test <code>dijkstra&#39;s algorithm</code> see <a href="http://larryim.cc/dijkstra_algorithm.html">here</a></p>
-
-<p>Methods such as <code>failUnless</code> check a condition to determine whether the given test succeeds or fails. </p>
-
-<p>The <code>unittest</code> module distinguishes between <code>errors</code>, where an exception is raised, and <code>failures</code>, which result from calls to <code>failUnless</code> and the like. </p>
-
-<h2 id="toc_6">Source Code Checking</h2>
-
-<p><a href="https://www.pylint.org">Pylint</a> and PyChecker are good tools for checking Python source code, looking for mistakes.</p>
-
-<p><code>Pylint</code> is a tool that checks for errors in Python code, tries to enforce a coding standard and looks for code smells. It can also look for certain type errors, it can recommend suggestions about how particular blocks can be refactored and can offer you details about the code’s complexity.</p>
-
-<p><code>Pylint</code> can be integrated with <code>Pycharm</code>, see <a href="https://pylint.readthedocs.io/en/latest/user_guide/ide-integration.html#pylint-in-pycharm">detail</a>.</p>
-
-<h3 id="toc_7">Resources</h3>
-
-<ul>
-<li><a href="https://www.ibm.com/developerworks/cn/linux/l-cn-pylint/index.html">如何使用 Pylint 来规范 Python 代码风格</a></li>
-<li><a href="https://www.python.org/dev/peps/pep-0008/">Style Guide for Python Code</a></li>
-</ul>
-
-<h2 id="toc_8">Profile</h2>
-
-<p><strong>When in doubt, use brute force</strong></p>
-
-<p>The standard library includes nice profiler modules called <code>profile</code> and <code>cProfile</code>.  </p>
-
-<p>A <code>profile</code> is a set of statistics that describes how often and for how long various parts of the program executed. </p>
-
-<pre><code class="language-python">&gt;&gt;&gt; import profile
-&gt;&gt;&gt; from my_math import square
-&gt;&gt;&gt; profile.run(&#39;square(1, 2)&#39;)
-</code></pre>
-
-<p>Another way to use <code>profile</code> in command-line:</p>
-
-<pre><code class="language-bash">$ python -m profile prof1py
-</code></pre>
-
-<p>The standard library also contains a module called <code>timeit</code>, which is a simple way of timing small snippets of Python code.</p>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Anaconda]]></title>
-    <link href="http://larryim.cc/anaconda.html"/>
-    <updated>2017-07-13T13:35:47+08:00</updated>
-    <id>http://larryim.cc/anaconda.html</id>
-    <content type="html"><![CDATA[
-<p><a href="https://www.continuum.io/why-anaconda">Anaconda </a>(/ˌænə&#39;kɑndə/)是一个用于科学计算的python发行版，支持各种系统，提供了包管理和环境管理的功能。Anaconda 利用<code>conda</code>来进行package和environment的管理。</p>
-
-<h2 id="toc_0">Conda的包管理</h2>
-
-<p><code>Conda</code>既是一个工具，也是一个可执行命令，其核心功能是包管理和环境管理。包管理与<code>pip</code>使用类似。</p>
-
-<pre><code class="language-python"># 安装package
-conda install package
-
-# 查看已经安装的packages
-conda list
-
-# 查找package信息
-conda search package
-
-# 更新package
-conda update -n python27 package
-
-# 删除package
-conda remove -n python27 package
-</code></pre>
-
-<h2 id="toc_1">Conda的环境管理</h2>
-
-<pre><code class="language-bash"># 创建一个名为python27的环境，指定Python版本是2.7
-conda create --name python27 python=2.7
-
-# 安装好后，使用activate激活某个环境
-source activate python27 # 激活后，会发现terminal输入的地方多了python27的字样，实际上，此时系统做的事情就是把默认环境从PATH中去除，再把2.7对应的命令加入PATH
-
-# 如果想返回python 2.7环境，运行
-source deactivate python27 # for Linux &amp; Mac
-
-# 删除一个已有的环境
-conda remove --name python27 --all
-</code></pre>
-
-<h2 id="toc_2">使用Pycharm</h2>
-
-<p>在<code>Pycharm</code>配置里选用<code>Anaconda</code>的<code>python</code>编译器所在位置即可。</p>
-
-<h2 id="toc_3">Resources</h2>
-
-<p><a href="https://conda.io/docs/_downloads/conda-cheatsheet.pdf">Conda Cheat Sheet</a></p>
 
 ]]></content>
   </entry>

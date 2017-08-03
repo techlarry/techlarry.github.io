@@ -127,6 +127,328 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="hashing_5.html">
+                
+                  <h1>Hashing (5): Hashable</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>To make items hashable, you should implement <code>__hash__</code>. You should also implement <code>__eq__</code> in a compatible way -- items that are equivalent should hash the same.</p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/8/3</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html'>Python数据结构与算法</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15017471539381.html">
+                
+                  <h1>Disjoint-Set Data Structure</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<ul>
+<li>
+<a href="#toc_0">Linked-List Implementation</a>
+</li>
+<li>
+<a href="#toc_1">Forest-of-Trees Implementation</a>
+<ul>
+<li>
+<a href="#toc_2">Union by rank</a>
+</li>
+<li>
+<a href="#toc_3">Path compression</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_4">Reference</a>
+</li>
+</ul>
+
+
+<p>In order to keep track of the connected components of a minimum spanning tree when implementing <code>Kruskal&#39;s algorithm</code>, a disjoint-set data structure should be used.</p>
+
+<p><code>Disjoint-set</code> data structure, also called <code>union-find</code> data structure, is a data structure that keeps track of a set of elements partitioned into a number of disjoint subsets.</p>
+
+<p>A <code>disjoint-set</code> data structure supports following operations:</p>
+
+<ul>
+<li><code>MAKE-SET(x)</code> creates a new set whose only member is \(x\)</li>
+<li><code>UNION(x,y)</code> unites the dynamic sets that contains \(x\) and \(y\), into a new set that is the union of these two sets.</li>
+<li><code>FIND-SET(x)</code> returns the representative of the set containing \(x\).</li>
+</ul>
+
+<h2 id="toc_0">Linked-List Implementation</h2>
+
+<p>Each set is represented by its own <strong>linked list</strong>. The object for each set has attributes <em>head</em>, pointing to the first object in the list, and <em>tail</em>, pointing to the last object. Each object in the linked list contains a set member, a pointer to the next object in the list, and a pointer back to the set object.</p>
+
+<p><strong>Weighted-Union Heuristic</strong>: And each linked list also includes the length of the list and we always append the shorter list onto the longer.</p>
+
+<p>Using the linked-list representation of disjoint sets and the weighted-union heuristic, a sequence of \(m\) MAKE-SET, UNION, and FIND-SET, \(n\) of which are MAKE-SET operations, takes \(O(m+n\lg n)\) time.</p>
+
+<pre><code class="language-python">import unittest
+
+
+class Node:
+    &quot;&quot;&quot;
+    class Node for double liked list
+    &quot;&quot;&quot;
+    def __init__(self, elem):
+        self.prev = None
+        self.elem = elem
+        self.next = None
+
+    def __hash__(self):
+        return hash(self.elem)
+
+    def __eq__(self, x, y):
+        return x.elem == y.elem
+
+
+class LinkedList:
+
+    def __init__(self):
+        self.head = None
+        self.tail = None
+        self.length = 0
+
+    def add(self, node):
+        &quot;&quot;&quot;
+        add element to disjoint set
+        &quot;&quot;&quot;
+        if self.head:
+            node.prev = self
+            self.tail.next = node
+            self.tail = node
+        else:
+            self.head = node
+            self.tail = node
+            node.prev = self
+        self.length += 1
+
+    def __len__(self):
+        return self.length
+
+    def set_length(self, l):
+        self.length = l
+
+    def __iter__(self):
+        next_node = self.head
+        while next_node:
+            yield next_node
+            next_node = next_node.next
+
+
+            
+
+class DisjointSet:
+
+    def __init__(self):
+        self.sets = []
+
+    def make_set(self, node):
+        &quot;&quot;&quot; 
+        creates a new set whose only member (and thus representative) is x.
+        &quot;&quot;&quot;
+        alist = LinkedList()
+        alist.add(node)
+        self.sets.append(alist)
+        return alist
+
+    def union(self, nodex, nodey):
+        &quot;&quot;&quot;
+        unites the dynamic sets that contain x and y, into a new set that is the union of these two sets.
+        &quot;&quot;&quot;
+        listx = self.find_set(nodex)
+        listy = self.find_set(nodey)
+        
+        # append the shorter list onto the longer.
+        if len(listx) &gt; len(listy):
+            listx.tail.next = listy.head
+            for y in listy:
+                y.prev = listx
+            listx.tail = listy.tail
+            listx.set_length = len(listx) + len(listy)
+            self.sets.remove(listy)
+        else:
+            listy.tail.next = listx.head
+            for x in listx:
+                x.prev = listy
+            listy.tail = listx.tail
+            listy.setlength = len(listx) + len(listy)
+            self.sets.remove(listx)
+
+
+
+    def find_set(self, node):
+        &quot;&quot;&quot;
+        returns the representative of the set containing x
+        &quot;&quot;&quot;
+        return node.prev
+
+    def connected_components(self):
+        for link_list in self.sets:
+            print(&#39;( &#39;, end=&#39;&#39;)
+            for node in link_list:
+                print(node.elem, end=&#39; &#39;)
+            print(&#39;) &#39;, end=&#39;&#39;)
+
+    def __len__(self):
+        return len(self.sets)
+
+
+class TestNode(unittest.TestCase):
+
+    def test_hash(self):
+        nodes1 = Node(5)
+        nodes2 = Node(6)
+        dic_test = {}
+        dic_test[nodes1] = &#39;saf&#39;
+        dic_test[nodes2] = &#39;4sf&#39;
+
+
+class TestLinkedList(unittest.TestCase):
+
+    def tests_add(self):
+        alist = LinkedList()
+        for elem in range(10):
+            alist.add(Node(elem))
+
+    def test_iter(self):
+        alist = LinkedList()
+        for elem in range(10):
+            alist.add(Node(elem))
+        to_test = []
+        for node in alist:
+            to_test.append(node.elem)
+        self.assertEqual(to_test, [ i for i in range(10)])
+
+    def test_length(self):
+        alist = LinkedList()
+        for elem in range(10):
+            alist.add(Node(elem))
+        self.assertEqual(len(alist), 10)
+        alist.set_length(100)
+        self.assertEqual(len(alist), 100)
+
+
+class TestDisjointSet(unittest.TestCase):
+
+    def test_make_set(self):
+        to_test = DisjointSet()
+        for elem in range(10):
+            newnode = Node(elem)
+            to_test.make_set(newnode)
+        self.assertEqual(len(to_test), 10)
+
+    def test_find_set(self):
+        to_test = DisjointSet()
+        elems = [i for i in range(10)]
+        elems_to = {}
+        for elem in elems:
+            newnode = Node(elem)
+            elems_to[elem] = newnode
+            to_test.make_set(newnode)
+
+        to_test2 = LinkedList()
+        to_test2.add(elems_to[5])
+
+        self.assertEqual(to_test.find_set(elems_to[5]), to_test2)
+
+    def test_union(self):
+        to_test = DisjointSet()
+        elems = [i for i in range(10)]
+        elems_to = {}
+        for elem in elems:
+            newnode = Node(elem)
+            elems_to[elem] = newnode
+            to_test.make_set(newnode)
+
+        x = elems_to[1]
+        y = elems_to[2]
+        to_test.union(x, y)
+        self.assertEqual(to_test.find_set(x), to_test.find_set(y))
+
+    def test_connected_components(self):
+        to_test = DisjointSet()
+        elems = [i for i in range(10)]
+        elems_to = {}
+        for elem in elems:
+            newnode = Node(elem)
+            elems_to[elem] = newnode
+            to_test.make_set(newnode)
+
+        to_test.union(elems_to[2], elems_to[4])
+        to_test.union(elems_to[5], elems_to[1])
+        to_test.union(elems_to[8], elems_to[0])
+        to_test.union(elems_to[4], elems_to[0])
+
+        to_test.connected_components()
+
+
+if __name__ == &quot;__main__&quot;:
+    unittest.main()
+</code></pre>
+
+<h2 id="toc_1">Forest-of-Trees Implementation</h2>
+
+<h3 id="toc_2">Union by rank</h3>
+
+<h3 id="toc_3">Path compression</h3>
+
+<h2 id="toc_4">Reference</h2>
+
+<ol>
+<li>Cormen, Leiserson, Rivest, and Stein. 2009. Introduction to Algorithms (3rd edition)</li>
+<li><a href="https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-046j-design-and-analysis-of-algorithms-spring-2012/lecture-notes/MIT6_046JS12_lec16.pdf">Disjoint-set Data Structure MIT</a></li>
+</ol>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/8/3</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html'>Python数据结构与算法</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="greedy_algorithm_1.html">
                 
                   <h1>Greedy algorithm (1): Introduction</h1>
@@ -3204,19 +3526,24 @@ def binary_search2(alist, item):
 <li>
 <a href="#toc_3">示意</a>
 </li>
-<li>
-<a href="#toc_4">代码</a>
+</ul>
 </li>
 <li>
-<a href="#toc_5">单项链表与顺序表的对比</a>
+<a href="#toc_4">![Screen Shot 2017-06-09 at 12.52.23 P](media/14969803634863/Screen%20Shot%202017-06-09%20at%2012.52.</a>
+<ul>
+<li>
+<a href="#toc_5">代码</a>
+</li>
+<li>
+<a href="#toc_6">单项链表与顺序表的对比</a>
 </li>
 </ul>
 </li>
 <li>
-<a href="#toc_6">双向链表</a>
+<a href="#toc_7">双向链表</a>
 </li>
 <li>
-<a href="#toc_7">单向循环列表</a>
+<a href="#toc_8">单向循环列表</a>
 </li>
 </ul>
 
@@ -3246,9 +3573,11 @@ def binary_search2(alist, item):
 
 <h3 id="toc_3">示意</h3>
 
-<p><img src="media/14969803634863/Screen%20Shot%202017-06-09%20at%2012.52.23%20PM.png" alt="Screen Shot 2017-06-09 at 12.52.23 P"/></p>
+<h2 id="toc_4">![Screen Shot 2017-06-09 at 12.52.23 P](media/14969803634863/Screen%20Shot%202017-06-09%20at%2012.52.</h2>
 
-<h3 id="toc_4">代码</h3>
+<p>23%20PM.png)</p>
+
+<h3 id="toc_5">代码</h3>
 
 <pre><code class="language-python">class Node(object):
     &quot;&quot;&quot;节点&quot;&quot;&quot;
@@ -3349,7 +3678,7 @@ class SingleLinkList(object):
         return False
 </code></pre>
 
-<h3 id="toc_5">单项链表与顺序表的对比</h3>
+<h3 id="toc_6">单项链表与顺序表的对比</h3>
 
 <ul>
 <li>顺序表随机读取，空间开销小的优点，但存储空间必须连续</li>
@@ -3390,7 +3719,7 @@ class SingleLinkList(object):
 </tbody>
 </table>
 
-<h2 id="toc_6">双向链表</h2>
+<h2 id="toc_7">双向链表</h2>
 
 <p>节点：前驱区、数据区、后继区</p>
 
@@ -3534,7 +3863,7 @@ class DobuleLinkList(object):
         return False
 </code></pre>
 
-<h2 id="toc_7">单向循环列表</h2>
+<h2 id="toc_8">单向循环列表</h2>
 
 <p><img src="media/14969803634863/Screen%20Shot%202017-06-10%20at%2012.41.20%20PM.png" alt="Screen Shot 2017-06-10 at 12.41.20 P"/></p>
 
@@ -4100,6 +4429,24 @@ print(&#39;pop end&#39;, pop_end.timeit(1000))
 	      
 		      
 			      <li class="post">
+			        <a href="hashing_5.html">Hashing (5): Hashable</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15017473061789.html">Kruskal's algorithm</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15017471539381.html">Disjoint-Set Data Structure</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15017330279879.html">Character encoding</a>
 			      </li>
 		     
@@ -4107,24 +4454,6 @@ print(&#39;pop end&#39;, pop_end.timeit(1000))
 		      
 			      <li class="post">
 			        <a href="15016407791054.html">MySQL</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15015745849061.html">Greedy algorithm (2): A Scheduling Application</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15015713574907.html">Minimum Spanning Tree</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="greedy_algorithm_1.html">Greedy algorithm (1): Introduction</a>
 			      </li>
 		     
 		  
