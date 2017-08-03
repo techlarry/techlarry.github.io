@@ -100,6 +100,8 @@
         
             <li><a href="English.html">English</a></li>
         
+            <li><a href="%20%E7%90%86%E8%A7%A3%E8%AE%A1%E7%AE%97%E6%9C%BA.html"> 理解计算机</a></li>
+        
             <li><a href="Linux%20%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B.html">Linux 系统编程</a></li>
         
             <li><a href="%E6%95%B0%E6%8D%AE%E5%BA%93.html">数据库</a></li>
@@ -180,6 +182,77 @@
 <pre><code class="language-SQL">USE database_name
 </code></pre>
 
+<h3 id="toc_4">Python</h3>
+
+<p>To use Python with MySQL, you can use the MySQL Connector/Python (<a href="https://dev.mysql.com/downloads/connector/python/">Download Here</a>). For those with anaconda, just install with <code>conda</code>:</p>
+
+<pre><code>conda install -c anaconda mysql-connector-python 
+</code></pre>
+
+<p>MySQL Connector/Python includes support for:</p>
+
+<ul>
+<li>Almost all features provided by MySQL Server.</li>
+<li>Converting parameter values back and forth between Python and MySQL data types.</li>
+<li>All MySQL extensions to standard SQL syntax.</li>
+</ul>
+
+<pre><code class="language-python">import re
+import mysql.connector
+
+# establishes the connection to MySQL.
+cnx = mysql.connector.connect(user=&#39;root&#39;, password=&#39;8032804254qq&#39;,
+                              host=&#39;127.0.0.1&#39;, database=&#39;rookery&#39;, port=&#39;3306&#39;)
+
+# creates a cursor object (cur) to use for executing queries on the database.
+
+
+cur = cnx.cursor(buffered=True)
+
+# query mysql database for list of user accounts
+sql_stmnt =  &quot;SELECT DISTINCT User, Host FROM mysql.db &quot;
+sql_stmnt += &quot;WHERE Db IN(&#39;rookery&#39;,&#39;birdwatchers&#39;) &quot;
+sql_stmnt += &quot;ORDER BY User, Host&quot;
+cur.execute(sql_stmnt)
+
+# loop through list of user accounts
+for user_accounts in cur.fetchall() :
+    user_name = user_accounts[0]
+    host_address = user_accounts[1]
+    user_account = &quot;&#39;&quot; + user_name + &quot;&#39;@&#39;&quot; + host_address + &quot;&#39;&quot;
+
+# display user account heading
+print (&#39;User Account:&#39;,(user_name, host_address))
+print (&quot;------------------------------------------&quot;)
+
+# query mysql for grants for user account
+sql_stmnt = &quot;show grants for&quot; + str(user_account)
+cur.execute(sql_stmnt)
+
+# loop through grant entries for user account
+for grants in cur.fetchall():
+     # skip &#39;usage&#39; entry
+    if re.search(&#39;USAGE&#39;, grants[0]) :
+        continue
+    # extract name of database and table
+    dbtb = re.search(&#39;ON\s(.*)\.+?(.+?)\sTO&#39;, grants[0])
+    db = dbtb.group(1)
+    tb = dbtb.group(2)
+
+    # change wildcard for tables to &#39;all&#39;
+    if re.search(&#39;\*&#39;, tb) : tb = &quot;all&quot;
+
+    # display database and table name for privileges
+    print &quot;database: %s; table: %s&quot; % (db,tb)
+
+    # extract and display privileges for user account # for database and table
+    privs = re.search(&#39;GRANT\s(.+?)\sON&#39;, grants[0])
+    print(&#39;privileges: &#39;, privs.group(1))
+
+cur.close()
+cnx.close()
+</code></pre>
+
 
     
 
@@ -188,6 +261,9 @@
       <div class="row">
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
+      
+          <a href="15017330279879.html" 
+          title="Previous Post: Character encoding">&laquo; Character encoding</a>
       
         </p>
         </div>
@@ -281,6 +357,8 @@ s.setAttribute('data-timestamp', +new Date());
         
             <a href="English.html"><strong>English</strong></a>
         
+            <a href="%20%E7%90%86%E8%A7%A3%E8%AE%A1%E7%AE%97%E6%9C%BA.html"><strong> 理解计算机</strong></a>
+        
             <a href="Linux%20%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B.html"><strong>Linux 系统编程</strong></a>
         
             <a href="%E6%95%B0%E6%8D%AE%E5%BA%93.html"><strong>数据库</strong></a>
@@ -298,6 +376,12 @@ s.setAttribute('data-timestamp', +new Date());
                 <div class="side-content">
                 <ul class="posts-list">
 	      
+		      
+			      <li class="post">
+			        <a href="15017330279879.html">Character encoding</a>
+			      </li>
+		     
+		  
 		      
 			      <li class="post">
 			        <a href="15016407791054.html">MySQL</a>
@@ -319,12 +403,6 @@ s.setAttribute('data-timestamp', +new Date());
 		      
 			      <li class="post">
 			        <a href="greedy_algorithm_1.html">Greedy algorithm (1): Introduction</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="generator.html">Generator</a>
 			      </li>
 		     
 		  
