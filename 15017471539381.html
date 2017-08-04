@@ -303,6 +303,59 @@ class DisjointSet:
 
 <p><img src="media/15017471539381/15017663772888.png" alt="path compression"/></p>
 
+<pre><code class="language-python">class Node:
+    &quot;&quot;&quot;
+    Each node contains one element
+    &quot;&quot;&quot;
+    def __init__(self, elem):
+        self.parent = []
+        self.elem = elem
+        self.rank = 0
+
+
+class DisjointSet:
+    &quot;&quot;&quot;
+    Disjoint set data strcuture
+    &quot;&quot;&quot;
+
+    def __init__(self):
+        self.sets = []
+
+    def make_set(self, node):
+        &quot;&quot;&quot;
+        creates a new set whose only member (and thus representative) is x.
+        &quot;&quot;&quot;
+        node.parent = node
+        self.sets.append(node)
+
+    def union(self, nodex, nodey):
+        &quot;&quot;&quot;
+        unites the dynamic sets that contain x and y, into a new set that is the union of these two sets.
+        &quot;&quot;&quot;
+        tree_x = self.find_set(nodex)
+        tree_y = self.find_set(nodey)
+        if tree_x.rank &gt; tree_y.rank:
+            tree_y.parent = tree_x
+            self.sets.remove(tree_y)
+            tree_x.rank += 1
+        else:
+            tree_x.parent = tree_y
+            self.sets.remove(tree_x)
+            tree_y.rank += 1
+
+
+    def find_set(self, node):
+        &quot;&quot;&quot;
+        returns the representative of the set containing x
+        &quot;&quot;&quot;
+        if node != node.parent:
+            node.parent = self.find_set(node.parent)
+        return node.parent
+
+    def __len__(self):
+        return len(self.sets)
+</code></pre>
+
 <h2 id="toc_2">Reference</h2>
 
 <ol>
@@ -319,8 +372,8 @@ class DisjointSet:
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="15017473061789.html" 
-          title="Previous Post: Kruskal's algorithm">&laquo; Kruskal's algorithm</a>
+          <a href="hashing_5.html" 
+          title="Previous Post: Hashing (5): Hashable">&laquo; Hashing (5): Hashable</a>
       
         </p>
         </div>
@@ -435,13 +488,13 @@ s.setAttribute('data-timestamp', +new Date());
 	      
 		      
 			      <li class="post">
-			        <a href="hashing_5.html">Hashing (5): Hashable</a>
+			        <a href="15015713574907.html">Minimum Spanning Tree: Prim's and Kruskal's Algorithm</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="15017473061789.html">Kruskal's algorithm</a>
+			        <a href="hashing_5.html">Hashing (5): Hashable</a>
 			      </li>
 		     
 		  

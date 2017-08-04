@@ -4,7 +4,7 @@
   <title><![CDATA[techlarry]]></title>
   <link href="http://larryim.cc/atom.xml" rel="self"/>
   <link href="http://larryim.cc/"/>
-  <updated>2017-08-03T20:21:41+08:00</updated>
+  <updated>2017-08-03T21:22:47+08:00</updated>
   <id>http://larryim.cc/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -13,22 +13,112 @@
   <generator uri="http://www.mweb.im/">MWeb</generator>
   
   <entry>
+    <title type="html"><![CDATA[Minimum Spanning Tree: Prim's and Kruskal's Algorithm]]></title>
+    <link href="http://larryim.cc/15015713574907.html"/>
+    <updated>2017-08-01T15:09:17+08:00</updated>
+    <id>http://larryim.cc/15015713574907.html</id>
+    <content type="html"><![CDATA[
+<p>Let \(G=(V, E)\) be a connected, undirected graph with a real-valued weight function \(w\) defined on \(E\). If an acyclic subset \(T\in E\) that connects all of the vertices and whose total weight \(w(T)=\sum_{(u,v)\in T}w(u,v)\) is minimized, \(T\) forms a <code>Minimum Spanning Tree</code>.</p>
+
+<h2 id="toc_0">Concepts</h2>
+
+<ul>
+<li><code>safe edge</code>: An edge that may be added to \(A\) without violating the invariant that \(A\) is a subset of some <code>minimum spanning tree</code>.</li>
+<li><code>cut</code>: A <code>cut</code> \((S, V-S)\) of an undirected graph \(G=(V,E)\) is a partition of \(V\).</li>
+<li><code>cross</code>: We say that an edge \((u,v)\in E\) <code>crosses</code> the cut \((S,V-S)\) if one of its endpoints is in \(S\) and the other is in \(V-S\).</li>
+<li><code>respect</code>: If no edge in \(A\) (a subset of some <code>minimum spanning tree</code>) <code>crosses</code> the cut, the cut <code>respects</code> a set \(A\) of edges.</li>
+<li><code>light edge</code>: An edge is a <code>light edge</code> crossing a cut if its weight is the minimum of any edge crossing the cut. </li>
+</ul>
+
+<h2 id="toc_1">Prim&#39;s algorithm</h2>
+
+<p>Total running time = \(O(V \log(V) + E \log(V)) = O(E \log(V))\)</p>
+
+<h3 id="toc_2">Implementation</h3>
+
+<pre><code class="language-python">from priorityqueue import PriorityQueue
+from graph import Graph
+import unittest
+import sys
+
+
+def prim(agraph, start):
+    &quot;&quot;&quot;
+    Prim&#39;s algorithm for minimum spanning tree
+    Using min-heap data structure
+
+    return the overall cost of a minimum spanning tre
+    &quot;&quot;&quot;
+    pq = PriorityQueue()
+    total_cost = 0
+    for v in agraph:
+        v.setDistance(sys.maxsize)
+        v.setPred(None)
+    start.setDistance(0)
+    pq.buildHeap([(v.getDistance(), v) for v in agraph])
+    while not pq.isEmpty():
+        cost, u = pq.delMin()
+        total_cost += cost
+        for adjacent in u.getConnections():
+          newcost = u.getWeight(adjacent)
+          if adjacent in pq and newcost &lt; adjacent.getDistance():
+              adjacent.setPred(u)
+              adjacent.setDistance(newcost)
+              pq.decreaseKey(adjacent, newcost)
+
+    return total_cost
+
+
+class TestPrim(unittest.TestCase):
+
+    def setUp(self):
+        pass
+
+    def test_big(self):
+        agraph = Graph()
+        count = 0
+        with open(&#39;edges.txt&#39;) as infile:
+            for line in infile:
+                if count == 0:
+                    pass
+                else:
+                    from_v, to_u, cost = [int(number) for number in line.split()]
+                    agraph.addEdge(from_v, to_u, cost)
+                    agraph.addEdge(to_u, from_v, cost)
+                count += 1
+
+        self.assertEqual(prim(agraph, agraph.getVertex(1)), -3612829)
+
+    def test_small(self):
+        agraph = Graph()
+        count = 0
+        with open(&#39;testcase1_prim.txt&#39;) as infile:
+            for line in infile:
+                if count == 0:
+                    pass
+                else:
+                    from_v, to_u, cost = [int(number) for number in line.split()]
+                    agraph.addEdge(from_v, to_u, cost)
+                    agraph.addEdge(to_u, from_v, cost)
+                count += 1
+
+        self.assertEqual(prim(agraph, agraph.getVertex(1)), 14)
+
+
+if __name__ == &quot;__main__&quot;:
+    unittest.main()
+</code></pre>
+
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[Hashing (5): Hashable]]></title>
     <link href="http://larryim.cc/hashing_5.html"/>
     <updated>2017-08-03T17:06:19+08:00</updated>
     <id>http://larryim.cc/hashing_5.html</id>
     <content type="html"><![CDATA[
 <p>To make items hashable, you should implement <code>__hash__</code>. You should also implement <code>__eq__</code> in a compatible way -- items that are equivalent should hash the same.</p>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Kruskal's algorithm]]></title>
-    <link href="http://larryim.cc/15017473061789.html"/>
-    <updated>2017-08-03T16:01:46+08:00</updated>
-    <id>http://larryim.cc/15017473061789.html</id>
-    <content type="html"><![CDATA[
 
 ]]></content>
   </entry>
@@ -194,6 +284,59 @@ class DisjointSet:
 <p><strong>Path Compression</strong>: When we call <code>find_set</code>, we traverse the path from a node up to its root. Instead of just returning root, we will link all the nodes in this path directly to root. </p>
 
 <p><img src="media/15017471539381/15017663772888.png" alt="path compression"/></p>
+
+<pre><code class="language-python">class Node:
+    &quot;&quot;&quot;
+    Each node contains one element
+    &quot;&quot;&quot;
+    def __init__(self, elem):
+        self.parent = []
+        self.elem = elem
+        self.rank = 0
+
+
+class DisjointSet:
+    &quot;&quot;&quot;
+    Disjoint set data strcuture
+    &quot;&quot;&quot;
+
+    def __init__(self):
+        self.sets = []
+
+    def make_set(self, node):
+        &quot;&quot;&quot;
+        creates a new set whose only member (and thus representative) is x.
+        &quot;&quot;&quot;
+        node.parent = node
+        self.sets.append(node)
+
+    def union(self, nodex, nodey):
+        &quot;&quot;&quot;
+        unites the dynamic sets that contain x and y, into a new set that is the union of these two sets.
+        &quot;&quot;&quot;
+        tree_x = self.find_set(nodex)
+        tree_y = self.find_set(nodey)
+        if tree_x.rank &gt; tree_y.rank:
+            tree_y.parent = tree_x
+            self.sets.remove(tree_y)
+            tree_x.rank += 1
+        else:
+            tree_x.parent = tree_y
+            self.sets.remove(tree_x)
+            tree_y.rank += 1
+
+
+    def find_set(self, node):
+        &quot;&quot;&quot;
+        returns the representative of the set containing x
+        &quot;&quot;&quot;
+        if node != node.parent:
+            node.parent = self.find_set(node.parent)
+        return node.parent
+
+    def __len__(self):
+        return len(self.sets)
+</code></pre>
 
 <h2 id="toc_2">Reference</h2>
 
@@ -511,106 +654,6 @@ if __name__ == &quot;__main__&quot;:
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Minimum Spanning Tree]]></title>
-    <link href="http://larryim.cc/15015713574907.html"/>
-    <updated>2017-08-01T15:09:17+08:00</updated>
-    <id>http://larryim.cc/15015713574907.html</id>
-    <content type="html"><![CDATA[
-<p>Let \(G=(V, E)\) be a connected, undirected graph with a real-valued weight function \(w\) defined on \(E\). If an acyclic subset \(T\in E\) that connects all of the vertices and whose total weight \(w(T)=\sum_{(u,v)\in T}w(u,v)\) is minimized, \(T\) forms a <code>Minimum Spanning Tree</code>.</p>
-
-<h2 id="toc_0">Concepts</h2>
-
-<ul>
-<li><code>safe edge</code>: An edge that may be added to \(A\) without violating the invariant that \(A\) is a subset of some <code>minimum spanning tree</code>.</li>
-<li><code>cut</code>: A <code>cut</code> \((S, V-S)\) of an undirected graph \(G=(V,E)\) is a partition of \(V\).</li>
-<li><code>cross</code>: We say that an edge \((u,v)\in E\) <code>crosses</code> the cut \((S,V-S)\) if one of its endpoints is in \(S\) and the other is in \(V-S\).</li>
-<li><code>respect</code>: If no edge in \(A\) (a subset of some <code>minimum spanning tree</code>) <code>crosses</code> the cut, the cut <code>respects</code> a set \(A\) of edges.</li>
-<li><code>light edge</code>: An edge is a <code>light edge</code> crossing a cut if its weight is the minimum of any edge crossing the cut. </li>
-</ul>
-
-<h2 id="toc_1">Prim&#39;s algorithm</h2>
-
-<p>Total running time = \(O(V \log(V) + E \log(V)) = O(E \log(V))\)</p>
-
-<h3 id="toc_2">Implementation</h3>
-
-<pre><code class="language-python">from priorityqueue import PriorityQueue
-from graph import Graph
-import unittest
-import sys
-
-
-def prim(agraph, start):
-    &quot;&quot;&quot;
-    Prim&#39;s algorithm for minimum spanning tree
-    Using min-heap data structure
-
-    return the overall cost of a minimum spanning tre
-    &quot;&quot;&quot;
-    pq = PriorityQueue()
-    total_cost = 0
-    for v in agraph:
-        v.setDistance(sys.maxsize)
-        v.setPred(None)
-    start.setDistance(0)
-    pq.buildHeap([(v.getDistance(), v) for v in agraph])
-    while not pq.isEmpty():
-        cost, u = pq.delMin()
-        total_cost += cost
-        for adjacent in u.getConnections():
-          newcost = u.getWeight(adjacent)
-          if adjacent in pq and newcost &lt; adjacent.getDistance():
-              adjacent.setPred(u)
-              adjacent.setDistance(newcost)
-              pq.decreaseKey(adjacent, newcost)
-
-    return total_cost
-
-
-class TestPrim(unittest.TestCase):
-
-    def setUp(self):
-        pass
-
-    def test_big(self):
-        agraph = Graph()
-        count = 0
-        with open(&#39;edges.txt&#39;) as infile:
-            for line in infile:
-                if count == 0:
-                    pass
-                else:
-                    from_v, to_u, cost = [int(number) for number in line.split()]
-                    agraph.addEdge(from_v, to_u, cost)
-                    agraph.addEdge(to_u, from_v, cost)
-                count += 1
-
-        self.assertEqual(prim(agraph, agraph.getVertex(1)), -3612829)
-
-    def test_small(self):
-        agraph = Graph()
-        count = 0
-        with open(&#39;testcase1_prim.txt&#39;) as infile:
-            for line in infile:
-                if count == 0:
-                    pass
-                else:
-                    from_v, to_u, cost = [int(number) for number in line.split()]
-                    agraph.addEdge(from_v, to_u, cost)
-                    agraph.addEdge(to_u, from_v, cost)
-                count += 1
-
-        self.assertEqual(prim(agraph, agraph.getVertex(1)), 14)
-
-
-if __name__ == &quot;__main__&quot;:
-    unittest.main()
-</code></pre>
-
-]]></content>
-  </entry>
-  
-  <entry>
     <title type="html"><![CDATA[Greedy algorithm (1): Introduction]]></title>
     <link href="http://larryim.cc/greedy_algorithm_1.html"/>
     <updated>2017-07-31T15:34:06+08:00</updated>
@@ -836,10 +879,10 @@ if __name__ == &quot;__main__&quot;:
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Hashing (4): Universal Hashing]]></title>
-    <link href="http://larryim.cc/hashing_4.html"/>
+    <title type="html"><![CDATA[Hash Table (4): Universal Hashing]]></title>
+    <link href="http://larryim.cc/Hash_Table_4_Universal_Hashing.html"/>
     <updated>2017-07-23T11:07:33+08:00</updated>
-    <id>http://larryim.cc/hashing_4.html</id>
+    <id>http://larryim.cc/Hash_Table_4_Universal_Hashing.html</id>
     <content type="html"><![CDATA[
 <p>Let \(H\) be a finite collection of hash functions that map a given universe \(U\) of keys into the range \(\{0,1,...,m-1\}\). Such a collection is said to be <code>universal</code> if for each pair of distinct keys \(k,l \in U\), the number of <code>hash function</code> \(h \in H\) for which \(h(k) = h(l)\) is at most \(\frac{|H|}{m}\), i.e.</p>
 
@@ -1009,10 +1052,10 @@ if __name__ == &quot;__main__&quot;:
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Hashing (3): A variant of 2-Sum Algorithm]]></title>
-    <link href="http://larryim.cc/hashing_3.html"/>
+    <title type="html"><![CDATA[Hash Table (3): A variant of 2-Sum Algorithm]]></title>
+    <link href="http://larryim.cc/Hash_Table_3_A_variant_of_2_Sum_Algorithm.html"/>
     <updated>2017-07-23T10:52:25+08:00</updated>
-    <id>http://larryim.cc/hashing_3.html</id>
+    <id>http://larryim.cc/Hash_Table_3_A_variant_of_2_Sum_Algorithm.html</id>
     <content type="html"><![CDATA[
 <p>The goal of the arcticle is to implement a variant of the <code>2-SUM algorithm</code>.</p>
 
@@ -2514,6 +2557,85 @@ if __name__ == &quot;__main__&quot;:
     import doctest
     doctest.testmod(verbose=True)
 </code></pre>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Dijkstra's algorithm]]></title>
+    <link href="http://larryim.cc/dijkstra_algorithm.html"/>
+    <updated>2017-07-14T14:35:59+08:00</updated>
+    <id>http://larryim.cc/dijkstra_algorithm.html</id>
+    <content type="html"><![CDATA[
+<p><code>Dijkstra&#39;s algorithm</code> is an iterative algorithm that provides us with the shortest path from one particular starting node to all other nodes in the graph.</p>
+
+<p>The algorithm iterates once for every vertex in the graph. The order that iterates over the vertices is controlled by a <code>priority queue</code>. When a vertex is first created <code>dist</code> is set to a very large number(<code>sys.maxsize</code>)</p>
+
+<pre><code>Dijkstra(G, w, s)
+INITIALIZE-SINGLE-SOURCE(G, s)
+Q=G.V
+while Q:
+    u = EXTRACT-MIN(Q)
+    for each vertex in adjacent
+        RELAX(u,v,w)
+</code></pre>
+
+<pre><code class="language-python">from priorityqueue import PriorityQueue
+from graph import Graph, Vertex
+import sys
+import unittest
+
+def dijkstra(aGraph, start):
+    &quot;&quot;&quot;
+    Find Single-Source shortest-paths on a weighted, directed graph
+    Return shortest path
+    aGraph: class Graph
+    start: class Vertex
+    &quot;&quot;&quot;
+    pq = PriorityQueue()
+    start.setDistance(0)
+    pq.buildHeap([(v.getDistance(), v) for v in aGraph])
+    while not pq.isEmpty():
+        u = pq.delMin()
+        for adjacent in u.getConnections():
+            newDist = u.dist + u.getWeight(adjacent)
+            if adjacent.dist &gt; newDist:
+                adjacent.setDistance(newDist)
+                adjacent.setPred(u)
+                pq.decreaseKey(adjacent, newDist)
+
+
+class TestDijkstra(unittest.TestCase):
+
+
+    def testShortest(self):
+
+        aGraph = Graph()
+        with open(&#39;dijkstraData.txt&#39;) as infile:
+            for line in infile:
+                numbers = [number for number in line.split()]
+                from_v = int(numbers[0])
+
+                for to_v_cost in numbers[1:]:
+                    to_v, cost = to_v_cost.split(&#39;,&#39;)
+                    aGraph.addEdge(from_v, int(to_v), int(cost))
+
+        dijkstra(aGraph, aGraph.getVertex(1))
+
+        dists = []
+        for vertex_id in [7, 37, 59, 82, 99, 115, 133, 165, 188, 197]:
+            dist = aGraph.getVertex(vertex_id).getDistance()
+            if dist == sys.maxsize:
+                dist = 100000
+            dists.append(dist)
+        assert dists == [2599, 2610, 2947, 2052, 2367, 2399, 2029, 2442, 2505, 3068]
+
+
+if __name__ == &#39;__main__&#39;:
+    unittest.main()
+</code></pre>
+
+<p>It is important to note that <code>Dijkstra&#39;s algorithm</code> works only when the weights are all positive. If you introduced a negative weight on one of the edges to the graph that the algorithm would never exit.</p>
 
 ]]></content>
   </entry>
