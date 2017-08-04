@@ -236,6 +236,8 @@ if __name__ == &quot;__main__&quot;:
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Tree.html'>Tree</a></span>
+          				  
+          					    <span class="posted-in"><a href='Graph.html'>Graph</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -529,6 +531,169 @@ class DisjointSet:
               </div><!-- article -->
         
 			<div class="article">
+                <a class="clearlink" href="greedy_algorithm_a_scheduling_problem.html">
+                
+                  <h1>Greedy algorithm (2): A Scheduling Application</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p><strong>Problem Statement</strong>: You want to schedule jobs (processes) on a processor. Each job has properties:</p>
+
+<ul>
+<li>weight \(w_j\) (“priority”) </li>
+<li>length \(l_j\)</li>
+</ul>
+
+<p>The <code>completion time</code> \(C_j\) of job \(j\) is Sum of job lengths up to and including job \(j\).</p>
+
+<p>The goal is to <strong>Minimize weighted sum of completion times</strong>, i.e.</p>
+
+<p>\[\sum_{j=1}^n w_j*C_j\]</p>
+
+<h2 id="toc_0">Algorithm</h2>
+
+<p>Order jobs by decreasing value of \(\frac{w_j}{l_j}\), i.e. jobs have larger weight and shorter length execute earlier.</p>
+
+<h3 id="toc_1">Greedy Exchange</h3>
+
+<p><code>Greedy Exchange</code> is one of the techniques used in proving the correctness of greedy algorithms. The idea of a greedy exchange proof is to morph a solution produced by an optimal algorithm into the solution produced by your greedy algorithm. This shows that any optimal solution is no better than the greedy solution, which proves that greedy does in fact return an optimal solution.</p>
+
+<h3 id="toc_2">Proof</h3>
+
+<h4 id="toc_3">Step1: label algorithm&#39;s solution and an optimal solution</h4>
+
+<p>Let \(\sigma\) be greedy schedule, and \(\sigma^*\) be optimal schedule. </p>
+
+<h4 id="toc_4">Step2: Compare greedy with optimal</h4>
+
+<p>Greedy schedule \(\sigma\) is just \(1,2,3,...,n\). And if optimal schedule \(\sigma^* \ne \sigma \), then \(\exists\) consecutive jobs \(i,j\), which \(i&gt;j\).</p>
+
+<h4 id="toc_5">Step3: Exchange</h4>
+
+<p>Suppose we exchange order of \(i,j\) in \(\sigma\):</p>
+
+<ul>
+<li>the cost of exchange \(w_jl_j\)</li>
+<li>the benefit of exchange is \(w_jl_i\)</li>
+</ul>
+
+<p>Note: <br/>
+\[i &gt;j \rightarrow w_i/l_i \le wj/lj \rightarrow w_il_j \le w_jl_i \]<br/>
+Exchanging \(i,j\) in \(\sigma^*\) has net benefit of \(w_jl_i-w_il_j \ge0\).</p>
+
+<p>\(\rightarrow\) After at most \(C_n^2\) such exchanges, \(\sigma^*\) can transform into \(\sigma\)<br/>
+\(\rightarrow \sigma \) at least as good as \(\sigma^*\)<br/>
+ \(\rightarrow \) Greedy is optimal.</p>
+
+<h2 id="toc_6">Implemenation</h2>
+
+<pre><code class="language-python">import numpy as np
+import unittest
+
+class JobSchedule:
+    &quot;&quot;&quot;
+    greedy algorithm that schedules jobs in decreasing order of ratio (weight/length)
+    &quot;&quot;&quot;
+    def __init__(self):
+        self.job_num = 0 # the number of jobs
+        self.job_weight = []
+        self.job_length = []
+        self.schedule_time = None
+        self.order = None # the ordering of jobs
+
+    def buildjobs(self, textfile):
+        &quot;&quot;&quot;
+        build jobs from a text file
+
+        The file describes a set of jobs with positive and integral weights and lengths.
+        It has the format
+        [number_of_jobs]
+        [job_1_weight] [job_1_length]
+
+        &quot;&quot;&quot;
+        count = 0
+        with open(textfile) as infile:
+            for line in infile.readlines():
+                line = line.strip(&#39;\n&#39;)
+                if count == 0:
+                    self.job_num = int(line)
+                else:
+                    job_weight, job_length = (int(num) for num in line.split())
+                    self.job_weight.append(job_weight)
+                    self.job_length.append(job_length)
+                count += 1
+
+        if count-1 != self.job_num:
+            raise ValueError
+
+    def scheduling(self):
+        &quot;&quot;&quot;
+        return the sum of weighted completion times of the resulting schedule
+        &quot;&quot;&quot;
+        # ratios of weight and length for every job
+        ratios = [self.job_weight[i]/self.job_length[i] for i in range(self.job_num)]
+        self.order = np.lexsort((self.job_length, ratios))
+        self.order=self.order[::-1]
+        print([ (self.job_weight[i], self.job_length[i],self.job_weight[i]/self.job_length[i]) for i in self.order])
+        # calculating the sum of weighted completion times of the resulting schedule
+        count = 0
+        job_length = 0
+        for job_ind in self.order:
+            job_length = job_length + self.job_length[job_ind]
+            count += self.job_weight[job_ind]*job_length
+        self.schedule_time = count
+        return self.schedule_time
+
+
+class TestJobSchedule(unittest.TestCase):
+
+    def testcase1(self):
+        jobs_to_schedule = JobSchedule()
+        jobs_to_schedule.buildjobs(&#39;testcase1.txt&#39;)
+        assert jobs_to_schedule.scheduling() == 16
+
+    def testcase2(self):
+        jobs_to_schedule = JobSchedule()
+        jobs_to_schedule.buildjobs(&#39;testcase2.txt&#39;)
+        assert jobs_to_schedule.scheduling() == 67247
+
+
+if __name__ == &quot;__main__&quot;:
+    unittest.main()
+</code></pre>
+
+<h2 id="toc_7">References</h2>
+
+<ol>
+<li><a href="http://www.cs.cornell.edu/courses/cs482/2003su/handouts/greedy_exchange.pdf">Greedy exchange</a></li>
+<li><a href="https://www.coursera.org/learn/algorithms-greedy/">Algorithms Specialization</a></li>
+</ol>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/8/1</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Greedy.html'>Greedy</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="greedy_algorithm_introduction.html">
                 
                   <h1>Greedy algorithm (1): Introduction</h1>
@@ -615,7 +780,7 @@ evict the cache item that will next be used farthest into the future.</p>
                     <span class="date">2017/7/31</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html'>Python数据结构与算法</a></span>
+          					    <span class="posted-in"><a href='Greedy.html'>Greedy</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -2035,7 +2200,7 @@ print(&#39;result = %d&#39; %postorder_eval(pt))
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="hash_table_2.html">
+                <a class="clearlink" href="hash_table_2_Using_hashing_to_implement_Map_ADT.html">
                 
                   <h1>Hashing (2): Using hashing to implement Map ADT</h1>
                   <div class="a-content">

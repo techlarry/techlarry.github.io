@@ -127,6 +127,130 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="minimum_spanning_tree_prim_kruskal.html">
+                
+                  <h1>Minimum Spanning Tree: Prim's and Kruskal's Algorithm</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>Let \(G=(V, E)\) be a connected, undirected graph with a real-valued weight function \(w\) defined on \(E\). If an acyclic subset \(T\in E\) that connects all of the vertices and whose total weight \(w(T)=\sum_{(u,v)\in T}w(u,v)\) is minimized, \(T\) forms a <code>Minimum Spanning Tree</code>.</p>
+
+<h2 id="toc_0">Concepts</h2>
+
+<ul>
+<li><code>safe edge</code>: An edge that may be added to \(A\) without violating the invariant that \(A\) is a subset of some <code>minimum spanning tree</code>.</li>
+<li><code>cut</code>: A <code>cut</code> \((S, V-S)\) of an undirected graph \(G=(V,E)\) is a partition of \(V\).</li>
+<li><code>cross</code>: We say that an edge \((u,v)\in E\) <code>crosses</code> the cut \((S,V-S)\) if one of its endpoints is in \(S\) and the other is in \(V-S\).</li>
+<li><code>respect</code>: If no edge in \(A\) (a subset of some <code>minimum spanning tree</code>) <code>crosses</code> the cut, the cut <code>respects</code> a set \(A\) of edges.</li>
+<li><code>light edge</code>: An edge is a <code>light edge</code> crossing a cut if its weight is the minimum of any edge crossing the cut. </li>
+</ul>
+
+<h2 id="toc_1">Prim&#39;s algorithm</h2>
+
+<p>Total running time = \(O(V \log(V) + E \log(V)) = O(E \log(V))\)</p>
+
+<h3 id="toc_2">Implementation</h3>
+
+<pre><code class="language-python">from priorityqueue import PriorityQueue
+from graph import Graph
+import unittest
+import sys
+
+
+def prim(agraph, start):
+    &quot;&quot;&quot;
+    Prim&#39;s algorithm for minimum spanning tree
+    Using min-heap data structure
+
+    return the overall cost of a minimum spanning tre
+    &quot;&quot;&quot;
+    pq = PriorityQueue()
+    total_cost = 0
+    for v in agraph:
+        v.setDistance(sys.maxsize)
+        v.setPred(None)
+    start.setDistance(0)
+    pq.buildHeap([(v.getDistance(), v) for v in agraph])
+    while not pq.isEmpty():
+        cost, u = pq.delMin()
+        total_cost += cost
+        for adjacent in u.getConnections():
+          newcost = u.getWeight(adjacent)
+          if adjacent in pq and newcost &lt; adjacent.getDistance():
+              adjacent.setPred(u)
+              adjacent.setDistance(newcost)
+              pq.decreaseKey(adjacent, newcost)
+
+    return total_cost
+
+
+class TestPrim(unittest.TestCase):
+
+    def setUp(self):
+        pass
+
+    def test_big(self):
+        agraph = Graph()
+        count = 0
+        with open(&#39;edges.txt&#39;) as infile:
+            for line in infile:
+                if count == 0:
+                    pass
+                else:
+                    from_v, to_u, cost = [int(number) for number in line.split()]
+                    agraph.addEdge(from_v, to_u, cost)
+                    agraph.addEdge(to_u, from_v, cost)
+                count += 1
+
+        self.assertEqual(prim(agraph, agraph.getVertex(1)), -3612829)
+
+    def test_small(self):
+        agraph = Graph()
+        count = 0
+        with open(&#39;testcase1_prim.txt&#39;) as infile:
+            for line in infile:
+                if count == 0:
+                    pass
+                else:
+                    from_v, to_u, cost = [int(number) for number in line.split()]
+                    agraph.addEdge(from_v, to_u, cost)
+                    agraph.addEdge(to_u, from_v, cost)
+                count += 1
+
+        self.assertEqual(prim(agraph, agraph.getVertex(1)), 14)
+
+
+if __name__ == &quot;__main__&quot;:
+    unittest.main()
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/8/4</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Tree.html'>Tree</a></span>
+          				  
+          					    <span class="posted-in"><a href='Graph.html'>Graph</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="dijkstra_algorithm.html">
                 
                   <h1>Dijkstra's algorithm</h1>
