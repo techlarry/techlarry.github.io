@@ -127,6 +127,159 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="14987831190581.html">
+                
+                  <h1>Machine Learning (5): Neural Networks</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<ul>
+<li>
+<a href="#toc_0">Why Neural Networks</a>
+</li>
+<li>
+<a href="#toc_1">Background of Neural Networks</a>
+</li>
+<li>
+<a href="#toc_2">Model Representation</a>
+</li>
+<li>
+<a href="#toc_3">Examples and Intuitions</a>
+</li>
+<li>
+<a href="#toc_4">Multiclass Classification</a>
+</li>
+</ul>
+
+
+<h2 id="toc_0">Why Neural Networks</h2>
+
+<p>The number of quadratic features closes to \(\frac{n^2}{2}\), it is computationally expensive.</p>
+
+<p>The number of cubic features closes to \(O(n^3)\), it is more computationally expensive.</p>
+
+<p>Computer vision problem looks at matrixes. Because dimensions of pixel images often large (e.g. n= 7500 for 50\(\times\)50 pixel images(RGB)), the number of quadratic features for the problem are 3 million.</p>
+
+<h2 id="toc_1">Background of Neural Networks</h2>
+
+<p><strong>Origins</strong>: Algorithms that try to mimic the brain. It was very widely used in 80s and early 90s; popularity diminished in late 90s. It is now a state of the art technique for many application, because its expensive computation can be meet.</p>
+
+<p>Input wire: Dendrite<br/>
+Output wire: Axon</p>
+
+<h2 id="toc_2">Model Representation</h2>
+
+<p>At a very simple level, neurons are basically computational units that take inputs (<code>dendrites</code>) as electrical inputs (<code>spikes</code>) that are channeled to outputs (<code>axons</code>). </p>
+
+<p>In neural networks, dendrites are like the input features \(x_1⋯x_n\), and the output is the result of our hypothesis function. \(x_0\) input node is sometimes called the <code>bias unit</code>. It is always equal to 1. In neural networks, we use the same logistic function as in classification, \(\frac{1}{1+e^{-\theta^Tx}}\), yet we sometimes call it a sigmoid (logistic) activation function. In this situation, our &quot;theta&quot; parameters are sometimes called <code>weights</code>.</p>
+
+<p><strong>Visually, a simplistic representation looks like:</strong><br/>
+\[\begin{bmatrix}x_0 \newline x_1 \newline x_2 \newline \end{bmatrix}\rightarrow\begin{bmatrix}\ \ \ \newline \end{bmatrix}\rightarrow h_\theta(x)\]</p>
+
+<p>Input nodes (layer 1), also known as the <code>input layer</code>, go into another node (layer 2), which finally outputs the hypothesis function, known as the <code>output layer</code>.</p>
+
+<p>We can have intermediate layers of nodes between the input and output layers called the <code>hidden layers</code>.</p>
+
+<p>In this example, we label these intermediate or hidden layer nodes \(a^2_0⋯a^2_n\) and call them <code>activation units</code>.</p>
+
+<p>\[\begin{align*}&amp; a_i^{(j)} = \text{&quot;activation&quot; of unit $i$ in layer $j$} \newline&amp; \Theta^{(j)} = \text{matrix of weights controlling function mapping from layer $j$ to $j+1$}\end{align*}\]</p>
+
+<p>The values for each of the &quot;activation&quot; nodes is obtained as follows:</p>
+
+<p>\[\begin{align*} a_1^{(2)} = g(\Theta_{10}^{(1)}x_0 + \Theta_{11}^{(1)}x_1 + \Theta_{12}^{(1)}x_2 + \Theta_{13}^{(1)}x_3) \newline a_2^{(2)} = g(\Theta_{20}^{(1)}x_0 + \Theta_{21}^{(1)}x_1 + \Theta_{22}^{(1)}x_2 + \Theta_{23}^{(1)}x_3) \newline a_3^{(2)} = g(\Theta_{30}^{(1)}x_0 + \Theta_{31}^{(1)}x_1 + \Theta_{32}^{(1)}x_2 + \Theta_{33}^{(1)}x_3) \newline h_\Theta(x) = a_1^{(3)} = g(\Theta_{10}^{(2)}a_0^{(2)} + \Theta_{11}^{(2)}a_1^{(2)} + \Theta_{12}^{(2)}a_2^{(2)} + \Theta_{13}^{(2)}a_3^{(2)}) \newline \end{align*}\]</p>
+
+<p>If network has \(s_j\) units in layer \(j\) and \(s_{j+1}\) units in layer \(j+1\), then \(\Theta^{(j)}\) will be of dimension \(s_{j+1}×(s_j+1)\). The \(+1\) comes from the addition in \(\Theta^{(j)}\) of the <code>bias nodes</code>, \(x_0\) and \(\Theta^{(j)}_0\). In other words the output nodes will not include the bias nodes while the inputs will. </p>
+
+<p>We&#39;re going to define a new variable \(z^{(j)}_k\) that encompasses the parameters inside our \(g\) function. In our previous example if we replaced by the variable \(z\) for all the parameters we would get:</p>
+
+<p>\[\begin{align*}a_1^{(2)} = g(z_1^{(2)}) \newline a_2^{(2)} = g(z_2^{(2)}) \newline a_3^{(2)} = g(z_3^{(2)}) \newline \end{align*}\]</p>
+
+<p>In other words, for layer \(j=2\) and node \(k\), the variable \(z\) will be:</p>
+
+<p>\[z_k^{(2)} = \Theta_{k,0}^{(1)}x_0 + \Theta_{k,1}^{(1)}x_1 + \cdots + \Theta_{k,n}^{(1)}x_n\]</p>
+
+<p>The vector representation of \(x\) and \(z_j\) is:</p>
+
+<p>\[\begin{align*}x = \begin{bmatrix}x_0 \newline x_1 \newline\cdots \newline x_n\end{bmatrix} &amp;z^{(j)} = \begin{bmatrix}z_1^{(j)} \newline z_2^{(j)} \newline\cdots \newline z_n^{(j)}\end{bmatrix}\end{align*}\]</p>
+
+<p>Setting \(x=a^{(1)}\), we can rewrite the equation as:</p>
+
+<p>\[z^{(j)} = \Theta^{(j-1)}a^{(j-1)}\]</p>
+
+<p>Now we can get a vector of our activation nodes for layer \(j\) as follows:</p>
+
+<p>\[a^{(j)} = g(z^{(j)})\]</p>
+
+<p>Last Step:<br/>
+\[h_\Theta(x) = a^{(j+1)} = g(z^{(j+1)})\]</p>
+
+<h2 id="toc_3">Examples and Intuitions</h2>
+
+<p>The \(\Theta^{(1)}\) matrices for AND, NOR, and OR are:</p>
+
+<p>\[\begin{align*}AND:\newline\Theta^{(1)} &amp;=\begin{bmatrix}-30 &amp; 20 &amp; 20\end{bmatrix} \newline NOR:\newline\Theta^{(1)} &amp;= \begin{bmatrix}10 &amp; -20 &amp; -20\end{bmatrix} \newline OR:\newline\Theta^{(1)} &amp;= \begin{bmatrix}-10 &amp; 20 &amp; 20\end{bmatrix} \newline\end{align*}\]</p>
+
+<p>We can combine these to get the \(XNOR\) logical operator (which gives 1 if \(x_1\) and \(x_2\) are both 0 or both 1).</p>
+
+<p>\[\begin{align*}\begin{bmatrix}x_0 \newline x_1 \newline x_2\end{bmatrix} \rightarrow\begin{bmatrix}a_1^{(2)} \newline a_2^{(2)} \end{bmatrix} \rightarrow\begin{bmatrix}a^{(3)}\end{bmatrix} \rightarrow h_\Theta(x)\end{align*}\]</p>
+
+<p>For the transition between the first and second layer, we&#39;ll use a \(\Theta^{(1)}\) matrix that combines the values for AND and NOR:</p>
+
+<p>\[\Theta^{(1)} =\begin{bmatrix}-30 &amp; 20 &amp; 20 \newline 10 &amp; -20 &amp; -20\end{bmatrix}\]</p>
+
+<p>For the transition between the second and third layer, we&#39;ll use a \(\Theta^{(2)}\) matrix that uses the value for OR:</p>
+
+<p>\[\Theta^{(2)} =\begin{bmatrix}-10 &amp; 20 &amp; 20\end{bmatrix}\]</p>
+
+<p>Let&#39;s write out the values for all our nodes:</p>
+
+<p>\[\begin{align*}&amp; a^{(2)} = g(\Theta^{(1)} \cdot x) \newline&amp; a^{(3)} = g(\Theta^{(2)} \cdot a^{(2)}) \newline&amp; h_\Theta(x) = a^{(3)}\end{align*}\]</p>
+
+<h2 id="toc_4">Multiclass Classification</h2>
+
+<p>To classify data into multiple classes, we let our hypothesis function return a vector of values. Say we wanted to classify our data into one of four categories. We will use the following example to see how this classification is done. This algorithm takes as input an image and classifies it accordingly:</p>
+
+<p><img src="media/14987831190581/14987929949268.png" alt=""/></p>
+
+<p>We can define our set of resulting classes as \(y\):</p>
+
+<p><img src="media/14987831190581/14987930862309.png" alt=""/></p>
+
+<p>Each \(y(i)\) represents a different image corresponding to either a car, pedestrian, truck, or motorcycle. The inner layers, each provide us with some new information which leads to our final hypothesis function. The setup looks like:</p>
+
+<p><img src="media/14987831190581/14987931059100.png" alt=""/></p>
+
+<p>Our resulting hypothesis for one set of inputs may look like:</p>
+
+<p>\[h_\Theta(x) =\begin{bmatrix}0 \newline 0 \newline 1 \newline 0 \newline\end{bmatrix}\]</p>
+
+<p>In which case our resulting class is the third one down, or \(h_\Theta(x)_3\), which represents the motorcycle.</p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/6/30</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html'>机器学习</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="14987114340830.html">
                 
                   <h1>Machine Learning (4): Overfitting and normalization</h1>

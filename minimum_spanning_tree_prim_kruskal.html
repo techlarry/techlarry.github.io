@@ -198,46 +198,37 @@ def prim(agraph, start):
               pq.decreaseKey(adjacent, newcost)
 
     return total_cost
+</code></pre>
 
+<h2 id="toc_3">Kruskal&#39;s Algorithm</h2>
 
-class TestPrim(unittest.TestCase):
+<h3 id="toc_4">Implementation</h3>
 
-    def setUp(self):
-        pass
+<pre><code class="language-python">def kruskal_mst(agraph):
+    &quot;&quot;&quot;
+    Return a minimum spanning tree using kruskal&#39;s algorithm
+    &quot;&quot;&quot;
+    # minimum spanning tree
+    mst = []
 
-    def test_big(self):
-        agraph = Graph()
-        count = 0
-        with open(&#39;edges.txt&#39;) as infile:
-            for line in infile:
-                if count == 0:
-                    pass
-                else:
-                    from_v, to_u, cost = [int(number) for number in line.split()]
-                    agraph.addEdge(from_v, to_u, cost)
-                    agraph.addEdge(to_u, from_v, cost)
-                count += 1
+    # disjoint set
+    disjoint_set = DisjointSet()
 
-        self.assertEqual(prim(agraph, agraph.getVertex(1)), -3612829)
+    # make set
+    for vertex in agraph.Vertices():
+        disjoint_set.make_set(vertex)
 
-    def test_small(self):
-        agraph = Graph()
-        count = 0
-        with open(&#39;testcase1_prim.txt&#39;) as infile:
-            for line in infile:
-                if count == 0:
-                    pass
-                else:
-                    from_v, to_u, cost = [int(number) for number in line.split()]
-                    agraph.addEdge(from_v, to_u, cost)
-                    agraph.addEdge(to_u, from_v, cost)
-                count += 1
+    # edges of the graph
+    edges = agraph.edges()
+    edges.sort(key=lambda tup: tup[2])
 
-        self.assertEqual(prim(agraph, agraph.getVertex(1)), 14)
+    for u, v, cost in edges:
+        if disjoint_set.find_set(u) != disjoint_set.find_set(v):
+            mst.append((u, v, cost))
+            disjoint_set.union(u, v)
+    return mst
+    ```
 
-
-if __name__ == &quot;__main__&quot;:
-    unittest.main()
 </code></pre>
 
 

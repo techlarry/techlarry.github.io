@@ -4,7 +4,7 @@
   <title><![CDATA[techlarry]]></title>
   <link href="http://larryim.cc/atom.xml" rel="self"/>
   <link href="http://larryim.cc/"/>
-  <updated>2017-08-04T09:43:34+08:00</updated>
+  <updated>2017-08-04T09:57:07+08:00</updated>
   <id>http://larryim.cc/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -67,46 +67,37 @@ def prim(agraph, start):
               pq.decreaseKey(adjacent, newcost)
 
     return total_cost
+</code></pre>
 
+<h2 id="toc_3">Kruskal&#39;s Algorithm</h2>
 
-class TestPrim(unittest.TestCase):
+<h3 id="toc_4">Implementation</h3>
 
-    def setUp(self):
-        pass
+<pre><code class="language-python">def kruskal_mst(agraph):
+    &quot;&quot;&quot;
+    Return a minimum spanning tree using kruskal&#39;s algorithm
+    &quot;&quot;&quot;
+    # minimum spanning tree
+    mst = []
 
-    def test_big(self):
-        agraph = Graph()
-        count = 0
-        with open(&#39;edges.txt&#39;) as infile:
-            for line in infile:
-                if count == 0:
-                    pass
-                else:
-                    from_v, to_u, cost = [int(number) for number in line.split()]
-                    agraph.addEdge(from_v, to_u, cost)
-                    agraph.addEdge(to_u, from_v, cost)
-                count += 1
+    # disjoint set
+    disjoint_set = DisjointSet()
 
-        self.assertEqual(prim(agraph, agraph.getVertex(1)), -3612829)
+    # make set
+    for vertex in agraph.Vertices():
+        disjoint_set.make_set(vertex)
 
-    def test_small(self):
-        agraph = Graph()
-        count = 0
-        with open(&#39;testcase1_prim.txt&#39;) as infile:
-            for line in infile:
-                if count == 0:
-                    pass
-                else:
-                    from_v, to_u, cost = [int(number) for number in line.split()]
-                    agraph.addEdge(from_v, to_u, cost)
-                    agraph.addEdge(to_u, from_v, cost)
-                count += 1
+    # edges of the graph
+    edges = agraph.edges()
+    edges.sort(key=lambda tup: tup[2])
 
-        self.assertEqual(prim(agraph, agraph.getVertex(1)), 14)
+    for u, v, cost in edges:
+        if disjoint_set.find_set(u) != disjoint_set.find_set(v):
+            mst.append((u, v, cost))
+            disjoint_set.union(u, v)
+    return mst
+    ```
 
-
-if __name__ == &quot;__main__&quot;:
-    unittest.main()
 </code></pre>
 
 ]]></content>
@@ -285,57 +276,48 @@ class DisjointSet:
 
 <p><img src="media/15017471539381/15017663772888.png" alt="path compression"/></p>
 
-<pre><code class="language-python">class Node:
+<pre><code class="language-python">class DisjointSet:
     &quot;&quot;&quot;
-    Each node contains one element
-    &quot;&quot;&quot;
-    def __init__(self, elem):
-        self.parent = []
-        self.elem = elem
-        self.rank = 0
-
-
-class DisjointSet:
-    &quot;&quot;&quot;
-    Disjoint set data strcuture
+    Disjoint set data structure
     &quot;&quot;&quot;
 
     def __init__(self):
         self.sets = []
+        self.parent = {}
+        self.rank = {}
 
     def make_set(self, node):
         &quot;&quot;&quot;
         creates a new set whose only member (and thus representative) is x.
         &quot;&quot;&quot;
-        node.parent = node
+        self.parent[node] = node
         self.sets.append(node)
+        self.rank[node] = 0
 
-    def union(self, nodex, nodey):
+    def union(self, x, y):
         &quot;&quot;&quot;
         unites the dynamic sets that contain x and y, into a new set that is the union of these two sets.
         &quot;&quot;&quot;
-        tree_x = self.find_set(nodex)
-        tree_y = self.find_set(nodey)
-        if tree_x.rank &gt; tree_y.rank:
-            tree_y.parent = tree_x
-            self.sets.remove(tree_y)
-            tree_x.rank += 1
+        x_root = self.find_set(x)
+        y_root = self.find_set(y)
+        if x_root == y_root:
+            return
+
+        if self.rank[x_root] &gt; self.rank[y_root]:
+            self.parent[y_root] = x_root
         else:
-            tree_x.parent = tree_y
-            self.sets.remove(tree_x)
-            tree_y.rank += 1
+            self.parent[x_root] = y_root
+            if self.rank[x_root] == self.rank[y_root]:
+                self.rank[y_root] = self.rank[y_root] + 1
 
-
-    def find_set(self, node):
+    def find_set(self, x):
         &quot;&quot;&quot;
         returns the representative of the set containing x
         &quot;&quot;&quot;
-        if node != node.parent:
-            node.parent = self.find_set(node.parent)
-        return node.parent
+        if self.parent[x] != x:
+            self.parent[x] = self.find_set(self.parent[x])
+        return self.parent[x]
 
-    def __len__(self):
-        return len(self.sets)
 </code></pre>
 
 <h2 id="toc_2">Reference</h2>
