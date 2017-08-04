@@ -15,7 +15,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  Python 高级 - techlarry
+  Greedy algorithm (2): A Scheduling Application - techlarry
   
   </title>
   
@@ -127,14 +127,12 @@
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>Python 高级</h1>
+          <h1>Greedy algorithm (2): A Scheduling Application</h1>
      
         <div class="read-more clearfix">
-          <span class="date">2017/4/9</span>
+          <span class="date">2017/8/1</span>
 
-          <span>posted in&nbsp;</span> 
           
-              <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
            
          
           <span class="comments">
@@ -147,116 +145,137 @@
       </div><!-- article -->
 
       <div class="article-content">
-      <h2 id="toc_0">模块重新导入</h2>
+      <p><strong>Problem Statement</strong>: You want to schedule jobs (processes) on a processor. Each job has properties:</p>
 
-<p>模块导入： import xxx, from xxx import xxxx<br/>
-增加路径 </p>
+<ul>
+<li>weight \(w_j\) (“priority”) </li>
+<li>length \(l_j\)</li>
+</ul>
 
-<pre><code class="language-python">import sys
-sys.path.append(path)
+<p>The <code>completion time</code> \(C_j\) of job \(j\) is Sum of job lengths up to and including job \(j\).</p>
+
+<p>The goal is to <strong>Minimize weighted sum of completion times</strong>, i.e.</p>
+
+<p>\[\sum_{j=1}^n w_j*C_j\]</p>
+
+<h2 id="toc_0">Algorithm</h2>
+
+<p>Order jobs by decreasing value of \(\frac{w_j}{l_j}\), i.e. jobs have larger weight and shorter length execute earlier.</p>
+
+<h3 id="toc_1">Greedy Exchange</h3>
+
+<p><code>Greedy Exchange</code> is one of the techniques used in proving the correctness of greedy algorithms. The idea of a greedy exchange proof is to morph a solution produced by an optimal algorithm into the solution produced by your greedy algorithm. This shows that any optimal solution is no better than the greedy solution, which proves that greedy does in fact return an optimal solution.</p>
+
+<h3 id="toc_2">Proof</h3>
+
+<h4 id="toc_3">Step1: label algorithm&#39;s solution and an optimal solution</h4>
+
+<p>Let \(\sigma\) be greedy schedule, and \(\sigma^*\) be optimal schedule. </p>
+
+<h4 id="toc_4">Step2: Compare greedy with optimal</h4>
+
+<p>Greedy schedule \(\sigma\) is just \(1,2,3,...,n\). And if optimal schedule \(\sigma^* \ne \sigma \), then \(\exists\) consecutive jobs \(i,j\), which \(i&gt;j\).</p>
+
+<h4 id="toc_5">Step3: Exchange</h4>
+
+<p>Suppose we exchange order of \(i,j\) in \(\sigma\):</p>
+
+<ul>
+<li>the cost of exchange \(w_jl_j\)</li>
+<li>the benefit of exchange is \(w_jl_i\)</li>
+</ul>
+
+<p>Note: <br/>
+\[i &gt;j \rightarrow w_i/l_i \le wj/lj \rightarrow w_il_j \le w_jl_i \]<br/>
+Exchanging \(i,j\) in \(\sigma^*\) has net benefit of \(w_jl_i-w_il_j \ge0\).</p>
+
+<p>\(\rightarrow\) After at most \(C_n^2\) such exchanges, \(\sigma^*\) can transform into \(\sigma\)<br/>
+\(\rightarrow \sigma \) at least as good as \(\sigma^*\)<br/>
+ \(\rightarrow \) Greedy is optimal.</p>
+
+<h2 id="toc_6">Implemenation</h2>
+
+<pre><code class="language-python">import numpy as np
+import unittest
+
+class JobSchedule:
+    &quot;&quot;&quot;
+    greedy algorithm that schedules jobs in decreasing order of ratio (weight/length)
+    &quot;&quot;&quot;
+    def __init__(self):
+        self.job_num = 0 # the number of jobs
+        self.job_weight = []
+        self.job_length = []
+        self.schedule_time = None
+        self.order = None # the ordering of jobs
+
+    def buildjobs(self, textfile):
+        &quot;&quot;&quot;
+        build jobs from a text file
+
+        The file describes a set of jobs with positive and integral weights and lengths.
+        It has the format
+        [number_of_jobs]
+        [job_1_weight] [job_1_length]
+
+        &quot;&quot;&quot;
+        count = 0
+        with open(textfile) as infile:
+            for line in infile.readlines():
+                line = line.strip(&#39;\n&#39;)
+                if count == 0:
+                    self.job_num = int(line)
+                else:
+                    job_weight, job_length = (int(num) for num in line.split())
+                    self.job_weight.append(job_weight)
+                    self.job_length.append(job_length)
+                count += 1
+
+        if count-1 != self.job_num:
+            raise ValueError
+
+    def scheduling(self):
+        &quot;&quot;&quot;
+        return the sum of weighted completion times of the resulting schedule
+        &quot;&quot;&quot;
+        # ratios of weight and length for every job
+        ratios = [self.job_weight[i]/self.job_length[i] for i in range(self.job_num)]
+        self.order = np.lexsort((self.job_length, ratios))
+        self.order=self.order[::-1]
+        print([ (self.job_weight[i], self.job_length[i],self.job_weight[i]/self.job_length[i]) for i in self.order])
+        # calculating the sum of weighted completion times of the resulting schedule
+        count = 0
+        job_length = 0
+        for job_ind in self.order:
+            job_length = job_length + self.job_length[job_ind]
+            count += self.job_weight[job_ind]*job_length
+        self.schedule_time = count
+        return self.schedule_time
+
+
+class TestJobSchedule(unittest.TestCase):
+
+    def testcase1(self):
+        jobs_to_schedule = JobSchedule()
+        jobs_to_schedule.buildjobs(&#39;testcase1.txt&#39;)
+        assert jobs_to_schedule.scheduling() == 16
+
+    def testcase2(self):
+        jobs_to_schedule = JobSchedule()
+        jobs_to_schedule.buildjobs(&#39;testcase2.txt&#39;)
+        assert jobs_to_schedule.scheduling() == 67247
+
+
+if __name__ == &quot;__main__&quot;:
+    unittest.main()
 </code></pre>
 
-<p>模块重新导入</p>
+<h2 id="toc_7">References</h2>
 
-<pre><code class="language-python">from imp import reload
-reload(module name)
-</code></pre>
-
-<h2 id="toc_1">02 模块循环导入问题</h2>
-
-<p>不可以循环导入，不能在模块之间相互调用</p>
-
-<p>怎样避免循环导入：导入语句放在后面需要导入时再倒入，例如放在函数体内导入</p>
-
-<h2 id="toc_2">03/04 ==与is的区别</h2>
-
-<ul>
-<li>== 判断值是否相等</li>
-<li>Is  id(a), id(b)是否相等，<strong>比较两个引用是否指向了同一个对象（引用比较）</strong></li>
-</ul>
-
-<h2 id="toc_3">05-07 深拷贝与浅拷贝</h2>
-
-<ul>
-<li>浅拷贝是一个对象的顶层拷贝，拷贝了引用，并没有拷贝内容
-= 就是浅拷贝</li>
-<li>深拷贝是对于一个对象所有层次的拷贝（递归）
-<code>python
-import copy
-c = copy.deepcopy(a)
-</code>
-copy.deepcopy深拷贝会把引用都拷贝出来（递归）
-copy.copy() 
-使用copy模块的copy功能的时候，它会根据当前拷贝的数据类型是可变类型还是不可变类型，有不同的处理方式：如果拷贝可变类型，只能识别第一层拷贝；如果拷贝不可变类型，是浅拷贝</li>
-</ul>
-
-<h2 id="toc_4">08 不同进制的讲解</h2>
-
-<p>略</p>
-
-<h2 id="toc_5">09 原码，反码，补码，进制的转换</h2>
-
-<p>有符号数和无符号数的概念<br/>
-规则：把二进制数中的最高位（最左边的那位）用作符号位</p>
-
-<p>对于有符号数，最高位被计算机系统规定为符号位（0为正，1为负）<br/>
-对于无符号数，最高位被计算机系统规定为数据位</p>
-
-<p>数字在计算机中，是用二进制补码的形式来保存的，因此-1+1需要按照补码进行相加才是正确的结果</p>
-
-<p>1）如何计算补码？<br/>
-正数：原码=反码=补码<br/>
-负数：反码=符号位不变，其他位取反<br/>
-      补码=反码+1<br/>
-溢出：越界<br/>
-    2) 从补码转回原码<br/>
-    负数补码转换原码的规则：<br/>
-    原码=补码的符号位不变，数据位取反，尾+1</p>
-
-<p>进制的转换 bin, int, oct, hex</p>
-
-<p>0b 二进制<br/>
-0o八进制<br/>
-0x十六进制</p>
-
-<p>转换成十进制 int(&quot;&quot;,16/8/2)</p>
-
-<h2 id="toc_6">10 位运算</h2>
-
-<p>把一个数的各位整体向左移动一个位，就变成原来的2倍</p>
-
-<h3 id="toc_7">位运算的介绍</h3>
-
-<ul>
-<li>&amp; 按位于</li>
-<li>|按位或</li>
-<li><sup>按位异或</sup></li>
-<li>～按位取反</li>
-<li>&lt;&lt;按位左移 &gt;&gt;按位右移</li>
-</ul>
-
-<h3 id="toc_8">位运算</h3>
-
-<ul>
-<li>按位与： 全1才1否则0：只有对应的两个二进位均为1时，结果位才为1，否则为0</li>
-<li>按位或：有1就1： 只要对应的二个二进位有一个位1时，结果位就为1，否则为0</li>
-<li>按位异或：不同为1: 当对应的二进位不相同时，结果为1，否则为0</li>
-</ul>
-
-<h2 id="toc_9">12 私有化</h2>
-
-<p>属性的名字前面加上下划线，属于私有属性，不能从外部调用的<br/>
-方法：setNum(), getNum() 设置两个方法，一个设置属性，一个获取数据</p>
-
-<ul>
-<li>xx: 公有变量</li>
-<li>_xx: 单前置下划线，私有化属性或方法，from somemodule import * 禁止导入，类对象和子类可以访问</li>
-<li>__xx__: 双前后下划线，用于名字空间的魔法对象或属性。例如：__init__</li>
-<li>__xx: 双前置下划线，私有，无法在外部直接访问（名子重整所以访问不到）</li>
-<li>xx_: 单后置下划线，用于避免与python关键词的冲突</li>
-</ul>
-
-<p>通过name mangling （名字重整）,目的是防止类意外重写基类的方法或者属性：__classname__privateatribute</p>
+<ol>
+<li><a href="http://www.cs.cornell.edu/courses/cs482/2003su/handouts/greedy_exchange.pdf">Greedy exchange</a></li>
+<li><a href="https://www.coursera.org/learn/algorithms-greedy/">Algorithms Specialization</a></li>
+</ol>
 
 
     
@@ -267,16 +286,16 @@ copy.copy()
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="14970764330712.html" 
-          title="Previous Post: 属性@property的使用">&laquo; 属性@property的使用</a>
+          <a href="mysql_introduction.html" 
+          title="Previous Post: MySQL">&laquo; MySQL</a>
       
         </p>
         </div>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="14969760668045.html" 
-          title="Next Post: 闭包，装饰器">闭包，装饰器 &raquo;</a>
+          <a  href="greedy_algorithm_introduction.html" 
+          title="Next Post: Greedy algorithm (1): Introduction">Greedy algorithm (1): Introduction &raquo;</a>
       
       </p>
         </div>
