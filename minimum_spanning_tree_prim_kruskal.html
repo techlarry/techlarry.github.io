@@ -15,7 +15,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  Minimum Spanning Tree: Prim's and Kruskal's Algorithm - techlarry
+  Minimum Spanning Tree: Prim's, Kruskal's Algorithm and Clustering - techlarry
   
   </title>
   
@@ -127,7 +127,7 @@
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>Minimum Spanning Tree: Prim's and Kruskal's Algorithm</h1>
+          <h1>Minimum Spanning Tree: Prim's, Kruskal's Algorithm and Clustering</h1>
      
         <div class="read-more clearfix">
           <span class="date">2017/8/4</span>
@@ -171,6 +171,14 @@
 <a href="#toc_5">Implementation</a>
 </li>
 </ul>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_6">Clustering</a>
+<ul>
+<li>
+<a href="#toc_7">Implementation</a>
 </li>
 </ul>
 
@@ -278,8 +286,59 @@ return mst
             mst.append((u, v, cost))
             disjoint_set.union(u, v)
     return mst
-    ```
+</code></pre>
 
+<h1 id="toc_6">Clustering</h1>
+
+<p><strong>Max-Spacing k clustering</strong>: Given a set of objects \(p_1, . . . , p_n\), a distance function \(d(p_i,p_j)\) specifies their similarity.  \(d(p_i,p_j)\) may be an actual distance, or some abstract representation of how dissimilar of two things are. </p>
+
+<p><strong>OUR GOAL</strong>: Divide the \(n\) items up into \(k\) groups so that the minimum distance between items in different groups is maximized.</p>
+
+<p><strong>IDEA</strong>: </p>
+
+<ul>
+<li>we maintain clusters as a set of connected components of a graph. </li>
+<li>And Iteratively combine the clusters containing the two closest items by adding an edge between them.</li>
+<li>Stop when there are \(k\) clusters.</li>
+</ul>
+
+<p>You&#39;ll find this is exactly <code>Kruskal&#39;s algorithm</code>.</p>
+
+<h3 id="toc_7">Implementation</h3>
+
+<pre><code class="language-python">def clustering(agraph, k):
+    &quot;&quot;&quot;
+    Max-Spacing k clustering
+
+    Return maximum spacing of a k-clustering
+    and corresponding mst.
+    &quot;&quot;&quot;
+    # minimum spanning tree
+    mst = []
+
+    # disjoint set
+    disjoint_set = DisjointSet()
+
+    # make set
+    for vertex in agraph.Vertices():
+        disjoint_set.make_set(vertex)
+
+    # edges of the graph
+    edges = agraph.edges()
+    edges.sort(key=lambda tup: tup[2])
+
+    for u, v, cost in edges:
+        if len(disjoint_set) &gt;= k:
+
+            if disjoint_set.find_set(u) != disjoint_set.find_set(v):
+                mst.append((u, v, cost))
+                max_cost = cost
+                disjoint_set.union(u, v)
+        else:
+            break
+
+
+    return max_cost, mst
 </code></pre>
 
 
@@ -291,8 +350,8 @@ return mst
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="%20Kruskals%20Algorithm:%20Max%20spacing%20k-clustering.html" 
-          title="Previous Post: Minimum Spanning Trees & Clustering">&laquo; Minimum Spanning Trees & Clustering</a>
+          <a href="bitwise%20operator%20in%20python.html" 
+          title="Previous Post: Bitwise Operation">&laquo; Bitwise Operation</a>
       
         </p>
         </div>
@@ -413,13 +472,7 @@ s.setAttribute('data-timestamp', +new Date());
 		  
 		      
 			      <li class="post">
-			        <a href="%20Kruskals%20Algorithm:%20Max%20spacing%20k-clustering.html">Minimum Spanning Trees & Clustering</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="minimum_spanning_tree_prim_kruskal.html">Minimum Spanning Tree: Prim's and Kruskal's Algorithm</a>
+			        <a href="minimum_spanning_tree_prim_kruskal.html">Minimum Spanning Tree: Prim's, Kruskal's Algorithm and Clustering</a>
 			      </li>
 		     
 		  
@@ -432,6 +485,12 @@ s.setAttribute('data-timestamp', +new Date());
 		      
 			      <li class="post">
 			        <a href="disjoint_set_data_structure.html">Disjoint-Set Data Structure</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="character%20encoding.html">Character encoding</a>
 			      </li>
 		     
 		  

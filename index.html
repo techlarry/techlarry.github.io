@@ -168,7 +168,7 @@
 <li><code>x&amp;y</code>(bitwise AND): Each bit of the output is 1 if the corresponding bit of \(x\) AND of \(y\) is 1, otherwise it&#39;s 0.</li>
 <li><code>x|y</code> (bitwise OR): Each bit of the output is 0 if the corresponding bit of \(x\) AND of \(y\) is 0, otherwise it&#39;s 1.</li>
 <li><code>~ x</code> ( bitwise NOT, or complement): Returns the complement of \(x\) - the number you get by switching each 1 for a 0 and each 0 for a 1. This is the same as \(-x-1\).</li>
-<li><code>^</code> (bitwise Exclusive OR): Each bit of the output is the same as the corresponding bit in \(x\) if that bit in \(y\) is 0, and it&#39;s the complement of the bit in\( x\) if that bit in \(y\) is 1.</li>
+<li><code>^</code> (bitwise Exclusive OR): outputs true only when inputs differ (one is 1, the other is 0).</li>
 </ul>
 
 <p><code>Bitwise Operators</code> operate on numbers, but instead of treating that number as if it were a single value, they treat it as if it were a string of bits, written  in <code>two&#39;s-complement</code> binary.</p>
@@ -294,54 +294,9 @@ add one 1111 1101
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="%20Kruskals%20Algorithm:%20Max%20spacing%20k-clustering.html">
-                
-                  <h1>Minimum Spanning Trees & Clustering</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p><strong>Max-Spacing k clustering</strong>: Given a set of objects \(p_1, . . . , p_n\), a distance function \(d(p_i,p_j)\) specifies their similarity.  \(d(p_i,p_j)\) may be an actual distance, or some abstract representation of how dissimilar of two things are. </p>
-
-<p><strong>OUR GOAL</strong>: Divide the \(n\) items up into \(k\) groups so that the minimum distance between items in different groups is maximized.</p>
-
-<p><strong>IDEA</strong>: </p>
-
-<ul>
-<li>we maintain clusters as a set of connected components of a graph. </li>
-<li>And Iteratively combine the clusters containing the two closest items by adding an edge between them.</li>
-<li>Stop when there are \(k\) clusters.</li>
-</ul>
-
-<p>You&#39;ll find this is exactly <code>Kruskal’s algorithm</code>.</p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/8/4</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Graph.html'>Graph</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
                 <a class="clearlink" href="minimum_spanning_tree_prim_kruskal.html">
                 
-                  <h1>Minimum Spanning Tree: Prim's and Kruskal's Algorithm</h1>
+                  <h1>Minimum Spanning Tree: Prim's, Kruskal's Algorithm and Clustering</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
@@ -368,6 +323,14 @@ add one 1111 1101
 <a href="#toc_5">Implementation</a>
 </li>
 </ul>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_6">Clustering</a>
+<ul>
+<li>
+<a href="#toc_7">Implementation</a>
 </li>
 </ul>
 
@@ -475,8 +438,59 @@ return mst
             mst.append((u, v, cost))
             disjoint_set.union(u, v)
     return mst
-    ```
+</code></pre>
 
+<h1 id="toc_6">Clustering</h1>
+
+<p><strong>Max-Spacing k clustering</strong>: Given a set of objects \(p_1, . . . , p_n\), a distance function \(d(p_i,p_j)\) specifies their similarity.  \(d(p_i,p_j)\) may be an actual distance, or some abstract representation of how dissimilar of two things are. </p>
+
+<p><strong>OUR GOAL</strong>: Divide the \(n\) items up into \(k\) groups so that the minimum distance between items in different groups is maximized.</p>
+
+<p><strong>IDEA</strong>: </p>
+
+<ul>
+<li>we maintain clusters as a set of connected components of a graph. </li>
+<li>And Iteratively combine the clusters containing the two closest items by adding an edge between them.</li>
+<li>Stop when there are \(k\) clusters.</li>
+</ul>
+
+<p>You&#39;ll find this is exactly <code>Kruskal&#39;s algorithm</code>.</p>
+
+<h3 id="toc_7">Implementation</h3>
+
+<pre><code class="language-python">def clustering(agraph, k):
+    &quot;&quot;&quot;
+    Max-Spacing k clustering
+
+    Return maximum spacing of a k-clustering
+    and corresponding mst.
+    &quot;&quot;&quot;
+    # minimum spanning tree
+    mst = []
+
+    # disjoint set
+    disjoint_set = DisjointSet()
+
+    # make set
+    for vertex in agraph.Vertices():
+        disjoint_set.make_set(vertex)
+
+    # edges of the graph
+    edges = agraph.edges()
+    edges.sort(key=lambda tup: tup[2])
+
+    for u, v, cost in edges:
+        if len(disjoint_set) &gt;= k:
+
+            if disjoint_set.find_set(u) != disjoint_set.find_set(v):
+                mst.append((u, v, cost))
+                max_cost = cost
+                disjoint_set.union(u, v)
+        else:
+            break
+
+
+    return max_cost, mst
 </code></pre>
 
                         
@@ -8451,13 +8465,7 @@ test2()
 		  
 		      
 			      <li class="post">
-			        <a href="%20Kruskals%20Algorithm:%20Max%20spacing%20k-clustering.html">Minimum Spanning Trees & Clustering</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="minimum_spanning_tree_prim_kruskal.html">Minimum Spanning Tree: Prim's and Kruskal's Algorithm</a>
+			        <a href="minimum_spanning_tree_prim_kruskal.html">Minimum Spanning Tree: Prim's, Kruskal's Algorithm and Clustering</a>
 			      </li>
 		     
 		  
@@ -8470,6 +8478,12 @@ test2()
 		      
 			      <li class="post">
 			        <a href="disjoint_set_data_structure.html">Disjoint-Set Data Structure</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="character%20encoding.html">Character encoding</a>
 			      </li>
 		     
 		  
