@@ -149,7 +149,33 @@
       </div><!-- article -->
 
       <div class="article-content">
-      <p>Let \(G=(V, E)\) be a connected, undirected graph with a real-valued weight function \(w\) defined on \(E\). If an acyclic subset \(T\in E\) that connects all of the vertices and whose total weight \(w(T)=\sum_{(u,v)\in T}w(u,v)\) is minimized, \(T\) forms a <code>Minimum Spanning Tree</code>.</p>
+      <ul>
+<li>
+<a href="#toc_0">Concepts</a>
+</li>
+<li>
+<a href="#toc_1">Prim&#39;s algorithm</a>
+<ul>
+<li>
+<a href="#toc_2">Implementation</a>
+</li>
+<li>
+<a href="#toc_3">Prim&#39;s v.s. Dijkstra&#39;s</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_4">Kruskal&#39;s Algorithm</a>
+<ul>
+<li>
+<a href="#toc_5">Implementation</a>
+</li>
+</ul>
+</li>
+</ul>
+
+
+<p>Let \(G=(V, E)\) be a connected, undirected graph with a real-valued weight function \(w\) defined on \(E\). If an acyclic subset \(T\in E\) that connects all of the vertices and whose total weight \(w(T)=\sum_{(u,v)\in T}w(u,v)\) is minimized, \(T\) forms a <code>Minimum Spanning Tree</code>.</p>
 
 <h2 id="toc_0">Concepts</h2>
 
@@ -163,46 +189,71 @@
 
 <h2 id="toc_1">Prim&#39;s algorithm</h2>
 
-<p>Total running time = \(O(V \log(V) + E \log(V)) = O(E \log(V))\)</p>
+<p>In <code>Prim&#39;s algorithm</code>, each step adds a light edge to minimum spanning tree. The running time of the Prim&#39;s algorithm is \(O(E \log(V))\)</p>
 
 <h3 id="toc_2">Implementation</h3>
 
-<pre><code class="language-python">from priorityqueue import PriorityQueue
-from graph import Graph
-import unittest
-import sys
-
-
-def prim(agraph, start):
+<pre><code class="language-python">def prim(agraph, start):
     &quot;&quot;&quot;
     Prim&#39;s algorithm for minimum spanning tree
     Using min-heap data structure
 
-    return the overall cost of a minimum spanning tre
+    return a minimum spanning tree
     &quot;&quot;&quot;
+    # vertex of minimun spanning tree
+    mst_vertex = []
     pq = PriorityQueue()
-    total_cost = 0
     for v in agraph:
         v.setDistance(sys.maxsize)
         v.setPred(None)
     start.setDistance(0)
     pq.buildHeap([(v.getDistance(), v) for v in agraph])
     while not pq.isEmpty():
-        cost, u = pq.delMin()
-        total_cost += cost
+        u = pq.delMin()
+        mst_vertex.append(u)
         for adjacent in u.getConnections():
-          newcost = u.getWeight(adjacent)
-          if adjacent in pq and newcost &lt; adjacent.getDistance():
-              adjacent.setPred(u)
-              adjacent.setDistance(newcost)
-              pq.decreaseKey(adjacent, newcost)
+            newcost = u.getWeight(adjacent)
+            if adjacent in pq and newcost &lt; adjacent.getDistance():
+                adjacent.setPred(u)
+                adjacent.setDistance(newcost)
+                pq.decreaseKey(adjacent, newcost)
 
-    return total_cost
+    # edges of minimum spanning tree
+    mst = []
+    for i in range(1, len(mst_vertex)):
+        # u, v, cost
+        mst.append((mst_vertex[i-1], mst_vertex[i],  mst_vertex[i].getDistance()))
+
+    return mst
 </code></pre>
 
-<h2 id="toc_3">Kruskal&#39;s Algorithm</h2>
+<h3 id="toc_3">Prim&#39;s v.s. Dijkstra&#39;s</h3>
 
-<h3 id="toc_4">Implementation</h3>
+<p><code>Prim&#39;s algorithm</code> are similar to <code>Dijkstra&#39;s algorithm</code>, both of which use a <code>priority queue</code>. And  each of them belongs to <code>greedy algorithm</code>. There is trivial difference when implementing:</p>
+
+<p>\[\text{Prim&#39;s} p(v) = \min_{(u,v): u\in S} w(u,v)\]<br/>
+\[\text{Dijkstra&#39;s} s(v) = \min_{(u,v): u\in S} \text{dist(su,u)} w(u,v)\]</p>
+
+<h2 id="toc_4">Kruskal&#39;s Algorithm</h2>
+
+<p>In <code>Kruskal&#39;s algorithm</code>, always add edges in increasing weight, skipping those whose addition would create a cycle.</p>
+
+<p>In order to keep track of the connected components of a minimum spanning tree when implementing Kruskal&#39;s algorithm, a disjoint-set data structure should be used. The pseudo code for <code>MST-KRUSKAL</code>:</p>
+
+<pre><code class="language-python">mst = []
+for each vertex in G:
+    make-set(vertex)
+sort the edges of G into nondecreasing order by weight of edges
+for each edge (u,v) in G:
+    if find-set(u) != find_set(v):
+        mst = mst + (u,v)
+        union(u,v)
+return mst
+</code></pre>
+
+<p>If we use <code>union-by-rank</code> and <code>path-compression</code> heuristics in <code>disjoint-set</code> data structure, the running time of <code>Kruskal&#39;s algorithm</code> is \(O(E\lg V)\).</p>
+
+<h3 id="toc_5">Implementation</h3>
 
 <pre><code class="language-python">def kruskal_mst(agraph):
     &quot;&quot;&quot;
@@ -239,6 +290,9 @@ def prim(agraph, start):
       <div class="row">
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
+      
+          <a href="%20Kruskals%20Algorithm:%20Max%20spacing%20k-clustering.html" 
+          title="Previous Post: Minimum Spanning Trees & Clustering">&laquo; Minimum Spanning Trees & Clustering</a>
       
         </p>
         </div>
@@ -353,6 +407,18 @@ s.setAttribute('data-timestamp', +new Date());
 	      
 		      
 			      <li class="post">
+			        <a href="bitwise%20operator%20in%20python.html">Bitwise Operation</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="%20Kruskals%20Algorithm:%20Max%20spacing%20k-clustering.html">Minimum Spanning Trees & Clustering</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="minimum_spanning_tree_prim_kruskal.html">Minimum Spanning Tree: Prim's and Kruskal's Algorithm</a>
 			      </li>
 		     
@@ -366,18 +432,6 @@ s.setAttribute('data-timestamp', +new Date());
 		      
 			      <li class="post">
 			        <a href="disjoint_set_data_structure.html">Disjoint-Set Data Structure</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="character%20encoding.html">Character encoding</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="mysql_introduction.html">MySQL</a>
 			      </li>
 		     
 		  
