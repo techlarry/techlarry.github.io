@@ -127,148 +127,155 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="bitwise%20operator%20in%20python.html">
+                <a class="clearlink" href="clustering%20on%20big%20graph.html">
                 
-                  <h1>Bitwise Operation</h1>
+                  <h1>Clustering on big graph</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<ul>
-<li>
-<a href="#toc_0">The method of complements</a>
-<ul>
-<li>
-<a href="#toc_1">One&#39;s complement (反码)</a>
-</li>
-<li>
-<a href="#toc_2">Two&#39;s complement (补码)</a>
-<ul>
-<li>
-<a href="#toc_3">Implementation</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_4">One or Two</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_5">Reference</a>
-</li>
-</ul>
+                        	<p><strong>Question</strong>: what is the largest value of k such that there is a <code>k-clustering</code> with spacing at least 3?  That is, how many clusters are needed to ensure that no pair of nodes with all but 2 bits in common get split into different clusters?</p>
 
+<p><strong>Input</strong>: <br/>
+[first bit of node 1] … [last bit of node 1]<br/>
+[first bit of node 2] … [last bit of node 2]</p>
 
-<p>There are 6 <code>Bitwise Operators</code>(位操作符) in Python:</p>
+<p>For example, the third line of the file “0 1 1 0 0 1 1 0 0 1 0 1 1 1 1 1 1 0 1 0 1 1 0 1″ denotes the 24 bits associated with node #2.</p>
+
+<p><strong>Output</strong>: what is the largest value of \(k\) such that there is a \(k\)-clustering with spacing at least 3? That is, how many clusters are needed to ensure that no pair of nodes with all but 2 bits in common get split into different clusters?</p>
+
+<p>The distance between two nodes \(u\) and \(v\) in this problem is defined as the <code>Hamming distance</code>--- the number of differing bits --- between the two nodes&#39; labels. </p>
+
+<p><strong>Note</strong>: NOTE: The graph implicitly defined by the data file is so big that you probably can&#39;t write it out explicitly, let alone sort the edges by cost. So you will have to be a little creative to complete this part of the question. For example, is there some way you can identify the smallest distances without explicitly looking at every pair of nodes?</p>
+
+<h2 id="toc_0">METHOD</h2>
 
 <ul>
-<li><code>x&lt;&lt;y</code>: Returns \(x\) with the bits shifted to the left by y places (and new bits on the right-hand-side are zeros). This is the same as multiplying x by \(2^y\).</li>
-<li><code>x&gt;&gt;y</code>: Returns \(x\) with the bits shifted to the right by y places. This is the same as //&#39;ing \(x\) by \(2^y\).</li>
-<li><code>x&amp;y</code>(bitwise AND): Each bit of the output is 1 if the corresponding bit of \(x\) AND of \(y\) is 1, otherwise it&#39;s 0.</li>
-<li><code>x|y</code> (bitwise OR): Each bit of the output is 0 if the corresponding bit of \(x\) AND of \(y\) is 0, otherwise it&#39;s 1.</li>
-<li><code>~ x</code> ( bitwise NOT, or complement): Returns the complement of \(x\) - the number you get by switching each 1 for a 0 and each 0 for a 1. This is the same as \(-x-1\).</li>
-<li><code>^</code> (bitwise Exclusive OR): outputs true only when inputs differ (one is 1, the other is 0).</li>
+<li>We put all the nodes into a hash table, which of size is \(2^n\), where \(n=24\) is the length of input bits. </li>
 </ul>
 
-<p><code>Bitwise Operators</code> operate on numbers, but instead of treating that number as if it were a single value, they treat it as if it were a string of bits, written  in <code>two&#39;s-complement</code> binary.</p>
+<p><strong>Detail</strong>: We use <code>list</code> to represent the hash table in python, of which index will be the numerical value of the input, and value will be the node number index. The node number index also denotes where each node is own cluster (i.e index of cluster).</p>
 
-<h2 id="toc_0">The method of complements</h2>
+<ul>
+<li>In order to find a \(k\)-clustering with spacing at least 3, we just need to find neighbors that the distance between neighbors and nodes are 1 or 2.</li>
+</ul>
 
-<p>The <code>method of complements</code> is a technique used to subtract one number from another using only addition of positive numbers.</p>
+<p><strong>Detail</strong>: We use bit manipulation to find potential   neighbors of a node. According to <code>Hamming distance</code>, the distance means the number of differing bits. Since the distance should be 1 or 2, neighbor of node are such points that differ  from node in no more than 2 bits. Total number of potential neighbor is \(C^2_{24}+C^1_{24} = 300\) . The property of XOR is used to compute its neighbors directly: </p>
 
-<p>Many early computers, use <code>one&#39;s complement</code> notation. The IBM 700/7000 series used to use <code>sign/magnitude</code> notation. Almost all subsequent minicomputers and microcomputers use <code>two&#39;s complement</code>  in the computer industry.</p>
-
-<h3 id="toc_1">One&#39;s complement (反码)</h3>
-
-<p>The one&#39;s complement of a <code>binary number</code> is defined as the value obtained by inverting all the bits in the binary representation of the number (swapping 0s for 1s and vice versa). </p>
-
-<p>Positive numbers are the same simple, binary system used by <code>two&#39;s complement</code> and <code>sign-magnitude</code>. Negative values are the bit complement of the corresponding positive value. </p>
-
-<p>The table below shows all possible values in a 4-bit system, from −7 to +7.</p>
-
-<pre><code>      +      −
- 0   0000   1111   — Note that both +0 and −0 return TRUE when tested for zero
- 1   0001   1110   — and FALSE when tested for non-zero. 
- 2   0010   1101
- 3   0011   1100
- 4   0100   1011
- 5   0101   1010
- 6   0110   1001
- 7   0111   1000
+<pre><code class="language-python">if x ^ y == z: 
+    x ^ z = y 
 </code></pre>
 
-<p><strong>Negative zero</strong> is the condition where all bits in a signed word are 1. </p>
+<p>Hence, In order to find neighbors \(y\), we just compute <code>x^z</code>, where \(z\) is no more than 3 1s in the 24-bit binary integer.</p>
 
-<pre><code>1111 1111
+<ul>
+<li>In order to keep track of connected clusters, the <code>disjoint-set</code> data structure is used here.</li>
+</ul>
+
+<h2 id="toc_1">Procedure</h2>
+
+<pre><code class="language-python">for each node in Graph (200K iterations):
+    for each code that is 0 or 1 or 2 units apart from this vertex:
+        Add these 2 vertexes to a cluster.
 </code></pre>
 
-<h3 id="toc_2">Two&#39;s complement (补码)</h3>
+<h2 id="toc_2">Implementation</h2>
 
-<p>A <code>two&#39;s complement</code> number system encodes positive and negative numbers in a binary number representation. The weight of each bit is a power of two, except for the <code>most significant bit</code>(最高有效位), whose weight is the negative of corresponding power of two.</p>
+<pre><code class="language-python">class HashTable:
+    def __init__(self, size):
+        self.size = size
+        self.slots = [None for i in range(self.size)]
 
-<p>The method to convert a negative integer into a two&#39;s complement is implemented as follows:</p>
-
-<pre><code>eg. -3
-Start with positive 0000 0011
-flip bits 1111 1100
-add one 1111 1101
-</code></pre>
-
-<h4 id="toc_3">Implementation</h4>
-
-<p>The naive implementation of <code>Two&#39;s complement</code> in Python is as follows:</p>
-
-<pre><code class="language-python">def int_to_two_complement(val, num_bits):
-
-    if val &lt; 0:
-        # major procedure as follows:
-        # 1. take the absolute
-        # 2. flip
-        # 3. add one
-
-        # absolute of val: use int to transform str to int
-        val = bin(val)[3:].rjust(num_bits, &#39;0&#39;)
-
-        # flip it: bitwise complement
-        flip_val = &#39;&#39;
-        flip_bit = {&#39;0&#39;: &#39;1&#39;, &#39;1&#39;: &#39;0&#39;}
-        for bit in val:
-            flip_val += flip_bit[bit]
-        val = flip_val
-
-        # add one
-        val = list(val)
-        if val[-1] == &#39;0&#39;:
-            val[-1] = &#39;1&#39;
+    def add(self, key, value):
+        if self.slots[key]:
+            self.slots[key].append(value)
         else:
-            index = -1
-            while val[index] == &#39;1&#39;:
-                index -= 1
-            val[-1] = &#39;0&#39;
-            val[index - 1] = &#39;1&#39;
-        val = &#39;&#39;.join(val)
-        val = int(val)
+            self.slots[key] = [value]
 
-    else:
+    def values(self):
+        key = 1
+        for val in self.slots:
+            if val:
+                yield (key, val)
+        key += 1
 
-        # fill zeros before the binary number converted by bin, the result = bin(val)
-        val = bin(val)[2:].rjust(num_bits, &#39;0&#39;)
-    return val
+
+class BigClustring:
+
+    def __init__(self):
+        self.hash_table = None
+        self.num = None
+        self.len_bit = None
+        self.disjoint_set = DisjointSet()
+        self.val = []
+
+    def read_from_file(self, file_name):
+        with open(file_name) as infile:
+            line = infile.readline()
+            line = line.strip(&#39;\n&#39;)
+            self.num, self.len_bit = [int(num) for num in line.split()]
+            self.hash_table = HashTable(2 ** self.len_bit)
+
+            node = 1
+            for line in infile.readlines():
+                line = line.strip(&#39;\n&#39;)
+                line = line.replace(&#39; &#39;, &#39;&#39;)
+                val = int(line, 2)
+                self.hash_table.add(val, node)
+                self.disjoint_set.make_set(node)
+                self.val.append(val)
+                node += 1
+
+        if self.num + 1 != node:
+            raise ValueError
+
+    def hamming(self):
+        &quot;&quot;&quot;
+        return binary integer at hamming distance 1 or 2
+        &quot;&quot;&quot;
+        self.hamm = []
+        for i in range(self.len_bit):
+            for j in range(self.len_bit):
+                self.hamm.append(1 &lt;&lt; i | 1 &lt;&lt; j)
+
+    def neighbors(self, val):
+        &quot;&quot;&quot;
+        return node_index of neighbors for val
+        &quot;&quot;&quot;
+        for key in self.hamm:
+            if self.hash_table.slots[key ^ val] is not None:
+                yield self.hash_table.slots[key ^ val][0]
+
+    def cluster(self):
+        &quot;&quot;&quot;
+        cluster nodes with 0-1-2 distances
+        &quot;&quot;&quot;
+
+        # first cluster the 0 distance nodes
+        for key, val in self.hash_table.values():
+            if len(val) &gt; 1:
+                # union
+                for val1 in val:
+                    for val2 in val:
+                        if val1 != val2:
+                            self.disjoint_set.union(val1, val2)
+
+        # second cluster the 1-2 distance nodes
+        node = 1
+        for val in self.val:
+            neighbors = self.neighbors(val)
+            for neighbor in neighbors:
+                self.disjoint_set.union(node, neighbor)
+            node += 1
+        return len(self.disjoint_set)
 </code></pre>
 
-<h3 id="toc_4">One or Two</h3>
+<h2 id="toc_3">Reference</h2>
 
-<p>A <code>two&#39;s complement</code> integer equals its <code>one&#39;s complement</code> integer plus one.</p>
-
-<p>\[X_{two} = 2^n-x = x_{one}+1\]</p>
-
-<h2 id="toc_5">Reference</h2>
-
-<p>1.<a href="https://en.wikipedia.org/wiki/Most_significant_bit">Most Significant Bit</a><br/>
-2.<a href="https://wiki.python.org/moin/BitwiseOperators">wiki-python</a><br/>
-3.<a href="https://stackoverflow.com/questions/1604464/twos-complement-in-python">two&#39;s complement in python -Stackoverflow</a><br/>
-4. <a href="https://en.wikipedia.org/wiki/Two&#x27;s_complement#Subtraction_from_2N">Two&#39;s complement WIKIPEDIA</a></p>
+<ol>
+<li><a href="https://rstudio-pubs-static.s3.amazonaws.com/72033_dcd43db591574873aac22be4cde29af6.html">Clustering on big graph, python</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Hamming_distance">Hamming Distance WIKIPEDIA</a></li>
+</ol>
 
                         
                       </div>
@@ -1952,6 +1959,12 @@ test2()
 	      
 		      
 			      <li class="post">
+			        <a href="clustering%20on%20big%20graph.html">Clustering on big graph</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="bitwise%20operator%20in%20python.html">Bitwise Operation</a>
 			      </li>
 		     
@@ -1971,12 +1984,6 @@ test2()
 		      
 			      <li class="post">
 			        <a href="disjoint_set_data_structure.html">Disjoint-Set Data Structure</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="character%20encoding.html">Character encoding</a>
 			      </li>
 		     
 		  
