@@ -15,7 +15,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  Machine Learning (3): Classification - techlarry
+  Huffman Coding - techlarry
   
   </title>
   
@@ -127,14 +127,14 @@
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>Machine Learning (3): Classification</h1>
+          <h1>Huffman Coding</h1>
      
         <div class="read-more clearfix">
-          <span class="date">2017/6/27</span>
+          <span class="date">2017/8/6</span>
 
           <span>posted in&nbsp;</span> 
           
-              <span class="posted-in"><a href='%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html'>机器学习</a></span>
+              <span class="posted-in"><a href='Greedy.html'>Greedy</a></span>
            
          
           <span class="comments">
@@ -147,151 +147,53 @@
       </div><!-- article -->
 
       <div class="article-content">
-      <ul>
-<li>
-<a href="#toc_0">Binary Classification</a>
-<ul>
-<li>
-<a href="#toc_1">Examples</a>
-</li>
-<li>
-<a href="#toc_2">Hypothesis Representation</a>
-</li>
-<li>
-<a href="#toc_3">Decision boundary</a>
-</li>
-<li>
-<a href="#toc_4">Cost Function</a>
-</li>
-<li>
-<a href="#toc_5">Gradient Descent</a>
-</li>
-<li>
-<a href="#toc_6">Advanced Optimization</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_7">Multiclass classification</a>
-<ul>
-<li>
-<a href="#toc_8">Example</a>
-</li>
-<li>
-<a href="#toc_9">Method</a>
-</li>
-</ul>
-</li>
-</ul>
+      <h2 id="toc_0">Implementation</h2>
+
+<pre><code class="language-python">from queue import PriorityQueue
+
+class HuffmanNode:
+    def __init__(self, left, right):
+        self.left_child = left
+        self.right_child = right
 
 
-<p>The classification problem is just like the regression problem, except that the values y we now want to predict take on only a small number of discrete values.</p>
+def huffman_coding(freqs):
+    pq = PriorityQueue()
+    for value in freqs:
+        pq.put(value)
 
-<h2 id="toc_0">Binary Classification</h2>
+    while pq.qsize() &gt; 1:
+        l, r = pq.get(), pq.get()
+        node = HuffmanNode(l, r)
+        pq.put((l[0]+r[0], node))
+    return pq.get()
 
-<p><strong>Binary classification problem</strong> : y can take on only two values, 0 and 1.</p>
 
-<h3 id="toc_1">Examples</h3>
+def walk_tree(node, prefix=&quot;&quot;, code={}):
+    if isinstance(node[1], HuffmanNode):
+        walk_tree(node[1].left_child, prefix + &quot;0&quot;, code)
+        walk_tree(node[1].right_child, prefix + &quot;1&quot;, code)
+    else:
+        code[node[1]] = prefix
 
-<ul>
-<li>Email: Spam/Not Spam?</li>
-<li>Online Transaction: Fraudulent(Yes/NO)?</li>
-<li>Tumor: Malignant/ Benign?</li>
-</ul>
+    return code
 
-<p>Given \(x(i)\), the corresponding \(y(i)\) is also called the <strong>label</strong> for the training example.</p>
 
-<h3 id="toc_2">Hypothesis Representation</h3>
 
-<p>It doesn&#39;t make sense for \(h_\theta(x)\) to take values larger than 1 or smaller than0, when we know that \( y\in \{0,1\}\). To fix this, let&#39;s change the form for our hypotheses \(h_\theta(x)\) to satisfy \(0\leq_\theta(x)\leq 1\). This is accomplished by plugging \(\theta^Tx\) into the Logistic Function.</p>
 
-<p><strong>Logistic Function</strong>:<br/>
-also called sigmoid (/&#39;sɪgmɔɪd/) function<br/>
-   \[\begin{align*}&amp; h_\theta (x) = g ( \theta^T x ) \newline \newline&amp; z = \theta^T x \newline&amp; g(z) = \dfrac{1}{1 + e^{-z}}\end{align*}\]</p>
+freq = [ (8.167, &#39;a&#39;), (1.492, &#39;b&#39;), (2.782, &#39;c&#39;), (4.253, &#39;d&#39;),
+    (12.702, &#39;e&#39;), (2.228, &#39;f&#39;), (2.015, &#39;g&#39;), (6.094, &#39;h&#39;),
+    (6.966, &#39;i&#39;), (0.153, &#39;j&#39;), (0.747, &#39;k&#39;), (4.025, &#39;l&#39;),
+    (2.406, &#39;m&#39;), (6.749, &#39;n&#39;), (7.507, &#39;o&#39;), (1.929, &#39;p&#39;),
+    (0.095, &#39;q&#39;), (5.987, &#39;r&#39;), (6.327, &#39;s&#39;), (9.056, &#39;t&#39;),
+    (2.758, &#39;u&#39;), (1.037, &#39;v&#39;), (2.365, &#39;w&#39;), (0.150, &#39;x&#39;),
+    (1.974, &#39;y&#39;), (0.074, &#39;z&#39;)]
 
-<ol>
-<li><p>The sigmoid function g(z), maps any real number to the (0, 1) interval, making it useful for transforming an arbitrary-valued function into a function better suited for classification.</p></li>
-<li><p>\(h_\theta(x)\) gives us the probability that our output is 1. Probability that prediction is 0 is just the complement of probability that it is 1:</p></li>
-</ol>
-
-<p>\[\begin{align*}&amp; h_\theta(x) = P(y=1 | x ; \theta) = 1 - P(y=0 | x ; \theta) \newline&amp; P(y = 0 | x;\theta) + P(y = 1 | x ; \theta) = 1\end{align*}\]</p>
-
-<h3 id="toc_3">Decision boundary</h3>
-
-<p>The <strong>decision boundary</strong> is the line that separates the area where y = 0 and where y = 1. It is defined by hypothesis function.</p>
-
-<h3 id="toc_4">Cost Function</h3>
-
-<p>We cannot use the same cost function that we use for linear regression because the Logistic Function will cause the output to be wary, causing many local optima.</p>
-
-<p>Instead, our cost function for logistic regression looks like:</p>
-
-<p>\[\begin{align*}&amp; J(\theta) = \dfrac{1}{m} \sum_{i=1}^m \mathrm{Cost}(h_\theta(x^{(i)}),y^{(i)}) \newline &amp; \mathrm{Cost}(h_\theta(x),y) = -\log(h_\theta(x)) \; &amp; \text{if y = 1} \newline &amp; \mathrm{Cost}(h_\theta(x),y) = -\log(1-h_\theta(x)) \; &amp; \text{if y = 0}\end{align*}\]</p>
-
-<p>Cost function&#39;s two conditional cases can be compressed into one case:<br/>
-\[Cost(h_\theta(x),y)= -y \log(h_\theta(x))-(1-y) \log(1-h_\theta(x))\]</p>
-
-<p>The entire cost function can be written as follows:</p>
-
-<p>\[ J(\theta) = -\dfrac{1}{m} \sum_{i=1}^m[ y ^{(i)}\log(h_\theta(x^{(i)}))+(1-y^{(i)}) \log(1-h_\theta(x^{(i)}))]\]</p>
-
-<p>A vectorized implementation is:<br/>
-\[h=g(X\theta)\]<br/>
-\[J(\theta)=\frac{1}{m}(-y^T\log(h)-(1-y)^T\log(1-h))\]</p>
-
-<p>And the gradient of the cost is a vector of the same length as \(\theta\) where the \(j^{th}\) element is defined as follows:</p>
-
-<p>\[\frac{\partial J(\theta)}{\partial \theta_j}=\frac{1}{m}\Sigma_{i=1}^m(h_\theta(x^{(i)})-y^{(i)})x^{(i)}_j\]</p>
-
-<p>A vectorized implementation is:<br/>
-\[\frac{\partial J(\theta)}{\partial \theta_j}=\frac{1}{m}(h-y)^TX\]</p>
-
-<h3 id="toc_5">Gradient Descent</h3>
-
-<p>Repeat until {</p>
-
-<p>\[\theta_j:=\theta_j-\frac{\alpha}{m}\Sigma^m_{i=1}(h_\theta(x^{(i)})-y^{(i)})x^{(i)}_j\]<br/>
-}</p>
-
-<p>A vectorized implementation is:</p>
-
-<p>\[\theta:=\theta-\frac{\alpha}{m}X^T(g(X\theta)-y)\]</p>
-
-<h3 id="toc_6">Advanced Optimization</h3>
-
-<p>There are more sophisticated, faster ways to optimize \(\theta\) that can be used instead of gradient descent:</p>
-
-<ul>
-<li>Conjugate gradient</li>
-<li>BFGS</li>
-<li>L-BFGS</li>
-</ul>
-
-<p>You should not write these algorithms yourself, but use the libraries provided by Octave and Matlab instead.</p>
-
-<h2 id="toc_7">Multiclass classification</h2>
-
-<h3 id="toc_8">Example</h3>
-
-<ul>
-<li>Email foldering/tagging: Work, friends, family, hobby</li>
-<li>Medical diagrams: Not ill, Cold, Flu</li>
-<li>Weather: Sunny, Cloudy, Rain, Snow</li>
-</ul>
-
-<h3 id="toc_9">Method</h3>
-
-<p>Since \(y = \{0,1...n\}\), we divide our problem into \(n+1\) (+1 because the index starts at 0) binary classification problems; in each one, we predict the probability that &#39;y&#39; is a member of one of our classes.</p>
-
-<p>We are basically choosing one class and then lumping all the others into a single second class. We do this repeatedly, applying binary logistic regression to each case, and then use the hypothesis that returned the highest value as our prediction.</p>
-
-<p>\[\begin{align*}&amp; y \in \lbrace0, 1 ... n\rbrace \newline&amp; h_\theta^{(0)}(x) = P(y = 0 | x ; \theta) \newline&amp; h_\theta^{(1)}(x) = P(y = 1 | x ; \theta) \newline&amp; \cdots \newline&amp; h_\theta^{(n)}(x) = P(y = n | x ; \theta) \newline&amp; \mathrm{prediction} = \max_i( h_\theta ^{(i)}(x) )\newline\end{align*}\]</p>
-
-<p><strong>To summarize</strong>:</p>
-
-<p>Train a logistic regression classifier hθ(x) for each class to predict the probability that  \(y = i\) .</p>
-
-<p>To make a prediction on a new x, pick the class that maximizes \(h_\theta(x)\)</p>
+root_node = huffman_coding(freq)
+code = walk_tree(root_node)
+for i in sorted(freq, reverse=True):
+    print(i[1], &#39;{:6.2f}&#39;.format(i[0]), code[i[1]])
+</code></pre>
 
 
     
@@ -302,16 +204,13 @@ also called sigmoid (/&#39;sɪgmɔɪd/) function<br/>
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="14987012023353.html" 
-          title="Previous Post: 口语">&laquo; 口语</a>
-      
         </p>
         </div>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="14985240916710.html" 
-          title="Next Post: Python科学计算三维可视化">Python科学计算三维可视化 &raquo;</a>
+          <a  href="clustering%20on%20big%20graph.html" 
+          title="Next Post: Clustering on big graph">Clustering on big graph &raquo;</a>
       
       </p>
         </div>

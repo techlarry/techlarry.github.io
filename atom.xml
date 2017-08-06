@@ -4,13 +4,70 @@
   <title><![CDATA[techlarry]]></title>
   <link href="http://larryim.cc/atom.xml" rel="self"/>
   <link href="http://larryim.cc/"/>
-  <updated>2017-08-05T23:13:58+08:00</updated>
+  <updated>2017-08-05T23:18:30+08:00</updated>
   <id>http://larryim.cc/</id>
   <author>
     <name><![CDATA[]]></name>
     
   </author>
   <generator uri="http://www.mweb.im/">MWeb</generator>
+  
+  <entry>
+    <title type="html"><![CDATA[Huffman Coding]]></title>
+    <link href="http://larryim.cc/15020346646852.html"/>
+    <updated>2017-08-06T23:51:04+08:00</updated>
+    <id>http://larryim.cc/15020346646852.html</id>
+    <content type="html"><![CDATA[
+<h2 id="toc_0">Implementation</h2>
+
+<pre><code class="language-python">from queue import PriorityQueue
+
+class HuffmanNode:
+    def __init__(self, left, right):
+        self.left_child = left
+        self.right_child = right
+
+
+def huffman_coding(freqs):
+    pq = PriorityQueue()
+    for value in freqs:
+        pq.put(value)
+
+    while pq.qsize() &gt; 1:
+        l, r = pq.get(), pq.get()
+        node = HuffmanNode(l, r)
+        pq.put((l[0]+r[0], node))
+    return pq.get()
+
+
+def walk_tree(node, prefix=&quot;&quot;, code={}):
+    if isinstance(node[1], HuffmanNode):
+        walk_tree(node[1].left_child, prefix + &quot;0&quot;, code)
+        walk_tree(node[1].right_child, prefix + &quot;1&quot;, code)
+    else:
+        code[node[1]] = prefix
+
+    return code
+
+
+
+
+freq = [ (8.167, &#39;a&#39;), (1.492, &#39;b&#39;), (2.782, &#39;c&#39;), (4.253, &#39;d&#39;),
+    (12.702, &#39;e&#39;), (2.228, &#39;f&#39;), (2.015, &#39;g&#39;), (6.094, &#39;h&#39;),
+    (6.966, &#39;i&#39;), (0.153, &#39;j&#39;), (0.747, &#39;k&#39;), (4.025, &#39;l&#39;),
+    (2.406, &#39;m&#39;), (6.749, &#39;n&#39;), (7.507, &#39;o&#39;), (1.929, &#39;p&#39;),
+    (0.095, &#39;q&#39;), (5.987, &#39;r&#39;), (6.327, &#39;s&#39;), (9.056, &#39;t&#39;),
+    (2.758, &#39;u&#39;), (1.037, &#39;v&#39;), (2.365, &#39;w&#39;), (0.150, &#39;x&#39;),
+    (1.974, &#39;y&#39;), (0.074, &#39;z&#39;)]
+
+root_node = huffman_coding(freq)
+code = walk_tree(root_node)
+for i in sorted(freq, reverse=True):
+    print(i[1], &#39;{:6.2f}&#39;.format(i[0]), code[i[1]])
+</code></pre>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Clustering on big graph]]></title>
@@ -26,9 +83,8 @@
 
 <p>For example, the third line of the file “0 1 1 0 0 1 1 0 0 1 0 1 1 1 1 1 1 0 1 0 1 1 0 1″ denotes the 24 bits associated with node #2.</p>
 
-<p><strong>Output</strong>: what is the largest value of \(k\) such that there is a \(k\)-clustering with spacing at least 3? That is, how many clusters are needed to ensure that no pair of nodes with all but 2 bits in common get split into different clusters?</p>
-
-<p>The distance between two nodes \(u\) and \(v\) in this problem is defined as the <code>Hamming distance</code>--- the number of differing bits --- between the two nodes&#39; labels. </p>
+<p><strong>Background</strong>:<br/>
+The distance between two nodes \(u\) and \(v\) in this problem is defined as the <code>Hamming distance</code>--- the number of differing bits --- between the two nodes&#39; labels. </p>
 
 <p><strong>Note</strong>: NOTE: The graph implicitly defined by the data file is so big that you probably can&#39;t write it out explicitly, let alone sort the edges by cost. So you will have to be a little creative to complete this part of the question. For example, is there some way you can identify the smallest distances without explicitly looking at every pair of nodes?</p>
 
@@ -2352,9 +2408,9 @@ class BinaryTree(object):
         postorder traversal
         &quot;&quot;&quot;
         if root is not None:
-            self.post_order(root.left_child)
+            self.in_order(root.left_child)
             print(root.key, end=&#39; &#39;)
-            self.post_order(root.right_child)
+            self.in_order(root.right_child)
 
 if __name__ == &quot;__main__&quot;:
     doctest.testmod(verbose=True)
@@ -2809,132 +2865,6 @@ print(f4())
 <p>The results shows:</p>
 
 <pre><code class="language-python">[&#39;f2&#39;, &#39;f3&#39;, &#39;f4&#39;, &#39;&lt;module&gt;&#39;]
-</code></pre>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Hashing (2): Using hashing to implement Map ADT]]></title>
-    <link href="http://larryim.cc/hash_table_2_Using_hashing_to_implement_Map_ADT.html"/>
-    <updated>2017-07-17T09:00:36+08:00</updated>
-    <id>http://larryim.cc/hash_table_2_Using_hashing_to_implement_Map_ADT.html</id>
-    <content type="html"><![CDATA[
-<p>The <code>map</code> abstract data type is an unordered collection of associations between a key and a data value (just like a dictionary in Python). The <code>keys</code> in a map are all unique so that there is a one-to-one relationship between a key and a value.</p>
-
-<p>The operations are given below:</p>
-
-<ul>
-<li><code>Map()</code> Create a new, empty map. If the key is already in the map, then replace the old value with the new value</li>
-<li><code>put(key, val)</code> Add a new key-value pair to the map. If the key is already in the map, then replace the old value with the new value.</li>
-<li><code>get(key)</code> Given a key, return the value stored in the map or None otherwise.</li>
-<li><code>del</code> Delete the key-value pair from the map using a statement of the form <code>del map[key]</code></li>
-<li><code>len()</code> Return the number of key-value pairs stored in the map</li>
-<li><code>in</code> Return <code>True</code> for a statement of the form <code>key in map</code>, if the given key is in the map, <code>False</code> otherwise.</li>
-</ul>
-
-<p>It would be better to use a hash table  than a list with binary search since looking up an item in a hash table can approach \(O(1)\) performance.</p>
-
-<p>Two list, are used to create <code>HashTable</code> class that implement the Map abstract data type. One called <code>slots</code> which will hold the key items; another called <code>data</code> which will hold the data values. It is important that the size of the hash table be a prime number so that the collision resolution algorithm can be as efficient as possible. </p>
-
-<p><code>hash_function</code> implements the hash function by simple <code>remainder method</code>. The collision resolution is linear probing. The <code>put</code> function assumes that there will eventually be an empty slot unless the key is already present in the <code>self.slots</code></p>
-
-<pre><code class="language-python">
-
-class HashTable:
-    &quot;&quot;&quot;
-    &gt;&gt;&gt; h=HashTable()
-    &gt;&gt;&gt; h[54]=&quot;cat&quot;
-    &gt;&gt;&gt; h[26]=&quot;dog&quot;
-    &gt;&gt;&gt; h[93]=&quot;lion&quot;
-    &gt;&gt;&gt; h[77]=&quot;bird&quot;
-    &gt;&gt;&gt; h[31]=&quot;cow&quot;
-    &gt;&gt;&gt; h[44]=&quot;goat&quot;
-    &gt;&gt;&gt; h.slots
-    [77, 44, None, None, 26, 93, None, None, None, 31, 54]
-    &gt;&gt;&gt; h.data
-    [&#39;goat&#39;, None, None, None, &#39;dog&#39;, &#39;lion&#39;, None, None, None, &#39;cow&#39;, &#39;cat&#39;]
-    &quot;&quot;&quot;
-    def __init__(self):
-        self.size = 11
-        self.slots = [None] * self.size
-        self.data = [None]* self.size
-
-    def put(self, key, data):
-        hash_value = self.hash_function(key, len(self.slots))
-        if self.slots[hash_value] is None:
-            self.slots[hash_value] = key
-            self.data[hash_value] = data
-        elif self.slots[hash_value] == key:
-            self.data[hash_value] = data
-        else:
-            # rehash
-            next_slot = self.rehash(hash_value, len(self.slots))
-            while self.slots[next_slot] is not None and self.slots[next_slot] != key:
-                next_slot = self.rehash(hash_value, len(self.slots))
-
-            if self.slots[next_slot] is None:
-                self.slots[next_slot] = key
-                self.data[hash_value] = data
-            else:
-                self.data[hash_value] = data
-
-    def hash_function(self, key, size):
-        &quot;&quot;&quot;
-        hash_function implements the simple remainder method
-        &quot;&quot;&quot;
-        return key % size
-
-    def rehash(self, old_hash, size):
-        &quot;&quot;&quot;
-        linear probing with a plus 1
-        &quot;&quot;&quot;
-        return (old_hash+1) % size
-
-    def get(self, key):
-        start_slot = self.hash_function(key, len(self.slots))
-        data = None
-        stop = False
-        found = False
-        position = start_slot
-        while self.slots[position] is not None and \
-                not found and not stop:
-            if self.slots[position] == key:
-                found = True
-                data = self.data[position]
-            else:
-                position = self.rehash(position, len(self.slots))
-            if position == start_slot:
-                stop = True
-        return data
-
-    def __getitem__(self, key):
-        return self.get(key)
-
-    def __setitem__(self, key, data):
-        self.put(key, data)
-
-    def __len__(self):
-        &quot;&quot;&quot;
-        return length
-        &quot;&quot;&quot;
-        count = 0
-        for item in self.slots:
-            if item is not None:
-                count += 1
-
-        return count
-
-    def __contains__(self, item):
-        &quot;&quot;&quot;
-        定义了使用in和not in进行成员测试时类的行为
-        &quot;&quot;&quot;
-        return self.get(item) is not None
-
-
-if __name__ == &quot;__main__&quot;:
-    import doctest
-    doctest.testmod(verbose=True)
 </code></pre>
 
 ]]></content>

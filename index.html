@@ -127,6 +127,85 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15020346646852.html">
+                
+                  <h1>Huffman Coding</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h2 id="toc_0">Implementation</h2>
+
+<pre><code class="language-python">from queue import PriorityQueue
+
+class HuffmanNode:
+    def __init__(self, left, right):
+        self.left_child = left
+        self.right_child = right
+
+
+def huffman_coding(freqs):
+    pq = PriorityQueue()
+    for value in freqs:
+        pq.put(value)
+
+    while pq.qsize() &gt; 1:
+        l, r = pq.get(), pq.get()
+        node = HuffmanNode(l, r)
+        pq.put((l[0]+r[0], node))
+    return pq.get()
+
+
+def walk_tree(node, prefix=&quot;&quot;, code={}):
+    if isinstance(node[1], HuffmanNode):
+        walk_tree(node[1].left_child, prefix + &quot;0&quot;, code)
+        walk_tree(node[1].right_child, prefix + &quot;1&quot;, code)
+    else:
+        code[node[1]] = prefix
+
+    return code
+
+
+
+
+freq = [ (8.167, &#39;a&#39;), (1.492, &#39;b&#39;), (2.782, &#39;c&#39;), (4.253, &#39;d&#39;),
+    (12.702, &#39;e&#39;), (2.228, &#39;f&#39;), (2.015, &#39;g&#39;), (6.094, &#39;h&#39;),
+    (6.966, &#39;i&#39;), (0.153, &#39;j&#39;), (0.747, &#39;k&#39;), (4.025, &#39;l&#39;),
+    (2.406, &#39;m&#39;), (6.749, &#39;n&#39;), (7.507, &#39;o&#39;), (1.929, &#39;p&#39;),
+    (0.095, &#39;q&#39;), (5.987, &#39;r&#39;), (6.327, &#39;s&#39;), (9.056, &#39;t&#39;),
+    (2.758, &#39;u&#39;), (1.037, &#39;v&#39;), (2.365, &#39;w&#39;), (0.150, &#39;x&#39;),
+    (1.974, &#39;y&#39;), (0.074, &#39;z&#39;)]
+
+root_node = huffman_coding(freq)
+code = walk_tree(root_node)
+for i in sorted(freq, reverse=True):
+    print(i[1], &#39;{:6.2f}&#39;.format(i[0]), code[i[1]])
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/8/6</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Greedy.html'>Greedy</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="clustering%20on%20big%20graph.html">
                 
                   <h1>Clustering on big graph</h1>
@@ -142,9 +221,8 @@
 
 <p>For example, the third line of the file “0 1 1 0 0 1 1 0 0 1 0 1 1 1 1 1 1 0 1 0 1 1 0 1″ denotes the 24 bits associated with node #2.</p>
 
-<p><strong>Output</strong>: what is the largest value of \(k\) such that there is a \(k\)-clustering with spacing at least 3? That is, how many clusters are needed to ensure that no pair of nodes with all but 2 bits in common get split into different clusters?</p>
-
-<p>The distance between two nodes \(u\) and \(v\) in this problem is defined as the <code>Hamming distance</code>--- the number of differing bits --- between the two nodes&#39; labels. </p>
+<p><strong>Background</strong>:<br/>
+The distance between two nodes \(u\) and \(v\) in this problem is defined as the <code>Hamming distance</code>--- the number of differing bits --- between the two nodes&#39; labels. </p>
 
 <p><strong>Note</strong>: NOTE: The graph implicitly defined by the data file is so big that you probably can&#39;t write it out explicitly, let alone sort the edges by cost. So you will have to be a little creative to complete this part of the question. For example, is there some way you can identify the smallest distances without explicitly looking at every pair of nodes?</p>
 
@@ -2800,9 +2878,9 @@ class BinaryTree(object):
         postorder traversal
         &quot;&quot;&quot;
         if root is not None:
-            self.post_order(root.left_child)
+            self.in_order(root.left_child)
             print(root.key, end=&#39; &#39;)
-            self.post_order(root.right_child)
+            self.in_order(root.right_child)
 
 if __name__ == &quot;__main__&quot;:
     doctest.testmod(verbose=True)
@@ -8633,6 +8711,12 @@ test2()
 	      
 		      
 			      <li class="post">
+			        <a href="15020346646852.html">Huffman Coding</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="clustering%20on%20big%20graph.html">Clustering on big graph</a>
 			      </li>
 		     
@@ -8652,12 +8736,6 @@ test2()
 		      
 			      <li class="post">
 			        <a href="hash_table_5_hashable.html">Hash Table (5): Hashable</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="disjoint_set_data_structure.html">Disjoint-Set Data Structure</a>
 			      </li>
 		     
 		  
