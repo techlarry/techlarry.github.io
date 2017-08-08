@@ -4,13 +4,72 @@
   <title><![CDATA[techlarry]]></title>
   <link href="http://larryim.cc/atom.xml" rel="self"/>
   <link href="http://larryim.cc/"/>
-  <updated>2017-08-05T23:18:30+08:00</updated>
+  <updated>2017-08-08T18:41:59+08:00</updated>
   <id>http://larryim.cc/</id>
   <author>
     <name><![CDATA[]]></name>
     
   </author>
   <generator uri="http://www.mweb.im/">MWeb</generator>
+  
+  <entry>
+    <title type="html"><![CDATA[Dynamic Programming]]></title>
+    <link href="http://larryim.cc/15021784932429.html"/>
+    <updated>2017-08-08T15:48:13+08:00</updated>
+    <id>http://larryim.cc/15021784932429.html</id>
+    <content type="html"><![CDATA[
+<p><code>Dynamic programming</code> is a method for solving a complex problem by breaking it down into a collection of simpler subproblems, solving each of those subproblems just once, and storing their solutions. It stores solutions to subproblems instead of recomputing them(called <code>memoization</code> technique).</p>
+
+<h4 id="toc_0">Dynamic programming v.s. Divide-and-conquer algorithm</h4>
+
+<p><code>Divide-and-conquer</code> algorithms partition the problem into disjoint subproblems, solve the subproblems recursively, and then combine their solutions to solve the original problem. In contrast, <code>dynamic programming</code> partition the problem into subproblems that overlaps, that is, subproblems share subproblems.</p>
+
+<h2 id="toc_1">Application: Minimum weight independent set</h2>
+
+<p><strong>Input</strong>: A path graph \(G=(V,E)\) with nonnegative weights on vertices.<br/>
+<strong>Output</strong>: an <code>independent set</code> of maximum total weight.</p>
+
+<p><strong>Background</strong>:<br/>
+A <code>path graph</code> is a tree with two nodes of vertex degree 1, and the other \(n-2\) nodes of vertex degree 2. A path graph is therefore a graph that can be drawn so that all of its vertices and edges lie on a single straight line.</p>
+
+<h3 id="toc_2">Proposed algorithm</h3>
+
+<ul>
+<li>Recursively compute \(S_1=\) max-weight independent set of \(G&#39;\)</li>
+<li>Recursively compute \(S_2=\) max-weight independent set of \(G&quot;\)</li>
+<li>Return \(S_1\) or \(S_2 \cup{v_n}\), whichever is better.</li>
+</ul>
+
+<h3 id="toc_3">Implementation</h3>
+
+<pre><code class="language-python">def maximum_weight_independent_set(weights):
+    &quot;&quot;&quot;
+    Compute Maximum weight independent set for a path graph.
+    Weights of vertexes in the path graph are given.
+    Return maximum weight independent set.
+    &quot;&quot;&quot;
+    num = len(weights)
+    a = [0] * (num + 1)
+    in_set = []  # independent set
+    a[0], a[1] = 0, weights[0]
+
+    for i in range(2, num + 1):
+        a[i] = max(a[i - 1], a[i - 2] + weights[i - 1])
+
+    while i &gt;= 1:
+        if a[i - 1] &gt;= a[i - 2] + weights[i - 1]:
+            i -= 1
+        else:
+            in_set.append(i - 1)
+            i -= 2
+    in_set.reverse()
+    return in_set
+    ```
+
+</code></pre>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Huffman Coding]]></title>
@@ -2808,64 +2867,6 @@ if __name__ == &quot;__main__&quot;:
 <p>The architecture of a database system is greatly influenced by the underlying computer system on which the database system runs. Database system can be centralized, or client-server, where one server machine executes work on behalf of multiple client machines.</p>
 
 <p><img src="media/15002564768282/Screen%20Shot%202017-07-17%20at%2010.55.20%20AM.png" alt="System Structure"/></p>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Recursion Iteration Performace]]></title>
-    <link href="http://larryim.cc/recursion_iteration.html"/>
-    <updated>2017-07-16T09:45:43+08:00</updated>
-    <id>http://larryim.cc/recursion_iteration.html</id>
-    <content type="html"><![CDATA[
-<p>The performance of <code>Recursion</code> v.s. <code>Iteration</code> depends on the language being used.</p>
-
-<p>In Java, C, and Python, <code>recursion</code> is fairly expensive compared to <code>iteration</code> (in general) because it requires the allocation of a new <code>stack frame</code>. In some C compilers, one can use a compiler flag to eliminate this overhead, which transforms certain types of recursion (actually, certain types of tail calls) into jumps instead of function calls.</p>
-
-<h2 id="toc_0">Stack Frame</h2>
-
-<p>When a function is called in Python, a <code>stack frame</code> is allocated to handle the local variables of the function. When the function returns, the return value is left on the top of the stack for the calling function to access.</p>
-
-<p>The stack frame provide a <code>scope</code> for the variables used by the function. Even though we are calling the same function over and over, each call creates a new scope for the variables that are local to the function.</p>
-
-<h3 id="toc_1">Get Stack Frame</h3>
-
-<p>The <code>inspect</code> module in <code>python</code> provides several useful functions to help get information about live objects such as modules, classes, methods, functions, tracebacks, <code>frame objects</code>, and code objects.</p>
-
-<pre><code class="language-python">import inspect
-
-def f1():
-    names = []
-    # inpect.currentframe
-    # Return the frame object for the caller’s stack frame.
-    frame = inspect.currentframe()
-  
-    ## Keep moving to next outer frame
-    while True:
-        try:
-            frame = frame.f_back # next outer frame object (this frame’s caller)
-            name = frame.f_code.co_name # name with which this code object was defined
-            names.append(name)
-        except:
-            break
-    return names
-    
-def f2():
-   return f1()
-
-def f3():
-   return f2()
-
-def f4():
-   return f3()
-
-print(f4())
-</code></pre>
-
-<p>The results shows:</p>
-
-<pre><code class="language-python">[&#39;f2&#39;, &#39;f3&#39;, &#39;f4&#39;, &#39;&lt;module&gt;&#39;]
-</code></pre>
 
 ]]></content>
   </entry>

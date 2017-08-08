@@ -127,6 +127,87 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15021784932429.html">
+                
+                  <h1>Dynamic Programming</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p><code>Dynamic programming</code> is a method for solving a complex problem by breaking it down into a collection of simpler subproblems, solving each of those subproblems just once, and storing their solutions. It stores solutions to subproblems instead of recomputing them(called <code>memoization</code> technique).</p>
+
+<h4 id="toc_0">Dynamic programming v.s. Divide-and-conquer algorithm</h4>
+
+<p><code>Divide-and-conquer</code> algorithms partition the problem into disjoint subproblems, solve the subproblems recursively, and then combine their solutions to solve the original problem. In contrast, <code>dynamic programming</code> partition the problem into subproblems that overlaps, that is, subproblems share subproblems.</p>
+
+<h2 id="toc_1">Application: Minimum weight independent set</h2>
+
+<p><strong>Input</strong>: A path graph \(G=(V,E)\) with nonnegative weights on vertices.<br/>
+<strong>Output</strong>: an <code>independent set</code> of maximum total weight.</p>
+
+<p><strong>Background</strong>:<br/>
+A <code>path graph</code> is a tree with two nodes of vertex degree 1, and the other \(n-2\) nodes of vertex degree 2. A path graph is therefore a graph that can be drawn so that all of its vertices and edges lie on a single straight line.</p>
+
+<h3 id="toc_2">Proposed algorithm</h3>
+
+<ul>
+<li>Recursively compute \(S_1=\) max-weight independent set of \(G&#39;\)</li>
+<li>Recursively compute \(S_2=\) max-weight independent set of \(G&quot;\)</li>
+<li>Return \(S_1\) or \(S_2 \cup{v_n}\), whichever is better.</li>
+</ul>
+
+<h3 id="toc_3">Implementation</h3>
+
+<pre><code class="language-python">def maximum_weight_independent_set(weights):
+    &quot;&quot;&quot;
+    Compute Maximum weight independent set for a path graph.
+    Weights of vertexes in the path graph are given.
+    Return maximum weight independent set.
+    &quot;&quot;&quot;
+    num = len(weights)
+    a = [0] * (num + 1)
+    in_set = []  # independent set
+    a[0], a[1] = 0, weights[0]
+
+    for i in range(2, num + 1):
+        a[i] = max(a[i - 1], a[i - 2] + weights[i - 1])
+
+    while i &gt;= 1:
+        if a[i - 1] &gt;= a[i - 2] + weights[i - 1]:
+            i -= 1
+        else:
+            in_set.append(i - 1)
+            i -= 2
+    in_set.reverse()
+    return in_set
+    ```
+
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/8/8</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html'>Python数据结构与算法</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15020346646852.html">
                 
                   <h1>Huffman Coding</h1>
@@ -5028,6 +5109,12 @@ print(&#39;pop end&#39;, pop_end.timeit(1000))
 	      
 		      
 			      <li class="post">
+			        <a href="15021784932429.html">Dynamic Programming</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15020346646852.html">Huffman Coding</a>
 			      </li>
 		     
@@ -5047,12 +5134,6 @@ print(&#39;pop end&#39;, pop_end.timeit(1000))
 		      
 			      <li class="post">
 			        <a href="minimum_spanning_tree_prim_kruskal.html">Minimum Spanning Tree: Prim's, Kruskal's Algorithm and Clustering</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="hash_table_5_hashable.html">Hash Table (5): Hashable</a>
 			      </li>
 		     
 		  
