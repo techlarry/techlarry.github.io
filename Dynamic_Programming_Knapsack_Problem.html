@@ -160,7 +160,7 @@
 
 <h3 id="toc_0">Solving</h3>
 
-<p>Assume \(w_i, w_2,..., w_n, W\) are strictly positive integers. Define \(m[i,w]\) to be the maximum value that can be attained with weight less than or queal to \(w\) using items up to \(i\)(first \(i\) items).</p>
+<p>Assume \(w_i, w_2,..., w_n, W\) are strictly positive integers. Define \(m[i,w]\) to be the maximum value that can be attained with weight less than or queal to \(w\) using items up to \(i\) (first \(i\) items).</p>
 
 <p>We can define \(m[i,w]\) recursively as follows:</p>
 
@@ -188,6 +188,51 @@ for i from 1 to n do:
         else:
             m[i, j] := max(m[i-1, j], m[i-1, j-w[i]] + v[i])
 </code></pre>
+
+<h3 id="toc_1">Implementation</h3>
+
+<pre><code class="language-python">def knapsack01(value, weight, w_size):
+    &quot;&quot;&quot;
+    kanapsack01 solves a 0-1 knapsack problem,
+    input: values(value) and weights(W) of items to put into knapsack ( size of which is w_size)
+    output: the index of items that maximize the value of items putted in the knapsack
+    the index of items counts from 0, and corresponding value
+    &quot;&quot;&quot;
+    n = len(value)  # the number of items
+    # maximum value that can be attained with weight &lt;= weight using first i items
+    m = np.zeros(shape=(n+1, w_size+1), dtype=int)
+    for i in range(w_size+1):
+        m[0, i] = 0
+
+    if not isinstance(w_size, int):
+        raise ValueError(&#39;knapsack_size should be an integer&#39;)
+
+    for i in range(1, n+1):  # items
+        for j in range(1, w_size+1):  # sizes
+            if weight[i-1] &gt; j:
+                m[i, j] = m[i - 1, j]
+            else:
+                m[i, j] = max(m[i - 1, j], m[i - 1, j - weight[i-1]] + value[i-1])
+
+    max_val = m[-1, -1]
+    items = set()
+
+    while max_val &gt; 0 and i &gt; 0:
+        if max_val - value[i-1] in m[i - 1, :]:
+            max_val = max_val - value[i-1]
+            items.add(i-1)
+            i -= 1
+        else:
+            i -= 1
+    return items, m[-1, -1]
+</code></pre>
+
+<h2 id="toc_2">Reference</h2>
+
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Knapsack_problem#cite_ref-plateau85_15-0">Knapsack Problem WIKIPEDIA</a></li>
+<li><a href="https://stackoverflow.com/questions/5683066/knapsack-problem-classic">Knapsack problem Stack Overflow</a></li>
+</ul>
 
 
     
