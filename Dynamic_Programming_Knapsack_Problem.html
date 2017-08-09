@@ -158,7 +158,9 @@
 
 <p>Informally, the problem is to maximize the sum of the values of the items in the knapsack so that the sum of the weights is less than or equal to the knapsack&#39;s capacity.</p>
 
-<h3 id="toc_0">Solving</h3>
+<h2 id="toc_0">Bottom-up method</h2>
+
+<h3 id="toc_1">Solving</h3>
 
 <p>Assume \(w_i, w_2,..., w_n, W\) are strictly positive integers. Define \(m[i,w]\) to be the maximum value that can be attained with weight less than or queal to \(w\) using items up to \(i\) (first \(i\) items).</p>
 
@@ -189,7 +191,7 @@ for i from 1 to n do:
             m[i, j] := max(m[i-1, j], m[i-1, j-w[i]] + v[i])
 </code></pre>
 
-<h3 id="toc_1">Implementation</h3>
+<h3 id="toc_2">Implementation</h3>
 
 <pre><code class="language-python">def knapsack01(value, weight, w_size):
     &quot;&quot;&quot;
@@ -227,11 +229,41 @@ for i from 1 to n do:
     return items, m[-1, -1]
 </code></pre>
 
-<h2 id="toc_2">Reference</h2>
+<h2 id="toc_3">top-down with memoization</h2>
+
+<p>def knapsack01_recursive(hash_table, value, weight, i, j):<br/>
+    # base case: when 1 items here<br/>
+    if i == 1:<br/>
+        if weight[i - 1] &lt; j:<br/>
+            hash_table[(i, j)] = value[i - 1]<br/>
+            return value[i - 1]<br/>
+        else:<br/>
+            hash_table[(i, j)] = 0<br/>
+        return 0</p>
+
+<pre><code># sub-problem computed
+if (i, j) in hash_table:
+    return hash_table[(i, j)]
+else:
+    if weight[i - 1] &gt; j:
+        # only case 1
+        hash_table[(i, j)] = knapsack01_recursive(hash_table, value, weight, i - 1, j)
+    else:
+        #  case 1, item i-1 excluded
+        case1 = knapsack01_recursive(hash_table, value, weight, i - 1, j)
+        # case 2, item i-1 included
+        case2 = knapsack01_recursive(hash_table, value, weight, i - 1, j - weight[i - 1]) + value[i - 1]
+        hash_table[(i, j)] = max(case1, case2)
+
+return hash_table[(i, j)]
+</code></pre>
+
+<h2 id="toc_4">Reference</h2>
 
 <ul>
 <li><a href="https://en.wikipedia.org/wiki/Knapsack_problem#cite_ref-plateau85_15-0">Knapsack Problem WIKIPEDIA</a></li>
 <li><a href="https://stackoverflow.com/questions/5683066/knapsack-problem-classic">Knapsack problem Stack Overflow</a></li>
+<li><a href="http://www.es.ele.tue.nl/education/5MC10/Solutions/knapsack.pdf">The knapsack Problem PPT</a></li>
 </ul>
 
 
@@ -243,16 +275,16 @@ for i from 1 to n do:
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="Dynamic_Programming_Sequence_Aligment.html" 
-          title="Previous Post: Dynamic Programming (2): Sequence Alignment">&laquo; Dynamic Programming (2): Sequence Alignment</a>
+          <a href="Dynamic_Programming_Optimal_Binary_Search_Tree.html" 
+          title="Previous Post: Dynamic Programming (4): Optimal Binary Search Tree">&laquo; Dynamic Programming (4): Optimal Binary Search Tree</a>
       
         </p>
         </div>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="Dynamic_Programming_Introduction.html" 
-          title="Next Post: Dynamic Programming (1): Introduction">Dynamic Programming (1): Introduction &raquo;</a>
+          <a  href="Dynamic_Programming_Minimum_weight_independent_set.html" 
+          title="Next Post: Dynamic Programming (2): Minimum weight independent set">Dynamic Programming (2): Minimum weight independent set &raquo;</a>
       
       </p>
         </div>
@@ -365,13 +397,13 @@ s.setAttribute('data-timestamp', +new Date());
 		  
 		      
 			      <li class="post">
-			        <a href="Dynamic_Programming_Sequence_Aligment.html">Dynamic Programming (2): Sequence Alignment</a>
+			        <a href="Dynamic_Programming_Knapsack_Problem.html">Dynamic Programming (3): Knapsack Problem</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="Dynamic_Programming_Knapsack_Problem.html">Dynamic Programming (3): Knapsack Problem</a>
+			        <a href="Dynamic_Programming_Minimum_weight_independent_set.html">Dynamic Programming (2): Minimum weight independent set</a>
 			      </li>
 		     
 		  

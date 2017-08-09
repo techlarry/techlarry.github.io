@@ -4,7 +4,7 @@
   <title><![CDATA[techlarry]]></title>
   <link href="http://larryim.cc/atom.xml" rel="self"/>
   <link href="http://larryim.cc/"/>
-  <updated>2017-08-09T16:51:17+08:00</updated>
+  <updated>2017-08-09T23:03:59+08:00</updated>
   <id>http://larryim.cc/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -18,16 +18,11 @@
     <updated>2017-08-09T16:42:39+08:00</updated>
     <id>http://larryim.cc/Dynamic_Programming_Optimal_Binary_Search_Tree.html</id>
     <content type="html"><![CDATA[
+<h2 id="toc_0">Reference</h2>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Dynamic Programming (2): Sequence Alignment]]></title>
-    <link href="http://larryim.cc/Dynamic_Programming_Sequence_Aligment.html"/>
-    <updated>2017-08-09T16:42:06+08:00</updated>
-    <id>http://larryim.cc/Dynamic_Programming_Sequence_Aligment.html</id>
-    <content type="html"><![CDATA[
+<ul>
+<li><a href="http://ac.els-cdn.com/S0304397596003209/1-s2.0-S0304397596003209-main.pdf?_tid=1505980e-7cd4-11e7-83de-00000aacb361&amp;acdnat=1502263778_53b76d131a06906e9fe3adfadc778677">Optimal Binary Search Tree</a></li>
+</ul>
 
 ]]></content>
   </entry>
@@ -49,7 +44,9 @@
 
 <p>Informally, the problem is to maximize the sum of the values of the items in the knapsack so that the sum of the weights is less than or equal to the knapsack&#39;s capacity.</p>
 
-<h3 id="toc_0">Solving</h3>
+<h2 id="toc_0">Bottom-up method</h2>
+
+<h3 id="toc_1">Solving</h3>
 
 <p>Assume \(w_i, w_2,..., w_n, W\) are strictly positive integers. Define \(m[i,w]\) to be the maximum value that can be attained with weight less than or queal to \(w\) using items up to \(i\) (first \(i\) items).</p>
 
@@ -80,7 +77,7 @@ for i from 1 to n do:
             m[i, j] := max(m[i-1, j], m[i-1, j-w[i]] + v[i])
 </code></pre>
 
-<h3 id="toc_1">Implementation</h3>
+<h3 id="toc_2">Implementation</h3>
 
 <pre><code class="language-python">def knapsack01(value, weight, w_size):
     &quot;&quot;&quot;
@@ -118,54 +115,52 @@ for i from 1 to n do:
     return items, m[-1, -1]
 </code></pre>
 
-<h2 id="toc_2">Reference</h2>
+<h2 id="toc_3">top-down with memoization</h2>
+
+<p>def knapsack01_recursive(hash_table, value, weight, i, j):<br/>
+    # base case: when 1 items here<br/>
+    if i == 1:<br/>
+        if weight[i - 1] &lt; j:<br/>
+            hash_table[(i, j)] = value[i - 1]<br/>
+            return value[i - 1]<br/>
+        else:<br/>
+            hash_table[(i, j)] = 0<br/>
+        return 0</p>
+
+<pre><code># sub-problem computed
+if (i, j) in hash_table:
+    return hash_table[(i, j)]
+else:
+    if weight[i - 1] &gt; j:
+        # only case 1
+        hash_table[(i, j)] = knapsack01_recursive(hash_table, value, weight, i - 1, j)
+    else:
+        #  case 1, item i-1 excluded
+        case1 = knapsack01_recursive(hash_table, value, weight, i - 1, j)
+        # case 2, item i-1 included
+        case2 = knapsack01_recursive(hash_table, value, weight, i - 1, j - weight[i - 1]) + value[i - 1]
+        hash_table[(i, j)] = max(case1, case2)
+
+return hash_table[(i, j)]
+</code></pre>
+
+<h2 id="toc_4">Reference</h2>
 
 <ul>
 <li><a href="https://en.wikipedia.org/wiki/Knapsack_problem#cite_ref-plateau85_15-0">Knapsack Problem WIKIPEDIA</a></li>
 <li><a href="https://stackoverflow.com/questions/5683066/knapsack-problem-classic">Knapsack problem Stack Overflow</a></li>
+<li><a href="http://www.es.ele.tue.nl/education/5MC10/Solutions/knapsack.pdf">The knapsack Problem PPT</a></li>
 </ul>
 
 ]]></content>
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Dynamic Programming (1): Introduction]]></title>
-    <link href="http://larryim.cc/Dynamic_Programming_Introduction.html"/>
-    <updated>2017-08-08T15:48:13+08:00</updated>
-    <id>http://larryim.cc/Dynamic_Programming_Introduction.html</id>
+    <title type="html"><![CDATA[Dynamic Programming (2): Minimum weight independent set]]></title>
+    <link href="http://larryim.cc/Dynamic_Programming_Minimum_weight_independent_set.html"/>
+    <updated>2017-08-09T22:52:15+08:00</updated>
+    <id>http://larryim.cc/Dynamic_Programming_Minimum_weight_independent_set.html</id>
     <content type="html"><![CDATA[
-<ul>
-<li>
-<a href="#toc_0">Dynamic programming v.s. Divide-and-conquer algorithm</a>
-</li>
-<li>
-<a href="#toc_1">Application: Minimum weight independent set</a>
-<ul>
-<li>
-<a href="#toc_2">Proposed algorithm</a>
-</li>
-<li>
-<a href="#toc_3">Implementation</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_4">Optimal Binary Search Tree</a>
-</li>
-<li>
-<a href="#toc_5">Reference</a>
-</li>
-</ul>
-
-
-<p><code>Dynamic programming</code> is a method for solving a complex problem by breaking it down into a collection of simpler subproblems, solving each of those subproblems just once, and storing their solutions. It stores solutions to subproblems instead of recomputing them(called <code>memoization</code> technique).</p>
-
-<h2 id="toc_0">Dynamic programming v.s. Divide-and-conquer algorithm</h2>
-
-<p><code>Divide-and-conquer</code> algorithms partition the problem into disjoint subproblems, solve the subproblems recursively, and then combine their solutions to solve the original problem. In contrast, <code>dynamic programming</code> partition the problem into subproblems that overlaps, that is, subproblems share subproblems.</p>
-
-<h2 id="toc_1">Application: Minimum weight independent set</h2>
-
 <p><strong>Input</strong>: A path graph \(G=(V,E)\) with nonnegative weights on vertices.<br/>
 <strong>Output</strong>: an <code>independent set</code> of maximum total weight.</p>
 
@@ -174,15 +169,15 @@ A <code>path graph</code> is a tree with two nodes of vertex degree 1, and the o
 
 <p>A <code>Independent set</code> is a set of vertices in a graph, no two of which are adjacent.</p>
 
-<h3 id="toc_2">Proposed algorithm</h3>
+<h2 id="toc_0">Proposed algorithm</h2>
 
 <ul>
-<li>Recursively compute \(S_1=\) max-weight independent set of \(G&#39;\)</li>
-<li>Recursively compute \(S_2=\) max-weight independent set of \(G&quot;\)</li>
+<li>Recursively compute \(S_1=\) max-weight independent set of \(G&#39;\)
+rsively compute \(S_2=\) max-weight independent set of \(G&quot;\)</li>
 <li>Return \(S_1\) or \(S_2 \cup{v_n}\), whichever is better.</li>
 </ul>
 
-<h3 id="toc_3">Implementation</h3>
+<h3 id="toc_1">Implementation</h3>
 
 <pre><code class="language-python">def maximum_weight_independent_set(weights):
     &quot;&quot;&quot;
@@ -208,13 +203,50 @@ A <code>path graph</code> is a tree with two nodes of vertex degree 1, and the o
     return in_set
 </code></pre>
 
-<h2 id="toc_4">Optimal Binary Search Tree</h2>
-
-<h2 id="toc_5">Reference</h2>
-
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Dynamic Programming (1): Introduction]]></title>
+    <link href="http://larryim.cc/Dynamic_Programming_Introduction.html"/>
+    <updated>2017-08-08T15:48:13+08:00</updated>
+    <id>http://larryim.cc/Dynamic_Programming_Introduction.html</id>
+    <content type="html"><![CDATA[
 <ul>
-<li><a href="http://ac.els-cdn.com/S0304397596003209/1-s2.0-S0304397596003209-main.pdf?_tid=1505980e-7cd4-11e7-83de-00000aacb361&amp;acdnat=1502263778_53b76d131a06906e9fe3adfadc778677">Optimal Binary Search Tree</a></li>
+<li>
+<a href="#toc_0">Dynamic programming v.s. Divide-and-conquer algorithm</a>
+</li>
+<li>
+<a href="#toc_1">Approach</a>
+<ul>
+<li>
+<a href="#toc_2">Top-down with memoization</a>
+</li>
+<li>
+<a href="#toc_3">Bottom-up method</a>
+</li>
 </ul>
+</li>
+</ul>
+
+
+<p><code>Dynamic programming</code> is a method for solving a complex problem by breaking it down into a collection of simpler subproblems, solving each of those subproblems just once, and storing their solutions. It stores solutions to subproblems instead of recomputing them(called <code>memoization</code> technique).</p>
+
+<h2 id="toc_0">Dynamic programming v.s. Divide-and-conquer algorithm</h2>
+
+<p><code>Divide-and-conquer</code> algorithms partition the problem into disjoint subproblems, solve the subproblems recursively, and then combine their solutions to solve the original problem. In contrast, <code>dynamic programming</code> partition the problem into subproblems that overlaps, that is, subproblems share subproblems.</p>
+
+<h2 id="toc_1">Approach</h2>
+
+<p>There are usually two equivalent ways to implement a dynamic-programming approach.</p>
+
+<h3 id="toc_2">Top-down with memoization</h3>
+
+<p>We write the procedure recursively in a natural manner, but modified to save the result of each subproblem in the hash table. The procedure first checks to see whether it has previously solved this subproblem. If so, it returns the saved value, saving further computation at this level; if not, the procedure computes the value in the usual manner. </p>
+
+<h3 id="toc_3">Bottom-up method</h3>
+
+<p>We sort the subproblems by size and solve them in size order, smallest first. When solving a particular subproblem, we have already solved all of the smaller subproblems its solution depends upon, and we have saved their solutions. We solve each subproblem only once, and when we first see it, we have already solved all of its prerequisite subproblems.</p>
 
 ]]></content>
   </entry>
