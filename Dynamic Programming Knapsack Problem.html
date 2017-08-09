@@ -15,7 +15,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  Linux 系统编程 - techlarry
+  Dynamic Programming: Knapsack Problem - techlarry
   
   </title>
   
@@ -118,84 +118,134 @@
        
 
  <script type="text/javascript">
-	$(function(){
-		$('#menu_item_index').addClass('is_active');
-	});
+  $(function(){
+    $('#menu_item_index').addClass('is_active');
+  });
 </script>
 <div class="row">
-	<div class="large-8 medium-8 columns">
-		<div class="markdown-body home-categories">
-		
-			<div class="article">
-                <a class="clearlink" href="14970832553234.html">
-                
-                  <h1>调试</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h2 id="toc_0">pdb</h2>
+  <div class="large-8 medium-8 columns">
+      <div class="markdown-body article-wrap">
+       <div class="article">
+          
+          <h1>Dynamic Programming: Knapsack Problem</h1>
+     
+        <div class="read-more clearfix">
+          <span class="date">2017/8/9</span>
 
-<p>pdb是基于命令行的调试工具，是Python的调试器，非常类似GNU的GDB（调试c/c++）</p>
+          <span>posted in&nbsp;</span> 
+          
+              <span class="posted-in"><a href='Dynamic%20Programming.html'>Dynamic Programming</a></span>
+           
+         
+          <span class="comments">
+            
 
-<pre><code class="language-python">python -m pdb some.py # -m是模块的意思, pdb模块
-</code></pre>
+            
+          </span>
 
-<h3 id="toc_1">命令</h3>
+        </div>
+      </div><!-- article -->
+
+      <div class="article-content">
+      <p>The most common problem being solved is the <code>0-1 knapsack problem</code>, which restricts the number \(w_i\) of copies of each kind of item to zero or one. Given a set of \(n\) items numbered from 1 up to \(n\), each with a weight \(w_i\) and a value \(v_i\), along with a maximum weight capacity \(W\),</p>
+
+<p>\[\begin{equation}<br/>
+\begin{split}<br/>
+&amp;\text{maximize} \sum_{i=1}^nv_ix_i\\<br/>
+&amp;\text{subject to} \sum_{i=1}^n w_ix_i \le W \quad \text{and} \quad x_i \in \{0,1\}\\<br/>
+\end{split}<br/>
+\end{equation}\]</p>
+
+<p>Informally, the problem is to maximize the sum of the values of the items in the knapsack so that the sum of the weights is less than or equal to the knapsack&#39;s capacity.</p>
+
+<h3 id="toc_0">Solving</h3>
+
+<p>Assume \(w_i, w_2,..., w_n, W\) are strictly positive integers. Define \(m[i,w]\) to be the maximum value that can be attained with weight less than or queal to \(w\) using items up to \(i\)(first \(i\) items).</p>
+
+<p>We can define \(m[i,w]\) recursively as follows:</p>
 
 <ul>
-<li>输入命令<code>l</code> (list) 查看代码</li>
-<li>输入命令<code>n</code> (next) 可以单步执行代码</li>
-<li>输入命令<code>c</code> (continue) 继续执行代码</li>
-<li>输入命令<code>b</code> (break) 添加断点</li>
-<li>输入命令<code>clear</code> 清除断点</li>
-<li>输入命令<code>p</code> (print) 打印一个变量的值</li>
-<li>输入命令<code>s</code> (step) 进入到一个函数</li>
-<li>输入命令<code>a</code> (args) 打印所有的形参数据</li>
-<li>输入命令<code>r</code> (return) 快速执行到函数的最后一行</li>
-<li>输入命令<code>q</code> quit 退出调试</li>
+<li>\(m[0, w]=0 \)</li>
+<li>\(m[i,w]=m[i-1, w]\) \(if w_i &gt; w\) ( the new item is more than the current weight limit)</li>
+<li>\(m[i,w]= max(m[i-1,w],m[i-1,w-w_i]+v_i\)) if \(w_i \le w\)</li>
 </ul>
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/6/10</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Linux%20%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B.html'>Linux 系统编程</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
+<p>The following is pseudo code for the dynamic program:</p>
 
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-              
+<pre><code class="language-python">// Input:
+// Values (stored in array v)
+// Weights (stored in array w)
+// Number of distinct items (n)
+// Knapsack capacity (W)
+  
+for j from 0 to W do:
+     m[0, j] := 0
+  
+for i from 1 to n do:
+    for j from 0 to W do:
+        if w[i] &gt; j then:
+            m[i, j] := m[i-1, j]
+        else:
+            m[i, j] := max(m[i-1, j], m[i-1, j-w[i]] + v[i])
+</code></pre>
 
 
-			<div class="row">
-			  <div class="large-6 columns">
-			  <p class="text-left" style="padding-top:25px;">
-			   
-			  </p>
-			  </div>
-			  <div class="large-6 columns">
-			<p class="text-right" style="padding-top:25px;">
-			
-			</p>
-			  </div>
-			</div>
-		</div>
-	</div><!-- large 8 -->
+    
+
+      </div>
+
+      <div class="row">
+        <div class="large-6 columns">
+        <p class="text-left" style="padding:15px 0px;">
+      
+          <a href="Dynamic%20Programming%20Sequence%20Aligment.html" 
+          title="Previous Post: Dynamic Programming: Sequence Aligment">&laquo; Dynamic Programming: Sequence Aligment</a>
+      
+        </p>
+        </div>
+        <div class="large-6 columns">
+      <p class="text-right" style="padding:15px 0px;">
+      
+          <a  href="15021784932429.html" 
+          title="Next Post: Dynamic Programming">Dynamic Programming &raquo;</a>
+      
+      </p>
+        </div>
+      </div>
+      <div class="comments-wrap">
+        <div class="share-comments">
+          <div id="disqus_thread"></div>
+<script>
+
+/**
+*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+/*
+var disqus_config = function () {
+this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+};
+*/
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = 'https://techlarry-1.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+                                
+
+          
+
+          
+        </div>
+      </div>
+    </div><!-- article-wrap -->
+  </div><!-- large 8 -->
+
+
+
 
  <div class="large-4 medium-4 columns">
   <div class="hide-for-small">
