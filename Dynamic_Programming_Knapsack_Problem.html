@@ -15,7 +15,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  Dynamic Programming (3): Knapsack Problem - techlarry
+  Dynamic Programming (3): 0-1 Knapsack Problem - techlarry
   
   </title>
   
@@ -127,7 +127,7 @@
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>Dynamic Programming (3): Knapsack Problem</h1>
+          <h1>Dynamic Programming (3): 0-1 Knapsack Problem</h1>
      
         <div class="read-more clearfix">
           <span class="date">2017/8/9</span>
@@ -231,31 +231,31 @@ for i from 1 to n do:
 
 <h2 id="toc_3">top-down with memoization</h2>
 
-<p>def knapsack01_recursive(hash_table, value, weight, i, j):<br/>
-    # base case: when 1 items here<br/>
-    if i == 1:<br/>
-        if weight[i - 1] &lt; j:<br/>
-            hash_table[(i, j)] = value[i - 1]<br/>
-            return value[i - 1]<br/>
-        else:<br/>
-            hash_table[(i, j)] = 0<br/>
-        return 0</p>
+<pre><code class="language-python">def knapsack01_recursive(hash_table, value, weight, i, j):
+    # base case: when 1 items here
+    if i == 1:
+        if weight[i - 1] &lt; j:
+            hash_table[(i, j)] = value[i - 1]
+            return value[i - 1]
+        else:
+            hash_table[(i, j)] = 0
+        return 0
 
-<pre><code># sub-problem computed
-if (i, j) in hash_table:
-    return hash_table[(i, j)]
-else:
-    if weight[i - 1] &gt; j:
-        # only case 1
-        hash_table[(i, j)] = knapsack01_recursive(hash_table, value, weight, i - 1, j)
+    # sub-problem computed
+    if (i, j) in hash_table:
+        return hash_table[(i, j)]
     else:
-        #  case 1, item i-1 excluded
-        case1 = knapsack01_recursive(hash_table, value, weight, i - 1, j)
-        # case 2, item i-1 included
-        case2 = knapsack01_recursive(hash_table, value, weight, i - 1, j - weight[i - 1]) + value[i - 1]
-        hash_table[(i, j)] = max(case1, case2)
+        if weight[i - 1] &gt; j:
+            # only case 1
+            hash_table[(i, j)] = knapsack01_recursive(hash_table, value, weight, i - 1, j)
+        else:
+            #  case 1, item i-1 excluded
+            case1 = knapsack01_recursive(hash_table, value, weight, i - 1, j)
+            # case 2, item i-1 included
+            case2 = knapsack01_recursive(hash_table, value, weight, i - 1, j - weight[i - 1]) + value[i - 1]
+            hash_table[(i, j)] = max(case1, case2)
 
-return hash_table[(i, j)]
+    return hash_table[(i, j)]
 </code></pre>
 
 <h2 id="toc_4">Reference</h2>
@@ -391,13 +391,19 @@ s.setAttribute('data-timestamp', +new Date());
 	      
 		      
 			      <li class="post">
+			        <a href="15023384623586.html">NP-completeness</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="Dynamic_Programming_Optimal_Binary_Search_Tree.html">Dynamic Programming (4): Optimal Binary Search Tree</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="Dynamic_Programming_Knapsack_Problem.html">Dynamic Programming (3): Knapsack Problem</a>
+			        <a href="Dynamic_Programming_Knapsack_Problem.html">Dynamic Programming (3): 0-1 Knapsack Problem</a>
 			      </li>
 		     
 		  
@@ -410,12 +416,6 @@ s.setAttribute('data-timestamp', +new Date());
 		      
 			      <li class="post">
 			        <a href="Dynamic_Programming_Introduction.html">Dynamic Programming (1): Introduction</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15020346646852.html">Huffman Coding</a>
 			      </li>
 		     
 		  

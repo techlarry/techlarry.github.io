@@ -127,6 +127,51 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15023384623586.html">
+                
+                  <h1>NP-completeness</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<ul>
+<li>NP stands <code>for None-deterministic Polynomial</code> time. This means that the problem can be solved in Polynomial time using a None-deterministic Turing machine.</li>
+<li>
+##  Polynomial-Time Solvability</li>
+</ul>
+
+<p>A problem is <code>polynomial-time solvable</code> if there is an algorithm that correctly solves it in \(O(n^k)\) time, for some constant \(k\).</p>
+
+<p>Definition: P = the set of polynomial-time solvable problems.</p>
+
+<h2 id="toc_0">Reference</h2>
+
+<ul>
+<li><a href="https://stackoverflow.com/questions/210829/what-is-an-np-complete-in-computer-science">What is an NP-complete in computer science?</a></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/8/10</span>
+                    
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="Dynamic_Programming_Optimal_Binary_Search_Tree.html">
                 
                   <h1>Dynamic Programming (4): Optimal Binary Search Tree</h1>
@@ -166,7 +211,7 @@
 			<div class="article">
                 <a class="clearlink" href="Dynamic_Programming_Knapsack_Problem.html">
                 
-                  <h1>Dynamic Programming (3): Knapsack Problem</h1>
+                  <h1>Dynamic Programming (3): 0-1 Knapsack Problem</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
@@ -255,31 +300,31 @@ for i from 1 to n do:
 
 <h2 id="toc_3">top-down with memoization</h2>
 
-<p>def knapsack01_recursive(hash_table, value, weight, i, j):<br/>
-    # base case: when 1 items here<br/>
-    if i == 1:<br/>
-        if weight[i - 1] &lt; j:<br/>
-            hash_table[(i, j)] = value[i - 1]<br/>
-            return value[i - 1]<br/>
-        else:<br/>
-            hash_table[(i, j)] = 0<br/>
-        return 0</p>
+<pre><code class="language-python">def knapsack01_recursive(hash_table, value, weight, i, j):
+    # base case: when 1 items here
+    if i == 1:
+        if weight[i - 1] &lt; j:
+            hash_table[(i, j)] = value[i - 1]
+            return value[i - 1]
+        else:
+            hash_table[(i, j)] = 0
+        return 0
 
-<pre><code># sub-problem computed
-if (i, j) in hash_table:
-    return hash_table[(i, j)]
-else:
-    if weight[i - 1] &gt; j:
-        # only case 1
-        hash_table[(i, j)] = knapsack01_recursive(hash_table, value, weight, i - 1, j)
+    # sub-problem computed
+    if (i, j) in hash_table:
+        return hash_table[(i, j)]
     else:
-        #  case 1, item i-1 excluded
-        case1 = knapsack01_recursive(hash_table, value, weight, i - 1, j)
-        # case 2, item i-1 included
-        case2 = knapsack01_recursive(hash_table, value, weight, i - 1, j - weight[i - 1]) + value[i - 1]
-        hash_table[(i, j)] = max(case1, case2)
+        if weight[i - 1] &gt; j:
+            # only case 1
+            hash_table[(i, j)] = knapsack01_recursive(hash_table, value, weight, i - 1, j)
+        else:
+            #  case 1, item i-1 excluded
+            case1 = knapsack01_recursive(hash_table, value, weight, i - 1, j)
+            # case 2, item i-1 included
+            case2 = knapsack01_recursive(hash_table, value, weight, i - 1, j - weight[i - 1]) + value[i - 1]
+            hash_table[(i, j)] = max(case1, case2)
 
-return hash_table[(i, j)]
+    return hash_table[(i, j)]
 </code></pre>
 
 <h2 id="toc_4">Reference</h2>
@@ -407,6 +452,9 @@ rsively compute \(S_2=\) max-weight independent set of \(G&quot;\)</li>
 <li>
 <a href="#toc_3">Bottom-up method</a>
 </li>
+<li>
+<a href="#toc_4">Which Method?</a>
+</li>
 </ul>
 </li>
 </ul>
@@ -429,6 +477,13 @@ rsively compute \(S_2=\) max-weight independent set of \(G&quot;\)</li>
 <h3 id="toc_3">Bottom-up method</h3>
 
 <p>We sort the subproblems by size and solve them in size order, smallest first. When solving a particular subproblem, we have already solved all of the smaller subproblems its solution depends upon, and we have saved their solutions. We solve each subproblem only once, and when we first see it, we have already solved all of its prerequisite subproblems.</p>
+
+<h3 id="toc_4">Which Method?</h3>
+
+<ul>
+<li>Top-down approach often results in slightly simpler and clearer code</li>
+<li>Top-down approach only computes the partial results that are needed for the particular problem instance, whereas the bottom-up approach computes all partial results even if some of them go unused.</li>
+</ul>
 
                         
                       </div>
@@ -9038,13 +9093,19 @@ test2()
 	      
 		      
 			      <li class="post">
+			        <a href="15023384623586.html">NP-completeness</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="Dynamic_Programming_Optimal_Binary_Search_Tree.html">Dynamic Programming (4): Optimal Binary Search Tree</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="Dynamic_Programming_Knapsack_Problem.html">Dynamic Programming (3): Knapsack Problem</a>
+			        <a href="Dynamic_Programming_Knapsack_Problem.html">Dynamic Programming (3): 0-1 Knapsack Problem</a>
 			      </li>
 		     
 		  
@@ -9057,12 +9118,6 @@ test2()
 		      
 			      <li class="post">
 			        <a href="Dynamic_Programming_Introduction.html">Dynamic Programming (1): Introduction</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15020346646852.html">Huffman Coding</a>
 			      </li>
 		     
 		  
