@@ -543,6 +543,179 @@ for i in sorted(freq, reverse=True):
               </div><!-- article -->
         
 			<div class="article">
+                <a class="clearlink" href="clustering%20on%20big%20graph.html">
+                
+                  <h1>Clustering on big graph</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p><strong>Question</strong>: what is the largest value of k such that there is a <code>k-clustering</code> with spacing at least 3?  That is, how many clusters are needed to ensure that no pair of nodes with all but 2 bits in common get split into different clusters?</p>
+
+<p><strong>Input</strong>: <br/>
+[first bit of node 1] … [last bit of node 1]<br/>
+[first bit of node 2] … [last bit of node 2]</p>
+
+<p>For example, the third line of the file “0 1 1 0 0 1 1 0 0 1 0 1 1 1 1 1 1 0 1 0 1 1 0 1″ denotes the 24 bits associated with node #2.</p>
+
+<p><strong>Background</strong>:<br/>
+The distance between two nodes \(u\) and \(v\) in this problem is defined as the <code>Hamming distance</code>--- the number of differing bits --- between the two nodes&#39; labels. </p>
+
+<p><strong>Note</strong>: NOTE: The graph implicitly defined by the data file is so big that you probably can&#39;t write it out explicitly, let alone sort the edges by cost. So you will have to be a little creative to complete this part of the question. For example, is there some way you can identify the smallest distances without explicitly looking at every pair of nodes?</p>
+
+<h2 id="toc_0">METHOD</h2>
+
+<ul>
+<li>We put all the nodes into a hash table, which of size is \(2^n\), where \(n=24\) is the length of input bits. </li>
+</ul>
+
+<p><strong>Detail</strong>: We use <code>list</code> to represent the hash table in python, of which index will be the numerical value of the input, and value will be the node number index. The node number index also denotes where each node is own cluster (i.e index of cluster).</p>
+
+<ul>
+<li>In order to find a \(k\)-clustering with spacing at least 3, we just need to find neighbors that the distance between neighbors and nodes are 1 or 2.</li>
+</ul>
+
+<p><strong>Detail</strong>: We use bit manipulation to find potential   neighbors of a node. According to <code>Hamming distance</code>, the distance means the number of differing bits. Since the distance should be 1 or 2, neighbor of node are such points that differ  from node in no more than 2 bits. Total number of potential neighbor is \(C^2_{24}+C^1_{24} = 300\) . The property of XOR is used to compute its neighbors directly: </p>
+
+<pre><code class="language-python">if x ^ y == z: 
+    x ^ z = y 
+</code></pre>
+
+<p>Hence, In order to find neighbors \(y\), we just compute <code>x^z</code>, where \(z\) is no more than 3 1s in the 24-bit binary integer.</p>
+
+<ul>
+<li>In order to keep track of connected clusters, the <code>disjoint-set</code> data structure is used here.</li>
+</ul>
+
+<h2 id="toc_1">Procedure</h2>
+
+<pre><code class="language-python">for each node in Graph (200K iterations):
+    for each code that is 0 or 1 or 2 units apart from this vertex:
+        Add these 2 vertexes to a cluster.
+</code></pre>
+
+<h2 id="toc_2">Implementation</h2>
+
+<pre><code class="language-python">class HashTable:
+    def __init__(self, size):
+        self.size = size
+        self.slots = [None for i in range(self.size)]
+
+    def add(self, key, value):
+        if self.slots[key]:
+            self.slots[key].append(value)
+        else:
+            self.slots[key] = [value]
+
+    def values(self):
+        key = 1
+        for val in self.slots:
+            if val:
+                yield (key, val)
+        key += 1
+
+
+class BigClustring:
+
+    def __init__(self):
+        self.hash_table = None
+        self.num = None
+        self.len_bit = None
+        self.disjoint_set = DisjointSet()
+        self.val = []
+
+    def read_from_file(self, file_name):
+        with open(file_name) as infile:
+            line = infile.readline()
+            line = line.strip(&#39;\n&#39;)
+            self.num, self.len_bit = [int(num) for num in line.split()]
+            self.hash_table = HashTable(2 ** self.len_bit)
+
+            node = 1
+            for line in infile.readlines():
+                line = line.strip(&#39;\n&#39;)
+                line = line.replace(&#39; &#39;, &#39;&#39;)
+                val = int(line, 2)
+                self.hash_table.add(val, node)
+                self.disjoint_set.make_set(node)
+                self.val.append(val)
+                node += 1
+
+        if self.num + 1 != node:
+            raise ValueError
+
+    def hamming(self):
+        &quot;&quot;&quot;
+        return binary integer at hamming distance 1 or 2
+        &quot;&quot;&quot;
+        self.hamm = []
+        for i in range(self.len_bit):
+            for j in range(self.len_bit):
+                self.hamm.append(1 &lt;&lt; i | 1 &lt;&lt; j)
+
+    def neighbors(self, val):
+        &quot;&quot;&quot;
+        return node_index of neighbors for val
+        &quot;&quot;&quot;
+        for key in self.hamm:
+            if self.hash_table.slots[key ^ val] is not None:
+                yield self.hash_table.slots[key ^ val][0]
+
+    def cluster(self):
+        &quot;&quot;&quot;
+        cluster nodes with 0-1-2 distances
+        &quot;&quot;&quot;
+
+        # first cluster the 0 distance nodes
+        for key, val in self.hash_table.values():
+            if len(val) &gt; 1:
+                # union
+                for val1 in val:
+                    for val2 in val:
+                        if val1 != val2:
+                            self.disjoint_set.union(val1, val2)
+
+        # second cluster the 1-2 distance nodes
+        node = 1
+        for val in self.val:
+            neighbors = self.neighbors(val)
+            for neighbor in neighbors:
+                self.disjoint_set.union(node, neighbor)
+            node += 1
+        return len(self.disjoint_set)
+</code></pre>
+
+<h2 id="toc_3">Reference</h2>
+
+<ol>
+<li><a href="https://rstudio-pubs-static.s3.amazonaws.com/72033_dcd43db591574873aac22be4cde29af6.html">Clustering on big graph, python</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Hamming_distance">Hamming Distance WIKIPEDIA</a></li>
+</ol>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/8/5</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html'>Python数据结构与算法</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="bitwise%20operator%20in%20python.html">
                 
                   <h1>Bitwise Operation</h1>
