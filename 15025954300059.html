@@ -15,7 +15,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  Hashing (2): Using hashing to implement Map ADT - techlarry
+  Deep Learning - techlarry
   
   </title>
   
@@ -131,14 +131,14 @@
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>Hashing (2): Using hashing to implement Map ADT</h1>
+          <h1>Deep Learning</h1>
      
         <div class="read-more clearfix">
-          <span class="date">2017/7/17</span>
+          <span class="date">2017/8/13</span>
 
           <span>posted in&nbsp;</span> 
           
-              <span class="posted-in"><a href='Hash%20Table.html'>Hash Table</a></span>
+              <span class="posted-in"><a href='Deep%20Learning.html'>Deep Learning</a></span>
            
          
           <span class="comments">
@@ -151,123 +151,7 @@
       </div><!-- article -->
 
       <div class="article-content">
-      <p>The <code>map</code> abstract data type is an unordered collection of associations between a key and a data value (just like a dictionary in Python). The <code>keys</code> in a map are all unique so that there is a one-to-one relationship between a key and a value.</p>
-
-<p>The operations are given below:</p>
-
-<ul>
-<li><code>Map()</code> Create a new, empty map. If the key is already in the map, then replace the old value with the new value</li>
-<li><code>put(key, val)</code> Add a new key-value pair to the map. If the key is already in the map, then replace the old value with the new value.</li>
-<li><code>get(key)</code> Given a key, return the value stored in the map or None otherwise.</li>
-<li><code>del</code> Delete the key-value pair from the map using a statement of the form <code>del map[key]</code></li>
-<li><code>len()</code> Return the number of key-value pairs stored in the map</li>
-<li><code>in</code> Return <code>True</code> for a statement of the form <code>key in map</code>, if the given key is in the map, <code>False</code> otherwise.</li>
-</ul>
-
-<p>It would be better to use a hash table  than a list with binary search since looking up an item in a hash table can approach \(O(1)\) performance.</p>
-
-<p>Two list, are used to create <code>HashTable</code> class that implement the Map abstract data type. One called <code>slots</code> which will hold the key items; another called <code>data</code> which will hold the data values. It is important that the size of the hash table be a prime number so that the collision resolution algorithm can be as efficient as possible. </p>
-
-<p><code>hash_function</code> implements the hash function by simple <code>remainder method</code>. The collision resolution is linear probing. The <code>put</code> function assumes that there will eventually be an empty slot unless the key is already present in the <code>self.slots</code></p>
-
-<pre><code class="language-python">
-
-class HashTable:
-    &quot;&quot;&quot;
-    &gt;&gt;&gt; h=HashTable()
-    &gt;&gt;&gt; h[54]=&quot;cat&quot;
-    &gt;&gt;&gt; h[26]=&quot;dog&quot;
-    &gt;&gt;&gt; h[93]=&quot;lion&quot;
-    &gt;&gt;&gt; h[77]=&quot;bird&quot;
-    &gt;&gt;&gt; h[31]=&quot;cow&quot;
-    &gt;&gt;&gt; h[44]=&quot;goat&quot;
-    &gt;&gt;&gt; h.slots
-    [77, 44, None, None, 26, 93, None, None, None, 31, 54]
-    &gt;&gt;&gt; h.data
-    [&#39;goat&#39;, None, None, None, &#39;dog&#39;, &#39;lion&#39;, None, None, None, &#39;cow&#39;, &#39;cat&#39;]
-    &quot;&quot;&quot;
-    def __init__(self):
-        self.size = 11
-        self.slots = [None] * self.size
-        self.data = [None]* self.size
-
-    def put(self, key, data):
-        hash_value = self.hash_function(key, len(self.slots))
-        if self.slots[hash_value] is None:
-            self.slots[hash_value] = key
-            self.data[hash_value] = data
-        elif self.slots[hash_value] == key:
-            self.data[hash_value] = data
-        else:
-            # rehash
-            next_slot = self.rehash(hash_value, len(self.slots))
-            while self.slots[next_slot] is not None and self.slots[next_slot] != key:
-                next_slot = self.rehash(hash_value, len(self.slots))
-
-            if self.slots[next_slot] is None:
-                self.slots[next_slot] = key
-                self.data[hash_value] = data
-            else:
-                self.data[hash_value] = data
-
-    def hash_function(self, key, size):
-        &quot;&quot;&quot;
-        hash_function implements the simple remainder method
-        &quot;&quot;&quot;
-        return key % size
-
-    def rehash(self, old_hash, size):
-        &quot;&quot;&quot;
-        linear probing with a plus 1
-        &quot;&quot;&quot;
-        return (old_hash+1) % size
-
-    def get(self, key):
-        start_slot = self.hash_function(key, len(self.slots))
-        data = None
-        stop = False
-        found = False
-        position = start_slot
-        while self.slots[position] is not None and \
-                not found and not stop:
-            if self.slots[position] == key:
-                found = True
-                data = self.data[position]
-            else:
-                position = self.rehash(position, len(self.slots))
-            if position == start_slot:
-                stop = True
-        return data
-
-    def __getitem__(self, key):
-        return self.get(key)
-
-    def __setitem__(self, key, data):
-        self.put(key, data)
-
-    def __len__(self):
-        &quot;&quot;&quot;
-        return length
-        &quot;&quot;&quot;
-        count = 0
-        for item in self.slots:
-            if item is not None:
-                count += 1
-
-        return count
-
-    def __contains__(self, item):
-        &quot;&quot;&quot;
-        定义了使用in和not in进行成员测试时类的行为
-        &quot;&quot;&quot;
-        return self.get(item) is not None
-
-
-if __name__ == &quot;__main__&quot;:
-    import doctest
-    doctest.testmod(verbose=True)
-</code></pre>
-
+      
 
     
 
@@ -277,16 +161,13 @@ if __name__ == &quot;__main__&quot;:
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="recursion_iteration.html" 
-          title="Previous Post: Recursion Iteration Performace">&laquo; Recursion Iteration Performace</a>
-      
         </p>
         </div>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="dijkstra_algorithm.html" 
-          title="Next Post: Dijkstra's algorithm">Dijkstra's algorithm &raquo;</a>
+          <a  href="15025903235887.html" 
+          title="Next Post: Latex 技巧">Latex 技巧 &raquo;</a>
       
       </p>
         </div>
