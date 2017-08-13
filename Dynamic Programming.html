@@ -102,6 +102,10 @@
         
             <li><a href="%20%E7%90%86%E8%A7%A3%E8%AE%A1%E7%AE%97%E6%9C%BA.html"> 理解计算机</a></li>
         
+            <li><a href="Deep%20Learning.html">Deep Learning</a></li>
+        
+            <li><a href="Latex.html">Latex</a></li>
+        
             <li><a href="Linux%20%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B.html">Linux 系统编程</a></li>
         
             <li><a href="%E6%95%B0%E6%8D%AE%E5%BA%93.html">数据库</a></li>
@@ -134,10 +138,54 @@
                       
                       <div class="a-content-text">
                         
-                        	<h2 id="toc_0">Reference</h2>
+                        	<p>An <code>Optimal Binary Search Tree (Optimal BST)</code> is a binary search tree which provides the smallest possible search time for a given sequence of access probabilities. The cost of a BST node is the level of that node plus one multiplied by its frequency.</p>
+
+<p><strong>Problem Statement</strong>: Given a sorted array \(keys[0.. n-1]\) of search keys and an array \(freq[0.. n-1]\) of frequency counts, where \(freq[i]\) is the number of searches to \(keys[i]\). Construct a binary search tree of all keys such that the total cost of all the searches is as small as possible.</p>
+
+<h2 id="toc_0">Optimal Substructure</h2>
+
+<p>The optimal cost of node \(i,...,j\) can be recursively calculated using the following formula.</p>
+
+<p>\(Cost(i,j) = \sum \limits^{j}_{k=i}freq[k] + \min \limits_{r=i}^j[Cost(i,r-1)+Cost(r+1,j)]\)</p>
+
+<p>We try all nodes one by one as root (\(r\) varies from \(i\) to \(j\)). When we make \(r\)th node as root, we recursively calculate optimal cost from \(i\) to \(r-1\) and \(r+1\) to \(j\). </p>
+
+<h3 id="toc_1">Implementation: top-down with memoization</h3>
+
+<pre><code class="language-python">def optimal_bst(freq):
+    def opt_cost(hash_table, freq, i, j):
+        &quot;&quot;&quot;
+        Optimal Binary Search Tree
+        Recursive Method used here
+        &quot;&quot;&quot;
+
+        # base case: only 0~1 element
+        if j &lt; i:
+            return 0
+        if j == i:
+            return freq[i]
+
+        # if already exists
+        if (i, j) in hash_table:
+            return hash_table[(i, j)]
+
+        min_cost = sys.maxsize
+        for r in range(i, j + 1):
+            cost = opt_cost(hash_table, freq, i, r - 1) + opt_cost(hash_table, freq, r + 1, j)
+            if cost &lt; min_cost:
+                min_cost = cost
+
+        hash_table[(i, j)] = sum(freq[i:j + 1]) + min_cost
+        return hash_table[(i, j)]
+
+    return opt_cost({}, freq, 0, len(freq) - 1)
+</code></pre>
+
+<h2 id="toc_2">Reference</h2>
 
 <ul>
 <li><a href="http://ac.els-cdn.com/S0304397596003209/1-s2.0-S0304397596003209-main.pdf?_tid=1505980e-7cd4-11e7-83de-00000aacb361&amp;acdnat=1502263778_53b76d131a06906e9fe3adfadc778677">Optimal Binary Search Tree</a></li>
+<li><a href="http://www.geeksforgeeks.org/dynamic-programming-set-24-optimal-binary-search-tree/">Optimal Binary Search Tree GeeksforGeeks</a></li>
 </ul>
 
                         
@@ -407,12 +455,12 @@ rsively compute \(S_2=\) max-weight independent set of \(G&quot;\)</li>
 <li>
 <a href="#toc_3">Bottom-up method</a>
 </li>
+</ul>
+</li>
+</ul>
+</li>
 <li>
-<a href="#toc_4">Which Method?</a>
-</li>
-</ul>
-</li>
-</ul>
+<a href="#toc_4">****## Which Method?</a>
 
 
 <p><code>Dynamic programming</code> is a method for solving a complex problem by breaking it down into a collection of simpler subproblems, solving each of those subproblems just once, and storing their solutions. It stores solutions to subproblems instead of recomputing them(called <code>memoization</code> technique).</p>
@@ -433,7 +481,7 @@ rsively compute \(S_2=\) max-weight independent set of \(G&quot;\)</li>
 
 <p>We sort the subproblems by size and solve them in size order, smallest first. When solving a particular subproblem, we have already solved all of the smaller subproblems its solution depends upon, and we have saved their solutions. We solve each subproblem only once, and when we first see it, we have already solved all of its prerequisite subproblems.</p>
 
-<h3 id="toc_4">Which Method?</h3>
+<h1 id="toc_4">****## Which Method?</h1>
 
 <ul>
 <li>Top-down approach often results in slightly simpler and clearer code</li>
@@ -529,6 +577,10 @@ rsively compute \(S_2=\) max-weight independent set of \(G&quot;\)</li>
         
             <a href="%20%E7%90%86%E8%A7%A3%E8%AE%A1%E7%AE%97%E6%9C%BA.html"><strong> 理解计算机</strong></a>
         
+            <a href="Deep%20Learning.html"><strong>Deep Learning</strong></a>
+        
+            <a href="Latex.html"><strong>Latex</strong></a>
+        
             <a href="Linux%20%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B.html"><strong>Linux 系统编程</strong></a>
         
             <a href="%E6%95%B0%E6%8D%AE%E5%BA%93.html"><strong>数据库</strong></a>
@@ -548,6 +600,24 @@ rsively compute \(S_2=\) max-weight independent set of \(G&quot;\)</li>
 	      
 		      
 			      <li class="post">
+			        <a href="15025903235887.html">Latex 如何将下标放在正上方／正下方</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15025274631841.html">Tensorflow</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15025201109276.html">MySQL(3): Storage Engines</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15023384623586.html">NP-completeness</a>
 			      </li>
 		     
@@ -555,24 +625,6 @@ rsively compute \(S_2=\) max-weight independent set of \(G&quot;\)</li>
 		      
 			      <li class="post">
 			        <a href="Dynamic_Programming_Optimal_Binary_Search_Tree.html">Dynamic Programming (4): Optimal Binary Search Tree</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="Dynamic_Programming_Knapsack_Problem.html">Dynamic Programming (3): 0-1 Knapsack Problem</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="Dynamic_Programming_Minimum_weight_independent_set.html">Dynamic Programming (2): Minimum weight independent set</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="Dynamic_Programming_Introduction.html">Dynamic Programming (1): Introduction</a>
 			      </li>
 		     
 		  
