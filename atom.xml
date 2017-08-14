@@ -4,13 +4,257 @@
   <title><![CDATA[techlarry]]></title>
   <link href="http://larryim.cc/atom.xml" rel="self"/>
   <link href="http://larryim.cc/"/>
-  <updated>2017-08-13T11:27:10+08:00</updated>
+  <updated>2017-08-14T14:17:04+08:00</updated>
   <id>http://larryim.cc/</id>
   <author>
     <name><![CDATA[]]></name>
     
   </author>
   <generator uri="http://www.mweb.im/">MWeb</generator>
+  
+  <entry>
+    <title type="html"><![CDATA[Python and MySQL]]></title>
+    <link href="http://larryim.cc/15026944183320.html"/>
+    <updated>2017-08-14T15:06:58+08:00</updated>
+    <id>http://larryim.cc/15026944183320.html</id>
+    <content type="html"><![CDATA[
+<p>There are a lot of python driver available for MySQL and two stand out the most. The one, traditionally everybody’s choice, sort of industrial standard <code>MySQLdb</code>. It uses a C module to link to MySQL’s client library.  For Python3, use PyMySQL instead, because <code>MySQLdb</code> don&#39;t support Python3. Oracle’s <code>mysql-connector</code> on the other hand is pure python so no MySQL libraries and no compilation is necessary.</p>
+
+<h2 id="toc_0">MySQL Connector/Python</h2>
+
+<p>To use Python with MySQL, you can use the MySQL Connector/Python (<a href="https://dev.mysql.com/downloads/connector/python/">Download Here</a>). For those with anaconda, just install with <code>conda</code>:</p>
+
+<pre><code>conda install -c anaconda mysql-connector-python 
+</code></pre>
+
+<p>MySQL Connector/Python includes support for:</p>
+
+<ul>
+<li>Almost all features provided by MySQL Server.</li>
+<li>Converting parameter values back and forth between Python and MySQL data types.</li>
+<li>All MySQL extensions to standard SQL syntax.</li>
+</ul>
+
+<pre><code class="language-python">import re
+import mysql.connector
+
+# establishes the connection to MySQL.
+cnx = mysql.connector.connect(user=&#39;root&#39;, password=&#39;8032804254qq&#39;,
+                              host=&#39;127.0.0.1&#39;, database=&#39;rookery&#39;, port=&#39;3306&#39;)
+
+# creates a cursor object (cur) to use for executing queries on the database.
+
+
+cur = cnx.cursor(buffered=True)
+
+# query mysql database for list of user accounts
+sql_stmnt = &quot;SELECT DISTINCT User, Host FROM mysql.db &quot;
+sql_stmnt += &quot;WHERE Db IN(&#39;rookery&#39;,&#39;birdwatchers&#39;) &quot;
+sql_stmnt += &quot;ORDER BY User, Host&quot;
+cur.execute(sql_stmnt)
+
+# loop through list of user accounts
+for user_accounts in cur.fetchall():
+    user_name = user_accounts[0]
+    host_address = user_accounts[1]
+    user_account = user_name.decode(&#39;utf-8&#39;) + &quot;@&quot; + host_address.decode(&#39;utf-8&#39;)
+
+# display user account heading
+print(&#39;User Account:&#39;, (user_name, host_address))
+print(&quot;------------------------------------------&quot;)
+
+# query mysql for grants for user account
+sql_stmnt = &quot;show grants for &quot; + user_account
+cur.execute(sql_stmnt)
+
+# loop through grant entries for user account
+for grants in cur.fetchall():
+    # skip &#39;usage&#39; entry
+    if re.search(&#39;USAGE&#39;, grants[0]):
+        continue
+    # extract name of database and table
+    dbtb = re.search(&#39;ON\s(.*)\.+?(.+?)\sTO&#39;, grants[0])
+    db = dbtb.group(1)
+    tb = dbtb.group(2)
+
+    # change wildcard for tables to &#39;all&#39;
+    if re.search(&#39;\*&#39;, tb): tb = &quot;all&quot;
+
+    # display database and table name for privileges
+    print(&quot;database: &quot;, db, &quot;table: &quot;, tb)
+
+    # extract and display privileges for user account # for database and table
+    privs = re.search(&#39;GRANT\s(.+?)\sON&#39;, grants[0])
+    print(&#39;privileges: &#39;, privs.group(1))
+
+cur.close()
+cnx.close()
+</code></pre>
+
+<h2 id="toc_1">PyMySQL</h2>
+
+<p><a href="https://github.com/PyMySQL/PyMySQL">PyMySQL</a> is to be a drop-in replacement for <code>MySQLdb</code> and work on <code>CPython</code>, <code>PyPy</code> and <code>IronPython</code>.</p>
+
+<h3 id="toc_2">Installation</h3>
+
+<pre><code class="language-bash">$ pip install PyMySQL
+</code></pre>
+
+<h3 id="toc_3">Example</h3>
+
+<pre><code class="language-python">import pymysql
+
+# connect to the datacase
+connection = pymysql.connect(host=&#39;localhost&#39;, user=&#39;root&#39;, password=&#39;8032804254qq&#39;, db=&#39;test&#39;)
+
+with connection.cursor() as cursor:
+    &quot;&quot;&quot;
+    Create Table | CREATE TABLE `books` (
+    `book_id` int(3) NOT NULL AUTO_INCREMENT,
+    `title` text DEFAULT NULL,
+    `status` bit(1) DEFAULT b&#39;0&#39;,
+    PRIMARY KEY (`book_id`)
+    ) ENGINE=MyISAM AUTO_INCREMENT=103 DEFAULT CHARSET=utf8
+    &quot;&quot;&quot;
+    # create a new record
+    sql = &quot;INSERT INTO `books` (`title`, `status`) VALUES (%s, %s)&quot;
+    cursor.execute(sql, (&#39;GRE Reading&#39;, 1))
+    
+    # connection is not autocommit by default. So you must commit to save your changes.
+    connection.commit()
+
+with connection.cursor() as cursor:
+    sql = &quot;select `book_id`, `title`, `status` from `books`&quot;
+    cursor.execute(sql)
+    # read records
+    for book in cursor.fetchall():
+        book = list(book)
+        book[2] = ord(book[2])
+        print(book)
+</code></pre>
+
+<h2 id="toc_4">Difference? which is better?</h2>
+
+<p><code>MySQLdb</code> is a thin python wrapper around C module which implements API for MySQL database.</p>
+
+<p><code>MySQL Connector</code>is a Python module that reimplements the <a href="https://www.python.org/dev/peps/pep-0249/"><code>MySQL Database API</code></a> in Python. It is written in Python and does not have any dependencies except for the Python Standard Library. It is slower, but does not require the C library and so is more portable.</p>
+
+<h3 id="toc_5">Query Performance</h3>
+
+<p>Obviously, <code>MySQLdb</code> has better performance, especially when it comes to large data sets.</p>
+
+<p><img src="media/15026944183320/Untitled.png" alt="Untitled"/></p>
+
+<h2 id="toc_6">Reference</h2>
+
+<p>1.<a href="https://stackoverflow.com/questions/32575857/the-differences-between-mysqldb-and-mysqlconnector">The differences between MySQLdb and mysqlconnector</a><br/>
+2.<a href="http://charlesnagy.info/it/python/python-mysqldb-vs-mysql-connector-query-performance">Python MySQLdb vs mysql-connector query performance</a><br/>
+3. <a href="https://wiki.openstack.org/wiki/PyMySQL_evaluation">PyMySQL evaluation</a></p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[逻辑删除]]></title>
+    <link href="http://larryim.cc/15026939409542.html"/>
+    <updated>2017-08-14T14:59:00+08:00</updated>
+    <id>http://larryim.cc/15026939409542.html</id>
+    <content type="html"><![CDATA[
+<p><strong>逻辑删除</strong>：当数据非常重要时，在实际执行删除操作时，只是将数据标记为删除。在数据查询操作时，加上是否删除语句。</p>
+
+<pre><code class="language-SQL">mysql&gt; alter table birds add column isDelete bit default b&#39;0&#39;;
+mysql&gt; update birds
+    -&gt; set isDelete = b&#39;1&#39;
+    -&gt; where bird_id = 101;
+mysql&gt; select count(*)
+    -&gt; from birds
+    -&gt; where `isDelete` = 0;
++----------+
+| count(*) |
++----------+
+| 28890    |
++----------+
+</code></pre>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Regular Expression in MySQL]]></title>
+    <link href="http://larryim.cc/Regular%20Expression%20in%20MySQL.html"/>
+    <updated>2017-08-14T14:08:00+08:00</updated>
+    <id>http://larryim.cc/Regular%20Expression%20in%20MySQL.html</id>
+    <content type="html"><![CDATA[
+<p><code>MySQL</code> support pattern-matching operations performed with the <code>REGEXP</code> operator in SQL statements.</p>
+
+<pre><code class="language-SQL">mysql &gt; select common_name as &#39;Birds Great and Small&#39;
+      -&gt; from birds
+      -&gt; where common_name regexp &#39;Least|Great&#39;
+      -&gt; order by common_name desc
+      -&gt; limit 10;
+
++-----------------------+
+| Birds Great and Small |
++-----------------------+
+| Least Tern            |
+| Least Storm-Petrel    |
+| Least Seedsnipe       |
+| Least Sandpiper       |
+| Least Pygmy-Owl       |
+| Least Pauraque        |
+| Least Nighthawk       |
+| Least Honeyguide      |
+| Least Grebe           |
+| Least Flycatcher      |
++-----------------------+
+
+</code></pre>
+
+<p><code>REGEXP</code> Operator is case insensitive. If we want an expression to be case sensitive, we&#39;ll need to add the <code>Binary</code> option.</p>
+
+<pre><code class="language-SQL">mysql &gt; select common_name as &#39;Hawks&#39;
+      -&gt; from birds
+      -&gt; where common_name regexp binary &#39;Hawk&#39;
+      -&gt; and common_name not regexp &#39;Hawk-Owl&#39;
+      -&gt; order by family_id
+      -&gt; limit 10;
++------------------------+
+| Hawks                  |
++------------------------+
+| Ornate Hawk-Eagle      |
+| Wallace&#39;s Hawk-Eagle   |
+| Pinsker&#39;s Hawk-Eagle   |
+| Philippine Hawk-Eagle  |
+| Sulawesi Hawk-Eagle    |
+| Javan Hawk-Eagle       |
+| Blyth&#39;s Hawk-Eagle     |
+| Mountain Hawk-Eagle    |
+| Flores Hawk-Eagle      |
+| Madagascar Cuckoo-Hawk |
++------------------------+
+</code></pre>
+
+<h2 id="toc_0">Syntax of Regular Expressions</h2>
+
+<ul>
+<li><code>^</code>: Match the beginning of a string</li>
+<li><code>$</code>: Match the end of a string</li>
+<li><code>.</code>: Match any character</li>
+<li><code>a*</code>: Match any sequence of zero or more <code>a</code> characters</li>
+<li><code>a+</code>: Match any sequence of one or more <code>a</code> characters</li>
+<li><code>a?</code>: Match either zero or one <code>a</code> character</li>
+<li><code>de|abc</code>: Match either of the sequences <code>de</code> or <code>abc</code></li>
+<li><code>(abc)*</code>: Match zero or more instances of the sequence <code>abc</code></li>
+</ul>
+
+<h2 id="toc_1">Rescources</h2>
+
+<ul>
+<li><a href="https://dev.mysql.com/doc/refman/5.7/en/regexp.html">Regular Expressions</a></li>
+</ul>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Deep Learning]]></title>
@@ -1255,13 +1499,10 @@ class DisjointSet:
 <li>
 <a href="#toc_4">Starting to Explore Databases</a>
 </li>
-<li>
-<a href="#toc_5">Python</a>
-</li>
 </ul>
 </li>
 <li>
-<a href="#toc_6">Reference</a>
+<a href="#toc_5">Reference</a>
 
 
 <p>MySQL is an open source, multithread, relational database management system.</p>
@@ -1307,383 +1548,11 @@ class DisjointSet:
 <pre><code class="language-SQL">USE database_name
 </code></pre>
 
-<h2 id="toc_5">Python</h2>
-
-<p>To use Python with MySQL, you can use the MySQL Connector/Python (<a href="https://dev.mysql.com/downloads/connector/python/">Download Here</a>). For those with anaconda, just install with <code>conda</code>:</p>
-
-<pre><code>conda install -c anaconda mysql-connector-python 
-</code></pre>
-
-<p>MySQL Connector/Python includes support for:</p>
-
-<ul>
-<li>Almost all features provided by MySQL Server.</li>
-<li>Converting parameter values back and forth between Python and MySQL data types.</li>
-<li>All MySQL extensions to standard SQL syntax.</li>
-</ul>
-
-<pre><code class="language-python">import re
-import mysql.connector
-
-# establishes the connection to MySQL.
-cnx = mysql.connector.connect(user=&#39;root&#39;, password=&#39;8032804254qq&#39;,
-                              host=&#39;127.0.0.1&#39;, database=&#39;rookery&#39;, port=&#39;3306&#39;)
-
-# creates a cursor object (cur) to use for executing queries on the database.
-
-
-cur = cnx.cursor(buffered=True)
-
-# query mysql database for list of user accounts
-sql_stmnt =  &quot;SELECT DISTINCT User, Host FROM mysql.db &quot;
-sql_stmnt += &quot;WHERE Db IN(&#39;rookery&#39;,&#39;birdwatchers&#39;) &quot;
-sql_stmnt += &quot;ORDER BY User, Host&quot;
-cur.execute(sql_stmnt)
-
-# loop through list of user accounts
-for user_accounts in cur.fetchall() :
-    user_name = user_accounts[0]
-    host_address = user_accounts[1]
-    user_account = &quot;&#39;&quot; + user_name + &quot;&#39;@&#39;&quot; + host_address + &quot;&#39;&quot;
-
-# display user account heading
-print (&#39;User Account:&#39;,(user_name, host_address))
-print (&quot;------------------------------------------&quot;)
-
-# query mysql for grants for user account
-sql_stmnt = &quot;show grants for&quot; + str(user_account)
-cur.execute(sql_stmnt)
-
-# loop through grant entries for user account
-for grants in cur.fetchall():
-     # skip &#39;usage&#39; entry
-    if re.search(&#39;USAGE&#39;, grants[0]) :
-        continue
-    # extract name of database and table
-    dbtb = re.search(&#39;ON\s(.*)\.+?(.+?)\sTO&#39;, grants[0])
-    db = dbtb.group(1)
-    tb = dbtb.group(2)
-
-    # change wildcard for tables to &#39;all&#39;
-    if re.search(&#39;\*&#39;, tb) : tb = &quot;all&quot;
-
-    # display database and table name for privileges
-    print &quot;database: %s; table: %s&quot; % (db,tb)
-
-    # extract and display privileges for user account # for database and table
-    privs = re.search(&#39;GRANT\s(.+?)\sON&#39;, grants[0])
-    print(&#39;privileges: &#39;, privs.group(1))
-
-cur.close()
-cnx.close()
-</code></pre>
-
-<h1 id="toc_6">Reference</h1>
+<h1 id="toc_5">Reference</h1>
 
 <ol>
 <li>Russell T D. 2015. Learning MySQL and MariaDB. O&#39;REILLY.</li>
 </ol>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Greedy algorithm (2): A Scheduling Application]]></title>
-    <link href="http://larryim.cc/greedy_algorithm_a_scheduling_problem.html"/>
-    <updated>2017-08-01T16:03:04+08:00</updated>
-    <id>http://larryim.cc/greedy_algorithm_a_scheduling_problem.html</id>
-    <content type="html"><![CDATA[
-<p><strong>Problem Statement</strong>: You want to schedule jobs (processes) on a processor. Each job has properties:</p>
-
-<ul>
-<li>weight \(w_j\) (“priority”) </li>
-<li>length \(l_j\)</li>
-</ul>
-
-<p>The <code>completion time</code> \(C_j\) of job \(j\) is Sum of job lengths up to and including job \(j\).</p>
-
-<p>The goal is to <strong>Minimize weighted sum of completion times</strong>, i.e.</p>
-
-<p>\[\sum_{j=1}^n w_j*C_j\]</p>
-
-<h2 id="toc_0">Algorithm</h2>
-
-<p>Order jobs by decreasing value of \(\frac{w_j}{l_j}\), i.e. jobs have larger weight and shorter length execute earlier.</p>
-
-<h3 id="toc_1">Greedy Exchange</h3>
-
-<p><code>Greedy Exchange</code> is one of the techniques used in proving the correctness of greedy algorithms. The idea of a greedy exchange proof is to morph a solution produced by an optimal algorithm into the solution produced by your greedy algorithm. This shows that any optimal solution is no better than the greedy solution, which proves that greedy does in fact return an optimal solution.</p>
-
-<h3 id="toc_2">Proof</h3>
-
-<h4 id="toc_3">Step1: label algorithm&#39;s solution and an optimal solution</h4>
-
-<p>Let \(\sigma\) be greedy schedule, and \(\sigma^*\) be optimal schedule. </p>
-
-<h4 id="toc_4">Step2: Compare greedy with optimal</h4>
-
-<p>Greedy schedule \(\sigma\) is just \(1,2,3,...,n\). And if optimal schedule \(\sigma^* \ne \sigma \), then \(\exists\) consecutive jobs \(i,j\), which \(i&gt;j\).</p>
-
-<h4 id="toc_5">Step3: Exchange</h4>
-
-<p>Suppose we exchange order of \(i,j\) in \(\sigma\):</p>
-
-<ul>
-<li>the cost of exchange \(w_jl_j\)</li>
-<li>the benefit of exchange is \(w_jl_i\)</li>
-</ul>
-
-<p>Note: <br/>
-\[i &gt;j \rightarrow w_i/l_i \le wj/lj \rightarrow w_il_j \le w_jl_i \]<br/>
-Exchanging \(i,j\) in \(\sigma^*\) has net benefit of \(w_jl_i-w_il_j \ge0\).</p>
-
-<p>\(\rightarrow\) After at most \(C_n^2\) such exchanges, \(\sigma^*\) can transform into \(\sigma\)<br/>
-\(\rightarrow \sigma \) at least as good as \(\sigma^*\)<br/>
- \(\rightarrow \) Greedy is optimal.</p>
-
-<h2 id="toc_6">Implemenation</h2>
-
-<pre><code class="language-python">import numpy as np
-import unittest
-
-class JobSchedule:
-    &quot;&quot;&quot;
-    greedy algorithm that schedules jobs in decreasing order of ratio (weight/length)
-    &quot;&quot;&quot;
-    def __init__(self):
-        self.job_num = 0 # the number of jobs
-        self.job_weight = []
-        self.job_length = []
-        self.schedule_time = None
-        self.order = None # the ordering of jobs
-
-    def buildjobs(self, textfile):
-        &quot;&quot;&quot;
-        build jobs from a text file
-
-        The file describes a set of jobs with positive and integral weights and lengths.
-        It has the format
-        [number_of_jobs]
-        [job_1_weight] [job_1_length]
-
-        &quot;&quot;&quot;
-        count = 0
-        with open(textfile) as infile:
-            for line in infile.readlines():
-                line = line.strip(&#39;\n&#39;)
-                if count == 0:
-                    self.job_num = int(line)
-                else:
-                    job_weight, job_length = (int(num) for num in line.split())
-                    self.job_weight.append(job_weight)
-                    self.job_length.append(job_length)
-                count += 1
-
-        if count-1 != self.job_num:
-            raise ValueError
-
-    def scheduling(self):
-        &quot;&quot;&quot;
-        return the sum of weighted completion times of the resulting schedule
-        &quot;&quot;&quot;
-        # ratios of weight and length for every job
-        ratios = [self.job_weight[i]/self.job_length[i] for i in range(self.job_num)]
-        self.order = np.lexsort((self.job_length, ratios))
-        self.order=self.order[::-1]
-        print([ (self.job_weight[i], self.job_length[i],self.job_weight[i]/self.job_length[i]) for i in self.order])
-        # calculating the sum of weighted completion times of the resulting schedule
-        count = 0
-        job_length = 0
-        for job_ind in self.order:
-            job_length = job_length + self.job_length[job_ind]
-            count += self.job_weight[job_ind]*job_length
-        self.schedule_time = count
-        return self.schedule_time
-
-
-class TestJobSchedule(unittest.TestCase):
-
-    def testcase1(self):
-        jobs_to_schedule = JobSchedule()
-        jobs_to_schedule.buildjobs(&#39;testcase1.txt&#39;)
-        assert jobs_to_schedule.scheduling() == 16
-
-    def testcase2(self):
-        jobs_to_schedule = JobSchedule()
-        jobs_to_schedule.buildjobs(&#39;testcase2.txt&#39;)
-        assert jobs_to_schedule.scheduling() == 67247
-
-
-if __name__ == &quot;__main__&quot;:
-    unittest.main()
-</code></pre>
-
-<h2 id="toc_7">References</h2>
-
-<ol>
-<li><a href="http://www.cs.cornell.edu/courses/cs482/2003su/handouts/greedy_exchange.pdf">Greedy exchange</a></li>
-<li><a href="https://www.coursera.org/learn/algorithms-greedy/">Algorithms Specialization</a></li>
-</ol>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Greedy algorithm (1): Introduction]]></title>
-    <link href="http://larryim.cc/greedy_algorithm_introduction.html"/>
-    <updated>2017-07-31T15:34:06+08:00</updated>
-    <id>http://larryim.cc/greedy_algorithm_introduction.html</id>
-    <content type="html"><![CDATA[
-<ul>
-<li>
-<a href="#toc_0">Definition</a>
-</li>
-<li>
-<a href="#toc_1">Contrast with Divide &amp; Conquer</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_2">Examples</a>
-<ul>
-<li>
-<a href="#toc_3">The Optimal Caching Algorithm</a>
-</li>
-<li>
-<a href="#toc_4">A Scheduling Problem</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_5">Reference</a>
-
-
-<h3 id="toc_0">Definition</h3>
-
-<p>A <code>greedy algorithm</code> always makes the choice that looks best at the moment. That is, it makes a locally optimal choice in the hope that this choice will lead to a globally optimal solution. (Cormen et al., 2009)</p>
-
-<h3 id="toc_1">Contrast with Divide &amp; Conquer</h3>
-
-<ol>
-<li>Easy to propose multiple greedy algorithms for many problems. </li>
-<li>Easy running time analysis. (Contrast with Master method etc.)</li>
-<li>Hard to establish correctness.
-(Contrast with straightforward inductive correctness proofs.)</li>
-</ol>
-
-<p><strong>DANGER: Most greedy algorithms are NOT correct. (Even if your intuition says otherwise!)</strong></p>
-
-<h2 id="toc_2">Examples</h2>
-
-<h3 id="toc_3">The Optimal Caching Algorithm</h3>
-
-<p>Theorem: [Bélády&#39;s 1960s] <code>Farthest-in-Future</code> is the optimal algorithm that minimizes the number of cache misses.</p>
-
-<p><code>Bélády&#39;s Algorithm</code>:</p>
-
-<p>When \(d_i\) is requested but not in the cache,<br/>
-evict the cache item that will next be used farthest into the future.</p>
-
-<h3 id="toc_4">A Scheduling Problem</h3>
-
-<p>Assume: Each job has a:</p>
-
-<ul>
-<li>weight \(w_j\) (“priority”) </li>
-<li>length \(l_j\)</li>
-</ul>
-
-<p>The completion time \(C_j\) of job \(j\) = Sum of job lengths up to and including \(j\).</p>
-
-<p>Goal: Minimize the weighted sum of completion times: \(\min \sum ^n_j= w_jC_j\)</p>
-
-<h2 id="toc_5">Reference</h2>
-
-<ol>
-<li>Cormen, Leiserson, Rivest, and Stein. 2009. Introduction to Algorithms (3rd edition)</li>
-</ol>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Generator]]></title>
-    <link href="http://larryim.cc/python_generator.html"/>
-    <updated>2017-07-23T18:24:09+08:00</updated>
-    <id>http://larryim.cc/python_generator.html</id>
-    <content type="html"><![CDATA[
-<p>Any function that contains a <code>yield</code> statement is called a <code>generator</code>.</p>
-
-<h3 id="toc_0">yield statement</h3>
-
-<p>Each time a value is yielded (with <code>yield</code>), the function freezes; that is, it stops its execution at exactly that point and waits to be reawakened.</p>
-
-<h3 id="toc_1">generator comprehension</h3>
-
-<p><code>Generator comprehension</code> works in the same way as <code>list comprehension</code>, except that a list isn&#39;t constructed. Instead, a <code>generator</code> is returned.</p>
-
-<pre><code class="language-python">&gt;&gt;&gt; h = (i for i in range(10))
-&gt;&gt;&gt; h
-&lt;generator object &lt;genexpr&gt; at 0x104d76ba0&gt;
-&gt;&gt;&gt; list(h)
-[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-</code></pre>
-
-<p>When using <code>generator comprehension</code>, if there already exists parentheses, you don&#39;t need to add another pair.</p>
-
-<pre><code class="language-python">&gt;&gt;&gt; sorted(100-i for i in range(10))
-[91, 92, 93, 94, 95, 96, 97, 98, 99, 100]
-</code></pre>
-
-<h3 id="toc_2">Recursive generator</h3>
-
-<p><code>generators</code> are ideal for complex recursive algorithms that gradually build a result. </p>
-
-<p>A <code>recursive generator</code> could be used to flatten a nested list.</p>
-
-<pre><code class="language-python">def flatten(nested):
-    &quot;&quot;&quot;
-    When flatten is called, you have two possibilites: the base case and the recursive case.
-
-    In the base case, the function is told to flatten a single element.
-    In the recursive case, flatten it.
-
-    &gt;&gt;&gt; list(flatten([[[1], 2], 3, 4, [5, [6, 7]], 8]))
-    [1, 2, 3, 4, 5, 6, 7, 8]
-    &gt;&gt;&gt; list(flatten([&#39;foo&#39;, [&#39;bar&#39;, [&#39;baz&#39;]]]))
-    [&#39;foo&#39;, &#39;bar&#39;, &#39;baz&#39;]
-    &quot;&quot;&quot;
-    try:
-        try:
-            nested + &#39; &#39;
-        except TypeError:
-            pass
-        else:
-            raise TypeError
-        
-        for sublist in nested:
-            for element in flatten(sublist):
-                yield element
-
-    except TypeError:
-        yield nested
-
-
-if __name__ == &quot;__main__&quot;:
-    import doctest
-    doctest.testmod(verbose=True)
-</code></pre>
-
-<p>An <code>inorder traversal</code> (also <code>postoder traversal</code> and <code>preorder traversal</code>) of a <code>binary search tree</code> might use the <code>recursive generator</code>, detailed code here <a href="http://larryim.cc/binary_search_tree.html">Binary Search Tree</a></p>
-
-<h3 id="toc_3">Generator methods</h3>
-
-<p>We may supply generators with values after they have started running, by using a communications channel between the <code>generator</code> and the “outside world,” with the following two end points:</p>
-
-<ul>
-<li><p>The outside world has access to a method on the generator called <code>send</code>, which works just like <code>next</code>, except that it takes a single argument (the “message” to send—an arbitrary object).</p></li>
-<li><p>Inside the suspended generator, <strong><code>yield</code> may now be used as an <code>expression</code>, rather than a <code>statement</code></strong>. In other words, when the generator is resumed, yield returns a value—the value sent from the outside through <code>send</code>. If <code>next</code> was used, <code>yield</code> returns <code>None</code>.</p></li>
-</ul>
 
 ]]></content>
   </entry>

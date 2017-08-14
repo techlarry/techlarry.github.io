@@ -15,7 +15,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  Hash Table (3): A variant of 2-Sum Algorithm - techlarry
+  Regular Expression in MySQL - techlarry
   
   </title>
   
@@ -131,14 +131,14 @@
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>Hash Table (3): A variant of 2-Sum Algorithm</h1>
+          <h1>Regular Expression in MySQL</h1>
      
         <div class="read-more clearfix">
-          <span class="date">2017/7/23</span>
+          <span class="date">2017/8/14</span>
 
           <span>posted in&nbsp;</span> 
           
-              <span class="posted-in"><a href='Hash%20Table.html'>Hash Table</a></span>
+              <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E5%BA%93.html'>数据库</a></span>
            
          
           <span class="comments">
@@ -151,86 +151,73 @@
       </div><!-- article -->
 
       <div class="article-content">
-      <p>The goal of the arcticle is to implement a variant of the <code>2-SUM algorithm</code>.</p>
+      <p><code>MySQL</code> support pattern-matching operations performed with the <code>REGEXP</code> operator in SQL statements.</p>
 
-<p>The file contains 1 million integers, both positive and negative (repetitions exists!). This is your array of integers, with the \(i\)th row of the file specifying the \(i\)th entry of the array.</p>
+<pre><code class="language-SQL">mysql &gt; select common_name as &#39;Birds Great and Small&#39;
+      -&gt; from birds
+      -&gt; where common_name regexp &#39;Least|Great&#39;
+      -&gt; order by common_name desc
+      -&gt; limit 10;
 
-<p>The task is to compute the number of target values \(t\) in the interval \([-10000,10000]\)(inclusive) such that there are distinct numbers \(x,y\) in the input file that satisfy \(x+y=t\). </p>
++-----------------------+
+| Birds Great and Small |
++-----------------------+
+| Least Tern            |
+| Least Storm-Petrel    |
+| Least Seedsnipe       |
+| Least Sandpiper       |
+| Least Pygmy-Owl       |
+| Least Pauraque        |
+| Least Nighthawk       |
+| Least Honeyguide      |
+| Least Grebe           |
+| Least Flycatcher      |
++-----------------------+
 
-<h2 id="toc_0">Implementation</h2>
-
-<p>The key process lies in the <code>hash function</code>, which might be set to appropriate small value based on the origin value:<br/>
-\[\text{hash_function}= \frac{\text{number}}{\text{factor}}\]</p>
-
-<p>The <code>factor</code> is selected based on the number of <code>slots</code> needed in the algorithm. i.e.<br/>
-\[\frac{\text{the range of keys}}{\text{factor}}\approx \text{the number of slots} &lt; \text{the number of keys}\]</p>
-
-<p>There, factor is \(\frac{\text{the number of key}}{2}\)</p>
-
-<pre><code class="language-python">class HashTable(object):
-
-    def __init__(self):
-
-        self.size = 5000000
-        self.slots = [set() for i in range(self.size)]
-        self.data = set()
-
-    def put(self, key, data):
-
-        hash_value = self.hash_function(key)
-        self.slots[hash_value].add(data)
-        self.data.add(data)
-
-    def hash_function(self, key):
-
-        return key//(self.size//2)
-
-    def get(self, key):
-        &quot;&quot;&quot;
-        there key == data
-        &quot;&quot;&quot;
-        slot = self.hash_function(key)
-        if key in self.slots[slot]:
-            return key
-        else:
-            return None
-
-    def buildfromfile(self, textfile):
-
-        with open(text_file, &#39;r&#39;) as infile:
-            for line in infile.readlines():
-                self.put(int(line), int(line))
-
-    def two_sum_count(self):
-        &quot;&quot;&quot;
-        Compute the number of target values t in the interval[low, high] (inclusive),
-        such that there are distinct numbers x, y that satisfy x+y = t
-        &quot;&quot;&quot;
-        sums = set()
-
-        for key1 in self.data:
-            left = self.hash_function(-key1-10000)
-            right = self.hash_function(-key1+10000)
-
-            for slot in self.slots[left:right+1]:
-
-                for key2 in slot:
-
-                    if 10000 &gt; key1 + key2 &gt; -10000:
-                        sums.add(key1+key2)
-
-        return len(sums)
-
-
-if __name__ == &quot;__main__&quot;:
-
-    # target files for counting
-    text_file = &#39;two_sum.txt&#39;
-
-    hashnumber = HashTable()
-    hashnumber.buildfromfile(text_file)
-    print(hashnumber.two_sum_count())
 </code></pre>
+
+<p><code>REGEXP</code> Operator is case insensitive. If we want an expression to be case sensitive, we&#39;ll need to add the <code>Binary</code> option.</p>
+
+<pre><code class="language-SQL">mysql &gt; select common_name as &#39;Hawks&#39;
+      -&gt; from birds
+      -&gt; where common_name regexp binary &#39;Hawk&#39;
+      -&gt; and common_name not regexp &#39;Hawk-Owl&#39;
+      -&gt; order by family_id
+      -&gt; limit 10;
++------------------------+
+| Hawks                  |
++------------------------+
+| Ornate Hawk-Eagle      |
+| Wallace&#39;s Hawk-Eagle   |
+| Pinsker&#39;s Hawk-Eagle   |
+| Philippine Hawk-Eagle  |
+| Sulawesi Hawk-Eagle    |
+| Javan Hawk-Eagle       |
+| Blyth&#39;s Hawk-Eagle     |
+| Mountain Hawk-Eagle    |
+| Flores Hawk-Eagle      |
+| Madagascar Cuckoo-Hawk |
++------------------------+
+</code></pre>
+
+<h2 id="toc_0">Syntax of Regular Expressions</h2>
+
+<ul>
+<li><code>^</code>: Match the beginning of a string</li>
+<li><code>$</code>: Match the end of a string</li>
+<li><code>.</code>: Match any character</li>
+<li><code>a*</code>: Match any sequence of zero or more <code>a</code> characters</li>
+<li><code>a+</code>: Match any sequence of one or more <code>a</code> characters</li>
+<li><code>a?</code>: Match either zero or one <code>a</code> character</li>
+<li><code>de|abc</code>: Match either of the sequences <code>de</code> or <code>abc</code></li>
+<li><code>(abc)*</code>: Match zero or more instances of the sequence <code>abc</code></li>
+</ul>
+
+<h2 id="toc_1">Rescources</h2>
+
+<ul>
+<li><a href="https://dev.mysql.com/doc/refman/5.7/en/regexp.html">Regular Expressions</a></li>
+</ul>
 
 
     
@@ -241,16 +228,16 @@ if __name__ == &quot;__main__&quot;:
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="Hash_Table_4_Universal_Hashing.html" 
-          title="Previous Post: Hash Table (4): Universal Hashing">&laquo; Hash Table (4): Universal Hashing</a>
+          <a href="15026939409542.html" 
+          title="Previous Post: 逻辑删除">&laquo; 逻辑删除</a>
       
         </p>
         </div>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="heap_median_maintenance.html" 
-          title="Next Post: Heap (2): Median Maintenance">Heap (2): Median Maintenance &raquo;</a>
+          <a  href="15025954300059.html" 
+          title="Next Post: Deep Learning">Deep Learning &raquo;</a>
       
       </p>
         </div>

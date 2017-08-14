@@ -15,7 +15,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  Hash Table (3): A variant of 2-Sum Algorithm - techlarry
+  Python and MySQL - techlarry
   
   </title>
   
@@ -131,14 +131,14 @@
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>Hash Table (3): A variant of 2-Sum Algorithm</h1>
+          <h1>Python and MySQL</h1>
      
         <div class="read-more clearfix">
-          <span class="date">2017/7/23</span>
+          <span class="date">2017/8/14</span>
 
           <span>posted in&nbsp;</span> 
           
-              <span class="posted-in"><a href='Hash%20Table.html'>Hash Table</a></span>
+              <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E5%BA%93.html'>数据库</a></span>
            
          
           <span class="comments">
@@ -151,86 +151,138 @@
       </div><!-- article -->
 
       <div class="article-content">
-      <p>The goal of the arcticle is to implement a variant of the <code>2-SUM algorithm</code>.</p>
+      <p>There are a lot of python driver available for MySQL and two stand out the most. The one, traditionally everybody’s choice, sort of industrial standard <code>MySQLdb</code>. It uses a C module to link to MySQL’s client library.  For Python3, use PyMySQL instead, because <code>MySQLdb</code> don&#39;t support Python3. Oracle’s <code>mysql-connector</code> on the other hand is pure python so no MySQL libraries and no compilation is necessary.</p>
 
-<p>The file contains 1 million integers, both positive and negative (repetitions exists!). This is your array of integers, with the \(i\)th row of the file specifying the \(i\)th entry of the array.</p>
+<h2 id="toc_0">MySQL Connector/Python</h2>
 
-<p>The task is to compute the number of target values \(t\) in the interval \([-10000,10000]\)(inclusive) such that there are distinct numbers \(x,y\) in the input file that satisfy \(x+y=t\). </p>
+<p>To use Python with MySQL, you can use the MySQL Connector/Python (<a href="https://dev.mysql.com/downloads/connector/python/">Download Here</a>). For those with anaconda, just install with <code>conda</code>:</p>
 
-<h2 id="toc_0">Implementation</h2>
-
-<p>The key process lies in the <code>hash function</code>, which might be set to appropriate small value based on the origin value:<br/>
-\[\text{hash_function}= \frac{\text{number}}{\text{factor}}\]</p>
-
-<p>The <code>factor</code> is selected based on the number of <code>slots</code> needed in the algorithm. i.e.<br/>
-\[\frac{\text{the range of keys}}{\text{factor}}\approx \text{the number of slots} &lt; \text{the number of keys}\]</p>
-
-<p>There, factor is \(\frac{\text{the number of key}}{2}\)</p>
-
-<pre><code class="language-python">class HashTable(object):
-
-    def __init__(self):
-
-        self.size = 5000000
-        self.slots = [set() for i in range(self.size)]
-        self.data = set()
-
-    def put(self, key, data):
-
-        hash_value = self.hash_function(key)
-        self.slots[hash_value].add(data)
-        self.data.add(data)
-
-    def hash_function(self, key):
-
-        return key//(self.size//2)
-
-    def get(self, key):
-        &quot;&quot;&quot;
-        there key == data
-        &quot;&quot;&quot;
-        slot = self.hash_function(key)
-        if key in self.slots[slot]:
-            return key
-        else:
-            return None
-
-    def buildfromfile(self, textfile):
-
-        with open(text_file, &#39;r&#39;) as infile:
-            for line in infile.readlines():
-                self.put(int(line), int(line))
-
-    def two_sum_count(self):
-        &quot;&quot;&quot;
-        Compute the number of target values t in the interval[low, high] (inclusive),
-        such that there are distinct numbers x, y that satisfy x+y = t
-        &quot;&quot;&quot;
-        sums = set()
-
-        for key1 in self.data:
-            left = self.hash_function(-key1-10000)
-            right = self.hash_function(-key1+10000)
-
-            for slot in self.slots[left:right+1]:
-
-                for key2 in slot:
-
-                    if 10000 &gt; key1 + key2 &gt; -10000:
-                        sums.add(key1+key2)
-
-        return len(sums)
-
-
-if __name__ == &quot;__main__&quot;:
-
-    # target files for counting
-    text_file = &#39;two_sum.txt&#39;
-
-    hashnumber = HashTable()
-    hashnumber.buildfromfile(text_file)
-    print(hashnumber.two_sum_count())
+<pre><code>conda install -c anaconda mysql-connector-python 
 </code></pre>
+
+<p>MySQL Connector/Python includes support for:</p>
+
+<ul>
+<li>Almost all features provided by MySQL Server.</li>
+<li>Converting parameter values back and forth between Python and MySQL data types.</li>
+<li>All MySQL extensions to standard SQL syntax.</li>
+</ul>
+
+<pre><code class="language-python">import re
+import mysql.connector
+
+# establishes the connection to MySQL.
+cnx = mysql.connector.connect(user=&#39;root&#39;, password=&#39;8032804254qq&#39;,
+                              host=&#39;127.0.0.1&#39;, database=&#39;rookery&#39;, port=&#39;3306&#39;)
+
+# creates a cursor object (cur) to use for executing queries on the database.
+
+
+cur = cnx.cursor(buffered=True)
+
+# query mysql database for list of user accounts
+sql_stmnt = &quot;SELECT DISTINCT User, Host FROM mysql.db &quot;
+sql_stmnt += &quot;WHERE Db IN(&#39;rookery&#39;,&#39;birdwatchers&#39;) &quot;
+sql_stmnt += &quot;ORDER BY User, Host&quot;
+cur.execute(sql_stmnt)
+
+# loop through list of user accounts
+for user_accounts in cur.fetchall():
+    user_name = user_accounts[0]
+    host_address = user_accounts[1]
+    user_account = user_name.decode(&#39;utf-8&#39;) + &quot;@&quot; + host_address.decode(&#39;utf-8&#39;)
+
+# display user account heading
+print(&#39;User Account:&#39;, (user_name, host_address))
+print(&quot;------------------------------------------&quot;)
+
+# query mysql for grants for user account
+sql_stmnt = &quot;show grants for &quot; + user_account
+cur.execute(sql_stmnt)
+
+# loop through grant entries for user account
+for grants in cur.fetchall():
+    # skip &#39;usage&#39; entry
+    if re.search(&#39;USAGE&#39;, grants[0]):
+        continue
+    # extract name of database and table
+    dbtb = re.search(&#39;ON\s(.*)\.+?(.+?)\sTO&#39;, grants[0])
+    db = dbtb.group(1)
+    tb = dbtb.group(2)
+
+    # change wildcard for tables to &#39;all&#39;
+    if re.search(&#39;\*&#39;, tb): tb = &quot;all&quot;
+
+    # display database and table name for privileges
+    print(&quot;database: &quot;, db, &quot;table: &quot;, tb)
+
+    # extract and display privileges for user account # for database and table
+    privs = re.search(&#39;GRANT\s(.+?)\sON&#39;, grants[0])
+    print(&#39;privileges: &#39;, privs.group(1))
+
+cur.close()
+cnx.close()
+</code></pre>
+
+<h2 id="toc_1">PyMySQL</h2>
+
+<p><a href="https://github.com/PyMySQL/PyMySQL">PyMySQL</a> is to be a drop-in replacement for <code>MySQLdb</code> and work on <code>CPython</code>, <code>PyPy</code> and <code>IronPython</code>.</p>
+
+<h3 id="toc_2">Installation</h3>
+
+<pre><code class="language-bash">$ pip install PyMySQL
+</code></pre>
+
+<h3 id="toc_3">Example</h3>
+
+<pre><code class="language-python">import pymysql
+
+# connect to the datacase
+connection = pymysql.connect(host=&#39;localhost&#39;, user=&#39;root&#39;, password=&#39;8032804254qq&#39;, db=&#39;test&#39;)
+
+with connection.cursor() as cursor:
+    &quot;&quot;&quot;
+    Create Table | CREATE TABLE `books` (
+    `book_id` int(3) NOT NULL AUTO_INCREMENT,
+    `title` text DEFAULT NULL,
+    `status` bit(1) DEFAULT b&#39;0&#39;,
+    PRIMARY KEY (`book_id`)
+    ) ENGINE=MyISAM AUTO_INCREMENT=103 DEFAULT CHARSET=utf8
+    &quot;&quot;&quot;
+    # create a new record
+    sql = &quot;INSERT INTO `books` (`title`, `status`) VALUES (%s, %s)&quot;
+    cursor.execute(sql, (&#39;GRE Reading&#39;, 1))
+    
+    # connection is not autocommit by default. So you must commit to save your changes.
+    connection.commit()
+
+with connection.cursor() as cursor:
+    sql = &quot;select `book_id`, `title`, `status` from `books`&quot;
+    cursor.execute(sql)
+    # read records
+    for book in cursor.fetchall():
+        book = list(book)
+        book[2] = ord(book[2])
+        print(book)
+</code></pre>
+
+<h2 id="toc_4">Difference? which is better?</h2>
+
+<p><code>MySQLdb</code> is a thin python wrapper around C module which implements API for MySQL database.</p>
+
+<p><code>MySQL Connector</code>is a Python module that reimplements the <a href="https://www.python.org/dev/peps/pep-0249/"><code>MySQL Database API</code></a> in Python. It is written in Python and does not have any dependencies except for the Python Standard Library. It is slower, but does not require the C library and so is more portable.</p>
+
+<h3 id="toc_5">Query Performance</h3>
+
+<p>Obviously, <code>MySQLdb</code> has better performance, especially when it comes to large data sets.</p>
+
+<p><img src="media/15026944183320/Untitled.png" alt="Untitled"/></p>
+
+<h2 id="toc_6">Reference</h2>
+
+<p>1.<a href="https://stackoverflow.com/questions/32575857/the-differences-between-mysqldb-and-mysqlconnector">The differences between MySQLdb and mysqlconnector</a><br/>
+2.<a href="http://charlesnagy.info/it/python/python-mysqldb-vs-mysql-connector-query-performance">Python MySQLdb vs mysql-connector query performance</a><br/>
+3. <a href="https://wiki.openstack.org/wiki/PyMySQL_evaluation">PyMySQL evaluation</a></p>
 
 
     
@@ -241,16 +293,13 @@ if __name__ == &quot;__main__&quot;:
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="Hash_Table_4_Universal_Hashing.html" 
-          title="Previous Post: Hash Table (4): Universal Hashing">&laquo; Hash Table (4): Universal Hashing</a>
-      
         </p>
         </div>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="heap_median_maintenance.html" 
-          title="Next Post: Heap (2): Median Maintenance">Heap (2): Median Maintenance &raquo;</a>
+          <a  href="15026939409542.html" 
+          title="Next Post: 逻辑删除">逻辑删除 &raquo;</a>
       
       </p>
         </div>
