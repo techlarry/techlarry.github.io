@@ -106,6 +106,8 @@
         
             <li><a href="Latex.html">Latex</a></li>
         
+            <li><a href="%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F.html">操作系统</a></li>
+        
             <li><a href="Linux%20%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B.html">Linux 系统编程</a></li>
         
             <li><a href="%E6%95%B0%E6%8D%AE%E5%BA%93.html">数据库</a></li>
@@ -130,6 +132,280 @@
 	<div class="large-8 medium-8 columns">
 		<div class="markdown-body home-categories">
 		
+			<div class="article">
+                <a class="clearlink" href="15028699473698.html">
+                
+                  <h1>Thread</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/8/16</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F.html'>操作系统</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15028699346565.html">
+                
+                  <h1>Process</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/8/16</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F.html'>操作系统</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="Python%E5%85%A8%E5%B1%80%E8%A7%A3%E9%87%8A%E5%99%A8%E9%94%81GIL.html">
+                
+                  <h1>Python GIL</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<ul>
+<li>
+<a href="#toc_0">An example</a>
+</li>
+<li>
+<a href="#toc_1">Introduction</a>
+<ul>
+<li>
+<a href="#toc_2">Visualization:</a>
+</li>
+<li>
+<a href="#toc_3">Cooperative Multitasking</a>
+</li>
+<li>
+<a href="#toc_4">Preemptive multitasking</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_5">解决办法</a>
+<ul>
+<li>
+<a href="#toc_6">用multiprocessing替代Thread</a>
+</li>
+<li>
+<a href="#toc_7">利用<code>ctypes</code>绕过<code>GIL</code></a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_8">Reference</a>
+</li>
+</ul>
+
+
+<h2 id="toc_0">An example</h2>
+
+<p>In the following Python program, it seems it should reach 100% CPU. In fact, it takes only 50% of CPU resources.</p>
+
+<pre><code class="language-python">import threading
+
+
+# 子线程死循环
+def test():
+    while True:
+        pass
+
+
+t1 = threading.Thread(target=test)
+t1.start()
+
+# 主线程死循环
+while True:
+    pass
+</code></pre>
+
+<h2 id="toc_1">Introduction</h2>
+
+<p>Python全局解释器锁(<code>Global Interpreter Lock</code>)是用于同步线程的一种机制，它使得任何时刻仅有一个线程在执行。上面例子中虽然两个线程是死循环，而且有两个物理CPU内核，但因为 <code>GIL</code>的限制，两个线程只是做着分时切换，总的CPU占用率还略低于50％。</p>
+
+<p><strong>Note: One thread runs Python, while N others sleep or await I/O</strong></p>
+
+<h3 id="toc_2">Visualization:</h3>
+
+<p>All of those red regions indicate times where the operating system has scheduled a Python thread on one of the cores, but it can&#39;t run because the thread on the other core is holding it.</p>
+
+<p><img src="media/15028686628076/15028730462252.png" alt="demo for GIL"/><br/>
+<img src="media/15028686628076/15028733300914.png" alt=""/></p>
+
+<h3 id="toc_3">Cooperative Multitasking</h3>
+
+<p>When it begins a task, such as network I/O, that is of long or uncertain duration and does not require running any Python code, a thread relinquishes the <code>GIL</code> so another thread can take it and run Python. This polite conduct is called <code>cooperative multitasking</code>(协同式多任务处理), and it allows concurrency; many threads can wait for different events at the same time.</p>
+
+<p>Say that two threads each connect a <code>socket</code>:</p>
+
+<pre><code class="language-python">def do_connect():
+    s = socket.socket()
+    s.connect((&#39;python.org&#39;, 80))  # drop the GIL
+
+for i in range(2):
+    t = threading.Thread(target=do_connect)
+    t.start()
+</code></pre>
+
+<p>Only one of these two threads can execute Python at a time, but once the thread has begun connecting, it drops the GIL so the other thread can run. This means that both threads could be waiting for their sockets to connect concurrently, which is a good thing. They can do more work in the same amount of time.</p>
+
+<p>Let&#39;s pry open the box and see how a Python thread actually drops the GIL while it waits for a connection to be established, in <code>socketmodule.c</code>:</p>
+
+<pre><code class="language-C">/* s.connect((host, port)) method */
+static PyObject *
+sock_connect(PySocketSockObject *s, PyObject *addro)
+{
+    sock_addr_t addrbuf;
+    int addrlen;
+    int res;
+
+    /* convert (host, port) tuple to C address */
+    getsockaddrarg(s, addro, SAS2SA(&amp;addrbuf), &amp;addrlen);
+
+    Py_BEGIN_ALLOW_THREADS
+    res = connect(s-&gt;sock_fd, addr, addrlen);
+    Py_END_ALLOW_THREADS
+
+    /* error handling and so on .... */
+}
+</code></pre>
+
+<p>The <code>Py_BEGIN_ALLOW_THREAD</code>S macro is where the thread drops the <code>GIL</code>; it is defined simply as:</p>
+
+<pre><code>PyThread_release_lock(interpreter_lock);
+</code></pre>
+
+<p>And of course <code>Py_END_ALLOW_THREADS</code> reacquires the lock. A thread might block at this spot, waiting for another thread to release the lock; once that happens, the waiting thread grabs the GIL back and resumes executing your Python code. In short: While N threads are blocked on network I/O or waiting to reacquire the <code>GIL</code>, one thread can run Python.</p>
+
+<p>Below, see a complete example that uses cooperative multitasking to fetch many URLs quickly. But before that, let&#39;s contrast cooperative multitasking with the other kind of multitasking.</p>
+
+<h3 id="toc_4">Preemptive multitasking</h3>
+
+<p>A Python thread can voluntarily release the <code>GIL,</code> but it can also have the GIL seized from it preemptively(<code>Preemptive multitasking</code>,抢占式多任务处理).</p>
+
+<p>Let&#39;s back up and talk about how Python is executed. Your program is run in two stages. First, your Python text is compiled into a simpler binary format called <code>bytecode</code>. Second, the Python interpreter&#39;s main loop, a function mellifluously named <code>PyEval_EvalFrameEx()</code>, reads the <code>bytecode</code> and executes the instructions in it one by one.</p>
+
+<p>While the interpreter steps through your<code>bytecode</code> it periodically drops the <code>GIL</code>, without asking permission of the thread whose code it is executing, so other threads can run:</p>
+
+<pre><code class="language-C">for (;;) {
+    if (--ticker &lt; 0) {
+        ticker = check_interval;
+    
+        /* Give another thread a chance */
+        PyThread_release_lock(interpreter_lock);
+    
+        /* Other threads may run now */
+    
+        PyThread_acquire_lock(interpreter_lock, 1);
+    }
+
+    bytecode = *next_instr++;
+    switch (bytecode) {
+        /* execute the next instruction ... */ 
+    }
+}
+</code></pre>
+
+<p>By default the check interval is 1000 <code>bytecodes</code>. All threads run this same code and have the lock taken from them periodically in the same way. In Python 3 the GIL&#39;s implementation is more complex, and the check interval is not a fixed number of <code>bytecodes</code>, but 15 milliseconds. For your code, however, these differences are not significant.</p>
+
+<h2 id="toc_5">解决办法</h2>
+
+<h3 id="toc_6">用multiprocessing替代Thread</h3>
+
+<p>利用<code>multiprocessing</code>模块，可以很方便的处理。但进程会增加程序实现时线程间数据通讯和同步的困难。</p>
+
+<h3 id="toc_7">利用<code>ctypes</code>绕过<code>GIL</code></h3>
+
+<p><code>ctypes</code>可以让Python 接调用任意的C动态库的导出函数。</p>
+
+<pre><code class="language-python">from ctypes import *
+from threading import Thread
+
+#加载动态库
+lib = cdll.LoadLibrary(&quot;./libdeadloop.so&quot;)
+
+#创建一个子线程，让其执行ｃ语言编写的函数，此函数是一个死循环
+t = Thread(target=lib.DeadLoop)
+t.start()
+
+#主线程，也调用ｃ语言编写的那个死循环函数
+#lib.DeadLoop()
+
+while True:
+    pass
+</code></pre>
+
+<h2 id="toc_8">Reference</h2>
+
+<ul>
+<li><a href="https://opensource.com/article/17/4/grok-gil">Grok the GIL: How to write fast and thread-safe Python</a></li>
+<li><a href="http://www.dabeaz.com/GIL/">Understanding the Python GIL, David Beazley</a></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/8/16</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
 			<div class="article">
                 <a class="clearlink" href="15026944183320.html">
                 
@@ -9587,6 +9863,8 @@ test2()
         
             <a href="Latex.html"><strong>Latex</strong></a>
         
+            <a href="%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F.html"><strong>操作系统</strong></a>
+        
             <a href="Linux%20%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B.html"><strong>Linux 系统编程</strong></a>
         
             <a href="%E6%95%B0%E6%8D%AE%E5%BA%93.html"><strong>数据库</strong></a>
@@ -9606,6 +9884,24 @@ test2()
 	      
 		      
 			      <li class="post">
+			        <a href="15028699473698.html">Thread</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15028699346565.html">Process</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="Python%E5%85%A8%E5%B1%80%E8%A7%A3%E9%87%8A%E5%99%A8%E9%94%81GIL.html">Python GIL</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15026944183320.html">Python and MySQL</a>
 			      </li>
 		     
@@ -9613,24 +9909,6 @@ test2()
 		      
 			      <li class="post">
 			        <a href="15026939409542.html">逻辑删除</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="Regular%20Expression%20in%20MySQL.html">Regular Expression in MySQL</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15025954300059.html">Deep Learning</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15025903235887.html">Latex 技巧</a>
 			      </li>
 		     
 		  
