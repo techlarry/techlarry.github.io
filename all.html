@@ -139,7 +139,7 @@
 			<div class="article">
                 <a class="clearlink" href="getting_started_with_tensorflow.html">
                 
-                  <h1>Getting started with tensorflow</h1>
+                  <h1>Getting started with TensorFlow</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
@@ -191,7 +191,8 @@ node2 = tf.constant(4.0) # also tf.float32 implicitly
 print(node1, node2)
 </code></pre>
 
-<pre><code>Tensor(&quot;Const:0&quot;, shape=(), dtype=float32) Tensor(&quot;Const_1:0&quot;, shape=(), dtype=float32)
+<pre><code>Tensor(&quot;Const:0&quot;, shape=(), dtype=float32)
+Tensor(&quot;Const_1:0&quot;, shape=(), dtype=float32)
 </code></pre>
 
 <p>To produce output values for <code>node1</code> and <code>nodes2</code>, evaluation is needed. To actually evaluate the nodes, we must run the computational graph within a <code>session</code>. A session encapsulates the control and state of the Tensorflow runtime.</p>
@@ -859,7 +860,7 @@ Your algorithm should have a linear runtime complexity. Could you implement it w
 <a href="#toc_3">Cooperative Multitasking</a>
 </li>
 <li>
-<a href="#toc_4">Preemptive multitasking</a>
+<a href="#toc_4">Preemptive Multitasking</a>
 </li>
 </ul>
 </li>
@@ -867,7 +868,7 @@ Your algorithm should have a linear runtime complexity. Could you implement it w
 <a href="#toc_5">解决办法</a>
 <ul>
 <li>
-<a href="#toc_6">用multiprocessing替代Thread</a>
+<a href="#toc_6">用<code>multiprocessing</code>替代<code>Thread</code></a>
 </li>
 <li>
 <a href="#toc_7">利用<code>ctypes</code>绕过<code>GIL</code></a>
@@ -882,7 +883,7 @@ Your algorithm should have a linear runtime complexity. Could you implement it w
 
 <h2 id="toc_0">An example</h2>
 
-<p>In the following Python program, it seems it should reach 100% CPU. In fact, it takes only 50% of CPU resources.</p>
+<p>In the following Python program, it seems that the program may reach 100% CPU usuage. In fact, it takes only 50% of CPU resources.</p>
 
 <pre><code class="language-python">import threading
 
@@ -918,6 +919,8 @@ while True:
 
 <p>When it begins a task, such as network I/O, that is of long or uncertain duration and does not require running any Python code, a thread relinquishes the <code>GIL</code> so another thread can take it and run Python. This polite conduct is called <code>cooperative multitasking</code>(协同式多任务处理), and it allows concurrency; many threads can wait for different events at the same time.</p>
 
+<p>For <code>cooperative multitasking</code>, processes voluntarily yield control periodically or when idle in order to enable multiple applications to be run simultaneously. All programs must cooperate for the entire scheduling scheme to work.</p>
+
 <p>Say that two threads each connect a <code>socket</code>:</p>
 
 <pre><code class="language-python">def do_connect():
@@ -931,7 +934,7 @@ for i in range(2):
 
 <p>Only one of these two threads can execute Python at a time, but once the thread has begun connecting, it drops the GIL so the other thread can run. This means that both threads could be waiting for their sockets to connect concurrently, which is a good thing. They can do more work in the same amount of time.</p>
 
-<p>Let&#39;s pry open the box and see how a Python thread actually drops the GIL while it waits for a connection to be established, in <code>socketmodule.c</code>:</p>
+<p>Let&#39;s try to open the box and see how a Python thread actually drops the GIL while it waits for a connection to be established, in <code>socketmodule.c</code>:</p>
 
 <pre><code class="language-C">/* s.connect((host, port)) method */
 static PyObject *
@@ -952,20 +955,20 @@ sock_connect(PySocketSockObject *s, PyObject *addro)
 }
 </code></pre>
 
-<p>The <code>Py_BEGIN_ALLOW_THREAD</code>S macro is where the thread drops the <code>GIL</code>; it is defined simply as:</p>
+<p>The <code>Py_BEGIN_ALLOW_THREADS</code> macro is where the thread drops the <code>GIL</code>; it is defined simply as:</p>
 
 <pre><code>PyThread_release_lock(interpreter_lock);
 </code></pre>
 
 <p>And of course <code>Py_END_ALLOW_THREADS</code> reacquires the lock. A thread might block at this spot, waiting for another thread to release the lock; once that happens, the waiting thread grabs the GIL back and resumes executing your Python code. In short: While N threads are blocked on network I/O or waiting to reacquire the <code>GIL</code>, one thread can run Python.</p>
 
-<p>Below, see a complete example that uses cooperative multitasking to fetch many URLs quickly. But before that, let&#39;s contrast cooperative multitasking with the other kind of multitasking.</p>
+<p>Let&#39;s contrast cooperative multitasking with the other kind of multitasking.</p>
 
-<h3 id="toc_4">Preemptive multitasking</h3>
+<h3 id="toc_4">Preemptive Multitasking</h3>
 
-<p>A Python thread can voluntarily release the <code>GIL,</code> but it can also have the GIL seized from it preemptively(<code>Preemptive multitasking</code>,抢占式多任务处理).</p>
+<p>A Python thread can voluntarily release the <code>GIL,</code> but it can also have the GIL seized from it preemptively(<code>Preemptive multitasking</code>, 抢占式多任务处理).</p>
 
-<p>Let&#39;s back up and talk about how Python is executed. Your program is run in two stages. First, your Python text is compiled into a simpler binary format called <code>bytecode</code>. Second, the Python interpreter&#39;s main loop, a function mellifluously named <code>PyEval_EvalFrameEx()</code>, reads the <code>bytecode</code> and executes the instructions in it one by one.</p>
+<p>Let&#39;s back up and talk about how Python is executed. Your program is run in two stages. First, your Python program is compiled into a simpler binary format called <code>bytecode</code>. Second, the Python interpreter&#39;s main loop, a function mellifluously named <code>PyEval_EvalFrameEx()</code>, reads the <code>bytecode</code> and executes the instructions in it one by one.</p>
 
 <p>While the interpreter steps through your<code>bytecode</code> it periodically drops the <code>GIL</code>, without asking permission of the thread whose code it is executing, so other threads can run:</p>
 
@@ -992,7 +995,7 @@ sock_connect(PySocketSockObject *s, PyObject *addro)
 
 <h2 id="toc_5">解决办法</h2>
 
-<h3 id="toc_6">用multiprocessing替代Thread</h3>
+<h3 id="toc_6">用<code>multiprocessing</code>替代<code>Thread</code></h3>
 
 <p>利用<code>multiprocessing</code>模块，可以很方便的处理。但进程会增加程序实现时线程间数据通讯和同步的困难。</p>
 
@@ -1022,6 +1025,7 @@ while True:
 <ul>
 <li><a href="https://opensource.com/article/17/4/grok-gil">Grok the GIL: How to write fast and thread-safe Python</a></li>
 <li><a href="http://www.dabeaz.com/GIL/">Understanding the Python GIL, David Beazley</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Cooperative_multitasking">Cooperative multitasking WEKIPEDIA</a></li>
 </ul>
 
                         
@@ -10553,7 +10557,7 @@ test2()
 	      
 		      
 			      <li class="post">
-			        <a href="getting_started_with_tensorflow.html">Getting started with tensorflow</a>
+			        <a href="getting_started_with_tensorflow.html">Getting started with TensorFlow</a>
 			      </li>
 		     
 		  
