@@ -15,7 +15,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  Tensorflow operation - techlarry
+  TensorFlow Operation - techlarry
   
   </title>
   
@@ -137,7 +137,7 @@
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>Tensorflow operation</h1>
+          <h1>TensorFlow Operation</h1>
      
         <div class="read-more clearfix">
           <span class="date">2017/8/20</span>
@@ -157,7 +157,70 @@
       </div><!-- article -->
 
       <div class="article-content">
-      <h2 id="toc_0">1 Visualize with TensorBoard</h2>
+      <ul>
+<li>
+<a href="#toc_0">1 Visualize with TensorBoard</a>
+<ul>
+<li>
+<a href="#toc_1">Explicitly name operation, variable</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_2">2 Constant types</a>
+<ul>
+<li>
+<a href="#toc_3">Tensors filled with a specific value</a>
+</li>
+<li>
+<a href="#toc_4">Constants as sequences</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_5">3 Math Operations</a>
+</li>
+<li>
+<a href="#toc_6">4 TensorFlow data types:</a>
+<ul>
+<li>
+<a href="#toc_7">Python Native Types</a>
+</li>
+<li>
+<a href="#toc_8">TensorFlow Native Types</a>
+</li>
+<li>
+<a href="#toc_9">Numpy Data Types</a>
+</li>
+<li>
+<a href="#toc_10">Constant</a>
+</li>
+<li>
+<a href="#toc_11">Variables</a>
+<ul>
+<li>
+<a href="#toc_12">Each session maintains its own copy of variable</a>
+</li>
+<li>
+<a href="#toc_13">Use a variable to initialize another variable</a>
+</li>
+<li>
+<a href="#toc_14">Session vs InteractiveSession,</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_15">Placeholder</a>
+</li>
+<li>
+<a href="#toc_16">Lazy loading</a>
+</li>
+</ul>
+</li>
+</ul>
+
+
+<h2 id="toc_0">1 Visualize with TensorBoard</h2>
 
 <pre><code class="language-python">import tensorflow as tf
 a = tf.constant(2, name=&#39;a&#39;)
@@ -178,7 +241,7 @@ writer.close() # close the writer when you&#39;re done using it.
  open http://localhost:6006/#graphs
 </code></pre>
 
-<p>### Explicity name operation, variable</p>
+<h3 id="toc_1">Explicitly name operation, variable</h3>
 
 <pre><code class="language-python">a = tf.constant(2, name=&#39;a&#39;)
 b = tf.constant(3, name=&#39;b&#39;)
@@ -198,9 +261,9 @@ writer.close() # close the writer when you&#39;re done using it.
 
 <p><strong>Note</strong>:  Learn to use TensorBoard well and often. It will help a lot when you build complicated models.</p>
 
-<h2 id="toc_1">2 Constant types</h2>
+<h2 id="toc_2">2 Constant types</h2>
 
-<h3 id="toc_2">Tensors filled with a specific value</h3>
+<h3 id="toc_3">Tensors filled with a specific value</h3>
 
 <p>Using <code>tensorflow.zeros</code> to fill tensor with zeors, which is similar to <code>Numpy</code>:</p>
 
@@ -229,12 +292,12 @@ with tf.Session() as sess:
  [0 0 0]]
 </code></pre>
 
-<p>There are other command to fill tensor with a specific value, such as <code>tensorflow.ones</code>, <code>tensorflow.ones_like</code>, which of usuage is similar to <code>tensorflow.zeros</code>,<code>tensorflow.zeros_like</code>.</p>
+<p>There are other command to fill tensor with a specific value, such as <code>tensorflow.ones</code>, <code>tensorflow.ones_like</code>, which of usuage is similar to <code>tensorflow.zeros</code>, <code>tensorflow.zeros_like</code>.</p>
 
-<p><code>tensorflow.fill</code> creates a tensor filled with a scalar value:<br/>
-<code>python<br/>
-tf.fill(dims, value, name=None)<br/>
-</code></p>
+<p><code>tensorflow.fill</code> creates a tensor filled with a scalar value:</p>
+
+<pre><code class="language-python">tf.fill(dims, value, name=None)
+</code></pre>
 
 <pre><code class="language-python">z = tf.fill([3,4],3)
 with tf.Session() as sess:
@@ -246,7 +309,7 @@ with tf.Session() as sess:
  [3 3 3 3]]
 </code></pre>
 
-<h3 id="toc_3">Constants as sequences</h3>
+<h3 id="toc_4">Constants as sequences</h3>
 
 <p>You can create constants that are sequences, using <code>tf.linspace</code>, <code>tf.range</code>:</p>
 
@@ -276,7 +339,7 @@ with tf.Session() as sess:
 [ 3  6  9 12 15]
 </code></pre>
 
-<h2 id="toc_4">3 Math Operations</h2>
+<h2 id="toc_5">3 Math Operations</h2>
 
 <p><img src="media/15033836099887/math_operations.png" alt=""/></p>
 
@@ -296,8 +359,6 @@ with tf.Session() as sess:
     print(&#39;x3:\n&#39;, sess.run(x3))
     print(&#39;x4:\n&#39;, sess.run(x4))
     print(&#39;x5:\n&#39;, sess.run(x5))
-
-
 </code></pre>
 
 <pre><code>x1:
@@ -319,9 +380,9 @@ x5:
  [ 0  0  0  0]]
 </code></pre>
 
-<h2 id="toc_5">4 TensorFlow data types:</h2>
+<h2 id="toc_6">4 TensorFlow data types:</h2>
 
-<h3 id="toc_6">Python Native Types</h3>
+<h3 id="toc_7">Python Native Types</h3>
 
 <p>TensorFlow takes Python natives types: <code>boolean</code>, <code>numeric</code> (<code>int</code>, <code>float</code>), <code>strings</code></p>
 
@@ -353,13 +414,13 @@ Tensor(&quot;ones_like_21:0&quot;, shape=(3, 3), dtype=bool)
 
 <p><strong>Note: Do not use Python native types for tensors because TensorFlow has to infer Python type.</strong></p>
 
-<h3 id="toc_7">TensorFlow Native Types</h3>
+<h3 id="toc_8">TensorFlow Native Types</h3>
 
 <p>Like <code>NumPy</code>, <code>TensorFlow</code> also its own data types such as <code>tf.int32</code>, <code>tf.float32</code>. Below is a list of current TensorFlow data types.</p>
 
 <p><img src="media/15033836099887/tensorflow_data_types.png" alt=""/></p>
 
-<h3 id="toc_8">Numpy Data Types</h3>
+<h3 id="toc_9">Numpy Data Types</h3>
 
 <p>By now, you’ve probably noticed the similarity between <code>NumPy</code> and <code>TensorFlow</code>. <code>TensorFlow</code> was designed to integrate seamlessly with <code>Numpy</code>, the package that has become the  lingua franca of data science.</p>
 
@@ -381,7 +442,7 @@ tf.ones_like(x)
 <pre><code>&lt;tf.Tensor &#39;ones_like_22:0&#39; shape=(2, 2) dtype=float64&gt;
 </code></pre>
 
-<h3 id="toc_9">Constant</h3>
+<h3 id="toc_10">Constant</h3>
 
 <p>Constants are stored in the graph definition. This makes loading graphs expensive when constants are big. <strong>Only use constants for primitive types, use variables or readers for more data that requires more memory</strong>.</p>
 
@@ -421,7 +482,7 @@ versions {
 }
 </code></pre>
 
-<h3 id="toc_10">Variables</h3>
+<h3 id="toc_11">Variables</h3>
 
 <p><code>tf.constant</code> is an operation, but <code>tf.Variable</code> is a class. <code>tf.Variables</code> holds several operations:</p>
 
@@ -433,7 +494,7 @@ assign_op = xx.assign(5)
 
 </code></pre>
 
-<p>You have to initilize <code>variables</code>, The easiest way is initializing all variables at once:</p>
+<p>You have to initialize <code>variables</code>, The easiest way is initializing all variables at once:</p>
 
 <pre><code class="language-python">init = tf.global_variables_initializer()
 with tf.Session() as sess:
@@ -447,7 +508,7 @@ with tf.Session() as sess:
 5
 </code></pre>
 
-<h4 id="toc_11">Each session maintains its own copy of variable</h4>
+<h4 id="toc_12">Each session maintains its own copy of variable</h4>
 
 <pre><code class="language-python">W = tf.Variable(10, name=&#39;W&#39;)
 sess1 = tf.Session()
@@ -465,7 +526,7 @@ sess2.close()
 8
 </code></pre>
 
-<h4 id="toc_12">Use a variable to initialize another variable</h4>
+<h4 id="toc_13">Use a variable to initialize another variable</h4>
 
 <pre><code class="language-python"># want to declare U = 2*W
 # W is random tesnor
@@ -482,9 +543,9 @@ with tf.Session() as sess:
  [ 0.6298722  -0.38194153]]
 </code></pre>
 
-<h4 id="toc_13">Session vs InteractiveSession,</h4>
+<h4 id="toc_14">Session vs InteractiveSession,</h4>
 
-<p>You sometims see InteractiveSession instead of Session. The only difference is an InteractiveSession makes itself the default.</p>
+<p>You sometimes see InteractiveSession instead of Session. The only difference is an InteractiveSession makes itself the default.</p>
 
 <pre><code class="language-python">sess = tf.InteractiveSession()
 a = tf.constant(5.0)
@@ -498,7 +559,7 @@ sess.close()
 <pre><code>30.0
 </code></pre>
 
-<h3 id="toc_14">Placeholder</h3>
+<h3 id="toc_15">Placeholder</h3>
 
 <p>A TensorFlow program often has 2 phases:</p>
 
@@ -513,14 +574,14 @@ sess.close()
 
 <p>So using <code>placeholders</code>, we can later supply their data when they needed to execute the computation.</p>
 
-<pre><code>tf.placeholder(dtype, shape=None, name=None_
+<pre><code>tf.placeholder(dtype, shape=None, name=None)
 </code></pre>
 
-<p><code>shape=None</code> means that tensor of nay shape will be accepted as value for placeholder. <code>shape=None</code> is easy to constrcut graphs, but nighmarish for debugging.</p>
+<p><code>shape=None</code> means that tensor of nay shape will be accepted as value for placeholder. <code>shape=None</code> is easy to construct graphs, but nightmarish for debugging.</p>
 
-<h3 id="toc_15">Lazy loading</h3>
+<h3 id="toc_16">Lazy loading</h3>
 
-<p><code>Lazy loading</code> means defer creating/initialzing an object until it is needed.</p>
+<p><code>Lazy loading</code> means defer creating/initializing an object until it is needed.</p>
 
 <p>Normal loading:</p>
 
@@ -528,7 +589,7 @@ sess.close()
 with g.as_default():
     x = tf.Variable(10, name=&#39;x&#39;)
     y = tf.Variable(20, name=&#39;y&#39;)
-    z = tf.add(x,y) # you create the node for add node befre executing the graph
+    z = tf.add(x,y) # you create the node for add node before executing the graph
 
     with tf.Session() as sess:
         sess.run(tf.global_variables_initializer())
@@ -693,7 +754,7 @@ s.setAttribute('data-timestamp', +new Date());
 	      
 		      
 			      <li class="post">
-			        <a href="tensorflow_operation.html">Tensorflow operation</a>
+			        <a href="tensorflow_operation.html">TensorFlow Operation</a>
 			      </li>
 		     
 		  
