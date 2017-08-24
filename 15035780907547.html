@@ -15,7 +15,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  Recursion Iteration Performace - techlarry
+  Vector and Matrix Product in Numpy and TensorFlow - techlarry
   
   </title>
   
@@ -137,14 +137,14 @@
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>Recursion Iteration Performace</h1>
+          <h1>Vector and Matrix Product in Numpy and TensorFlow</h1>
      
         <div class="read-more clearfix">
-          <span class="date">2017/7/17</span>
+          <span class="date">2017/8/24</span>
 
           <span>posted in&nbsp;</span> 
           
-              <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
+              <span class="posted-in"><a href='Tensorflow.html'>Tensorflow</a></span>
            
          
           <span class="comments">
@@ -157,53 +157,85 @@
       </div><!-- article -->
 
       <div class="article-content">
-      <p>The performance of <code>Recursion</code> v.s. <code>Iteration</code> depends on the language being used.</p>
+      <h2 id="toc_0">Numpy</h2>
 
-<p>In Java, C, and Python, <code>recursion</code> is fairly expensive compared to <code>iteration</code> (in general) because it requires the allocation of a new <code>stack frame</code>. In some C compilers, one can use a compiler flag to eliminate this overhead, which transforms certain types of recursion (actually, certain types of tail calls) into jumps instead of function calls.</p>
+<p>Following are common vector and matrix product operations in Numpy, they are quite simple and straightforward:</p>
 
-<h2 id="toc_0">Stack Frame</h2>
+<ul>
+<li><p>Inner Product   \(\quad a^Tb\quad \):  <code>np.inner()</code></p></li>
+<li><p>Outter Product  \(\quad ab^T\quad \):  <code>np.outer()</code></p></li>
+<li><p>Dot Product  \(\quad a \cdot b = \sum a_ib_i\quad \): <code>np.dot()</code></p></li>
+<li><p>Elementwise Product  \(\quad c_i = a_ib_i\quad \): <code>np.multiply()</code></p></li>
+</ul>
 
-<p>When a function is called in Python, a <code>stack frame</code> is allocated to handle the local variables of the function. When the function returns, the return value is left on the top of the stack for the calling function to access.</p>
+<p>Note: inner product is defined on vector spaces over a field 𝕂 (finite or infinite dimensional). Dot product refers specifically to the product of vectors in \(ℝ^n\)</p>
 
-<p>The stack frame provide a <code>scope</code> for the variables used by the function. Even though we are calling the same function over and over, each call creates a new scope for the variables that are local to the function.</p>
+<p>The difference between the following implementations of the dot/inner/outer/elementwise product are demonstrated:</p>
 
-<h3 id="toc_1">Get Stack Frame</h3>
-
-<p>The <code>inspect</code> module in <code>python</code> provides several useful functions to help get information about live objects such as modules, classes, methods, functions, tracebacks, <code>frame objects</code>, and code objects.</p>
-
-<pre><code class="language-python">import inspect
-
-def f1():
-    names = []
-    # inpect.currentframe
-    # Return the frame object for the caller’s stack frame.
-    frame = inspect.currentframe()
-  
-    ## Keep moving to next outer frame
-    while True:
-        try:
-            frame = frame.f_back # next outer frame object (this frame’s caller)
-            name = frame.f_code.co_name # name with which this code object was defined
-            names.append(name)
-        except:
-            break
-    return names
-    
-def f2():
-   return f1()
-
-def f3():
-   return f2()
-
-def f4():
-   return f3()
-
-print(f4())
+<pre><code class="language-python">W = np.ones((2, 7), dtype=&#39;float32&#39;)
+x1 = [9, 2, 5, 0, 0, 7, 5]
+x2 = [9, 2, 2, 9, 0, 9, 2]
+print(&#39;vector dot product&#39;, np.dot(x1,x2)) # dot product
+print(&#39;inner&#39;, np.inner(x1,x2)) # inner product
+print(&#39;outter&#39;, np.outer(x1,x2)) # outter product
+print(&#39;element-wsie&#39;, np.multiply(x1,x2)) # Element-wise product
+print(&#39;matrix dot product&#39;, np.dot(W, x1)) # dot product
 </code></pre>
 
-<p>The results shows:</p>
+<pre><code>dot for vector 168
+inner 168
+outter [[81 18 18 81  0 81 18]
+ [18  4  4 18  0 18  4]
+ [45 10 10 45  0 45 10]
+ [ 0  0  0  0  0  0  0]
+ [ 0  0  0  0  0  0  0]
+ [63 14 14 63  0 63 14]
+ [45 10 10 45  0 45 10]]
+element-wsie [81  4 10  0  0 63 10]
+dot for matrix [ 28.  28.]
+</code></pre>
 
-<pre><code class="language-python">[&#39;f2&#39;, &#39;f3&#39;, &#39;f4&#39;, &#39;&lt;module&gt;&#39;]
+<h2 id="toc_1">TensorFlow</h2>
+
+<p>Vector inner/outer Product are a bit complex in TensorFlow. </p>
+
+<pre><code class="language-python">import tensorflow as tf
+import numpy as np
+
+x = tf.Variable([[1, -2, 3]], tf.float32, name=&#39;x&#39;)
+y = tf.Variable([[-1, 2, -3]], tf.float32, name=&#39;y&#39;)
+
+## inner product
+inner_product1 = tf.reduce_sum(tf.multiply(x, y))
+inner_product2 = tf.matmul(x, y, transpose_a=False, transpose_b= True) # different from inner_product1
+
+## outer product
+outer_product2 = tf.matmul(x, y, transpose_a= True)
+
+## matrix dot product
+X = tf.constant(np.random.randn(3,3), name=&#39;X&#39;)
+W = tf.constant(np.random.randn(3,3), name=&#39;W&#39;)
+matrix_product = tf.matmul(W, X)
+
+sess = tf.InteractiveSession()
+init_op = tf.global_variables_initializer()
+
+# run
+sess.run(init_op)
+print(sess.run(inner_product1))
+print(sess.run(inner_product2))
+print(sess.run(outer_product2))
+print(sess.run(matrix_product))
+</code></pre>
+
+<pre><code>-14
+[[-14]]
+[[-1  2 -3]
+ [ 2 -4  6]
+ [-3  6 -9]]
+[[-0.88722509 -0.94128018 -2.1999658 ]
+ [-0.67967623  1.33193446 -0.75612585]
+ [ 0.31741623  1.3271727  -0.04311113]]
 </code></pre>
 
 
@@ -215,16 +247,13 @@ print(f4())
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="15002564768282.html" 
-          title="Previous Post: Database System Concept (1): Introduction">&laquo; Database System Concept (1): Introduction</a>
-      
         </p>
         </div>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="hash_table_2_Using_hashing_to_implement_Map_ADT.html" 
-          title="Next Post: Hashing (2): Using hashing to implement Map ADT">Hashing (2): Using hashing to implement Map ADT &raquo;</a>
+          <a  href="15035712266178.html" 
+          title="Next Post: Python `set`, `tuple`">Python `set`, `tuple` &raquo;</a>
       
       </p>
         </div>

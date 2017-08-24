@@ -15,7 +15,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  Recursion Iteration Performace - techlarry
+  Python `set`, `tuple` - techlarry
   
   </title>
   
@@ -137,10 +137,10 @@
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>Recursion Iteration Performace</h1>
+          <h1>Python `set`, `tuple`</h1>
      
         <div class="read-more clearfix">
-          <span class="date">2017/7/17</span>
+          <span class="date">2017/8/24</span>
 
           <span>posted in&nbsp;</span> 
           
@@ -157,53 +157,88 @@
       </div><!-- article -->
 
       <div class="article-content">
-      <p>The performance of <code>Recursion</code> v.s. <code>Iteration</code> depends on the language being used.</p>
+      <h2 id="toc_0"><code>set</code></h2>
 
-<p>In Java, C, and Python, <code>recursion</code> is fairly expensive compared to <code>iteration</code> (in general) because it requires the allocation of a new <code>stack frame</code>. In some C compilers, one can use a compiler flag to eliminate this overhead, which transforms certain types of recursion (actually, certain types of tail calls) into jumps instead of function calls.</p>
+<p>A <code>set</code> is an unordered collection with no duplicate elements. Basic uses include membership testing and eliminating duplicate entries. Set objects also support mathematical operations like <code>union</code>, intersection, difference, and symmetric difference.</p>
 
-<h2 id="toc_0">Stack Frame</h2>
+<p>Curly braces or the <code>set()</code> function can be used to create sets. Note: to create an empty set you have to use <code>set()</code>, not {}; the latter creates an empty dictionary, a data structure that we discuss in the next section.</p>
 
-<p>When a function is called in Python, a <code>stack frame</code> is allocated to handle the local variables of the function. When the function returns, the return value is left on the top of the stack for the calling function to access.</p>
+<pre><code class="language-python">&gt;&gt;&gt; basket = {&#39;apple&#39;, &#39;orange&#39;, &#39;apple&#39;, &#39;pear&#39;, &#39;orange&#39;, &#39;banana&#39;}
+&gt;&gt;&gt; print(basket)                      # show that duplicates have been removed
+{&#39;orange&#39;, &#39;banana&#39;, &#39;pear&#39;, &#39;apple&#39;}
+&gt;&gt;&gt; &#39;orange&#39; in basket                 # fast membership testing
+True
+&gt;&gt;&gt; &#39;crabgrass&#39; in basket
+False
 
-<p>The stack frame provide a <code>scope</code> for the variables used by the function. Even though we are calling the same function over and over, each call creates a new scope for the variables that are local to the function.</p>
-
-<h3 id="toc_1">Get Stack Frame</h3>
-
-<p>The <code>inspect</code> module in <code>python</code> provides several useful functions to help get information about live objects such as modules, classes, methods, functions, tracebacks, <code>frame objects</code>, and code objects.</p>
-
-<pre><code class="language-python">import inspect
-
-def f1():
-    names = []
-    # inpect.currentframe
-    # Return the frame object for the caller’s stack frame.
-    frame = inspect.currentframe()
-  
-    ## Keep moving to next outer frame
-    while True:
-        try:
-            frame = frame.f_back # next outer frame object (this frame’s caller)
-            name = frame.f_code.co_name # name with which this code object was defined
-            names.append(name)
-        except:
-            break
-    return names
-    
-def f2():
-   return f1()
-
-def f3():
-   return f2()
-
-def f4():
-   return f3()
-
-print(f4())
+&gt;&gt;&gt; # Demonstrate set operations on unique letters from two words
+...
+&gt;&gt;&gt; a = set(&#39;abracadabra&#39;)
+&gt;&gt;&gt; b = set(&#39;alacazam&#39;)
+&gt;&gt;&gt; a                                  # unique letters in a
+{&#39;a&#39;, &#39;r&#39;, &#39;b&#39;, &#39;c&#39;, &#39;d&#39;}
+&gt;&gt;&gt; a - b                              # letters in a but not in b
+{&#39;r&#39;, &#39;d&#39;, &#39;b&#39;}
+&gt;&gt;&gt; a | b                              # letters in either a or b
+{&#39;a&#39;, &#39;c&#39;, &#39;r&#39;, &#39;d&#39;, &#39;b&#39;, &#39;m&#39;, &#39;z&#39;, &#39;l&#39;}
+&gt;&gt;&gt; a &amp; b                              # letters in both a and b
+{&#39;a&#39;, &#39;c&#39;}
+&gt;&gt;&gt; a ^ b                              # letters in a or b but not both
+{&#39;r&#39;, &#39;d&#39;, &#39;b&#39;, &#39;m&#39;, &#39;z&#39;, &#39;l&#39;}
 </code></pre>
 
-<p>The results shows:</p>
+<h2 id="toc_1"><code>tuple</code></h2>
 
-<pre><code class="language-python">[&#39;f2&#39;, &#39;f3&#39;, &#39;f4&#39;, &#39;&lt;module&gt;&#39;]
+<p>A <code>tuple</code> is an (<code>immutable</code>) ordered list of values. A <code>tuple</code> is in many ways similar to a list; one of the most important differences is that <code>tuple</code> can be used as keys in dictionaries and as elements of sets, while <code>list</code> cannot. Here is a trivial example:</p>
+
+<pre><code class="language-python">d = {(x, x + 1): x for x in range(10)}  # Create a dictionary with tuple keys
+t = (5, 6)        # Create a tuple
+print(type(t))    # Prints &quot;&lt;class &#39;tuple&#39;&gt;&quot;
+print(d[t])       # Prints &quot;5&quot;
+print(d[(1, 2)])  # Prints &quot;1&quot;
+</code></pre>
+
+<p>A special problem is the construction of tuples containing 0 or 1 items: the syntax has some extra quirks to accommodate these. Empty tuples are constructed by an empty pair of parentheses; a tuple with one item is constructed by following a value with a comma (it is not sufficient to enclose a single value in parentheses). Ugly, but effective. For example:</p>
+
+<pre><code class="language-python">&gt;&gt;&gt; empty = ()
+&gt;&gt;&gt; singleton = &#39;hello&#39;,    # &lt;-- note trailing comma
+&gt;&gt;&gt; len(empty)
+0
+&gt;&gt;&gt; len(singleton)
+1
+&gt;&gt;&gt; singleton
+(&#39;hello&#39;,)
+</code></pre>
+
+<p>The tuple syntax is simple, if you separate some values with commas, you automatically have a tuple(called <code>tuple packing</code>),</p>
+
+<pre><code>&gt;&gt;&gt; 1,2,3
+(1, 2, 3)
+</code></pre>
+
+<h3 id="toc_2"><code>tuple</code> function</h3>
+
+<p>The <code>tuple</code> function works in pretty much the same way as <code>list</code>: it takes one sequence argument and converts it to a <code>tuple</code>.</p>
+
+<pre><code>&gt;&gt;&gt; tuple([1,2,3])
+(1, 2, 3)
+</code></pre>
+
+<h3 id="toc_3">Performance</h3>
+
+<p>Instantiation is almost an order of magnitude faster for the tuple, but item access is actually somewhat faster for the list! So if you&#39;re creating a few tuples and accessing them many many times, it may actually be faster to use lists instead.</p>
+
+<pre><code class="language-python">$ python -m timeit &quot;x=(1,2,3,4,5,6,7,8)&quot;
+10000000 loops, best of 3: 0.0388 usec per loop
+
+$ python -m timeit &quot;x=[1,2,3,4,5,6,7,8]&quot;
+1000000 loops, best of 3: 0.363 usec per loop
+
+$ python -m timeit -s &quot;x=(1,2,3,4,5,6,7,8)&quot; &quot;y=x[3]&quot;
+10000000 loops, best of 3: 0.0938 usec per loop
+
+$ python -m timeit -s &quot;x=[1,2,3,4,5,6,7,8]&quot; &quot;y=x[3]&quot;
+10000000 loops, best of 3: 0.0649 usec per loop
 </code></pre>
 
 
@@ -215,16 +250,16 @@ print(f4())
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="15002564768282.html" 
-          title="Previous Post: Database System Concept (1): Introduction">&laquo; Database System Concept (1): Introduction</a>
+          <a href="15035780907547.html" 
+          title="Previous Post: Vector and Matrix Product in Numpy and TensorFlow">&laquo; Vector and Matrix Product in Numpy and TensorFlow</a>
       
         </p>
         </div>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="hash_table_2_Using_hashing_to_implement_Map_ADT.html" 
-          title="Next Post: Hashing (2): Using hashing to implement Map ADT">Hashing (2): Using hashing to implement Map ADT &raquo;</a>
+          <a  href="tensorflow_operation.html" 
+          title="Next Post: TensorFlow Operation">TensorFlow Operation &raquo;</a>
       
       </p>
         </div>
