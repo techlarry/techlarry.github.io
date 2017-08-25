@@ -132,979 +132,1387 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="14969760398302.html">
+                <a class="clearlink" href="Hash_Table_4_Universal_Hashing.html">
                 
-                  <h1>迭代器与生成器</h1>
+                  <h1>Hash Table (4): Universal Hashing</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>Let \(H\) be a finite collection of hash functions that map a given universe \(U\) of keys into the range \(\{0,1,...,m-1\}\). Such a collection is said to be <code>universal</code> if for each pair of distinct keys \(k,l \in U\), the number of <code>hash function</code> \(h \in H\) for which \(h(k) = h(l)\) is at most \(\frac{|H|}{m}\), i.e.</p>
+
+<p>\[ \forall k,l \in U, k\ne l: \Pr_{h\in H }[h(x)=h(y)]\le \frac{1}{m}  \]</p>
+
+<h2 id="toc_0">Why Universal Hashing?</h2>
+
+<p>Some malicious adversary might chooses the keys which all hash to the same slot, yielding an average retrieval time of \(\Theta(n)\). Instead of fixed hash functions, randomly chosen hash functions can yield good performance on average.</p>
+
+<h2 id="toc_1">Designing a universal class of hash functions</h2>
+
+<p>In short, you can generate family of hash functions using following simple equation:</p>
+
+<pre><code class="language-python">h(x,a,b) = ((ax+b) mod p) mod m
+</code></pre>
+
+<p>\(x\) is key you want to hash<br/>
+\(a\) is any number you can choose between \(1\) to \(p-1\) inclusive.<br/>
+\(b\) is any number you can choose between \(0\) to \(p-1\) inclusive.<br/>
+\(p\) is a prime number that is greater than max possible value of \(x\)<br/>
+\(m\) is a max possible value you want for hash code + 1<br/>
+By selecting different values of \(a\) and \(b\) you can generate many hash codes that are independent of each other.</p>
+
+<h2 id="toc_2">Implementation</h2>
+
+<pre><code class="language-python">import random
+
+
+class UniversalHash:
+    &quot;&quot;&quot;
+    &gt;&gt;&gt; h=UniversalHash()
+    &gt;&gt;&gt; h[54]=&quot;cat&quot;
+    &gt;&gt;&gt; h[26]=&quot;dog&quot;
+    &gt;&gt;&gt; h[93]=&quot;lion&quot;
+    &gt;&gt;&gt; h[77]=&quot;bird&quot;
+    &gt;&gt;&gt; h[31]=&quot;cow&quot;
+    &gt;&gt;&gt; h[44]=&quot;goat&quot;
+    &gt;&gt;&gt; 54 in h
+    True
+    &quot;&quot;&quot;
+    def __init__(self):
+        self.size = 100
+        self.slots = [None] * self.size
+        self.data = [None] * self.size
+        (self.p, self.a, self.b) = self.generate_hash_constants()
+
+
+    def generate_hash_constants(self):
+        &quot;&quot;&quot;
+        generate a, b, p for universal hashing
+        &quot;&quot;&quot;
+        p = self._get_prime()  # set p a  random prime number
+        a = random.randint(1, p - 1)  # A has a random value between 1 and p - 1.
+        b = random.randint(1, p - 1)  # B has a random value between 1 and p - 1
+        return p, a, b
+
+    def put(self, key, data):
+        hash_value = self.hash_function(key)
+        if self.slots[hash_value] is None:
+            self.slots[hash_value] = key
+            self.data[hash_value] = data
+        elif self.slots[hash_value] == key:
+            self.data[hash_value] = data
+        else:
+            # rehash
+            next_slot = self.rehash(hash_value, len(self.slots))
+            while self.slots[next_slot] is not None and self.slots[next_slot] != key:
+                next_slot = self.rehash(hash_value, len(self.slots))
+
+            if self.slots[next_slot] is None:
+                self.slots[next_slot] = key
+                self.data[hash_value] = data
+            else:
+                self.data[hash_value] = data
+
+    def hash_function(self, key):
+        &quot;&quot;&quot;
+        hash_function implements the simple remainder method
+        &quot;&quot;&quot;
+        return round(self.a * key + self.b) % self.p % self.size
+
+    def rehash(self, old_hash, size):
+        &quot;&quot;&quot;
+        linear probing with a plus 1
+        &quot;&quot;&quot;
+        return (old_hash+1) % size
+
+    def get(self, key):
+        start_slot = self.hash_function(key)
+        data = None
+        stop = False
+        found = False
+        position = start_slot
+        while self.slots[position] is not None and \
+                not found and not stop:
+            if self.slots[position] == key:
+                found = True
+                data = self.data[position]
+            else:
+                position = self.rehash(position, len(self.slots))
+            if position == start_slot:
+                stop = True
+        return data
+
+    def _is_prime(self,n):
+        if n &lt;= 2 or n%2 == 0:
+            return False
+
+        return not any((n%i == 0 for i in range(3, n-1)))
+
+    def _get_prime(self, p=0):
+        &quot;&quot;&quot;
+        get a prime number
+        &quot;&quot;&quot;
+        if p == 0:
+            p = random.randint(1000000,10000000)
+        while not self._is_prime(p):
+            p += 1
+
+        return p
+
+    def __getitem__(self, key):
+        return self.get(key)
+
+    def __setitem__(self, key, data):
+        self.put(key, data)
+
+    def __len__(self):
+        &quot;&quot;&quot;
+        return length
+        &quot;&quot;&quot;
+        count = 0
+        for item in self.slots:
+            if item is not None:
+                count += 1
+
+        return count
+
+    def __contains__(self, item):
+        &quot;&quot;&quot;
+        定义了使用in和not in进行成员测试时类的行为
+        &quot;&quot;&quot;
+        return self.get(item) is not None
+
+    def __iter__(self):
+        &quot;&quot;&quot;
+        iterator
+        &quot;&quot;&quot;
+        for item in self.slots:
+            if item is not None:
+                yield item
+
+if __name__ == &quot;__main__&quot;:
+    import doctest
+    doctest.testmod(verbose=True)
+
+</code></pre>
+
+<h2 id="toc_3">Resources</h2>
+
+<ol>
+<li><a href="https://www.cse.iitb.ac.in/%7Esri/cs213/lec-Hashing.pdf">Hash Functions and Hash Tables</a></li>
+<li>Cormen, Leiserson, Rivest, and Stein, Introduction to Algorithms (3rd edition)</li>
+</ol>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/7/23</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Hash%20Table.html'>Hash Table</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="Hash_Table_3_A_variant_of_2_Sum_Algorithm.html">
+                
+                  <h1>Hash Table (3): A variant of 2-Sum Algorithm</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>The goal of the arcticle is to implement a variant of the <code>2-SUM algorithm</code>.</p>
+
+<p>The file contains 1 million integers, both positive and negative (repetitions exists!). This is your array of integers, with the \(i\)th row of the file specifying the \(i\)th entry of the array.</p>
+
+<p>The task is to compute the number of target values \(t\) in the interval \([-10000,10000]\)(inclusive) such that there are distinct numbers \(x,y\) in the input file that satisfy \(x+y=t\). </p>
+
+<h2 id="toc_0">Implementation</h2>
+
+<p>The key process lies in the <code>hash function</code>, which might be set to appropriate small value based on the origin value:<br/>
+\[\text{hash_function}= \frac{\text{number}}{\text{factor}}\]</p>
+
+<p>The <code>factor</code> is selected based on the number of <code>slots</code> needed in the algorithm. i.e.<br/>
+\[\frac{\text{the range of keys}}{\text{factor}}\approx \text{the number of slots} &lt; \text{the number of keys}\]</p>
+
+<p>There, factor is \(\frac{\text{the number of key}}{2}\)</p>
+
+<pre><code class="language-python">class HashTable(object):
+
+    def __init__(self):
+
+        self.size = 5000000
+        self.slots = [set() for i in range(self.size)]
+        self.data = set()
+
+    def put(self, key, data):
+
+        hash_value = self.hash_function(key)
+        self.slots[hash_value].add(data)
+        self.data.add(data)
+
+    def hash_function(self, key):
+
+        return key//(self.size//2)
+
+    def get(self, key):
+        &quot;&quot;&quot;
+        there key == data
+        &quot;&quot;&quot;
+        slot = self.hash_function(key)
+        if key in self.slots[slot]:
+            return key
+        else:
+            return None
+
+    def buildfromfile(self, textfile):
+
+        with open(text_file, &#39;r&#39;) as infile:
+            for line in infile.readlines():
+                self.put(int(line), int(line))
+
+    def two_sum_count(self):
+        &quot;&quot;&quot;
+        Compute the number of target values t in the interval[low, high] (inclusive),
+        such that there are distinct numbers x, y that satisfy x+y = t
+        &quot;&quot;&quot;
+        sums = set()
+
+        for key1 in self.data:
+            left = self.hash_function(-key1-10000)
+            right = self.hash_function(-key1+10000)
+
+            for slot in self.slots[left:right+1]:
+
+                for key2 in slot:
+
+                    if 10000 &gt; key1 + key2 &gt; -10000:
+                        sums.add(key1+key2)
+
+        return len(sums)
+
+
+if __name__ == &quot;__main__&quot;:
+
+    # target files for counting
+    text_file = &#39;two_sum.txt&#39;
+
+    hashnumber = HashTable()
+    hashnumber.buildfromfile(text_file)
+    print(hashnumber.two_sum_count())
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/7/23</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Hash%20Table.html'>Hash Table</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="heap_median_maintenance.html">
+                
+                  <h1>Heap (2): Median Maintenance</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p><strong>Problem Statement</strong>: The goal of the problem is to implement the <code>Median Maintenance</code> algorithm. The text file contains a list of the integers; you should treat this as a stream of numbers, arriving one by one. Letting \(x_i\) denote the \(i\)th number of the file, the \(k\)th median \(m_k\) is defined as the median of the numbers \(x_1,…,x_k\). (So, if \(k\) is odd, then \(m_k\) is \(((k+1)/2)\)th smallest number among \(x_1,…,x_k\); if \(k\) is even, then \(m_k\) is the \((k/2)\)th smallest number among \(x_1,…,x_k\).)</p>
+
+<h1 id="toc_0">Solution</h1>
+
+<p>We might use a max heap to represent elements that are less than the median, and a min heap to represent elements that are greater than the median.</p>
+
+<p>After balancing the heaps, the number of elements in two heaps differs at most by 1. </p>
+
+<pre><code class="language-python">Step 1: Add next item to one of the heaps
+
+   if next item &lt; maxHeap root:
+        add it to maxHeap
+   else:
+        add it to minHeap
+
+Step 2: Balance the heaps (after this step heaps will be either balanced or
+   one of them will contain 1 more item)
+
+   if number of elements in one of the heaps &gt; the other by
+   more than 1:
+        remove the root element from the one containing more elements 
+        and add to the other one
+
+Step 3: Calculate the median:
+
+   if the heaps contain equal amount of elements:
+        median = root of maxHeap
+   else:
+        median = root of the heap with more elements
+</code></pre>
+
+<h2 id="toc_1">Implementation</h2>
+
+<pre><code class="language-python">import doctest
+import sys
+
+class MinHeap(object):
+    &quot;&quot;&quot;
+    Min Heap
+    &gt;&gt;&gt; bh = MinHeap()
+    &gt;&gt;&gt; bh.buildHeap([9,5,14,18,-17,27,33,19,11,21])
+    &gt;&gt;&gt; bh.findMin()
+    -17
+    &gt;&gt;&gt; bh.delMin()
+    -17
+    &gt;&gt;&gt; bh.list[1:]
+    [5, 9, 14, 11, 21, 27, 33, 19, 18]
+    &gt;&gt;&gt; bh.insert(-100)
+    &gt;&gt;&gt; bh.delMin()
+    -100
+    &quot;&quot;&quot;
+
+    def __init__(self):
+        &quot;&quot;&quot;
+        add self.list 0 with initialization in order to divide
+        &quot;&quot;&quot;
+        self.list = [-sys.maxsize]
+        self.size = 0
+
+
+    def insert(self, k):
+        &quot;&quot;&quot;
+        Insert element to the MinBinaryHeap
+        &quot;&quot;&quot;
+        self.list.append(k)
+        self.size += 1
+        self.perc_up(self.size)
+
+
+    def findMin(self):
+        &quot;&quot;&quot;
+        Find the min element and return it
+        &quot;&quot;&quot;
+        return self.list[1]
+
+
+    def delMin(self):
+        &quot;&quot;&quot;
+        Delete the min element
+        and return it
+        &quot;&quot;&quot;
+        retrival = self.list[1]
+        self.size -= 1
+        self.list[1] = self.list[-1]
+        self.list.pop()
+        self.perc_down(1)
+
+        return retrival
+
+
+    def isEmpty(self):
+        &quot;&quot;&quot;
+        Return if the MinBinaryHeap is empty
+        &quot;&quot;&quot;
+        return self.size == 0
+
+    def __len__(self):
+        &quot;&quot;&quot;
+        Magic Method: return the length of MinBinaryHeap
+        &quot;&quot;&quot;
+        return self.size
+
+
+    def buildHeap(self, alist):
+        &quot;&quot;&quot;
+        Build a MinBinaryHeap from alist which is a collection of data
+        &quot;&quot;&quot;
+        self.list.extend(alist)
+        self.size = len(alist)
+
+        i = self.size//2
+        while i &gt; 0:
+            self.perc_down(i)
+            i -= 1
+
+    def perc_up(self, i):
+        &quot;&quot;&quot;&quot;
+        perc_up i
+        &quot;&quot;&quot;
+        while i//2&gt;0:
+            if self.list[i] &lt; self.list[i // 2]:
+                self.list[i], self.list[i // 2] = self.list[i // 2], self.list[i]
+            i = i // 2
+
+    def perc_down(self, i):
+        &quot;&quot;&quot;
+        perc down i
+        &quot;&quot;&quot;
+        while (i * 2) &lt;= self.size:
+            mc = self.minChild(i)
+            if self.list[i] &gt; self.list[mc]:
+                self.list[i], self.list[mc] = self.list[mc], self.list[i]
+            i = mc
+
+    def minChild(self, i):
+        &quot;&quot;&quot;
+        find the min child
+        &quot;&quot;&quot;
+        if i * 2 + 1 &gt; self.size:
+            return i * 2
+        else:
+            if self.list[i * 2] &lt; self.list[i * 2 + 1]:
+                return i * 2
+            else:
+                return i * 2 + 1
+
+    def __iter__(self):
+        return iter(self.list[1:])
+
+
+class MaxHeap(object):
+    &quot;&quot;&quot;
+    Max Heap
+    &gt;&gt;&gt; bh = MaxHeap()
+    &gt;&gt;&gt; bh.buildHeap([9,5,14,18,-17,27,33,19,11,21])
+    &gt;&gt;&gt; bh.delMax()
+    33
+    &gt;&gt;&gt; bh.insert(100)
+    &gt;&gt;&gt; bh.delMax()
+    100
+    &gt;&gt;&gt; len(bh)
+    9
+    &quot;&quot;&quot;
+
+    def __init__(self):
+        self.heap = MinHeap()
+
+    def insert(self, k):
+        self.heap.insert(-k)
+
+    def delMax(self):
+        return -self.heap.delMin()
+
+    def buildHeap(self, alist):
+        for i in range(len(alist)):
+            alist[i] = -alist[i]
+        self.heap.buildHeap(alist)
+
+    def findMax(self):
+        return -self.heap.findMin()
+
+    def __len__(self):
+        return self.heap.size
+
+    def __iter__(self):
+        for i in range(1, self.heap.size+1):
+            yield -self.heap.list[i]
+
+
+def median_maintenance(textfile):
+
+    min_heap = MinHeap()  # &gt; medium
+    max_heap = MaxHeap()  # &lt; medium
+
+    medians = []
+    count = 0
+
+    with open(textfile) as infile:
+        for line in infile:
+            item = int(line)
+            count += 1
+
+            # Step 1: Add next item to one of the hepas
+            # special case: initialize
+            if count == 1:
+                max_heap.insert(item)
+            else:
+                if item &lt; max_heap.findMax():
+                    max_heap.insert(item)
+                else:
+                    min_heap.insert(item)
+
+            # Step2: Balance the heap
+            if abs(len(max_heap) - len(min_heap)) &gt; 1:
+                if len(max_heap) &gt; len(min_heap):
+                    min_heap.insert(max_heap.delMax())
+                else:
+                    max_heap.insert(min_heap.delMin())
+
+            # Step3: calculate median
+            if len(max_heap) == len(min_heap):
+                median = max_heap.findMax()
+            else:
+                if len(max_heap) &gt; len(min_heap):
+                    median = max_heap.findMax()
+                else:
+                    median = min_heap.findMin()
+
+            medians.append(median)
+
+            # test
+            #for element in max_heap:
+            #    print(element, end=&#39; &#39;)
+            #for element in min_heap:
+            #    print(element, end=&#39; &#39;)
+            #print(&#39;total elem:&#39;,len(max_heap)+len(min_heap))
+
+
+    return medians
+
+if __name__ == &#39;__main__&#39;:
+    # doctest.testmod(verbose=True)
+    #textfile = &#39;SmallTest.txt&#39;
+    textfile = &#39;Median.txt&#39;
+    medians = median_maintenance(textfile)
+    answer = sum(medians)%10000
+    print(answer)
+</code></pre>
+
+<h2 id="toc_2">Resources</h2>
+
+<ol>
+<li><a href="https://stackoverflow.com/questions/14189540/python-topn-max-heap-use-heapq-or-self-implement">max heap implementation</a></li>
+<li><a href="https://stackoverflow.com/questions/10657503/find-running-median-from-a-stream-of-integers">median maintenance</a></li>
+</ol>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/7/21</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html'>Python数据结构与算法</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="binary_search_tree.html">
+                
+                  <h1>Python树(三)：Binary Search Tree</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>A <code>binary search tree</code>  is a tree that keys that are less than the parent are found in the left subtree, and keys that are greater than the parent are found in the right subtree.</p>
+
+<p>Let \(x\) be a node in a binary search tree. If \(y\) is a node in the left subtree of \(x\), then \(y.key\le x.key\). If \(y\) is a node in the right subtree of \(x\), then \(y.key\le x.key\).</p>
+
+<h2 id="toc_0">Implementation</h2>
+
+<ul>
+<li><code>Map()</code> Create a new, empty map.</li>
+<li><code>put(key,val)</code> Add a new key-value pair to the map. If the key is already in the map then replace the old value with the new value.</li>
+<li><code>get(key)</code> Given a key, return the value stored in the map or <code>None</code> otherwise.</li>
+<li><code>del</code> Delete the key-value pair from the map using a statement of the form <code>del map[key]</code>.</li>
+<li><code>len()</code> Return the number of key-value pairs stored in the map.</li>
+<li><code>in</code> Return <code>True</code> for a statement of the form <code>key in map</code>, if the given key is in the map.</li>
+</ul>
+
+<p>To implement the binary search tree,  the method of <code>the nodes and references approached</code> similar to <code>binary tree</code>(<a href="http://larryim.cc/tree_2.html">Link</a>) The <code>BinarySearchTree</code> class has a reference to the <code>TreeNode</code> that is the root of the binary search tree. </p>
+
+<h3 id="toc_1"><code>delete</code> method</h3>
+
+<p>Once we’ve found the node containing the key we want to delete, there are three cases that we must consider:</p>
+
+<ul>
+<li>The node to be deleted has no children.</li>
+<li>The node to be deleted has only one child.</li>
+<li>The node to be deleted has two children.</li>
+</ul>
+
+<p>The first case is straightforward. If the current node has no children all we need to do is delete the node and remove the reference to this node in the parent. The code for this case is shown in here.</p>
+
+<p>The second case is only slightly more complicated. If a node has only a single child, then we can simply promote the child to take the place of its parent. The code for this case is shown in the next listing. As you look at this code you will see that there are six cases to consider. Since the cases are symmetric with respect to either having a left or right child we will just discuss the case where the current node has a left child. The decision proceeds as follows:</p>
+
+<ul>
+<li>If the current node is a left child then we only need to update the parent reference of the left child to point to the parent of the current node, and then update the left child reference of the parent to point to the current node’s left child.</li>
+<li>If the current node is a right child then we only need to update the parent reference of the left child to point to the parent of the current node, and then update the right child reference of the parent to point to the current node’s left child.</li>
+<li>If the current node has no parent, it must be the root. In this case we will just replace the key, payload, leftChild, and rightChild data by calling the <code>replaceNodeData</code> method on the root.</li>
+</ul>
+
+<p>The third case is the most difficult case to handle. If a node has two children, then it is unlikely that we can simply promote one of them to take the node’s place. We can, however, search the tree for a node that can be used to replace the one scheduled for deletion. What we need is a node that will preserve the binary search tree relationships for both of the existing left and right subtrees. The node that will do this is the node that has the next-largest key in the tree. We call this node the <code>successor</code>, and we will look at a way to find the successor shortly. The successor is guaranteed to have no more than one child, so we know how to remove it using the two cases for deletion that we have already implemented. Once the successor has been removed, we simply put it in the tree in place of the node to be deleted.</p>
+
+<h3 id="toc_2"><code>successor</code> Method</h3>
+
+<p>The code to find the successor is a method of the <code>TreeNode</code> class. This code makes use of the same properties of binary search trees that cause an <code>inorder traversal</code> to print out the nodes in the tree from smallest to largest. There are three cases to consider when looking for the successor:</p>
+
+<ul>
+<li>If the node has a right child, then the successor is the smallest key in the right subtree.</li>
+<li>If the node has no right child and is the left child of its parent, then the parent is the successor.</li>
+<li>If the node is the right child of its parent, and itself has no right child, then the successor to this node is the successor of its parent, excluding this node.</li>
+</ul>
+
+<pre><code class="language-python">
+class BinarySearchTree(object):
+
+    def __init__(self):
+        self.root = None
+        self.size = 0
+
+    def put(self, key, val):
+        if self.root:
+            self._put(key, val, self.root)
+        else:
+            self.root = TreeNode(key, val)
+        self.size = self.size + 1
+
+    def _put(self, key, val, currentNode):
+        if key &lt; currentNode.key:
+            if currentNode.hasLeftChild():
+                self._put(key, val, currentNode.leftChild)
+            else:
+                currentNode.leftChild = TreeNode(key, val, parent=currentNode)
+        else:
+            if currentNode.hasRightChild():
+                self._put(key, val, currentNode.rightChild)
+            else:
+                currentNode.rightChild = TreeNode(key, val, parent=currentNode)
+
+    def __setitem__(self, k, v):
+        self.put(k, v)
+
+    def get(self, key):
+        if self.root:
+            res = self._get(key, self.root)
+            if res:
+                return res.payload
+            else:
+                return None
+        else:
+            return None
+
+    def _get(self, key, currentNode):
+        if not currentNode:
+            return None
+        elif currentNode.key == key:
+            return currentNode
+        elif key &lt; currentNode.key:
+            return self._get(key, currentNode.leftChild)
+        else:
+            return self._get(key, currentNode.rightChild)
+
+    def __getitem__(self, key):
+        res = self.get(key)
+        if res:
+            return res
+        else:
+            raise KeyError(&#39;Error, key not in tree&#39;)
+
+    def __contains__(self, key):
+        if self._get(key, self.root):
+            return True
+        else:
+            return False
+
+    def length(self):
+        return self.size
+
+    def __len__(self):
+        return self.size
+
+    def __iter__(self):
+        return self.root.__iter__()
+
+    def delete(self, key):
+        if self.size &gt; 1:
+            nodeToRemove = self._get(key, self.root)
+            if nodeToRemove:
+                self.remove(nodeToRemove)
+                self.size = self.size - 1
+            else:
+                raise KeyError(&#39;Error, key not in tree&#39;)
+        elif self.size == 1 and self.root.key == key:
+            self.root = None
+            self.size = self.size - 1
+        else:
+            raise KeyError(&#39;Error, key not in tree&#39;)
+
+    def __delitem__(self, key):
+        self.delete(key)
+
+    def remove(self, currentNode):
+        if currentNode.isLeaf():  # leaf
+            if currentNode == currentNode.parent.leftChild:
+                currentNode.parent.leftChild = None
+            else:
+                currentNode.parent.rightChild = None
+        elif currentNode.hasBothChildren():  # interior
+            succ = currentNode.findSuccessor()
+            succ.spliceOut()
+            currentNode.key = succ.key
+            currentNode.payload = succ.payload
+        else:  # this node has one child
+            if currentNode.hasLeftChild():
+                if currentNode.isLeftChild():
+                    currentNode.leftChild.parent = currentNode.parent
+                    currentNode.parent.leftChild = currentNode.leftChild
+                elif currentNode.isRightChild():
+                    currentNode.leftChild.parent = currentNode.parent
+                    currentNode.parent.rightChild = currentNode.leftChild
+                else:
+                    currentNode.replaceNodeData(currentNode.leftChild.key,
+                                                currentNode.leftChild.payload,
+                                                currentNode.leftChild.leftChild,
+                                                currentNode.leftChild.rightChild)
+            else:
+                if currentNode.isLeftChild():
+                    currentNode.rightChild.parent = currentNode.parent
+                    currentNode.parent.leftChild = currentNode.rightChild
+                elif currentNode.isRightChild():
+                    currentNode.rightChild.parent = currentNode.parent
+                    currentNode.parent.rightChild = currentNode.rightChild
+                else:
+                    currentNode.replaceNodeData(currentNode.rightChild.key,
+                                                currentNode.rightChild.payload,
+                                                currentNode.rightChild.leftChild,
+                                                currentNode.rightChild.rightChild)
+
+    def inorder(self):
+        self._inorder(self.root)
+
+    def _inorder(self, tree):
+        if tree != None:
+            self._inorder(tree.leftChild)
+            print(tree.key)
+            self._inorder(tree.rightChild)
+
+    def postorder(self):
+        self._postorder(self.root)
+
+    def _postorder(self, tree):
+        if tree:
+            self._postorder(tree.rightChild)
+            self._postorder(tree.leftChild)
+            print(tree.key)
+
+    def preorder(self):
+        self._preorder(self, self.root)
+
+    def _preorder(self, tree):
+        if tree:
+            print(tree.key)
+            self._preorder(tree.leftChild)
+            self._preorder(tree.rightChild)
+
+
+class TreeNode:
+    def __init__(self, key, val, left=None, right=None, parent=None):
+        self.key = key
+        self.payload = val
+        self.leftChild = left
+        self.rightChild = right
+        self.parent = parent
+        self.balanceFactor = 0
+
+    def hasLeftChild(self):
+        return self.leftChild
+
+    def hasRightChild(self):
+        return self.rightChild
+
+    def isLeftChild(self):
+        return self.parent and self.parent.leftChild == self
+
+    def isRightChild(self):
+        return self.parent and self.parent.rightChild == self
+
+    def isRoot(self):
+        return not self.parent
+
+    def isLeaf(self):
+        return not (self.rightChild or self.leftChild)
+
+    def hasAnyChildren(self):
+        return self.rightChild or self.leftChild
+
+    def hasBothChildren(self):
+        return self.rightChild and self.leftChild
+
+    def replaceNodeData(self, key, value, lc, rc):
+        self.key = key
+        self.payload = value
+        self.leftChild = lc
+        self.rightChild = rc
+        if self.hasLeftChild():
+            self.leftChild.parent = self
+        if self.hasRightChild():
+            self.rightChild.parent = self
+
+    def findSuccessor(self):
+        succ = None
+        if self.hasRightChild():
+            succ = self.rightChild.findMin()
+        else:
+            if self.parent:
+                if self.isLeftChild():
+                    succ = self.parent
+                else:
+                    self.parent.rightChild = None
+                    succ = self.parent.findSuccessor()
+                    self.parent.rightChild = self
+        return succ
+
+    def spliceOut(self):
+        if self.isLeaf():
+            if self.isLeftChild():
+                self.parent.leftChild = None
+            else:
+                self.parent.rightChild = None
+        elif self.hasAnyChildren():
+            if self.hasLeftChild():
+                if self.isLeftChild():
+                    self.parent.leftChild = self.leftChild
+                else:
+                    self.parent.rightChild = self.leftChild
+                self.leftChild.parent = self.parent
+            else:
+                if self.isLeftChild():
+                    self.parent.leftChild = self.rightChild
+                else:
+                    self.parent.rightChild = self.rightChild
+                self.rightChild.parent = self.parent
+
+    def findMin(self):
+        current = self
+        while current.hasLeftChild():
+            current = current.leftChild
+        return current
+
+    def __iter__(self):
+        &quot;&quot;&quot;The standard inorder traversal of a binary tree.&quot;&quot;&quot;
+        if self:
+            if self.hasLeftChild():
+                for elem in self.leftChild:
+                    yield elem
+            yield self.key
+            if self.hasRightChild():
+                for elem in self.rightChild:
+                    yield elem
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/7/19</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Tree.html'>Tree</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="tree_2.html">
+                
+                  <h1>Python树(二)：二叉树的实现</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
                         	<ul>
 <li>
-<a href="#toc_0">可迭代对象</a>
+<a href="#toc_0">嵌套列表表示树</a>
+</li>
+<li>
+<a href="#toc_1">节点和引用</a>
+</li>
+<li>
+<a href="#toc_2">优先队列和二叉堆</a>
 <ul>
 <li>
-<a href="#toc_1">判断是否可以迭代</a>
+<a href="#toc_3">列表与完全二叉树</a>
+</li>
+<li>
+<a href="#toc_4">二叉堆的操作与实现</a>
 </li>
 </ul>
 </li>
 <li>
-<a href="#toc_2">迭代器</a>
-<ul>
-<li>
-<a href="#toc_3">手动访问迭代器中的元素</a>
+<a href="#toc_5">分析树</a>
 </li>
 <li>
-<a href="#toc_4">将可迭代对象转换成迭代器</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_5">生成器</a>
-<ul>
-<li>
-<a href="#toc_6">生成器表达式</a>
-</li>
-<li>
-<a href="#toc_7">生成器函数</a>
-</li>
-<li>
-<a href="#toc_8">next()方法运行流程</a>
-</li>
-<li>
-<a href="#toc_9">send()方法</a>
-</li>
-</ul>
+<a href="#toc_6">树的遍历</a>
 </li>
 </ul>
 
 
-<p>迭代是Python中最强有力的特性之一。</p>
-
-<h2 id="toc_0">可迭代对象</h2>
-
-<p>迭代是访问集合元素的一种方式。迭代器是一个可以记住遍历的位置的对象。迭代器对象从集合的第一个元素开始访问，直到所有的元素被访问完结束。迭代器只能往前不会后退。</p>
-
-<p>以直接作用于for循环的数据类型有以下几种：</p>
-
-<p>一类是集合数据类型，如list, tuple, dict, set, str等；<br/>
-一类是generator,包括生成器和带yield的生成器函数(generator function).</p>
-
-<p>这些可以直接作用于for循环的对象统称为可迭代对象：<code>Iterable</code></p>
-
-<h3 id="toc_1">判断是否可以迭代</h3>
-
-<p>可以使用<code>isinstance()</code>判断一个对象是否是<code>Iterable</code>对象：</p>
-
-<pre><code class="language-python">from collections import Iterable
-
-isinstance([], Iterable)
-</code></pre>
-
-<h2 id="toc_2">迭代器</h2>
-
-<p>可以被<code>next()</code>函数调用并不断返回下一个值的对象称为迭代器：Iterator。</p>
-
-<h3 id="toc_3">手动访问迭代器中的元素</h3>
-
-<p>要手动访问可迭代对象中的元素，可以使用<code>next()</code>函数，然后自己编写代码来捕获<code>StopIteration</code>异常。例如，下面这个例子采用手工方式从文件中读取文本行：</p>
-
-<pre><code class="language-python"># 打印hosts文件
-with open(&#39;/etc/hosts&#39;) as f:
-    try:
-        while True:
-            line = next(f)
-            print(line, end=&#39;&#39;)
-    except: StopIteration:
-        pass
-</code></pre>
-
-<p>可以使用<code>isinstance()</code>判断一个对象是否是<code>Iterator</code>对象：</p>
-
-<pre><code class="language-python">from collections import Iterator
-isinstance((x for x in ragne(10)), Iterator)
-</code></pre>
-
-<h3 id="toc_4">将可迭代对象转换成迭代器</h3>
-
-<p>把list, dict, str等可迭代对象变成迭代器，可以使用<code>iter()</code>函数</p>
-
-<pre><code class="language-python">&gt;&gt;&gt; a = [11,22,33,44]
-&gt;&gt;&gt; type(a)
-&lt;class &#39;list&#39;&gt;
-&gt;&gt;&gt; b=iter(a)
-&gt;&gt;&gt; b
-&lt;list_iterator object at 0x109ba3278&gt;
-</code></pre>
-
-<h2 id="toc_5">生成器</h2>
-
-<p>如果列表元素可以按照某种算法推算出来，从而节省大量空间，即保存计算生成的方式，当需要时才生成。</p>
-
-<p>生成器可以通过next()获得生成器的下一个返回值。</p>
-
-<p>生成器的特点：<br/>
-1. 节约内存<br/>
-2. 迭代到下一次的调用时，所使用的参数都是第一次所保留下的</p>
-
-<h3 id="toc_6">生成器表达式</h3>
-
-<p><code>生成器表达式(generator expression)</code>: An expression that returns an iterator.</p>
-
-<pre><code class="language-python">&gt;&gt;&gt;&gt; a = ( x for x in range(1,100))
-&gt;&gt;&gt;&gt; a
-&gt;&gt;&gt;&gt; &lt;generator object &lt;genexpr&gt; at 0x10ce60f10&gt; # 生成器表达式
-</code></pre>
-
-<h3 id="toc_7">生成器函数</h3>
-
-<p>如果想实现一种新的迭代模式，可使用<code>生成器函数</code>来定义。函数中只要出现了<code>yield</code>语句就会讲其转变成一个生成器。一旦执行到<code>yield</code>语句，生成器函数返回，迭代停止。</p>
-
-<pre><code class="language-python">def fib(times):
-     &quot;&quot;&quot;
-     斐波那契数列
-     &quot;&quot;&quot;
-     
-     n =0
-     a,b = 0,1
-     while n&lt; times:
-        yield b    #与函数的唯一区别是yield语句
-        a,b = b, a+b
-        n+=1
-     return &#39;done&#39;
-
-for n in fib(5):
-    print(n)
-</code></pre>
-
-<h3 id="toc_8">next()方法运行流程</h3>
-
-<p>当第一次调用生成器的<code>next</code>方法时，生成器开始执行生成器函数，从第一行代码开始执行，一直执行到<code>yield</code>语句后，生成器函数返回<code>yield</code>表达式的值。之后每一次调用生成器的<code>next</code>方法时，生成器从<code>yield</code>语句的下一句开始执行，直到再次遇到<code>yield</code>语句返回。</p>
-
-<h3 id="toc_9">send()方法</h3>
-
-<p>生成器对象首先是一个迭代器，但比一般迭代器对象多了一些方法，包括<code>send()</code>,<code>throw()</code>,<code>close()</code>方法；这些方法主要用与生成器对象的交互。</p>
-
-<p>对于生成器，使用<code>send()</code>时，第一次需要<code>send(None)</code>，因为没有<code>yield</code>语句来接受参数。（<code>yield</code>执行完就跳出，对应变量没有赋值，看下面的例子）</p>
-
-<p><code>send()</code>方法和<code>next()</code>方法类似，不同的是<code>send()</code>可以向生成器传参数。当<br/>
-第一次调用生成器的<code>send()</code>方法时，从生成器函数的第一行代码开始执行，一直执行到yield语句后，生成器函数返回。注意这个过程中，变量一直没有赋值。当下一次运行时，变量才赋值，赋值的值来源于这一次的<code>send()</code>方法（不是上一次！而且第一次都是<code>None</code>），但并不执行yield部分，直到再次遇到<code>yield</code>语句返回。</p>
-
-<pre><code class="language-python">&gt;&gt;&gt; def gen():
-...     while True:
-...         s = yield
-...         print(s)
-...
-&gt;&gt;&gt; g = gen()
-&gt;&gt;&gt; g.send()
-Traceback (most recent call last):
-  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
-TypeError: send() takes exactly one argument (0 given)
-&gt;&gt;&gt; g.send(None)  # 第一次需要传入参数None
-&gt;&gt;&gt; g.send(&#39;Kiss&#39;) # 将参数赋值给变量s
-Kiss
-</code></pre>
-
-<p><strong>注意： 不能将一个非None的值传给初始的生成器</strong></p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/6/9</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="14969731064895.html">
-                
-                  <h1>列表</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h2 id="toc_0">列表生成式</h2>
-
-<p>列表生成式,即List Comprehensions,Python内置的非常简单却强大的可以用来创建list的生成式。</p>
-
-<p>例子</p>
-
-<pre><code class="language-python">&gt;&gt;&gt;&gt; a = [ i for i in range(1,19)]
-&gt;&gt;&gt;&gt; b = [i for i in ragne(10) if i%2 == 0]
-&gt;&gt;&gt;&gt; c = [i for i in range(3) for j in range(2)]
-&gt;&gt;&gt;&gt; d = [(i,j) for i in range(3) for j in range(2)]
-</code></pre>
-
-<h3 id="toc_1">range的风险</h3>
-
-<pre><code class="language-python">&gt;&gt;&gt; range(1,1000000000)
-</code></pre>
-
-<p>内存空间太大，但在python3中已经解决: 在需要时，才生成</p>
-
-<h2 id="toc_2">列表去重</h2>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/6/9</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="14969711309826.html">
-                
-                  <h1>内置LIST，DICT 时间复杂度</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h2 id="toc_0">timeit 模块</h2>
-
-<pre><code class="language-python">class timeit.Timer(stmt=&#39;pass&#39;, setup=&#39;pass&#39;, timer=&lt;timer function&gt;)
-</code></pre>
+<p>树可以具有以下方法：</p>
 
 <ul>
-<li>Timer是测量小段代码执行速度的类。</li>
-<li>stmt参数是要测试的代码语句（statment）；</li>
-<li>setup参数是运行代码时需要的设置；</li>
-<li>timer参数是一个定时器函数，与平台有关。</li>
+<li><code>BinaryTree()</code> creates a new instance of a binary tree.</li>
+<li><code>get_left_child()</code> returns the binary tree corresponding to the left child of the current node</li>
+<li><code>get_right_child()</code> return the binary tree corresponding to the right child of the current node</li>
+<li><code>set_root_val(val)</code> stores the object stored in the current node</li>
+<li><code>get_root_val()</code> returns the object stored in the current node</li>
+<li><code>insert_left(val)</code> creates a new binary tree and installs it as the left child of the current node</li>
+<li><code>insert_right(val)</code> creates a new binary tree and installs it as the right child of the current node</li>
 </ul>
 
-<p>timeit.Timer.timeit(number=1000000)</p>
+<h2 id="toc_0">嵌套列表表示树</h2>
 
-<p>Timer类中测试语句执行速度的对象方法。number参数是测试代码时的测试次数，默认为1000000次。方法返回执行代码的平均耗时，一个float类型的秒数。</p>
+<p>在列表实现树时，我们将存储根节点作为列表的第一个元素的值。列表的第二个元素的本身是一个表示左子树的列表。这个列表的第三个元素表示在右子树的另一个列表。</p>
 
-<pre><code class="language-python">from timeit import Timer
-
-li1 = [1,2]
-li2 = [23,5]
-li = li1+li2
-
-li = [i for i in range(10000)]
-li = list(range(10000))
-
-def t1():
-    li = []
-    for i in range(10000):
-        li.append(i)
-
-def t2():
-    li = []
-    for i in range(10000):
-        li += [i]
-
-def t3():
-    li = [ i for i in range(10000)]
-
-def t4():
-    li = list(range(10000))
-
-timer1 = Timer(&#39;t1()&#39;,&quot;from __main__ import t1&quot;)
-timer2 = Timer(&#39;t2()&#39;,&#39;from __main__ import t2&#39;)
-timer3 = Timer(&#39;t3()&#39;,&#39;from __main__ import t3&#39;)
-timer4 = Timer(&#39;t4()&#39;,&#39;from __main__ import t4&#39;)
+<pre><code class="language-python"># coding: utf-8
 
 
-print(&#39;append&#39;,timer1.timeit(1000))
-print(&#39;+&#39;,timer2.timeit(1000))
-print(&#39;comprehesion&#39;,timer3.timeit(1000))
-print(&#39;list(range)&#39;,timer4.timeit(1000))
+def BinaryTree(r):
+    &quot;&quot;&quot;
+    creates a new instance of a binary tree.
+    &quot;&quot;&quot;
+    return [r,[],[]]
 
 
-# pop
-x = range(2000000)
-pop_zero = Timer(&quot;x.pop(0)&quot;, &quot;from __main__ import x&quot;)
-pop_end = Timer(&quot;x.pop()&quot;, &quot;from __main__ import x&quot;)
-print(&#39;pop zero&#39;, pop_zero.timeit(1000))
-print(&#39;pop end&#39;, pop_end.timeit(1000))
+def get_left_child(root):
+    &quot;&quot;&quot;
+    returns the binary tree corresponding to the left child of the current node
+    &quot;&quot;&quot;
+    return root[1]
+
+
+def get_right_child(root):
+    &quot;&quot;&quot;
+    return the binary tree corresponding to the right child of the current node
+    &quot;&quot;&quot;
+    return  root[2]
+
+
+def set_root_val(root, val):
+    &quot;&quot;&quot;stores the object stored in the current node
+    &quot;&quot;&quot;
+    root[0] = val
+
+
+
+def get_root_val(root):
+    &quot;&quot;&quot;
+    returns the object stored in the current node
+    &quot;&quot;&quot;
+    return root[0]
+
+def insert_left(root, new_branch):
+    &quot;&quot;&quot;
+    creates a new binary tree and installs it as the left child of the current node
+
+    插入一个左子节点，首先获取对应于当前左子节点的列表（可能是空的）。
+    然后，添加新的左子节点，将原来的左子节点作为新节点的左子节点。
+    这使我们能够将新节点插入到树中的任何位置.
+    &quot;&quot;&quot;
+    if root[1]:
+        root[1] = [new_branch,root[1], []]
+    else:
+        root[1] = [new_branch, [], []]
+    return root
+
+
+
+def insert_right(root, new_branch):
+    &quot;&quot;&quot;
+    creates a new binary tree and installs it as the right child of the current node
+    &quot;&quot;&quot;
+    if root[2]:
+        root[2] = [new_branch, [], root[2]]
+    else:
+        root[2] = [new_branch, [], []]
+    return root
+
+
+if __name__ == &quot;__main__&quot;:
+    r = BinaryTree(3)
+    insert_left(r,4)
+    insert_left(r,5)
+    insert_right(r,6)
+    insert_right(r,7)
+    l = get_left_child(r)
+    print(l)
+
+    set_root_val(l,9)
+    print(r)
+    insert_left(l,11)
+    print(r)
+    print(get_right_child(get_right_child(r)))
+
+# result
+#[5, [4, [], []], []]
+#[3, [9, [4, [], []], []], [7, [], [6, [], []]]]
+#[3, [9, [11, [4, [], []], []], []], [7, [], [6, [], []]]]
+#[6, [], []]
 
 </code></pre>
 
-<h2 id="toc_1">list 内置操作的时间复杂度</h2>
+<h2 id="toc_1">节点和引用</h2>
 
-<pre><code>* Operatation Big-O Efficiency
-* indexx[]          O(1)
-* index assignment  O(1)
-* append            O(1)
-* pop()             O(1)    #弹出
-* pop(i)            O(n)    #插入
-* insert(i, item)   O(n)
-* del operator      O(n)
-* iteration         O(n)
-* contains(in)      O(n)
-* get slice[x:y]    O(k)    # 取切片
-* del slice         O(n)    #删除切片
-* set slice         O(n+k)  #设置切片
-* reverse           O(n)
-* concatenate       O(k)
-* sort              O(nlogn)
-* multiply          O(nk)
-</code></pre>
+<p>节点和引用方法，定义一个类，具有根、以及左、右子树属性。这种表示更紧密地结合了面向对象的方式。树的结构类似于下图所示。</p>
 
-<h2 id="toc_2">dict 内置操作的时间复杂度</h2>
+<p><img src="media/14973171257726/14974056999880.jpg" alt="binary tree"/></p>
 
-<pre><code>* copy                O(n)
-* get item            O(n)   #取
-* set item            O(n)   #设置
-* delete tiem         O(n)   #删除键
-* contains(in)        O(1)    #包含，不用遍历
-* iteration           O(n)    #迭代
+<p>左右子树是其他二叉树实例的引用。例如，当插入一个新的左子节点到树上时，即创建了二叉树的另一个实例，并修改了根节点的<code>self.left_child</code>使之指向新的树。</p>
 
-</code></pre>
+<pre><code class="language-python">
+import doctest
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/6/9</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html'>Python数据结构与算法</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
 
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="14969711309827.html">
-                
-                  <h1>数据结构介绍</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h2 id="toc_0">概念</h2>
+class BinaryTree(object):
+    &quot;&quot;&quot;
+    &gt;&gt;&gt; r = BinaryTree(&#39;a&#39;)
+    &gt;&gt;&gt; r.get_root_val()
+    &#39;a&#39;
+    &gt;&gt;&gt; r.get_left_child()
 
-<p>数据是一个抽象的概念，将其进行分类后得到程序设计语言中的基本类型。如：int，float，char等。数据元素之间不是独立的，存在特定的关系，这些关系便是结构。数据结构指数据对象中数据元素之间的关系。</p>
-
-<p>程序= 数据结构+算法<br/>
-总结：算法是为了解决实际问题而设计的，数据结构是算法需要处理的问题载体。</p>
-
-<h2 id="toc_1">抽象数据类型(Abstract Data Type)</h2>
-
-<p>抽象数据类型(ADT)的含义是指一个数学模型以及定义在此数学模型上的一组操作。即把数据类型和数据类型上的运算捆在一起，进行封装。引入抽象数据类型的目的是把数据类型的表示和数据类型上运算的实现与这些数据类型和运算在程序中的引用隔开，使它们相互独立。</p>
-
-<h2 id="toc_2">内存、类型本质、连续存储</h2>
-
-<p>内存是连续的存储空间，内存的基本存储单元是一个字节，1个字节(Byte)是8位(Bit)</p>
-
-<p>顺序表的内存形式：</p>
-
-<ul>
-<li>逻辑地址：0,1,2,3,...,n01</li>
-<li>元素存储: e0,e1,e2,e3,....,en-1</li>
-<li>物理地址:l0,l0+c,l0+2c,l0+3c,l0+(n-1)c</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/6/9</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html'>Python数据结构与算法</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="14969760599335.html">
-                
-                  <h1>作用域</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h2 id="toc_0">命名空间</h2>
-
-<p>命名空间就是生效的范围</p>
-
-<h2 id="toc_1">全局，局部</h2>
-
-<p>查看局部变量</p>
-
-<pre><code class="language-python">&gt;&gt;&gt;&gt; locals() 
-</code></pre>
-
-<p>查看全局变量</p>
-
-<pre><code class="language-python">&gt;&gt;&gt;&gt; globals() 
-</code></pre>
-
-<h2 id="toc_2">LEGB规则</h2>
-
-<p>python 使用<code>LEGB</code>的顺序来查找一个符号对应的对象</p>
-
-<p>locals-&gt; enclosing function-&gt;globals-&gt;builtins</p>
-
-<ul>
-<li>locals, 当前所在命名空间（如函数、模块），函数的参数也属于命名空间中的变量</li>
-<li>enclosing，外部嵌套函数的命名空间（闭包中常见）</li>
-<li>globals, 全局变量，函数定义所在模块的命名空间</li>
-<li>builtins, 内建模块的命名空间</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/6/6</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="14969760531704.html">
-                
-                  <h1>python是动态语言</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>C语言是静态语言，运行之前需要先编译，不允许在运行过程中修改代码。</p>
-
-<p>动态编程语言，在运行时可以改变其结果的语言：例如新的函数、对象、甚至代码可以被引进，已有的函数可以被删除或是其他结构上的变化。</p>
-
-<h2 id="toc_0">运行的过程中给实例/类添加属性(实例属性/类属性)</h2>
-
-<pre><code class="language-python">class Person(object):
-    def __init__(self, name=None, age=None):
-             self.name = name
-             self.age = age
-P = Person(&#39;X man&#39;,&#39;24&#39;)
-P.sex = &#39;male&#39;  # 给对象添加属性
-Person.sex = &#39;female&#39; #给类添加属性
-</code></pre>
-
-<h2 id="toc_1">运行的过程中给实例/类添加方法</h2>
-
-<p>给实例添加方法时，一般需使用<code>MethodType</code>函数。</p>
-
-<pre><code class="language-python">class Person(object):
-    def __init__(self, name=None, age=None):
-             self.name = name
-             self.age = age
-    def eat(self):
-        print(&#39;---%s is eating&#39;%self.name)
-        
-def run(self):
-    print(&#39;---%s is running&#39;%self.name)
+    &gt;&gt;&gt; r.insert_left(&#39;b&#39;)
+    &gt;&gt;&gt; r.get_left_child().get_root_val()
+    &#39;b&#39;
+    &gt;&gt;&gt; r.insert_right(&#39;c&#39;)
+    &gt;&gt;&gt; r.get_right_child().get_root_val()
+    &#39;c&#39;
+    &gt;&gt;&gt; r.get_right_child().set_root_val(&#39;hello&#39;)
+    &gt;&gt;&gt; r.get_right_child().get_root_val()
+    &#39;hello&#39;
+    &quot;&quot;&quot;
     
-p1= Person(&#39;P1&#39;, 10)
-p1.eat()
-p1.run = run
-#虽然p1对象中 run属性已经指向了第10行的函数，但是这句代码还不正确
-#因为run属性的函数是后来添加的，即p1.run()的时候，并没有把p1当作第1个参数
+    def __init__(self, root):
+        self.key = root
+        self.left_child = None
+        self.right_child = None
 
-import types
-p1.run = types.MethodType(run,p1)
-p1.run()
+    def insert_left(self, item):
+        &quot;&quot;&quot;
+        creates a new binary tree and installs it as the left child of the current node
+        &quot;&quot;&quot;
+        if self.left_child:
+            self.left_child = BinaryTree(item)
+        else:
+            t = self.left_child
+            self.left_child = BinaryTree(item)
+            self.left_child.left_child = t
+
+    def insert_right(self, item):
+        &quot;&quot;&quot;
+        creates a new binary tree and installs it as the right child of the current node
+        &quot;&quot;&quot;
+        if self.right_child:
+            self.right_child = BinaryTree(item)
+        else:
+            t = self.right_child
+            self.right_child = BinaryTree(item)
+            self.right_child.right_child = t
+
+    def get_right_child(self):
+        &quot;&quot;&quot;
+        return the binary tree corresponding to the right child of the current node
+        &quot;&quot;&quot;
+        return self.right_child
+
+    def get_left_child(self):
+        &quot;&quot;&quot;
+        return the binary tree corresponding to the left child of the current node
+        &quot;&quot;&quot;
+        return self.left_child
+
+    def set_root_val(self, root):
+        &quot;&quot;&quot;
+        stores the object stored in the current node
+        &quot;&quot;&quot;
+        self.key = root
+
+    def get_root_val(self):
+        &quot;&quot;&quot;
+        returns the object stored in the current node
+        &quot;&quot;&quot;
+        return self.key
+
+    def pre_order(self, root):
+        &quot;&quot;&quot;
+        preorder traversal
+        &quot;&quot;&quot;
+        print(root.key, end=&#39; &#39;)
+        if root.left_child:
+            root.pre_order(root.left_child)
+        if root.right_child:
+            root.pre_order(root.right_child)
+
+    def post_order(self, root):
+        &quot;&quot;&quot;
+        postorder traversal
+        &quot;&quot;&quot;
+        if root is not None:
+            self.post_order(root.left_child)
+            self.post_order(root.right_child)
+            print(root.key, end=&#39; &#39;)
+
+    def pre_order(self, root):
+        &quot;&quot;&quot;
+        Preorder traversal
+        &quot;&quot;&quot;
+        print(root.key, end=&#39; &#39;)
+        if root.left_child:
+            self.pre_order(root.left_child)
+        if root.right_child:
+            self.pre_order(root.right_child)
+
+    def in_order(self, root):
+        &quot;&quot;&quot;
+        postorder traversal
+        &quot;&quot;&quot;
+        if root is not None:
+            self.in_order(root.left_child)
+            print(root.key, end=&#39; &#39;)
+            self.in_order(root.right_child)
+
+if __name__ == &quot;__main__&quot;:
+    doctest.testmod(verbose=True)
+
 </code></pre>
 
-<p>但是静态方法(static method)和类方法(class method)可以直接添加</p>
+<h2 id="toc_2">优先队列和二叉堆</h2>
 
-<pre><code class="language-python">@staticmethod
-def test():
-    print(&quot;---static method-----&quot;)
-p1.test = test
-p1.test()
+<p><strong>优先队列</strong>(Priority Queues)是一类抽象数据类型。优先队列中的每个元素都有各自的优先级，优先级最高的元素最先得到服务；优先级相同的元素按照其在优先队列中的顺序得到服务。在优先队列的内部，元素的次序是由“优先级”来决定：高优先级的元素排在队首，而低优先级的元素则排在后面。</p>
 
-@classmethod
-def printNum(cls):
-    print(&#39;----class method---&#39;)
-    
-Person.printNum = printNum
-Person.printNum()
-</code></pre>
+<p>实现优先队列的经典方法是采用<strong>二叉堆</strong>(Binary Heap)。因为使用二叉堆能将优先队列的入队和出队复杂度都保持在\(O(\log n)\)。 二叉堆有两种：键值总是最小的排在队首称为<strong>最小堆</strong>(min heap)，反之，键值总是最大的排在队首称为<strong>最大堆</strong>(max heap)。</p>
 
-<h2 id="toc_2">限制属性 __slots__</h2>
+<p>储存元素要满足<strong>堆次序</strong>，即堆中任何一个节点\(x\)，其父节点\(p\)的键值均小于或等于\(x\)的键值。下图所示是具备堆次序性质的完全二叉树。</p>
 
-<p>定义一个特殊的__slot__变量，限制class实例能添加的属性</p>
+<h3 id="toc_3">列表与完全二叉树</h3>
 
-<pre><code class="language-python">class Person(object):
-    __slots__=(&quot;name&quot;,&quot;age&quot;)
+<p><strong>不需要使用节点，引用或嵌套列表，用单个列表就能代表完全二叉树</strong>。因为对于完全二叉树，如果节点在列表中的下标为\(p\)，那么其左子节点下标为\(2p\)，右节点为\(2p+1\)。当我们要找任何节点的父节点时，可以直接使用 python 的整除。如果节点在列表中下标为\(n\)，那么父节点下标为\(n//2\)（参考下图）。使用列表, 能够使用简单的数学方法高效地遍历一棵完全二叉树，这也导致了二叉堆的高效实现。</p>
 
-p = Person()
-p.name = &quot;老王&quot;
-p.age = 10
-p.score = 100
-&gt;&gt;&gt;&gt; AttributeError: &#39;Person&#39; object has no attribute &#39;score&#39;
-</code></pre>
+<p><img src="media/14973171257726/14974117374605.jpg" alt=""/></p>
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/6/6</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
+<h3 id="toc_4">二叉堆的操作与实现</h3>
 
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="14970764330712.html">
-                
-                  <h1>属性@property的使用</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h3 id="toc_0">为什么要使用<code>getter</code>和<code>setter</code>方法</h3>
+<ul>
+<li><code>BinaryHeap()</code>：创建一个新的、空的二叉堆对象</li>
+<li><code>insert(k)</code>：把新元素加入到堆中</li>
+<li><code>findMin()</code>：返回堆中的最小项，最小项仍保留在堆中</li>
+<li><code>delMin()</code>：返回堆中的最小项，同时从堆中删除</li>
+<li><code>isEmpty()</code>：返回堆是否为空</li>
+<li><code>size()</code>：返回堆中元素的个数</li>
+<li><code>buildHeap(list)</code>：从一个包含元素的列表创建新堆</li>
+</ul>
 
-<p>在绑定属性时，如果可以直接设置属性，虽然写起来很简单，但是没有办法检查参数，并且可以随意更改参数。</p>
+<p>有两个关键的操作：<br/>
+1. <code>insert</code>方法。首先，为了满足“完全二叉树”的性质，新键值应该添加到列表的末尾。然而新键值简单地添加在列表末尾，显然无法满足堆次序。所以要通过比较父节点和新加入的元素的方法来重新满足堆次序。如果新加入的元素比父节点要小，可以与父节点互换位置；不断交换，直到到达树的顶端。下图所示一系列交换操作来使新加入元素“上浮”到正确的位置。</p>
 
-<pre><code class="language-python">s = People()
-s.salary = -1000
-</code></pre>
+<p><img src="media/14973171257726/14974156268132.jpg" alt=""/></p>
 
-<p>这显然不符合逻辑。为了限制salary的范围，可以通过一个<code>setSalary</code>方法来设置工资，再通过一个<code>getSalary</code>来获得工资，这样在<code>setSalary</code>方法里，就可以检查参数。</p>
+<p>2.<code>delMin</code>方法 移走根节点的元素后如何保持堆结构和堆次序: 首先，用最后一个节点来代替根节点, 移走最后一个节点保持了堆结构的性质。这么简单的替换，还是会破坏堆次序。第二步，将新节点“下沉”来恢复堆次序。下图所示的是一系列交换操作来使新节点“下沉”到正确的位置。</p>
 
-<h3 id="toc_1">私有属性添加<code>getter</code>和<code>setter</code>方法</h3>
+<p><img src="media/14973171257726/14974156980805.jpg" alt=""/></p>
 
-<pre><code class="language-python">class People(object):
+<pre><code class="language-python">class BinHeap(object):
+    &quot;&quot;&quot;
+    创建一个新的、空的二叉堆对象
+    &quot;&quot;&quot;
     def __init__(self):
-        self.__salary = 0
-    def getSalary(self):
-        return self.__salary
-    def setSalary(self, value):
-        if not isinstance(value, int):
-            raise ValueError(&#39;Money must be an integer!&#39;)
-        if value &lt;0 or value &gt; 10000:
-            raise ValueError(&#39;Money must between 0~10000!&#39;)
-        
-        self.__salary = value
-</code></pre>
+        self.list = [0]
+        self.size = 0
 
-<h3 id="toc_2">注意点</h3>
-
-<p>t.num到底是调用<code>getter</code>还是<code>setter</code>，要根据实际的场景来判断，</p>
-
-<ol>
-<li>如果是给t.num赋值，那么一定调用<code>setNum()</code></li>
-<li>如果是获取t.num的值，那么久一定调用<code>getNum()</code></li>
-</ol>
-
-<h3 id="toc_3">@property装饰器</h3>
-
-<p>但是直接调用<code>getter()</code>和<code>setter()</code>比较复杂。Python内置的<code>@property</code>装饰器可以把这两种方法转化为属性进行调用。看一下例子：</p>
-
-<pre><code class="language-python">class People(object):
-    def __init__(self):
-        self.__salary = 0
+    def perc_up(self,i):
+        &quot;&quot;&quot;
+        Percolate the new node into proper position
+        &quot;&quot;&quot;
+        while i//2&gt;0: 
+            if self.list[i] &lt; self.list[i//2]:
+                self.list[i], self.list[i//2] = self.list[i//2], self.list[i]
+            i = i//2
     
-    @property
-    def salary(self):
-        return self.__salary
-    
-    @salary.setter
-    def salary(self, value):
-        if not isinstance(value, int):
-            raise ValueError(&#39;Salary must be an integer!&#39;)
-        if value &lt;0 or value &gt; 10000:
-            raise ValueError(&#39;Salary must between 0~10000!&#39;)
-        
-        self.__salary = value
-        
-    @property
-    def tax(self):
-        self.__tax = self.__salary*0.1
-        return self.__tax
-</code></pre>
-
-<p>当不定义setter方法时，那么就定义了一个只读属性(例子中<code>tax</code>属性是只读属性)。</p>
-
-<p>@property 成为属性函数，可以对属性赋值时做必要的检查，并保证代码的清晰短小，主要有2个作用：</p>
-
-<ol>
-<li>将方法转换为只读</li>
-<li>重新实现一个属性的设置和读取方法，可做边界判定</li>
-</ol>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/5/10</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="14969760733622.html">
-                
-                  <h1>Python 高级</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h2 id="toc_0">模块重新导入</h2>
-
-<p>模块导入： import xxx, from xxx import xxxx<br/>
-增加路径 </p>
-
-<pre><code class="language-python">import sys
-sys.path.append(path)
-</code></pre>
-
-<p>模块重新导入</p>
-
-<pre><code class="language-python">from imp import reload
-reload(module name)
-</code></pre>
-
-<h2 id="toc_1">02 模块循环导入问题</h2>
-
-<p>不可以循环导入，不能在模块之间相互调用</p>
-
-<p>怎样避免循环导入：导入语句放在后面需要导入时再倒入，例如放在函数体内导入</p>
-
-<h2 id="toc_2">03/04 ==与is的区别</h2>
-
-<ul>
-<li>== 判断值是否相等</li>
-<li>Is  id(a), id(b)是否相等，<strong>比较两个引用是否指向了同一个对象（引用比较）</strong></li>
-</ul>
-
-<h2 id="toc_3">05-07 深拷贝与浅拷贝</h2>
-
-<ul>
-<li>浅拷贝是一个对象的顶层拷贝，拷贝了引用，并没有拷贝内容
-= 就是浅拷贝</li>
-<li>深拷贝是对于一个对象所有层次的拷贝（递归）
-<code>python
-import copy
-c = copy.deepcopy(a)
-</code>
-copy.deepcopy深拷贝会把引用都拷贝出来（递归）
-copy.copy() 
-使用copy模块的copy功能的时候，它会根据当前拷贝的数据类型是可变类型还是不可变类型，有不同的处理方式：如果拷贝可变类型，只能识别第一层拷贝；如果拷贝不可变类型，是浅拷贝</li>
-</ul>
-
-<h2 id="toc_4">08 不同进制的讲解</h2>
-
-<p>略</p>
-
-<h2 id="toc_5">09 原码，反码，补码，进制的转换</h2>
-
-<p>有符号数和无符号数的概念<br/>
-规则：把二进制数中的最高位（最左边的那位）用作符号位</p>
-
-<p>对于有符号数，最高位被计算机系统规定为符号位（0为正，1为负）<br/>
-对于无符号数，最高位被计算机系统规定为数据位</p>
-
-<p>数字在计算机中，是用二进制补码的形式来保存的，因此-1+1需要按照补码进行相加才是正确的结果</p>
-
-<p>1）如何计算补码？<br/>
-正数：原码=反码=补码<br/>
-负数：反码=符号位不变，其他位取反<br/>
-      补码=反码+1<br/>
-溢出：越界<br/>
-    2) 从补码转回原码<br/>
-    负数补码转换原码的规则：<br/>
-    原码=补码的符号位不变，数据位取反，尾+1</p>
-
-<p>进制的转换 bin, int, oct, hex</p>
-
-<p>0b 二进制<br/>
-0o八进制<br/>
-0x十六进制</p>
-
-<p>转换成十进制 int(&quot;&quot;,16/8/2)</p>
-
-<h2 id="toc_6">10 位运算</h2>
-
-<p>把一个数的各位整体向左移动一个位，就变成原来的2倍</p>
-
-<h3 id="toc_7">位运算的介绍</h3>
-
-<ul>
-<li>&amp; 按位于</li>
-<li>|按位或</li>
-<li><sup>按位异或</sup></li>
-<li>～按位取反</li>
-<li>&lt;&lt;按位左移 &gt;&gt;按位右移</li>
-</ul>
-
-<h3 id="toc_8">位运算</h3>
-
-<ul>
-<li>按位与： 全1才1否则0：只有对应的两个二进位均为1时，结果位才为1，否则为0</li>
-<li>按位或：有1就1： 只要对应的二个二进位有一个位1时，结果位就为1，否则为0</li>
-<li>按位异或：不同为1: 当对应的二进位不相同时，结果为1，否则为0</li>
-</ul>
-
-<h2 id="toc_9">12 私有化</h2>
-
-<p>属性的名字前面加上下划线，属于私有属性，不能从外部调用的<br/>
-方法：setNum(), getNum() 设置两个方法，一个设置属性，一个获取数据</p>
-
-<ul>
-<li>xx: 公有变量</li>
-<li>_xx: 单前置下划线，私有化属性或方法，from somemodule import * 禁止导入，类对象和子类可以访问</li>
-<li>__xx__: 双前后下划线，用于名字空间的魔法对象或属性。例如：__init__</li>
-<li>__xx: 双前置下划线，私有，无法在外部直接访问（名子重整所以访问不到）</li>
-<li>xx_: 单后置下划线，用于避免与python关键词的冲突</li>
-</ul>
-
-<p>通过name mangling （名字重整）,目的是防止类意外重写基类的方法或者属性：__classname__privateatribute</p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/4/9</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="14969760668045.html">
-                
-                  <h1>闭包，装饰器</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h3 id="toc_0">函数引用</h3>
-
-<pre><code class="language-python">&gt;&gt;&gt; def test():
-...     print(&#39;lala&#39;)
-...
-&gt;&gt;&gt; test()
-lala
-&gt;&gt;&gt; test
-&lt;function test at 0x109a51950&gt; 
-
-&gt;&gt;&gt; b = test  # b指向函数体test
-
-&gt;&gt;&gt; b
-&lt;function test at 0x109a51950&gt;
-
-&gt;&gt;&gt; b()  # 通过引用调用函数
-lala
-</code></pre>
-
-<h3 id="toc_1">闭包</h3>
-
-<p>在函数内部再定义一个函数，并且这个函数用到了外边函数的变量，那么将这个函数以及用到的一些变量统称为闭包</p>
-
-<pre><code class="language-python">def test(number):
-  def test_in(number_in):
-    print(&quot;in test_in, number_in is %d&quot;%number_in)
-    return number+number_in
-  return test_in
-
-ret = test(100)  # ret 指向函数体
-ret(1)  # 调用函数
-</code></pre>
-
-<p>闭包的实际例子：</p>
-
-<pre><code class="language-python">def line_conf(a,b):
-  def line(x):
-    return a*x + b
-  return line
-
-line1 = line_conf(1,1)
-line2 = line_conf(4,5)
-
-print(line1(5))
-print(line2(5))
-</code></pre>
-
-<ol>
-<li>闭包又花了变量，原来需要类对象完成的工作，闭包也可以完成</li>
-<li>由于必报引用了外部函数的局部变量，则外部函数的局部变量没有及时释放，消耗内存</li>
-</ol>
-
-<h2 id="toc_2">装饰器</h2>
-
-<p>装饰器是程序开发中经常会用到的一个功能，用好了装饰器，开发效率如虎添翼。<br/>
-* 只要python解释器执行到了装饰器代码部分，那么就会自动装饰，而不是等到调用的时候才装饰<br/>
-* 有多个装饰器时，先执行后面的装饰</p>
-
-<pre><code class="language-python">def w1(func):
-  print(&#39;---正在装饰1-----&#39;)
-  def inner():
-    print(&#39;-----装在验证权限1------&#39;)
-    func()
-  return inner
-  
-def w2(func):
-  print(&#39;---正在装饰2-----&#39;)
-  def inner():
-    print(&#39;-----装在验证权限2------&#39;)
-    func()
-  return inner
-
-@w1
-@w2
-def f1():
-  print(&quot;---f1---&quot;)
-
-f1()
-
-&gt;&gt;&gt;
----正在装饰2-----
----正在装饰1-----
------装在验证权限1------
------装在验证权限2------
----f1---
-</code></pre>
-
-<h3 id="toc_3">通用装饰器</h3>
-
-<p>无参数、有参数、不定长参数、有返回值、无返回值 示例</p>
-
-<pre><code class="language-python">def func(functionName):
-
-  def func_in(*args, **kwargs):
-    ret = functionName(*args, **kwargs)
-    return ret
-    
-  return func_in
-</code></pre>
-
-<h3 id="toc_4">带有参数的装饰器</h3>
-
-<p>同一个装饰器，在装饰不同函数时，起到不同的效果</p>
-
-<pre><code class="language-python">def func_arg(arg):
-    def func(functionName):
-        def func_in():
-            print(&quot;---记录日志-arg=%s--&quot;%arg)
-            if arg==&quot;heihei&quot;:
-                functionName()
-                functionName()
+    def insert(self, item):
+        &quot;&quot;&quot;把新元素加入到堆中&quot;&quot;&quot;
+        self.list.append(item)
+        self.size += 1
+        self.perc_up(self.size)
+
+    def findMin(self):
+        &quot;&quot;&quot;返回堆中的最小项，最小项仍保留在堆中&quot;&quot;&quot;
+        return self.list[1]
+
+    def delMin(self):
+        &quot;&quot;&quot;返回堆中的最小项，同时从堆中删除&quot;&quot;&quot;
+        retval = self.list[1]
+        self.list[1] = self.list[-1]
+        self.size -=1
+        self.list.pop()
+        self.perc_down(1)
+
+        return retval
+
+
+    def perc_down(self, i):
+        &quot;&quot;&quot;
+        Percolate the root node  down the tree
+        &quot;&quot;&quot;
+        while (i * 2) &lt;= self.currentSize:
+            mc = self.minChild(i)
+            if self.heapList[i] &gt; self.heapList[mc]:
+                tmp = self.heapList[i]
+                self.heapList[i] = self.heapList[mc]
+                self.heapList[mc] = tmp
+            i = mc
+            
+    def minChild(self, i):
+        &quot;&quot;&quot;
+        find the min child
+        &quot;&quot;&quot;
+        if i * 2 + 1 &gt; self.currentSize:
+            return i * 2
+        else:
+            if self.heapList[i * 2] &lt; self.heapList[i * 2 + 1]:
+                return i * 2
             else:
-                functionName()
-        return func_in
-    return func
+                return i * 2 + 1
 
-#1. 先执行func_arg(&quot;heihei&quot;)函数,这个函数return 的结果是func这个函数的引用
-#2. @func
-#3. 使用@func对test进行装饰
-@func_arg(&quot;heihei&quot;)
-def test():
-    print(&quot;--test--&quot;)
+    def isEmpty(self):
+        &quot;&quot;&quot;返回堆是否为空&quot;&quot;&quot;
+        return self.size == 0
 
-#带有参数的装饰器,能够起到在运行时,有不同的功能
-@func_arg(&quot;haha&quot;)
-def test2():
-    print(&quot;--test2--&quot;)
+    def __len__(self):
+        &quot;&quot;&quot;返回堆中元素的个数&quot;&quot;&quot;
+        return self.size
 
-test()
-test2()
+    def buildHeap(self,alist):
+        &quot;&quot;&quot;从一个包含元素的列表创建新堆&quot;&quot;&quot;
+        self.size = len(alist)
+        self.list.extend(alist)
+        i = self.size//2
+        while i &gt;0:
+            self.perc_down(i)
+            i -= 1
+
 </code></pre>
+
+<h2 id="toc_5">分析树</h2>
+
+<p><strong>分析树</strong>(Parse Tree)是一个反映某种形式语言字符串的语法关系的有根有序树, 常常用于真实世界的结构表示，例如句子或数学表达式。</p>
+
+<p>下图是\( ((7+3)*(5−2))\) 的分析树, 树的层级结构帮我们理解了整个表达式的运算顺序。在计算最顶上的乘法运算前，我们先要计算子树中的加法和减法运算。左子树的加法运算结果为\(10\)，右子树的减法运算结果为\(3\)。利用树的层级结构，一旦我们计算出了子节点中表达式的结果，我们能够将整个子树用一个节点来替换。</p>
+
+<p><img src="media/14973171257726/14974242592531.jpg" alt=""/></p>
+
+<p>建立分析树的第一步是将表达式字符串分解成符号保存在列表里。有四种符号需要考虑：<strong>左括号</strong>，<strong>右括号</strong>，<strong>操作符</strong>和<strong>操作数</strong>。当读到一个左括号时，将开始一个新的表达式，因此需要创建一个子树来对应这个新的表达式。相反，每当读到一个右括号，就得结束这个表达式。另外，操作数将成为叶节点和他们所属的操作符的子节点。最后，每个操作符都应该有一个左子节点和一个右子节点。通过上面的分析我们定义以下四条规则：</p>
+
+<ul>
+<li>如果当前读入的字符是<code>(</code>，添加一个新的节点作为当前节点的左子节点，并下降到左子节点处。</li>
+<li>如果当前读入的字符在列表[<code>+</code>, <code>-</code>, <code>/</code>, <code>*</code>]中，将当前节点的根值设置为当前读入的字符。添加一个新的节点作为当前节点的右子节点，并下降到右子节点处。</li>
+<li>如果当前读入的字符是一个数字，将当前节点的根值设置为该数字，并返回到它的父节点。</li>
+<li>如果当前读入的字符是<code>)</code>，返回当前节点的父节点。</li>
+</ul>
+
+<p>利用<code>get_left_child</code>和<code>get_right_child</code>方法可以获得子节点的方法。<strong>利用栈跟踪父节点</strong>：当要下降到当前节点的子节点时，将当前节点压入栈；当要返回当前节点的父节点时，从栈中弹出该父节点。</p>
+
+<p>所以使用栈和二叉树来创建分析树，代码如下：</p>
+
+<pre><code class="language-python">from stack import Stack
+from binary_tree2 import BinaryTree
+import operator
+
+def build_parse_tree(fp_exp):
+    fp_list = fp_exp.split()
+    p_stack = Stack()
+    e_tree = BinaryTree(&#39;&#39;)
+    p_stack.push(e_tree)
+    current_tree = e_tree
+
+    for i in fp_list:
+        if i == &#39;(&#39;:
+            current_tree.insert_left(&#39;&#39;)
+            p_stack.push(current_tree)
+            current_tree = current_tree.get_left_child()
+        elif i not in [&#39;+&#39;,&#39;-&#39;,&#39;*&#39;,&#39;/&#39;,&#39;)&#39;]:
+            current_tree.set_root_val(int(i))
+            parent = p_stack.pop()
+            current_tree = parent
+        elif i in [&#39;+&#39;,&#39;-&#39;,&#39;*&#39;,&#39;/&#39;]:
+            current_tree.set_root_val(i)
+            current_tree.insert_right(&#39;&#39;)
+            p_stack.push(current_tree)
+            current_tree = current_tree.get_right_child()
+        elif i == &#39;)&#39;:
+            current_tree = p_stack.pop()
+        else:
+            raise ValueError
+
+    return e_tree
+
+def postorder_eval(tree):
+    opers = {&#39;+&#39;:operator.add, &#39;-&#39;:operator.sub, &#39;*&#39;:operator.mul, &#39;/&#39;: operator.truediv}
+    res1 = None
+    res2 = None
+
+    if tree:
+        res1 = postorder_eval(tree.get_left_child())
+        res2 = postorder_eval(tree.get_right_child())
+        if res1 and res2:
+            return opers[tree.get_root_val()](res1, res2)
+        else:
+            return tree.get_root_val()
+
+pt = build_parse_tree(&quot;( ( 10 + 5 ) * 3 )&quot;)
+
+print(&#39;result = %d&#39; %postorder_eval(pt))
+</code></pre>
+
+<h2 id="toc_6">树的遍历</h2>
+
+<p>对树中所有节点的访问称为<strong>遍历</strong>(traversal)。按照节点的访问方式不同，树的遍历模式可分为 3 种。这三种方式常被用于访问树的节点，它们之间的不同在于访问每个节点的次序不同。这三种遍历分别叫做<strong>先序遍历</strong>(preorder)，<strong>中序遍历</strong>(inorder)和<strong>后序遍历</strong>(postorder)。具体定义为：</p>
+
+<ul>
+<li><p><strong>先序遍历</strong> 先访问根节点，然后递归使用先序遍历访问左子树，再递归使用先序遍历访问右子树。</p></li>
+<li><p><strong>中序遍历</strong> 递归使用中序遍历访问左子树，然后访问根节点，最后再递归使用中序遍历访问右子树。</p></li>
+<li><p><strong>后序遍历</strong> 先递归使用后序遍历访问左子树和右子树，最后访问根节点。</p></li>
+</ul>
+
+<p>三种遍历模式的代码已经包括在<code>BinaryTree</code>类中（参见<code>节点和引用</code>一节）。</p>
 
                         
                       </div>
@@ -1113,10 +1521,10 @@ test2()
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2017/4/5</span>
+                    <span class="date">2017/7/19</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
+          					    <span class="posted-in"><a href='Tree.html'>Tree</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -1140,7 +1548,7 @@ test2()
 			  </div>
 			  <div class="large-6 columns">
 			<p class="text-right" style="padding-top:25px;">
-			
+			 <a href="all_8.html">&raquo; Next Page</a> 
 			</p>
 			  </div>
 			</div>
