@@ -137,6 +137,227 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15036619229303.html">
+                
+                  <h1>Support Vector Machines</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h2 id="toc_0">Training Objective</h2>
+
+<p>The smaller the weight vector <code>w</code>, the larger the margin. So we want to minimize \(\lVert w\rVert\) to get a large margin.</p>
+
+<h3 id="toc_1">Hard Margin</h3>
+
+<p>If we also want to avoid any margin violation (<code>hard margin</code>), then we need the decision function to be greater than 1 for all positive trainig instances, and lower than  -1 for negative training instances. If we define \(t^{(i)} = -1\) for negative instances (if \(y^{(i)}&gt;0\)) and \(t^{(i)}=1\) for positive instances (if \(y^{(i)}=1\)), then we can express this constraint as \(t^{(i)}(w^T\cdot x^{(i)}+b) \le 1\) for all instances. </p>
+
+<p>** Hard Margin linear SVM classifier objective**</p>
+
+<p>\[<br/>
+\min_{w,b} \frac{1}{2}w^T\cdot w \\<br/>
+\text{subject to } t^{(i)}(w^T\cdot x^{(i)}+b) \le 1  \quad for \quad i =1,2,...,m<br/>
+\]</p>
+
+<h3 id="toc_2">Soft Margin</h3>
+
+<p>To get the soft margin objective, we need to introduce a <code>slack variable</code> \(\zeta^(i)\le0\) for each instance: \(\zeta^{(i)}\) measures how much the \(i^{th}\) instance is allowed to violate the margin. We now have two conflicting objectives: making the slack variables as small as possible to reduce the margin violations, and makeing \(\frac{1}{2}w^T\cdot w \) as small as possible to increase the margin.</p>
+
+<p>** Soft Margin linear SVM classifier objective**</p>
+
+<p>\[<br/>
+\min_{w,b} \frac{1}{2}w^T\cdot w + C\sum^m_{i=1}\zeta^{(i)}\\<br/>
+\text{subject to } t^{(i)}(w^T\cdot x^{(i)}+b) \le 1 - \zeta^{(i)} \quad for \quad i =1,2,...,m<br/>
+\]</p>
+
+<h2 id="toc_3">Implementation</h2>
+
+<pre><code class="language-python">import numpy as np
+from sklearn import datasets
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.svm import LinearSVC
+from sklearn.svm import SVC
+import matplotlib.pyplot as plt
+</code></pre>
+
+<h2 id="toc_4">Soft Margin Classification</h2>
+
+<pre><code class="language-python">
+# load data sets
+iris = datasets.load_iris()
+x = iris[&#39;data&#39;][:,(2,3)] # petal length, petal width
+y = (iris[&#39;target&#39;] == 2).astype(np.float64) # Iris-Virginica
+</code></pre>
+
+<pre><code class="language-python">%matplotlib inline
+plt.scatter(x[:,0], x[:,1], c=y)
+</code></pre>
+
+<pre><code>&lt;matplotlib.collections.PathCollection at 0x110ecf0f0&gt;
+</code></pre>
+
+<p><img src="media/15036619229303/output_4_1.png" alt="png"/></p>
+
+<pre><code class="language-python"># plot decision boundary
+def make_meshgrid(x, y, h=.02):
+    &quot;&quot;&quot;Create a mesh of points to plot in
+
+    Parameters
+    ----------
+    x: data to base x-axis meshgrid on
+    y: data to base y-axis meshgrid on
+    h: stepsize for meshgrid, optional
+
+    Returns
+    -------
+    xx, yy : ndarray
+    &quot;&quot;&quot;
+    x_min, x_max = x.min() - 1, x.max() + 1
+    y_min, y_max = y.min() - 1, y.max() + 1
+    xx, yy = np.meshgrid(np.arange(x_min, x_max, h),
+                         np.arange(y_min, y_max, h))
+    return xx, yy
+
+def plot_contours(model, xx, yy, **params):
+    &quot;&quot;&quot;Plot the decision boundaries for a classifier.
+
+    Parameters
+    ----------
+    ax: matplotlib axes object
+    clf: a classifier
+    xx: meshgrid ndarray
+    yy: meshgrid ndarray
+    params: dictionary of params to pass to contourf, optional
+    &quot;&quot;&quot;
+    Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
+    Z = Z.reshape(xx.shape)
+    out = plt.contourf(xx, yy, Z, **params)
+    return out
+</code></pre>
+
+<pre><code class="language-python"># svm
+svm_clf = Pipeline([
+    (&#39;scalar&#39;, StandardScaler()),
+    (&#39;linear_svc&#39;, LinearSVC(C=1, loss=&#39;hinge&#39;))])
+svm_clf.fit(x, y)
+</code></pre>
+
+<pre><code>Pipeline(steps=[(&#39;scalar&#39;, StandardScaler(copy=True, with_mean=True, with_std=True)), (&#39;linear_svc&#39;, LinearSVC(C=1, class_weight=None, dual=True, fit_intercept=True,
+     intercept_scaling=1, loss=&#39;hinge&#39;, max_iter=1000, multi_class=&#39;ovr&#39;,
+     penalty=&#39;l2&#39;, random_state=None, tol=0.0001, verbose=0))])
+</code></pre>
+
+<pre><code class="language-python">plot_contours(svm_clf, xx, yy,
+              cmap=plt.cm.coolwarm, alpha=0.8)
+plt.hold
+plt.scatter(x[:,0], x[:,1], c=y)
+</code></pre>
+
+<pre><code>&lt;matplotlib.collections.PathCollection at 0x111e5c128&gt;
+</code></pre>
+
+<p><img src="media/15036619229303/output_7_1.png" alt="png"/></p>
+
+<h2 id="toc_5">Nonelinear SVM Classification</h2>
+
+<p>One approach to handling nonlinear datasets is to add more features, such as polynomial features. In some cases result in a linearly separable dataset.</p>
+
+<pre><code class="language-python">from sklearn.preprocessing import PolynomialFeatures
+
+polynomial_svm_clf = Pipeline([
+    (&#39;poly_features&#39;, PolynomialFeatures(degree=3)),
+    (&#39;scaler&#39;, StandardScaler()),
+    (&#39;svm, clf&#39;, LinearSVC(C=10, loss=&#39;hinge&#39;))
+])
+
+polynomial_svm_clf.fit(x, y)
+</code></pre>
+
+<pre><code>Pipeline(steps=[(&#39;poly_features&#39;, PolynomialFeatures(degree=3, include_bias=True, interaction_only=False)), (&#39;scaler&#39;, StandardScaler(copy=True, with_mean=True, with_std=True)), (&#39;svm, clf&#39;, LinearSVC(C=10, class_weight=None, dual=True, fit_intercept=True,
+     intercept_scaling=1, loss=&#39;hinge&#39;, max_iter=1000, multi_class=&#39;ovr&#39;,
+     penalty=&#39;l2&#39;, random_state=None, tol=0.0001, verbose=0))])
+</code></pre>
+
+<pre><code class="language-python">xx, yy = make_meshgrid(x[:,0], x[:,1])
+plot_contours(polynomial_svm_clf, xx, yy,
+              cmap=plt.cm.coolwarm, alpha=0.8)
+plt.hold
+plt.scatter(x[:,0], x[:,1], c=y)
+</code></pre>
+
+<pre><code>&lt;matplotlib.collections.PathCollection at 0x112f0a470&gt;
+</code></pre>
+
+<p><img src="media/15036619229303/output_10_1.png" alt="png"/></p>
+
+<h2 id="toc_6">Gaussian RBF Kernal</h2>
+
+<p>Define the similarity function to be the Gaussian Radial Basis Function (RBF):</p>
+
+<p>\[\phi(x, \gamma) = exp(-\gamma \lVert x-l\rVert ^2)\]</p>
+
+<p>Let&#39;s try the Gaussian RBF kernel using the <code>SVC</code> class:</p>
+
+<pre><code class="language-python">rbf_kernel_svm_clf = Pipeline([
+    (&#39;svm_clf&#39;, SVC(kernel=&#39;rbf&#39;, gamma=0.1, C=0.1))
+])
+rbf_kernel_svm_clf.fit(x,y)
+</code></pre>
+
+<pre><code>Pipeline(steps=[(&#39;svm_clf&#39;, SVC(C=0.1, cache_size=200, class_weight=None, coef0=0.0,
+  decision_function_shape=None, degree=3, gamma=0.1, kernel=&#39;rbf&#39;,
+  max_iter=-1, probability=False, random_state=None, shrinking=True,
+  tol=0.001, verbose=False))])
+</code></pre>
+
+<pre><code class="language-python">plot_contours(rbf_kernel_svm_clf, xx, yy,
+              cmap=plt.cm.coolwarm, alpha=0.8)
+plt.hold
+plt.scatter(x[:,0], x[:,1], c=y)
+</code></pre>
+
+<pre><code>&lt;matplotlib.collections.PathCollection at 0x114174518&gt;
+</code></pre>
+
+<p><img src="media/15036619229303/output_13_1.png" alt="png"/></p>
+
+<p>Other kernals such as <code>sigmoid</code>, <code>precomputed</code> are also used. With so many kernels to choose from, as a rule of thumb, you should always try the linear kernel first, especailly if the training set is very large or if it has plenty of features. If the training set is not too large, you should try the Gaussian RBF kernel as well; it works well in most cases.</p>
+
+<h2 id="toc_7">Complexity</h2>
+
+<p>Time complexity of algorithms above:</p>
+
+<ul>
+<li><code>LinearSVC</code>: \(O(m\times n)\)</li>
+<li><code>SGDClassifier</code>: \(O(m\times n)\)</li>
+<li><code>SVC</code>: \(O(m^2\times n) \text{ to } O(m^3\times n)\)</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/8/25</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html'>机器学习</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15035780907547.html">
                 
                   <h1>Vector and Matrix Product in Numpy and TensorFlow</h1>
@@ -150,14 +371,14 @@
 
 <ul>
 <li><p>Inner Product   \(\quad a^Tb\quad \):  <code>np.inner()</code></p></li>
-<li><p>Outter Product  \(\quad ab^T\quad \):  <code>np.outer()</code></p></li>
+<li><p>Outer Product  \(\quad ab^T\quad \):  <code>np.outer()</code></p></li>
 <li><p>Dot Product  \(\quad a \cdot b = \sum a_ib_i\quad \): <code>np.dot()</code></p></li>
 <li><p>Elementwise Product  \(\quad c_i = a_ib_i\quad \): <code>np.multiply()</code></p></li>
 </ul>
 
 <p>Note: inner product is defined on vector spaces over a field 𝕂 (finite or infinite dimensional). Dot product refers specifically to the product of vectors in \(ℝ^n\)</p>
 
-<p>The difference between the following implementations of the dot/inner/outer/elementwise product are demonstrated:</p>
+<p>The difference between the following implementations of the dot/inner/outer/elementwise product are demonstrated as follows:</p>
 
 <pre><code class="language-python">W = np.ones((2, 7), dtype=&#39;float32&#39;)
 x1 = [9, 2, 5, 0, 0, 7, 5]
@@ -11495,6 +11716,12 @@ test2()
 	      
 		      
 			      <li class="post">
+			        <a href="15036619229303.html">Support Vector Machines</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15035780907547.html">Vector and Matrix Product in Numpy and TensorFlow</a>
 			      </li>
 		     
@@ -11514,12 +11741,6 @@ test2()
 		      
 			      <li class="post">
 			        <a href="getting_started_with_tensorflow.html">Getting started with TensorFlow</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="what_is_a_tensorflow_session.html">What is a tensorflow session?</a>
 			      </li>
 		     
 		  
