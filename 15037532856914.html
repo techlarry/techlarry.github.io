@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  What is a tensorflow session? - techlarry
+  K-means clustering - techlarry
   
   </title>
   
@@ -132,14 +132,14 @@
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>What is a tensorflow session?</h1>
+          <h1>K-means clustering</h1>
      
         <div class="read-more clearfix">
-          <span class="date">2017/8/18</span>
+          <span class="date">2017/8/26</span>
 
           <span>posted in&nbsp;</span> 
           
-              <span class="posted-in"><a href='Tensorflow.html'>Tensorflow</a></span>
+              <span class="posted-in"><a href='%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html'>机器学习</a></span>
            
          
           <span class="comments">
@@ -152,63 +152,25 @@
       </div><!-- article -->
 
       <div class="article-content">
-      <p>by <a href="http://danijar.com/what-is-a-tensorflow-session/">Danijar Hafner</a>, modified by <a href="http://larryim.cc">larry</a></p>
+      <p>Optimization objective:<br/>
+\[J(c^{(1)},...,c^{(m)},\mu_1,...,\mu_k)=\frac{1}{m}\sum^m_{i=1}\rVert x^{(i)}-\mu_{c^{(i)}}\rVert^2\]</p>
 
-<p>I’ve seen a lot of confusion over the rules of <code>tf.Graph</code> and <code>tf.Session</code> in TensorFlow. It’s simple:</p>
+<p>Randomly initialize \(K\) cluster centroid \(\mu_1, \mu_2,...,\mu_k\)</p>
 
-<ul>
-<li>A <code>graph</code> defines the computation. It doesn’t compute anything, it doesn’t hold any values, it just defines the operations that you specified in your code.</li>
-<li>A <code>session</code> allows you to execute graphs or part of graphs. It allocates resources (on one or more machines) for that and holds the actual values of intermediate results and variables.</li>
-</ul>
+<p>Repeat{<br/>
+    for \(i=1\) to \(m\)<br/>
+    \( c^{(i)}=\) index (from 1 to \(K\) of cluster centroid closest to \(x^{(i)}\)</p>
 
-<p>Let’s look at an example.</p>
+<h3 id="toc_0">Random initialization</h3>
 
-<h3 id="toc_0">Defining the Graph</h3>
+<p>Randomly pick \(K\) training examples, and set \(\mu_1, \mu_2,...,\mu_k\) equal to these \(K\) examples.</p>
 
-<p>We define a graph with a variable and three operations: <code>x</code> returns the current value of our variable. <code>init</code> assigns the initial value of 42 to that variable. <code>x_assign</code> assigns the new value of 13 to that variable.</p>
-
-<pre><code class="language-python">import tensorflow as tf
-graph = tf.Graph()
-with graph.as_default():
-  x = tf.Variable(42, name=&#39;foo&#39;)
-  init = tf.global_variables_initializer()
-  x_assign = x.assign(13)
-</code></pre>
-
-<p>On a side note: TensorFlow creates a default graph for you, so we don’t need the first two lines of the code above. The default graph is also what the sessions in the next section use when not manually specifying a graph.</p>
-
-<h3 id="toc_1">Running Computations in a Session</h3>
-
-<p>To run any of the three defined operations, we need to create a session for that graph. The session will also allocate memory to store the current value of the variable.</p>
-
-<pre><code class="language-python">with tf.Session(graph=graph) as sess:
-  sess.run(init)
-  sess.run(x_assign)
-  print(sess.run(x))
-</code></pre>
-
-<pre><code>13
-</code></pre>
-
-<p>As you can see, the value of our variable is only valid within one session. If we try to query the value afterwards in a second session, TensorFlow will raise an error because the variable is not initialized there.</p>
-
-<pre><code class="language-python">with tf.Session(graph=graph) as sess:
-  print(sess.run(x))
-# Error: Attempting to use uninitialized value foo
-
-</code></pre>
-
-<p>Of course, we can use the graph in more than one session, we just have to initialize the variables again. The values in the new session will be completely independent from the first one:</p>
-
-<pre><code class="language-python">with tf.Session(graph=graph) as sess:
-  sess.run(init)
-  print(sess.run(x))
-</code></pre>
-
-<pre><code>42
-</code></pre>
-
-<p>Hopefully this short workthrough helped you to better understand <code>tf.Session</code>. </p>
+<p>\[\text{For }i = 1 \text{  to  } 100 {\\<br/>
+\text{    Randomly initialize K cluster centroid } \mu_1, \mu_2,...,\mu_k\\<br/>
+\text{    Run K-means}\\<br/>
+\text{    Compute cost function (distortion)}\\<br/>
+}\\<br/>
+\]</p>
 
 
     
@@ -219,16 +181,13 @@ with graph.as_default():
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="getting_started_with_tensorflow.html" 
-          title="Previous Post: Getting started with TensorFlow">&laquo; Getting started with TensorFlow</a>
-      
         </p>
         </div>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="bit_manipulation_2.html" 
-          title="Next Post: Bit manipulation (2)">Bit manipulation (2) &raquo;</a>
+          <a  href="15036679491914.html" 
+          title="Next Post: Feature Engineering">Feature Engineering &raquo;</a>
       
       </p>
         </div>

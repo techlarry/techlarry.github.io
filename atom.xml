@@ -4,13 +4,59 @@
   <title><![CDATA[techlarry]]></title>
   <link href="http://larryim.cc/atom.xml" rel="self"/>
   <link href="http://larryim.cc/"/>
-  <updated>2017-08-25T20:42:19+08:00</updated>
+  <updated>2017-08-25T21:21:53+08:00</updated>
   <id>http://larryim.cc/</id>
   <author>
     <name><![CDATA[]]></name>
     
   </author>
   <generator uri="http://www.mweb.im/">MWeb</generator>
+  
+  <entry>
+    <title type="html"><![CDATA[K-means clustering]]></title>
+    <link href="http://larryim.cc/15037532856914.html"/>
+    <updated>2017-08-26T21:14:45+08:00</updated>
+    <id>http://larryim.cc/15037532856914.html</id>
+    <content type="html"><![CDATA[
+<p>Optimization objective:<br/>
+\[J(c^{(1)},...,c^{(m)},\mu_1,...,\mu_k)=\frac{1}{m}\sum^m_{i=1}\rVert x^{(i)}-\mu_{c^{(i)}}\rVert^2\]</p>
+
+<p>Randomly initialize \(K\) cluster centroid \(\mu_1, \mu_2,...,\mu_k\)</p>
+
+<p>Repeat{<br/>
+    for \(i=1\) to \(m\)<br/>
+    \( c^{(i)}=\) index (from 1 to \(K\) of cluster centroid closest to \(x^{(i)}\)</p>
+
+<h3 id="toc_0">Random initialization</h3>
+
+<p>Randomly pick \(K\) training examples, and set \(\mu_1, \mu_2,...,\mu_k\) equal to these \(K\) examples.</p>
+
+<p>\[\text{For }i = 1 \text{  to  } 100 {\\<br/>
+\text{    Randomly initialize K cluster centroid } \mu_1, \mu_2,...,\mu_k\\<br/>
+\text{    Run K-means}\\<br/>
+\text{    Compute cost function (distortion)}\\<br/>
+}\\<br/>
+\]</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Feature Engineering]]></title>
+    <link href="http://larryim.cc/15036679491914.html"/>
+    <updated>2017-08-25T21:32:29+08:00</updated>
+    <id>http://larryim.cc/15036679491914.html</id>
+    <content type="html"><![CDATA[
+<p>As the saying goes: garbage in, garbage out. Your system will only be capable of learn‐ ing if the training data contains enough relevant features and not too many irrelevant ones. A critical part of the success of a Machine Learning project is coming up with a good set of features to train on. This process, called feature engineering, involves:</p>
+
+<ul>
+<li><code>Feature selection</code>: selecting the most useful features to train on among existing features.</li>
+<li><code>Feature extraction</code>: combining existing features to produce a more useful one (as we saw earlier, dimensionality reduction algorithms can help).</li>
+<li><code>Creating new features</code> by gathering new data.</li>
+</ul>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Support Vector Machines]]></title>
@@ -2056,88 +2102,6 @@ Comment         |
 <ol>
 <li>Baron S, Peter Z, Vadim T. 2012. High Performance MySQL 3rd Edition.</li>
 </ol>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[NP-completeness]]></title>
-    <link href="http://larryim.cc/15023384623586.html"/>
-    <updated>2017-08-10T12:14:22+08:00</updated>
-    <id>http://larryim.cc/15023384623586.html</id>
-    <content type="html"><![CDATA[
-<p><code>NP</code> stands for <code>None-deterministic Polynomial</code>. This means that the problem can be solved in Polynomial time using a None-deterministic Turing machine.</p>
-
-<h2 id="toc_0">Polynomial-Time Solvability</h2>
-
-<p>A problem is <code>polynomial-time solvable</code> if there is an algorithm that correctly solves it in \(O(n^k)\) time, for some constant \(k\).</p>
-
-<p>Definition: P = the set of polynomial-time solvable problems.</p>
-
-<h2 id="toc_1">Reference</h2>
-
-<ul>
-<li><a href="https://stackoverflow.com/questions/210829/what-is-an-np-complete-in-computer-science">What is an NP-complete in computer science?</a></li>
-</ul>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Dynamic Programming (4): Optimal Binary Search Tree]]></title>
-    <link href="http://larryim.cc/Dynamic_Programming_Optimal_Binary_Search_Tree.html"/>
-    <updated>2017-08-09T16:42:39+08:00</updated>
-    <id>http://larryim.cc/Dynamic_Programming_Optimal_Binary_Search_Tree.html</id>
-    <content type="html"><![CDATA[
-<p>An <code>Optimal Binary Search Tree (Optimal BST)</code> is a binary search tree which provides the smallest possible search time for a given sequence of access probabilities. The cost of a BST node is the level of that node plus one multiplied by its frequency.</p>
-
-<p><strong>Problem Statement</strong>: Given a sorted array \(keys[0.. n-1]\) of search keys and an array \(freq[0.. n-1]\) of frequency counts, where \(freq[i]\) is the number of searches to \(keys[i]\). Construct a binary search tree of all keys such that the total cost of all the searches is as small as possible.</p>
-
-<h2 id="toc_0">Optimal Substructure</h2>
-
-<p>The optimal cost of node \(i,...,j\) can be recursively calculated using the following formula.</p>
-
-<p>\(Cost(i,j) = \sum \limits^{j}_{k=i}freq[k] + \min \limits_{r=i}^j[Cost(i,r-1)+Cost(r+1,j)]\)</p>
-
-<p>We try all nodes one by one as root (\(r\) varies from \(i\) to \(j\)). When we make \(r\)th node as root, we recursively calculate optimal cost from \(i\) to \(r-1\) and \(r+1\) to \(j\). </p>
-
-<h3 id="toc_1">Implementation: top-down with memoization</h3>
-
-<pre><code class="language-python">def optimal_bst(freq):
-    def opt_cost(hash_table, freq, i, j):
-        &quot;&quot;&quot;
-        Optimal Binary Search Tree
-        Recursive Method used here
-        &quot;&quot;&quot;
-
-        # base case: only 0~1 element
-        if j &lt; i:
-            return 0
-        if j == i:
-            return freq[i]
-
-        # if already exists
-        if (i, j) in hash_table:
-            return hash_table[(i, j)]
-
-        min_cost = sys.maxsize
-        for r in range(i, j + 1):
-            cost = opt_cost(hash_table, freq, i, r - 1) + opt_cost(hash_table, freq, r + 1, j)
-            if cost &lt; min_cost:
-                min_cost = cost
-
-        hash_table[(i, j)] = sum(freq[i:j + 1]) + min_cost
-        return hash_table[(i, j)]
-
-    return opt_cost({}, freq, 0, len(freq) - 1)
-</code></pre>
-
-<h2 id="toc_2">Reference</h2>
-
-<ul>
-<li><a href="http://ac.els-cdn.com/S0304397596003209/1-s2.0-S0304397596003209-main.pdf?_tid=1505980e-7cd4-11e7-83de-00000aacb361&amp;acdnat=1502263778_53b76d131a06906e9fe3adfadc778677">Optimal Binary Search Tree</a></li>
-<li><a href="http://www.geeksforgeeks.org/dynamic-programming-set-24-optimal-binary-search-tree/">Optimal Binary Search Tree GeeksforGeeks</a></li>
-</ul>
 
 ]]></content>
   </entry>
