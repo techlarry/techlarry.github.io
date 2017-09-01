@@ -4,13 +4,34 @@
   <title><![CDATA[techlarry]]></title>
   <link href="http://larryim.cc/atom.xml" rel="self"/>
   <link href="http://larryim.cc/"/>
-  <updated>2017-08-25T21:21:53+08:00</updated>
+  <updated>2017-08-26T23:14:57+08:00</updated>
   <id>http://larryim.cc/</id>
   <author>
     <name><![CDATA[]]></name>
     
   </author>
   <generator uri="http://www.mweb.im/">MWeb</generator>
+  
+  <entry>
+    <title type="html"><![CDATA[Cross-Validation]]></title>
+    <link href="http://larryim.cc/cross-validation.html"/>
+    <updated>2017-08-28T09:35:39+08:00</updated>
+    <id>http://larryim.cc/cross-validation.html</id>
+    <content type="html"><![CDATA[
+<p><code>cross-validation</code> splits the training setinto complementary subsets, and each model is trained against a different combination of these subsets and validates against the remaining parts. Once the model type and hyperparameters on the full training set, and the generalized error is measured on the test set.</p>
+
+<p><img src="media/15038841395536/15042349862270.jpg" alt="demo of cross-validation"/></p>
+
+<p>A great convenient is to use Scikit-Learn&#39;s <code>cross-validation</code> feature. The following code performs <code>K-fold cross-validation</code>: it randomly splits the training set into 10 distinct subsets called <code>folds</code>, then it trains and evaluates the Decision Tree model 10 times, picking a different fold for evaluation every time and training on the other 9 folds.</p>
+
+<pre><code class="language-python">from sklearn.model_selection import cross_val_score
+scores = cross_val_score(tree_reg, housing_prepared, housing_labels,
+                             scoring=&quot;neg_mean_squared_error&quot;, cv=10)
+    rmse_scores = np.sqrt(-scores)
+</code></pre>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[K-means clustering]]></title>
@@ -1925,11 +1946,82 @@ mysql&gt; select count(*)
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Deep Learning]]></title>
+    <title type="html"><![CDATA[CS231n:]]></title>
     <link href="http://larryim.cc/15025954300059.html"/>
     <updated>2017-08-13T11:37:10+08:00</updated>
     <id>http://larryim.cc/15025954300059.html</id>
     <content type="html"><![CDATA[
+<p><code>score function</code> that maps the raw data to class scores. For visual recognition, score function maps the pixel values of an image to confidence scores for each class.</p>
+
+<p><code>loss function</code> that quantifies the agreement between the predicated scores and the ground truth labels.</p>
+
+<p><strong>Linear classifier.</strong> We will start out with arguably the simplest possible function( a <code>score function</code>), a linear mapping:</p>
+
+<p>\[<br/>
+f(x_i, W, b) =  W x_i + b<br/>
+\]</p>
+
+<p>Convolutional Neural Networks will map image pixels to scores exactly as shown above, but the mapping ( \(f \)) will be more complex and will contain more parameters.</p>
+
+<p><strong>Bias trick</strong>: A commonly used trick is to combine the two sets of parameters (\(W, b\)) into a single matrix that holds both of them by extending the vector \(x_i\) with one additional dimension that always holds the constant \(1\) - a default <em>bias dimension</em>. With the extra dimension, the new <code>score function</code> will simplify to a single matrix multiply:</p>
+
+<p>\[<br/>
+f(x_i, W) =  W x_i<br/>
+\]</p>
+
+<p><img src="media/15025954300059/15041865704757.jpg" alt=""/></p>
+
+<p><strong>Loss Function</strong>: We want to set parameters W so that the predicted class scores are consistent with the ground truth labels in the training data. We are going to measure our unhappiness with outcomes with a <code>loss function</code> (or sometimes also referred to as the <code>cost function</code> or the <code>objective</code>). Intuitively, the loss will be high if we’re doing a poor job of classifying the training data, and it will be low if we’re doing well.</p>
+
+<ul>
+<li><code>Multiclass Support Vector Machine</code> (SVM): The <code>score function</code> computes the vector \(f(x_i, W)\) of class scores, which we will abbreviate to \(s\) (short for scores). For example, the score for the j-th class is the j-th element: \(s_j=f(x_i,W)_j\). The Multiclass SVM loss for the i-th example is then formalized as follows:</li>
+</ul>
+
+<p>\[<br/>
+L_i = \sum_{j\neq y_i} \max(0, s_j - s_{y_i} + \Delta)<br/>
+\]</p>
+
+<p>The SVM loss function wants the score of the correct class \(y_i\) to be larger than the incorrect class scores by at least by \(\Delta\) (delta). If this is not the case, we will accumulate loss.  Hyperparameter \(\Delta\) can safely be set to \(\Delta=1.0\) in all cases</p>
+
+<p><strong><code>hinge loss</code></strong>: The function <code>max(0,1-t)$ is called the</code>hinge loss` function.</p>
+
+<p><img src="media/15025954300059/Hinge%20Loss%20Function.png" alt="Hinge Loss Function"/></p>
+
+<p><strong>Regularization</strong>:</p>
+
+<p>Including the regularization penalty completes the full Multiclass Support Vector Machine loss, which is made up of two components: the <strong>data loss</strong> (which is the average loss \(L_i\) over all examples) and the <strong>regularization loss</strong>. That is, the full Multiclass SVM loss becomes:</p>
+
+<p>\[<br/>
+L =  \underbrace{ \frac{1}{N} \sum_i L_i }_\text{data loss} + \underbrace{ \lambda R(W) }_\text{regularization loss} \\\\<br/>
+\]<br/>
+Or expanding this out in its full form:</p>
+
+<p>\[<br/>
+L = \frac{1}{N} \sum_i \sum_{j\neq y_i} \left[ \max(0, f(x_i; W)_j - f(x_i; W)_{y_i} + \Delta) \right] + \lambda \sum_k\sum_l W_{k,l}^2<br/>
+\]</p>
+
+<p>Where \(N\) is the number of training examples.</p>
+
+<p>Code. Here is the loss function (without regularization) implemented in Python, in both unvectorized and half-vectorized form:</p>
+
+<p><strong>Softmax classifier</strong>: Another commonly seen classifiers besides <code>SVM classifier</code> is the <code>Softmax classifier</code>, which has a <code>cross-entropy loss</code>:</p>
+
+<p>\[<br/>
+L_i = -\log\left(\frac{e^{f_{y_i}}}{ \sum_j e^{f_j} }\right) \hspace{0.5in} \text{or equivalently} \hspace{0.5in} L_i = -f_{y_i} + \log\sum_j e^{f_j}<br/>
+\]</p>
+
+<p>where we are using the notation \(f_j\) to mean the j-th element of the vector of class scores \(f\). As before, the full loss for the dataset is the mean of \(L_i\) over all training examples together with a regularization term \(R(W)\). The function \(f_j(z) = \frac{e^{z_j}}{\sum_k e^{z_k}} \) is called the <strong>softmax function</strong>: It takes a vector of arbitrary real-valued scores (in \(z\)) and squashes it to a vector of values between zero and one that sum to one.</p>
+
+<p>The difference between <code>SVM classifiers</code> and <code>Soft-max classifiers</code>:</p>
+
+<p><img src="media/15025954300059/15041909839867.png" alt=""/></p>
+
+<h2 id="toc_0">Reference</h2>
+
+<ul>
+<li>CS231n Convolutional Neural Network</li>
+<li>Aurelien Geron. Hands-On Machine Learning with Scikit-Learn &amp; TensorFlow</li>
+</ul>
 
 ]]></content>
   </entry>
@@ -2058,49 +2150,6 @@ sess.close() # Close the session
 
 <ol>
 <li><a href="https://web.stanford.edu/class/cs20si/">CS 20SI: Tensorflow for Deep Learning Research</a></li>
-</ol>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[MySQL(3): Storage Engines]]></title>
-    <link href="http://larryim.cc/15025201109276.html"/>
-    <updated>2017-08-12T14:41:50+08:00</updated>
-    <id>http://larryim.cc/15025201109276.html</id>
-    <content type="html"><![CDATA[
-<p>You can use the <code>SHOW TABLE STATUS</code> command to display information about tables, which include types of storage engines.</p>
-
-<pre><code class="language-sql">mysql root@localhost:rookery&gt; show table status\G
-***************************[ 1. row ]***************************
-Name            | bird_families
-Engine          | InnoDB
-Version         | 10
-Row_format      | Dynamic
-Rows            | 12
-Avg_row_length  | 1365
-Data_length     | 16384
-Max_data_length | 0
-Index_length    | 16384
-Data_free       | 0
-Auto_increment  | 113
-Create_time     | 2017-08-11 00:18:18
-Update_time     | 2017-08-12 13:11:47
-Check_time      | &lt;null&gt;
-Collation       | latin1_bin
-Checksum        | &lt;null&gt;
-Create_options  |
-Comment         |
-</code></pre>
-
-<h2 id="toc_0">InnoDB</h2>
-
-<p><code>InnoDB</code> is the default transactional storage engine for MySQL and the most important and broadly useful engine overall. <em>You should use InnoDB for your tables unless you have a compelling need to use a different engine</em>.</p>
-
-<h2 id="toc_1">Reference</h2>
-
-<ol>
-<li>Baron S, Peter Z, Vadim T. 2012. High Performance MySQL 3rd Edition.</li>
 </ol>
 
 ]]></content>
