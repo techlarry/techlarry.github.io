@@ -4,7 +4,7 @@
   <title><![CDATA[techlarry]]></title>
   <link href="http://larryim.cc/atom.xml" rel="self"/>
   <link href="http://larryim.cc/"/>
-  <updated>2017-09-01T11:04:38+08:00</updated>
+  <updated>2017-09-02T16:30:50+08:00</updated>
   <id>http://larryim.cc/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -21,6 +21,85 @@
 <p><code>Transfer learning</code> focuses on storing knowledge gained while solving one problem and applying it to a different but related problem.</p>
 
 <p>Generally, transfer learning will work only well if the inputs have similar low-level features.</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Convolutional Neural Networks]]></title>
+    <link href="http://larryim.cc/15042285789723.html"/>
+    <updated>2017-09-01T09:16:18+08:00</updated>
+    <id>http://larryim.cc/15042285789723.html</id>
+    <content type="html"><![CDATA[
+<h2 id="toc_0">Architecture</h2>
+
+<p>Three main types of layers to build ConvNet architectures: <strong>Convolutional Layer, Pooling Layer and Fully-Connected Layer</strong>.</p>
+
+<p>The layers of a ConvNet have neurons arranged in 3 dimensions: <strong>width, height, depth</strong>.</p>
+
+<p><img src="media/15042285789723/15043406058323.jpg" alt="convolutional neural networks"/></p>
+
+<p>A simple ConvNet for <a href="https://www.cs.toronto.edu/%7Ekriz/cifar.html">CIFAR-10</a> classification could have the architecture as follows:</p>
+
+<ul>
+<li><strong>INPUT</strong> [width x height x color channel] will hold the raw pixel values of the image, in this case an image of width, height, and with three color channels R,G,B.</li>
+<li><strong>CONV layer</strong> will compute the output of neurons that are connected to local regions in the input, each computing a dot product between their weights and a small region they are connected to in the input volume.</li>
+<li><strong>RELU layer</strong> will apply an elementwise activation function, such as the <code>max(0,x)</code> thresholding at zero. </li>
+<li><strong>POOL layer</strong> will perform a downsampling operation along the spatial dimensions (width, height).</li>
+<li><strong>FC</strong> (i.e. fully-connected) layer will compute the class scores, where each score corresponding to the 10 categories of CIFAR-10. As with ordinary Neural Networks and as the name implies, each neuron in this layer will be connected to all the numbers in the previous volume.</li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[cross-entropy]]></title>
+    <link href="http://larryim.cc/15041905263785.html"/>
+    <updated>2017-08-31T22:42:06+08:00</updated>
+    <id>http://larryim.cc/15041905263785.html</id>
+    <content type="html"><![CDATA[
+<p>\[<br/>
+L_i = -\log\left(\frac{e^{f_{y_i}}}{ \sum_j e^{f_j} }\right) \hspace{0.5in} \text{or equivalently} \hspace{0.5in} L_i = -f_{y_i} + \log\sum_j e^{f_j}<br/>
+\]</p>
+
+<p>where we are using the notation \(f_j\) to mean the j-th element of the vector of class scores \(f\). As before, the full loss for the dataset is the mean of \(L_i\) over all training examples together with a regularization term \(R(W)\). The function \(f_j(z) = \frac{e^{z_j}}{\sum_k e^{z_k}} \) is called the <strong>softmax function</strong>: It takes a vector of arbitrary real-valued scores (in \(z\)) and squashes it to a vector of values between zero and one that sum to one. The full cross-entropy loss that involves the softmax function might look scary if you&#39;re seeing it for the first time but it is relatively easy to motivate.</p>
+
+<p><strong>Information theory view</strong>. The <em>cross-entropy</em> between a &quot;true&quot; distribution \(p\) and an estimated distribution \(q\) is defined as:</p>
+
+<p>\[<br/>
+H(p,q) = - \sum_x p(x) \log q(x)<br/>
+\]</p>
+
+<p>The Softmax classifier is hence minimizing the cross-entropy between the estimated class probabilities ( \(q = e^{f_{y_i}}  / \sum_j e^{f_j} \) as seen above) and the &quot;true&quot; distribution, which in this interpretation is the distribution where all probability mass is on the correct class (i.e. \(p = [0, \ldots 1, \ldots, 0]\) contains a single 1 at the \(y_i\) -th position.). Moreover, since the cross-entropy can be written in terms of entropy and the Kullback-Leibler divergence as \(H(p,q) = H(p) + D_{KL}(p\|\|q)\), and the entropy of the delta function \(p\) is zero, this is also equivalent to minimizing the KL divergence between the two distributions (a measure of distance). In other words, the cross-entropy objective <em>wants</em> the predicted distribution to have all of its mass on the correct answer.</p>
+
+<p><strong>Probabilistic interpretation</strong>. Looking at the expression, we see that</p>
+
+<p>\[<br/>
+P(y_i \mid x_i; W) = \frac{e^{f_{y_i}}}{\sum_j e^{f_j} }<br/>
+\]</p>
+
+<p>can be interpreted as the (normalized) probability assigned to the correct label \(y_i\) given the image \(x_i\) and parameterized by \(W\). To see this, remember that the Softmax classifier interprets the scores inside the output vector \(f\) as the unnormalized log probabilities. Exponentiating these quantities therefore gives the (unnormalized) probabilities, and the division performs the normalization so that the probabilities sum to one. In the probabilistic interpretation, we are therefore minimizing the negative log likelihood of the correct class, which can be interpreted as performing <em>Maximum Likelihood Estimation</em> (MLE). A nice feature of this view is that we can now also interpret the regularization term \(R(W)\) in the full loss function as coming from a Gaussian prior over the weight matrix \(W\), where instead of MLE we are performing the <em>Maximum a posteriori</em> (MAP) estimation. We mention these interpretations to help your intuitions, but the full details of this derivation are beyond the scope of this class.</p>
+
+<p><strong>Practical issues: Numeric stability</strong>. When you&#39;re writing code for computing the Softmax function in practice, the intermediate terms \(e^{f_{y_i}}\) and \(\sum_j e^{f_j}\) may be very large due to the exponentials. Dividing large numbers can be numerically unstable, so it is important to use a normalization trick. Notice that if we multiply the top and bottom of the fraction by a constant \(C\) and push it into the sum, we get the following (mathematically equivalent) expression:</p>
+
+<p>\[<br/>
+\frac{e^{f_{y_i}}}{\sum_j e^{f_j}}<br/>
+= \frac{Ce^{f_{y_i}}}{C\sum_j e^{f_j}}<br/>
+= \frac{e^{f_{y_i} + \log C}}{\sum_j e^{f_j + \log C}}<br/>
+\]</p>
+
+<p>We are free to choose the value of \(C\). This will not change any of the results, but we can use this value to improve the numerical stability of the computation. A common choice for \(C\) is to set \(\log C = -\max_j f_j \). This simply states that we should shift the values inside the vector \(f\) so that the highest value is zero. In code:</p>
+
+<pre><code class="language-python">f = np.array([123, 456, 789]) # example with 3 classes and each having large scores
+p = np.exp(f) / np.sum(np.exp(f)) # Bad: Numeric problem, potential blowup
+
+# instead: first shift the values of f so that the highest number is 0:
+f -= np.max(f) # f becomes [-666, -333, 0]
+p = np.exp(f) / np.sum(np.exp(f)) # safe to do, gives the correct answer
+
+</code></pre>
+
+<p><strong>Possibly confusing naming conventions</strong>. To be precise, the <em>SVM classifier</em> uses the <em>hinge loss</em>, or also sometimes called the <em>max-margin loss</em>. The <em>Softmax classifier</em> uses the <em>cross-entropy loss</em>. The Softmax classifier gets its name from the <em>softmax function</em>, which is used to squash the raw class scores into normalized positive values that sum to one, so that the cross-entropy loss can be applied. In particular, note that technically it doesn&#39;t make sense to talk about the &quot;softmax loss&quot;, since softmax is just the squashing function, but it is a relatively commonly used shorthand.</p>
 
 ]]></content>
   </entry>
@@ -1954,111 +2033,6 @@ mysql&gt; select count(*)
 <ul>
 <li><a href="https://dev.mysql.com/doc/refman/5.7/en/regexp.html">Regular Expressions</a></li>
 </ul>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[CS231n:]]></title>
-    <link href="http://larryim.cc/15025954300059.html"/>
-    <updated>2017-08-13T11:37:10+08:00</updated>
-    <id>http://larryim.cc/15025954300059.html</id>
-    <content type="html"><![CDATA[
-<p><code>score function</code> that maps the raw data to class scores. For visual recognition, score function maps the pixel values of an image to confidence scores for each class.</p>
-
-<p><code>loss function</code> that quantifies the agreement between the predicated scores and the ground truth labels.</p>
-
-<p><strong>Linear classifier.</strong> We will start out with arguably the simplest possible function( a <code>score function</code>), a linear mapping:</p>
-
-<p>\[<br/>
-f(x_i, W, b) =  W x_i + b<br/>
-\]</p>
-
-<p>Convolutional Neural Networks will map image pixels to scores exactly as shown above, but the mapping ( \(f \)) will be more complex and will contain more parameters.</p>
-
-<p><strong>Bias trick</strong>: A commonly used trick is to combine the two sets of parameters (\(W, b\)) into a single matrix that holds both of them by extending the vector \(x_i\) with one additional dimension that always holds the constant \(1\) - a default <em>bias dimension</em>. With the extra dimension, the new <code>score function</code> will simplify to a single matrix multiply:</p>
-
-<p>\[<br/>
-f(x_i, W) =  W x_i<br/>
-\]</p>
-
-<p><img src="media/15025954300059/15041865704757.jpg" alt=""/></p>
-
-<p><strong>Loss Function</strong>: We want to set parameters W so that the predicted class scores are consistent with the ground truth labels in the training data. We are going to measure our unhappiness with outcomes with a <code>loss function</code> (or sometimes also referred to as the <code>cost function</code> or the <code>objective</code>). Intuitively, the loss will be high if we’re doing a poor job of classifying the training data, and it will be low if we’re doing well.</p>
-
-<ul>
-<li><code>Multiclass Support Vector Machine</code> (SVM): The <code>score function</code> computes the vector \(f(x_i, W)\) of class scores, which we will abbreviate to \(s\) (short for scores). For example, the score for the j-th class is the j-th element: \(s_j=f(x_i,W)_j\). The Multiclass SVM loss for the i-th example is then formalized as follows:</li>
-</ul>
-
-<p>\[<br/>
-L_i = \sum_{j\neq y_i} \max(0, s_j - s_{y_i} + \Delta)<br/>
-\]</p>
-
-<p>The SVM loss function wants the score of the correct class \(y_i\) to be larger than the incorrect class scores by at least by \(\Delta\) (delta). If this is not the case, we will accumulate loss.  Hyperparameter \(\Delta\) can safely be set to \(\Delta=1.0\) in all cases</p>
-
-<p><strong><code>hinge loss</code></strong>: The function <code>max(0,1-t)$ is called the</code>hinge loss` function.</p>
-
-<p><img src="media/15025954300059/Hinge%20Loss%20Function.png" alt="Hinge Loss Function"/></p>
-
-<p><strong>Regularization</strong>:</p>
-
-<p>Including the regularization penalty completes the full Multiclass Support Vector Machine loss, which is made up of two components: the <strong>data loss</strong> (which is the average loss \(L_i\) over all examples) and the <strong>regularization loss</strong>. That is, the full Multiclass SVM loss becomes:</p>
-
-<p>\[<br/>
-L =  \underbrace{ \frac{1}{N} \sum_i L_i }_\text{data loss} + \underbrace{ \lambda R(W) }_\text{regularization loss} \\\\<br/>
-\]<br/>
-Or expanding this out in its full form:</p>
-
-<p>\[<br/>
-L = \frac{1}{N} \sum_i \sum_{j\neq y_i} \left[ \max(0, f(x_i; W)_j - f(x_i; W)_{y_i} + \Delta) \right] + \lambda \sum_k\sum_l W_{k,l}^2<br/>
-\]</p>
-
-<p>Where \(N\) is the number of training examples.</p>
-
-<p>Code. Here is the loss function (without regularization) implemented in Python, in both unvectorized and half-vectorized form:</p>
-
-<p><strong>Softmax classifier</strong>: Another commonly seen classifiers besides <code>SVM classifier</code> is the <code>Softmax classifier</code>, which has a <code>cross-entropy loss</code>:</p>
-
-<p>\[<br/>
-L_i = -\log\left(\frac{e^{f_{y_i}}}{ \sum_j e^{f_j} }\right) \hspace{0.5in} \text{or equivalently} \hspace{0.5in} L_i = -f_{y_i} + \log\sum_j e^{f_j}<br/>
-\]</p>
-
-<p>where we are using the notation \(f_j\) to mean the j-th element of the vector of class scores \(f\). As before, the full loss for the dataset is the mean of \(L_i\) over all training examples together with a regularization term \(R(W)\). The function \(f_j(z) = \frac{e^{z_j}}{\sum_k e^{z_k}} \) is called the <strong>softmax function</strong>: It takes a vector of arbitrary real-valued scores (in \(z\)) and squashes it to a vector of values between zero and one that sum to one.</p>
-
-<p>The difference between <code>SVM classifiers</code> and <code>Soft-max classifiers</code>:</p>
-
-<p><img src="media/15025954300059/15041909839867.png" alt=""/></p>
-
-<h2 id="toc_0">Reference</h2>
-
-<ul>
-<li>CS231n Convolutional Neural Network</li>
-<li>Aurelien Geron. Hands-On Machine Learning with Scikit-Learn &amp; TensorFlow</li>
-</ul>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Latex 技巧]]></title>
-    <link href="http://larryim.cc/15025903235887.html"/>
-    <updated>2017-08-13T10:12:03+08:00</updated>
-    <id>http://larryim.cc/15025903235887.html</id>
-    <content type="html"><![CDATA[
-<h2 id="toc_0">Latex 查询</h2>
-
-<p>可以在<code>Dash</code>中下载Latex Cheat Sheet以便随时查询。</p>
-
-<h2 id="toc_1">Latex 如何将下标放在正上方／正下方</h2>
-
-<p>在 <code>\sum</code>，<code>\max</code>等之后添加<code>\limits^{upper}_{lower}</code>：\(\sum\limits^{upper}_{lower}\)</p>
-
-<p>例如：</p>
-
-<pre><code class="language-Latex">cost(i,j) = \sum \limits^{j}_{k=i}freq[k] + \min \limits_{r=i}^j
-</code></pre>
-
-<p>\(cost(i,j) = \sum \limits^{j}_{k=i}freq[k] + \min \limits_{r=i}^j\)</p>
 
 ]]></content>
   </entry>

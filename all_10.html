@@ -132,6 +132,281 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="dijkstra_algorithm.html">
+                
+                  <h1>Dijkstra's algorithm</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p><code>Dijkstra&#39;s algorithm</code> is an iterative algorithm that provides us with the shortest path from one particular starting node to all other nodes in the graph.</p>
+
+<p>The algorithm iterates once for every vertex in the graph. The order that iterates over the vertices is controlled by a <code>priority queue</code>. When a vertex is first created <code>dist</code> is set to a very large number(<code>sys.maxsize</code>)</p>
+
+<pre><code>Dijkstra(G, w, s)
+INITIALIZE-SINGLE-SOURCE(G, s)
+Q=G.V
+while Q:
+    u = EXTRACT-MIN(Q)
+    for each vertex in adjacent
+        RELAX(u,v,w)
+</code></pre>
+
+<pre><code class="language-python">from priorityqueue import PriorityQueue
+from graph import Graph, Vertex
+import sys
+import unittest
+
+def dijkstra(aGraph, start):
+    &quot;&quot;&quot;
+    Find Single-Source shortest-paths on a weighted, directed graph
+    Return shortest path
+    aGraph: class Graph
+    start: class Vertex
+    &quot;&quot;&quot;
+    pq = PriorityQueue()
+    start.setDistance(0)
+    pq.buildHeap([(v.getDistance(), v) for v in aGraph])
+    while not pq.isEmpty():
+        u = pq.delMin()
+        for adjacent in u.getConnections():
+            newDist = u.dist + u.getWeight(adjacent)
+            if adjacent.dist &gt; newDist:
+                adjacent.setDistance(newDist)
+                adjacent.setPred(u)
+                pq.decreaseKey(adjacent, newDist)
+
+
+class TestDijkstra(unittest.TestCase):
+
+
+    def testShortest(self):
+
+        aGraph = Graph()
+        with open(&#39;dijkstraData.txt&#39;) as infile:
+            for line in infile:
+                numbers = [number for number in line.split()]
+                from_v = int(numbers[0])
+
+                for to_v_cost in numbers[1:]:
+                    to_v, cost = to_v_cost.split(&#39;,&#39;)
+                    aGraph.addEdge(from_v, int(to_v), int(cost))
+
+        dijkstra(aGraph, aGraph.getVertex(1))
+
+        dists = []
+        for vertex_id in [7, 37, 59, 82, 99, 115, 133, 165, 188, 197]:
+            dist = aGraph.getVertex(vertex_id).getDistance()
+            if dist == sys.maxsize:
+                dist = 100000
+            dists.append(dist)
+        assert dists == [2599, 2610, 2947, 2052, 2367, 2399, 2029, 2442, 2505, 3068]
+
+
+if __name__ == &#39;__main__&#39;:
+    unittest.main()
+</code></pre>
+
+<p>It is important to note that <code>Dijkstra&#39;s algorithm</code> works only when the weights are all positive. If you introduced a negative weight on one of the edges to the graph that the algorithm would never exit.</p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/7/14</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Graph.html'>Graph</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="testing.html">
+                
+                  <h1>Testing</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p><a href="https://en.wikipedia.org/wiki/Unit_testing">Unit testing</a> is a software testing method by which individual units of source code, sets of one or more computer program modules together with associated control data, usage procedures, and operating procedures, are tested to determine whether they are fit for use.</p>
+
+<h2 id="toc_0">Test-driven programming</h2>
+
+<p>&quot;<strong>Test first and code later</strong>&quot; practice, known as test-driven programming, instead of test after code.</p>
+
+<h3 id="toc_1">Requirement Specification</h3>
+
+<p>When developing a piece of software, you must first know what problem the software will solve—what objectives it will meet. You can clarify your goals for the program by writing a <strong>requirement specification</strong>, a document (or just some quick notes) describing requirements the program must satisfy. </p>
+
+<h3 id="toc_2">The 1-2-3-4 of Testing</h3>
+
+<p>Here’s a breakdown of the test-driven development process:</p>
+
+<ul>
+<li>Figure out the new feature you want. Possibly document it, and then write a test for it.</li>
+<li>Write some skeleton code for the feature, so that you program runs without any syntax errors. See your test fail.</li>
+<li>Write dummy code for skeleton code, just to appease the test.</li>
+<li>Rewrite the code so that it actually pass the test.</li>
+</ul>
+
+<h2 id="toc_3">Testing Tools</h2>
+
+<p>Two brilliant modules are available to automate the testing process:</p>
+
+<ul>
+<li><code>unittest</code>: A generic testing framework.</li>
+<li><code>doctest</code>: A simpler module, designed for checking documentation, but excellent for writing unit tests as well.</li>
+</ul>
+
+<h3 id="toc_4">doctest</h3>
+
+<p>The <code>testmod</code> function checks both the module docstring and function docstring.</p>
+
+<p>E.g.</p>
+
+<pre><code class="language-python">def square(x):
+    &quot;&quot;&quot;
+    squares a number and returns the result.
+    &gt;&gt;&gt; square(2)
+    4
+    &gt;&gt;&gt; square(3)
+    9
+    &quot;&quot;&quot;
+    return x*x
+
+if __name__ == &quot;__main__&quot;:
+    import doctest, doc_test_example
+    doctest.testmod(doc_test_example, verbose=True)
+</code></pre>
+
+<p>Run the example. To get some more output, just add <code>-v</code>(for verbose)</p>
+
+<pre><code class="language-bash">$ python doc_test_example.py -v
+Trying:
+    square(2)
+Expecting:
+    4
+ok
+Trying:
+    square(3)
+Expecting:
+    9
+ok
+1 items had no tests:
+    doc_test_example
+1 items passed all tests:
+   2 tests in doc_test_example.square
+2 tests in 2 items.
+2 passed and 0 failed.
+Test passed.
+</code></pre>
+
+<h3 id="toc_5">unittest</h3>
+
+<p><code>unittest</code> which is based on the popular test framework <code>JUnit</code>, is more flexible and powerful. It allows to write very large and thorough test sets in a more structured manner.</p>
+
+<p><strong>注意： 测试方法应该以test为前缀命名</strong></p>
+
+<p>E.g.</p>
+
+<pre><code class="language-python">import unittest
+import doc_test_example as my_math
+
+class ProductTestCase(unittest.TestCase):
+
+    def testIntegers(self):
+        for x in xrange(-10,10):
+            p = my_math.square(x)
+            self.failUnless(p == x*x, &#39;Integer multiplication failed&#39;)
+
+    def testFloats(self):
+        for x in xrange(-10,10):
+            x = x/10.0
+            p = my_math.square(x)
+            self.failUnless(p == x*x, &#39;Float multiplication failed&#39;)
+
+
+if __name__ == &quot;__main__&quot;:
+    unittest.main()
+</code></pre>
+
+<p>Another example to test <code>dijkstra&#39;s algorithm</code> see <a href="http://larryim.cc/dijkstra_algorithm.html">here</a></p>
+
+<p>Methods such as <code>failUnless</code> check a condition to determine whether the given test succeeds or fails. </p>
+
+<p>The <code>unittest</code> module distinguishes between <code>errors</code>, where an exception is raised, and <code>failures</code>, which result from calls to <code>failUnless</code> and the like. </p>
+
+<h2 id="toc_6">Source Code Checking</h2>
+
+<p><a href="https://www.pylint.org">Pylint</a> and PyChecker are good tools for checking Python source code, looking for mistakes.</p>
+
+<p><code>Pylint</code> is a tool that checks for errors in Python code, tries to enforce a coding standard and looks for code smells. It can also look for certain type errors, it can recommend suggestions about how particular blocks can be refactored and can offer you details about the code’s complexity.</p>
+
+<p><code>Pylint</code> can be integrated with <code>Pycharm</code>, see <a href="https://pylint.readthedocs.io/en/latest/user_guide/ide-integration.html#pylint-in-pycharm">detail</a>.</p>
+
+<h3 id="toc_7">Resources</h3>
+
+<ul>
+<li><a href="https://www.ibm.com/developerworks/cn/linux/l-cn-pylint/index.html">如何使用 Pylint 来规范 Python 代码风格</a></li>
+<li><a href="https://www.python.org/dev/peps/pep-0008/">Style Guide for Python Code</a></li>
+</ul>
+
+<h2 id="toc_8">Profile</h2>
+
+<p><strong>When in doubt, use brute force</strong></p>
+
+<p>The standard library includes nice profiler modules called <code>profile</code> and <code>cProfile</code>.  </p>
+
+<p>A <code>profile</code> is a set of statistics that describes how often and for how long various parts of the program executed. </p>
+
+<pre><code class="language-python">&gt;&gt;&gt; import profile
+&gt;&gt;&gt; from my_math import square
+&gt;&gt;&gt; profile.run(&#39;square(1, 2)&#39;)
+</code></pre>
+
+<p>Another way to use <code>profile</code> in command-line:</p>
+
+<pre><code class="language-bash">$ python -m profile prof1py
+</code></pre>
+
+<p>The standard library also contains a module called <code>timeit</code>, which is a simple way of timing small snippets of Python code.</p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/7/14</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="anaconda.html">
                 
                   <h1>Anaconda</h1>
@@ -930,200 +1205,6 @@ Just like <code>LEFT JOIN</code></li>
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="heap.html">
-                
-                  <h1>Heap (1): Introduction and Implementation</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>A <strong>heap</strong> (堆)is a specialized tree-based data structure。 A <strong>heap</strong> can be classified as either a <strong>max heap</strong> or a <strong>min heap</strong>. </p>
-
-<ul>
-<li>In a <strong>max heap</strong>, the keys of parent nodes are always greater than or equal to those of the children and the highest key is in the root node. </li>
-<li>In a <strong>min heap</strong>, the keys of parent nodes are less than or equal to those of the children and the lowest key is in the root node.</li>
-</ul>
-
-<p><strong>Heap</strong> is one maximally efficient implementation of an abstract data type called a <strong>priority queue</strong> (see <a href="http://larryim.cc/priority_queue.html">here</a>), and in fact priority queues are often referred to as <strong>heaps</strong>, regardless of how they may be implemented. </p>
-
-<h2 id="toc_0">Implementation</h2>
-
-<p>Priority queues typically use a heap as backbone, giving \(O(\log n)\) performance for inserts and removals, and \(O(n \log n)\) to build initially.</p>
-
-<h2 id="toc_1">Binary Heap</h2>
-
-<p>A common implementation of a heap is the <strong>binary heap</strong>(二叉堆), in which the tree is a <strong>complete binary tree</strong>(完全二叉树). </p>
-
-<p>二叉堆的操作与实现</p>
-
-<ul>
-<li><code>BinaryHeap()</code>：创建一个新的、空的二叉堆对象</li>
-<li><code>insert(k)</code>：把新元素加入到堆中</li>
-<li><code>findMin()</code>：返回堆中的最小项，最小项仍保留在堆中</li>
-<li><code>delMin()</code>：返回堆中的最小项，同时从堆中删除</li>
-<li><code>isEmpty()</code>：返回堆是否为空</li>
-<li><code>size()</code>：返回堆中元素的个数</li>
-<li><code>buildHeap(list)</code>：从一个包含元素的列表创建新堆</li>
-</ul>
-
-<p>有两个关键的操作：<br/>
-1. <code>insert</code>方法。首先，为了满足“完全二叉树”的性质，新键值应该添加到列表的末尾。然而新键值简单地添加在列表末尾，显然无法满足堆次序。所以要通过比较父节点和新加入的元素的方法来重新满足堆次序。如果新加入的元素比父节点要小，可以与父节点互换位置；不断交换，直到到达树的顶端。下图所示一系列交换操作来使新加入元素“上浮”到正确的位置。</p>
-
-<p><img src="media/14973171257726/14974156268132.jpg" alt=""/></p>
-
-<p>2.<code>delMin</code>方法 移走根节点的元素后如何保持堆结构和堆次序: 首先，用最后一个节点来代替根节点, 移走最后一个节点保持了堆结构的性质。这么简单的替换，还是会破坏堆次序。第二步，将新节点“下沉”来恢复堆次序。下图所示的是一系列交换操作来使新节点“下沉”到正确的位置。</p>
-
-<p><img src="media/14973171257726/14974156980805.jpg" alt=""/></p>
-
-<pre><code class="language-python">class BinHeap(object):
-    &quot;&quot;&quot;
-    创建一个新的、空的二叉堆对象
-    &quot;&quot;&quot;
-    def __init__(self):
-        self.list = [0]
-        self.size = 0
-
-    def perc_up(self,i):
-        &quot;&quot;&quot;
-        Percolate the new node into proper position
-        &quot;&quot;&quot;
-        while i: 
-            if self.list[i] &lt; self.list[i//2]:
-                self.list[i], self.list[i//2] = self.list[i//2], self.list[i]
-            i = i//2
-    
-    def insert(self, item):
-        &quot;&quot;&quot;把新元素加入到堆中&quot;&quot;&quot;
-        self.list.append(item)
-        self.size += 1
-        self.perc_up(self.size)
-
-    def findMin(self):
-        &quot;&quot;&quot;返回堆中的最小项，最小项仍保留在堆中&quot;&quot;&quot;
-        return self.list[1]
-
-    def delMin(self):
-        &quot;&quot;&quot;返回堆中的最小项，同时从堆中删除&quot;&quot;&quot;
-        retval = self.list[1]
-        self.list[1] = self.list[-1]
-        self.size -=1
-        self.list.pop()
-        self.perc_down(1)
-
-        return retval
-
-
-    def perc_down(self, i):
-        &quot;&quot;&quot;
-        Percolate the root node  down the tree
-        &quot;&quot;&quot;
-        while i*2 &lt;= self.size:
-            if i*2+1 &gt; self.size:
-                self.list[i*2], self.list[i] = self.list[i], self.list[i*2]
-                i = i*2
-            else:
-                if self.list[i*2] &gt; self.list[i*2+1]:
-                    self.list[i*2+1], self.list[i] =  self.list[i], self.list[i*2+1]
-                    i = i*2+1
-                else:
-                    self.list[i*2], self.list[i] = self.list[i], self.list[i*2]
-                    i = i*2
-
-
-    def isEmpty(self):
-        &quot;&quot;&quot;返回堆是否为空&quot;&quot;&quot;
-        return self.size == 0
-
-    def __len__(self):
-        &quot;&quot;&quot;返回堆中元素的个数&quot;&quot;&quot;
-        return self.size
-
-    def buildHeap(self,alist):
-        &quot;&quot;&quot;从一个包含元素的列表创建新堆&quot;&quot;&quot;
-        self.size = len(alist)
-        self.list.extend(alist)
-        i = self.size//2
-        while i &gt;0:
-            self.perc_down(i)
-            i -= 1
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/7/12</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Tree.html'>Tree</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="14992350772045.html">
-                
-                  <h1>首先有一个概念：回溯</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>　　回溯法(探索与回溯法)是一种选优搜索法，按选优条件向前搜索，以达到目标。但当探索到某一步时，发现原先选择并不优或达不到目标，就退回一步重新选择，这种走不通就退回再走的技术为回溯法，而满足回溯条件的某个状态的点称为“回溯点”。</p>
-
-<p>深度优先算法：</p>
-
-<p>（1）访问初始顶点v并标记顶点v已访问。<br/>
-（2）查找顶点v的第一个邻接顶点w。<br/>
-（3）若顶点v的邻接顶点w存在，则继续执行；否则回溯到v，再找v的另外一个未访问过的邻接点。<br/>
-（4）若顶点w尚未被访问，则访问顶点w并标记顶点w为已访问。<br/>
-（5）继续查找顶点w的下一个邻接顶点wi，如果v取值wi转到步骤（3）。直到连通图中所有顶点全部访问过为止。</p>
-
-<p>广度优先算法：</p>
-
-<p>（1）顶点v入队列。<br/>
-（2）当队列非空时则继续执行，否则算法结束。<br/>
-（3）出队列取得队头顶点v；访问顶点v并标记顶点v已被访问。<br/>
-（4）查找顶点v的第一个邻接顶点col。<br/>
-（5）若v的邻接顶点col未被访问过的，则col入队列。<br/>
-（6）继续查找顶点v的另一个新的邻接顶点col，转到步骤（5）。直到顶点v的所有未被访问过的邻接点处理完。转到步骤（2）。</p>
-
-<p>代码：</p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/7/5</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html'>Python数据结构与算法</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1225,6 +1306,18 @@ Just like <code>LEFT JOIN</code></li>
 		  
 		      
 			      <li class="post">
+			        <a href="15042285789723.html">Convolutional Neural Networks</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15041905263785.html">cross-entropy</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="cross-validation.html">Cross-Validation</a>
 			      </li>
 		     
@@ -1232,18 +1325,6 @@ Just like <code>LEFT JOIN</code></li>
 		      
 			      <li class="post">
 			        <a href="15037532856914.html">K-means clustering</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15036679491914.html">Feature Engineering</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15036619229303.html">Support Vector Machines</a>
 			      </li>
 		     
 		  
