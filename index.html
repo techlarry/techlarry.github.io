@@ -132,6 +132,41 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15042359761425.html">
+                
+                  <h1>Transfer Learning</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p><code>Transfer learning</code> focuses on storing knowledge gained while solving one problem and applying it to a different but related problem.</p>
+
+<p>Generally, transfer learning will work only well if the inputs have similar low-level features.</p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/9/1</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html'>机器学习</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="cross-validation.html">
                 
                   <h1>Cross-Validation</h1>
@@ -139,7 +174,7 @@
                       
                       <div class="a-content-text">
                         
-                        	<p><code>cross-validation</code> splits the training setinto complementary subsets, and each model is trained against a different combination of these subsets and validates against the remaining parts. Once the model type and hyperparameters on the full training set, and the generalized error is measured on the test set.</p>
+                        	<p><code>cross-validation</code> splits the training set into complementary subsets, and each model is trained against a different combination of these subsets and validates against the remaining parts. Once the model type and hyperparameters on the full training set, and the generalized error is measured on the test set.</p>
 
 <p><img src="media/15038841395536/15042349862270.jpg" alt="demo of cross-validation"/></p>
 
@@ -485,118 +520,6 @@ plt.scatter(x[:,0], x[:,1], c=y)
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15035780907547.html">
-                
-                  <h1>Vector and Matrix Product in Numpy and TensorFlow</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h2 id="toc_0">Numpy</h2>
-
-<p>Following are common vector and matrix product operations in Numpy, they are quite simple and straightforward:</p>
-
-<ul>
-<li><p>Inner Product   \(\quad a^Tb\quad \):  <code>np.inner()</code></p></li>
-<li><p>Outer Product  \(\quad ab^T\quad \):  <code>np.outer()</code></p></li>
-<li><p>Dot Product  \(\quad a \cdot b = \sum a_ib_i\quad \): <code>np.dot()</code></p></li>
-<li><p>Elementwise Product  \(\quad c_i = a_ib_i\quad \): <code>np.multiply()</code></p></li>
-</ul>
-
-<p>Note: inner product is defined on vector spaces over a field 𝕂 (finite or infinite dimensional). Dot product refers specifically to the product of vectors in \(ℝ^n\)</p>
-
-<p>The difference between the following implementations of the dot/inner/outer/elementwise product are demonstrated as follows:</p>
-
-<pre><code class="language-python">W = np.ones((2, 7), dtype=&#39;float32&#39;)
-x1 = [9, 2, 5, 0, 0, 7, 5]
-x2 = [9, 2, 2, 9, 0, 9, 2]
-print(&#39;vector dot product&#39;, np.dot(x1,x2)) # dot product
-print(&#39;inner&#39;, np.inner(x1,x2)) # inner product
-print(&#39;outter&#39;, np.outer(x1,x2)) # outter product
-print(&#39;element-wsie&#39;, np.multiply(x1,x2)) # Element-wise product
-print(&#39;matrix dot product&#39;, np.dot(W, x1)) # dot product
-</code></pre>
-
-<pre><code>dot for vector 168
-inner 168
-outter [[81 18 18 81  0 81 18]
- [18  4  4 18  0 18  4]
- [45 10 10 45  0 45 10]
- [ 0  0  0  0  0  0  0]
- [ 0  0  0  0  0  0  0]
- [63 14 14 63  0 63 14]
- [45 10 10 45  0 45 10]]
-element-wsie [81  4 10  0  0 63 10]
-dot for matrix [ 28.  28.]
-</code></pre>
-
-<h2 id="toc_1">TensorFlow</h2>
-
-<p>Vector inner/outer Product are a bit complex in TensorFlow. </p>
-
-<pre><code class="language-python">import tensorflow as tf
-import numpy as np
-
-x = tf.Variable([[1, -2, 3]], tf.float32, name=&#39;x&#39;)
-y = tf.Variable([[-1, 2, -3]], tf.float32, name=&#39;y&#39;)
-
-## inner product
-inner_product1 = tf.reduce_sum(tf.multiply(x, y))
-inner_product2 = tf.matmul(x, y, transpose_a=False, transpose_b= True) # different from inner_product1
-
-## outer product
-outer_product2 = tf.matmul(x, y, transpose_a= True)
-
-## matrix dot product
-X = tf.constant(np.random.randn(3,3), name=&#39;X&#39;)
-W = tf.constant(np.random.randn(3,3), name=&#39;W&#39;)
-matrix_product = tf.matmul(W, X)
-
-sess = tf.InteractiveSession()
-init_op = tf.global_variables_initializer()
-
-# run
-sess.run(init_op)
-print(sess.run(inner_product1))
-print(sess.run(inner_product2))
-print(sess.run(outer_product2))
-print(sess.run(matrix_product))
-</code></pre>
-
-<pre><code>-14
-[[-14]]
-[[-1  2 -3]
- [ 2 -4  6]
- [-3  6 -9]]
-[[-0.88722509 -0.94128018 -2.1999658 ]
- [-0.67967623  1.33193446 -0.75612585]
- [ 0.31741623  1.3271727  -0.04311113]]
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/8/24</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Tensorflow.html'>Tensorflow</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -692,6 +615,12 @@ print(sess.run(matrix_product))
 	      
 		      
 			      <li class="post">
+			        <a href="15042359761425.html">Transfer Learning</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="cross-validation.html">Cross-Validation</a>
 			      </li>
 		     
@@ -711,12 +640,6 @@ print(sess.run(matrix_product))
 		      
 			      <li class="post">
 			        <a href="15036619229303.html">Support Vector Machines</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15035780907547.html">Vector and Matrix Product in Numpy and TensorFlow</a>
 			      </li>
 		     
 		  
