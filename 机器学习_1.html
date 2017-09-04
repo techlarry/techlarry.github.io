@@ -155,6 +155,18 @@
 <li>
 <a href="#toc_4">Multiclass Classification</a>
 </li>
+<li>
+<a href="#toc_5">Neuron in the brain</a>
+</li>
+<li>
+<a href="#toc_6">Cost Function</a>
+</li>
+<li>
+<a href="#toc_7">Backpropagation Algorithm</a>
+</li>
+<li>
+<a href="#toc_8">Putting it Together</a>
+</li>
 </ul>
 
 
@@ -188,7 +200,8 @@ Output wire: Axon</p>
 
 <p>In this example, we label these intermediate or hidden layer nodes \(a^2_0⋯a^2_n\) and call them <code>activation units</code>.</p>
 
-<p>\[\begin{align*}&amp; a_i^{(j)} = \text{&quot;activation&quot; of unit $i$ in layer $j$} \newline&amp; \Theta^{(j)} = \text{matrix of weights controlling function mapping from layer $j$ to $j+1$}\end{align*}\]</p>
+<p>\[\begin{align*}&amp; a_i^{(j)} = \text{&quot;activation&quot; of unit $i$ in layer $j$} \newline&amp; \Theta^{(j)} = \text{matrix of weights controlling function mapping from layer $j$ to $j+1$}\end{align*}\\<br/>
+\text{ will be of dimension }s_{j+1}\times(s_{j+1})\]</p>
 
 <p>The values for each of the &quot;activation&quot; nodes is obtained as follows:</p>
 
@@ -245,7 +258,7 @@ Output wire: Axon</p>
 
 <p>To classify data into multiple classes, we let our hypothesis function return a vector of values. Say we wanted to classify our data into one of four categories. We will use the following example to see how this classification is done. This algorithm takes as input an image and classifies it accordingly:</p>
 
-<p><img src="media/14987831190581/14987929949268.png" alt=""/></p>
+<p><img src="media/14987831190581/one-vs-all%20neural%20network.png" alt="one-vs-all neural network"/></p>
 
 <p>We can define our set of resulting classes as \(y\):</p>
 
@@ -260,6 +273,84 @@ Output wire: Axon</p>
 <p>\[h_\Theta(x) =\begin{bmatrix}0 \newline 0 \newline 1 \newline 0 \newline\end{bmatrix}\]</p>
 
 <p>In which case our resulting class is the third one down, or \(h_\Theta(x)_3\), which represents the motorcycle.</p>
+
+<h2 id="toc_5">Neuron in the brain</h2>
+
+<ul>
+<li>Input: <code>Dendrite</code></li>
+<li>Output: <code>Axon</code></li>
+</ul>
+
+<p><img src="media/14987831190581/Blausen_0657_MultipolarNeuron.png" alt="illustration of neuron "/></p>
+
+<h2 id="toc_6">Cost Function</h2>
+
+<p>Let&#39;s first define a few variables that we will need to use:</p>
+
+<ul>
+<li>\(L\) = total number of layers in the network</li>
+<li>\(s_l\) = number of units (not counting bias unit) in layer \(l\)</li>
+<li>\(K\) = number of output units/classes</li>
+</ul>
+
+<p>Recall that in neural networks, we may have many output nodes. We denote \(h_\Theta(x)^k\) as being a hypothesis that results in the \(k\)th output. Our cost function for neural networks is going to be a generalization of the one we used for logistic regression. Recall that the cost function for regularized logistic regression was:</p>
+
+<p>\[J(\theta) = - \frac{1}{m} \sum_{i=1}^m [ y^{(i)}\ \log (h_\theta (x^{(i)})) + (1 - y^{(i)})\ \log (1 - h_\theta(x^{(i)}))] + \frac{\lambda}{2m}\sum_{j=1}^n \theta_j^2\]</p>
+
+<p>For neural networks, it is going to be slightly more complicated:</p>
+
+<p>\[\begin{gather*} J(\Theta) = - \frac{1}{m} \sum_{i=1}^m \sum_{k=1}^K \left[y^{(i)}_k \log ((h_\Theta (x^{(i)}))_k) + (1 - y^{(i)}_k)\log (1 - (h_\Theta(x^{(i)}))_k)\right] + \frac{\lambda}{2m}\sum_{l=1}^{L-1} \sum_{i=1}^{s_l} \sum_{j=1}^{s_{l+1}} ( \Theta_{j,i}^{(l)})^2\end{gather*}\]</p>
+
+<p>We have added a few nested summations to account for our multiple output nodes. In the first part of the equation, before the square brackets, we have an additional nested summation that loops through the number of output nodes.</p>
+
+<p>In the regularization part, after the square brackets, we must account for multiple \(\Theta\) matrices. The number of columns in our current theta matrix is equal to the number of nodes in our current layer (including the bias unit). The number of rows in our current \(\Theta\) matrix is equal to the number of nodes in the next layer (excluding the bias unit). As before with logistic regression, we square every term.</p>
+
+<p>Note:</p>
+
+<ul>
+<li>the double sum simply adds up the logistic regression costs calculated for each cell in the output layer</li>
+<li>the triple sum simply adds up the squares of all the individual \(\Theta\)s in the entire network.</li>
+<li>the \(i\) in the triple sum does not refer to training example \(i\)</li>
+</ul>
+
+<h2 id="toc_7">Backpropagation Algorithm</h2>
+
+<p><code>Backpropagation</code> is neural-network terminology for minimizing cost function, similar to <code>gradient descent</code> in logistic and linear regression. Our goal is to realize:</p>
+
+<p>\[\min_\Theta J(\Theta)\]</p>
+
+<p>That is, we want to minimize cost function \(J\) using an optimal set of parameters in \(\Theta\). The algorithm to minimize the cost function is as follows:</p>
+
+<p><strong>Backpropagation algorithm</strong>:</p>
+
+<ol>
+<li>Training set \(\{(x^{(1)},y^{(1)}),...,(x^{(m)},y^{(m)})\}\)</li>
+<li>Set \(\Delta_{ij}^{(l)}=0\) (for all \(l,i,j\))</li>
+<li>For \(i=1\) to \(m\)
+
+<ul>
+<li>Set \(a^{(1)}=x^{(i)}\)</li>
+<li>Perform forward propagation to compute \(a^{(l)}\) for \(l=2,3,...,L\)</li>
+<li>Using \(y^{(i)}\), compute \(\delta^{(L)}=a^{(L)}-y^{(i)}\)</li>
+<li>Compute \(\delta^{(L-1)},...,\delta^{(2)}\)</li>
+<li>\(\Delta^{(l)}_{ij}:=\Delta^{(l)}_{ij} +a_{ij}\delta_i^{(l+1)}\)</li>
+</ul></li>
+<li>\(D_{ij}^{(l)}=\frac{1}{m}\Delta_{ij}^{(l)}+\lambda\Theta_{ij}^{(l)}\) if \(j\ne0\)</li>
+<li>\(D_{ij}^{(l)}=\frac{1}{m}\Delta_{ij}^{(l)}\) if \(j=0\)</li>
+</ol>
+
+<h2 id="toc_8">Putting it Together</h2>
+
+<p><strong>Training a Neural Network</strong>:</p>
+
+<ul>
+<li>Randomly initialize the weights</li>
+<li>Implement forward propagation</li>
+<li>Implement the cost function</li>
+<li>Implement backpropagation to compute partial derivatives</li>
+<li>Use gradient checking to confirm that your backpropagation works. Then disable gradient checking.</li>
+<li>Use gradient descent or a built-in optimization function to minimize the cost function with the weights in theta.</li>
+</ul>
 
                         
                       </div>
@@ -437,7 +528,7 @@ Keep all the features, but reduce the magnitude of parameters \(\theta_j\). Regu
 
 <h2 id="toc_0">Binary Classification</h2>
 
-<p><strong>Binary classification problem</strong> : y can take on only two values, 0 and 1.</p>
+<p><strong>Binary classification problem</strong> : \(y\) can take on only two values, 0 and 1.</p>
 
 <h3 id="toc_1">Examples</h3>
 
@@ -537,9 +628,10 @@ also called sigmoid (/&#39;sɪgmɔɪd/) function<br/>
 
 <p><strong>To summarize</strong>:</p>
 
-<p>Train a logistic regression classifier hθ(x) for each class to predict the probability that  \(y = i\) .</p>
-
-<p>To make a prediction on a new x, pick the class that maximizes \(h_\theta(x)\)</p>
+<ul>
+<li>Train a logistic regression classifier hθ(x) for each class to predict the probability that  \(y = i\).</li>
+<li>To make a prediction on a new x, pick the class that maximizes \(h_\theta(x)\).</li>
+</ul>
 
                         
                       </div>
@@ -1006,13 +1098,19 @@ repeat until converge{</p>
 	      
 		      
 			      <li class="post">
-			        <a href="15042359761425.html">Transfer Learning</a>
+			        <a href="15043546317888.html">Python `virtualenv` on mac</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="15042285789723.html">Convolutional Neural Networks</a>
+			        <a href="convolutional-neural-networks.html">Convolutional Neural Networks</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15042359761425.html">Transfer Learning</a>
 			      </li>
 		     
 		  
@@ -1025,12 +1123,6 @@ repeat until converge{</p>
 		      
 			      <li class="post">
 			        <a href="cross-validation.html">Cross-Validation</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15037532856914.html">K-means clustering</a>
 			      </li>
 		     
 		  
