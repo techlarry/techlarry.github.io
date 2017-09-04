@@ -169,13 +169,13 @@
 <a href="#toc_4">Multiclass Classification</a>
 </li>
 <li>
-<a href="#toc_5">Neuron in the brain</a>
+<a href="#toc_5">Cost Function</a>
 </li>
 <li>
-<a href="#toc_6">Cost Function</a>
+<a href="#toc_6">Backpropagation Algorithm</a>
 </li>
 <li>
-<a href="#toc_7">Backpropagation Algorithm</a>
+<a href="#toc_7">Gradient Checking</a>
 </li>
 <li>
 <a href="#toc_8">Putting it Together</a>
@@ -195,12 +195,16 @@
 
 <p><strong>Origins</strong>: Algorithms that try to mimic the brain. It was very widely used in 80s and early 90s; popularity diminished in late 90s. It is now a state of the art technique for many application, because its expensive computation can be meet.</p>
 
-<p>Input wire: Dendrite<br/>
-Output wire: Axon</p>
-
 <h2 id="toc_2">Model Representation</h2>
 
-<p>At a very simple level, neurons are basically computational units that take inputs (<code>dendrites</code>) as electrical inputs (<code>spikes</code>) that are channeled to outputs (<code>axons</code>). </p>
+<p>At a very simple level, neurons are basically computational units that take inputs (<code>dendrites</code>) as electrical inputs (<code>spikes</code>) that are channeled to outputs (<code>axons</code>).</p>
+
+<ul>
+<li>Input: <code>Dendrite</code></li>
+<li>Output: <code>Axon</code></li>
+</ul>
+
+<p><img src="media/14987831190581/Blausen_0657_MultipolarNeuron.png" alt="illustration of neuron "/></p>
 
 <p>In neural networks, dendrites are like the input features \(x_1⋯x_n\), and the output is the result of our hypothesis function. \(x_0\) input node is sometimes called the <code>bias unit</code>. It is always equal to 1. In neural networks, we use the same logistic function as in classification, \(\frac{1}{1+e^{-\theta^Tx}}\), yet we sometimes call it a sigmoid (logistic) activation function. In this situation, our &quot;theta&quot; parameters are sometimes called <code>weights</code>.</p>
 
@@ -287,16 +291,7 @@ Output wire: Axon</p>
 
 <p>In which case our resulting class is the third one down, or \(h_\Theta(x)_3\), which represents the motorcycle.</p>
 
-<h2 id="toc_5">Neuron in the brain</h2>
-
-<ul>
-<li>Input: <code>Dendrite</code></li>
-<li>Output: <code>Axon</code></li>
-</ul>
-
-<p><img src="media/14987831190581/Blausen_0657_MultipolarNeuron.png" alt="illustration of neuron "/></p>
-
-<h2 id="toc_6">Cost Function</h2>
+<h2 id="toc_5">Cost Function</h2>
 
 <p>Let&#39;s first define a few variables that we will need to use:</p>
 
@@ -312,7 +307,7 @@ Output wire: Axon</p>
 
 <p>For neural networks, it is going to be slightly more complicated:</p>
 
-<p>\[\begin{gather*} J(\Theta) = - \frac{1}{m} \sum_{i=1}^m \sum_{k=1}^K \left[y^{(i)}_k \log ((h_\Theta (x^{(i)}))_k) + (1 - y^{(i)}_k)\log (1 - (h_\Theta(x^{(i)}))_k)\right] + \frac{\lambda}{2m}\sum_{l=1}^{L-1} \sum_{i=1}^{s_l} \sum_{j=1}^{s_{l+1}} ( \Theta_{j,i}^{(l)})^2\end{gather*}\]</p>
+<p>\[\begin{gather*} J(\Theta) = - \frac{1}{m} \sum_{i=1}^m \sum_{k=1}^K \left[y^{(i)}_k \log ((h_\Theta (x^{(i)}))_k) + (1 - y^{(i)}_k)\log (1 - (h_\Theta(x^{(i)}))_k)\right] + \\\frac{\lambda}{2m}\sum_{l=1}^{L-1} \sum_{i=1}^{s_l} \sum_{j=1}^{s_{l+1}} ( \Theta_{j,i}^{(l)})^2\end{gather*}\]</p>
 
 <p>We have added a few nested summations to account for our multiple output nodes. In the first part of the equation, before the square brackets, we have an additional nested summation that loops through the number of output nodes.</p>
 
@@ -326,7 +321,7 @@ Output wire: Axon</p>
 <li>the \(i\) in the triple sum does not refer to training example \(i\)</li>
 </ul>
 
-<h2 id="toc_7">Backpropagation Algorithm</h2>
+<h2 id="toc_6">Backpropagation Algorithm</h2>
 
 <p><code>Backpropagation</code> is neural-network terminology for minimizing cost function, similar to <code>gradient descent</code> in logistic and linear regression. Our goal is to realize:</p>
 
@@ -351,6 +346,18 @@ Output wire: Axon</p>
 <li>\(D_{ij}^{(l)}=\frac{1}{m}\Delta_{ij}^{(l)}+\lambda\Theta_{ij}^{(l)}\) if \(j\ne0\)</li>
 <li>\(D_{ij}^{(l)}=\frac{1}{m}\Delta_{ij}^{(l)}\) if \(j=0\)</li>
 </ol>
+
+<h2 id="toc_7">Gradient Checking</h2>
+
+<p>Gradient checking will assure that our backpropagation works as intended. We can approximate the derivative of our cost function with:<br/>
+\[\dfrac{\partial}{\partial\Theta}J(\Theta) \approx \dfrac{J(\Theta + \epsilon) - J(\Theta - \epsilon)}{2\epsilon}\]</p>
+
+<p>With multiple theta matrices, we can approximate the derivative with respect to \(Θ_j\) as follows:<br/>
+\[\dfrac{\partial}{\partial\Theta_j}J(\Theta) \approx \dfrac{J(\Theta_1, \dots, \Theta_j + \epsilon, \dots, \Theta_n) - J(\Theta_1, \dots, \Theta_j - \epsilon, \dots, \Theta_n)}{2\epsilon}\]</p>
+
+<p>A small value for \(\epsilon\) such as \(\epsilon=10^{-4}\), guarantees that the math works out properly. If the value for \(\epsilon\) is too small, we can end up with numerical problems.</p>
+
+<p>Once we compute grad by numerical method, we can check that grads are approximate to grads calculated by calculus. We don&#39;t use the method to compute grads, because it is very slow.</p>
 
 <h2 id="toc_8">Putting it Together</h2>
 
@@ -500,7 +507,13 @@ s.setAttribute('data-timestamp', +new Date());
 	      
 		      
 			      <li class="post">
-			        <a href="15043546317888.html">Python `virtualenv` on mac</a>
+			        <a href="anomaly-detection.html">Anomaly Detection</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="virtualenv.html">Python `virtualenv` on mac</a>
 			      </li>
 		     
 		  
@@ -519,12 +532,6 @@ s.setAttribute('data-timestamp', +new Date());
 		      
 			      <li class="post">
 			        <a href="15041905263785.html">cross-entropy</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="cross-validation.html">Cross-Validation</a>
 			      </li>
 		     
 		  

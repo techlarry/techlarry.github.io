@@ -132,6 +132,131 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="14969711309826.html">
+                
+                  <h1>内置LIST，DICT 时间复杂度</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h2 id="toc_0">timeit 模块</h2>
+
+<pre><code class="language-python">class timeit.Timer(stmt=&#39;pass&#39;, setup=&#39;pass&#39;, timer=&lt;timer function&gt;)
+</code></pre>
+
+<ul>
+<li>Timer是测量小段代码执行速度的类。</li>
+<li>stmt参数是要测试的代码语句（statment）；</li>
+<li>setup参数是运行代码时需要的设置；</li>
+<li>timer参数是一个定时器函数，与平台有关。</li>
+</ul>
+
+<p>timeit.Timer.timeit(number=1000000)</p>
+
+<p>Timer类中测试语句执行速度的对象方法。number参数是测试代码时的测试次数，默认为1000000次。方法返回执行代码的平均耗时，一个float类型的秒数。</p>
+
+<pre><code class="language-python">from timeit import Timer
+
+li1 = [1,2]
+li2 = [23,5]
+li = li1+li2
+
+li = [i for i in range(10000)]
+li = list(range(10000))
+
+def t1():
+    li = []
+    for i in range(10000):
+        li.append(i)
+
+def t2():
+    li = []
+    for i in range(10000):
+        li += [i]
+
+def t3():
+    li = [ i for i in range(10000)]
+
+def t4():
+    li = list(range(10000))
+
+timer1 = Timer(&#39;t1()&#39;,&quot;from __main__ import t1&quot;)
+timer2 = Timer(&#39;t2()&#39;,&#39;from __main__ import t2&#39;)
+timer3 = Timer(&#39;t3()&#39;,&#39;from __main__ import t3&#39;)
+timer4 = Timer(&#39;t4()&#39;,&#39;from __main__ import t4&#39;)
+
+
+print(&#39;append&#39;,timer1.timeit(1000))
+print(&#39;+&#39;,timer2.timeit(1000))
+print(&#39;comprehesion&#39;,timer3.timeit(1000))
+print(&#39;list(range)&#39;,timer4.timeit(1000))
+
+
+# pop
+x = range(2000000)
+pop_zero = Timer(&quot;x.pop(0)&quot;, &quot;from __main__ import x&quot;)
+pop_end = Timer(&quot;x.pop()&quot;, &quot;from __main__ import x&quot;)
+print(&#39;pop zero&#39;, pop_zero.timeit(1000))
+print(&#39;pop end&#39;, pop_end.timeit(1000))
+
+</code></pre>
+
+<h2 id="toc_1">list 内置操作的时间复杂度</h2>
+
+<pre><code>* Operatation Big-O Efficiency
+* indexx[]          O(1)
+* index assignment  O(1)
+* append            O(1)
+* pop()             O(1)    #弹出
+* pop(i)            O(n)    #插入
+* insert(i, item)   O(n)
+* del operator      O(n)
+* iteration         O(n)
+* contains(in)      O(n)
+* get slice[x:y]    O(k)    # 取切片
+* del slice         O(n)    #删除切片
+* set slice         O(n+k)  #设置切片
+* reverse           O(n)
+* concatenate       O(k)
+* sort              O(nlogn)
+* multiply          O(nk)
+</code></pre>
+
+<h2 id="toc_2">dict 内置操作的时间复杂度</h2>
+
+<pre><code>* copy                O(n)
+* get item            O(n)   #取
+* set item            O(n)   #设置
+* delete tiem         O(n)   #删除键
+* contains(in)        O(1)    #包含，不用遍历
+* iteration           O(n)    #迭代
+
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/6/9</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html'>Python数据结构与算法</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="14969711309827.html">
                 
                   <h1>数据结构介绍</h1>
@@ -448,148 +573,6 @@ s.salary = -1000
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="14969760733622.html">
-                
-                  <h1>Python 高级</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h2 id="toc_0">模块重新导入</h2>
-
-<p>模块导入： import xxx, from xxx import xxxx<br/>
-增加路径 </p>
-
-<pre><code class="language-python">import sys
-sys.path.append(path)
-</code></pre>
-
-<p>模块重新导入</p>
-
-<pre><code class="language-python">from imp import reload
-reload(module name)
-</code></pre>
-
-<h2 id="toc_1">02 模块循环导入问题</h2>
-
-<p>不可以循环导入，不能在模块之间相互调用</p>
-
-<p>怎样避免循环导入：导入语句放在后面需要导入时再倒入，例如放在函数体内导入</p>
-
-<h2 id="toc_2">03/04 ==与is的区别</h2>
-
-<ul>
-<li>== 判断值是否相等</li>
-<li>Is  id(a), id(b)是否相等，<strong>比较两个引用是否指向了同一个对象（引用比较）</strong></li>
-</ul>
-
-<h2 id="toc_3">05-07 深拷贝与浅拷贝</h2>
-
-<ul>
-<li>浅拷贝是一个对象的顶层拷贝，拷贝了引用，并没有拷贝内容
-= 就是浅拷贝</li>
-<li>深拷贝是对于一个对象所有层次的拷贝（递归）
-<code>python
-import copy
-c = copy.deepcopy(a)
-</code>
-copy.deepcopy深拷贝会把引用都拷贝出来（递归）
-copy.copy() 
-使用copy模块的copy功能的时候，它会根据当前拷贝的数据类型是可变类型还是不可变类型，有不同的处理方式：如果拷贝可变类型，只能识别第一层拷贝；如果拷贝不可变类型，是浅拷贝</li>
-</ul>
-
-<h2 id="toc_4">08 不同进制的讲解</h2>
-
-<p>略</p>
-
-<h2 id="toc_5">09 原码，反码，补码，进制的转换</h2>
-
-<p>有符号数和无符号数的概念<br/>
-规则：把二进制数中的最高位（最左边的那位）用作符号位</p>
-
-<p>对于有符号数，最高位被计算机系统规定为符号位（0为正，1为负）<br/>
-对于无符号数，最高位被计算机系统规定为数据位</p>
-
-<p>数字在计算机中，是用二进制补码的形式来保存的，因此-1+1需要按照补码进行相加才是正确的结果</p>
-
-<p>1）如何计算补码？<br/>
-正数：原码=反码=补码<br/>
-负数：反码=符号位不变，其他位取反<br/>
-      补码=反码+1<br/>
-溢出：越界<br/>
-    2) 从补码转回原码<br/>
-    负数补码转换原码的规则：<br/>
-    原码=补码的符号位不变，数据位取反，尾+1</p>
-
-<p>进制的转换 bin, int, oct, hex</p>
-
-<p>0b 二进制<br/>
-0o八进制<br/>
-0x十六进制</p>
-
-<p>转换成十进制 int(&quot;&quot;,16/8/2)</p>
-
-<h2 id="toc_6">10 位运算</h2>
-
-<p>把一个数的各位整体向左移动一个位，就变成原来的2倍</p>
-
-<h3 id="toc_7">位运算的介绍</h3>
-
-<ul>
-<li>&amp; 按位于</li>
-<li>|按位或</li>
-<li><sup>按位异或</sup></li>
-<li>～按位取反</li>
-<li>&lt;&lt;按位左移 &gt;&gt;按位右移</li>
-</ul>
-
-<h3 id="toc_8">位运算</h3>
-
-<ul>
-<li>按位与： 全1才1否则0：只有对应的两个二进位均为1时，结果位才为1，否则为0</li>
-<li>按位或：有1就1： 只要对应的二个二进位有一个位1时，结果位就为1，否则为0</li>
-<li>按位异或：不同为1: 当对应的二进位不相同时，结果为1，否则为0</li>
-</ul>
-
-<h2 id="toc_9">12 私有化</h2>
-
-<p>属性的名字前面加上下划线，属于私有属性，不能从外部调用的<br/>
-方法：setNum(), getNum() 设置两个方法，一个设置属性，一个获取数据</p>
-
-<ul>
-<li>xx: 公有变量</li>
-<li>_xx: 单前置下划线，私有化属性或方法，from somemodule import * 禁止导入，类对象和子类可以访问</li>
-<li>__xx__: 双前后下划线，用于名字空间的魔法对象或属性。例如：__init__</li>
-<li>__xx: 双前置下划线，私有，无法在外部直接访问（名子重整所以访问不到）</li>
-<li>xx_: 单后置下划线，用于避免与python关键词的冲突</li>
-</ul>
-
-<p>通过name mangling （名字重整）,目的是防止类意外重写基类的方法或者属性：__classname__privateatribute</p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/4/9</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -685,7 +668,13 @@ copy.copy()
 	      
 		      
 			      <li class="post">
-			        <a href="15043546317888.html">Python `virtualenv` on mac</a>
+			        <a href="anomaly-detection.html">Anomaly Detection</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="virtualenv.html">Python `virtualenv` on mac</a>
 			      </li>
 		     
 		  
@@ -704,12 +693,6 @@ copy.copy()
 		      
 			      <li class="post">
 			        <a href="15041905263785.html">cross-entropy</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="cross-validation.html">Cross-Validation</a>
 			      </li>
 		     
 		  
