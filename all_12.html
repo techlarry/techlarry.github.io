@@ -110,6 +110,8 @@
             <li><a href="%E6%95%B0%E6%8D%AE%E5%BA%93.html">数据库</a></li>
         
             <li><a href="Tensorflow.html">Tensorflow</a></li>
+        
+            <li><a href="Data%20Science.html">Data Science</a></li>
          
 
       </ul>
@@ -132,638 +134,155 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="14987831190581.html">
+                <a class="clearlink" href="testing.html">
                 
-                  <h1>Machine Learning (5): Neural Networks</h1>
+                  <h1>Testing</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<ul>
-<li>
-<a href="#toc_0">Why Neural Networks</a>
-</li>
-<li>
-<a href="#toc_1">Background of Neural Networks</a>
-</li>
-<li>
-<a href="#toc_2">Model Representation</a>
-</li>
-<li>
-<a href="#toc_3">Examples and Intuitions</a>
-</li>
-<li>
-<a href="#toc_4">Multiclass Classification</a>
-</li>
-<li>
-<a href="#toc_5">Cost Function</a>
-</li>
-<li>
-<a href="#toc_6">Backpropagation Algorithm</a>
-</li>
-<li>
-<a href="#toc_7">Gradient Checking</a>
-</li>
-<li>
-<a href="#toc_8">Putting it Together</a>
-</li>
-</ul>
+                        	<p><a href="https://en.wikipedia.org/wiki/Unit_testing">Unit testing</a> is a software testing method by which individual units of source code, sets of one or more computer program modules together with associated control data, usage procedures, and operating procedures, are tested to determine whether they are fit for use.</p>
 
+<h2 id="toc_0">Test-driven programming</h2>
 
-<h2 id="toc_0">Why Neural Networks</h2>
+<p>&quot;<strong>Test first and code later</strong>&quot; practice, known as test-driven programming, instead of test after code.</p>
 
-<p>The number of quadratic features closes to \(\frac{n^2}{2}\), it is computationally expensive.</p>
+<h3 id="toc_1">Requirement Specification</h3>
 
-<p>The number of cubic features closes to \(O(n^3)\), it is more computationally expensive.</p>
+<p>When developing a piece of software, you must first know what problem the software will solve—what objectives it will meet. You can clarify your goals for the program by writing a <strong>requirement specification</strong>, a document (or just some quick notes) describing requirements the program must satisfy. </p>
 
-<p>Computer vision problem looks at matrixes. Because dimensions of pixel images often large (e.g. n= 7500 for 50\(\times\)50 pixel images(RGB)), the number of quadratic features for the problem are 3 million.</p>
+<h3 id="toc_2">The 1-2-3-4 of Testing</h3>
 
-<h2 id="toc_1">Background of Neural Networks</h2>
-
-<p><strong>Origins</strong>: Algorithms that try to mimic the brain. It was very widely used in 80s and early 90s; popularity diminished in late 90s. It is now a state of the art technique for many application, because its expensive computation can be meet.</p>
-
-<h2 id="toc_2">Model Representation</h2>
-
-<p>At a very simple level, neurons are basically computational units that take inputs (<code>dendrites</code>) as electrical inputs (<code>spikes</code>) that are channeled to outputs (<code>axons</code>).</p>
+<p>Here’s a breakdown of the test-driven development process:</p>
 
 <ul>
-<li>Input: <code>Dendrite</code></li>
-<li>Output: <code>Axon</code></li>
+<li>Figure out the new feature you want. Possibly document it, and then write a test for it.</li>
+<li>Write some skeleton code for the feature, so that you program runs without any syntax errors. See your test fail.</li>
+<li>Write dummy code for skeleton code, just to appease the test.</li>
+<li>Rewrite the code so that it actually pass the test.</li>
 </ul>
 
-<p><img src="media/14987831190581/Blausen_0657_MultipolarNeuron.png" alt="illustration of neuron "/></p>
+<h2 id="toc_3">Testing Tools</h2>
 
-<p>In neural networks, dendrites are like the input features \(x_1⋯x_n\), and the output is the result of our hypothesis function. \(x_0\) input node is sometimes called the <code>bias unit</code>. It is always equal to 1. In neural networks, we use the same logistic function as in classification, \(\frac{1}{1+e^{-\theta^Tx}}\), yet we sometimes call it a sigmoid (logistic) activation function. In this situation, our &quot;theta&quot; parameters are sometimes called <code>weights</code>.</p>
-
-<p><strong>Visually, a simplistic representation looks like:</strong><br/>
-\[\begin{bmatrix}x_0 \newline x_1 \newline x_2 \newline \end{bmatrix}\rightarrow\begin{bmatrix}\ \ \ \newline \end{bmatrix}\rightarrow h_\theta(x)\]</p>
-
-<p>Input nodes (layer 1), also known as the <code>input layer</code>, go into another node (layer 2), which finally outputs the hypothesis function, known as the <code>output layer</code>.</p>
-
-<p>We can have intermediate layers of nodes between the input and output layers called the <code>hidden layers</code>.</p>
-
-<p>In this example, we label these intermediate or hidden layer nodes \(a^2_0⋯a^2_n\) and call them <code>activation units</code>.</p>
-
-<p>\[\begin{align*}&amp; a_i^{(j)} = \text{&quot;activation&quot; of unit $i$ in layer $j$} \newline&amp; \Theta^{(j)} = \text{matrix of weights controlling function mapping from layer $j$ to $j+1$}\end{align*}\\<br/>
-\text{ will be of dimension }s_{j+1}\times(s_{j+1})\]</p>
-
-<p>The values for each of the &quot;activation&quot; nodes is obtained as follows:</p>
-
-<p>\[\begin{align*} a_1^{(2)} = g(\Theta_{10}^{(1)}x_0 + \Theta_{11}^{(1)}x_1 + \Theta_{12}^{(1)}x_2 + \Theta_{13}^{(1)}x_3) \newline a_2^{(2)} = g(\Theta_{20}^{(1)}x_0 + \Theta_{21}^{(1)}x_1 + \Theta_{22}^{(1)}x_2 + \Theta_{23}^{(1)}x_3) \newline a_3^{(2)} = g(\Theta_{30}^{(1)}x_0 + \Theta_{31}^{(1)}x_1 + \Theta_{32}^{(1)}x_2 + \Theta_{33}^{(1)}x_3) \newline h_\Theta(x) = a_1^{(3)} = g(\Theta_{10}^{(2)}a_0^{(2)} + \Theta_{11}^{(2)}a_1^{(2)} + \Theta_{12}^{(2)}a_2^{(2)} + \Theta_{13}^{(2)}a_3^{(2)}) \newline \end{align*}\]</p>
-
-<p>If network has \(s_j\) units in layer \(j\) and \(s_{j+1}\) units in layer \(j+1\), then \(\Theta^{(j)}\) will be of dimension \(s_{j+1}×(s_j+1)\). The \(+1\) comes from the addition in \(\Theta^{(j)}\) of the <code>bias nodes</code>, \(x_0\) and \(\Theta^{(j)}_0\). In other words the output nodes will not include the bias nodes while the inputs will. </p>
-
-<p>We&#39;re going to define a new variable \(z^{(j)}_k\) that encompasses the parameters inside our \(g\) function. In our previous example if we replaced by the variable \(z\) for all the parameters we would get:</p>
-
-<p>\[\begin{align*}a_1^{(2)} = g(z_1^{(2)}) \newline a_2^{(2)} = g(z_2^{(2)}) \newline a_3^{(2)} = g(z_3^{(2)}) \newline \end{align*}\]</p>
-
-<p>In other words, for layer \(j=2\) and node \(k\), the variable \(z\) will be:</p>
-
-<p>\[z_k^{(2)} = \Theta_{k,0}^{(1)}x_0 + \Theta_{k,1}^{(1)}x_1 + \cdots + \Theta_{k,n}^{(1)}x_n\]</p>
-
-<p>The vector representation of \(x\) and \(z_j\) is:</p>
-
-<p>\[\begin{align*}x = \begin{bmatrix}x_0 \newline x_1 \newline\cdots \newline x_n\end{bmatrix} &amp;z^{(j)} = \begin{bmatrix}z_1^{(j)} \newline z_2^{(j)} \newline\cdots \newline z_n^{(j)}\end{bmatrix}\end{align*}\]</p>
-
-<p>Setting \(x=a^{(1)}\), we can rewrite the equation as:</p>
-
-<p>\[z^{(j)} = \Theta^{(j-1)}a^{(j-1)}\]</p>
-
-<p>Now we can get a vector of our activation nodes for layer \(j\) as follows:</p>
-
-<p>\[a^{(j)} = g(z^{(j)})\]</p>
-
-<p>Last Step:<br/>
-\[h_\Theta(x) = a^{(j+1)} = g(z^{(j+1)})\]</p>
-
-<h2 id="toc_3">Examples and Intuitions</h2>
-
-<p>The \(\Theta^{(1)}\) matrices for AND, NOR, and OR are:</p>
-
-<p>\[\begin{align*}AND:\newline\Theta^{(1)} &amp;=\begin{bmatrix}-30 &amp; 20 &amp; 20\end{bmatrix} \newline NOR:\newline\Theta^{(1)} &amp;= \begin{bmatrix}10 &amp; -20 &amp; -20\end{bmatrix} \newline OR:\newline\Theta^{(1)} &amp;= \begin{bmatrix}-10 &amp; 20 &amp; 20\end{bmatrix} \newline\end{align*}\]</p>
-
-<p>We can combine these to get the \(XNOR\) logical operator (which gives 1 if \(x_1\) and \(x_2\) are both 0 or both 1).</p>
-
-<p>\[\begin{align*}\begin{bmatrix}x_0 \newline x_1 \newline x_2\end{bmatrix} \rightarrow\begin{bmatrix}a_1^{(2)} \newline a_2^{(2)} \end{bmatrix} \rightarrow\begin{bmatrix}a^{(3)}\end{bmatrix} \rightarrow h_\Theta(x)\end{align*}\]</p>
-
-<p>For the transition between the first and second layer, we&#39;ll use a \(\Theta^{(1)}\) matrix that combines the values for AND and NOR:</p>
-
-<p>\[\Theta^{(1)} =\begin{bmatrix}-30 &amp; 20 &amp; 20 \newline 10 &amp; -20 &amp; -20\end{bmatrix}\]</p>
-
-<p>For the transition between the second and third layer, we&#39;ll use a \(\Theta^{(2)}\) matrix that uses the value for OR:</p>
-
-<p>\[\Theta^{(2)} =\begin{bmatrix}-10 &amp; 20 &amp; 20\end{bmatrix}\]</p>
-
-<p>Let&#39;s write out the values for all our nodes:</p>
-
-<p>\[\begin{align*}&amp; a^{(2)} = g(\Theta^{(1)} \cdot x) \newline&amp; a^{(3)} = g(\Theta^{(2)} \cdot a^{(2)}) \newline&amp; h_\Theta(x) = a^{(3)}\end{align*}\]</p>
-
-<h2 id="toc_4">Multiclass Classification</h2>
-
-<p>To classify data into multiple classes, we let our hypothesis function return a vector of values. Say we wanted to classify our data into one of four categories. We will use the following example to see how this classification is done. This algorithm takes as input an image and classifies it accordingly:</p>
-
-<p><img src="media/14987831190581/one-vs-all%20neural%20network.png" alt="one-vs-all neural network"/></p>
-
-<p>We can define our set of resulting classes as \(y\):</p>
-
-<p><img src="media/14987831190581/14987930862309.png" alt=""/></p>
-
-<p>Each \(y(i)\) represents a different image corresponding to either a car, pedestrian, truck, or motorcycle. The inner layers, each provide us with some new information which leads to our final hypothesis function. The setup looks like:</p>
-
-<p><img src="media/14987831190581/14987931059100.png" alt=""/></p>
-
-<p>Our resulting hypothesis for one set of inputs may look like:</p>
-
-<p>\[h_\Theta(x) =\begin{bmatrix}0 \newline 0 \newline 1 \newline 0 \newline\end{bmatrix}\]</p>
-
-<p>In which case our resulting class is the third one down, or \(h_\Theta(x)_3\), which represents the motorcycle.</p>
-
-<h2 id="toc_5">Cost Function</h2>
-
-<p>Let&#39;s first define a few variables that we will need to use:</p>
+<p>Two brilliant modules are available to automate the testing process:</p>
 
 <ul>
-<li>\(L\) = total number of layers in the network</li>
-<li>\(s_l\) = number of units (not counting bias unit) in layer \(l\)</li>
-<li>\(K\) = number of output units/classes</li>
+<li><code>unittest</code>: A generic testing framework.</li>
+<li><code>doctest</code>: A simpler module, designed for checking documentation, but excellent for writing unit tests as well.</li>
 </ul>
 
-<p>Recall that in neural networks, we may have many output nodes. We denote \(h_\Theta(x)^k\) as being a hypothesis that results in the \(k\)th output. Our cost function for neural networks is going to be a generalization of the one we used for logistic regression. Recall that the cost function for regularized logistic regression was:</p>
-
-<p>\[J(\theta) = - \frac{1}{m} \sum_{i=1}^m [ y^{(i)}\ \log (h_\theta (x^{(i)})) + (1 - y^{(i)})\ \log (1 - h_\theta(x^{(i)}))] + \frac{\lambda}{2m}\sum_{j=1}^n \theta_j^2\]</p>
-
-<p>For neural networks, it is going to be slightly more complicated:</p>
-
-<p>\[\begin{gather*} J(\Theta) = - \frac{1}{m} \sum_{i=1}^m \sum_{k=1}^K \left[y^{(i)}_k \log ((h_\Theta (x^{(i)}))_k) + (1 - y^{(i)}_k)\log (1 - (h_\Theta(x^{(i)}))_k)\right] + \\\frac{\lambda}{2m}\sum_{l=1}^{L-1} \sum_{i=1}^{s_l} \sum_{j=1}^{s_{l+1}} ( \Theta_{j,i}^{(l)})^2\end{gather*}\]</p>
-
-<p>We have added a few nested summations to account for our multiple output nodes. In the first part of the equation, before the square brackets, we have an additional nested summation that loops through the number of output nodes.</p>
-
-<p>In the regularization part, after the square brackets, we must account for multiple \(\Theta\) matrices. The number of columns in our current theta matrix is equal to the number of nodes in our current layer (including the bias unit). The number of rows in our current \(\Theta\) matrix is equal to the number of nodes in the next layer (excluding the bias unit). As before with logistic regression, we square every term.</p>
-
-<p>Note:</p>
-
-<ul>
-<li>the double sum simply adds up the logistic regression costs calculated for each cell in the output layer</li>
-<li>the triple sum simply adds up the squares of all the individual \(\Theta\)s in the entire network.</li>
-<li>the \(i\) in the triple sum does not refer to training example \(i\)</li>
-</ul>
-
-<h2 id="toc_6">Backpropagation Algorithm</h2>
-
-<p><code>Backpropagation</code> is neural-network terminology for minimizing cost function, similar to <code>gradient descent</code> in logistic and linear regression. Our goal is to realize:</p>
-
-<p>\[\min_\Theta J(\Theta)\]</p>
-
-<p>That is, we want to minimize cost function \(J\) using an optimal set of parameters in \(\Theta\). The algorithm to minimize the cost function is as follows:</p>
-
-<p><strong>Backpropagation algorithm</strong>:</p>
-
-<ol>
-<li>Training set \(\{(x^{(1)},y^{(1)}),...,(x^{(m)},y^{(m)})\}\)</li>
-<li>Set \(\Delta_{ij}^{(l)}=0\) (for all \(l,i,j\))</li>
-<li>For \(i=1\) to \(m\)
-
-<ul>
-<li>Set \(a^{(1)}=x^{(i)}\)</li>
-<li>Perform forward propagation to compute \(a^{(l)}\) for \(l=2,3,...,L\)</li>
-<li>Using \(y^{(i)}\), compute \(\delta^{(L)}=a^{(L)}-y^{(i)}\)</li>
-<li>Compute \(\delta^{(L-1)},...,\delta^{(2)}\)</li>
-<li>\(\Delta^{(l)}_{ij}:=\Delta^{(l)}_{ij} +a_{ij}\delta_i^{(l+1)}\)</li>
-</ul></li>
-<li>\(D_{ij}^{(l)}=\frac{1}{m}\Delta_{ij}^{(l)}+\lambda\Theta_{ij}^{(l)}\) if \(j\ne0\)</li>
-<li>\(D_{ij}^{(l)}=\frac{1}{m}\Delta_{ij}^{(l)}\) if \(j=0\)</li>
-</ol>
-
-<h2 id="toc_7">Gradient Checking</h2>
-
-<p>Gradient checking will assure that our backpropagation works as intended. We can approximate the derivative of our cost function with:<br/>
-\[\dfrac{\partial}{\partial\Theta}J(\Theta) \approx \dfrac{J(\Theta + \epsilon) - J(\Theta - \epsilon)}{2\epsilon}\]</p>
-
-<p>With multiple theta matrices, we can approximate the derivative with respect to \(Θ_j\) as follows:<br/>
-\[\dfrac{\partial}{\partial\Theta_j}J(\Theta) \approx \dfrac{J(\Theta_1, \dots, \Theta_j + \epsilon, \dots, \Theta_n) - J(\Theta_1, \dots, \Theta_j - \epsilon, \dots, \Theta_n)}{2\epsilon}\]</p>
-
-<p>A small value for \(\epsilon\) such as \(\epsilon=10^{-4}\), guarantees that the math works out properly. If the value for \(\epsilon\) is too small, we can end up with numerical problems.</p>
-
-<p>Once we compute grad by numerical method, we can check that grads are approximate to grads calculated by calculus. We don&#39;t use the method to compute grads, because it is very slow.</p>
-
-<h2 id="toc_8">Putting it Together</h2>
-
-<p><strong>Training a Neural Network</strong>:</p>
-
-<ul>
-<li>Randomly initialize the weights</li>
-<li>Implement forward propagation</li>
-<li>Implement the cost function</li>
-<li>Implement backpropagation to compute partial derivatives</li>
-<li>Use gradient checking to confirm that your backpropagation works. Then disable gradient checking.</li>
-<li>Use gradient descent or a built-in optimization function to minimize the cost function with the weights in theta.</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/6/30</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html'>机器学习</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="14987114340830.html">
-                
-                  <h1>Machine Learning (4): Overfitting and normalization</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<ul>
-<li>
-<a href="#toc_0">The problem of Overfitting</a>
-</li>
-<li>
-<a href="#toc_1">Regularized Linear Regression</a>
-<ul>
-<li>
-<a href="#toc_2">Normal Equation</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_3">Regularized Logistic Regression</a>
-</li>
-</ul>
-
-
-<h2 id="toc_0">The problem of Overfitting</h2>
-
-<p><strong>Underfitting</strong>, or <strong>high bias</strong>, is when the form of our hypothesis function \(h\) maps poorly to the trend of the data. It is usually caused by a function that is too simple or uses too few features. </p>
-
-<p><strong>Overfitting</strong>, or <strong>high variance</strong>, is caused by a hypothesis function that fits the available data but does not generalize well to predict new data. It is usually caused by a complicated function that creates a lot of unnecessary curves and angles unrelated to the data.</p>
-
-<p>There are two main options to address the issue of overfitting:</p>
-
-<ol>
-<li><p><strong><em>Reduce the number of features</em></strong>:<br/>
-Manually select which features to keep.<br/>
-(Use a model selection algorithm).</p></li>
-<li><p><strong><em>Regularization</em></strong><br/>
-Keep all the features, but reduce the magnitude of parameters \(\theta_j\). Regularization works well when we have a lot of slightly useful features.</p></li>
-</ol>
-
-<p><img src="media/14985711297859/14987109337751.png" alt="sd"/></p>
-
-<p>The figure above shows the Underfitting, Normal, Overfitting.</p>
-
-<h2 id="toc_1">Regularized Linear Regression</h2>
-
-<p>We regularize all of theta parameters in a single summation as:</p>
-
-<p>\[J(\theta)= \dfrac{1}{2m}[ \sum_{i=1}^m (h_\theta(x^{(i)}) - y^{(i)})^2 + \lambda\ \sum_{j=1}^n \theta_j^2]\]</p>
-
-<p>where the \(\lambda\), or lambda, is the <strong>regularization parameter</strong>. It determines how much the costs of our theta parameters are inflated.  If \(\lambda\) is chosen to be too large, it may smooth out the function too much and cause underfitting. </p>
-
-<p><strong>Note that you should not regularize the parameter \(\theta_0\)</strong>.</p>
-
-<p>The corresponding gradient descent is</p>
-
-<p>\[\begin{align*} &amp; \text{Repeat}\ \lbrace \newline &amp; \ \ \ \ \theta_0 := \theta_0 - \alpha\ \frac{1}{m}\ \sum_{i=1}^m (h_\theta(x^{(i)}) - y^{(i)})x_0^{(i)} \newline &amp; \ \ \ \ \theta_j := \theta_j - \alpha\ \left[ \left( \frac{1}{m}\ \sum_{i=1}^m (h_\theta(x^{(i)}) - y^{(i)})x_j^{(i)} \right) + \frac{\lambda}{m}\theta_j \right] &amp;\ \ \ \ \ \ \ \ \ \ j \in \lbrace 1,2...n\rbrace\newline &amp; \rbrace \end{align*}\]</p>
-
-<p>With some manipulation our update rule can also be represented as:<br/>
-\[\theta_j := \theta_j(1 - \alpha\frac{\lambda}{m}) - \alpha\frac{1}{m}\sum_{i=1}^m(h_\theta(x^{(i)}) - y^{(i)})x_j^{(i)}\]</p>
-
-<h3 id="toc_2">Normal Equation</h3>
-
-<p>To add in regularization, the equation is the same as our original, except that we add another term inside the parentheses:</p>
-
-<p>\[\begin{align*}&amp; \theta = \left( X^TX + \lambda \cdot L \right)^{-1} X^Ty \newline&amp; \text{where}\ \ L = \begin{bmatrix} 0 &amp; &amp; &amp; &amp; \newline &amp; 1 &amp; &amp; &amp; \newline &amp; &amp; 1 &amp; &amp; \newline &amp; &amp; &amp; \ddots &amp; \newline &amp; &amp; &amp; &amp; 1 \newline\end{bmatrix}\end{align*}\]</p>
-
-<p>Recall that if \(m &lt; n\), then \(XTX\) is non-invertible. However, when we add the term \(\lambda L\), then \(XTX + \lambda L\) becomes invertible.</p>
-
-<h2 id="toc_3">Regularized Logistic Regression</h2>
-
-<p>We regularize all of \(\theta\) parameters in a single summation as:</p>
-
-<p>\[ J(\theta) = -\dfrac{1}{m} \sum_{i=1}^m[ y ^{(i)}\log(h_\theta(x^{(i)}))+(1-y^{(i)}) \log(1-h_\theta(x^{(i)}))]+ \frac{\lambda}{2m} \sum_{j=1}^n \theta_j^2\]</p>
-
-<p>The corresponding gradient descent is<br/>
-\[\theta_j:=\theta_j-\frac{\alpha}{m}\Sigma^m_{i=1}(h_\theta(x^{(i)})-y^{(i)})x^{(i)}_j+\frac{\alpha\lambda}{m}\theta_j\]</p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/6/29</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html'>机器学习</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="14987012023353.html">
-                
-                  <h1>口语</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<ol>
-<li>发音 native</li>
-<li>流畅度</li>
-<li>地道的语料</li>
-</ol>
-
-<p>方法</p>
-
-<ol>
-<li>逐句跟读   <strong>不看原文</strong></li>
-<li>影子跟读</li>
-<li>全文复数  用到关键词句</li>
-</ol>
-
-<p>每天2个小时，1个小时跟读，1个小时背诵和跟读</p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/6/29</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='English.html'>English</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="14985711297859.html">
-                
-                  <h1>Machine Learning (3): Classification</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<ul>
-<li>
-<a href="#toc_0">Binary Classification</a>
-<ul>
-<li>
-<a href="#toc_1">Examples</a>
-</li>
-<li>
-<a href="#toc_2">Hypothesis Representation</a>
-</li>
-<li>
-<a href="#toc_3">Decision boundary</a>
-</li>
-<li>
-<a href="#toc_4">Cost Function</a>
-</li>
-<li>
-<a href="#toc_5">Gradient Descent</a>
-</li>
-<li>
-<a href="#toc_6">Advanced Optimization</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_7">Multiclass classification</a>
-<ul>
-<li>
-<a href="#toc_8">Example</a>
-</li>
-<li>
-<a href="#toc_9">Method</a>
-</li>
-</ul>
-</li>
-</ul>
-
-
-<p>The classification problem is just like the regression problem, except that the values y we now want to predict take on only a small number of discrete values.</p>
-
-<h2 id="toc_0">Binary Classification</h2>
-
-<p><strong>Binary classification problem</strong> : \(y\) can take on only two values, 0 and 1.</p>
-
-<h3 id="toc_1">Examples</h3>
-
-<ul>
-<li>Email: Spam/Not Spam?</li>
-<li>Online Transaction: Fraudulent(Yes/NO)?</li>
-<li>Tumor: Malignant/ Benign?</li>
-</ul>
-
-<p>Given \(x(i)\), the corresponding \(y(i)\) is also called the <strong>label</strong> for the training example.</p>
-
-<h3 id="toc_2">Hypothesis Representation</h3>
-
-<p>It doesn&#39;t make sense for \(h_\theta(x)\) to take values larger than 1 or smaller than0, when we know that \( y\in \{0,1\}\). To fix this, let&#39;s change the form for our hypotheses \(h_\theta(x)\) to satisfy \(0\leq_\theta(x)\leq 1\). This is accomplished by plugging \(\theta^Tx\) into the Logistic Function.</p>
-
-<p><strong>Logistic Function</strong>:<br/>
-also called sigmoid (/&#39;sɪgmɔɪd/) function<br/>
-   \[\begin{align*}&amp; h_\theta (x) = g ( \theta^T x ) \newline \newline&amp; z = \theta^T x \newline&amp; g(z) = \dfrac{1}{1 + e^{-z}}\end{align*}\]</p>
-
-<ol>
-<li><p>The sigmoid function g(z), maps any real number to the (0, 1) interval, making it useful for transforming an arbitrary-valued function into a function better suited for classification.</p></li>
-<li><p>\(h_\theta(x)\) gives us the probability that our output is 1. Probability that prediction is 0 is just the complement of probability that it is 1:</p></li>
-</ol>
-
-<p>\[\begin{align*}&amp; h_\theta(x) = P(y=1 | x ; \theta) = 1 - P(y=0 | x ; \theta) \newline&amp; P(y = 0 | x;\theta) + P(y = 1 | x ; \theta) = 1\end{align*}\]</p>
-
-<h3 id="toc_3">Decision boundary</h3>
-
-<p>The <strong>decision boundary</strong> is the line that separates the area where y = 0 and where y = 1. It is defined by hypothesis function.</p>
-
-<h3 id="toc_4">Cost Function</h3>
-
-<p>We cannot use the same cost function that we use for linear regression because the Logistic Function will cause the output to be wary, causing many local optima.</p>
-
-<p>Instead, our cost function for logistic regression looks like:</p>
-
-<p>\[\begin{align*}&amp; J(\theta) = \dfrac{1}{m} \sum_{i=1}^m \mathrm{Cost}(h_\theta(x^{(i)}),y^{(i)}) \newline &amp; \mathrm{Cost}(h_\theta(x),y) = -\log(h_\theta(x)) \; &amp; \text{if y = 1} \newline &amp; \mathrm{Cost}(h_\theta(x),y) = -\log(1-h_\theta(x)) \; &amp; \text{if y = 0}\end{align*}\]</p>
-
-<p>Cost function&#39;s two conditional cases can be compressed into one case:<br/>
-\[Cost(h_\theta(x),y)= -y \log(h_\theta(x))-(1-y) \log(1-h_\theta(x))\]</p>
-
-<p>The entire cost function can be written as follows:</p>
-
-<p>\[ J(\theta) = -\dfrac{1}{m} \sum_{i=1}^m[ y ^{(i)}\log(h_\theta(x^{(i)}))+(1-y^{(i)}) \log(1-h_\theta(x^{(i)}))]\]</p>
-
-<p>A vectorized implementation is:<br/>
-\[h=g(X\theta)\]<br/>
-\[J(\theta)=\frac{1}{m}(-y^T\log(h)-(1-y)^T\log(1-h))\]</p>
-
-<p>And the gradient of the cost is a vector of the same length as \(\theta\) where the \(j^{th}\) element is defined as follows:</p>
-
-<p>\[\frac{\partial J(\theta)}{\partial \theta_j}=\frac{1}{m}\Sigma_{i=1}^m(h_\theta(x^{(i)})-y^{(i)})x^{(i)}_j\]</p>
-
-<p>A vectorized implementation is:<br/>
-\[\frac{\partial J(\theta)}{\partial \theta_j}=\frac{1}{m}(h-y)^TX\]</p>
-
-<h3 id="toc_5">Gradient Descent</h3>
-
-<p>Repeat until {</p>
-
-<p>\[\theta_j:=\theta_j-\frac{\alpha}{m}\Sigma^m_{i=1}(h_\theta(x^{(i)})-y^{(i)})x^{(i)}_j\]<br/>
-}</p>
-
-<p>A vectorized implementation is:</p>
-
-<p>\[\theta:=\theta-\frac{\alpha}{m}X^T(g(X\theta)-y)\]</p>
-
-<h3 id="toc_6">Advanced Optimization</h3>
-
-<p>There are more sophisticated, faster ways to optimize \(\theta\) that can be used instead of gradient descent:</p>
-
-<ul>
-<li>Conjugate gradient</li>
-<li>BFGS</li>
-<li>L-BFGS</li>
-</ul>
-
-<p>You should not write these algorithms yourself, but use the libraries provided by Octave and Matlab instead.</p>
-
-<h2 id="toc_7">Multiclass classification</h2>
-
-<h3 id="toc_8">Example</h3>
-
-<ul>
-<li>Email foldering/tagging: Work, friends, family, hobby</li>
-<li>Medical diagrams: Not ill, Cold, Flu</li>
-<li>Weather: Sunny, Cloudy, Rain, Snow</li>
-</ul>
-
-<h3 id="toc_9">Method</h3>
-
-<p>Since \(y = \{0,1...n\}\), we divide our problem into \(n+1\) (+1 because the index starts at 0) binary classification problems; in each one, we predict the probability that &#39;y&#39; is a member of one of our classes.</p>
-
-<p>We are basically choosing one class and then lumping all the others into a single second class. We do this repeatedly, applying binary logistic regression to each case, and then use the hypothesis that returned the highest value as our prediction.</p>
-
-<p>\[\begin{align*}&amp; y \in \lbrace0, 1 ... n\rbrace \newline&amp; h_\theta^{(0)}(x) = P(y = 0 | x ; \theta) \newline&amp; h_\theta^{(1)}(x) = P(y = 1 | x ; \theta) \newline&amp; \cdots \newline&amp; h_\theta^{(n)}(x) = P(y = n | x ; \theta) \newline&amp; \mathrm{prediction} = \max_i( h_\theta ^{(i)}(x) )\newline\end{align*}\]</p>
-
-<p><strong>To summarize</strong>:</p>
-
-<ul>
-<li>Train a logistic regression classifier hθ(x) for each class to predict the probability that  \(y = i\).</li>
-<li>To make a prediction on a new x, pick the class that maximizes \(h_\theta(x)\).</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/6/27</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html'>机器学习</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="14985240916710.html">
-                
-                  <h1>Python科学计算三维可视化</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h2 id="toc_0">第三方库</h2>
-
-<ul>
-<li>VTK</li>
-<li>Mayavi</li>
-<li>Numpy</li>
-<li>PyQt4</li>
-<li>Traites</li>
-<li>TraitsUI</li>
-</ul>
-
-<h2 id="toc_1">实例</h2>
-
-<ul>
-<li>流体数据的标量可视化、矢量可视化实例</li>
-<li>三维扫描数据（）可视化实例</li>
-<li>三维地球场景可视化实例</li>
-<li>曲线UI交互控制可视化实例</li>
-</ul>
-
-<h2 id="toc_2">TVTK</h2>
-
-<p>The tvtk module (<a href="http://docs.enthought.com/mayavi/tvtk/README.html">TVTK</a>) provides a traits enabled version of VTK. TVTK objects wrap around VTK objects but additionally support traits, and provide a convenient Pythonic API. TVTK is implemented mostly in pure Python (except for a small extension module). Here is a list of current features.</p>
-
-<h3 id="toc_3">Installation</h3>
-
-<ol>
-<li>安装 <a href="https://www.continuum.io/downloads">Anaconda</a></li>
-<li>在终端依次运行：</li>
-</ol>
-
-<pre><code>    conda install vtk
-    conda install numpy
-    conda install traits
-    conda install mayavi
-    conda install PyQt
+<h3 id="toc_4">doctest</h3>
+
+<p>The <code>testmod</code> function checks both the module docstring and function docstring.</p>
+
+<p>E.g.</p>
+
+<pre><code class="language-python">def square(x):
+    &quot;&quot;&quot;
+    squares a number and returns the result.
+    &gt;&gt;&gt; square(2)
+    4
+    &gt;&gt;&gt; square(3)
+    9
+    &quot;&quot;&quot;
+    return x*x
+
+if __name__ == &quot;__main__&quot;:
+    import doctest, doc_test_example
+    doctest.testmod(doc_test_example, verbose=True)
 </code></pre>
 
-<h3 id="toc_4">创建一个三维对象</h3>
+<p>Run the example. To get some more output, just add <code>-v</code>(for verbose)</p>
 
-<p>tvtk.CubeSource()<br/>
-s = tvtk.CubeSource()</p>
+<pre><code class="language-bash">$ python doc_test_example.py -v
+Trying:
+    square(2)
+Expecting:
+    4
+ok
+Trying:
+    square(3)
+Expecting:
+    9
+ok
+1 items had no tests:
+    doc_test_example
+1 items passed all tests:
+   2 tests in doc_test_example.square
+2 tests in 2 items.
+2 passed and 0 failed.
+Test passed.
+</code></pre>
 
-<h3 id="toc_5">traits</h3>
+<h3 id="toc_5">unittest</h3>
 
-<p>traits 就是TVTK的属性</p>
+<p><code>unittest</code> which is based on the popular test framework <code>JUnit</code>, is more flexible and powerful. It allows to write very large and thorough test sets in a more structured manner.</p>
+
+<p><strong>注意： 测试方法应该以test为前缀命名</strong></p>
+
+<p>E.g.</p>
+
+<pre><code class="language-python">import unittest
+import doc_test_example as my_math
+
+class ProductTestCase(unittest.TestCase):
+
+    def testIntegers(self):
+        for x in xrange(-10,10):
+            p = my_math.square(x)
+            self.failUnless(p == x*x, &#39;Integer multiplication failed&#39;)
+
+    def testFloats(self):
+        for x in xrange(-10,10):
+            x = x/10.0
+            p = my_math.square(x)
+            self.failUnless(p == x*x, &#39;Float multiplication failed&#39;)
+
+
+if __name__ == &quot;__main__&quot;:
+    unittest.main()
+</code></pre>
+
+<p>Another example to test <code>dijkstra&#39;s algorithm</code> see <a href="http://larryim.cc/dijkstra_algorithm.html">here</a></p>
+
+<p>Methods such as <code>failUnless</code> check a condition to determine whether the given test succeeds or fails. </p>
+
+<p>The <code>unittest</code> module distinguishes between <code>errors</code>, where an exception is raised, and <code>failures</code>, which result from calls to <code>failUnless</code> and the like. </p>
+
+<h2 id="toc_6">Source Code Checking</h2>
+
+<p><a href="https://www.pylint.org">Pylint</a> and PyChecker are good tools for checking Python source code, looking for mistakes.</p>
+
+<p><code>Pylint</code> is a tool that checks for errors in Python code, tries to enforce a coding standard and looks for code smells. It can also look for certain type errors, it can recommend suggestions about how particular blocks can be refactored and can offer you details about the code’s complexity.</p>
+
+<p><code>Pylint</code> can be integrated with <code>Pycharm</code>, see <a href="https://pylint.readthedocs.io/en/latest/user_guide/ide-integration.html#pylint-in-pycharm">detail</a>.</p>
+
+<h3 id="toc_7">Resources</h3>
+
+<ul>
+<li><a href="https://www.ibm.com/developerworks/cn/linux/l-cn-pylint/index.html">如何使用 Pylint 来规范 Python 代码风格</a></li>
+<li><a href="https://www.python.org/dev/peps/pep-0008/">Style Guide for Python Code</a></li>
+</ul>
+
+<h2 id="toc_8">Profile</h2>
+
+<p><strong>When in doubt, use brute force</strong></p>
+
+<p>The standard library includes nice profiler modules called <code>profile</code> and <code>cProfile</code>.  </p>
+
+<p>A <code>profile</code> is a set of statistics that describes how often and for how long various parts of the program executed. </p>
+
+<pre><code class="language-python">&gt;&gt;&gt; import profile
+&gt;&gt;&gt; from my_math import square
+&gt;&gt;&gt; profile.run(&#39;square(1, 2)&#39;)
+</code></pre>
+
+<p>Another way to use <code>profile</code> in command-line:</p>
+
+<pre><code class="language-bash">$ python -m profile prof1py
+</code></pre>
+
+<p>The standard library also contains a module called <code>timeit</code>, which is a simple way of timing small snippets of Python code.</p>
 
                         
                       </div>
@@ -772,10 +291,951 @@ s = tvtk.CubeSource()</p>
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2017/6/27</span>
+                    <span class="date">2017/7/14</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Python%E7%A7%91%E5%AD%A6%E8%AE%A1%E7%AE%97%E4%B8%89%E7%BB%B4%E5%8F%AF%E8%A7%86%E5%8C%96.html'>Python科学计算三维可视化</a></span>
+          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="anaconda.html">
+                
+                  <h1>Anaconda</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p><a href="https://www.continuum.io/why-anaconda">Anaconda </a>(/ˌænə&#39;kɑndə/)是一个用于科学计算的python发行版，支持各种系统，提供了包管理和环境管理的功能。Anaconda 利用<code>conda</code>来进行package和environment的管理。</p>
+
+<h2 id="toc_0">Conda的包管理</h2>
+
+<p><code>Conda</code>既是一个工具，也是一个可执行命令，其核心功能是包管理和环境管理。包管理与<code>pip</code>使用类似。</p>
+
+<pre><code class="language-python"># 安装package
+conda install package
+
+# 查看已经安装的packages
+conda list
+
+# 查找package信息
+conda search package
+
+# 更新package
+conda update -n python27 package
+
+# 删除package
+conda remove -n python27 package
+</code></pre>
+
+<h2 id="toc_1">Conda的环境管理</h2>
+
+<pre><code class="language-bash"># 创建一个名为python27的环境，指定Python版本是2.7
+conda create --name python27 python=2.7
+
+# 安装好后，使用activate激活某个环境
+source activate python27 # 激活后，会发现terminal输入的地方多了python27的字样，实际上，此时系统做的事情就是把默认环境从PATH中去除，再把2.7对应的命令加入PATH
+
+# 如果想返回python 2.7环境，运行
+source deactivate python27 # for Linux &amp; Mac
+
+# 删除一个已有的环境
+conda remove --name python27 --all
+</code></pre>
+
+<h2 id="toc_2">使用Pycharm</h2>
+
+<p>在<code>Pycharm</code>配置里选用<code>Anaconda</code>的<code>python</code>编译器所在位置即可。</p>
+
+<h2 id="toc_3">Jupyter NoteBook</h2>
+
+<p><code>Anaconda</code>默认自带<code>Jupyter Notebook</code>，可以很方便的运行Python代码、记录笔记。</p>
+
+<h3 id="toc_4">主题</h3>
+
+<p><code>Jupyter Notebook</code>的<a href="%5Bhttps://github.com/dunovank/jupyter-themes">主题</a>可以调整，首先安装主题:</p>
+
+<pre><code>pip install --upgrade jupyterthemes
+</code></pre>
+
+<p>选择好主题后，切换主题:</p>
+
+<pre><code>jt -t theme_name -T -N
+</code></pre>
+
+<h2 id="toc_5">Bash Kernel</h2>
+
+<p><code>Bash kernel</code>(<a href="https://github.com/takluyver/bash_kernel">Project Link</a>)可以通过pip安装</p>
+
+<pre><code>pip install bash_kernel
+python -m bash_kernel.install
+</code></pre>
+
+<h2 id="toc_6">Resources</h2>
+
+<p><a href="https://conda.io/docs/_downloads/conda-cheatsheet.pdf">Conda Cheat Sheet</a></p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/7/13</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="database_and_SQL.html">
+                
+                  <h1>MySQL (2): Database and SQL</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<ul>
+<li>
+<a href="#toc_0">Database</a>
+</li>
+<li>
+<a href="#toc_1">Primary key</a>
+</li>
+<li>
+<a href="#toc_2">SQL</a>
+</li>
+<li>
+<a href="#toc_3">Concepts</a>
+</li>
+<li>
+<a href="#toc_4">SQL syntax rules</a>
+</li>
+<li>
+<a href="#toc_5">List of SQL commands</a>
+</li>
+<li>
+<a href="#toc_6">SQL Operators</a>
+<ul>
+<li>
+<a href="#toc_7">Comparison Operators</a>
+</li>
+<li>
+<a href="#toc_8">Logical Operators</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_9">Functions</a>
+</li>
+<li>
+<a href="#toc_10">Subqueires</a>
+</li>
+<li>
+<a href="#toc_11">Joining Tables</a>
+<ul>
+<li>
+<a href="#toc_12">Types of Join</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_13">Backing up and Restoring</a>
+<ul>
+<li>
+<a href="#toc_14">Backing up</a>
+</li>
+<li>
+<a href="#toc_15">Restoring</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_16">Resources</a>
+</li>
+</ul>
+
+
+<h2 id="toc_0">Database</h2>
+
+<p>A <code>Database</code> is a collection of data that is organized in a manner that facilitates ease of access, as well as efficient management and updating.</p>
+
+<p>A database is made up of <code>tables</code> that store relevant information. Databases often contain multiple tables, each designed for a specific purpose.</p>
+
+<h2 id="toc_1">Primary key</h2>
+
+<p>A <code>primary key</code>(主键) is a field in the table that uniquely identifies the table records.</p>
+
+<p>The primary key&#39;s main features:</p>
+
+<ul>
+<li>It must contain a unique value for each row.</li>
+<li>It cannot contain <code>Null</code> values.</li>
+<li>Tables are limited to <strong>One</strong> primary key each.</li>
+<li>The primary key&#39;s value must be different for each row.</li>
+</ul>
+
+<h2 id="toc_2">SQL</h2>
+
+<p><strong>SQL</strong>, <code>Structured Query Language</code>(结构化查询语言), is a programming language designed to manage data stored in <code>relational databases</code>(关系数据库). </p>
+
+<p><strong>SQL</strong> operates through simple, declarative statements. This keeps data accurate and secure, and helps maintain the integrity of databases, regardless of size.</p>
+
+<p><strong>SQL</strong> is used to access and manipulate a <strong>database</strong>, <code>MySQL</code> is a program that understands <strong>SQL</strong>.</p>
+
+<p><strong>SQL</strong> can:</p>
+
+<ul>
+<li>Insert, update, or delete records in a database.</li>
+<li>Create new databases, tables, stored procedures, views.</li>
+<li>retrieve data from a database, etc.</li>
+</ul>
+
+<p><strong>Common Data types</strong> in SQL are <code>Integer</code>, <code>Text</code>, <code>Date</code>, and <code>Real</code>.</p>
+
+<p>A <code>Null</code> value in SQL represents missing or unknown data.</p>
+
+<h2 id="toc_3">Concepts</h2>
+
+<ul>
+<li>A <code>relational database</code> is a database that organizes information into one or more tables. </li>
+<li>A <code>table</code> is a collection of data organized into rows and columns. Tables are sometimes referred to as<code>relations</code>.</li>
+<li>A <code>column</code> is a set of data values of a particular type. </li>
+<li>A <code>row</code> is a single record in a table. </li>
+<li>A <code>statement</code> is text that the database recognizes as a valid command. Statements always end in a semi-colon ; The structure of SQL statements vary. The number of lines used do not matter. A statement can be written all on one line, or split up across multiple lines if it makes it easier to read.</li>
+<li><code>Clauses</code> in a <code>statement</code> perform specific tasks in SQL. By convention, clauses are written in capital letters. Clauses can also be referred to as <code>commands</code>.</li>
+<li>A <code>fully qualified name</code> puts the table name prior to the column name, by separating them a dot. E.g. customer.City. It is especially useful with multiple tables that may share the same column names.</li>
+</ul>
+
+<h2 id="toc_4">SQL syntax rules</h2>
+
+<ol>
+<li><p>SQL allows to run multiple queries or commands at the same time. We should end each SQL statement with a <strong>semicolon</strong> to indicate that the statement is complete and ready to be interpreted.</p></li>
+<li><p>SQL is case <strong>insensitive</strong>. </p></li>
+<li><p>A single SQL statement can be placed on one or more text lines. In addition, multiple SQL statements can be combined on a single text line. </p></li>
+</ol>
+
+<p><strong>NOTE</strong></p>
+
+<h2 id="toc_5">List of SQL commands</h2>
+
+<p>Glossary of commonly used SQL commands:</p>
+
+<p><code>ALTER TABLE</code></p>
+
+<pre><code class="language-SQL">ALTER TABLE table_name ADD column datatype;
+</code></pre>
+
+<p><strong>ALTER TABLE</strong> lets you add columns to a table in a database.</p>
+
+<p><code>AND</code></p>
+
+<pre><code class="language-SQL">SELECT column_name(s)
+FROM table_name
+WHERE column_1 = value_1
+AND column_2 = value_2;
+</code></pre>
+
+<p>AND is an operator that combines two conditions. Both conditions must be true for the row to be included in the result set.</p>
+
+<p><code>AS</code></p>
+
+<pre><code class="language-SQL">SELECT column_name AS &#39;Alias&#39;
+FROM table_name;
+</code></pre>
+
+<p><strong>AS</strong> is a keyword in SQL that allows you to rename a column or table using an alias.</p>
+
+<p><code>AVG</code></p>
+
+<pre><code class="language-SQL">SELECT AVG(column_name)
+FROM table_name;
+</code></pre>
+
+<p><strong>AVG()</strong> is an aggregate function that returns the average value for a numeric column.</p>
+
+<p><code>BETWEEN</code></p>
+
+<pre><code class="language-SQL">SELECT column_name(s)
+FROM table_name
+WHERE column_name BETWEEN value_1 AND value_2;
+The BETWEEN operator is used to filter the result set within a certain range. The values can be numbers, text or dates.
+</code></pre>
+
+<p><code>COUNT</code></p>
+
+<pre><code class="language-SQL">SELECT COUNT(column_name)
+FROM table_name;
+</code></pre>
+
+<p><strong>COUNT()</strong> is a function that takes the name of a column as an argument and counts the number of rows where the column is not NULL.</p>
+
+<p><code>CREATE TABLE</code></p>
+
+<pre><code class="language-SQL">CREATE TABLE table_name (column_1 datatype, column_2 datatype, column_3 datatype);
+</code></pre>
+
+<p><strong>CREATE TABLE</strong> creates a new table in the database. It allows you to specify the name of the table and the name of each column in the table.</p>
+
+<p><code>DELETE</code></p>
+
+<pre><code class="language-SQL">DELETE FROM table_name WHERE some_column = some_value;
+</code></pre>
+
+<p><strong>DELETE</strong> statements are used to remove rows from a table.</p>
+
+<p><code>GROUP BY</code></p>
+
+<pre><code class="language-SQL">SELECT COUNT(*)
+FROM table_name
+GROUP BY column_name;
+</code></pre>
+
+<p><strong>GROUP BY</strong> is a clause in SQL that is only used with aggregate functions. It is used in collaboration with the SELECT statement to arrange identical data into groups.</p>
+
+<p><code>INNER JOIN</code></p>
+
+<pre><code class="language-SQL">SELECT column_name(s) FROM table_1
+JOIN table_2
+ON table_1.column_name = table_2.column_name;
+</code></pre>
+
+<p>An <strong>inner join</strong> will combine rows from different tables if the join condition is true.</p>
+
+<p><code>INSERT</code></p>
+
+<pre><code class="language-SQL">INSERT INTO table_name (column_1, column_2, column_3) VALUES (value_1, &#39;value_2&#39;, value_3);
+</code></pre>
+
+<p><strong>INSERT</strong> statements are used to add a new row to a table.</p>
+
+<p><code>LIKE</code></p>
+
+<pre><code class="language-SQL">SELECT column_name(s)
+FROM table_name
+WHERE column_name LIKE pattern;
+</code></pre>
+
+<p><strong>LIKE</strong> is a special operator used with the WHERE clause to search for a specific pattern in a column. SQL <code>pattern</code> matching enables you to use <code>_</code> to match any single character and <code>%</code> to match an arbitrary number of characters (including zero characters).</p>
+
+<p><code>LIMIT</code></p>
+
+<pre><code class="language-SQL">SELECT column_name(s)
+FROM table_name
+LIMIT number;
+</code></pre>
+
+<p><strong>LIMIT</strong> is a clause that lets you specify the maximum number of rows the result set will have.</p>
+
+<p><code>MAX</code></p>
+
+<pre><code class="language-SQL">SELECT MAX(column_name)
+FROM table_name;
+</code></pre>
+
+<p><strong>MAX()</strong> is a function that takes the name of a column as an argument and returns the largest value in that column.</p>
+
+<p><code>MIN</code></p>
+
+<pre><code class="language-SQL">SELECT MIN(column_name)
+FROM table_name;
+MIN() is a function that takes the name of a column as an argument and returns the smallest value in that column.
+</code></pre>
+
+<p><code>OR</code></p>
+
+<pre><code class="language-SQL">SELECT column_name
+FROM table_name
+WHERE column_name = value_1
+OR column_name = value_2;
+</code></pre>
+
+<p><strong>OR</strong> is an operator that filters the result set to only include rows where either condition is true.</p>
+
+<p><code>ORDER BY</code></p>
+
+<pre><code class="language-SQL">SELECT column_name
+FROM table_name
+ORDER BY column_name1, column_name2 ASC|DESC;
+</code></pre>
+
+<p><strong>ORDER BY</strong> is a clause that indicates you want to sort the result set by a particular column either alphabetically or numerically.</p>
+
+<p><code>OUTER JOIN</code></p>
+
+<pre><code class="language-SQL">SELECT column_name(s) FROM table_1
+LEFT JOIN table_2
+ON table_1.column_name = table_2.column_name;
+</code></pre>
+
+<p>An <strong>outer join</strong> will combine rows from different tables even if the the join condition is not met. Every row in the left table is returned in the result set, and if the join condition is not met, then NULL values are used to fill in the columns from the right table.</p>
+
+<p><code>ROUND</code></p>
+
+<pre><code class="language-SQL">SELECT ROUND(column_name, integer)
+FROM table_name;
+</code></pre>
+
+<p><strong>ROUND()</strong> is a function that takes a column name and an integer as an argument. It rounds the values in the column to the number of decimal places specified by the integer.</p>
+
+<p><code>SELECT</code></p>
+
+<pre><code class="language-SQL">SELECT column_name FROM table_name;
+</code></pre>
+
+<p><strong>SELECT</strong> statements are used to fetch data from a database. Every query will begin with SELECT.</p>
+
+<p><code>SELECT DISTINCT</code></p>
+
+<pre><code class="language-SQL">SELECT DISTINCT column_name FROM table_name;
+</code></pre>
+
+<p><strong>SELECT DISTINCT</strong> specifies that the statement is going to be a query that returns unique values in the specified column(s).</p>
+
+<p><code>SUM</code></p>
+
+<pre><code class="language-SQL">SELECT SUM(column_name)
+FROM table_name;
+</code></pre>
+
+<p><strong>SUM()</strong> is a function that takes the name of a column as an argument and returns the sum of all the values in that column.</p>
+
+<p><code>UPDATE</code></p>
+
+<pre><code class="language-SQL">UPDATE table_name
+SET some_column = some_value
+WHERE some_column = some_value;
+</code></pre>
+
+<p><strong>UPDATE</strong> statments allow you to edit rows in a table.</p>
+
+<p><code>WHERE</code></p>
+
+<pre><code class="language-SQL">SELECT column_name(s)
+FROM table_name
+WHERE column_name operator value;
+</code></pre>
+
+<p><strong>WHERE</strong> is a clause that indicates you want to filter the result set to include only rows where the following condition is true. eg. <code>SELECT * FROM customers WHERE ID=7</code>;</p>
+
+<h2 id="toc_6">SQL Operators</h2>
+
+<p>Comparison Operators and Logical Operators are used in the <code>WHERE</code> clause to filter the data to be selected.</p>
+
+<h3 id="toc_7">Comparison Operators</h3>
+
+<p>The following comparison operators can be used in the <code>WHERE</code> clause:</p>
+
+<table>
+<thead>
+<tr>
+<th>Operator</th>
+<th>Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>=</td>
+<td>Equal</td>
+</tr>
+<tr>
+<td>!=</td>
+<td>Not equal</td>
+</tr>
+<tr>
+<td>&gt;</td>
+<td>Greater than</td>
+</tr>
+<tr>
+<td>&lt;</td>
+<td>Less than </td>
+</tr>
+<tr>
+<td>&gt;=</td>
+<td>Greater than or equal</td>
+</tr>
+<tr>
+<td>&lt;=</td>
+<td>Less than or equal</td>
+</tr>
+<tr>
+<td>BETWEEN</td>
+<td>Between an inclusive range</td>
+</tr>
+</tbody>
+</table>
+
+<p><code>BETWEEN</code> Operator:</p>
+
+<pre><code class="language-SQL">SELECT * FROM customers
+WHERE ID BETWEEN 3 AND 7;
+</code></pre>
+
+<h3 id="toc_8">Logical Operators</h3>
+
+<p>Logical operators can be used to combine two Boolean values and return a result of <strong>true</strong>, <strong>false</strong>, or <strong>null</strong>.</p>
+
+<p>The following operators exists in SQL:</p>
+
+<table>
+<thead>
+<tr>
+<th>Operator</th>
+<th>Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>AND</td>
+<td>TRUE if both expressions are TRUE</td>
+</tr>
+<tr>
+<td>OR</td>
+<td>TRUE if either expression is TRUE</td>
+</tr>
+<tr>
+<td>IN</td>
+<td>TRUE if the operand is equal to one of a list of expressions</td>
+</tr>
+<tr>
+<td>NOT</td>
+<td>Returns TRUE if expression is not TRUE</td>
+</tr>
+</tbody>
+</table>
+
+<p>The <code>IN</code> Operator:</p>
+
+<pre><code class="language-SQL">SELECT * FROM customers 
+WHERE City IN (&#39;New York&#39;, &#39;Los Angeles&#39;, &#39;Chicago&#39;);
+</code></pre>
+
+<p>The <code>NOT IN</code> Operator:</p>
+
+<pre><code class="language-SQL">SELECT * FROM customers 
+WHERE City NOT IN (&#39;New York&#39;, &#39;Los Angeles&#39;, &#39;Chicago&#39;);
+</code></pre>
+
+<h2 id="toc_9">Functions</h2>
+
+<p>The <code>UPPER</code> function converts all letters in the specified string to uppercase. <br/>
+The <code>LOWER</code> function converts the string to lowercase.</p>
+
+<p>The following SQL query selects all <em>Lastnames</em> as uppercase:</p>
+
+<pre><code class="language-SQL">SELECT FirstName, UPPER(LastName) AS LastName 
+FROM employees;
+</code></pre>
+
+<p>The <code>SQRT</code> function returns the square root of given value in the argument.<br/>
+Similarly, the <code>AVG</code> function returns the average value of a numeric column.<br/>
+The <code>SUM</code> function is used to calculate the sum for a column&#39;s values.</p>
+
+<p>The <code>MIN</code> function is used to return the minimum value of an expression in a <code>SELECT</code> statement.</p>
+
+<p>E.g. you might wish to know the minimum salary among the employees:</p>
+
+<pre><code class="language-SQL">SELECT MIN(salary) AS Salary FROM employees;
+</code></pre>
+
+<h2 id="toc_10">Subqueires</h2>
+
+<p>A subquery is a query within another query. Enclose the subquery in parentheses. </p>
+
+<p>E.g.</p>
+
+<pre><code class="language-SQL">SELECT FirstName, Salary FROM employees 
+WHERE  Salary &gt; (SELECT AVG(Salary) FROM employees) 
+ORDER BY Salary DESC;
+</code></pre>
+
+<h2 id="toc_11">Joining Tables</h2>
+
+<p>SQL can combine data from multiple tables. In SQL, &#39;joining tables&#39; means combining data from two or more tables. A table join creates a <code>temporary table</code> showing the data from the joined tables.</p>
+
+<p>To join tables, specify them as a comma-separated list in the <code>FROM</code> clause:</p>
+
+<pre><code class="language-SQL">SELECT customers.ID, customers.Name, orders.Name, orders.Amount FROM customers, orders
+WHERE customers.ID = orders.Customer_ID
+ORDER BY customers.ID
+</code></pre>
+
+<h3 id="toc_12">Types of Join</h3>
+
+<p>The following are types of <code>JOIN</code> that can be used in SQL:</p>
+
+<ul>
+<li><code>INNER JOIN</code>: returns rows when there is a match between the tables.</li>
+<li><code>LEFT JOIN</code>: returns rows from the left table, even if there are no matches in the right table.</li>
+</ul>
+
+<pre><code class="language-SQL">SELECT table1.column1, table2.column2...
+FROM table1 LEFT JOIN table2
+ON table1.column_name = table2.column_name;
+</code></pre>
+
+<p>If no match is found for a particular row,<code>NULL</code>is returned.</p>
+
+<ul>
+<li><code>RIGHT JOIN</code>
+Just like <code>LEFT JOIN</code></li>
+</ul>
+
+<h2 id="toc_13">Backing up and Restoring</h2>
+
+<h3 id="toc_14">Backing up</h3>
+
+<pre><code class="language-bash">mysqldump -u user -p database_name &gt; /data/backups/all-dbs.sql
+</code></pre>
+
+<h3 id="toc_15">Restoring</h3>
+
+<pre><code class="language-bash">mysql -u user -p &lt; all-dbs.sql
+</code></pre>
+
+<h2 id="toc_16">Resources</h2>
+
+<ol>
+<li><p><a href="https://www.codecademy.com/courses/learn-sql/lessons/manipulation/exercises/relational-databases?action=lesson_resume">Codecademy</a></p></li>
+<li><p><a href="https://www.sololearn.com/Play/SQL">Sololearn</a></p></li>
+<li><p><a href="http://www.w3school.com.cn/sql/index.asp">W3school</a></p></li>
+<li><p><a href="https://lagunita.stanford.edu/courses/DB/2014/SelfPaced/about">Standford MOOC</a> </p></li>
+</ol>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/7/13</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E5%BA%93.html'>数据库</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="priority_queue.html">
+                
+                  <h1>Priority queue</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p><strong>A priority queue</strong>(优先队列) is an ADP which likes a regular queue or stack , but where additionally each element has a <code>priority</code> associated with it. In a priority queue, an element with high priority is served before an element with low priority. If two elements have the same priority, they are served according to their order in the queue.</p>
+
+<p>A priority queue must at least support the following operations:</p>
+
+<ul>
+<li><code>insert_with_priority</code>: add an element to the queue with an associated priority.</li>
+<li><code>pull_highest_priority_element</code>: remove the element from the queue that has the highest priority, and return it.</li>
+<li><code>peek</code> :return the highest-priority element but does not modify the queue</li>
+</ul>
+
+<h2 id="toc_0">Naive Implementation</h2>
+
+<p>There are a variety of simple, usually inefficient, ways to implement a priority queue. They provide an analogy to help one understand what a priority queue is. For instance, one can keep all the elements in an unsorted list. Whenever the highest-priority element is requested, search through all elements for the one with the highest priority. (In big O notation: \(O(1)\) insertion time, \(O(n)\) pull time due to search.)</p>
+
+<h2 id="toc_1">Heap Implementation</h2>
+
+<pre><code class="language-python">class PriorityQueue:
+    def __init__(self):
+        self.heapArray = [(0, 0)]
+        self.currentSize = 0
+
+    def buildHeap(self, alist):
+        &quot;&quot;&quot;
+        &quot;&quot;&quot;从一个包含元素的列表创建新堆&quot;&quot;&quot;
+        :param alist: a list
+        &quot;&quot;&quot;
+        self.currentSize = len(alist)
+        self.heapArray = [(0, 0)]
+        for i in alist:
+            self.heapArray.append(i)
+        i = len(alist) // 2
+        while (i &gt; 0):
+            self.percDown(i)
+            i = i - 1
+
+    def percDown(self, i):
+        &quot;&quot;&quot;
+        Percolate the ith node down the tree
+        &quot;&quot;&quot;
+        while (i * 2) &lt;= self.currentSize:
+            mc = self.minChild(i)
+            if self.heapArray[i][0] &gt; self.heapArray[mc][0]:
+                tmp = self.heapArray[i]
+                self.heapArray[i] = self.heapArray[mc]
+                self.heapArray[mc] = tmp
+            i = mc
+
+    def minChild(self, i):
+        &quot;&quot;&quot;
+        Find the smallest child
+        &quot;&quot;&quot;
+        if i * 2 &gt; self.currentSize:
+            return -1
+        else:
+            if i * 2 + 1 &gt; self.currentSize:
+                return i * 2
+            else:
+                if self.heapArray[i * 2][0] &lt; self.heapArray[i * 2 + 1][0]:
+                    return i * 2
+                else:
+                    return i * 2 + 1
+
+    def percUp(self, i):
+        &quot;&quot;&quot;
+        Percolate the ith node up the tree
+        &quot;&quot;&quot;
+        while i // 2 &gt; 0:
+            if self.heapArray[i][0] &lt; self.heapArray[i // 2][0]:
+                tmp = self.heapArray[i // 2]
+                self.heapArray[i // 2] = self.heapArray[i]
+                self.heapArray[i] = tmp
+            i = i // 2
+
+    def add(self, k):
+        self.heapArray.append(k)
+        self.currentSize = self.currentSize + 1
+        self.percUp(self.currentSize)
+
+    def delMin(self):
+        &quot;&quot;&quot;
+        delete the min-vertex of heap array, which always in the first position.
+        &quot;&quot;&quot;
+        retval = self.heapArray[1][1]
+        self.heapArray[1] = self.heapArray[self.currentSize]
+        self.currentSize = self.currentSize - 1
+        self.heapArray.pop()
+        self.percDown(1)
+        return retval
+
+    def isEmpty(self):
+        &quot;&quot;&quot;
+        return true if the heapArray is empty
+        &quot;&quot;&quot;
+        if self.currentSize == 0:
+            return True
+        else:
+            return False
+
+    def decreaseKey(self, val, amt):
+        &quot;&quot;&quot;
+        Decrease the key of the specific vertex (here, val)
+
+        First, find its position in the heapArray: myKey
+        Second, set its position to the right
+        &quot;&quot;&quot;
+        done = False
+        i = 1
+        myKey = 0
+        while not done and i &lt;= self.currentSize:
+            if self.heapArray[i][1] == val:
+                done = True
+                myKey = i
+            else:
+                i = i + 1
+        if myKey &gt; 0:
+            self.heapArray[myKey] = (amt, self.heapArray[myKey][1])
+            self.percUp(myKey)
+
+    def __contains__(self, vtx):
+        &quot;&quot;&quot;
+        Built-in Magic method
+        &quot;&quot;&quot;
+        for pair in self.heapArray:
+            if pair[1] == vtx:
+                return True
+        return False
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/7/12</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html'>Python数据结构与算法</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="heap.html">
+                
+                  <h1>Heap (1): Introduction and Implementation</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>A <strong>heap</strong> (堆)is a specialized tree-based data structure。 A <strong>heap</strong> can be classified as either a <strong>max heap</strong> or a <strong>min heap</strong>. </p>
+
+<ul>
+<li>In a <strong>max heap</strong>, the keys of parent nodes are always greater than or equal to those of the children and the highest key is in the root node. </li>
+<li>In a <strong>min heap</strong>, the keys of parent nodes are less than or equal to those of the children and the lowest key is in the root node.</li>
+</ul>
+
+<p><strong>Heap</strong> is one maximally efficient implementation of an abstract data type called a <strong>priority queue</strong> (see <a href="http://larryim.cc/priority_queue.html">here</a>), and in fact priority queues are often referred to as <strong>heaps</strong>, regardless of how they may be implemented. </p>
+
+<h2 id="toc_0">Implementation</h2>
+
+<p>Priority queues typically use a heap as backbone, giving \(O(\log n)\) performance for inserts and removals, and \(O(n \log n)\) to build initially.</p>
+
+<h2 id="toc_1">Binary Heap</h2>
+
+<p>A common implementation of a heap is the <strong>binary heap</strong>(二叉堆), in which the tree is a <strong>complete binary tree</strong>(完全二叉树). </p>
+
+<p>二叉堆的操作与实现</p>
+
+<ul>
+<li><code>BinaryHeap()</code>：创建一个新的、空的二叉堆对象</li>
+<li><code>insert(k)</code>：把新元素加入到堆中</li>
+<li><code>findMin()</code>：返回堆中的最小项，最小项仍保留在堆中</li>
+<li><code>delMin()</code>：返回堆中的最小项，同时从堆中删除</li>
+<li><code>isEmpty()</code>：返回堆是否为空</li>
+<li><code>size()</code>：返回堆中元素的个数</li>
+<li><code>buildHeap(list)</code>：从一个包含元素的列表创建新堆</li>
+</ul>
+
+<p>有两个关键的操作：<br/>
+1. <code>insert</code>方法。首先，为了满足“完全二叉树”的性质，新键值应该添加到列表的末尾。然而新键值简单地添加在列表末尾，显然无法满足堆次序。所以要通过比较父节点和新加入的元素的方法来重新满足堆次序。如果新加入的元素比父节点要小，可以与父节点互换位置；不断交换，直到到达树的顶端。下图所示一系列交换操作来使新加入元素“上浮”到正确的位置。</p>
+
+<p><img src="media/14973171257726/14974156268132.jpg" alt=""/></p>
+
+<p>2.<code>delMin</code>方法 移走根节点的元素后如何保持堆结构和堆次序: 首先，用最后一个节点来代替根节点, 移走最后一个节点保持了堆结构的性质。这么简单的替换，还是会破坏堆次序。第二步，将新节点“下沉”来恢复堆次序。下图所示的是一系列交换操作来使新节点“下沉”到正确的位置。</p>
+
+<p><img src="media/14973171257726/14974156980805.jpg" alt=""/></p>
+
+<pre><code class="language-python">class BinHeap(object):
+    &quot;&quot;&quot;
+    创建一个新的、空的二叉堆对象
+    &quot;&quot;&quot;
+    def __init__(self):
+        self.list = [0]
+        self.size = 0
+
+    def perc_up(self,i):
+        &quot;&quot;&quot;
+        Percolate the new node into proper position
+        &quot;&quot;&quot;
+        while i: 
+            if self.list[i] &lt; self.list[i//2]:
+                self.list[i], self.list[i//2] = self.list[i//2], self.list[i]
+            i = i//2
+    
+    def insert(self, item):
+        &quot;&quot;&quot;把新元素加入到堆中&quot;&quot;&quot;
+        self.list.append(item)
+        self.size += 1
+        self.perc_up(self.size)
+
+    def findMin(self):
+        &quot;&quot;&quot;返回堆中的最小项，最小项仍保留在堆中&quot;&quot;&quot;
+        return self.list[1]
+
+    def delMin(self):
+        &quot;&quot;&quot;返回堆中的最小项，同时从堆中删除&quot;&quot;&quot;
+        retval = self.list[1]
+        self.list[1] = self.list[-1]
+        self.size -=1
+        self.list.pop()
+        self.perc_down(1)
+
+        return retval
+
+
+    def perc_down(self, i):
+        &quot;&quot;&quot;
+        Percolate the root node  down the tree
+        &quot;&quot;&quot;
+        while i*2 &lt;= self.size:
+            if i*2+1 &gt; self.size:
+                self.list[i*2], self.list[i] = self.list[i], self.list[i*2]
+                i = i*2
+            else:
+                if self.list[i*2] &gt; self.list[i*2+1]:
+                    self.list[i*2+1], self.list[i] =  self.list[i], self.list[i*2+1]
+                    i = i*2+1
+                else:
+                    self.list[i*2], self.list[i] = self.list[i], self.list[i*2]
+                    i = i*2
+
+
+    def isEmpty(self):
+        &quot;&quot;&quot;返回堆是否为空&quot;&quot;&quot;
+        return self.size == 0
+
+    def __len__(self):
+        &quot;&quot;&quot;返回堆中元素的个数&quot;&quot;&quot;
+        return self.size
+
+    def buildHeap(self,alist):
+        &quot;&quot;&quot;从一个包含元素的列表创建新堆&quot;&quot;&quot;
+        self.size = len(alist)
+        self.list.extend(alist)
+        i = self.size//2
+        while i &gt;0:
+            self.perc_down(i)
+            i -= 1
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/7/12</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Tree.html'>Tree</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -867,6 +1327,8 @@ s = tvtk.CubeSource()</p>
             <a href="%E6%95%B0%E6%8D%AE%E5%BA%93.html"><strong>数据库</strong></a>
         
             <a href="Tensorflow.html"><strong>Tensorflow</strong></a>
+        
+            <a href="Data%20Science.html"><strong>Data Science</strong></a>
          
         </p>
 
@@ -883,31 +1345,31 @@ s = tvtk.CubeSource()</p>
 	      
 		      
 			      <li class="post">
-			        <a href="anomaly-detection.html">Machine Learning(9): Anomaly Detection</a>
+			        <a href="batch_normalization.html">Batch Normalization</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="virtualenv.html">Python `virtualenv` on mac</a>
+			        <a href="15046658203135.html">TensorFlow Q</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="convolutional-neural-networks.html">Convolutional Neural Networks</a>
+			        <a href="15046649572570.html">Pandas</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="15042359761425.html">Transfer Learning</a>
+			        <a href="15045390828524.html"></a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="15041905263785.html">cross-entropy</a>
+			        <a href="google-cloud-platform.html">Google Cloud Platform</a>
 			      </li>
 		     
 		  

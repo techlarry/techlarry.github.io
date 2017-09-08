@@ -110,6 +110,8 @@
             <li><a href="%E6%95%B0%E6%8D%AE%E5%BA%93.html">数据库</a></li>
         
             <li><a href="Tensorflow.html">Tensorflow</a></li>
+        
+            <li><a href="Data%20Science.html">Data Science</a></li>
          
 
       </ul>
@@ -132,521 +134,93 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="database_and_SQL.html">
+                <a class="clearlink" href="magic_method_item_access.html">
                 
-                  <h1>MySQL (2): Database and SQL</h1>
+                  <h1>Magic Methods: Item Access</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<ul>
-<li>
-<a href="#toc_0">Database</a>
-</li>
-<li>
-<a href="#toc_1">Primary key</a>
-</li>
-<li>
-<a href="#toc_2">SQL</a>
-</li>
-<li>
-<a href="#toc_3">Concepts</a>
-</li>
-<li>
-<a href="#toc_4">SQL syntax rules</a>
-</li>
-<li>
-<a href="#toc_5">List of SQL commands</a>
-</li>
-<li>
-<a href="#toc_6">SQL Operators</a>
-<ul>
-<li>
-<a href="#toc_7">Comparison Operators</a>
-</li>
-<li>
-<a href="#toc_8">Logical Operators</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_9">Functions</a>
-</li>
-<li>
-<a href="#toc_10">Subqueires</a>
-</li>
-<li>
-<a href="#toc_11">Joining Tables</a>
-<ul>
-<li>
-<a href="#toc_12">Types of Join</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_13">Backing up and Restoring</a>
-<ul>
-<li>
-<a href="#toc_14">Backing up</a>
-</li>
-<li>
-<a href="#toc_15">Restoring</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_16">Resources</a>
-</li>
-</ul>
+                        	<p>Useful magic methods allows you to create objects that behave like sequences or mappings.</p>
 
+<h2 id="toc_0">Sequence and Mapping Protocol</h2>
 
-<h2 id="toc_0">Database</h2>
-
-<p>A <code>Database</code> is a collection of data that is organized in a manner that facilitates ease of access, as well as efficient management and updating.</p>
-
-<p>A database is made up of <code>tables</code> that store relevant information. Databases often contain multiple tables, each designed for a specific purpose.</p>
-
-<h2 id="toc_1">Primary key</h2>
-
-<p>A <code>primary key</code>(主键) is a field in the table that uniquely identifies the table records.</p>
-
-<p>The primary key&#39;s main features:</p>
+<p><code>protocol</code> in Python usually describe the rules governing some form of behavior. The <code>protocol</code> states which methods you should implement and what those methods should do. So, to be a sequence means,  to follow the sequence protocol.</p>
 
 <ul>
-<li>It must contain a unique value for each row.</li>
-<li>It cannot contain <code>Null</code> values.</li>
-<li>Tables are limited to <strong>One</strong> primary key each.</li>
-<li>The primary key&#39;s value must be different for each row.</li>
+<li><code>__len__(self)</code>: This method should return the number of items contained in the collection. For a sequence, this would simply be the number of elements. For a mapping, it would be the number of key-value pairs. If <code>__len__</code> returns zero (and you don’t implement <code>__nonzero__</code>, which overrides this behavior), the object is treated as false in a Boolean context (as with empty lists, tuples, strings, and dictionaries).</li>
+<li><code>__getitem__(self, key)</code>: This should return the value corresponding to the given key. For a sequence, the key should be an integer from \(0\) to \(n–1\) (or, it could be negative, as noted later), where \(n\) is the length of the sequence. For a mapping, you could really have any kind of keys.</li>
+<li><code>__setitem__(self, key, value)</code>: This should store value in a manner associated with key, so it can later be retrieved with <code>__getitem__</code>. Of course, you define this method only for mutable objects.</li>
+<li><code>__delitem__(self, key)</code>: This is called when someone uses the <code>del</code> statement on a part of the object, and should delete the element associated with key. Again, only mutable objects (and not all of them—only those for which you want to let items be removed) should define this method.</li>
 </ul>
 
-<h2 id="toc_2">SQL</h2>
+<h2 id="toc_1">Example</h2>
 
-<p><strong>SQL</strong>, <code>Structured Query Language</code>(结构化查询语言), is a programming language designed to manage data stored in <code>relational databases</code>(关系数据库). </p>
+<pre><code class="language-python">def checkIndex(key):
+    &quot;&quot;&quot;
+    Is the given key an acceptable index?
+    To be acceptable, the key should be a non-negative integer. If it
+    is not an integer, a TypeError is raised; if it is negative, an
+    IndexError is raised (since the sequence is of infinite length).
+    &quot;&quot;&quot;
+    if not isinstance(key, int):
+        raise TypeError
+    if key &lt; 0:
+        raise IndexError
 
-<p><strong>SQL</strong> operates through simple, declarative statements. This keeps data accurate and secure, and helps maintain the integrity of databases, regardless of size.</p>
 
-<p><strong>SQL</strong> is used to access and manipulate a <strong>database</strong>, <code>MySQL</code> is a program that understands <strong>SQL</strong>.</p>
+class ArithmeticSequence:
+    def __init__(self, start=0, step=1):
+        &quot;&quot;&quot;
+        Initialize the arithmetic sequence.
+        start   - the first value in the sequence
+        step    - the difference between two adjacent values
+        changed - a dictionary of values that have been modified by the user
+        &quot;&quot;&quot;
+        self.start = start
+        self.step = step
+        self.changed = {}
 
-<p><strong>SQL</strong> can:</p>
+    def __getitem__(self, key):
+        &quot;&quot;&quot;
+        Get an item from the arithmetic sequence.
+        &quot;&quot;&quot;
+        checkIndex(key)
+        try:
+            return self.changed[key]
+        except KeyError:
+            return self.start + key*self.step
+    # Store the start value
+    # Store the step value
+    # No items have been modified
+    # Modified?
+    # otherwise...
+    # ...calculate the value
 
-<ul>
-<li>Insert, update, or delete records in a database.</li>
-<li>Create new databases, tables, stored procedures, views.</li>
-<li>retrieve data from a database, etc.</li>
-</ul>
+    def __setitem__(self, key, value):
+        &quot;&quot;&quot;
+        Change an item in the arithmetic sequence.
+        &quot;&quot;&quot;
+        checkIndex(key)
+        self.changed[key] = value                 # Store the changed value
 
-<p><strong>Common Data types</strong> in SQL are <code>Integer</code>, <code>Text</code>, <code>Date</code>, and <code>Real</code>.</p>
+    def __delitem__(self, key):
+        &quot;&quot;&quot;
+        Delete the key provided from sequence
+        &quot;&quot;&quot;
+        checkIndex(key)
+        del self.changed[key]
 
-<p>A <code>Null</code> value in SQL represents missing or unknown data.</p>
 
-<h2 id="toc_3">Concepts</h2>
 
-<ul>
-<li>A <code>relational database</code> is a database that organizes information into one or more tables. </li>
-<li>A <code>table</code> is a collection of data organized into rows and columns. Tables are sometimes referred to as<code>relations</code>.</li>
-<li>A <code>column</code> is a set of data values of a particular type. </li>
-<li>A <code>row</code> is a single record in a table. </li>
-<li>A <code>statement</code> is text that the database recognizes as a valid command. Statements always end in a semi-colon ; The structure of SQL statements vary. The number of lines used do not matter. A statement can be written all on one line, or split up across multiple lines if it makes it easier to read.</li>
-<li><code>Clauses</code> in a <code>statement</code> perform specific tasks in SQL. By convention, clauses are written in capital letters. Clauses can also be referred to as <code>commands</code>.</li>
-<li>A <code>fully qualified name</code> puts the table name prior to the column name, by separating them a dot. E.g. customer.City. It is especially useful with multiple tables that may share the same column names.</li>
-</ul>
-
-<h2 id="toc_4">SQL syntax rules</h2>
-
-<ol>
-<li><p>SQL allows to run multiple queries or commands at the same time. We should end each SQL statement with a <strong>semicolon</strong> to indicate that the statement is complete and ready to be interpreted.</p></li>
-<li><p>SQL is case <strong>insensitive</strong>. </p></li>
-<li><p>A single SQL statement can be placed on one or more text lines. In addition, multiple SQL statements can be combined on a single text line. </p></li>
-</ol>
-
-<p><strong>NOTE</strong></p>
-
-<h2 id="toc_5">List of SQL commands</h2>
-
-<p>Glossary of commonly used SQL commands:</p>
-
-<p><code>ALTER TABLE</code></p>
-
-<pre><code class="language-SQL">ALTER TABLE table_name ADD column datatype;
+if __name__ == &quot;__main__&quot;:
+    s = ArithmeticSequence(1, 2)
+    print(s[4])
+    s[4]=3
+    print(s[4])
+    del s[4]
+    print(s[4])
 </code></pre>
-
-<p><strong>ALTER TABLE</strong> lets you add columns to a table in a database.</p>
-
-<p><code>AND</code></p>
-
-<pre><code class="language-SQL">SELECT column_name(s)
-FROM table_name
-WHERE column_1 = value_1
-AND column_2 = value_2;
-</code></pre>
-
-<p>AND is an operator that combines two conditions. Both conditions must be true for the row to be included in the result set.</p>
-
-<p><code>AS</code></p>
-
-<pre><code class="language-SQL">SELECT column_name AS &#39;Alias&#39;
-FROM table_name;
-</code></pre>
-
-<p><strong>AS</strong> is a keyword in SQL that allows you to rename a column or table using an alias.</p>
-
-<p><code>AVG</code></p>
-
-<pre><code class="language-SQL">SELECT AVG(column_name)
-FROM table_name;
-</code></pre>
-
-<p><strong>AVG()</strong> is an aggregate function that returns the average value for a numeric column.</p>
-
-<p><code>BETWEEN</code></p>
-
-<pre><code class="language-SQL">SELECT column_name(s)
-FROM table_name
-WHERE column_name BETWEEN value_1 AND value_2;
-The BETWEEN operator is used to filter the result set within a certain range. The values can be numbers, text or dates.
-</code></pre>
-
-<p><code>COUNT</code></p>
-
-<pre><code class="language-SQL">SELECT COUNT(column_name)
-FROM table_name;
-</code></pre>
-
-<p><strong>COUNT()</strong> is a function that takes the name of a column as an argument and counts the number of rows where the column is not NULL.</p>
-
-<p><code>CREATE TABLE</code></p>
-
-<pre><code class="language-SQL">CREATE TABLE table_name (column_1 datatype, column_2 datatype, column_3 datatype);
-</code></pre>
-
-<p><strong>CREATE TABLE</strong> creates a new table in the database. It allows you to specify the name of the table and the name of each column in the table.</p>
-
-<p><code>DELETE</code></p>
-
-<pre><code class="language-SQL">DELETE FROM table_name WHERE some_column = some_value;
-</code></pre>
-
-<p><strong>DELETE</strong> statements are used to remove rows from a table.</p>
-
-<p><code>GROUP BY</code></p>
-
-<pre><code class="language-SQL">SELECT COUNT(*)
-FROM table_name
-GROUP BY column_name;
-</code></pre>
-
-<p><strong>GROUP BY</strong> is a clause in SQL that is only used with aggregate functions. It is used in collaboration with the SELECT statement to arrange identical data into groups.</p>
-
-<p><code>INNER JOIN</code></p>
-
-<pre><code class="language-SQL">SELECT column_name(s) FROM table_1
-JOIN table_2
-ON table_1.column_name = table_2.column_name;
-</code></pre>
-
-<p>An <strong>inner join</strong> will combine rows from different tables if the join condition is true.</p>
-
-<p><code>INSERT</code></p>
-
-<pre><code class="language-SQL">INSERT INTO table_name (column_1, column_2, column_3) VALUES (value_1, &#39;value_2&#39;, value_3);
-</code></pre>
-
-<p><strong>INSERT</strong> statements are used to add a new row to a table.</p>
-
-<p><code>LIKE</code></p>
-
-<pre><code class="language-SQL">SELECT column_name(s)
-FROM table_name
-WHERE column_name LIKE pattern;
-</code></pre>
-
-<p><strong>LIKE</strong> is a special operator used with the WHERE clause to search for a specific pattern in a column. SQL <code>pattern</code> matching enables you to use <code>_</code> to match any single character and <code>%</code> to match an arbitrary number of characters (including zero characters).</p>
-
-<p><code>LIMIT</code></p>
-
-<pre><code class="language-SQL">SELECT column_name(s)
-FROM table_name
-LIMIT number;
-</code></pre>
-
-<p><strong>LIMIT</strong> is a clause that lets you specify the maximum number of rows the result set will have.</p>
-
-<p><code>MAX</code></p>
-
-<pre><code class="language-SQL">SELECT MAX(column_name)
-FROM table_name;
-</code></pre>
-
-<p><strong>MAX()</strong> is a function that takes the name of a column as an argument and returns the largest value in that column.</p>
-
-<p><code>MIN</code></p>
-
-<pre><code class="language-SQL">SELECT MIN(column_name)
-FROM table_name;
-MIN() is a function that takes the name of a column as an argument and returns the smallest value in that column.
-</code></pre>
-
-<p><code>OR</code></p>
-
-<pre><code class="language-SQL">SELECT column_name
-FROM table_name
-WHERE column_name = value_1
-OR column_name = value_2;
-</code></pre>
-
-<p><strong>OR</strong> is an operator that filters the result set to only include rows where either condition is true.</p>
-
-<p><code>ORDER BY</code></p>
-
-<pre><code class="language-SQL">SELECT column_name
-FROM table_name
-ORDER BY column_name1, column_name2 ASC|DESC;
-</code></pre>
-
-<p><strong>ORDER BY</strong> is a clause that indicates you want to sort the result set by a particular column either alphabetically or numerically.</p>
-
-<p><code>OUTER JOIN</code></p>
-
-<pre><code class="language-SQL">SELECT column_name(s) FROM table_1
-LEFT JOIN table_2
-ON table_1.column_name = table_2.column_name;
-</code></pre>
-
-<p>An <strong>outer join</strong> will combine rows from different tables even if the the join condition is not met. Every row in the left table is returned in the result set, and if the join condition is not met, then NULL values are used to fill in the columns from the right table.</p>
-
-<p><code>ROUND</code></p>
-
-<pre><code class="language-SQL">SELECT ROUND(column_name, integer)
-FROM table_name;
-</code></pre>
-
-<p><strong>ROUND()</strong> is a function that takes a column name and an integer as an argument. It rounds the values in the column to the number of decimal places specified by the integer.</p>
-
-<p><code>SELECT</code></p>
-
-<pre><code class="language-SQL">SELECT column_name FROM table_name;
-</code></pre>
-
-<p><strong>SELECT</strong> statements are used to fetch data from a database. Every query will begin with SELECT.</p>
-
-<p><code>SELECT DISTINCT</code></p>
-
-<pre><code class="language-SQL">SELECT DISTINCT column_name FROM table_name;
-</code></pre>
-
-<p><strong>SELECT DISTINCT</strong> specifies that the statement is going to be a query that returns unique values in the specified column(s).</p>
-
-<p><code>SUM</code></p>
-
-<pre><code class="language-SQL">SELECT SUM(column_name)
-FROM table_name;
-</code></pre>
-
-<p><strong>SUM()</strong> is a function that takes the name of a column as an argument and returns the sum of all the values in that column.</p>
-
-<p><code>UPDATE</code></p>
-
-<pre><code class="language-SQL">UPDATE table_name
-SET some_column = some_value
-WHERE some_column = some_value;
-</code></pre>
-
-<p><strong>UPDATE</strong> statments allow you to edit rows in a table.</p>
-
-<p><code>WHERE</code></p>
-
-<pre><code class="language-SQL">SELECT column_name(s)
-FROM table_name
-WHERE column_name operator value;
-</code></pre>
-
-<p><strong>WHERE</strong> is a clause that indicates you want to filter the result set to include only rows where the following condition is true. eg. <code>SELECT * FROM customers WHERE ID=7</code>;</p>
-
-<h2 id="toc_6">SQL Operators</h2>
-
-<p>Comparison Operators and Logical Operators are used in the <code>WHERE</code> clause to filter the data to be selected.</p>
-
-<h3 id="toc_7">Comparison Operators</h3>
-
-<p>The following comparison operators can be used in the <code>WHERE</code> clause:</p>
-
-<table>
-<thead>
-<tr>
-<th>Operator</th>
-<th>Description</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td>=</td>
-<td>Equal</td>
-</tr>
-<tr>
-<td>!=</td>
-<td>Not equal</td>
-</tr>
-<tr>
-<td>&gt;</td>
-<td>Greater than</td>
-</tr>
-<tr>
-<td>&lt;</td>
-<td>Less than </td>
-</tr>
-<tr>
-<td>&gt;=</td>
-<td>Greater than or equal</td>
-</tr>
-<tr>
-<td>&lt;=</td>
-<td>Less than or equal</td>
-</tr>
-<tr>
-<td>BETWEEN</td>
-<td>Between an inclusive range</td>
-</tr>
-</tbody>
-</table>
-
-<p><code>BETWEEN</code> Operator:</p>
-
-<pre><code class="language-SQL">SELECT * FROM customers
-WHERE ID BETWEEN 3 AND 7;
-</code></pre>
-
-<h3 id="toc_8">Logical Operators</h3>
-
-<p>Logical operators can be used to combine two Boolean values and return a result of <strong>true</strong>, <strong>false</strong>, or <strong>null</strong>.</p>
-
-<p>The following operators exists in SQL:</p>
-
-<table>
-<thead>
-<tr>
-<th>Operator</th>
-<th>Description</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td>AND</td>
-<td>TRUE if both expressions are TRUE</td>
-</tr>
-<tr>
-<td>OR</td>
-<td>TRUE if either expression is TRUE</td>
-</tr>
-<tr>
-<td>IN</td>
-<td>TRUE if the operand is equal to one of a list of expressions</td>
-</tr>
-<tr>
-<td>NOT</td>
-<td>Returns TRUE if expression is not TRUE</td>
-</tr>
-</tbody>
-</table>
-
-<p>The <code>IN</code> Operator:</p>
-
-<pre><code class="language-SQL">SELECT * FROM customers 
-WHERE City IN (&#39;New York&#39;, &#39;Los Angeles&#39;, &#39;Chicago&#39;);
-</code></pre>
-
-<p>The <code>NOT IN</code> Operator:</p>
-
-<pre><code class="language-SQL">SELECT * FROM customers 
-WHERE City NOT IN (&#39;New York&#39;, &#39;Los Angeles&#39;, &#39;Chicago&#39;);
-</code></pre>
-
-<h2 id="toc_9">Functions</h2>
-
-<p>The <code>UPPER</code> function converts all letters in the specified string to uppercase. <br/>
-The <code>LOWER</code> function converts the string to lowercase.</p>
-
-<p>The following SQL query selects all <em>Lastnames</em> as uppercase:</p>
-
-<pre><code class="language-SQL">SELECT FirstName, UPPER(LastName) AS LastName 
-FROM employees;
-</code></pre>
-
-<p>The <code>SQRT</code> function returns the square root of given value in the argument.<br/>
-Similarly, the <code>AVG</code> function returns the average value of a numeric column.<br/>
-The <code>SUM</code> function is used to calculate the sum for a column&#39;s values.</p>
-
-<p>The <code>MIN</code> function is used to return the minimum value of an expression in a <code>SELECT</code> statement.</p>
-
-<p>E.g. you might wish to know the minimum salary among the employees:</p>
-
-<pre><code class="language-SQL">SELECT MIN(salary) AS Salary FROM employees;
-</code></pre>
-
-<h2 id="toc_10">Subqueires</h2>
-
-<p>A subquery is a query within another query. Enclose the subquery in parentheses. </p>
-
-<p>E.g.</p>
-
-<pre><code class="language-SQL">SELECT FirstName, Salary FROM employees 
-WHERE  Salary &gt; (SELECT AVG(Salary) FROM employees) 
-ORDER BY Salary DESC;
-</code></pre>
-
-<h2 id="toc_11">Joining Tables</h2>
-
-<p>SQL can combine data from multiple tables. In SQL, &#39;joining tables&#39; means combining data from two or more tables. A table join creates a <code>temporary table</code> showing the data from the joined tables.</p>
-
-<p>To join tables, specify them as a comma-separated list in the <code>FROM</code> clause:</p>
-
-<pre><code class="language-SQL">SELECT customers.ID, customers.Name, orders.Name, orders.Amount FROM customers, orders
-WHERE customers.ID = orders.Customer_ID
-ORDER BY customers.ID
-</code></pre>
-
-<h3 id="toc_12">Types of Join</h3>
-
-<p>The following are types of <code>JOIN</code> that can be used in SQL:</p>
-
-<ul>
-<li><code>INNER JOIN</code>: returns rows when there is a match between the tables.</li>
-<li><code>LEFT JOIN</code>: returns rows from the left table, even if there are no matches in the right table.</li>
-</ul>
-
-<pre><code class="language-SQL">SELECT table1.column1, table2.column2...
-FROM table1 LEFT JOIN table2
-ON table1.column_name = table2.column_name;
-</code></pre>
-
-<p>If no match is found for a particular row,<code>NULL</code>is returned.</p>
-
-<ul>
-<li><code>RIGHT JOIN</code>
-Just like <code>LEFT JOIN</code></li>
-</ul>
-
-<h2 id="toc_13">Backing up and Restoring</h2>
-
-<h3 id="toc_14">Backing up</h3>
-
-<pre><code class="language-bash">mysqldump -u user -p database_name &gt; /data/backups/all-dbs.sql
-</code></pre>
-
-<h3 id="toc_15">Restoring</h3>
-
-<pre><code class="language-bash">mysql -u user -p &lt; all-dbs.sql
-</code></pre>
-
-<h2 id="toc_16">Resources</h2>
-
-<ol>
-<li><p><a href="https://www.codecademy.com/courses/learn-sql/lessons/manipulation/exercises/relational-databases?action=lesson_resume">Codecademy</a></p></li>
-<li><p><a href="https://www.sololearn.com/Play/SQL">Sololearn</a></p></li>
-<li><p><a href="http://www.w3school.com.cn/sql/index.asp">W3school</a></p></li>
-<li><p><a href="https://lagunita.stanford.edu/courses/DB/2014/SelfPaced/about">Standford MOOC</a> </p></li>
-</ol>
 
                         
                       </div>
@@ -655,7 +229,132 @@ Just like <code>LEFT JOIN</code></li>
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2017/7/13</span>
+                    <span class="date">2017/7/18</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15002564768282.html">
+                
+                  <h1>Database System Concept (1): Introduction</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>A <code>database-management system</code> (DBMS，数据库管理系统) is a collection of interrelated data and a set of programs to access those data.  The collection of data, usually referred to as the <code>database</code>. The primary goal of a DBMS is to provide a way to store and retrieve database information that is both <code>convenient</code> and <code>efficient</code>.</p>
+
+<h2 id="toc_0">Purpose of Database System</h2>
+
+<p>Keeping organizational information in a file-processing system has a number of major disadvantages:</p>
+
+<ul>
+<li>Data redundancy and inconsistency
+
+<ul>
+<li>Users of one program may be unaware of potentially useful data held by other programs.</li>
+</ul></li>
+<li>Difficulty in accessing data
+
+<ul>
+<li>Programs are written to satisfy particular functions.<br/></li>
+<li>Any new requirement needs a new program.</li>
+</ul></li>
+<li>Data isolation
+
+<ul>
+<li>Same data is held by different programs </li>
+<li>Each program maintains its own set of data</li>
+</ul></li>
+<li>Integrity problems</li>
+<li>Atomicity problems</li>
+<li>Concurrent-access anomalies</li>
+<li>Security problems</li>
+</ul>
+
+<h2 id="toc_1">View of data</h2>
+
+<h3 id="toc_2">Data Abstraction</h3>
+
+<p>The need for efficiency has led designers to use complex data structures to represent data in the database.</p>
+
+<ul>
+<li><code>Physical level</code>. The lowest level of abstraction <em>how</em> the data are actually stored</li>
+<li><code>Logical level</code>. The next-higher level of abstraction describes <em>what</em> data are stored in the database, and what relationships exist among those data. Each record is described by a type definition, and the interrelationship of these record types is defined as well.</li>
+<li><code>View level</code>. The highest level of abstraction describes only part of the entire data. The system may provide many views for the same database. Computer users see a set of application programs that hide details of the data types.</li>
+</ul>
+
+<p><img src="media/15002564768282/Screen%20Shot%202017-07-17%20at%2010.08.36%20AM.png" alt="The three views of data abstraction"/></p>
+
+<h3 id="toc_3">Instances and Schemas</h3>
+
+<ul>
+<li><code>Instance</code>: the collection of information stored in the database at a particular moment</li>
+<li><code>schema</code>: the overall design of the database.</li>
+</ul>
+
+<p>Database systems have several schemas, partitioned according to the levels of abstraction. The <code>Physical schema</code> describes the database design at the physical level, while the <code>logical schema</code> describes the database design at the logical level.</p>
+
+<p>Applications programs are said to exhibit <code>physical data independence</code> if they do not depend on the <code>physical schema</code>, and thus need not be rewritten if the physical schema changes.</p>
+
+<h3 id="toc_4">Data Models</h3>
+
+<p><code>Data Model</code>(数据库): a collection of conceptual tools for describing data, data relationships, data semantics, and consistency constraints.</p>
+
+<ul>
+<li><code>Relational Model</code>(关系数据库)</li>
+<li><code>Entity-Relationship Model</code> (实体对象模型)</li>
+<li><code>Object-Based Data Model</code> (基于对象的数据模型)</li>
+<li><code>Semistructed Data Model</code></li>
+</ul>
+
+<h2 id="toc_5">Database Language</h2>
+
+<p>A database system provides a <code>data-definition language</code>(DDL) to specify the database schema and a <code>data-manipulation language</code>(DML) to express database queries and updates.</p>
+
+<h2 id="toc_6">Data Storage and Querying</h2>
+
+<p>A database system is partitioned into modules that deal with each of the responsibilities of the overall system. The functional components of a database system can be broadly divided into the <code>storage manager</code> and the <code>query processor</code></p>
+
+<p>The <code>storage manager</code> is the component of a database system that provides the interface between the low-level data stored in the database and the application programs and queries submitted to the system. it is responsible for storing, retrieving, and updating data in the database. The storage manager translates the various DML statement into low-level file-system commands.</p>
+
+<p>The <code>query processor</code> includes:</p>
+
+<ul>
+<li><code>DDL interpreter</code>, which interprets DDL statements and records the definitions in the data dictionary.</li>
+<li><code>DML compiler</code>, which translates DML statements in a query language into an evaluation plan consisting of low-level instructions that the query evaluation engine understands.</li>
+<li><code>Query evaluation engine</code>, which executes low-level instructions generated by the DML compiler.</li>
+</ul>
+
+<h2 id="toc_7">Transaction management</h2>
+
+<p><code>Transaction management</code> ensures that the database remains in a consistent (correct) state despite system failures. The transaction manager ensures that concurrent transaction executions proceed without conflicting.</p>
+
+<h2 id="toc_8">Database Architecture</h2>
+
+<p>The architecture of a database system is greatly influenced by the underlying computer system on which the database system runs. Database system can be centralized, or client-server, where one server machine executes work on behalf of multiple client machines.</p>
+
+<p><img src="media/15002564768282/Screen%20Shot%202017-07-17%20at%2010.55.20%20AM.png" alt="System Structure"/></p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/7/17</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E5%BA%93.html'>数据库</a></span>
@@ -672,139 +371,60 @@ Just like <code>LEFT JOIN</code></li>
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="priority_queue.html">
+                <a class="clearlink" href="recursion_iteration.html">
                 
-                  <h1>Priority queue</h1>
+                  <h1>Recursion Iteration Performace</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<p><strong>A priority queue</strong>(优先队列) is an ADP which likes a regular queue or stack , but where additionally each element has a <code>priority</code> associated with it. In a priority queue, an element with high priority is served before an element with low priority. If two elements have the same priority, they are served according to their order in the queue.</p>
+                        	<p>The performance of <code>Recursion</code> v.s. <code>Iteration</code> depends on the language being used.</p>
 
-<p>A priority queue must at least support the following operations:</p>
+<p>In Java, C, and Python, <code>recursion</code> is fairly expensive compared to <code>iteration</code> (in general) because it requires the allocation of a new <code>stack frame</code>. In some C compilers, one can use a compiler flag to eliminate this overhead, which transforms certain types of recursion (actually, certain types of tail calls) into jumps instead of function calls.</p>
 
-<ul>
-<li><code>insert_with_priority</code>: add an element to the queue with an associated priority.</li>
-<li><code>pull_highest_priority_element</code>: remove the element from the queue that has the highest priority, and return it.</li>
-<li><code>peek</code> :return the highest-priority element but does not modify the queue</li>
-</ul>
+<h2 id="toc_0">Stack Frame</h2>
 
-<h2 id="toc_0">Naive Implementation</h2>
+<p>When a function is called in Python, a <code>stack frame</code> is allocated to handle the local variables of the function. When the function returns, the return value is left on the top of the stack for the calling function to access.</p>
 
-<p>There are a variety of simple, usually inefficient, ways to implement a priority queue. They provide an analogy to help one understand what a priority queue is. For instance, one can keep all the elements in an unsorted list. Whenever the highest-priority element is requested, search through all elements for the one with the highest priority. (In big O notation: \(O(1)\) insertion time, \(O(n)\) pull time due to search.)</p>
+<p>The stack frame provide a <code>scope</code> for the variables used by the function. Even though we are calling the same function over and over, each call creates a new scope for the variables that are local to the function.</p>
 
-<h2 id="toc_1">Heap Implementation</h2>
+<h3 id="toc_1">Get Stack Frame</h3>
 
-<pre><code class="language-python">class PriorityQueue:
-    def __init__(self):
-        self.heapArray = [(0, 0)]
-        self.currentSize = 0
+<p>The <code>inspect</code> module in <code>python</code> provides several useful functions to help get information about live objects such as modules, classes, methods, functions, tracebacks, <code>frame objects</code>, and code objects.</p>
 
-    def buildHeap(self, alist):
-        &quot;&quot;&quot;
-        &quot;&quot;&quot;从一个包含元素的列表创建新堆&quot;&quot;&quot;
-        :param alist: a list
-        &quot;&quot;&quot;
-        self.currentSize = len(alist)
-        self.heapArray = [(0, 0)]
-        for i in alist:
-            self.heapArray.append(i)
-        i = len(alist) // 2
-        while (i &gt; 0):
-            self.percDown(i)
-            i = i - 1
+<pre><code class="language-python">import inspect
 
-    def percDown(self, i):
-        &quot;&quot;&quot;
-        Percolate the ith node down the tree
-        &quot;&quot;&quot;
-        while (i * 2) &lt;= self.currentSize:
-            mc = self.minChild(i)
-            if self.heapArray[i][0] &gt; self.heapArray[mc][0]:
-                tmp = self.heapArray[i]
-                self.heapArray[i] = self.heapArray[mc]
-                self.heapArray[mc] = tmp
-            i = mc
+def f1():
+    names = []
+    # inpect.currentframe
+    # Return the frame object for the caller’s stack frame.
+    frame = inspect.currentframe()
+  
+    ## Keep moving to next outer frame
+    while True:
+        try:
+            frame = frame.f_back # next outer frame object (this frame’s caller)
+            name = frame.f_code.co_name # name with which this code object was defined
+            names.append(name)
+        except:
+            break
+    return names
+    
+def f2():
+   return f1()
 
-    def minChild(self, i):
-        &quot;&quot;&quot;
-        Find the smallest child
-        &quot;&quot;&quot;
-        if i * 2 &gt; self.currentSize:
-            return -1
-        else:
-            if i * 2 + 1 &gt; self.currentSize:
-                return i * 2
-            else:
-                if self.heapArray[i * 2][0] &lt; self.heapArray[i * 2 + 1][0]:
-                    return i * 2
-                else:
-                    return i * 2 + 1
+def f3():
+   return f2()
 
-    def percUp(self, i):
-        &quot;&quot;&quot;
-        Percolate the ith node up the tree
-        &quot;&quot;&quot;
-        while i // 2 &gt; 0:
-            if self.heapArray[i][0] &lt; self.heapArray[i // 2][0]:
-                tmp = self.heapArray[i // 2]
-                self.heapArray[i // 2] = self.heapArray[i]
-                self.heapArray[i] = tmp
-            i = i // 2
+def f4():
+   return f3()
 
-    def add(self, k):
-        self.heapArray.append(k)
-        self.currentSize = self.currentSize + 1
-        self.percUp(self.currentSize)
+print(f4())
+</code></pre>
 
-    def delMin(self):
-        &quot;&quot;&quot;
-        delete the min-vertex of heap array, which always in the first position.
-        &quot;&quot;&quot;
-        retval = self.heapArray[1][1]
-        self.heapArray[1] = self.heapArray[self.currentSize]
-        self.currentSize = self.currentSize - 1
-        self.heapArray.pop()
-        self.percDown(1)
-        return retval
+<p>The results shows:</p>
 
-    def isEmpty(self):
-        &quot;&quot;&quot;
-        return true if the heapArray is empty
-        &quot;&quot;&quot;
-        if self.currentSize == 0:
-            return True
-        else:
-            return False
-
-    def decreaseKey(self, val, amt):
-        &quot;&quot;&quot;
-        Decrease the key of the specific vertex (here, val)
-
-        First, find its position in the heapArray: myKey
-        Second, set its position to the right
-        &quot;&quot;&quot;
-        done = False
-        i = 1
-        myKey = 0
-        while not done and i &lt;= self.currentSize:
-            if self.heapArray[i][1] == val:
-                done = True
-                myKey = i
-            else:
-                i = i + 1
-        if myKey &gt; 0:
-            self.heapArray[myKey] = (amt, self.heapArray[myKey][1])
-            self.percUp(myKey)
-
-    def __contains__(self, vtx):
-        &quot;&quot;&quot;
-        Built-in Magic method
-        &quot;&quot;&quot;
-        for pair in self.heapArray:
-            if pair[1] == vtx:
-                return True
-        return False
+<pre><code class="language-python">[&#39;f2&#39;, &#39;f3&#39;, &#39;f4&#39;, &#39;&lt;module&gt;&#39;]
 </code></pre>
 
                         
@@ -814,10 +434,10 @@ Just like <code>LEFT JOIN</code></li>
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2017/7/12</span>
+                    <span class="date">2017/7/17</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html'>Python数据结构与算法</a></span>
+          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -831,122 +451,128 @@ Just like <code>LEFT JOIN</code></li>
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="heap.html">
+                <a class="clearlink" href="hash_table_2_Using_hashing_to_implement_Map_ADT.html">
                 
-                  <h1>Heap (1): Introduction and Implementation</h1>
+                  <h1>Hashing (2): Using hashing to implement Map ADT</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<p>A <strong>heap</strong> (堆)is a specialized tree-based data structure。 A <strong>heap</strong> can be classified as either a <strong>max heap</strong> or a <strong>min heap</strong>. </p>
+                        	<p>The <code>map</code> abstract data type is an unordered collection of associations between a key and a data value (just like a dictionary in Python). The <code>keys</code> in a map are all unique so that there is a one-to-one relationship between a key and a value.</p>
+
+<p>The operations are given below:</p>
 
 <ul>
-<li>In a <strong>max heap</strong>, the keys of parent nodes are always greater than or equal to those of the children and the highest key is in the root node. </li>
-<li>In a <strong>min heap</strong>, the keys of parent nodes are less than or equal to those of the children and the lowest key is in the root node.</li>
+<li><code>Map()</code> Create a new, empty map. If the key is already in the map, then replace the old value with the new value</li>
+<li><code>put(key, val)</code> Add a new key-value pair to the map. If the key is already in the map, then replace the old value with the new value.</li>
+<li><code>get(key)</code> Given a key, return the value stored in the map or None otherwise.</li>
+<li><code>del</code> Delete the key-value pair from the map using a statement of the form <code>del map[key]</code></li>
+<li><code>len()</code> Return the number of key-value pairs stored in the map</li>
+<li><code>in</code> Return <code>True</code> for a statement of the form <code>key in map</code>, if the given key is in the map, <code>False</code> otherwise.</li>
 </ul>
 
-<p><strong>Heap</strong> is one maximally efficient implementation of an abstract data type called a <strong>priority queue</strong> (see <a href="http://larryim.cc/priority_queue.html">here</a>), and in fact priority queues are often referred to as <strong>heaps</strong>, regardless of how they may be implemented. </p>
+<p>It would be better to use a hash table  than a list with binary search since looking up an item in a hash table can approach \(O(1)\) performance.</p>
 
-<h2 id="toc_0">Implementation</h2>
+<p>Two list, are used to create <code>HashTable</code> class that implement the Map abstract data type. One called <code>slots</code> which will hold the key items; another called <code>data</code> which will hold the data values. It is important that the size of the hash table be a prime number so that the collision resolution algorithm can be as efficient as possible. </p>
 
-<p>Priority queues typically use a heap as backbone, giving \(O(\log n)\) performance for inserts and removals, and \(O(n \log n)\) to build initially.</p>
+<p><code>hash_function</code> implements the hash function by simple <code>remainder method</code>. The collision resolution is linear probing. The <code>put</code> function assumes that there will eventually be an empty slot unless the key is already present in the <code>self.slots</code></p>
 
-<h2 id="toc_1">Binary Heap</h2>
+<pre><code class="language-python">
 
-<p>A common implementation of a heap is the <strong>binary heap</strong>(二叉堆), in which the tree is a <strong>complete binary tree</strong>(完全二叉树). </p>
-
-<p>二叉堆的操作与实现</p>
-
-<ul>
-<li><code>BinaryHeap()</code>：创建一个新的、空的二叉堆对象</li>
-<li><code>insert(k)</code>：把新元素加入到堆中</li>
-<li><code>findMin()</code>：返回堆中的最小项，最小项仍保留在堆中</li>
-<li><code>delMin()</code>：返回堆中的最小项，同时从堆中删除</li>
-<li><code>isEmpty()</code>：返回堆是否为空</li>
-<li><code>size()</code>：返回堆中元素的个数</li>
-<li><code>buildHeap(list)</code>：从一个包含元素的列表创建新堆</li>
-</ul>
-
-<p>有两个关键的操作：<br/>
-1. <code>insert</code>方法。首先，为了满足“完全二叉树”的性质，新键值应该添加到列表的末尾。然而新键值简单地添加在列表末尾，显然无法满足堆次序。所以要通过比较父节点和新加入的元素的方法来重新满足堆次序。如果新加入的元素比父节点要小，可以与父节点互换位置；不断交换，直到到达树的顶端。下图所示一系列交换操作来使新加入元素“上浮”到正确的位置。</p>
-
-<p><img src="media/14973171257726/14974156268132.jpg" alt=""/></p>
-
-<p>2.<code>delMin</code>方法 移走根节点的元素后如何保持堆结构和堆次序: 首先，用最后一个节点来代替根节点, 移走最后一个节点保持了堆结构的性质。这么简单的替换，还是会破坏堆次序。第二步，将新节点“下沉”来恢复堆次序。下图所示的是一系列交换操作来使新节点“下沉”到正确的位置。</p>
-
-<p><img src="media/14973171257726/14974156980805.jpg" alt=""/></p>
-
-<pre><code class="language-python">class BinHeap(object):
+class HashTable:
     &quot;&quot;&quot;
-    创建一个新的、空的二叉堆对象
+    &gt;&gt;&gt; h=HashTable()
+    &gt;&gt;&gt; h[54]=&quot;cat&quot;
+    &gt;&gt;&gt; h[26]=&quot;dog&quot;
+    &gt;&gt;&gt; h[93]=&quot;lion&quot;
+    &gt;&gt;&gt; h[77]=&quot;bird&quot;
+    &gt;&gt;&gt; h[31]=&quot;cow&quot;
+    &gt;&gt;&gt; h[44]=&quot;goat&quot;
+    &gt;&gt;&gt; h.slots
+    [77, 44, None, None, 26, 93, None, None, None, 31, 54]
+    &gt;&gt;&gt; h.data
+    [&#39;goat&#39;, None, None, None, &#39;dog&#39;, &#39;lion&#39;, None, None, None, &#39;cow&#39;, &#39;cat&#39;]
     &quot;&quot;&quot;
     def __init__(self):
-        self.list = [0]
-        self.size = 0
+        self.size = 11
+        self.slots = [None] * self.size
+        self.data = [None]* self.size
 
-    def perc_up(self,i):
-        &quot;&quot;&quot;
-        Percolate the new node into proper position
-        &quot;&quot;&quot;
-        while i: 
-            if self.list[i] &lt; self.list[i//2]:
-                self.list[i], self.list[i//2] = self.list[i//2], self.list[i]
-            i = i//2
-    
-    def insert(self, item):
-        &quot;&quot;&quot;把新元素加入到堆中&quot;&quot;&quot;
-        self.list.append(item)
-        self.size += 1
-        self.perc_up(self.size)
+    def put(self, key, data):
+        hash_value = self.hash_function(key, len(self.slots))
+        if self.slots[hash_value] is None:
+            self.slots[hash_value] = key
+            self.data[hash_value] = data
+        elif self.slots[hash_value] == key:
+            self.data[hash_value] = data
+        else:
+            # rehash
+            next_slot = self.rehash(hash_value, len(self.slots))
+            while self.slots[next_slot] is not None and self.slots[next_slot] != key:
+                next_slot = self.rehash(hash_value, len(self.slots))
 
-    def findMin(self):
-        &quot;&quot;&quot;返回堆中的最小项，最小项仍保留在堆中&quot;&quot;&quot;
-        return self.list[1]
-
-    def delMin(self):
-        &quot;&quot;&quot;返回堆中的最小项，同时从堆中删除&quot;&quot;&quot;
-        retval = self.list[1]
-        self.list[1] = self.list[-1]
-        self.size -=1
-        self.list.pop()
-        self.perc_down(1)
-
-        return retval
-
-
-    def perc_down(self, i):
-        &quot;&quot;&quot;
-        Percolate the root node  down the tree
-        &quot;&quot;&quot;
-        while i*2 &lt;= self.size:
-            if i*2+1 &gt; self.size:
-                self.list[i*2], self.list[i] = self.list[i], self.list[i*2]
-                i = i*2
+            if self.slots[next_slot] is None:
+                self.slots[next_slot] = key
+                self.data[hash_value] = data
             else:
-                if self.list[i*2] &gt; self.list[i*2+1]:
-                    self.list[i*2+1], self.list[i] =  self.list[i], self.list[i*2+1]
-                    i = i*2+1
-                else:
-                    self.list[i*2], self.list[i] = self.list[i], self.list[i*2]
-                    i = i*2
+                self.data[hash_value] = data
 
+    def hash_function(self, key, size):
+        &quot;&quot;&quot;
+        hash_function implements the simple remainder method
+        &quot;&quot;&quot;
+        return key % size
 
-    def isEmpty(self):
-        &quot;&quot;&quot;返回堆是否为空&quot;&quot;&quot;
-        return self.size == 0
+    def rehash(self, old_hash, size):
+        &quot;&quot;&quot;
+        linear probing with a plus 1
+        &quot;&quot;&quot;
+        return (old_hash+1) % size
+
+    def get(self, key):
+        start_slot = self.hash_function(key, len(self.slots))
+        data = None
+        stop = False
+        found = False
+        position = start_slot
+        while self.slots[position] is not None and \
+                not found and not stop:
+            if self.slots[position] == key:
+                found = True
+                data = self.data[position]
+            else:
+                position = self.rehash(position, len(self.slots))
+            if position == start_slot:
+                stop = True
+        return data
+
+    def __getitem__(self, key):
+        return self.get(key)
+
+    def __setitem__(self, key, data):
+        self.put(key, data)
 
     def __len__(self):
-        &quot;&quot;&quot;返回堆中元素的个数&quot;&quot;&quot;
-        return self.size
+        &quot;&quot;&quot;
+        return length
+        &quot;&quot;&quot;
+        count = 0
+        for item in self.slots:
+            if item is not None:
+                count += 1
 
-    def buildHeap(self,alist):
-        &quot;&quot;&quot;从一个包含元素的列表创建新堆&quot;&quot;&quot;
-        self.size = len(alist)
-        self.list.extend(alist)
-        i = self.size//2
-        while i &gt;0:
-            self.perc_down(i)
-            i -= 1
+        return count
+
+    def __contains__(self, item):
+        &quot;&quot;&quot;
+        定义了使用in和not in进行成员测试时类的行为
+        &quot;&quot;&quot;
+        return self.get(item) is not None
+
+
+if __name__ == &quot;__main__&quot;:
+    import doctest
+    doctest.testmod(verbose=True)
 </code></pre>
 
                         
@@ -956,10 +582,10 @@ Just like <code>LEFT JOIN</code></li>
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2017/7/12</span>
+                    <span class="date">2017/7/17</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Tree.html'>Tree</a></span>
+          					    <span class="posted-in"><a href='Hash%20Table.html'>Hash Table</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -973,33 +599,82 @@ Just like <code>LEFT JOIN</code></li>
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="14992350772045.html">
+                <a class="clearlink" href="dijkstra_algorithm.html">
                 
-                  <h1>首先有一个概念：回溯</h1>
+                  <h1>Dijkstra's algorithm</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<p>　　回溯法(探索与回溯法)是一种选优搜索法，按选优条件向前搜索，以达到目标。但当探索到某一步时，发现原先选择并不优或达不到目标，就退回一步重新选择，这种走不通就退回再走的技术为回溯法，而满足回溯条件的某个状态的点称为“回溯点”。</p>
+                        	<p><code>Dijkstra&#39;s algorithm</code> is an iterative algorithm that provides us with the shortest path from one particular starting node to all other nodes in the graph.</p>
 
-<p>深度优先算法：</p>
+<p>The algorithm iterates once for every vertex in the graph. The order that iterates over the vertices is controlled by a <code>priority queue</code>. When a vertex is first created <code>dist</code> is set to a very large number(<code>sys.maxsize</code>)</p>
 
-<p>（1）访问初始顶点v并标记顶点v已访问。<br/>
-（2）查找顶点v的第一个邻接顶点w。<br/>
-（3）若顶点v的邻接顶点w存在，则继续执行；否则回溯到v，再找v的另外一个未访问过的邻接点。<br/>
-（4）若顶点w尚未被访问，则访问顶点w并标记顶点w为已访问。<br/>
-（5）继续查找顶点w的下一个邻接顶点wi，如果v取值wi转到步骤（3）。直到连通图中所有顶点全部访问过为止。</p>
+<pre><code>Dijkstra(G, w, s)
+INITIALIZE-SINGLE-SOURCE(G, s)
+Q=G.V
+while Q:
+    u = EXTRACT-MIN(Q)
+    for each vertex in adjacent
+        RELAX(u,v,w)
+</code></pre>
 
-<p>广度优先算法：</p>
+<pre><code class="language-python">from priorityqueue import PriorityQueue
+from graph import Graph, Vertex
+import sys
+import unittest
 
-<p>（1）顶点v入队列。<br/>
-（2）当队列非空时则继续执行，否则算法结束。<br/>
-（3）出队列取得队头顶点v；访问顶点v并标记顶点v已被访问。<br/>
-（4）查找顶点v的第一个邻接顶点col。<br/>
-（5）若v的邻接顶点col未被访问过的，则col入队列。<br/>
-（6）继续查找顶点v的另一个新的邻接顶点col，转到步骤（5）。直到顶点v的所有未被访问过的邻接点处理完。转到步骤（2）。</p>
+def dijkstra(aGraph, start):
+    &quot;&quot;&quot;
+    Find Single-Source shortest-paths on a weighted, directed graph
+    Return shortest path
+    aGraph: class Graph
+    start: class Vertex
+    &quot;&quot;&quot;
+    pq = PriorityQueue()
+    start.setDistance(0)
+    pq.buildHeap([(v.getDistance(), v) for v in aGraph])
+    while not pq.isEmpty():
+        u = pq.delMin()
+        for adjacent in u.getConnections():
+            newDist = u.dist + u.getWeight(adjacent)
+            if adjacent.dist &gt; newDist:
+                adjacent.setDistance(newDist)
+                adjacent.setPred(u)
+                pq.decreaseKey(adjacent, newDist)
 
-<p>代码：</p>
+
+class TestDijkstra(unittest.TestCase):
+
+
+    def testShortest(self):
+
+        aGraph = Graph()
+        with open(&#39;dijkstraData.txt&#39;) as infile:
+            for line in infile:
+                numbers = [number for number in line.split()]
+                from_v = int(numbers[0])
+
+                for to_v_cost in numbers[1:]:
+                    to_v, cost = to_v_cost.split(&#39;,&#39;)
+                    aGraph.addEdge(from_v, int(to_v), int(cost))
+
+        dijkstra(aGraph, aGraph.getVertex(1))
+
+        dists = []
+        for vertex_id in [7, 37, 59, 82, 99, 115, 133, 165, 188, 197]:
+            dist = aGraph.getVertex(vertex_id).getDistance()
+            if dist == sys.maxsize:
+                dist = 100000
+            dists.append(dist)
+        assert dists == [2599, 2610, 2947, 2052, 2367, 2399, 2029, 2442, 2505, 3068]
+
+
+if __name__ == &#39;__main__&#39;:
+    unittest.main()
+</code></pre>
+
+<p>It is important to note that <code>Dijkstra&#39;s algorithm</code> works only when the weights are all positive. If you introduced a negative weight on one of the edges to the graph that the algorithm would never exit.</p>
 
                         
                       </div>
@@ -1008,157 +683,7 @@ Just like <code>LEFT JOIN</code></li>
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2017/7/5</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html'>Python数据结构与算法</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="graph_basic.html">
-                
-                  <h1>Graph</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<ul>
-<li>
-<a href="#toc_0">Vocabulary and Definitions</a>
-</li>
-<li>
-<a href="#toc_1">Representation</a>
-</li>
-<li>
-<a href="#toc_2">The graph ADT</a>
-</li>
-<li>
-<a href="#toc_3">Implementation</a>
-</li>
-</ul>
-
-
-<p>Definition: A graph can be represented by \(G\) where \(G=(V,E)\). For the graph \(G\), \(V\) is a set of vertices and \(E\) is a set of edges. Each edge is a tuple \((v,w)\) where \(w, v \in V\). </p>
-
-<h2 id="toc_0">Vocabulary and Definitions</h2>
-
-<ul>
-<li><p>Vertex<br/>
-A <code>vertex</code> ( also a <code>node</code>) is a fundamental part of a graph. It can have a name <code>key</code>. A vertex may also have additional information called <code>payload</code>.</p></li>
-<li><p>Edge<br/>
-An <code>Edge</code> (also an <code>arc</code>) connects two vertices, and may be one-way(<code>directed graph</code>) or two-way(<code>undirected graph</code>).</p></li>
-<li><p>Weight<br/>
-Edges may be weighted to show that there is a cost (<code>weight</code>)to go from one vertex to another. E.g. the distance between the two cities.</p></li>
-<li><p>Path<br/>
-A <code>path</code> in a graph is a sequence of vertices that are connected by edges. Formally we could define a path as \(w_1, w_2,...,w_n\) such that \((w_i,w_{i+1}) \in E\) for all \(1 \le i \le  n-1\). The weighted path length is the sum of the weights of the edges in the path. </p></li>
-<li><p>Cycle<br/>
-A <code>cycle</code> in a directed graph is a graph that starts and ends at the same vertex.  A graph with no cycles is called an <code>acyclic graph</code>. A directed graph with no cycles is called a <code>directed acyclic graph</code> or a <code>DAG</code>.</p></li>
-</ul>
-
-<h2 id="toc_1">Representation</h2>
-
-<p>Adjacency Matrix<br/>
-Adjacency List<br/>
-Edge List<br/>
-<img src="media/14988021902558/Screen%20Shot%202017-06-30%20at%202.06.25%20PM.png" alt="Screen Shot 2017-06-30 at 2.06.25 P"/></p>
-
-<p>A <code>path</code> in a graph \(G\) is a sequence of vertices \(v_0,v_1,...,v_n\) so that for all \(i, (v_i,v_{i+1})\) is an edge of \(G\).</p>
-
-<h2 id="toc_2">The graph ADT</h2>
-
-<p>The graph abstract data type (ADT) is defined as follows:</p>
-
-<ul>
-<li><code>Graph()</code> creates a new, empty graph.</li>
-<li><code>addVertex(vert)</code> adds an instance of <code>Vertex</code> to the graph.</li>
-<li><code>addEdge(fromVert, toVert)</code>Adds a new, directed edge to the graph that connects two vertices.</li>
-<li><code>addEdge(fromVert, toVert, weight)</code> Adds a new, weighted, directed edge to the graph that connects two vertices.</li>
-<li><code>getVertex(vertKey)</code> finds the vertex in the graph named vertKey.</li>
-<li><code>getVertices()</code> returns the list of all vertices in the graph.</li>
-<li><code>in</code> returns <code>True</code> for a statement of the form vertex in graph, if the given vertex is in the graph,<code>False</code> otherwise.</li>
-</ul>
-
-<h2 id="toc_3">Implementation</h2>
-
-<p>We will create two classes, <code>Graph</code>, which holds the master list of vertices, and <code>Vertex</code>, which will represent each vertex in the graph.</p>
-
-<p>Each <code>Vertex</code> uses a dictionary to keep track of the vertices to which it is connected, and the weight of each edge. This dictionary is called <code>connectedTo</code>. The listing below shows the code for the <code>Vertex</code> class. The constructor simply initializes the <code>id</code>, which will typically be a string, and the <code>connectedTo</code> dictionary. The <code>addNeighbor</code> method is used add a connection from this vertex to another. The g<code>etConnections</code> method returns all of the vertices in the adjacency list, as represented by the <code>connectedTo</code>instance variable. The <code>getWeight</code> method returns the weight of the edge from this vertex to the vertex passed as a parameter.</p>
-
-<pre><code class="language-python">class Vertex:
-    def __init__(self,key):
-        self.id = key
-        self.connectedTo = {}
-
-    def addNeighbor(self,nbr,weight=0):
-        self.connectedTo[nbr] = weight
-
-    def __str__(self):
-        return str(self.id) + &#39; connectedTo: &#39; + str([x.id for x in self.connectedTo])
-
-    def getConnections(self):
-        return self.connectedTo.keys()
-
-    def getId(self):
-        return self.id
-
-    def getWeight(self,nbr):
-        return self.connectedTo[nbr]
-</code></pre>
-
-<p>The <code>Graph</code> class, shown in the next listing, contains a dictionary that maps vertex names to vertex objects. <code>Graph</code> also provides methods for adding vertices to a graph and connecting one vertex to another. The <code>getVertices</code> method returns the names of all of the vertices in the graph. In addition, we have implemented the <code>__iter__</code> method to make it easy to iterate over all the vertex objects in a particular graph. Together, the two methods allow you to iterate over the vertices in a graph by name, or by the objects themselves.</p>
-
-<pre><code class="language-python">class Graph:
-    def __init__(self):
-        self.vertList = {}
-        self.numVertices = 0
-
-    def addVertex(self,key):
-        self.numVertices = self.numVertices + 1
-        newVertex = Vertex(key)
-        self.vertList[key] = newVertex
-        return newVertex
-
-    def getVertex(self,n):
-        if n in self.vertList:
-            return self.vertList[n]
-        else:
-            return None
-
-    def __contains__(self,n):
-        return n in self.vertList
-
-    def addEdge(self,f,t,cost=0):
-        if f not in self.vertList:
-            nv = self.addVertex(f)
-        if t not in self.vertList:
-            nv = self.addVertex(t)
-        self.vertList[f].addNeighbor(self.vertList[t], cost)
-
-    def getVertices(self):
-        return self.vertList.keys()
-
-    def __iter__(self):
-        return iter(self.vertList.values())
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/6/30</span>
+                    <span class="date">2017/7/14</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Graph.html'>Graph</a></span>
@@ -1253,6 +778,8 @@ Edge List<br/>
             <a href="%E6%95%B0%E6%8D%AE%E5%BA%93.html"><strong>数据库</strong></a>
         
             <a href="Tensorflow.html"><strong>Tensorflow</strong></a>
+        
+            <a href="Data%20Science.html"><strong>Data Science</strong></a>
          
         </p>
 
@@ -1269,31 +796,31 @@ Edge List<br/>
 	      
 		      
 			      <li class="post">
-			        <a href="anomaly-detection.html">Machine Learning(9): Anomaly Detection</a>
+			        <a href="batch_normalization.html">Batch Normalization</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="virtualenv.html">Python `virtualenv` on mac</a>
+			        <a href="15046658203135.html">TensorFlow Q</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="convolutional-neural-networks.html">Convolutional Neural Networks</a>
+			        <a href="15046649572570.html">Pandas</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="15042359761425.html">Transfer Learning</a>
+			        <a href="15045390828524.html"></a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="15041905263785.html">cross-entropy</a>
+			        <a href="google-cloud-platform.html">Google Cloud Platform</a>
 			      </li>
 		     
 		  
