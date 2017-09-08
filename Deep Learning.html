@@ -141,7 +141,9 @@
                       
                       <div class="a-content-text">
                         
-                        	<h2 id="toc_0">Covariate Shift</h2>
+                        	<p>The idea is relatively straightforward. Machine learning methods tend to work better when their input data consists of uncorrelated features with <strong>zero mean</strong> and <strong>unit variance</strong>. When training a neural network, we can preprocess the data before feeding it to the network to explicitly decorrelate its features; this will ensure that the first layer of the network sees data that follows a nice distribution. However even if we preprocess the input data, the activations at deeper layers of the network will likely no longer be decorrelated and will no longer have zero mean or unit variance since they are output from earlier layers in the network. Even worse, during the training process the distribution of features at each layer of the network will shift as the weights of each layer are updated.</p>
+
+<h2 id="toc_0">Covariate Shift</h2>
 
 <p>While stochastic gradient is simple and effective, it requires careful tuning of the model hyper-parameters, specifically the learning rate used in optimization, as well as the initial values for the model parameters. The train- ing is complicated by the fact that the inputs to each layer are affected by the parameters of all preceding layers – so that small changes to the network parameters amplify as the network becomes deeper.</p>
 
@@ -151,19 +153,29 @@
 
 <h2 id="toc_1">Algorithm</h2>
 
-<h3 id="toc_2">forward</h3>
+<h3 id="toc_2">Forward</h3>
 
-<p>Given some input values \(x^{(1)},...,x^{(m)}\) over a mini-batch in the layer \(l\) of neural network.</p>
+<p>Given some input values \(\mathcal{B} = x^{(1)},...,x^{(m)}\) over a mini-batch in the layer \(l\) of neural network; </p>
 
-<p><img src="media/15048405877529/Screen%20Shot%202017-09-08%20at%203.11.32%20PM.png" alt="batch-normalization-forward"/></p>
+<p>\[\mu_{\mathcal{B}} = \frac{1}{m}\sum_i^m x_i  \text{     (mini-batch mean)}\\<br/>
+\sigma^2=\frac{1}{m}\sum_i(x_i-\mu_{\mathcal{B}})^2  \text{     (mini-batch variance)}\\<br/>
+\hat{x}_i=\frac{x_i-\mu_{\mathcal{B}}}{\sqrt{\sigma_{\mathcal{\mathcal{B}}}^2+\varepsilon}} \text{     (normalize)}\\<br/>
+y_i=\gamma \hat{x}_i+\beta \text{     (scale and shift)}<br/>
+\]</p>
 
-<h3 id="toc_3">Backward</h3>
+<p>At each iteration, we update the running averages for mean and variance using an exponential decay based on the momentum parameter:<br/>
+<code><br/>
+running_mean = momentum * running_mean + (1 - momentum) * sample_mean<br/>
+running_var = momentum * running_var + (1 - momentum) * sample_var<br/>
+</code></p>
+
+<h2 id="toc_3">Backward</h2>
 
 <p><img src="media/15048405877529/Screen%20Shot%202017-09-08%20at%203.11.45%20PM.png" alt="batch-normalization-backward"/></p>
 
 <h3 id="toc_4">Test time</h3>
 
-<p>Estimate \(\mu, \sigma^2\) using exponentially weighted average( across mini-batch). Using trained \(\alpha, \beta\)</p>
+<p>Using trained <code>runing_mean</code> and <code>running_var</code> to take forward step.</p>
 
 <h2 id="toc_5">TensorFlow</h2>
 
