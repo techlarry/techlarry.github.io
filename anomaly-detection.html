@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  Machine Learning(9-1): Anomaly Detection - techlarry
+  Machine Learning(9): Anomaly Detection AND Recommender System - techlarry
   
   </title>
   
@@ -134,7 +134,7 @@
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>Machine Learning(9-1): Anomaly Detection</h1>
+          <h1>Machine Learning(9): Anomaly Detection AND Recommender System</h1>
      
         <div class="read-more clearfix">
           <span class="date">2017/9/4</span>
@@ -156,115 +156,229 @@
       <div class="article-content">
       <ul>
 <li>
-<a href="#toc_0">Gaussian distribution</a>
+<a href="#toc_0">ML:Anomaly Detection</a>
 <ul>
 <li>
-<a href="#toc_1">Standard normal distribution</a>
+<a href="#toc_1">Problem Motivation</a>
+</li>
+<li>
+<a href="#toc_2">Gaussian Distribution</a>
+</li>
+<li>
+<a href="#toc_3">Algorithm</a>
+</li>
+<li>
+<a href="#toc_4">Developing and Evaluating an Anomaly Detection System</a>
+</li>
+<li>
+<a href="#toc_5">Anomaly Detection vs. Supervised Learning</a>
+</li>
+<li>
+<a href="#toc_6">Choosing What Features to Use</a>
+</li>
+<li>
+<a href="#toc_7">Multivariate Gaussian Distribution</a>
+</li>
+<li>
+<a href="#toc_8">Anomaly Detection using the Multivariate Gaussian Distribution</a>
+</li>
+<li>
+<a href="#toc_9">ML:Recommender Systems</a>
+</li>
+<li>
+<a href="#toc_10">Problem Formulation</a>
+</li>
+<li>
+<a href="#toc_11">Content Based Recommendations</a>
+</li>
+<li>
+<a href="#toc_12">Collaborative Filtering</a>
+</li>
+<li>
+<a href="#toc_13">Collaborative Filtering Algorithm</a>
+</li>
+<li>
+<a href="#toc_14">Vectorization: Low Rank Matrix Factorization</a>
+</li>
+<li>
+<a href="#toc_15">Implementation Detail: Mean Normalization</a>
 </li>
 </ul>
 </li>
-<li>
-<a href="#toc_2">Anomaly Detection Algorithm</a>
-<ul>
-<li>
-<a href="#toc_3">Choosing features</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_4">Multivariable Gaussian Distribution</a>
-<ul>
-<li>
-<a href="#toc_5">Understanding</a>
-</li>
-<li>
-<a href="#toc_6">Anomaly Detection Algorithm using multivariable gaussian distribution</a>
-</li>
-</ul>
-</li>
 </ul>
 
 
-<p>Several Examples that use <code>anomaly detection</code>:</p>
+<h1 id="toc_0">ML:Anomaly Detection</h1>
+
+<h2 id="toc_1">Problem Motivation</h2>
+
+<p>Just like in other learning problems, we are given a dataset \({x^{(1)}, x^{(2)},\dots,x^{(m)}}\).</p>
+
+<p>We are then given a new example, \(x_{test}\), and we want to know whether this new example is abnormal/anomalous.</p>
+
+<p>We define a &quot;model&quot; p(x) that tells us the probability the example is not anomalous. We also use a threshold ϵ (epsilon) as a dividing line so we can say which examples are anomalous and which are not.</p>
+
+<p>A very common application of anomaly detection is detecting fraud:</p>
 
 <ul>
-<li><strong>Fraud detection</strong>:
-
-<ul>
-<li>\(x^{(i)}\) = features of user \(i\)&#39;s activities</li>
-<li>Model \(p(x)\) from data</li>
-<li>Identify unusual users by checking which have \(p(x)&lt; \varepsilon\)</li>
-</ul></li>
-<li><strong>Monitoring computers in a data center</strong>:
-
-<ul>
-<li>\(x^{(i)}\) =  features of machine</li>
-<li>\(x_1\) = memory use</li>
-<li>\(x_2\) = number of disk accesses/sec,</li>
-<li>\(x_3\) = CPU load</li>
-<li>\(x_4\) = CPU load/network traffic.</li>
-</ul></li>
+<li><p>\(x^{(i)} =\) features of user i&#39;s activities</p></li>
+<li><p>Model p(x) from the data.</p></li>
+<li><p>Identify unusual users by checking which have p(x)&lt;ϵ.</p></li>
 </ul>
 
-<h2 id="toc_0">Gaussian distribution</h2>
+<p>If our anomaly detector is flagging <strong>too many</strong> anomalous examples, then we need to <strong>decrease</strong> our threshold ϵ</p>
 
-<p><code>Gaussian distribution</code>, also called <code>normal distribution</code>, is a very common continuous probability distribution.</p>
+<h2 id="toc_2">Gaussian Distribution</h2>
 
-<p>The <code>normal distribution</code> is often referred to as \(N(\mu, \sigma^2)\), Thus when a random variable \(X\) is distributed normally with mean \(\mu\)  and variances \(\sigma^{2}\), one may write<br/>
-\[X\sim N(\mu, \sigma^2)\]</p>
+<p>The Gaussian Distribution is a familiar bell-shaped curve that can be described by a function \(\mathcal{N}(\mu,\sigma^2)\)</p>
 
-<p>The probability density of the Gaussian distribution is:<br/>
-\[p(x;\mu, \sigma^2)=\frac{1}{\sqrt{2\pi}\sigma}\exp(-\frac{(x-\mu)^2}{2\sigma^2})\]<br/>
-where:<br/>
-* \(\mu\) is the mean or expectation of the distribution<br/>
-* \(\sigma\) is the standard deviation<br/>
-* \(\sigma^2\) is the variance</p>
+<p>Let x∈ℝ. If the probability distribution of x is Gaussian with mean μ, variance \(\sigma^2\), then:</p>
+
+<p>\(x \sim \mathcal{N}(\mu, \sigma^2)\)</p>
+
+<p>The little ∼ or &#39;tilde&#39; can be read as &quot;distributed as.&quot;</p>
+
+<p>The Gaussian Distribution is parameterized by a mean and a variance.</p>
+
+<p>Mu, or μ, describes the center of the curve, called the mean. The width of the curve is described by sigma, or σ, called the standard deviation.</p>
+
+<p>The full function is as follows:</p>
+
+<p>\(\large p(x;\mu,\sigma^2) = \dfrac{1}{\sigma\sqrt{(2\pi)}}e^{-\dfrac{1}{2}(\dfrac{x - \mu}{\sigma})^2}\)</p>
+
+<p>We can estimate the parameter μ from a given dataset by simply taking the average of all the examples:</p>
+
+<p>\(\mu = \dfrac{1}{m}\displaystyle \sum_{i=1}^m x^{(i)}\)</p>
+
+<p>We can estimate the other parameter, \(\sigma^2\), with our familiar squared error formula:</p>
+
+<p>\(\sigma^2 = \dfrac{1}{m}\displaystyle \sum_{i=1}^m(x^{(i)} - \mu)^2\)</p>
 
 <p><img src="media/15045011015887/15045018120355.png" alt="Gaussian distribution"/></p>
 
-<h3 id="toc_1">Standard normal distribution</h3>
+<h2 id="toc_3">Algorithm</h2>
 
-<p><code>standard normal distribution</code> is a special case when \(\mu=0, \sigma=1\), its probability density function(the red line in the figure) is as follows,</p>
+<p>Given a training set of examples, \(\lbrace x^{(1)},\dots,x^{(m)}\rbrace\) where each example is a vector, \(x \in \mathbb{R}^n\).</p>
 
-<p>\[\varphi(x)=\frac{1}{\sqrt{2\pi}}e^{-\frac{1}{2}x^2}\]</p>
+<p>\(p(x) = p(x_1;\mu_1,\sigma_1^2)p(x_2;\mu_2,\sigma^2_2)\cdots p(x_n;\mu_n,\sigma^2_n)\)</p>
 
-<h2 id="toc_2">Anomaly Detection Algorithm</h2>
+<p>In statistics, this is called an &quot;independence assumption&quot; on the values of the features inside training example x.</p>
 
-<p>Training set: \(\{x^{(1)},...,x^{(m)}\}\)<br/>
-Each example is \(x\) in \(R^n\)</p>
+<p>More compactly, the above expression can be written as follows:</p>
 
-<ol>
-<li>Choose features \(x_i\) that you think might be indicative of anomalous examples.</li>
-<li>Fit parameters \(\mu_1,...,\mu_n, \sigma_1^2,...,\sigma_n^2\)</li>
-<li>Given new example \(x\), compute \(p(x)\):
-\[p(x) = p(x_1;\mu_1, \sigma_1^2)p(x_2;\mu_2, \sigma_2^2)...p(x_n;\mu_n, \sigma_n^2)= \Pi_{j=1}^np(x_j;\mu_j, \sigma_j^2)\]
-Anomaly if \(p(x)&lt;\varepsilon\)</li>
-</ol>
+<p>\(= \displaystyle \prod^n_{j=1} p(x_j;\mu_j,\sigma_j^2)\)</p>
 
-<h3 id="toc_3">Choosing features</h3>
+<p><strong>The algorithm</strong></p>
 
-<p>Plotting histogram for each feature to check if it is gaussian. We can take transforms (such as log) if the result shows non-gaussian features:</p>
+<p>Choose features \(x_i\) that you think might be indicative of anomalous examples.</p>
 
-<pre><code class="language-python">import matplotlib.pyplot as plt
-import numpy as np
-%matplotlib inline
+<p>Fit parameters \(\mu_1,\dots,\mu_n,\sigma_1^2,\dots,\sigma_n^2\)</p>
 
-mu, sigma = 0, 1
-# Draw random samples from a normal (Gaussian) distribution.
-x = np.random.normal(mu,sigma,10000) 
-plt.hist(x, 50)
-plt.show()
-</code></pre>
+<p>Calculate \(\mu_j = \dfrac{1}{m}\displaystyle \sum_{i=1}^m x_j^{(i)}\)</p>
 
-<p><img src="media/15045011015887/15045075369987.jpg" alt="gaussian feature"/></p>
+<p>Calculate \(\sigma^2_j = \dfrac{1}{m}\displaystyle \sum_{i=1}^m(x_j^{(i)} - \mu_j)^2\)</p>
 
-<h2 id="toc_4">Multivariable Gaussian Distribution</h2>
+<p>Given a new example x, compute p(x):</p>
 
-<p>Multivariable Gaussian Distribution has two parameters \(\mu\in R^n\) and \(\Sigma \in R^{n\times n}\):</p>
+<p>\(p(x) = \displaystyle \prod^n_{j=1} p(x_j;\mu_j,\sigma_j^2) = \prod\limits^n_{j=1} \dfrac{1}{\sqrt{2\pi}\sigma_j}exp(-\dfrac{(x_j - \mu_j)^2}{2\sigma^2_j})\)</p>
 
-<p>\[p(x;\mu,\Sigma) = \frac{1}{(2\pi)^{\frac{n}{2}}|\Sigma|^{\frac{1}{2}}}e^{-\frac{1}{2}(x-\mu)^T\Sigma^{(-1)}(x-\mu)}\]</p>
+<p>Anomaly if p(x)&lt;ϵ</p>
 
-<h3 id="toc_5">Understanding</h3>
+<p>A vectorized version of the calculation for μ is \(\mu = \dfrac{1}{m}\displaystyle \sum_{i=1}^m x^{(i)}\). You can vectorize \(\sigma^2\) similarly.</p>
+
+<h2 id="toc_4">Developing and Evaluating an Anomaly Detection System</h2>
+
+<p>To evaluate our learning algorithm, we take some labeled data, categorized into anomalous and non-anomalous examples ( y = 0 if normal, y = 1 if anomalous).</p>
+
+<p>Among that data, take a large proportion of <strong>good</strong> , non-anomalous data for the training set on which to train p(x).</p>
+
+<p>Then, take a smaller proportion of mixed anomalous and non-anomalous examples (you will usually have many more non-anomalous examples) for your cross-validation and test sets.</p>
+
+<p>For example, we may have a set where 0.2% of the data is anomalous. We take 60% of those examples, all of which are good (y=0) for the training set. We then take 20% of the examples for the cross-validation set (with 0.1% of the anomalous examples) and another 20% from the test set (with another 0.1% of the anomalous).</p>
+
+<p>In other words, we split the data 60/20/20 training/CV/test and then split the anomalous examples 50/50 between the CV and test sets.</p>
+
+<p><strong>Algorithm evaluation:</strong></p>
+
+<p>Fit model p(x) on training set \(\lbrace x^{(1)},\dots,x^{(m)} \rbrace\)</p>
+
+<p>On a cross validation/test example x, predict:</p>
+
+<p>If p(x) &lt; ϵ ( <strong>anomaly</strong> ), then y=1</p>
+
+<p>If p(x) ≥ ϵ ( <strong>normal</strong> ), then y=0</p>
+
+<p>Possible evaluation metrics (see &quot;Machine Learning System Design&quot; section):</p>
+
+<ul>
+<li><p>True positive, false positive, false negative, true negative.</p></li>
+<li><p>Precision/recall</p></li>
+<li><p>\(F_1\) score</p></li>
+</ul>
+
+<p>Note that we use the cross-validation set to choose parameter ϵ</p>
+
+<h2 id="toc_5">Anomaly Detection vs. Supervised Learning</h2>
+
+<p>When do we use anomaly detection and when do we use supervised learning?</p>
+
+<p>Use anomaly detection when...</p>
+
+<ul>
+<li><p>We have a very small number of positive examples (y=1 ... 0-20 examples is common) and a large number of negative (y=0) examples.</p></li>
+<li><p>We have many different &quot;types&quot; of anomalies and it is hard for any algorithm to learn from positive examples what the anomalies look like; future anomalies may look nothing like any of the anomalous examples we&#39;ve seen so far.</p></li>
+</ul>
+
+<p>Use supervised learning when...</p>
+
+<ul>
+<li><p>We have a large number of both positive and negative examples. In other words, the training set is more evenly divided into classes.</p></li>
+<li><p>We have enough positive examples for the algorithm to get a sense of what new positives examples look like. The future positive examples are likely similar to the ones in the training set.</p></li>
+</ul>
+
+<h2 id="toc_6">Choosing What Features to Use</h2>
+
+<p>The features will greatly affect how well your anomaly detection algorithm works.</p>
+
+<p>We can check that our features are <strong>gaussian</strong> by plotting a histogram of our data and checking for the bell-shaped curve.</p>
+
+<p>Some <strong>transforms</strong> we can try on an example feature x that does not have the bell-shaped curve are:</p>
+
+<ul>
+<li><p>log(x)</p></li>
+<li><p>log(x+1)</p></li>
+<li><p>log(x+c) for some constant</p></li>
+<li><p>\(\sqrt{x}\)</p></li>
+<li><p>\(x^{1/3}\)</p></li>
+</ul>
+
+<p>We can play with each of these to try and achieve the gaussian shape in our data.</p>
+
+<p>There is an <strong>error analysis procedure</strong> for anomaly detection that is very similar to the one in supervised learning.</p>
+
+<p>Our goal is for p(x) to be large for normal examples and small for anomalous examples.</p>
+
+<p>One common problem is when p(x) is similar for both types of examples. In this case, you need to examine the anomalous examples that are giving high probability in detail and try to figure out new features that will better distinguish the data.</p>
+
+<p>In general, choose features that might take on unusually large or small values in the event of an anomaly.</p>
+
+<h2 id="toc_7">Multivariate Gaussian Distribution</h2>
+
+<p>The multivariate gaussian distribution is an extension of anomaly detection and may (or may not) catch more anomalies.</p>
+
+<p>Instead of modeling \(p(x_1),p(x_2),\dots\) separately, we will model p(x) all in one go. Our parameters will be: \(\mu \in \mathbb{R}^n\) and \(\Sigma \in \mathbb{R}^{n \times n}\)</p>
+
+<p>\(p(x;\mu,\Sigma) = \dfrac{1}{(2\pi)^{n/2} |\Sigma|^{1/2}} exp(-1/2(x-\mu)^T\Sigma^{-1}(x-\mu))\)</p>
+
+<p>The important effect is that we can model oblong gaussian contours, allowing us to better fit data that might not fit into the normal circular contours.</p>
+
+<p>Varying Σ changes the shape, width, and orientation of the contours. Changing μ will move the center of the distribution.</p>
+
+<p>Check also:</p>
+
+<ul>
+<li>  <a href="http://cs229.stanford.edu/section/gaussians.pdf">The Multivariate Gaussian Distribution</a> <a href="http://cs229.stanford.edu/section/gaussians.pdf">http://cs229.stanford.edu/section/gaussians.pdf</a> Chuong B. Do, October 10, 2008.</li>
+</ul>
 
 <p>Following examples illustrate the basic meaning of parameters in multivariable gaussian distribution:</p>
 
@@ -291,16 +405,127 @@ plt.show()
 
 <p><img src="media/15045011015887/15045091983941.jpg" alt="demo of multivarible gaussian"/></p>
 
-<h3 id="toc_6">Anomaly Detection Algorithm using multivariable gaussian distribution</h3>
+<h2 id="toc_8">Anomaly Detection using the Multivariate Gaussian Distribution</h2>
+
+<p>When doing anomaly detection with multivariate gaussian distribution, we compute μ and Σ normally. We then compute p(x) using the new formula in the previous section and flag an anomaly if p(x) &lt; ϵ.</p>
+
+<p>The original model for p(x) corresponds to a multivariate Gaussian where the contours of \(p(x;\mu,\Sigma)\) are axis-aligned.</p>
+
+<p>The multivariate Gaussian model can automatically capture correlations between different features of x.</p>
+
+<p>However, the original model maintains some advantages: it is computationally cheaper (no matrix to invert, which is costly for large number of features) and it performs well even with small training set size (in multivariate Gaussian model, it should be greater than the number of features for Σ to be invertible).</p>
+
+<h2 id="toc_9">ML:Recommender Systems</h2>
+
+<h2 id="toc_10">Problem Formulation</h2>
+
+<p>Recommendation is currently a very popular application of machine learning.</p>
+
+<p>Say we are trying to recommend movies to customers. We can use the following definitions</p>
+
+<ul>
+<li><p>\(n_u =\) number of users</p></li>
+<li><p>\(n_m =\) number of movies</p></li>
+<li><p>\(r(i,j) = 1\) if user j has rated movie i</p></li>
+<li><p>\(y(i,j) =\) rating given by user j to movie i (defined only if r(i,j)=1)</p></li>
+</ul>
+
+<h2 id="toc_11">Content Based Recommendations</h2>
+
+<p>We can introduce two features, \(x_1\) and \(x_2\) which represents how much romance or how much action a movie may have (on a scale of 0−1).</p>
+
+<p>One approach is that we could do linear regression for every single user. For each user j, learn a parameter \(\theta^{(j)} \in \mathbb{R}^3\). Predict user j as rating movie i with \((\theta^{(j)})^Tx^{(i)}\) stars.</p>
+
+<ul>
+<li><p>\(\theta^{(j)} =\) parameter vector for user j</p></li>
+<li><p>\(x^{(i)} =\) feature vector for movie i</p></li>
+</ul>
+
+<p>For user j, movie i, predicted rating: \((\theta^{(j)})^T(x^{(i)})\)</p>
+
+<ul>
+<li>  \(m^{(j)} =\) number of movies rated by user j</li>
+</ul>
+
+<p>To learn \(\theta^{(j)}\), we do the following</p>
+
+<p>\(min_{\theta^{(j)}} = \dfrac{1}{2}\displaystyle \sum_{i:r(i,j)=1} ((\theta^{(j)})^T(x^{(i)}) - y^{(i,j)})^2 + \dfrac{\lambda}{2} \sum_{k=1}^n(\theta_k^{(j)})^2\)</p>
+
+<p>This is our familiar linear regression. The base of the first summation is choosing all i such that \(r(i,j) = 1\).</p>
+
+<p>To get the parameters for all our users, we do the following:</p>
+
+<p>\(min_{\theta^{(1)},\dots,\theta^{(n_u)}} = \dfrac{1}{2}\displaystyle \sum_{j=1}^{n_u} \sum_{i:r(i,j)=1} ((\theta^{(j)})^T(x^{(i)}) - y^{(i,j)})^2 + \dfrac{\lambda}{2} \sum_{j=1}^{n_u} \sum_{k=1}^n(\theta_k^{(j)})^2\)</p>
+
+<p>We can apply our linear regression gradient descent update using the above cost function.</p>
+
+<p>The only real difference is that we <strong>eliminate the constant</strong> \(\dfrac{1}{m}\).</p>
+
+<h2 id="toc_12">Collaborative Filtering</h2>
+
+<p>It can be very difficult to find features such as &quot;amount of romance&quot; or &quot;amount of action&quot; in a movie. To figure this out, we can use <u>feature finders</u> .</p>
+
+<p>We can let the users tell us how much they like the different genres, providing their parameter vector immediately for us.</p>
+
+<p>To infer the features from given parameters, we use the squared error function with regularization over all the users:</p>
+
+<p>\(min_{x^{(1)},\dots,x^{(n_m)}} \dfrac{1}{2} \displaystyle \sum_{i=1}^{n_m} \sum_{j:r(i,j)=1} ((\theta^{(j)})^T x^{(i)} - y^{(i,j)})^2 + \dfrac{\lambda}{2}\sum_{i=1}^{n_m} \sum_{k=1}^{n} (x_k^{(i)})^2\)</p>
+
+<p>You can also <strong>randomly guess</strong> the values for theta to guess the features repeatedly. You will actually converge to a good set of features.</p>
+
+<h2 id="toc_13">Collaborative Filtering Algorithm</h2>
+
+<p>To speed things up, we can simultaneously minimize our features and our parameters:</p>
+
+<p>\(J(x,\theta) = \dfrac{1}{2} \displaystyle \sum_{(i,j):r(i,j)=1}((\theta^{(j)})^Tx^{(i)} - y^{(i,j)})^2 + \dfrac{\lambda}{2}\sum_{i=1}^{n_m} \sum_{k=1}^{n} (x_k^{(i)})^2 + \dfrac{\lambda}{2}\sum_{j=1}^{n_u} \sum_{k=1}^{n} (\theta_k^{(j)})^2\)</p>
+
+<p>It looks very complicated, but we&#39;ve only combined the cost function for theta and the cost function for x.</p>
+
+<p>Because the algorithm can learn them itself, the bias units where x0=1 have been removed, therefore x∈ℝn and θ∈ℝn.</p>
+
+<p>These are the steps in the algorithm:</p>
 
 <ol>
-<li>Fit model \(p(x)\) by Parameter fitting:
-Given training set \(\{x^{(1)},x^{(2)},...,x^{(m)}\}\)
-\[\mu=\frac{1}{m}\sum_{i=1}^mx^{(i)}\\
-\Sigma=\frac{1}{m}\sum_{i=1}^m(x^{(i)}-\mu)(x^{(i)}-\mu)^T
-\]</li>
-<li>Given a new example \(x\), compute \(p(x)\) and flag an anomaly if \(p(x) &lt; \varepsilon\)</li>
+<li><p>Initialize \(x^{(i)},...,x^{(n_m)},\theta^{(1)},...,\theta^{(n_u)}\) to small random values. This serves to break symmetry and ensures that the algorithm learns features \(x^{(i)},...,x^{(n_m)}\) that are different from each other.</p></li>
+<li><p>Minimize \(J(x^{(i)},...,x^{(n_m)},\theta^{(1)},...,\theta^{(n_u)})\) using gradient descent (or an advanced optimization algorithm).E.g. for every \(j=1,...,n_u,i=1,...n_m\):\(x_k^{(i)} := x_k^{(i)} - \alpha\left (\displaystyle \sum_{j:r(i,j)=1}{((\theta^{(j)})^T x^{(i)} - y^{(i,j)}) \theta_k^{(j)}} + \lambda x_k^{(i)} \right)\)\(\theta_k^{(j)} := \theta_k^{(j)} - \alpha\left (\displaystyle \sum_{i:r(i,j)=1}{((\theta^{(j)})^T x^{(i)} - y^{(i,j)}) x_k^{(i)}} + \lambda \theta_k^{(j)} \right)\)</p></li>
+<li><p>For a user with parameters θ and a movie with (learned) features x, predict a star rating of \(\theta^Tx\).</p></li>
 </ol>
+
+<h2 id="toc_14">Vectorization: Low Rank Matrix Factorization</h2>
+
+<p>Given matrices X (each row containing features of a particular movie) and Θ (each row containing the weights for those features for a given user), then the full matrix Y of all predicted ratings of all movies by all users is given simply by: \(Y = X\Theta^T\).</p>
+
+<p>Predicting how similar two movies i and j are can be done using the distance between their respective feature vectors x. Specifically, we are looking for a small value of \(||x^{(i)} - x^{(j)}||\).</p>
+
+<h2 id="toc_15">Implementation Detail: Mean Normalization</h2>
+
+<p>If the ranking system for movies is used from the previous lectures, then new users (who have watched no movies), will be assigned new movies incorrectly. Specifically, they will be assigned θ with all components equal to zero due to the minimization of the regularization term. That is, we assume that the new user will rank all movies 0, which does not seem intuitively correct.</p>
+
+<p>We rectify this problem by normalizing the data relative to the mean. First, we use a matrix Y to store the data from previous ratings, where the ith row of Y is the ratings for the ith movie and the jth column corresponds to the ratings for the jth user.</p>
+
+<p>We can now define a vector</p>
+
+<p>\(\mu = [\mu_1, \mu_2, \dots , \mu_{n_m}]\)</p>
+
+<p>such that</p>
+
+<p>\(\mu_i = \frac{\sum_{j:r(i,j)=1}{Y_{i,j}}}{\sum_{j}{r(i,j)}}\)</p>
+
+<p>Which is effectively the mean of the previous ratings for the ith movie (where only movies that have been watched by users are counted). We now can normalize the data by subtracting u, the mean rating, from the actual ratings for each user (column in matrix Y):</p>
+
+<p>As an example, consider the following matrix Y and mean ratings μ:</p>
+
+<p>\(Y = \begin{bmatrix} 5 &amp; 5 &amp; 0 &amp; 0 \newline 4 &amp; ? &amp; ? &amp; 0 \newline 0 &amp; 0 &amp; 5 &amp; 4 \newline 0 &amp; 0 &amp; 5 &amp; 0 \newline \end{bmatrix}, \quad \mu = \begin{bmatrix} 2.5 \newline 2 \newline 2.25 \newline 1.25 \newline \end{bmatrix}\)</p>
+
+<p>The resulting Y′ vector is:</p>
+
+<p>\(Y&#39; = \begin{bmatrix} 2.5 &amp; 2.5 &amp; -2.5 &amp; -2.5 \newline 2 &amp; ? &amp; ? &amp; -2 \newline -.2.25 &amp; -2.25 &amp; 3.75 &amp; 1.25 \newline -1.25 &amp; -1.25 &amp; 3.75 &amp; -1.25 \end{bmatrix}\)</p>
+
+<p>Now we must slightly modify the linear regression prediction to include the mean normalization term:</p>
+
+<p>\((\theta^{(j)})^T x^{(i)} + \mu_i\)</p>
+
+<p>Now, for a new user, the initial predicted values will be equal to the μ term instead of simply being initialized to zero, which is more accurate.</p>
 
 
     
@@ -312,15 +537,15 @@ Given training set \(\{x^{(1)},x^{(2)},...,x^{(m)}\}\)
         <p class="text-left" style="padding:15px 0px;">
       
           <a href="15045143826264.html" 
-          title="Previous Post: Machine Learning (6): Advice for applying machine learning">&laquo; Machine Learning (6): Advice for applying machine learning</a>
+          title="Previous Post: Machine Learning (6): Advice for applying machine learning and Machine Learning System Design">&laquo; Machine Learning (6): Advice for applying machine learning and Machine Learning System Design</a>
       
         </p>
         </div>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="recommender-system.html" 
-          title="Next Post: Machine Learning(9-2): Recommender System">Machine Learning(9-2): Recommender System &raquo;</a>
+          <a  href="virtualenv.html" 
+          title="Next Post: Python `virtualenv` on mac">Python `virtualenv` on mac &raquo;</a>
       
       </p>
         </div>
@@ -439,6 +664,12 @@ s.setAttribute('data-timestamp', +new Date());
 	      
 		      
 			      <li class="post">
+			        <a href="15049402475273.html">Machine Learning (10): Large Scale Machine Learning</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="batch_normalization.html">Batch Normalization</a>
 			      </li>
 		     
@@ -452,12 +683,6 @@ s.setAttribute('data-timestamp', +new Date());
 		      
 			      <li class="post">
 			        <a href="15046649572570.html">Pandas</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15045390828524.html"></a>
 			      </li>
 		     
 		  
