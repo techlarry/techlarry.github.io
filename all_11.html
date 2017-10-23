@@ -111,6 +111,8 @@
         
             <li><a href="Tensorflow.html">Tensorflow</a></li>
         
+            <li><a href="%E5%B7%A5%E4%BD%9C%E4%B8%8E%E5%AD%A6%E4%B9%A0.html">工作与学习</a></li>
+        
             <li><a href="Data%20Science.html">Data Science</a></li>
          
 
@@ -134,268 +136,148 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="heap_median_maintenance.html">
+                <a class="clearlink" href="bitwise%20operator%20in%20python.html">
                 
-                  <h1>Heap (2): Median Maintenance</h1>
+                  <h1>Bitwise Operation</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<p><strong>Problem Statement</strong>: The goal of the problem is to implement the <code>Median Maintenance</code> algorithm. The text file contains a list of the integers; you should treat this as a stream of numbers, arriving one by one. Letting \(x_i\) denote the \(i\)th number of the file, the \(k\)th median \(m_k\) is defined as the median of the numbers \(x_1,…,x_k\). (So, if \(k\) is odd, then \(m_k\) is \(((k+1)/2)\)th smallest number among \(x_1,…,x_k\); if \(k\) is even, then \(m_k\) is the \((k/2)\)th smallest number among \(x_1,…,x_k\).)</p>
+                        	<ul>
+<li>
+<a href="#toc_0">The method of complements</a>
+<ul>
+<li>
+<a href="#toc_1">One&#39;s complement (反码)</a>
+</li>
+<li>
+<a href="#toc_2">Two&#39;s complement (补码)</a>
+<ul>
+<li>
+<a href="#toc_3">Implementation</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_4">One or Two</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_5">Reference</a>
+</li>
+</ul>
 
-<h1 id="toc_0">Solution</h1>
 
-<p>We might use a max heap to represent elements that are less than the median, and a min heap to represent elements that are greater than the median.</p>
+<p>There are 6 <code>Bitwise Operators</code>(位操作符) in Python:</p>
 
-<p>After balancing the heaps, the number of elements in two heaps differs at most by 1. </p>
+<ul>
+<li><code>x&lt;&lt;y</code>: Returns \(x\) with the bits shifted to the left by y places (and new bits on the right-hand-side are zeros). This is the same as multiplying x by \(2^y\).</li>
+<li><code>x&gt;&gt;y</code>: Returns \(x\) with the bits shifted to the right by y places. This is the same as //&#39;ing \(x\) by \(2^y\).</li>
+<li><code>x&amp;y</code>(bitwise AND): Each bit of the output is 1 if the corresponding bit of \(x\) AND of \(y\) is 1, otherwise it&#39;s 0.</li>
+<li><code>x|y</code> (bitwise OR): Each bit of the output is 0 if the corresponding bit of \(x\) AND of \(y\) is 0, otherwise it&#39;s 1.</li>
+<li><code>~ x</code> ( bitwise NOT, or complement): Returns the complement of \(x\) - the number you get by switching each 1 for a 0 and each 0 for a 1. This is the same as \(-x-1\).</li>
+<li><code>^</code> (bitwise Exclusive OR): outputs true only when inputs differ (one is 1, the other is 0).</li>
+</ul>
 
-<pre><code class="language-python">Step 1: Add next item to one of the heaps
+<p><code>Bitwise Operators</code> operate on numbers, but instead of treating that number as if it were a single value, they treat it as if it were a string of bits, written  in <code>two&#39;s-complement</code> binary.</p>
 
-   if next item &lt; maxHeap root:
-        add it to maxHeap
-   else:
-        add it to minHeap
+<h2 id="toc_0">The method of complements</h2>
 
-Step 2: Balance the heaps (after this step heaps will be either balanced or
-   one of them will contain 1 more item)
+<p>The <code>method of complements</code> is a technique used to subtract one number from another using only addition of positive numbers.</p>
 
-   if number of elements in one of the heaps &gt; the other by
-   more than 1:
-        remove the root element from the one containing more elements 
-        and add to the other one
+<p>Many early computers, use <code>one&#39;s complement</code> notation. The IBM 700/7000 series used to use <code>sign/magnitude</code> notation. Almost all subsequent minicomputers and microcomputers use <code>two&#39;s complement</code>  in the computer industry.</p>
 
-Step 3: Calculate the median:
+<h3 id="toc_1">One&#39;s complement (反码)</h3>
 
-   if the heaps contain equal amount of elements:
-        median = root of maxHeap
-   else:
-        median = root of the heap with more elements
+<p>The one&#39;s complement of a <code>binary number</code> is defined as the value obtained by inverting all the bits in the binary representation of the number (swapping 0s for 1s and vice versa). </p>
+
+<p>Positive numbers are the same simple, binary system used by <code>two&#39;s complement</code> and <code>sign-magnitude</code>. Negative values are the bit complement of the corresponding positive value. </p>
+
+<p>The table below shows all possible values in a 4-bit system, from −7 to +7.</p>
+
+<pre><code>      +      −
+ 0   0000   1111   — Note that both +0 and −0 return TRUE when tested for zero
+ 1   0001   1110   — and FALSE when tested for non-zero. 
+ 2   0010   1101
+ 3   0011   1100
+ 4   0100   1011
+ 5   0101   1010
+ 6   0110   1001
+ 7   0111   1000
 </code></pre>
 
-<h2 id="toc_1">Implementation</h2>
+<p><strong>Negative zero</strong> is the condition where all bits in a signed word are 1. </p>
 
-<pre><code class="language-python">import doctest
-import sys
+<pre><code>1111 1111
+</code></pre>
 
-class MinHeap(object):
-    &quot;&quot;&quot;
-    Min Heap
-    &gt;&gt;&gt; bh = MinHeap()
-    &gt;&gt;&gt; bh.buildHeap([9,5,14,18,-17,27,33,19,11,21])
-    &gt;&gt;&gt; bh.findMin()
-    -17
-    &gt;&gt;&gt; bh.delMin()
-    -17
-    &gt;&gt;&gt; bh.list[1:]
-    [5, 9, 14, 11, 21, 27, 33, 19, 18]
-    &gt;&gt;&gt; bh.insert(-100)
-    &gt;&gt;&gt; bh.delMin()
-    -100
-    &quot;&quot;&quot;
+<h3 id="toc_2">Two&#39;s complement (补码)</h3>
 
-    def __init__(self):
-        &quot;&quot;&quot;
-        add self.list 0 with initialization in order to divide
-        &quot;&quot;&quot;
-        self.list = [-sys.maxsize]
-        self.size = 0
+<p>A <code>two&#39;s complement</code> number system encodes positive and negative numbers in a binary number representation. The weight of each bit is a power of two, except for the <code>most significant bit</code>(最高有效位), whose weight is the negative of corresponding power of two.</p>
 
+<p>The method to convert a negative integer into a two&#39;s complement is implemented as follows:</p>
 
-    def insert(self, k):
-        &quot;&quot;&quot;
-        Insert element to the MinBinaryHeap
-        &quot;&quot;&quot;
-        self.list.append(k)
-        self.size += 1
-        self.perc_up(self.size)
+<pre><code>eg. -3
+Start with positive 0000 0011
+flip bits 1111 1100
+add one 1111 1101
+</code></pre>
 
+<h4 id="toc_3">Implementation</h4>
 
-    def findMin(self):
-        &quot;&quot;&quot;
-        Find the min element and return it
-        &quot;&quot;&quot;
-        return self.list[1]
+<p>The naive implementation of <code>Two&#39;s complement</code> in Python is as follows:</p>
 
+<pre><code class="language-python">def int_to_two_complement(val, num_bits):
 
-    def delMin(self):
-        &quot;&quot;&quot;
-        Delete the min element
-        and return it
-        &quot;&quot;&quot;
-        retrival = self.list[1]
-        self.size -= 1
-        self.list[1] = self.list[-1]
-        self.list.pop()
-        self.perc_down(1)
+    if val &lt; 0:
+        # major procedure as follows:
+        # 1. take the absolute
+        # 2. flip
+        # 3. add one
 
-        return retrival
+        # absolute of val: use int to transform str to int
+        val = bin(val)[3:].rjust(num_bits, &#39;0&#39;)
 
+        # flip it: bitwise complement
+        flip_val = &#39;&#39;
+        flip_bit = {&#39;0&#39;: &#39;1&#39;, &#39;1&#39;: &#39;0&#39;}
+        for bit in val:
+            flip_val += flip_bit[bit]
+        val = flip_val
 
-    def isEmpty(self):
-        &quot;&quot;&quot;
-        Return if the MinBinaryHeap is empty
-        &quot;&quot;&quot;
-        return self.size == 0
-
-    def __len__(self):
-        &quot;&quot;&quot;
-        Magic Method: return the length of MinBinaryHeap
-        &quot;&quot;&quot;
-        return self.size
-
-
-    def buildHeap(self, alist):
-        &quot;&quot;&quot;
-        Build a MinBinaryHeap from alist which is a collection of data
-        &quot;&quot;&quot;
-        self.list.extend(alist)
-        self.size = len(alist)
-
-        i = self.size//2
-        while i &gt; 0:
-            self.perc_down(i)
-            i -= 1
-
-    def perc_up(self, i):
-        &quot;&quot;&quot;&quot;
-        perc_up i
-        &quot;&quot;&quot;
-        while i//2&gt;0:
-            if self.list[i] &lt; self.list[i // 2]:
-                self.list[i], self.list[i // 2] = self.list[i // 2], self.list[i]
-            i = i // 2
-
-    def perc_down(self, i):
-        &quot;&quot;&quot;
-        perc down i
-        &quot;&quot;&quot;
-        while (i * 2) &lt;= self.size:
-            mc = self.minChild(i)
-            if self.list[i] &gt; self.list[mc]:
-                self.list[i], self.list[mc] = self.list[mc], self.list[i]
-            i = mc
-
-    def minChild(self, i):
-        &quot;&quot;&quot;
-        find the min child
-        &quot;&quot;&quot;
-        if i * 2 + 1 &gt; self.size:
-            return i * 2
+        # add one
+        val = list(val)
+        if val[-1] == &#39;0&#39;:
+            val[-1] = &#39;1&#39;
         else:
-            if self.list[i * 2] &lt; self.list[i * 2 + 1]:
-                return i * 2
-            else:
-                return i * 2 + 1
+            index = -1
+            while val[index] == &#39;1&#39;:
+                index -= 1
+            val[-1] = &#39;0&#39;
+            val[index - 1] = &#39;1&#39;
+        val = &#39;&#39;.join(val)
+        val = int(val)
 
-    def __iter__(self):
-        return iter(self.list[1:])
+    else:
 
-
-class MaxHeap(object):
-    &quot;&quot;&quot;
-    Max Heap
-    &gt;&gt;&gt; bh = MaxHeap()
-    &gt;&gt;&gt; bh.buildHeap([9,5,14,18,-17,27,33,19,11,21])
-    &gt;&gt;&gt; bh.delMax()
-    33
-    &gt;&gt;&gt; bh.insert(100)
-    &gt;&gt;&gt; bh.delMax()
-    100
-    &gt;&gt;&gt; len(bh)
-    9
-    &quot;&quot;&quot;
-
-    def __init__(self):
-        self.heap = MinHeap()
-
-    def insert(self, k):
-        self.heap.insert(-k)
-
-    def delMax(self):
-        return -self.heap.delMin()
-
-    def buildHeap(self, alist):
-        for i in range(len(alist)):
-            alist[i] = -alist[i]
-        self.heap.buildHeap(alist)
-
-    def findMax(self):
-        return -self.heap.findMin()
-
-    def __len__(self):
-        return self.heap.size
-
-    def __iter__(self):
-        for i in range(1, self.heap.size+1):
-            yield -self.heap.list[i]
-
-
-def median_maintenance(textfile):
-
-    min_heap = MinHeap()  # &gt; medium
-    max_heap = MaxHeap()  # &lt; medium
-
-    medians = []
-    count = 0
-
-    with open(textfile) as infile:
-        for line in infile:
-            item = int(line)
-            count += 1
-
-            # Step 1: Add next item to one of the hepas
-            # special case: initialize
-            if count == 1:
-                max_heap.insert(item)
-            else:
-                if item &lt; max_heap.findMax():
-                    max_heap.insert(item)
-                else:
-                    min_heap.insert(item)
-
-            # Step2: Balance the heap
-            if abs(len(max_heap) - len(min_heap)) &gt; 1:
-                if len(max_heap) &gt; len(min_heap):
-                    min_heap.insert(max_heap.delMax())
-                else:
-                    max_heap.insert(min_heap.delMin())
-
-            # Step3: calculate median
-            if len(max_heap) == len(min_heap):
-                median = max_heap.findMax()
-            else:
-                if len(max_heap) &gt; len(min_heap):
-                    median = max_heap.findMax()
-                else:
-                    median = min_heap.findMin()
-
-            medians.append(median)
-
-            # test
-            #for element in max_heap:
-            #    print(element, end=&#39; &#39;)
-            #for element in min_heap:
-            #    print(element, end=&#39; &#39;)
-            #print(&#39;total elem:&#39;,len(max_heap)+len(min_heap))
-
-
-    return medians
-
-if __name__ == &#39;__main__&#39;:
-    # doctest.testmod(verbose=True)
-    #textfile = &#39;SmallTest.txt&#39;
-    textfile = &#39;Median.txt&#39;
-    medians = median_maintenance(textfile)
-    answer = sum(medians)%10000
-    print(answer)
+        # fill zeros before the binary number converted by bin, the result = bin(val)
+        val = bin(val)[2:].rjust(num_bits, &#39;0&#39;)
+    return val
 </code></pre>
 
-<h2 id="toc_2">Resources</h2>
+<h3 id="toc_4">One or Two</h3>
 
-<ol>
-<li><a href="https://stackoverflow.com/questions/14189540/python-topn-max-heap-use-heapq-or-self-implement">max heap implementation</a></li>
-<li><a href="https://stackoverflow.com/questions/10657503/find-running-median-from-a-stream-of-integers">median maintenance</a></li>
-</ol>
+<p>A <code>two&#39;s complement</code> integer equals its <code>one&#39;s complement</code> integer plus one.</p>
+
+<p>\[X_{two} = 2^n-x = x_{one}+1\]</p>
+
+<h2 id="toc_5">Reference</h2>
+
+<p>1.<a href="https://en.wikipedia.org/wiki/Most_significant_bit">Most Significant Bit</a><br/>
+2.<a href="https://wiki.python.org/moin/BitwiseOperators">wiki-python</a><br/>
+3.<a href="https://stackoverflow.com/questions/1604464/twos-complement-in-python">two&#39;s complement in python -Stackoverflow</a><br/>
+4. <a href="https://en.wikipedia.org/wiki/Two&#x27;s_complement#Subtraction_from_2N">Two&#39;s complement WIKIPEDIA</a></p>
 
                         
                       </div>
@@ -404,7 +286,7 @@ if __name__ == &#39;__main__&#39;:
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2017/7/21</span>
+                    <span class="date">2017/8/5</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html'>Python数据结构与算法</a></span>
@@ -421,793 +303,204 @@ if __name__ == &#39;__main__&#39;:
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="binary_search_tree.html">
+                <a class="clearlink" href="minimum_spanning_tree_prim_kruskal.html">
                 
-                  <h1>Python树(三)：Binary Search Tree</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>A <code>binary search tree</code>  is a tree that keys that are less than the parent are found in the left subtree, and keys that are greater than the parent are found in the right subtree.</p>
-
-<p>Let \(x\) be a node in a binary search tree. If \(y\) is a node in the left subtree of \(x\), then \(y.key\le x.key\). If \(y\) is a node in the right subtree of \(x\), then \(y.key\le x.key\).</p>
-
-<h2 id="toc_0">Implementation</h2>
-
-<ul>
-<li><code>Map()</code> Create a new, empty map.</li>
-<li><code>put(key,val)</code> Add a new key-value pair to the map. If the key is already in the map then replace the old value with the new value.</li>
-<li><code>get(key)</code> Given a key, return the value stored in the map or <code>None</code> otherwise.</li>
-<li><code>del</code> Delete the key-value pair from the map using a statement of the form <code>del map[key]</code>.</li>
-<li><code>len()</code> Return the number of key-value pairs stored in the map.</li>
-<li><code>in</code> Return <code>True</code> for a statement of the form <code>key in map</code>, if the given key is in the map.</li>
-</ul>
-
-<p>To implement the binary search tree,  the method of <code>the nodes and references approached</code> similar to <code>binary tree</code>(<a href="http://larryim.cc/tree_2.html">Link</a>) The <code>BinarySearchTree</code> class has a reference to the <code>TreeNode</code> that is the root of the binary search tree. </p>
-
-<h3 id="toc_1"><code>delete</code> method</h3>
-
-<p>Once we’ve found the node containing the key we want to delete, there are three cases that we must consider:</p>
-
-<ul>
-<li>The node to be deleted has no children.</li>
-<li>The node to be deleted has only one child.</li>
-<li>The node to be deleted has two children.</li>
-</ul>
-
-<p>The first case is straightforward. If the current node has no children all we need to do is delete the node and remove the reference to this node in the parent. The code for this case is shown in here.</p>
-
-<p>The second case is only slightly more complicated. If a node has only a single child, then we can simply promote the child to take the place of its parent. The code for this case is shown in the next listing. As you look at this code you will see that there are six cases to consider. Since the cases are symmetric with respect to either having a left or right child we will just discuss the case where the current node has a left child. The decision proceeds as follows:</p>
-
-<ul>
-<li>If the current node is a left child then we only need to update the parent reference of the left child to point to the parent of the current node, and then update the left child reference of the parent to point to the current node’s left child.</li>
-<li>If the current node is a right child then we only need to update the parent reference of the left child to point to the parent of the current node, and then update the right child reference of the parent to point to the current node’s left child.</li>
-<li>If the current node has no parent, it must be the root. In this case we will just replace the key, payload, leftChild, and rightChild data by calling the <code>replaceNodeData</code> method on the root.</li>
-</ul>
-
-<p>The third case is the most difficult case to handle. If a node has two children, then it is unlikely that we can simply promote one of them to take the node’s place. We can, however, search the tree for a node that can be used to replace the one scheduled for deletion. What we need is a node that will preserve the binary search tree relationships for both of the existing left and right subtrees. The node that will do this is the node that has the next-largest key in the tree. We call this node the <code>successor</code>, and we will look at a way to find the successor shortly. The successor is guaranteed to have no more than one child, so we know how to remove it using the two cases for deletion that we have already implemented. Once the successor has been removed, we simply put it in the tree in place of the node to be deleted.</p>
-
-<h3 id="toc_2"><code>successor</code> Method</h3>
-
-<p>The code to find the successor is a method of the <code>TreeNode</code> class. This code makes use of the same properties of binary search trees that cause an <code>inorder traversal</code> to print out the nodes in the tree from smallest to largest. There are three cases to consider when looking for the successor:</p>
-
-<ul>
-<li>If the node has a right child, then the successor is the smallest key in the right subtree.</li>
-<li>If the node has no right child and is the left child of its parent, then the parent is the successor.</li>
-<li>If the node is the right child of its parent, and itself has no right child, then the successor to this node is the successor of its parent, excluding this node.</li>
-</ul>
-
-<pre><code class="language-python">
-class BinarySearchTree(object):
-
-    def __init__(self):
-        self.root = None
-        self.size = 0
-
-    def put(self, key, val):
-        if self.root:
-            self._put(key, val, self.root)
-        else:
-            self.root = TreeNode(key, val)
-        self.size = self.size + 1
-
-    def _put(self, key, val, currentNode):
-        if key &lt; currentNode.key:
-            if currentNode.hasLeftChild():
-                self._put(key, val, currentNode.leftChild)
-            else:
-                currentNode.leftChild = TreeNode(key, val, parent=currentNode)
-        else:
-            if currentNode.hasRightChild():
-                self._put(key, val, currentNode.rightChild)
-            else:
-                currentNode.rightChild = TreeNode(key, val, parent=currentNode)
-
-    def __setitem__(self, k, v):
-        self.put(k, v)
-
-    def get(self, key):
-        if self.root:
-            res = self._get(key, self.root)
-            if res:
-                return res.payload
-            else:
-                return None
-        else:
-            return None
-
-    def _get(self, key, currentNode):
-        if not currentNode:
-            return None
-        elif currentNode.key == key:
-            return currentNode
-        elif key &lt; currentNode.key:
-            return self._get(key, currentNode.leftChild)
-        else:
-            return self._get(key, currentNode.rightChild)
-
-    def __getitem__(self, key):
-        res = self.get(key)
-        if res:
-            return res
-        else:
-            raise KeyError(&#39;Error, key not in tree&#39;)
-
-    def __contains__(self, key):
-        if self._get(key, self.root):
-            return True
-        else:
-            return False
-
-    def length(self):
-        return self.size
-
-    def __len__(self):
-        return self.size
-
-    def __iter__(self):
-        return self.root.__iter__()
-
-    def delete(self, key):
-        if self.size &gt; 1:
-            nodeToRemove = self._get(key, self.root)
-            if nodeToRemove:
-                self.remove(nodeToRemove)
-                self.size = self.size - 1
-            else:
-                raise KeyError(&#39;Error, key not in tree&#39;)
-        elif self.size == 1 and self.root.key == key:
-            self.root = None
-            self.size = self.size - 1
-        else:
-            raise KeyError(&#39;Error, key not in tree&#39;)
-
-    def __delitem__(self, key):
-        self.delete(key)
-
-    def remove(self, currentNode):
-        if currentNode.isLeaf():  # leaf
-            if currentNode == currentNode.parent.leftChild:
-                currentNode.parent.leftChild = None
-            else:
-                currentNode.parent.rightChild = None
-        elif currentNode.hasBothChildren():  # interior
-            succ = currentNode.findSuccessor()
-            succ.spliceOut()
-            currentNode.key = succ.key
-            currentNode.payload = succ.payload
-        else:  # this node has one child
-            if currentNode.hasLeftChild():
-                if currentNode.isLeftChild():
-                    currentNode.leftChild.parent = currentNode.parent
-                    currentNode.parent.leftChild = currentNode.leftChild
-                elif currentNode.isRightChild():
-                    currentNode.leftChild.parent = currentNode.parent
-                    currentNode.parent.rightChild = currentNode.leftChild
-                else:
-                    currentNode.replaceNodeData(currentNode.leftChild.key,
-                                                currentNode.leftChild.payload,
-                                                currentNode.leftChild.leftChild,
-                                                currentNode.leftChild.rightChild)
-            else:
-                if currentNode.isLeftChild():
-                    currentNode.rightChild.parent = currentNode.parent
-                    currentNode.parent.leftChild = currentNode.rightChild
-                elif currentNode.isRightChild():
-                    currentNode.rightChild.parent = currentNode.parent
-                    currentNode.parent.rightChild = currentNode.rightChild
-                else:
-                    currentNode.replaceNodeData(currentNode.rightChild.key,
-                                                currentNode.rightChild.payload,
-                                                currentNode.rightChild.leftChild,
-                                                currentNode.rightChild.rightChild)
-
-    def inorder(self):
-        self._inorder(self.root)
-
-    def _inorder(self, tree):
-        if tree != None:
-            self._inorder(tree.leftChild)
-            print(tree.key)
-            self._inorder(tree.rightChild)
-
-    def postorder(self):
-        self._postorder(self.root)
-
-    def _postorder(self, tree):
-        if tree:
-            self._postorder(tree.rightChild)
-            self._postorder(tree.leftChild)
-            print(tree.key)
-
-    def preorder(self):
-        self._preorder(self, self.root)
-
-    def _preorder(self, tree):
-        if tree:
-            print(tree.key)
-            self._preorder(tree.leftChild)
-            self._preorder(tree.rightChild)
-
-
-class TreeNode:
-    def __init__(self, key, val, left=None, right=None, parent=None):
-        self.key = key
-        self.payload = val
-        self.leftChild = left
-        self.rightChild = right
-        self.parent = parent
-        self.balanceFactor = 0
-
-    def hasLeftChild(self):
-        return self.leftChild
-
-    def hasRightChild(self):
-        return self.rightChild
-
-    def isLeftChild(self):
-        return self.parent and self.parent.leftChild == self
-
-    def isRightChild(self):
-        return self.parent and self.parent.rightChild == self
-
-    def isRoot(self):
-        return not self.parent
-
-    def isLeaf(self):
-        return not (self.rightChild or self.leftChild)
-
-    def hasAnyChildren(self):
-        return self.rightChild or self.leftChild
-
-    def hasBothChildren(self):
-        return self.rightChild and self.leftChild
-
-    def replaceNodeData(self, key, value, lc, rc):
-        self.key = key
-        self.payload = value
-        self.leftChild = lc
-        self.rightChild = rc
-        if self.hasLeftChild():
-            self.leftChild.parent = self
-        if self.hasRightChild():
-            self.rightChild.parent = self
-
-    def findSuccessor(self):
-        succ = None
-        if self.hasRightChild():
-            succ = self.rightChild.findMin()
-        else:
-            if self.parent:
-                if self.isLeftChild():
-                    succ = self.parent
-                else:
-                    self.parent.rightChild = None
-                    succ = self.parent.findSuccessor()
-                    self.parent.rightChild = self
-        return succ
-
-    def spliceOut(self):
-        if self.isLeaf():
-            if self.isLeftChild():
-                self.parent.leftChild = None
-            else:
-                self.parent.rightChild = None
-        elif self.hasAnyChildren():
-            if self.hasLeftChild():
-                if self.isLeftChild():
-                    self.parent.leftChild = self.leftChild
-                else:
-                    self.parent.rightChild = self.leftChild
-                self.leftChild.parent = self.parent
-            else:
-                if self.isLeftChild():
-                    self.parent.leftChild = self.rightChild
-                else:
-                    self.parent.rightChild = self.rightChild
-                self.rightChild.parent = self.parent
-
-    def findMin(self):
-        current = self
-        while current.hasLeftChild():
-            current = current.leftChild
-        return current
-
-    def __iter__(self):
-        &quot;&quot;&quot;The standard inorder traversal of a binary tree.&quot;&quot;&quot;
-        if self:
-            if self.hasLeftChild():
-                for elem in self.leftChild:
-                    yield elem
-            yield self.key
-            if self.hasRightChild():
-                for elem in self.rightChild:
-                    yield elem
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/7/19</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Tree.html'>Tree</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="tree_2.html">
-                
-                  <h1>Python树(二)：二叉树的实现</h1>
+                  <h1>Minimum Spanning Tree: Prim's, Kruskal's Algorithm and Clustering</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
                         	<ul>
 <li>
-<a href="#toc_0">嵌套列表表示树</a>
+<a href="#toc_0">Concepts</a>
 </li>
 <li>
-<a href="#toc_1">节点和引用</a>
-</li>
-<li>
-<a href="#toc_2">优先队列和二叉堆</a>
+<a href="#toc_1">Prim&#39;s algorithm</a>
 <ul>
 <li>
-<a href="#toc_3">列表与完全二叉树</a>
+<a href="#toc_2">Implementation</a>
 </li>
 <li>
-<a href="#toc_4">二叉堆的操作与实现</a>
+<a href="#toc_3">Prim&#39;s v.s. Dijkstra&#39;s</a>
 </li>
 </ul>
 </li>
 <li>
-<a href="#toc_5">分析树</a>
+<a href="#toc_4">Kruskal&#39;s Algorithm</a>
+<ul>
+<li>
+<a href="#toc_5">Implementation</a>
+</li>
+</ul>
+</li>
+</ul>
 </li>
 <li>
-<a href="#toc_6">树的遍历</a>
+<a href="#toc_6">Clustering</a>
+<ul>
+<li>
+<a href="#toc_7">Implementation</a>
 </li>
 </ul>
 
 
-<p>树可以具有以下方法：</p>
+<p>Let \(G=(V, E)\) be a connected, undirected graph with a real-valued weight function \(w\) defined on \(E\). If an acyclic subset \(T\in E\) that connects all of the vertices and whose total weight \(w(T)=\sum_{(u,v)\in T}w(u,v)\) is minimized, \(T\) forms a <code>Minimum Spanning Tree</code>.</p>
+
+<h2 id="toc_0">Concepts</h2>
 
 <ul>
-<li><code>BinaryTree()</code> creates a new instance of a binary tree.</li>
-<li><code>get_left_child()</code> returns the binary tree corresponding to the left child of the current node</li>
-<li><code>get_right_child()</code> return the binary tree corresponding to the right child of the current node</li>
-<li><code>set_root_val(val)</code> stores the object stored in the current node</li>
-<li><code>get_root_val()</code> returns the object stored in the current node</li>
-<li><code>insert_left(val)</code> creates a new binary tree and installs it as the left child of the current node</li>
-<li><code>insert_right(val)</code> creates a new binary tree and installs it as the right child of the current node</li>
+<li><code>safe edge</code>: An edge that may be added to \(A\) without violating the invariant that \(A\) is a subset of some <code>minimum spanning tree</code>.</li>
+<li><code>cut</code>: A <code>cut</code> \((S, V-S)\) of an undirected graph \(G=(V,E)\) is a partition of \(V\).</li>
+<li><code>cross</code>: We say that an edge \((u,v)\in E\) <code>crosses</code> the cut \((S,V-S)\) if one of its endpoints is in \(S\) and the other is in \(V-S\).</li>
+<li><code>respect</code>: If no edge in \(A\) (a subset of some <code>minimum spanning tree</code>) <code>crosses</code> the cut, the cut <code>respects</code> a set \(A\) of edges.</li>
+<li><code>light edge</code>: An edge is a <code>light edge</code> crossing a cut if its weight is the minimum of any edge crossing the cut. </li>
 </ul>
 
-<h2 id="toc_0">嵌套列表表示树</h2>
+<h2 id="toc_1">Prim&#39;s algorithm</h2>
 
-<p>在列表实现树时，我们将存储根节点作为列表的第一个元素的值。列表的第二个元素的本身是一个表示左子树的列表。这个列表的第三个元素表示在右子树的另一个列表。</p>
+<p>In <code>Prim&#39;s algorithm</code>, each step adds a light edge to minimum spanning tree. The running time of the Prim&#39;s algorithm is \(O(E \log(V))\)</p>
 
-<pre><code class="language-python"># coding: utf-8
+<h3 id="toc_2">Implementation</h3>
 
-
-def BinaryTree(r):
+<pre><code class="language-python">def prim(agraph, start):
     &quot;&quot;&quot;
-    creates a new instance of a binary tree.
+    Prim&#39;s algorithm for minimum spanning tree
+    Using min-heap data structure
+
+    return a minimum spanning tree
     &quot;&quot;&quot;
-    return [r,[],[]]
+    # vertex of minimun spanning tree
+    mst_vertex = []
+    pq = PriorityQueue()
+    for v in agraph:
+        v.setDistance(sys.maxsize)
+        v.setPred(None)
+    start.setDistance(0)
+    pq.buildHeap([(v.getDistance(), v) for v in agraph])
+    while not pq.isEmpty():
+        u = pq.delMin()
+        mst_vertex.append(u)
+        for adjacent in u.getConnections():
+            newcost = u.getWeight(adjacent)
+            if adjacent in pq and newcost &lt; adjacent.getDistance():
+                adjacent.setPred(u)
+                adjacent.setDistance(newcost)
+                pq.decreaseKey(adjacent, newcost)
 
+    # edges of minimum spanning tree
+    mst = []
+    for i in range(1, len(mst_vertex)):
+        # u, v, cost
+        mst.append((mst_vertex[i-1], mst_vertex[i],  mst_vertex[i].getDistance()))
 
-def get_left_child(root):
-    &quot;&quot;&quot;
-    returns the binary tree corresponding to the left child of the current node
-    &quot;&quot;&quot;
-    return root[1]
-
-
-def get_right_child(root):
-    &quot;&quot;&quot;
-    return the binary tree corresponding to the right child of the current node
-    &quot;&quot;&quot;
-    return  root[2]
-
-
-def set_root_val(root, val):
-    &quot;&quot;&quot;stores the object stored in the current node
-    &quot;&quot;&quot;
-    root[0] = val
-
-
-
-def get_root_val(root):
-    &quot;&quot;&quot;
-    returns the object stored in the current node
-    &quot;&quot;&quot;
-    return root[0]
-
-def insert_left(root, new_branch):
-    &quot;&quot;&quot;
-    creates a new binary tree and installs it as the left child of the current node
-
-    插入一个左子节点，首先获取对应于当前左子节点的列表（可能是空的）。
-    然后，添加新的左子节点，将原来的左子节点作为新节点的左子节点。
-    这使我们能够将新节点插入到树中的任何位置.
-    &quot;&quot;&quot;
-    if root[1]:
-        root[1] = [new_branch,root[1], []]
-    else:
-        root[1] = [new_branch, [], []]
-    return root
-
-
-
-def insert_right(root, new_branch):
-    &quot;&quot;&quot;
-    creates a new binary tree and installs it as the right child of the current node
-    &quot;&quot;&quot;
-    if root[2]:
-        root[2] = [new_branch, [], root[2]]
-    else:
-        root[2] = [new_branch, [], []]
-    return root
-
-
-if __name__ == &quot;__main__&quot;:
-    r = BinaryTree(3)
-    insert_left(r,4)
-    insert_left(r,5)
-    insert_right(r,6)
-    insert_right(r,7)
-    l = get_left_child(r)
-    print(l)
-
-    set_root_val(l,9)
-    print(r)
-    insert_left(l,11)
-    print(r)
-    print(get_right_child(get_right_child(r)))
-
-# result
-#[5, [4, [], []], []]
-#[3, [9, [4, [], []], []], [7, [], [6, [], []]]]
-#[3, [9, [11, [4, [], []], []], []], [7, [], [6, [], []]]]
-#[6, [], []]
-
+    return mst
 </code></pre>
 
-<h2 id="toc_1">节点和引用</h2>
+<h3 id="toc_3">Prim&#39;s v.s. Dijkstra&#39;s</h3>
 
-<p>节点和引用方法，定义一个类，具有根、以及左、右子树属性。这种表示更紧密地结合了面向对象的方式。树的结构类似于下图所示。</p>
+<p><code>Prim&#39;s algorithm</code> are similar to <code>Dijkstra&#39;s algorithm</code>, both of which use a <code>priority queue</code>. And  each of them belongs to <code>greedy algorithm</code>. There is trivial difference when implementing:</p>
 
-<p><img src="media/14973171257726/14974056999880.jpg" alt="binary tree"/></p>
+<p>\[\text{Prim&#39;s} p(v) = \min_{(u,v): u\in S} w(u,v)\]<br/>
+\[\text{Dijkstra&#39;s} s(v) = \min_{(u,v): u\in S} \text{dist(su,u)} w(u,v)\]</p>
 
-<p>左右子树是其他二叉树实例的引用。例如，当插入一个新的左子节点到树上时，即创建了二叉树的另一个实例，并修改了根节点的<code>self.left_child</code>使之指向新的树。</p>
+<h2 id="toc_4">Kruskal&#39;s Algorithm</h2>
 
-<pre><code class="language-python">
-import doctest
+<p>In <code>Kruskal&#39;s algorithm</code>, always add edges in increasing weight, skipping those whose addition would create a cycle.</p>
 
+<p>In order to keep track of the connected components of a minimum spanning tree when implementing Kruskal&#39;s algorithm, a disjoint-set data structure should be used. The pseudo code for <code>MST-KRUSKAL</code>:</p>
 
-class BinaryTree(object):
-    &quot;&quot;&quot;
-    &gt;&gt;&gt; r = BinaryTree(&#39;a&#39;)
-    &gt;&gt;&gt; r.get_root_val()
-    &#39;a&#39;
-    &gt;&gt;&gt; r.get_left_child()
-
-    &gt;&gt;&gt; r.insert_left(&#39;b&#39;)
-    &gt;&gt;&gt; r.get_left_child().get_root_val()
-    &#39;b&#39;
-    &gt;&gt;&gt; r.insert_right(&#39;c&#39;)
-    &gt;&gt;&gt; r.get_right_child().get_root_val()
-    &#39;c&#39;
-    &gt;&gt;&gt; r.get_right_child().set_root_val(&#39;hello&#39;)
-    &gt;&gt;&gt; r.get_right_child().get_root_val()
-    &#39;hello&#39;
-    &quot;&quot;&quot;
-    
-    def __init__(self, root):
-        self.key = root
-        self.left_child = None
-        self.right_child = None
-
-    def insert_left(self, item):
-        &quot;&quot;&quot;
-        creates a new binary tree and installs it as the left child of the current node
-        &quot;&quot;&quot;
-        if self.left_child:
-            self.left_child = BinaryTree(item)
-        else:
-            t = self.left_child
-            self.left_child = BinaryTree(item)
-            self.left_child.left_child = t
-
-    def insert_right(self, item):
-        &quot;&quot;&quot;
-        creates a new binary tree and installs it as the right child of the current node
-        &quot;&quot;&quot;
-        if self.right_child:
-            self.right_child = BinaryTree(item)
-        else:
-            t = self.right_child
-            self.right_child = BinaryTree(item)
-            self.right_child.right_child = t
-
-    def get_right_child(self):
-        &quot;&quot;&quot;
-        return the binary tree corresponding to the right child of the current node
-        &quot;&quot;&quot;
-        return self.right_child
-
-    def get_left_child(self):
-        &quot;&quot;&quot;
-        return the binary tree corresponding to the left child of the current node
-        &quot;&quot;&quot;
-        return self.left_child
-
-    def set_root_val(self, root):
-        &quot;&quot;&quot;
-        stores the object stored in the current node
-        &quot;&quot;&quot;
-        self.key = root
-
-    def get_root_val(self):
-        &quot;&quot;&quot;
-        returns the object stored in the current node
-        &quot;&quot;&quot;
-        return self.key
-
-    def pre_order(self, root):
-        &quot;&quot;&quot;
-        preorder traversal
-        &quot;&quot;&quot;
-        print(root.key, end=&#39; &#39;)
-        if root.left_child:
-            root.pre_order(root.left_child)
-        if root.right_child:
-            root.pre_order(root.right_child)
-
-    def post_order(self, root):
-        &quot;&quot;&quot;
-        postorder traversal
-        &quot;&quot;&quot;
-        if root is not None:
-            self.post_order(root.left_child)
-            self.post_order(root.right_child)
-            print(root.key, end=&#39; &#39;)
-
-    def pre_order(self, root):
-        &quot;&quot;&quot;
-        Preorder traversal
-        &quot;&quot;&quot;
-        print(root.key, end=&#39; &#39;)
-        if root.left_child:
-            self.pre_order(root.left_child)
-        if root.right_child:
-            self.pre_order(root.right_child)
-
-    def in_order(self, root):
-        &quot;&quot;&quot;
-        postorder traversal
-        &quot;&quot;&quot;
-        if root is not None:
-            self.in_order(root.left_child)
-            print(root.key, end=&#39; &#39;)
-            self.in_order(root.right_child)
-
-if __name__ == &quot;__main__&quot;:
-    doctest.testmod(verbose=True)
-
+<pre><code class="language-python">mst = []
+for each vertex in G:
+    make-set(vertex)
+sort the edges of G into nondecreasing order by weight of edges
+for each edge (u,v) in G:
+    if find-set(u) != find_set(v):
+        mst = mst + (u,v)
+        union(u,v)
+return mst
 </code></pre>
 
-<h2 id="toc_2">优先队列和二叉堆</h2>
+<p>If we use <code>union-by-rank</code> and <code>path-compression</code> heuristics in <code>disjoint-set</code> data structure, the running time of <code>Kruskal&#39;s algorithm</code> is \(O(E\lg V)\).</p>
 
-<p><strong>优先队列</strong>(Priority Queues)是一类抽象数据类型。优先队列中的每个元素都有各自的优先级，优先级最高的元素最先得到服务；优先级相同的元素按照其在优先队列中的顺序得到服务。在优先队列的内部，元素的次序是由“优先级”来决定：高优先级的元素排在队首，而低优先级的元素则排在后面。</p>
+<h3 id="toc_5">Implementation</h3>
 
-<p>实现优先队列的经典方法是采用<strong>二叉堆</strong>(Binary Heap)。因为使用二叉堆能将优先队列的入队和出队复杂度都保持在\(O(\log n)\)。 二叉堆有两种：键值总是最小的排在队首称为<strong>最小堆</strong>(min heap)，反之，键值总是最大的排在队首称为<strong>最大堆</strong>(max heap)。</p>
-
-<p>储存元素要满足<strong>堆次序</strong>，即堆中任何一个节点\(x\)，其父节点\(p\)的键值均小于或等于\(x\)的键值。下图所示是具备堆次序性质的完全二叉树。</p>
-
-<h3 id="toc_3">列表与完全二叉树</h3>
-
-<p><strong>不需要使用节点，引用或嵌套列表，用单个列表就能代表完全二叉树</strong>。因为对于完全二叉树，如果节点在列表中的下标为\(p\)，那么其左子节点下标为\(2p\)，右节点为\(2p+1\)。当我们要找任何节点的父节点时，可以直接使用 python 的整除。如果节点在列表中下标为\(n\)，那么父节点下标为\(n//2\)（参考下图）。使用列表, 能够使用简单的数学方法高效地遍历一棵完全二叉树，这也导致了二叉堆的高效实现。</p>
-
-<p><img src="media/14973171257726/14974117374605.jpg" alt=""/></p>
-
-<h3 id="toc_4">二叉堆的操作与实现</h3>
-
-<ul>
-<li><code>BinaryHeap()</code>：创建一个新的、空的二叉堆对象</li>
-<li><code>insert(k)</code>：把新元素加入到堆中</li>
-<li><code>findMin()</code>：返回堆中的最小项，最小项仍保留在堆中</li>
-<li><code>delMin()</code>：返回堆中的最小项，同时从堆中删除</li>
-<li><code>isEmpty()</code>：返回堆是否为空</li>
-<li><code>size()</code>：返回堆中元素的个数</li>
-<li><code>buildHeap(list)</code>：从一个包含元素的列表创建新堆</li>
-</ul>
-
-<p>有两个关键的操作：<br/>
-1. <code>insert</code>方法。首先，为了满足“完全二叉树”的性质，新键值应该添加到列表的末尾。然而新键值简单地添加在列表末尾，显然无法满足堆次序。所以要通过比较父节点和新加入的元素的方法来重新满足堆次序。如果新加入的元素比父节点要小，可以与父节点互换位置；不断交换，直到到达树的顶端。下图所示一系列交换操作来使新加入元素“上浮”到正确的位置。</p>
-
-<p><img src="media/14973171257726/14974156268132.jpg" alt=""/></p>
-
-<p>2.<code>delMin</code>方法 移走根节点的元素后如何保持堆结构和堆次序: 首先，用最后一个节点来代替根节点, 移走最后一个节点保持了堆结构的性质。这么简单的替换，还是会破坏堆次序。第二步，将新节点“下沉”来恢复堆次序。下图所示的是一系列交换操作来使新节点“下沉”到正确的位置。</p>
-
-<p><img src="media/14973171257726/14974156980805.jpg" alt=""/></p>
-
-<pre><code class="language-python">class BinHeap(object):
+<pre><code class="language-python">def kruskal_mst(agraph):
     &quot;&quot;&quot;
-    创建一个新的、空的二叉堆对象
+    Return a minimum spanning tree using kruskal&#39;s algorithm
     &quot;&quot;&quot;
-    def __init__(self):
-        self.list = [0]
-        self.size = 0
+    # minimum spanning tree
+    mst = []
 
-    def perc_up(self,i):
-        &quot;&quot;&quot;
-        Percolate the new node into proper position
-        &quot;&quot;&quot;
-        while i//2&gt;0: 
-            if self.list[i] &lt; self.list[i//2]:
-                self.list[i], self.list[i//2] = self.list[i//2], self.list[i]
-            i = i//2
-    
-    def insert(self, item):
-        &quot;&quot;&quot;把新元素加入到堆中&quot;&quot;&quot;
-        self.list.append(item)
-        self.size += 1
-        self.perc_up(self.size)
+    # disjoint set
+    disjoint_set = DisjointSet()
 
-    def findMin(self):
-        &quot;&quot;&quot;返回堆中的最小项，最小项仍保留在堆中&quot;&quot;&quot;
-        return self.list[1]
+    # make set
+    for vertex in agraph.Vertices():
+        disjoint_set.make_set(vertex)
 
-    def delMin(self):
-        &quot;&quot;&quot;返回堆中的最小项，同时从堆中删除&quot;&quot;&quot;
-        retval = self.list[1]
-        self.list[1] = self.list[-1]
-        self.size -=1
-        self.list.pop()
-        self.perc_down(1)
+    # edges of the graph
+    edges = agraph.edges()
+    edges.sort(key=lambda tup: tup[2])
 
-        return retval
-
-
-    def perc_down(self, i):
-        &quot;&quot;&quot;
-        Percolate the root node  down the tree
-        &quot;&quot;&quot;
-        while (i * 2) &lt;= self.currentSize:
-            mc = self.minChild(i)
-            if self.heapList[i] &gt; self.heapList[mc]:
-                tmp = self.heapList[i]
-                self.heapList[i] = self.heapList[mc]
-                self.heapList[mc] = tmp
-            i = mc
-            
-    def minChild(self, i):
-        &quot;&quot;&quot;
-        find the min child
-        &quot;&quot;&quot;
-        if i * 2 + 1 &gt; self.currentSize:
-            return i * 2
-        else:
-            if self.heapList[i * 2] &lt; self.heapList[i * 2 + 1]:
-                return i * 2
-            else:
-                return i * 2 + 1
-
-    def isEmpty(self):
-        &quot;&quot;&quot;返回堆是否为空&quot;&quot;&quot;
-        return self.size == 0
-
-    def __len__(self):
-        &quot;&quot;&quot;返回堆中元素的个数&quot;&quot;&quot;
-        return self.size
-
-    def buildHeap(self,alist):
-        &quot;&quot;&quot;从一个包含元素的列表创建新堆&quot;&quot;&quot;
-        self.size = len(alist)
-        self.list.extend(alist)
-        i = self.size//2
-        while i &gt;0:
-            self.perc_down(i)
-            i -= 1
-
+    for u, v, cost in edges:
+        if disjoint_set.find_set(u) != disjoint_set.find_set(v):
+            mst.append((u, v, cost))
+            disjoint_set.union(u, v)
+    return mst
 </code></pre>
 
-<h2 id="toc_5">分析树</h2>
+<h1 id="toc_6">Clustering</h1>
 
-<p><strong>分析树</strong>(Parse Tree)是一个反映某种形式语言字符串的语法关系的有根有序树, 常常用于真实世界的结构表示，例如句子或数学表达式。</p>
+<p><strong>Max-Spacing k clustering</strong>: Given a set of objects \(p_1, . . . , p_n\), a distance function \(d(p_i,p_j)\) specifies their similarity.  \(d(p_i,p_j)\) may be an actual distance, or some abstract representation of how dissimilar of two things are. </p>
 
-<p>下图是\( ((7+3)*(5−2))\) 的分析树, 树的层级结构帮我们理解了整个表达式的运算顺序。在计算最顶上的乘法运算前，我们先要计算子树中的加法和减法运算。左子树的加法运算结果为\(10\)，右子树的减法运算结果为\(3\)。利用树的层级结构，一旦我们计算出了子节点中表达式的结果，我们能够将整个子树用一个节点来替换。</p>
+<p><strong>OUR GOAL</strong>: Divide the \(n\) items up into \(k\) groups so that the minimum distance between items in different groups is maximized.</p>
 
-<p><img src="media/14973171257726/14974242592531.jpg" alt=""/></p>
-
-<p>建立分析树的第一步是将表达式字符串分解成符号保存在列表里。有四种符号需要考虑：<strong>左括号</strong>，<strong>右括号</strong>，<strong>操作符</strong>和<strong>操作数</strong>。当读到一个左括号时，将开始一个新的表达式，因此需要创建一个子树来对应这个新的表达式。相反，每当读到一个右括号，就得结束这个表达式。另外，操作数将成为叶节点和他们所属的操作符的子节点。最后，每个操作符都应该有一个左子节点和一个右子节点。通过上面的分析我们定义以下四条规则：</p>
+<p><strong>IDEA</strong>: </p>
 
 <ul>
-<li>如果当前读入的字符是<code>(</code>，添加一个新的节点作为当前节点的左子节点，并下降到左子节点处。</li>
-<li>如果当前读入的字符在列表[<code>+</code>, <code>-</code>, <code>/</code>, <code>*</code>]中，将当前节点的根值设置为当前读入的字符。添加一个新的节点作为当前节点的右子节点，并下降到右子节点处。</li>
-<li>如果当前读入的字符是一个数字，将当前节点的根值设置为该数字，并返回到它的父节点。</li>
-<li>如果当前读入的字符是<code>)</code>，返回当前节点的父节点。</li>
+<li>we maintain clusters as a set of connected components of a graph. </li>
+<li>And Iteratively combine the clusters containing the two closest items by adding an edge between them.</li>
+<li>Stop when there are \(k\) clusters.</li>
 </ul>
 
-<p>利用<code>get_left_child</code>和<code>get_right_child</code>方法可以获得子节点的方法。<strong>利用栈跟踪父节点</strong>：当要下降到当前节点的子节点时，将当前节点压入栈；当要返回当前节点的父节点时，从栈中弹出该父节点。</p>
+<p>You&#39;ll find this is exactly <code>Kruskal&#39;s algorithm</code>.</p>
 
-<p>所以使用栈和二叉树来创建分析树，代码如下：</p>
+<h3 id="toc_7">Implementation</h3>
 
-<pre><code class="language-python">from stack import Stack
-from binary_tree2 import BinaryTree
-import operator
+<pre><code class="language-python">def clustering(agraph, k):
+    &quot;&quot;&quot;
+    Max-Spacing k clustering
 
-def build_parse_tree(fp_exp):
-    fp_list = fp_exp.split()
-    p_stack = Stack()
-    e_tree = BinaryTree(&#39;&#39;)
-    p_stack.push(e_tree)
-    current_tree = e_tree
+    Return maximum spacing of a k-clustering
+    and corresponding mst.
+    &quot;&quot;&quot;
+    # minimum spanning tree
+    mst = []
 
-    for i in fp_list:
-        if i == &#39;(&#39;:
-            current_tree.insert_left(&#39;&#39;)
-            p_stack.push(current_tree)
-            current_tree = current_tree.get_left_child()
-        elif i not in [&#39;+&#39;,&#39;-&#39;,&#39;*&#39;,&#39;/&#39;,&#39;)&#39;]:
-            current_tree.set_root_val(int(i))
-            parent = p_stack.pop()
-            current_tree = parent
-        elif i in [&#39;+&#39;,&#39;-&#39;,&#39;*&#39;,&#39;/&#39;]:
-            current_tree.set_root_val(i)
-            current_tree.insert_right(&#39;&#39;)
-            p_stack.push(current_tree)
-            current_tree = current_tree.get_right_child()
-        elif i == &#39;)&#39;:
-            current_tree = p_stack.pop()
+    # disjoint set
+    disjoint_set = DisjointSet()
+
+    # make set
+    for vertex in agraph.Vertices():
+        disjoint_set.make_set(vertex)
+
+    # edges of the graph
+    edges = agraph.edges()
+    edges.sort(key=lambda tup: tup[2])
+
+    for u, v, cost in edges:
+        if len(disjoint_set) &gt;= k:
+
+            if disjoint_set.find_set(u) != disjoint_set.find_set(v):
+                mst.append((u, v, cost))
+                max_cost = cost
+                disjoint_set.union(u, v)
         else:
-            raise ValueError
+            break
 
-    return e_tree
 
-def postorder_eval(tree):
-    opers = {&#39;+&#39;:operator.add, &#39;-&#39;:operator.sub, &#39;*&#39;:operator.mul, &#39;/&#39;: operator.truediv}
-    res1 = None
-    res2 = None
-
-    if tree:
-        res1 = postorder_eval(tree.get_left_child())
-        res2 = postorder_eval(tree.get_right_child())
-        if res1 and res2:
-            return opers[tree.get_root_val()](res1, res2)
-        else:
-            return tree.get_root_val()
-
-pt = build_parse_tree(&quot;( ( 10 + 5 ) * 3 )&quot;)
-
-print(&#39;result = %d&#39; %postorder_eval(pt))
+    return max_cost, mst
 </code></pre>
-
-<h2 id="toc_6">树的遍历</h2>
-
-<p>对树中所有节点的访问称为<strong>遍历</strong>(traversal)。按照节点的访问方式不同，树的遍历模式可分为 3 种。这三种方式常被用于访问树的节点，它们之间的不同在于访问每个节点的次序不同。这三种遍历分别叫做<strong>先序遍历</strong>(preorder)，<strong>中序遍历</strong>(inorder)和<strong>后序遍历</strong>(postorder)。具体定义为：</p>
-
-<ul>
-<li><p><strong>先序遍历</strong> 先访问根节点，然后递归使用先序遍历访问左子树，再递归使用先序遍历访问右子树。</p></li>
-<li><p><strong>中序遍历</strong> 递归使用中序遍历访问左子树，然后访问根节点，最后再递归使用中序遍历访问右子树。</p></li>
-<li><p><strong>后序遍历</strong> 先递归使用后序遍历访问左子树和右子树，最后访问根节点。</p></li>
-</ul>
-
-<p>三种遍历模式的代码已经包括在<code>BinaryTree</code>类中（参见<code>节点和引用</code>一节）。</p>
 
                         
                       </div>
@@ -1216,10 +509,12 @@ print(&#39;result = %d&#39; %postorder_eval(pt))
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2017/7/19</span>
+                    <span class="date">2017/8/4</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Tree.html'>Tree</a></span>
+          				  
+          					    <span class="posted-in"><a href='Graph.html'>Graph</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -1233,94 +528,253 @@ print(&#39;result = %d&#39; %postorder_eval(pt))
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="magic_method_item_access.html">
+                <a class="clearlink" href="hash_table_5_hashable.html">
                 
-                  <h1>Magic Methods: Item Access</h1>
+                  <h1>Hash Table (5): Hashable</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<p>Useful magic methods allows you to create objects that behave like sequences or mappings.</p>
+                        	<p>To make items hashable, you should implement <code>__hash__</code>. You should also implement <code>__eq__</code> in a compatible way -- items that are equivalent should hash the same.</p>
 
-<h2 id="toc_0">Sequence and Mapping Protocol</h2>
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/8/3</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Hash%20Table.html'>Hash Table</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
 
-<p><code>protocol</code> in Python usually describe the rules governing some form of behavior. The <code>protocol</code> states which methods you should implement and what those methods should do. So, to be a sequence means,  to follow the sequence protocol.</p>
-
-<ul>
-<li><code>__len__(self)</code>: This method should return the number of items contained in the collection. For a sequence, this would simply be the number of elements. For a mapping, it would be the number of key-value pairs. If <code>__len__</code> returns zero (and you don’t implement <code>__nonzero__</code>, which overrides this behavior), the object is treated as false in a Boolean context (as with empty lists, tuples, strings, and dictionaries).</li>
-<li><code>__getitem__(self, key)</code>: This should return the value corresponding to the given key. For a sequence, the key should be an integer from \(0\) to \(n–1\) (or, it could be negative, as noted later), where \(n\) is the length of the sequence. For a mapping, you could really have any kind of keys.</li>
-<li><code>__setitem__(self, key, value)</code>: This should store value in a manner associated with key, so it can later be retrieved with <code>__getitem__</code>. Of course, you define this method only for mutable objects.</li>
-<li><code>__delitem__(self, key)</code>: This is called when someone uses the <code>del</code> statement on a part of the object, and should delete the element associated with key. Again, only mutable objects (and not all of them—only those for which you want to let items be removed) should define this method.</li>
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="disjoint_set_data_structure.html">
+                
+                  <h1>Disjoint-Set Data Structure</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<ul>
+<li>
+<a href="#toc_0">Linked-List Implementation</a>
+</li>
+<li>
+<a href="#toc_1">Forest Implementation of Disjoint-Set</a>
+</li>
+<li>
+<a href="#toc_2">Reference</a>
+</li>
 </ul>
 
-<h2 id="toc_1">Example</h2>
 
-<pre><code class="language-python">def checkIndex(key):
+<p>In order to keep track of the connected components of a minimum spanning tree when implementing <code>Kruskal&#39;s algorithm</code>, a disjoint-set data structure should be used.</p>
+
+<p><code>Disjoint-set</code> data structure, also called <code>union-find</code> data structure, is a data structure that keeps track of a set of elements partitioned into a number of disjoint subsets.</p>
+
+<p>A <code>disjoint-set</code> data structure supports following operations:</p>
+
+<ul>
+<li><code>MAKE-SET(x)</code> creates a new set whose only member is \(x\)</li>
+<li><code>UNION(x,y)</code> unites the dynamic sets that contains \(x\) and \(y\), into a new set that is the union of these two sets.</li>
+<li><code>FIND-SET(x)</code> returns the representative of the set containing \(x\).</li>
+</ul>
+
+<h2 id="toc_0">Linked-List Implementation</h2>
+
+<p>Each set is represented by its own <strong>linked list</strong>. The object for each set has attributes <em>head</em>, pointing to the first object in the list, and <em>tail</em>, pointing to the last object. Each object in the linked list contains a set member, a pointer to the next object in the list, and a pointer back to the set object.</p>
+
+<p><img src="media/15017471539381/Screen%20Shot%202017-08-03%20at%209.21.43%20PM.png" alt="Linked List implementaion"/></p>
+
+<p><strong>Weighted-Union Heuristic</strong>: And each linked list also includes the length of the list and we always append the shorter list onto the longer.</p>
+
+<p>Using the linked-list representation of disjoint sets and the weighted-union heuristic, a sequence of \(m\) MAKE-SET, UNION, and FIND-SET, \(n\) of which are MAKE-SET operations, takes \(O(m+n\lg n)\) time.</p>
+
+<pre><code class="language-python">class Node:
     &quot;&quot;&quot;
-    Is the given key an acceptable index?
-    To be acceptable, the key should be a non-negative integer. If it
-    is not an integer, a TypeError is raised; if it is negative, an
-    IndexError is raised (since the sequence is of infinite length).
+    class Node for double liked list
     &quot;&quot;&quot;
-    if not isinstance(key, int):
-        raise TypeError
-    if key &lt; 0:
-        raise IndexError
+    def __init__(self, elem):
+        self.prev = None
+        self.elem = elem
+        self.next = None
+
+    def __hash__(self):
+        return hash(self.elem)
+
+    def __eq__(self, x, y):
+        return x.elem == y.elem
 
 
-class ArithmeticSequence:
-    def __init__(self, start=0, step=1):
-        &quot;&quot;&quot;
-        Initialize the arithmetic sequence.
-        start   - the first value in the sequence
-        step    - the difference between two adjacent values
-        changed - a dictionary of values that have been modified by the user
-        &quot;&quot;&quot;
-        self.start = start
-        self.step = step
-        self.changed = {}
+class LinkedList:
 
-    def __getitem__(self, key):
-        &quot;&quot;&quot;
-        Get an item from the arithmetic sequence.
-        &quot;&quot;&quot;
-        checkIndex(key)
-        try:
-            return self.changed[key]
-        except KeyError:
-            return self.start + key*self.step
-    # Store the start value
-    # Store the step value
-    # No items have been modified
-    # Modified?
-    # otherwise...
-    # ...calculate the value
+    def __init__(self):
+        self.head = None
+        self.tail = None
+        self.length = 0
 
-    def __setitem__(self, key, value):
+    def add(self, node):
         &quot;&quot;&quot;
-        Change an item in the arithmetic sequence.
+        add element to disjoint set
         &quot;&quot;&quot;
-        checkIndex(key)
-        self.changed[key] = value                 # Store the changed value
+        if self.head:
+            node.prev = self
+            self.tail.next = node
+            self.tail = node
+        else:
+            self.head = node
+            self.tail = node
+            node.prev = self
+        self.length += 1
 
-    def __delitem__(self, key):
-        &quot;&quot;&quot;
-        Delete the key provided from sequence
-        &quot;&quot;&quot;
-        checkIndex(key)
-        del self.changed[key]
+    def __len__(self):
+        return self.length
+
+    def set_length(self, l):
+        self.length = l
+
+    def __iter__(self):
+        next_node = self.head
+        while next_node:
+            yield next_node
+            next_node = next_node.next
 
 
+            
 
-if __name__ == &quot;__main__&quot;:
-    s = ArithmeticSequence(1, 2)
-    print(s[4])
-    s[4]=3
-    print(s[4])
-    del s[4]
-    print(s[4])
+class DisjointSet:
+
+    def __init__(self):
+        self.sets = []
+
+    def make_set(self, node):
+        &quot;&quot;&quot; 
+        creates a new set whose only member (and thus representative) is x.
+        &quot;&quot;&quot;
+        alist = LinkedList()
+        alist.add(node)
+        self.sets.append(alist)
+        return alist
+
+    def union(self, nodex, nodey):
+        &quot;&quot;&quot;
+        unites the dynamic sets that contain x and y, into a new set that is the union of these two sets.
+        &quot;&quot;&quot;
+        listx = self.find_set(nodex)
+        listy = self.find_set(nodey)
+        
+        # append the shorter list onto the longer.
+        if len(listx) &gt; len(listy):
+            listx.tail.next = listy.head
+            for y in listy:
+                y.prev = listx
+            listx.tail = listy.tail
+            listx.set_length = len(listx) + len(listy)
+            self.sets.remove(listy)
+        else:
+            listy.tail.next = listx.head
+            for x in listx:
+                x.prev = listy
+            listy.tail = listx.tail
+            listy.setlength = len(listx) + len(listy)
+            self.sets.remove(listx)
+
+
+
+    def find_set(self, node):
+        &quot;&quot;&quot;
+        returns the representative of the set containing x
+        &quot;&quot;&quot;
+        return node.prev
+
+    def connected_components(self):
+        for link_list in self.sets:
+            print(&#39;( &#39;, end=&#39;&#39;)
+            for node in link_list:
+                print(node.elem, end=&#39; &#39;)
+            print(&#39;) &#39;, end=&#39;&#39;)
+
+    def __len__(self):
+        return len(self.sets)
+
 </code></pre>
 
+<h2 id="toc_1">Forest Implementation of Disjoint-Set</h2>
+
+<p><code>Disjoint-set forest</code>, a faster implementation of disjoint sets, uses rooted trees represent sets, with each node containing one member and each tree representing one set. In a <code>disjoint-set forest</code>, each member points only to its parents. The root of each tree contains the representative and is its own parent.</p>
+
+<p><img src="media/15017471539381/15017663990040.png" alt="disjoint set forest"/></p>
+
+<p><strong>Union by Rank</strong>: For each node, we maintain a <code>rank</code>, which is an upper bound on the hight of the node. We make the root with smaller rank point to the root with larger rank during a <code>Union</code> operation.</p>
+
+<p><strong>Path Compression</strong>: When we call <code>find_set</code>, we traverse the path from a node up to its root. Instead of just returning root, we will link all the nodes in this path directly to root. </p>
+
+<p><img src="media/15017471539381/15017663772888.png" alt="path compression"/></p>
+
+<pre><code class="language-python">class DisjointSet:
+    &quot;&quot;&quot;
+    Disjoint set data structure
+    &quot;&quot;&quot;
+
+    def __init__(self):
+        self.sets = []
+        self.parent = {}
+        self.rank = {}
+
+    def make_set(self, node):
+        &quot;&quot;&quot;
+        creates a new set whose only member (and thus representative) is x.
+        &quot;&quot;&quot;
+        self.parent[node] = node
+        self.sets.append(node)
+        self.rank[node] = 0
+
+    def union(self, x, y):
+        &quot;&quot;&quot;
+        unites the dynamic sets that contain x and y, into a new set that is the union of these two sets.
+        &quot;&quot;&quot;
+        x_root = self.find_set(x)
+        y_root = self.find_set(y)
+        if x_root == y_root:
+            return
+
+        if self.rank[x_root] &gt; self.rank[y_root]:
+            self.parent[y_root] = x_root
+        else:
+            self.parent[x_root] = y_root
+            if self.rank[x_root] == self.rank[y_root]:
+                self.rank[y_root] = self.rank[y_root] + 1
+
+    def find_set(self, x):
+        &quot;&quot;&quot;
+        returns the representative of the set containing x
+        &quot;&quot;&quot;
+        if self.parent[x] != x:
+            self.parent[x] = self.find_set(self.parent[x])
+        return self.parent[x]
+
+</code></pre>
+
+<h2 id="toc_2">Reference</h2>
+
+<ol>
+<li>Cormen, Leiserson, Rivest, and Stein. 2009. Introduction to Algorithms (3rd edition)</li>
+<li><a href="https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-046j-design-and-analysis-of-algorithms-spring-2012/lecture-notes/MIT6_046JS12_lec16.pdf">Disjoint-set Data Structure MIT</a></li>
+</ol>
+
                         
                       </div>
                   </div>
@@ -1328,10 +782,10 @@ if __name__ == &quot;__main__&quot;:
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2017/7/18</span>
+                    <span class="date">2017/8/3</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
+          					    <span class="posted-in"><a href='Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html'>Python数据结构与算法</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -1345,106 +799,33 @@ if __name__ == &quot;__main__&quot;:
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15002564768282.html">
+                <a class="clearlink" href="character%20encoding.html">
                 
-                  <h1>Database System Concept (1): Introduction</h1>
+                  <h1>Character encoding</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<p>A <code>database-management system</code> (DBMS，数据库管理系统) is a collection of interrelated data and a set of programs to access those data.  The collection of data, usually referred to as the <code>database</code>. The primary goal of a DBMS is to provide a way to store and retrieve database information that is both <code>convenient</code> and <code>efficient</code>.</p>
+                        	<p>A <code>character encoding</code> (字符编码) is used to represent a repertoire of characters by some kind of encoding system.</p>
 
-<h2 id="toc_0">Purpose of Database System</h2>
-
-<p>Keeping organizational information in a file-processing system has a number of major disadvantages:</p>
+<h2 id="toc_0">Terminology</h2>
 
 <ul>
-<li>Data redundancy and inconsistency
-
-<ul>
-<li>Users of one program may be unaware of potentially useful data held by other programs.</li>
-</ul></li>
-<li>Difficulty in accessing data
-
-<ul>
-<li>Programs are written to satisfy particular functions.<br/></li>
-<li>Any new requirement needs a new program.</li>
-</ul></li>
-<li>Data isolation
-
-<ul>
-<li>Same data is held by different programs </li>
-<li>Each program maintains its own set of data</li>
-</ul></li>
-<li>Integrity problems</li>
-<li>Atomicity problems</li>
-<li>Concurrent-access anomalies</li>
-<li>Security problems</li>
+<li><code>character</code>: a minimal unit of text that has semantic value.</li>
+<li><code>character set</code>: a collection of characters that might be used by multiple languages.</li>
+<li><code>coded character set</code>: a character set in which each character corresponds to a unique number.</li>
+<li><code>code unit</code>: a bit sequence used to encode each character of a repertoire within a given encoding form.</li>
+<li><code>code point</code>(码位): any legal value in the character set.</li>
+<li><code>character repertoire</code>(字符集): an abstract list of more than one million characters found in a wide variety of scripts including <em>Latin</em>, <em>Cyrillic</em>, <em>Chinese</em>, <em>Korean</em>, <em>Japanese</em>, <em>Hebrew</em>, and <em>Aramaic</em>.</li>
 </ul>
 
-<h2 id="toc_1">View of data</h2>
+<h2 id="toc_1">Unicode</h2>
 
-<h3 id="toc_2">Data Abstraction</h3>
+<p><code>unicode</code> is a computing industry standard for the consistent encoding, representation, and handling of text expressed in most of the world&#39;s writing systems. The Unicode standard defines <code>UTF-8</code>, <code>UTF-16</code>, and <code>UTF-32</code>, and several other encodings are in use.</p>
 
-<p>The need for efficiency has led designers to use complex data structures to represent data in the database.</p>
+<h3 id="toc_2">UTF-8</h3>
 
-<ul>
-<li><code>Physical level</code>. The lowest level of abstraction <em>how</em> the data are actually stored</li>
-<li><code>Logical level</code>. The next-higher level of abstraction describes <em>what</em> data are stored in the database, and what relationships exist among those data. Each record is described by a type definition, and the interrelationship of these record types is defined as well.</li>
-<li><code>View level</code>. The highest level of abstraction describes only part of the entire data. The system may provide many views for the same database. Computer users see a set of application programs that hide details of the data types.</li>
-</ul>
-
-<p><img src="media/15002564768282/Screen%20Shot%202017-07-17%20at%2010.08.36%20AM.png" alt="The three views of data abstraction"/></p>
-
-<h3 id="toc_3">Instances and Schemas</h3>
-
-<ul>
-<li><code>Instance</code>: the collection of information stored in the database at a particular moment</li>
-<li><code>schema</code>: the overall design of the database.</li>
-</ul>
-
-<p>Database systems have several schemas, partitioned according to the levels of abstraction. The <code>Physical schema</code> describes the database design at the physical level, while the <code>logical schema</code> describes the database design at the logical level.</p>
-
-<p>Applications programs are said to exhibit <code>physical data independence</code> if they do not depend on the <code>physical schema</code>, and thus need not be rewritten if the physical schema changes.</p>
-
-<h3 id="toc_4">Data Models</h3>
-
-<p><code>Data Model</code>(数据库): a collection of conceptual tools for describing data, data relationships, data semantics, and consistency constraints.</p>
-
-<ul>
-<li><code>Relational Model</code>(关系数据库)</li>
-<li><code>Entity-Relationship Model</code> (实体对象模型)</li>
-<li><code>Object-Based Data Model</code> (基于对象的数据模型)</li>
-<li><code>Semistructed Data Model</code></li>
-</ul>
-
-<h2 id="toc_5">Database Language</h2>
-
-<p>A database system provides a <code>data-definition language</code>(DDL) to specify the database schema and a <code>data-manipulation language</code>(DML) to express database queries and updates.</p>
-
-<h2 id="toc_6">Data Storage and Querying</h2>
-
-<p>A database system is partitioned into modules that deal with each of the responsibilities of the overall system. The functional components of a database system can be broadly divided into the <code>storage manager</code> and the <code>query processor</code></p>
-
-<p>The <code>storage manager</code> is the component of a database system that provides the interface between the low-level data stored in the database and the application programs and queries submitted to the system. it is responsible for storing, retrieving, and updating data in the database. The storage manager translates the various DML statement into low-level file-system commands.</p>
-
-<p>The <code>query processor</code> includes:</p>
-
-<ul>
-<li><code>DDL interpreter</code>, which interprets DDL statements and records the definitions in the data dictionary.</li>
-<li><code>DML compiler</code>, which translates DML statements in a query language into an evaluation plan consisting of low-level instructions that the query evaluation engine understands.</li>
-<li><code>Query evaluation engine</code>, which executes low-level instructions generated by the DML compiler.</li>
-</ul>
-
-<h2 id="toc_7">Transaction management</h2>
-
-<p><code>Transaction management</code> ensures that the database remains in a consistent (correct) state despite system failures. The transaction manager ensures that concurrent transaction executions proceed without conflicting.</p>
-
-<h2 id="toc_8">Database Architecture</h2>
-
-<p>The architecture of a database system is greatly influenced by the underlying computer system on which the database system runs. Database system can be centralized, or client-server, where one server machine executes work on behalf of multiple client machines.</p>
-
-<p><img src="media/15002564768282/Screen%20Shot%202017-07-17%20at%2010.55.20%20AM.png" alt="System Structure"/></p>
+<p><code>UTF-8</code>, the most widely used by websites. The encoding is variable-length and uses 8-bit code units. UTF-8 encodes each of the 1,112,064 valid code points in Unicode using 1 to 4 8 bit bytes.</p>
 
                         
                       </div>
@@ -1453,10 +834,10 @@ if __name__ == &quot;__main__&quot;:
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2017/7/17</span>
+                    <span class="date">2017/8/3</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E5%BA%93.html'>数据库</a></span>
+          					    <span class="posted-in"><a href='%20%E7%90%86%E8%A7%A3%E8%AE%A1%E7%AE%97%E6%9C%BA.html'> 理解计算机</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -1549,6 +930,8 @@ if __name__ == &quot;__main__&quot;:
         
             <a href="Tensorflow.html"><strong>Tensorflow</strong></a>
         
+            <a href="%E5%B7%A5%E4%BD%9C%E4%B8%8E%E5%AD%A6%E4%B9%A0.html"><strong>工作与学习</strong></a>
+        
             <a href="Data%20Science.html"><strong>Data Science</strong></a>
          
         </p>
@@ -1566,31 +949,31 @@ if __name__ == &quot;__main__&quot;:
 	      
 		      
 			      <li class="post">
-			        <a href="SqueezeNet.html">SqueezeNet</a>
+			        <a href="machine_Learning_foundation_4.html">Machine Learning Foundations (4): Feasibility of Learning</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="Visualizing_and_understaning_CNN.html">Visualizing and Understanding CNN</a>
+			        <a href="15087235268574.html">Machine Learning Foundations (3): Types of Learning</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="15050418178399.html">Recurrent Neural Network</a>
+			        <a href="15087235262377.html">Machine Learning Foundations (2): Learning to answer Yes or No</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="15050120680855.html">Image Captioning</a>
+			        <a href="15087235092833.html">Machine Learning Foundations (1): The Learning Problem</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="15049402475273.html">Machine Learning (10): Large Scale Machine Learning</a>
+			        <a href="15086547919641.html">JSON</a>
 			      </li>
 		     
 		  

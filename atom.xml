@@ -4,13 +4,464 @@
   <title><![CDATA[techlarry]]></title>
   <link href="http://larryim.cc/atom.xml" rel="self"/>
   <link href="http://larryim.cc/"/>
-  <updated>2017-09-17T18:50:09+08:00</updated>
+  <updated>2017-10-23T09:53:50+08:00</updated>
   <id>http://larryim.cc/</id>
   <author>
     <name><![CDATA[]]></name>
     
   </author>
   <generator uri="http://www.mweb.im/">MWeb</generator>
+  
+  <entry>
+    <title type="html"><![CDATA[Machine Learning Foundations (4): Feasibility of Learning]]></title>
+    <link href="http://larryim.cc/machine_Learning_foundation_4.html"/>
+    <updated>2017-10-23T08:48:30+08:00</updated>
+    <id>http://larryim.cc/machine_Learning_foundation_4.html</id>
+    <content type="html"><![CDATA[
+<h2 id="toc_0">Learning outside training examples</h2>
+
+<p><strong>No Free Lunch</strong>: Learning from \(D\) (\(D\): training examples) (to infer something outside \(D\)) is doomed to fail if any unknown \(f\) can happen.</p>
+
+<ul>
+<li>\(g\approx f\) inside \(D\): Possible!</li>
+<li>\(g\approx f\) outside \(D\): Impossible!</li>
+</ul>
+
+<h2 id="toc_1">In and out of sample error</h2>
+
+<p>For any fixed \(h\), in &#39;big&#39; data (N large), <code>in-sample error</code> \(E_{in}(h)\) is probably close to <code>out-of-sample error</code> \(E_{out}(h)\) (within \(\epsilon\))</p>
+
+<p>\(P(|E_{in}(h)-E_{out}(h)|&gt; \epsilon) \le 2\exp(-2\epsilon^2N)\)</p>
+
+<p>The equation above is called <code>Hoeffding&#39;s Inequality</code>. The statement \(E_{in}(h)=E_{out}(h)\) is <code>probably approximately correct</code> (PAC).</p>
+
+<p>If large \(N\), we can <strong>probably</strong> infer unknown \(E_{out}(h)\) by known \(E_{in}(h)\).</p>
+
+<p><code>in-sample error</code> \(E_{in}(h)\) denotes orange fraction in sample, <code>out-of-sample error</code> \(E_{out}(h)\) denotes orange probability in bin, When we want to infer the orange probability in bin.</p>
+
+<p><img src="media/15087197108957/Ein_Eout.png" alt="Ein_Eout"/></p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Machine Learning Foundations (3): Types of Learning]]></title>
+    <link href="http://larryim.cc/15087235268574.html"/>
+    <updated>2017-10-23T09:52:06+08:00</updated>
+    <id>http://larryim.cc/15087235268574.html</id>
+    <content type="html"><![CDATA[
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Machine Learning Foundations (2): Learning to answer Yes or No]]></title>
+    <link href="http://larryim.cc/15087235262377.html"/>
+    <updated>2017-10-23T09:52:06+08:00</updated>
+    <id>http://larryim.cc/15087235262377.html</id>
+    <content type="html"><![CDATA[
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Machine Learning Foundations (1): The Learning Problem]]></title>
+    <link href="http://larryim.cc/15087235092833.html"/>
+    <updated>2017-10-23T09:51:49+08:00</updated>
+    <id>http://larryim.cc/15087235092833.html</id>
+    <content type="html"><![CDATA[
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[JSON]]></title>
+    <link href="http://larryim.cc/15086547919641.html"/>
+    <updated>2017-10-22T14:46:31+08:00</updated>
+    <id>http://larryim.cc/15086547919641.html</id>
+    <content type="html"><![CDATA[
+<p><code>JSON</code> stands for <code>Javascript Object Notation</code>. It is a lightweight data interchange format, similar to <code>XML</code>, <code>SOAP</code> and <code>YAML</code>.</p>
+
+<p><code>JSON</code> syntax is based around three simple data types:</p>
+
+<ul>
+<li>Name-value pair</li>
+<li>JSON Object: a collection of name-value pairs or Arrays encased in curly brackets.</li>
+<li>JSON Array: a lift of values encased in square brackets.</li>
+</ul>
+
+<p>E.g. a student in an university with basic information: name, id number, GPA etc:</p>
+
+<pre><code class="language-python">
+{
+    &quot;name&quot;:&quot;Jacob Bellamy&quot;,
+    &quot;id_number&quot;:3352976,
+    &quot;gpa&quot;:8.2,
+    &quot;courses&quot;:[&quot;Compsci 101&quot;, &quot;Compsci 105&quot;, &quot;Phil 101&quot;, &quot;Maths 108&quot;],
+    &quot;fees_paid&quot;: True,
+    &quot;address&quot;: {
+        &quot;street_address&quot;: &quot;1 Horse Lane&quot;,
+        &quot;city&quot;: &quot;Auckland&quot;,
+        &quot;post_code&quot;: 1632}
+}
+</code></pre>
+
+<h2 id="toc_0">Python之<code>json</code>模块</h2>
+
+<p>Python的<code>json</code>模块可以用来编码和解码JSON数据。其最主要的两个函数是<code>json.dumps()</code>(encoding,编码)和<code>json.loads()</code>(decoding, 解码).</p>
+
+<pre><code class="language-python">import json
+
+student_info = {
+    &quot;name&quot;:&quot;Jacob Bellamy&quot;,
+    &quot;id_number&quot;:3352976,
+    &quot;gpa&quot;:8.2,
+    &quot;courses&quot;:[&quot;Compsci 101&quot;, &quot;Compsci 105&quot;, &quot;Phil 101&quot;, &quot;Maths 108&quot;],
+    &quot;fees_paid&quot;: True,
+    &quot;address&quot;: {
+        &quot;street_address&quot;: &quot;1 Horse Lane&quot;,
+        &quot;city&quot;: &quot;Auckland&quot;,
+        &quot;post_code&quot;: 1632}
+}
+
+student_info_json = json.dumps(student_info)
+
+print(student_info_json)
+</code></pre>
+
+<pre><code>{&quot;name&quot;: &quot;Jacob Bellamy&quot;, &quot;id_number&quot;: 3352976, &quot;gpa&quot;: 8.2, &quot;courses&quot;: [&quot;Compsci 101&quot;, &quot;Compsci 105&quot;, &quot;Phil 101&quot;, &quot;Maths 108&quot;], &quot;fees_paid&quot;: true, &quot;address&quot;: {&quot;street_address&quot;: &quot;1 Horse Lane&quot;, &quot;city&quot;: &quot;Auckland&quot;, &quot;post_code&quot;: 1632}}
+</code></pre>
+
+<p>如果你要处理的是文件而不是字符串，你可以使用<code>json.dump()</code> 和 <code>json.load()</code> 来编码和解码<code>JSON</code>数据。例如：</p>
+
+<pre><code class="language-python"># Writing JSON data
+with open(&#39;student_info.json&#39;, &#39;w&#39;) as f:
+    json.dump(student_info_json, f)
+ 
+# Reading data back
+with open(&#39;student_info.json&#39;, &#39;r&#39;) as f:
+    data = json.load(f)
+data
+</code></pre>
+
+<pre><code>&#39;{&quot;name&quot;: &quot;Jacob Bellamy&quot;, &quot;id_number&quot;: 3352976, &quot;gpa&quot;: 8.2, &quot;courses&quot;: [&quot;Compsci 101&quot;, &quot;Compsci 105&quot;, &quot;Phil 101&quot;, &quot;Maths 108&quot;], &quot;fees_paid&quot;: true, &quot;address&quot;: {&quot;street_address&quot;: &quot;1 Horse Lane&quot;, &quot;city&quot;: &quot;Auckland&quot;, &quot;post_code&quot;: 1632}}&#39;
+</code></pre>
+
+<h2 id="toc_1">Binary JSON - BSON</h2>
+
+<p><code>BSON</code> /ˈbiːsən/, standing for <code>Binary JSON</code>, is a computer data interchange format used mainly as a data storage and network transfer format in the <code>MongoDB</code> database.</p>
+
+<pre><code class="language-python">import bson      #installed with the pymongo package
+data = bson.decode_file_iter(open(&#39;example.bson&#39;, &#39;rb&#39;))
+</code></pre>
+
+<h2 id="toc_2">Reference</h2>
+
+<ul>
+<li>Brad Miller, David Ranum. 2013. Problem Solving with Algorithms and Data Structures.</li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Cdiscount’s Image Classification Challenge]]></title>
+    <link href="http://larryim.cc/cdiscount_challenge.html"/>
+    <updated>2017-10-22T14:07:43+08:00</updated>
+    <id>http://larryim.cc/cdiscount_challenge.html</id>
+    <content type="html"><![CDATA[
+<p><a href="https://www.kaggle.com/c/cdiscount-image-classification-challenge">Link</a></p>
+
+<p><code>Cdiscount.com</code> generated nearly 3 billion euros last year, making it France’s largest non-food e-commerce company. While the company already sells everything from TVs to trampolines, the list of products is still rapidly growing. By the end of this year, Cdiscount.com will have over 30 million products up for sale. This is up from 10 million products only 2 years ago. Ensuring that so many products are well classified is a challenging task.</p>
+
+<p>Currently, <code>Cdiscount.com</code> applies machine learning algorithms to the text description of the products in order to automatically predict their category. As these methods now seem close to their maximum potential, Cdiscount.com believes that the next quantitative improvement will be driven by the application of data science techniques to images.</p>
+
+<p><strong>In this challenge you will be building a model that automatically classifies the products based on their images</strong>. As a quick tour of Cdiscount.com&#39;s website can confirm, one product can have one or several images. The data set Cdiscount.com is making available is unique and characterized by superlative numbers in several ways:</p>
+
+<ul>
+<li>Almost 9 million products: half of the current catalogue</li>
+<li>More than 15 million images at 180x180 resolution</li>
+<li>More than 5000 categories: yes this is quite an extreme multi-class classification!</li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[伴你养成早起的习惯]]></title>
+    <link href="http://larryim.cc/15077159489506.html"/>
+    <updated>2017-10-11T17:59:08+08:00</updated>
+    <id>http://larryim.cc/15077159489506.html</id>
+    <content type="html"><![CDATA[
+<h2 id="toc_0">早起的五个原则</h2>
+
+<ul>
+<li>比起起床时间，就寝时间更重要；</li>
+<li>防止睡眠负债发生；</li>
+<li>一次养成一个习惯；</li>
+<li>找到生活习惯的问题点；</li>
+<li>预想好妨碍早起的原因。</li>
+</ul>
+
+<h2 id="toc_1">晚上早睡的技巧</h2>
+
+<ul>
+<li>手机关机放包里</li>
+<li>开小灯让房间变暗</li>
+<li>制造睡前仪式形成自我暗示</li>
+<li>睡前3小时不吃东西</li>
+</ul>
+
+<h1 id="toc_2">早起失败的主要原因</h1>
+
+<ul>
+<li>一口气定6点起床的目标</li>
+<li>只抓起床的时间</li>
+<li>缩短睡眠时间</li>
+<li>突发事件的干扰</li>
+<li>没有明确早起的理由</li>
+<li>早起的同时养成多个习惯。</li>
+</ul>
+
+<h1 id="toc_3">Reference</h1>
+
+<ul>
+<li>图解习惯力. 速溶综合研究所 <a href="https://book.douban.com/subject/26982922/">豆瓣链接</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Towards Accurate Multi-person Pose Estimation in the Wild]]></title>
+    <link href="http://larryim.cc/15066169438683.html"/>
+    <updated>2017-09-29T00:42:23+08:00</updated>
+    <id>http://larryim.cc/15066169438683.html</id>
+    <content type="html"><![CDATA[
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[C++面试经典100题]]></title>
+    <link href="http://larryim.cc/15066079292359.html"/>
+    <updated>2017-09-28T22:12:09+08:00</updated>
+    <id>http://larryim.cc/15066079292359.html</id>
+    <content type="html"><![CDATA[
+<h2 id="toc_0">1. 请填写BOOL , float, 指针变量与“零值”比较的 if 语句</h2>
+
+<p>提示：这里“零值”可以是0, 0.0 , <code>FALSE</code> 或者“空指针”。例如 <code>int</code> 变量 \(n\) 与“零值”<br/>
+比较的<code>if</code>语句为：</p>
+
+<pre><code>if ( n == 0 )
+if ( n != 0 )
+</code></pre>
+
+<p>以此类推。</p>
+
+<p>(1)请写出 BOOL flag 与“零值”比较的 if 语句：<br/>
+标准答案：</p>
+
+<pre><code>if ( flag )
+if ( !flag )
+``
+
+如下写法均属不良风格，不得分。
+
+</code></pre>
+
+<p>if (flag == TRUE)<br/>
+if (flag == 1 )<br/>
+if (flag == FALSE)<br/>
+if (flag == 0)<br/>
+```</p>
+
+<p>(2)请写出 <code>float x</code> 与“零值”比较的<code>if</code>语句：<br/>
+标准答案示例：</p>
+
+<pre><code>const float EPSINON = 0.00001;
+if ((x &gt;= - EPSINON) &amp;&amp; (x &lt;= EPSINON)
+</code></pre>
+
+<p>不可将浮点变量用<code>==</code>或<code>！=</code>与数字比较，应该设法转化成<code>&gt;=</code>或<code>&lt;=</code>此<br/>
+类形式。<br/>
+如下是错误的写法，不得分。</p>
+
+<pre><code>if (x == 0.0)
+if (x != 0.0)
+</code></pre>
+
+<p>(3)请写出 <code>char *p</code> 与“零值”比较的 <code>if</code> 语句：<br/>
+标准答案：对于空指针值，用<code>#NULL</code> 表示</p>
+
+<pre><code>if (p == NULL)
+if (p != NULL)
+</code></pre>
+
+<p>如下写法均属不良风格，不得分。</p>
+
+<pre><code>if (p == 0)
+if (p != 0)
+if (p)
+if (!)
+</code></pre>
+
+<h2 id="toc_1">2.32位C++程序，计算sizeof的值</h2>
+
+<p><img src="media/15066079292359/15066082580402.jpg" alt=""/></p>
+
+<p><code>sizeof(str) = 6</code>; //字符串数组，大小是六个字节(加上&#39;\0&#39;共六个)。<br/>
+<code>sizeof(p) = 4</code>; // 指针的内容就是一个指向目标地址的整数，所以不管指向<code>char</code>、<code>int</code>还是其他，32位机指针一律是4个字节。</p>
+
+<p><code>sizeof(n) = 4</code>; // <code>int</code>型变量是4个字节。<br/>
+右侧：<br/>
+<code>sizeof(str) = 4</code>; // 这里的str不再是100字节。当数组作为函数的参数进行传递时，也就是作为参数入栈，那么该数组自动退化成同类型的指针。<br/>
+<code>sizeof(p) = 4</code>; // 同样，指针类型一律4个字节。</p>
+
+<h2 id="toc_2">3. long a=0x801010; a+5=?</h2>
+
+<p>0x801010 用二进制表示 为：“ 1000 0000 0001 0000 0001 0000” ，十进制的值为 8392720 ，再加 上 5 就是 8392725 。</p>
+
+<h2 id="toc_3">4. 用变量 <code>a</code> 给出下面的定义</h2>
+
+<ul>
+<li>一个有 10 个指针的数组，该指针是指向一个整型数的;</li>
+<li>一个指向有 10 个整型数数组的指针 ;</li>
+<li>一个指向函数的指针，该函数有一个整型参数并返 回一个整型数 ;</li>
+<li><p>一个有 10 个指针的数组，该指针指向一个函数，该 函数有一个整型参数并返回一个整型数 ;</p></li>
+<li><p>int * a[10]; </p></li>
+<li><p>int (*a)[10]</p></li>
+<li><p>int (*a)(int); </p></li>
+<li><p>int (*a[10])(int)</p></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[GAN]]></title>
+    <link href="http://larryim.cc/15058297239665.html"/>
+    <updated>2017-09-19T22:02:03+08:00</updated>
+    <id>http://larryim.cc/15058297239665.html</id>
+    <content type="html"><![CDATA[
+<ul>
+<li>
+<a href="#toc_0">Maximum Likelihood Estimation</a>
+<ul>
+<li>
+<a href="#toc_1">$P_G(x;theta)$ is a NN</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_2">Basic Idea of GAN</a>
+</li>
+<li>
+<a href="#toc_3">Reference</a>
+</li>
+</ul>
+
+
+<h2 id="toc_0">Maximum Likelihood Estimation</h2>
+
+<p>Given a data distribution \(P_{data}(x)\). We want to find \(\theta\) such that \(P_G(x;\theta)\) close to \(P_{data}(x)\). Here, \(P_G(x;\theta)\)  is a distribution (e.g. Gaussian Mixture Model) parameterized by \(\theta\) (e.g. means and variances of the Gaussians).</p>
+
+<p>Likelihood of generating the samples can be expressed by</p>
+
+<p>\[\begin{equation}<br/>
+L=\prod\limits_{i=1}^mP_G(x^i;\theta)<br/>
+\end{equation}<br/>
+\]</p>
+
+<p>The problem can be restated that finding \(\theta^*\) maximizing the likelihood:</p>
+
+<p>\[\begin{equation}<br/>
+\theta^* = arg \max\limits_\theta \prod\limits_{i=1}^m P_G(x^i;\theta)\\<br/>
+=arg \max\limits_\theta \log\prod\limits_{i=1}^m P_G(x^i;\theta)\\<br/>
+=arg \max\limits_\theta \prod\limits_{i=1}^m \log P_G(x^i;\theta)\\<br/>
+\approx arg \max\limits_\theta E_{x\sim P_{data}}^m [\log P_G(x;\theta)]\\<br/>
+= arg \max\limits_\theta\int_xP_{data}(x)\log P_G(x;\theta)dx - \int_xP_{data}(x)\log P_{data}(x) dx \\<br/>
+= arg \min\limits_\theta KL(P_{data}(x)||P_G(x;\theta))<br/>
+\end{equation}<br/>
+\]</p>
+
+<p><strong>KL Divergence</strong>:  <code>KL Divergence</code> is  a measure of how one probability distribution diverges from a second expected probability distribution. For distributions \(P\) and \(Q\) of a continuous random variable, the Kullback-Leibler divergence is defined to be the intergral:</p>
+
+<p>\[\begin{equation}<br/>
+ D_{KL}(P|Q)=\int_{-\infty}^{\infty}p(x)\log\frac{p(x)}{q(x)}dx<br/>
+ \end{equation}<br/>
+ \]</p>
+
+<p>Where \(p\) and \(q\) denote the densities of \(P\) and \(Q\).</p>
+
+<h3 id="toc_1">\(P_G(x;\theta)\) is a NN</h3>
+
+<p>It is hard to use Gaussian Mixture Model as \(P_G(x;\theta)\) to approximate \(P_{data}(x;\theta)\), because of the complicity of the data. A very good natural idea is trying to using neural network which is very powerful.</p>
+
+<p><img src="media/15058297239665/Screen%20Shot%202017-09-19%20at%2010.36.46%20PM.png" alt="NN"/></p>
+
+<p>However, it is Hard to learn by <code>maximum likelihood</code>.  <code>GAN</code> solves the problem.</p>
+
+<h2 id="toc_2">Basic Idea of GAN</h2>
+
+<ul>
+<li>Generator G
+
+<ul>
+<li>G is a function, input \(z\), output \(x\)</li>
+<li>Given a prior distribution \(P_{prior}(z)\), a probability distribution \(P_G (x)\) is defined by function G</li>
+</ul></li>
+<li>Discriminator D
+
+<ul>
+<li>D is a function, input \(x\), output scalar</li>
+<li>Evaluate the “difference” between \(P_G(x)\) and \(P_{data}(x)\)</li>
+</ul></li>
+</ul>
+
+<p>Objective: Given function \(V(G, D)\), to find \(G^* = arg \min \limits_G\max\limits_DV(G,D)\)</p>
+
+<p>\[\begin{equation}<br/>
+V = E_{x\sim P_{data}}[\log D(x)] + E_{x\sim P_G}[\log (1-D(x)]<br/>
+\end{equation}<br/>
+\]</p>
+
+<h2 id="toc_3">Reference</h2>
+
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence">KL Divergence WEKIPEDIA</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Efficient Methods and Hardware for Deep Learning]]></title>
+    <link href="http://larryim.cc/15057176549019.html"/>
+    <updated>2017-09-18T14:54:14+08:00</updated>
+    <id>http://larryim.cc/15057176549019.html</id>
+    <content type="html"><![CDATA[
+<h2 id="toc_0">Challenges</h2>
+
+<ul>
+<li>Model Size</li>
+<li>Speed</li>
+<li>Energy Efficiency</li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[机器学习路线]]></title>
+    <link href="http://larryim.cc/machine_learning_route.html"/>
+    <updated>2017-09-18T10:12:47+08:00</updated>
+    <id>http://larryim.cc/machine_learning_route.html</id>
+    <content type="html"><![CDATA[
+<p><img src="media/15057007673036/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.png" alt="机器学习"/></p>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[SqueezeNet]]></title>
@@ -85,23 +536,23 @@
     <updated>2017-09-17T18:42:40+08:00</updated>
     <id>http://larryim.cc/Visualizing_and_understaning_CNN.html</id>
     <content type="html"><![CDATA[
-<ul>
-<li>Saliency Maps: Saliency maps are a quick way to tell which part of the image influenced the classification decision made by the network.
-Fooling Images: We can perturb an input image so that it appears the same to humans, but will be misclassified by the pretrained network.
-Class Visualization: We can synthesize an image to maximize the classification score of a particular class; this can give us some sense of what the network is looking for when it classifies images of that class.</li>
-</ul>
+<ol>
+<li><strong>Saliency Maps</strong>: Saliency maps are a quick way to tell which part of the image influenced the classification decision made by the network.</li>
+<li><strong>Fooling Images</strong>: We can perturb an input image so that it appears the same to humans, but will be misclassified by the pretrained network.</li>
+<li><strong>Class Visualization</strong>: We can synthesize an image to maximize the classification score of a particular class; this can give us some sense of what the network is looking for when it classifies images of that class.</li>
+</ol>
 
 <h2 id="toc_0">Saliency Map</h2>
 
 <p>A <strong>saliency map</strong> tells us the degree to which each pixel in the image affects the classification score for that image. To obtain <code>saliency map</code>, first compute the gradient of the unnormalized score corresponding to the correct class (which is a scalar) with respect to the pixels of the image. If the image has shape <code>(H, W, 3)</code> then this gradient will also have shape <code>(H, W, 3)</code>; for each pixel in the image, this gradient tells us the amount by which the classification score will change if the pixel changes by a small amount. Second, In the case of the multi-channel (e.g. RGB) image, take the absolute value of this gradient, then take the maximum value over the 3 input channels; the final saliency map thus has shape <code>(H, W)</code> and all entries are nonnegative.</p>
 
-<p>The <code>Saliency Map</code> obtained by <code>SqueezeNet</code>, using the data of ImageNet ILSVRC 2012 Classification dataset are as follows:</p>
+<h5 id="toc_1">The <code>Saliency Map</code> learnt by <code>SqueezeNet</code>, trained on the data of ImageNet ILSVRC 2012 Classification dataset are as follows:</h5>
 
 <p><img src="media/15056449604256/saliency_map.png" alt="saliency_map"/></p>
 
-<h2 id="toc_1">Fooling images</h2>
+<h2 id="toc_2">Fooling images</h2>
 
-<h2 id="toc_2">Reference</h2>
+<h2 id="toc_3">Reference</h2>
 
 <ul>
 <li>Karen Simonyan, Andrea Vedaldi, and Andrew Zisserman. &quot;Deep Inside Convolutional Networks- Visualising Image Classification Models and Saliency Maps</li>
@@ -417,1492 +868,6 @@ print(w1 is w1_p, w2 is w2_p)
 </code></pre>
 
 <p>df now becomes a numpy <code>ndarray</code>.</p>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Google Cloud Platform]]></title>
-    <link href="http://larryim.cc/google-cloud-platform.html"/>
-    <updated>2017-09-04T17:25:15+08:00</updated>
-    <id>http://larryim.cc/google-cloud-platform.html</id>
-    <content type="html"><![CDATA[
-<p>Google Cloud Platform enables developers to <strong>build</strong>, <strong>test</strong> and <strong>deploy</strong> applications on Google&#39;s <em>highly-scalable</em>, <em>secure</em>, and <em>reliable</em> infrastructure.</p>
-
-<p>All Google Cloud Platform services are associated with a project that is used to:</p>
-
-<ul>
-<li>Track resource and quota usage</li>
-<li>Enable billing</li>
-<li>Manage permissions and credentials</li>
-<li>Enable services and APIs</li>
-</ul>
-
-<h2 id="toc_0">VM Instances</h2>
-
-<p>Run the following code to start or stop an compute instance called <code>instance-name</code>.</p>
-
-<pre><code class="language-bash">gcloud compute instances start/stop instance-name
-</code></pre>
-
-<p>After starting your compute instance, you might need to access the instance in the zone which is <code>zone-name</code> here, via the terminal by <code>ssh</code> </p>
-
-<pre><code class="language-bash">gcloud compute ssh instance-name --zone zone-name
-</code></pre>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Machine Learning (6): Advice for applying machine learning and Machine Learning System Design]]></title>
-    <link href="http://larryim.cc/15045143826264.html"/>
-    <updated>2017-09-04T16:39:42+08:00</updated>
-    <id>http://larryim.cc/15045143826264.html</id>
-    <content type="html"><![CDATA[
-<ul>
-<li>
-<a href="#toc_0">ML: Advice for applying machine learning</a>
-<ul>
-<li>
-<a href="#toc_1">Deciding What to Try Next</a>
-</li>
-<li>
-<a href="#toc_2">Evaluating a Hypothesis</a>
-<ul>
-<li>
-<a href="#toc_3">The test set error</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_4">Model Selection and Train/Validation/Test Sets</a>
-</li>
-<li>
-<a href="#toc_5">Diagnosing Bias vs. Variance</a>
-</li>
-<li>
-<a href="#toc_6">Regularization and Bias/Variance</a>
-</li>
-<li>
-<a href="#toc_7">Learning Curves</a>
-</li>
-<li>
-<a href="#toc_8">Deciding What to Do Next Revisited</a>
-<ul>
-<li>
-<a href="#toc_9">Diagnosing Neural Networks</a>
-</li>
-<li>
-<a href="#toc_10">Model Selection:</a>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_11">ML:Machine Learning System Design</a>
-<ul>
-<li>
-<a href="#toc_12">Prioritizing What to Work On</a>
-</li>
-<li>
-<a href="#toc_13">Error Analysis</a>
-</li>
-<li>
-<a href="#toc_14">Error Metrics for Skewed Classes</a>
-</li>
-<li>
-<a href="#toc_15">Trading Off Precision and Recall</a>
-</li>
-<li>
-<a href="#toc_16">Data for Machine Learning</a>
-</li>
-<li>
-<a href="#toc_17">Quiz instructions</a>
-</li>
-</ul>
-</li>
-</ul>
-
-
-<h1 id="toc_0">ML: Advice for applying machine learning</h1>
-
-<h2 id="toc_1">Deciding What to Try Next</h2>
-
-<p>Errors in your predictions can be troubleshooted by:</p>
-
-<ul>
-<li>  Getting more training examples</li>
-<li>  Trying smaller sets of features</li>
-<li>  Trying additional features</li>
-<li>  Trying polynomial features</li>
-<li>  Increasing or decreasing λ</li>
-</ul>
-
-<p>Don&#39;t just pick one of these avenues at random. We&#39;ll explore diagnostic techniques for choosing one of the above solutions in the following sections.</p>
-
-<h2 id="toc_2">Evaluating a Hypothesis</h2>
-
-<p>A hypothesis may have low error for the training examples but still be inaccurate (because of overfitting).</p>
-
-<p>With a given dataset of training examples, we can split up the data into two sets: a <strong>training set</strong> and a <strong>test set</strong> .</p>
-
-<p>The new procedure using these two sets is then:</p>
-
-<ol>
-<li> Learn \(\Theta\) and minimize \(J_{train}(\Theta)\) using the training set</li>
-<li> Compute the test set error \(J_{test}(\Theta)\)</li>
-</ol>
-
-<h3 id="toc_3">The test set error</h3>
-
-<ol>
-<li> For linear regression: \(J_{test}(\Theta) = \dfrac{1}{2m_{test}} \sum_{i=1}^{m_{test}}(h_\Theta(x^{(i)}_{test}) - y^{(i)}_{test})^2\)</li>
-<li> For classification ~ Misclassification error (aka 0/1 misclassification error):</li>
-</ol>
-
-<p>\(err(h_\Theta(x),y) = \{\begin{matrix} 1 &amp; \mbox{if } h_\Theta(x) \geq 0.5\ and\ y = 0\ or\ h_\Theta(x) &lt; 0.5\ and\ y = 1\newline 0 &amp; \mbox otherwise \end{matrix}\)</p>
-
-<p>This gives us a binary 0 or 1 error result based on a misclassification.</p>
-
-<p>The average test error for the test set is</p>
-
-<p>\(\text{Test Error} = \dfrac{1}{m_{test}} \sum^{m_{test}}_{i=1} err(h_\Theta(x^{(i)}_{test}), y^{(i)}_{test})\)</p>
-
-<p>This gives us the proportion of the test data that was misclassified.</p>
-
-<h2 id="toc_4">Model Selection and Train/Validation/Test Sets</h2>
-
-<ul>
-<li>  Just because a learning algorithm fits a training set well, that does not mean it is a good hypothesis.</li>
-<li>  The error of your hypothesis as measured on the data set with which you trained the parameters will be lower than any other data set.</li>
-</ul>
-
-<p>In order to choose the model of your hypothesis, you can test each degree of polynomial and look at the error result.</p>
-
-<p><strong>Without the Validation Set (note: this is a bad method - do not use it)</strong></p>
-
-<ol>
-<li> Optimize the parameters in Θ using the training set for each polynomial degree.</li>
-<li> Find the polynomial degree d with the least error using the test set.</li>
-<li> Estimate the generalization error also using the test set with \(J_{test}(\Theta^{(d)})\), (d = theta from polynomial with lower error);</li>
-</ol>
-
-<p>In this case, we have trained one variable, d, or the degree of the polynomial, using the test set. This will cause our error value to be greater for any other set of data.</p>
-
-<p><strong>Use of the CV set</strong></p>
-
-<p>To solve this, we can introduce a third set, the <strong>Cross Validation Set</strong> , to serve as an intermediate set that we can train d with. Then our test set will give us an accurate, non-optimistic error.</p>
-
-<p>One example way to break down our dataset into the three sets is:</p>
-
-<ul>
-<li>  Training set: 60%</li>
-<li>  Cross validation set: 20%</li>
-<li>  Test set: 20%</li>
-</ul>
-
-<p>We can now calculate three separate error values for the three different sets.</p>
-
-<p><strong>With the Validation Set (note: this method presumes we do not also use the CV set for regularization)</strong></p>
-
-<ol>
-<li><p>Optimize the parameters in Θ using the training set for each polynomial degree.</p></li>
-<li><p>Find the polynomial degree d with the least error using the cross validation set.</p></li>
-<li><p>Estimate the generalization error using the test set with \(J_{test}(\Theta^{(d)})\), (d = theta from polynomial with lower error);</p></li>
-</ol>
-
-<p>This way, the degree of the polynomial d has not been trained using the test set.</p>
-
-<p>(Mentor note: be aware that using the CV set to select &#39;d&#39; means that we cannot also use it for the validation curve process of setting the lambda value).</p>
-
-<h2 id="toc_5">Diagnosing Bias vs. Variance</h2>
-
-<p>In this section we examine the relationship between the degree of the polynomial d and the underfitting or overfitting of our hypothesis.</p>
-
-<ul>
-<li><p>We need to distinguish whether <strong>bias</strong> or <strong>variance</strong> is the problem contributing to bad predictions.</p></li>
-<li><p>High bias is underfitting and high variance is overfitting. We need to find a golden mean between these two.</p></li>
-</ul>
-
-<p>The training error will tend to <strong>decrease</strong> as we increase the degree d of the polynomial.</p>
-
-<p>At the same time, the cross validation error will tend to <strong>decrease</strong> as we increase d up to a point, and then it will <strong>increase</strong> as d is increased, forming a convex curve.</p>
-
-<p><strong>High bias (underfitting)</strong> : both \(J_{train}(\Theta)\) and \(J_{CV}(\Theta)\) will be high. Also, \(J_{CV}(\Theta) \approx J_{train}(\Theta)\).</p>
-
-<p><strong>High variance (overfitting)</strong> : \(J_{train}(\Theta)\) will be low and \(J_{CV}(\Theta)\) will be much greater than\(J_{train}(\Theta)\).</p>
-
-<p>The is represented in the figure below:</p>
-
-<p><img src="media/15045143826264/15049369778320.jpg" alt=""/></p>
-
-<h2 id="toc_6">Regularization and Bias/Variance</h2>
-
-<p>Instead of looking at the degree d contributing to bias/variance, now we will look at the regularization parameter λ.</p>
-
-<ul>
-<li>  Large λ: High bias (underfitting)</li>
-<li>  Intermediate λ: just right</li>
-<li>  Small λ: High variance (overfitting)</li>
-</ul>
-
-<p>A large lambda heavily penalizes all the Θ parameters, which greatly simplifies the line of our resulting function, so causes underfitting.</p>
-
-<p>The relationship of λ to the training set and the variance set is as follows:</p>
-
-<p><strong>Low λ</strong> : \(J_{train}(\Theta)\) is low and \(J_{CV}(\Theta)\) is high (high variance/overfitting).</p>
-
-<p><strong>Intermediate λ</strong> : \(J_{train}(\Theta)\) and \(J_{CV}(\Theta)\) are somewhat low and \(J_{train}(\Theta) \approx J_{CV}(\Theta)\).</p>
-
-<p><strong>Large λ</strong> : both \(J_{train}(\Theta)\) and \(J_{CV}(\Theta)\) will be high (underfitting /high bias)</p>
-
-<p>The figure below illustrates the relationship between lambda and the hypothesis:</p>
-
-<p><img src="media/15045143826264/15049370422319.jpg" alt=""/></p>
-
-<p>In order to choose the model and the regularization λ, we need:</p>
-
-<ol>
-<li> Create a list of lambdas (i.e. λ∈{0,0.01,0.02,0.04,0.08,0.16,0.32,0.64,1.28,2.56,5.12,10.24});
-2. Create a set of models with different degrees or any other variants.
-3. Iterate through the \(\lambda\)s and for each \(\lambda\) go through all the models to learn some \(\Theta\).
-4. Compute the cross validation error using the learned Θ (computed with λ) on the \(J_{CV}(\Theta)\) without regularization or λ = 0.
-5. Select the best combo that produces the lowest error on the cross validation set.
-6. Using the best combo Θ and λ, apply it on \(J_{test}(\Theta)\) to see if it has a good generalization of the problem.</li>
-</ol>
-
-<h2 id="toc_7">Learning Curves</h2>
-
-<p>Training 3 examples will easily have 0 errors because we can always find a quadratic curve that exactly touches 3 points.</p>
-
-<ul>
-<li>  As the training set gets larger, the error for a quadratic function increases.</li>
-<li>  The error value will plateau out after a certain m, or training set size.</li>
-</ul>
-
-<p><strong>With high bias</strong></p>
-
-<p><strong>Low training set size</strong> : causes \(J_{train}(\Theta)\) to be low and \(J_{CV}(\Theta)\) to be high.</p>
-
-<p><strong>Large training set size</strong> : causes both \(J_{train}(\Theta)\) and \(J_{CV}(\Theta)\) to be high with \(J_{train}(\Theta)\)≈\(J_{CV}(\Theta)\).</p>
-
-<p>If a learning algorithm is suffering from <strong>high bias</strong> , getting more training data <strong>will not (by itself) help much</strong> .</p>
-
-<p>For high variance, we have the following relationships in terms of the training set size:</p>
-
-<p><strong>With high variance</strong></p>
-
-<p><strong>Low training set size</strong> : \(J_{train}(\Theta)\) will be low and \(J_{CV}(\Theta)\) will be high.</p>
-
-<p><strong>Large training set size</strong> : \(J_{train}(\Theta)\) increases with training set size and \(J_{CV}(\Theta)\) continues to decrease without leveling off. Also, \(J_{train}(\Theta)\)&lt;\(J_{CV}(\Theta)\) but the difference between them remains significant.</p>
-
-<p>If a learning algorithm is suffering from <strong>high variance</strong> , getting more training data is <strong>likely to help.</strong></p>
-
-<p><img src="media/15045143826264/15049370738559.jpg" alt=""/></p>
-
-<p><img src="media/15045143826264/15049370848695.jpg" alt=""/></p>
-
-<h2 id="toc_8">Deciding What to Do Next Revisited</h2>
-
-<p>Our decision process can be broken down as follows:</p>
-
-<ul>
-<li>  Getting more training examples</li>
-</ul>
-
-<p>Fixes high variance</p>
-
-<ul>
-<li>  Trying smaller sets of features</li>
-</ul>
-
-<p>Fixes high variance</p>
-
-<ul>
-<li>  Adding features</li>
-</ul>
-
-<p>Fixes high bias</p>
-
-<ul>
-<li>  Adding polynomial features</li>
-</ul>
-
-<p>Fixes high bias</p>
-
-<ul>
-<li>  Decreasing λ</li>
-</ul>
-
-<p>Fixes high bias</p>
-
-<ul>
-<li>  Increasing λ</li>
-</ul>
-
-<p>Fixes high variance</p>
-
-<h3 id="toc_9">Diagnosing Neural Networks</h3>
-
-<ul>
-<li>  A neural network with fewer parameters is <strong>prone to underfitting</strong> . It is also <strong>computationally cheaper</strong> .</li>
-<li>  A large neural network with more parameters is <strong>prone to overfitting</strong> . It is also <strong>computationally expensive</strong> . In this case you can use regularization (increase λ) to address the overfitting.</li>
-</ul>
-
-<p>Using a single hidden layer is a good starting default. You can train your neural network on a number of hidden layers using your cross validation set.</p>
-
-<h3 id="toc_10">Model Selection:</h3>
-
-<p>Choosing M the order of polynomials.</p>
-
-<p>How can we tell which parameters Θ to leave in the model (known as &quot;model selection&quot;)?</p>
-
-<p>There are several ways to solve this problem:</p>
-
-<ul>
-<li>  Get more data (very difficult).</li>
-<li>  Choose the model which best fits the data without overfitting (very difficult).</li>
-<li>  Reduce the opportunity for overfitting through regularization.</li>
-</ul>
-
-<p><strong>Bias: approximation error (Difference between expected value and optimal value)</strong></p>
-
-<ul>
-<li>  High Bias = UnderFitting (BU)</li>
-<li>  \(J_{train}(\Theta)\) and \(J_{CV}(\Theta)\) both will be high and \(J_{train}(\Theta)\) ≈ \(J_{CV}(\Theta)\)</li>
-</ul>
-
-<p><strong>Variance: estimation error due to finite data</strong></p>
-
-<ul>
-<li>  High Variance = OverFitting (VO)</li>
-<li>  \(J_{train}(\Theta)\) is low and \(J_{CV}(\Theta)\) ≫\(J_{train}(\Theta)\)</li>
-</ul>
-
-<p><strong>Intuition for the bias-variance trade-off:</strong></p>
-
-<ul>
-<li>  Complex model =&gt; sensitive to data =&gt; much affected by changes in X =&gt; high variance, low bias.</li>
-<li>  Simple model =&gt; more rigid =&gt; does not change as much with changes in X =&gt; low variance, high bias.</li>
-</ul>
-
-<p>One of the most important goals in learning: finding a model that is just right in the bias-variance trade-off.</p>
-
-<p><strong>Regularization Effects:</strong></p>
-
-<ul>
-<li>  Small values of λ allow model to become finely tuned to noise leading to large variance =&gt; overfitting.</li>
-<li>  Large values of λ pull weight parameters to zero leading to large bias =&gt; underfitting.</li>
-</ul>
-
-<p><strong>Model Complexity Effects:</strong></p>
-
-<ul>
-<li>  Lower-order polynomials (low model complexity) have high bias and low variance. In this case, the model fits poorly consistently.</li>
-<li>  Higher-order polynomials (high model complexity) fit the training data extremely well and the test data extremely poorly. These have low bias on the training data, but very high variance.</li>
-<li>  In reality, we would want to choose a model somewhere in between, that can generalize well but also fits the data reasonably well.</li>
-</ul>
-
-<p><strong>A typical rule of thumb when running diagnostics is:</strong></p>
-
-<ul>
-<li>  More training examples fixes high variance but not high bias.</li>
-<li>  Fewer features fixes high variance but not high bias.</li>
-<li>  Additional features fixes high bias but not high variance.</li>
-<li>  The addition of polynomial and interaction features fixes high bias but not high variance.</li>
-<li>  When using gradient descent, decreasing lambda can fix high bias and increasing lambda can fix high variance (lambda is the regularization parameter).</li>
-<li>  When using neural networks, small neural networks are more prone to under-fitting and big neural networks are prone to over-fitting. Cross-validation of network size is a way to choose alternatives.</li>
-</ul>
-
-<h1 id="toc_11">ML:Machine Learning System Design</h1>
-
-<h2 id="toc_12">Prioritizing What to Work On</h2>
-
-<p>Different ways we can approach a machine learning problem:</p>
-
-<ul>
-<li>  Collect lots of data (for example &quot;honeypot&quot; project but doesn&#39;t always work)</li>
-<li>  Develop sophisticated features (for example: using email header data in spam emails)</li>
-<li>  Develop algorithms to process your input in different ways (recognizing misspellings in spam).</li>
-</ul>
-
-<p>It is difficult to tell which of the options will be helpful.</p>
-
-<h2 id="toc_13">Error Analysis</h2>
-
-<p>The recommended approach to solving machine learning problems is:</p>
-
-<ul>
-<li>  Start with a simple algorithm, implement it quickly, and test it early.</li>
-<li>  Plot learning curves to decide if more data, more features, etc. will help</li>
-<li>  Error analysis: manually examine the errors on examples in the cross validation set and try to spot a trend.</li>
-</ul>
-
-<p>It&#39;s important to get error results as a single, numerical value. Otherwise it is difficult to assess your algorithm&#39;s performance.</p>
-
-<p>You may need to process your input before it is useful. For example, if your input is a set of words, you may want to treat the same word with different forms (fail/failing/failed) as one word, so must use &quot;stemming software&quot; to recognize them all as one.</p>
-
-<h2 id="toc_14">Error Metrics for Skewed Classes</h2>
-
-<p>It is sometimes difficult to tell whether a reduction in error is actually an improvement of the algorithm.</p>
-
-<ul>
-<li>  For example: In predicting a cancer diagnoses where 0.5% of the examples have cancer, we find our learning algorithm has a 1% error. However, if we were to simply classify every single example as a 0, then our error would reduce to 0.5% even though we did not improve the algorithm.</li>
-</ul>
-
-<p>This usually happens with <strong>skewed classes</strong> ; that is, when our class is very rare in the entire data set.</p>
-
-<p>Or to say it another way, when we have lot more examples from one class than from the other class.</p>
-
-<p>For this we can use <strong>Precision/Recall</strong> .</p>
-
-<ul>
-<li>  Predicted: 1, Actual: 1 --- True positive</li>
-<li>  Predicted: 0, Actual: 0 --- True negative</li>
-<li>  Predicted: 0, Actual, 1 --- False negative</li>
-<li>  Predicted: 1, Actual: 0 --- False positive</li>
-</ul>
-
-<p><strong>Precision</strong> : of all patients we predicted where y=1, what fraction actually has cancer?</p>
-
-<p>\(\dfrac{\text{True Positives}}{\text{Total number of predicted positives}} = \dfrac{\text{True Positives}}{\text{True Positives}+\text{False positives}}\)</p>
-
-<p><strong>Recall</strong> : Of all the patients that actually have cancer, what fraction did we correctly detect as having cancer?</p>
-
-<p>\(\dfrac{\text{True Positives}}{\text{Total number of actual positives}}= \dfrac{\text{True Positives}}{\text{True Positives}+\text{False negatives}}\)</p>
-
-<p>These two metrics give us a better sense of how our classifier is doing. We want both precision and recall to be high.</p>
-
-<p>In the example at the beginning of the section, if we classify all patients as 0, then our <strong>recall</strong> will be \(\dfrac{0}{0 + f} = 0\), so despite having a lower error percentage, we can quickly see it has worse recall.</p>
-
-<p>Accuracy = \(\frac {\text{true positive + true negative}} {\text{total population}}\)</p>
-
-<p>Note 1: if an algorithm predicts only negatives like it does in one of exercises, the precision is not defined, it is impossible to divide by 0. F1 score will not be defined too.</p>
-
-<h2 id="toc_15">Trading Off Precision and Recall</h2>
-
-<p>We might want a <strong>confident</strong> prediction of two classes using logistic regression. One way is to increase our threshold:</p>
-
-<ul>
-<li><p>Predict 1 if: \(h_\theta(x) \geq 0.7\)</p></li>
-<li><p>Predict 0 if: \(h_\theta(x) &lt; 0.7\)</p></li>
-</ul>
-
-<p>This way, we only predict cancer if the patient has a 70% chance.</p>
-
-<p>Doing this, we will have <strong>higher precision</strong> but <strong>lower recall</strong> (refer to the definitions in the previous section).</p>
-
-<p>In the opposite example, we can lower our threshold:</p>
-
-<ul>
-<li><p>Predict 1 if: \(h_\theta(x) \geq 0.3\)</p></li>
-<li><p>Predict 0 if: \(h_\theta(x) &lt; 0.3\)</p></li>
-</ul>
-
-<p>That way, we get a very <strong>safe</strong> prediction. This will cause <strong>higher recall</strong> but <strong>lower precision</strong> .</p>
-
-<p>The greater the threshold, the greater the precision and the lower the recall.</p>
-
-<p>The lower the threshold, the greater the recall and the lower the precision.</p>
-
-<p>In order to turn these two metrics into one single number, we can take the <strong>F value</strong> .</p>
-
-<p>One way is to take the <strong>average</strong> :</p>
-
-<p>\(\dfrac{P+R}{2}\)</p>
-
-<p>This does not work well. If we predict all y=0 then that will bring the average up despite having 0 recall. If we predict all examples as y=1, then the very high recall will bring up the average despite having 0 precision.</p>
-
-<p>A better way is to compute the <strong>F Score</strong> (or F1 score):</p>
-
-<p>\(\text{F Score} = 2\dfrac{PR}{P + R}\)</p>
-
-<p>In order for the F Score to be large, both precision and recall must be large.</p>
-
-<p>We want to train precision and recall on the <strong>cross validation set</strong> so as not to bias our test set.</p>
-
-<h2 id="toc_16">Data for Machine Learning</h2>
-
-<p>How much data should we train on?</p>
-
-<p>In certain cases, an &quot;inferior algorithm,&quot; if given enough data, can outperform a superior algorithm with less data.</p>
-
-<p>We must choose our features to have <strong>enough</strong> information. A useful test is: Given input x, would a human expert be able to confidently predict y?</p>
-
-<p><strong>Rationale for large data</strong> : if we have a <strong>low bias</strong> algorithm (many features or hidden units making a very complex function), then the larger the training set we use, the less we will have overfitting (and the more accurate the algorithm will be on the test set).</p>
-
-<h2 id="toc_17">Quiz instructions</h2>
-
-<p>When the quiz instructions tell you to enter a value to &quot;two decimal digits&quot;, what it really means is &quot;two significant digits&quot;. So, just for example, the value 0.0123 should be entered as &quot;0.012&quot;, not &quot;0.01&quot;.</p>
-
-<p>References:</p>
-
-<ul>
-<li>  <a href="https://class.coursera.org/ml/lecture/index">https://class.coursera.org/ml/lecture/index</a></li>
-<li>  <a href="http://www.cedar.buffalo.edu/%7Esrihari/CSE555/Chap9.Part2.pdf">http://www.cedar.buffalo.edu/~srihari/CSE555/Chap9.Part2.pdf</a></li>
-<li>  <a href="http://blog.stephenpurpura.com/post/13052575854/managing-bias-variance-tradeoff-in-machine-learning">http://blog.stephenpurpura.com/post/13052575854/managing-bias-variance-tradeoff-in-machine-learning</a></li>
-<li>  <a href="http://www.cedar.buffalo.edu/%7Esrihari/CSE574/Chap3/Bias-Variance.pdf">http://www.cedar.buffalo.edu/~srihari/CSE574/Chap3/Bias-Variance.pdf</a></li>
-</ul>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Machine Learning(9): Anomaly Detection AND Recommender System]]></title>
-    <link href="http://larryim.cc/anomaly-detection.html"/>
-    <updated>2017-09-04T12:58:21+08:00</updated>
-    <id>http://larryim.cc/anomaly-detection.html</id>
-    <content type="html"><![CDATA[
-<ul>
-<li>
-<a href="#toc_0">ML:Anomaly Detection</a>
-<ul>
-<li>
-<a href="#toc_1">Problem Motivation</a>
-</li>
-<li>
-<a href="#toc_2">Gaussian Distribution</a>
-</li>
-<li>
-<a href="#toc_3">Algorithm</a>
-</li>
-<li>
-<a href="#toc_4">Developing and Evaluating an Anomaly Detection System</a>
-</li>
-<li>
-<a href="#toc_5">Anomaly Detection vs. Supervised Learning</a>
-</li>
-<li>
-<a href="#toc_6">Choosing What Features to Use</a>
-</li>
-<li>
-<a href="#toc_7">Multivariate Gaussian Distribution</a>
-</li>
-<li>
-<a href="#toc_8">Anomaly Detection using the Multivariate Gaussian Distribution</a>
-</li>
-<li>
-<a href="#toc_9">ML:Recommender Systems</a>
-</li>
-<li>
-<a href="#toc_10">Problem Formulation</a>
-</li>
-<li>
-<a href="#toc_11">Content Based Recommendations</a>
-</li>
-<li>
-<a href="#toc_12">Collaborative Filtering</a>
-</li>
-<li>
-<a href="#toc_13">Collaborative Filtering Algorithm</a>
-</li>
-<li>
-<a href="#toc_14">Vectorization: Low Rank Matrix Factorization</a>
-</li>
-<li>
-<a href="#toc_15">Implementation Detail: Mean Normalization</a>
-</li>
-</ul>
-</li>
-</ul>
-
-
-<h1 id="toc_0">ML:Anomaly Detection</h1>
-
-<h2 id="toc_1">Problem Motivation</h2>
-
-<p>Just like in other learning problems, we are given a dataset \({x^{(1)}, x^{(2)},\dots,x^{(m)}}\).</p>
-
-<p>We are then given a new example, \(x_{test}\), and we want to know whether this new example is abnormal/anomalous.</p>
-
-<p>We define a &quot;model&quot; p(x) that tells us the probability the example is not anomalous. We also use a threshold ϵ (epsilon) as a dividing line so we can say which examples are anomalous and which are not.</p>
-
-<p>A very common application of anomaly detection is detecting fraud:</p>
-
-<ul>
-<li><p>\(x^{(i)} =\) features of user i&#39;s activities</p></li>
-<li><p>Model p(x) from the data.</p></li>
-<li><p>Identify unusual users by checking which have p(x)&lt;ϵ.</p></li>
-</ul>
-
-<p>If our anomaly detector is flagging <strong>too many</strong> anomalous examples, then we need to <strong>decrease</strong> our threshold ϵ</p>
-
-<h2 id="toc_2">Gaussian Distribution</h2>
-
-<p>The Gaussian Distribution is a familiar bell-shaped curve that can be described by a function \(\mathcal{N}(\mu,\sigma^2)\)</p>
-
-<p>Let x∈ℝ. If the probability distribution of x is Gaussian with mean μ, variance \(\sigma^2\), then:</p>
-
-<p>\(x \sim \mathcal{N}(\mu, \sigma^2)\)</p>
-
-<p>The little ∼ or &#39;tilde&#39; can be read as &quot;distributed as.&quot;</p>
-
-<p>The Gaussian Distribution is parameterized by a mean and a variance.</p>
-
-<p>Mu, or μ, describes the center of the curve, called the mean. The width of the curve is described by sigma, or σ, called the standard deviation.</p>
-
-<p>The full function is as follows:</p>
-
-<p>\(\large p(x;\mu,\sigma^2) = \dfrac{1}{\sigma\sqrt{(2\pi)}}e^{-\dfrac{1}{2}(\dfrac{x - \mu}{\sigma})^2}\)</p>
-
-<p>We can estimate the parameter μ from a given dataset by simply taking the average of all the examples:</p>
-
-<p>\(\mu = \dfrac{1}{m}\displaystyle \sum_{i=1}^m x^{(i)}\)</p>
-
-<p>We can estimate the other parameter, \(\sigma^2\), with our familiar squared error formula:</p>
-
-<p>\(\sigma^2 = \dfrac{1}{m}\displaystyle \sum_{i=1}^m(x^{(i)} - \mu)^2\)</p>
-
-<p><img src="media/15045011015887/15045018120355.png" alt="Gaussian distribution"/></p>
-
-<h2 id="toc_3">Algorithm</h2>
-
-<p>Given a training set of examples, \(\lbrace x^{(1)},\dots,x^{(m)}\rbrace\) where each example is a vector, \(x \in \mathbb{R}^n\).</p>
-
-<p>\(p(x) = p(x_1;\mu_1,\sigma_1^2)p(x_2;\mu_2,\sigma^2_2)\cdots p(x_n;\mu_n,\sigma^2_n)\)</p>
-
-<p>In statistics, this is called an &quot;independence assumption&quot; on the values of the features inside training example x.</p>
-
-<p>More compactly, the above expression can be written as follows:</p>
-
-<p>\(= \displaystyle \prod^n_{j=1} p(x_j;\mu_j,\sigma_j^2)\)</p>
-
-<p><strong>The algorithm</strong></p>
-
-<p>Choose features \(x_i\) that you think might be indicative of anomalous examples.</p>
-
-<p>Fit parameters \(\mu_1,\dots,\mu_n,\sigma_1^2,\dots,\sigma_n^2\)</p>
-
-<p>Calculate \(\mu_j = \dfrac{1}{m}\displaystyle \sum_{i=1}^m x_j^{(i)}\)</p>
-
-<p>Calculate \(\sigma^2_j = \dfrac{1}{m}\displaystyle \sum_{i=1}^m(x_j^{(i)} - \mu_j)^2\)</p>
-
-<p>Given a new example x, compute p(x):</p>
-
-<p>\(p(x) = \displaystyle \prod^n_{j=1} p(x_j;\mu_j,\sigma_j^2) = \prod\limits^n_{j=1} \dfrac{1}{\sqrt{2\pi}\sigma_j}exp(-\dfrac{(x_j - \mu_j)^2}{2\sigma^2_j})\)</p>
-
-<p>Anomaly if p(x)&lt;ϵ</p>
-
-<p>A vectorized version of the calculation for μ is \(\mu = \dfrac{1}{m}\displaystyle \sum_{i=1}^m x^{(i)}\). You can vectorize \(\sigma^2\) similarly.</p>
-
-<h2 id="toc_4">Developing and Evaluating an Anomaly Detection System</h2>
-
-<p>To evaluate our learning algorithm, we take some labeled data, categorized into anomalous and non-anomalous examples ( y = 0 if normal, y = 1 if anomalous).</p>
-
-<p>Among that data, take a large proportion of <strong>good</strong> , non-anomalous data for the training set on which to train p(x).</p>
-
-<p>Then, take a smaller proportion of mixed anomalous and non-anomalous examples (you will usually have many more non-anomalous examples) for your cross-validation and test sets.</p>
-
-<p>For example, we may have a set where 0.2% of the data is anomalous. We take 60% of those examples, all of which are good (y=0) for the training set. We then take 20% of the examples for the cross-validation set (with 0.1% of the anomalous examples) and another 20% from the test set (with another 0.1% of the anomalous).</p>
-
-<p>In other words, we split the data 60/20/20 training/CV/test and then split the anomalous examples 50/50 between the CV and test sets.</p>
-
-<p><strong>Algorithm evaluation:</strong></p>
-
-<p>Fit model p(x) on training set \(\lbrace x^{(1)},\dots,x^{(m)} \rbrace\)</p>
-
-<p>On a cross validation/test example x, predict:</p>
-
-<p>If p(x) &lt; ϵ ( <strong>anomaly</strong> ), then y=1</p>
-
-<p>If p(x) ≥ ϵ ( <strong>normal</strong> ), then y=0</p>
-
-<p>Possible evaluation metrics (see &quot;Machine Learning System Design&quot; section):</p>
-
-<ul>
-<li><p>True positive, false positive, false negative, true negative.</p></li>
-<li><p>Precision/recall</p></li>
-<li><p>\(F_1\) score</p></li>
-</ul>
-
-<p>Note that we use the cross-validation set to choose parameter ϵ</p>
-
-<h2 id="toc_5">Anomaly Detection vs. Supervised Learning</h2>
-
-<p>When do we use anomaly detection and when do we use supervised learning?</p>
-
-<p>Use anomaly detection when...</p>
-
-<ul>
-<li><p>We have a very small number of positive examples (y=1 ... 0-20 examples is common) and a large number of negative (y=0) examples.</p></li>
-<li><p>We have many different &quot;types&quot; of anomalies and it is hard for any algorithm to learn from positive examples what the anomalies look like; future anomalies may look nothing like any of the anomalous examples we&#39;ve seen so far.</p></li>
-</ul>
-
-<p>Use supervised learning when...</p>
-
-<ul>
-<li><p>We have a large number of both positive and negative examples. In other words, the training set is more evenly divided into classes.</p></li>
-<li><p>We have enough positive examples for the algorithm to get a sense of what new positives examples look like. The future positive examples are likely similar to the ones in the training set.</p></li>
-</ul>
-
-<h2 id="toc_6">Choosing What Features to Use</h2>
-
-<p>The features will greatly affect how well your anomaly detection algorithm works.</p>
-
-<p>We can check that our features are <strong>gaussian</strong> by plotting a histogram of our data and checking for the bell-shaped curve.</p>
-
-<p>Some <strong>transforms</strong> we can try on an example feature x that does not have the bell-shaped curve are:</p>
-
-<ul>
-<li><p>log(x)</p></li>
-<li><p>log(x+1)</p></li>
-<li><p>log(x+c) for some constant</p></li>
-<li><p>\(\sqrt{x}\)</p></li>
-<li><p>\(x^{1/3}\)</p></li>
-</ul>
-
-<p>We can play with each of these to try and achieve the gaussian shape in our data.</p>
-
-<p>There is an <strong>error analysis procedure</strong> for anomaly detection that is very similar to the one in supervised learning.</p>
-
-<p>Our goal is for p(x) to be large for normal examples and small for anomalous examples.</p>
-
-<p>One common problem is when p(x) is similar for both types of examples. In this case, you need to examine the anomalous examples that are giving high probability in detail and try to figure out new features that will better distinguish the data.</p>
-
-<p>In general, choose features that might take on unusually large or small values in the event of an anomaly.</p>
-
-<h2 id="toc_7">Multivariate Gaussian Distribution</h2>
-
-<p>The multivariate gaussian distribution is an extension of anomaly detection and may (or may not) catch more anomalies.</p>
-
-<p>Instead of modeling \(p(x_1),p(x_2),\dots\) separately, we will model p(x) all in one go. Our parameters will be: \(\mu \in \mathbb{R}^n\) and \(\Sigma \in \mathbb{R}^{n \times n}\)</p>
-
-<p>\(p(x;\mu,\Sigma) = \dfrac{1}{(2\pi)^{n/2} |\Sigma|^{1/2}} exp(-1/2(x-\mu)^T\Sigma^{-1}(x-\mu))\)</p>
-
-<p>The important effect is that we can model oblong gaussian contours, allowing us to better fit data that might not fit into the normal circular contours.</p>
-
-<p>Varying Σ changes the shape, width, and orientation of the contours. Changing μ will move the center of the distribution.</p>
-
-<p>Check also:</p>
-
-<ul>
-<li>  <a href="http://cs229.stanford.edu/section/gaussians.pdf">The Multivariate Gaussian Distribution</a> <a href="http://cs229.stanford.edu/section/gaussians.pdf">http://cs229.stanford.edu/section/gaussians.pdf</a> Chuong B. Do, October 10, 2008.</li>
-</ul>
-
-<p>Following examples illustrate the basic meaning of parameters in multivariable gaussian distribution:</p>
-
-<pre><code>mean = [0, 0]
-cov = [[1, 0], [0, 1]]  # diagonal covariance
-# Draw random samples from a multivariate normal distribution
-x, y = np.random.multivariate_normal(mean, cov, 5000).T
-plt.plot(x, y, &#39;x&#39;,color=&#39;y&#39;)
-plt.axis(&#39;equal&#39;)
-plt.hold
-
-# change mean
-mean = [0, 10]
-x, y = np.random.multivariate_normal(mean, cov, 5000).T
-plt.plot(x, y, &#39;.&#39;, color=&#39;b&#39;)
-
-# change variances
-mean = [10, 10]
-cov = [[1, 0], [0, 10]]  # diagonal covariance
-x, y = np.random.multivariate_normal(mean, cov, 5000).T
-plt.plot(x, y, &#39;-&#39;, color=&#39;r&#39;)
-plt.show()
-</code></pre>
-
-<p><img src="media/15045011015887/15045091983941.jpg" alt="demo of multivarible gaussian"/></p>
-
-<h2 id="toc_8">Anomaly Detection using the Multivariate Gaussian Distribution</h2>
-
-<p>When doing anomaly detection with multivariate gaussian distribution, we compute μ and Σ normally. We then compute p(x) using the new formula in the previous section and flag an anomaly if p(x) &lt; ϵ.</p>
-
-<p>The original model for p(x) corresponds to a multivariate Gaussian where the contours of \(p(x;\mu,\Sigma)\) are axis-aligned.</p>
-
-<p>The multivariate Gaussian model can automatically capture correlations between different features of x.</p>
-
-<p>However, the original model maintains some advantages: it is computationally cheaper (no matrix to invert, which is costly for large number of features) and it performs well even with small training set size (in multivariate Gaussian model, it should be greater than the number of features for Σ to be invertible).</p>
-
-<h2 id="toc_9">ML:Recommender Systems</h2>
-
-<h2 id="toc_10">Problem Formulation</h2>
-
-<p>Recommendation is currently a very popular application of machine learning.</p>
-
-<p>Say we are trying to recommend movies to customers. We can use the following definitions</p>
-
-<ul>
-<li><p>\(n_u =\) number of users</p></li>
-<li><p>\(n_m =\) number of movies</p></li>
-<li><p>\(r(i,j) = 1\) if user j has rated movie i</p></li>
-<li><p>\(y(i,j) =\) rating given by user j to movie i (defined only if r(i,j)=1)</p></li>
-</ul>
-
-<h2 id="toc_11">Content Based Recommendations</h2>
-
-<p>We can introduce two features, \(x_1\) and \(x_2\) which represents how much romance or how much action a movie may have (on a scale of 0−1).</p>
-
-<p>One approach is that we could do linear regression for every single user. For each user j, learn a parameter \(\theta^{(j)} \in \mathbb{R}^3\). Predict user j as rating movie i with \((\theta^{(j)})^Tx^{(i)}\) stars.</p>
-
-<ul>
-<li><p>\(\theta^{(j)} =\) parameter vector for user j</p></li>
-<li><p>\(x^{(i)} =\) feature vector for movie i</p></li>
-</ul>
-
-<p>For user j, movie i, predicted rating: \((\theta^{(j)})^T(x^{(i)})\)</p>
-
-<ul>
-<li>  \(m^{(j)} =\) number of movies rated by user j</li>
-</ul>
-
-<p>To learn \(\theta^{(j)}\), we do the following</p>
-
-<p>\(min_{\theta^{(j)}} = \dfrac{1}{2}\displaystyle \sum_{i:r(i,j)=1} ((\theta^{(j)})^T(x^{(i)}) - y^{(i,j)})^2 + \dfrac{\lambda}{2} \sum_{k=1}^n(\theta_k^{(j)})^2\)</p>
-
-<p>This is our familiar linear regression. The base of the first summation is choosing all i such that \(r(i,j) = 1\).</p>
-
-<p>To get the parameters for all our users, we do the following:</p>
-
-<p>\(min_{\theta^{(1)},\dots,\theta^{(n_u)}} = \dfrac{1}{2}\displaystyle \sum_{j=1}^{n_u} \sum_{i:r(i,j)=1} ((\theta^{(j)})^T(x^{(i)}) - y^{(i,j)})^2 + \dfrac{\lambda}{2} \sum_{j=1}^{n_u} \sum_{k=1}^n(\theta_k^{(j)})^2\)</p>
-
-<p>We can apply our linear regression gradient descent update using the above cost function.</p>
-
-<p>The only real difference is that we <strong>eliminate the constant</strong> \(\dfrac{1}{m}\).</p>
-
-<h2 id="toc_12">Collaborative Filtering</h2>
-
-<p>It can be very difficult to find features such as &quot;amount of romance&quot; or &quot;amount of action&quot; in a movie. To figure this out, we can use <u>feature finders</u> .</p>
-
-<p>We can let the users tell us how much they like the different genres, providing their parameter vector immediately for us.</p>
-
-<p>To infer the features from given parameters, we use the squared error function with regularization over all the users:</p>
-
-<p>\(min_{x^{(1)},\dots,x^{(n_m)}} \dfrac{1}{2} \displaystyle \sum_{i=1}^{n_m} \sum_{j:r(i,j)=1} ((\theta^{(j)})^T x^{(i)} - y^{(i,j)})^2 + \dfrac{\lambda}{2}\sum_{i=1}^{n_m} \sum_{k=1}^{n} (x_k^{(i)})^2\)</p>
-
-<p>You can also <strong>randomly guess</strong> the values for theta to guess the features repeatedly. You will actually converge to a good set of features.</p>
-
-<h2 id="toc_13">Collaborative Filtering Algorithm</h2>
-
-<p>To speed things up, we can simultaneously minimize our features and our parameters:</p>
-
-<p>\(J(x,\theta) = \dfrac{1}{2} \displaystyle \sum_{(i,j):r(i,j)=1}((\theta^{(j)})^Tx^{(i)} - y^{(i,j)})^2 + \dfrac{\lambda}{2}\sum_{i=1}^{n_m} \sum_{k=1}^{n} (x_k^{(i)})^2 + \dfrac{\lambda}{2}\sum_{j=1}^{n_u} \sum_{k=1}^{n} (\theta_k^{(j)})^2\)</p>
-
-<p>It looks very complicated, but we&#39;ve only combined the cost function for theta and the cost function for x.</p>
-
-<p>Because the algorithm can learn them itself, the bias units where x0=1 have been removed, therefore x∈ℝn and θ∈ℝn.</p>
-
-<p>These are the steps in the algorithm:</p>
-
-<ol>
-<li><p>Initialize \(x^{(i)},...,x^{(n_m)},\theta^{(1)},...,\theta^{(n_u)}\) to small random values. This serves to break symmetry and ensures that the algorithm learns features \(x^{(i)},...,x^{(n_m)}\) that are different from each other.</p></li>
-<li><p>Minimize \(J(x^{(i)},...,x^{(n_m)},\theta^{(1)},...,\theta^{(n_u)})\) using gradient descent (or an advanced optimization algorithm).E.g. for every \(j=1,...,n_u,i=1,...n_m\):\(x_k^{(i)} := x_k^{(i)} - \alpha\left (\displaystyle \sum_{j:r(i,j)=1}{((\theta^{(j)})^T x^{(i)} - y^{(i,j)}) \theta_k^{(j)}} + \lambda x_k^{(i)} \right)\)\(\theta_k^{(j)} := \theta_k^{(j)} - \alpha\left (\displaystyle \sum_{i:r(i,j)=1}{((\theta^{(j)})^T x^{(i)} - y^{(i,j)}) x_k^{(i)}} + \lambda \theta_k^{(j)} \right)\)</p></li>
-<li><p>For a user with parameters θ and a movie with (learned) features x, predict a star rating of \(\theta^Tx\).</p></li>
-</ol>
-
-<h2 id="toc_14">Vectorization: Low Rank Matrix Factorization</h2>
-
-<p>Given matrices X (each row containing features of a particular movie) and Θ (each row containing the weights for those features for a given user), then the full matrix Y of all predicted ratings of all movies by all users is given simply by: \(Y = X\Theta^T\).</p>
-
-<p>Predicting how similar two movies i and j are can be done using the distance between their respective feature vectors x. Specifically, we are looking for a small value of \(||x^{(i)} - x^{(j)}||\).</p>
-
-<h2 id="toc_15">Implementation Detail: Mean Normalization</h2>
-
-<p>If the ranking system for movies is used from the previous lectures, then new users (who have watched no movies), will be assigned new movies incorrectly. Specifically, they will be assigned θ with all components equal to zero due to the minimization of the regularization term. That is, we assume that the new user will rank all movies 0, which does not seem intuitively correct.</p>
-
-<p>We rectify this problem by normalizing the data relative to the mean. First, we use a matrix Y to store the data from previous ratings, where the ith row of Y is the ratings for the ith movie and the jth column corresponds to the ratings for the jth user.</p>
-
-<p>We can now define a vector</p>
-
-<p>\(\mu = [\mu_1, \mu_2, \dots , \mu_{n_m}]\)</p>
-
-<p>such that</p>
-
-<p>\(\mu_i = \frac{\sum_{j:r(i,j)=1}{Y_{i,j}}}{\sum_{j}{r(i,j)}}\)</p>
-
-<p>Which is effectively the mean of the previous ratings for the ith movie (where only movies that have been watched by users are counted). We now can normalize the data by subtracting u, the mean rating, from the actual ratings for each user (column in matrix Y):</p>
-
-<p>As an example, consider the following matrix Y and mean ratings μ:</p>
-
-<p>\(Y = \begin{bmatrix} 5 &amp; 5 &amp; 0 &amp; 0 \newline 4 &amp; ? &amp; ? &amp; 0 \newline 0 &amp; 0 &amp; 5 &amp; 4 \newline 0 &amp; 0 &amp; 5 &amp; 0 \newline \end{bmatrix}, \quad \mu = \begin{bmatrix} 2.5 \newline 2 \newline 2.25 \newline 1.25 \newline \end{bmatrix}\)</p>
-
-<p>The resulting Y′ vector is:</p>
-
-<p>\(Y&#39; = \begin{bmatrix} 2.5 &amp; 2.5 &amp; -2.5 &amp; -2.5 \newline 2 &amp; ? &amp; ? &amp; -2 \newline -.2.25 &amp; -2.25 &amp; 3.75 &amp; 1.25 \newline -1.25 &amp; -1.25 &amp; 3.75 &amp; -1.25 \end{bmatrix}\)</p>
-
-<p>Now we must slightly modify the linear regression prediction to include the mean normalization term:</p>
-
-<p>\((\theta^{(j)})^T x^{(i)} + \mu_i\)</p>
-
-<p>Now, for a new user, the initial predicted values will be equal to the μ term instead of simply being initialized to zero, which is more accurate.</p>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Python `virtualenv` on mac]]></title>
-    <link href="http://larryim.cc/virtualenv.html"/>
-    <updated>2017-09-02T20:17:11+08:00</updated>
-    <id>http://larryim.cc/virtualenv.html</id>
-    <content type="html"><![CDATA[
-<h2 id="toc_0">Install</h2>
-
-<p>Install <code>virtualenv</code> using <code>conda</code> instead of <code>pip</code>, because it might raise error (see on <a href="virtualenv%20--no-site-packages%20venv">StackOverflow</a>)</p>
-
-<pre><code class="language-bash">conda install virtualenv
-</code></pre>
-
-<h2 id="toc_1">create your environment</h2>
-
-<p>Now you can create your python environment for your particular programs. For example, under the folder <code>your project</code>, you create an environment called <code>.venv</code> by:</p>
-
-<pre><code class="language-bash">virtualenv --no-site-packages .venv
-</code></pre>
-
-<p>The command <code>--no-site-packages</code> requires the environment should not access to global site-packages (as default now).</p>
-
-<p>Before running your program in your created environment, you need to activate it:</p>
-
-<pre><code class="language-python">source .venv/bin/activate
-</code></pre>
-
-<p>And remember to deactivate it whenever you are done.:</p>
-
-<pre><code>deactivate
-</code></pre>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Convolutional Neural Networks]]></title>
-    <link href="http://larryim.cc/convolutional-neural-networks.html"/>
-    <updated>2017-09-01T09:16:18+08:00</updated>
-    <id>http://larryim.cc/convolutional-neural-networks.html</id>
-    <content type="html"><![CDATA[
-<ul>
-<li>
-<a href="#toc_0">Architecture</a>
-<ul>
-<li>
-<ul>
-<li>
-<a href="#toc_1">Conv layers</a>
-</li>
-<li>
-<a href="#toc_2">Pooling</a>
-</li>
-<li>
-<a href="#toc_3">Fully-connected layers</a>
-</li>
-<li>
-<a href="#toc_4">Layer Patterns</a>
-</li>
-<li>
-<a href="#toc_5">Layer Sizing Patterns</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_6">Computational Considerations</a>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_7">The memory bottleneck is the largest bottleneck when constructing ConvNet architectures.</a>
-
-
-<h2 id="toc_0">Architecture</h2>
-
-<p>Three main types of layers to build ConvNet architectures: <strong>Convolutional Layer, Pooling Layer and Fully-Connected Layer</strong>.</p>
-
-<p>The layers of a ConvNet have neurons arranged in 3 dimensions: <strong>width, height, depth</strong>.</p>
-
-<p><img src="media/15042285789723/15043413926666.jpg" alt="convolutional"/></p>
-
-<p>A simple ConvNet for <a href="https://www.cs.toronto.edu/%7Ekriz/cifar.html">CIFAR-10</a> classification could have the architecture as follows:</p>
-
-<ul>
-<li><strong>INPUT</strong> [width x height x color channel] will hold the raw pixel values of the image, in this case an image of width, height, and with three color channels R,G,B.</li>
-<li><strong>CONV layer</strong> will compute the output of neurons that are connected to local regions in the input, each computing a dot product between their weights and a small region they are connected to in the input volume.</li>
-<li><strong>RELU layer</strong> will apply an elementwise activation function, such as the <code>max(0,x)</code> thresholding at zero. </li>
-<li><strong>POOL layer</strong> will perform a downsampling operation along the spatial dimensions (width, height).</li>
-<li><strong>FC</strong> (i.e. fully-connected) layer will compute the class scores, where each score corresponding to the 10 categories of CIFAR-10. As with ordinary Neural Networks and as the name implies, each neuron in this layer will be connected to all the numbers in the previous volume.</li>
-</ul>
-
-<h4 id="toc_1">Conv layers</h4>
-
-<p>Four hyperparameters <strong>depth</strong>(K), <strong>spatial extent</strong>(\(F\)), <strong>stride</strong>(\(S\)) and <strong>zero-padding</strong>(\(P\)) control the size of the output volume from the input volume (\(W\)).</p>
-
-<p><strong>Summary</strong>. To summarize, the Conv Layer:</p>
-
-<ul>
-<li>Accepts a volume of size \(W_1 \times H_1 \times D_1\)</li>
-<li>Requires four hyperparameters: 
-
-<ul>
-<li>Number of filters \(K\), </li>
-<li>their spatial extent \(F\), </li>
-<li>the stride \(S\), </li>
-<li>the amount of zero padding \(P\).</li>
-</ul></li>
-<li>Produces a volume of size \(W_2 \times H_2 \times D_2\) where:
-
-<ul>
-<li>\(W_2 = (W_1 - F + 2P)/S + 1\)</li>
-<li>\(H_2 = (H_1 - F + 2P)/S + 1\) (i.e. width and height are computed equally by symmetry)</li>
-<li>\(D_2 = K\)</li>
-</ul></li>
-<li>With parameter sharing, it introduces \(F \cdot F \cdot D_1\) weights per filter, for a total of \((F \cdot F \cdot D_1) \cdot K\) weights and \(K\) biases.</li>
-<li>In the output volume, the \(d\)-th depth slice (of size \(W_2 \times H_2\)) is the result of performing a valid convolution of the \(d\)-th filter over the input volume with a stride of \(S\), and then offset by \(d\)-th bias.</li>
-</ul>
-
-<p><strong>parameter sharing</strong>: the neurons in each depth slice(i.e \(K\)) to use the same weights and bias. </p>
-
-<h4 id="toc_2">Pooling</h4>
-
-<p><code>max pooling</code> is the most common function performed on the pooling units, others like <code>average pooling</code> or <code>L2-norm pooling</code> is work worse in practice. And Many people dislike the pooling operation and think that we can get away without it.</p>
-
-<h4 id="toc_3">Fully-connected layers</h4>
-
-<p>Neurons in a fully connected layer have full connections to all activations in the previous layer.</p>
-
-<h4 id="toc_4">Layer Patterns</h4>
-
-<p>The most common form of a ConvNet architecture stacks a few CONV-RELU layers, follows them with POOL layers, and <strong>repeats this pattern until the image has been merged spatially to a small size</strong>. At some point, it is common to transition to fully-connected layers. The last fully-connected layer holds the output, such as the class scores. In other words, the most common ConvNet architecture follows the pattern:</p>
-
-<p>\[INPUT \rightarrow  [[CONV \rightarrow  RELU]*N \rightarrow  POOL?]*M \rightarrow [FC -&gt; RELU]*K \rightarrow  FC\]</p>
-
-<p>where the <code>*</code> indicates repetition, and the <code>POOL?</code> indicates an optional pooling layer. Moreover, <code>N &gt;= 0</code> (and usually <code>N &lt;= 3</code>), <code>M &gt;= 0</code>, <code>K &gt;= 0</code> (and usually <code>K &lt; 3</code>). For example, here are some common ConvNet architectures you may see that follow this pattern:</p>
-
-<p><strong>Note</strong>: <code>INPUT -&gt; FC</code>, implements a linear classifier. Here <code>N = M = K = 0</code>.<br/>
-<strong>Note</strong>: Prefer a stack of small filter CONV to one large receptive field CONV layer, because of few parameters needed and expressing more powerful features of the input.</p>
-
-<h4 id="toc_5">Layer Sizing Patterns</h4>
-
-<ul>
-<li><strong>input layer</strong>:  Common numbers include 32 (e.g. CIFAR-10), 64, 96 (e.g. STL-10), or 224 (e.g. common ImageNet ConvNets), 384, and 512.</li>
-<li><strong>conv layers</strong>: small filters(\(3\times3\) or \(5\times5\)), with \(S=1\). Crucially, <em>padding the input volume with zeros in such way that the conv layer does not alter the spatial dimensions of the input.</em> </li>
-<li><strong>pool layers</strong>: use max-pooling with \(F=2, S=2\) or \(F=3, S=2\)</li>
-</ul>
-
-<h3 id="toc_6">Computational Considerations</h3>
-
-<h1 id="toc_7">The memory bottleneck is the largest bottleneck when constructing ConvNet architectures.</h1>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Transfer Learning]]></title>
-    <link href="http://larryim.cc/15042359761425.html"/>
-    <updated>2017-09-01T11:19:36+08:00</updated>
-    <id>http://larryim.cc/15042359761425.html</id>
-    <content type="html"><![CDATA[
-<p><code>Transfer learning</code> focuses on storing knowledge gained while solving one problem and applying it to a different but related problem.</p>
-
-<p>Generally, transfer learning will work only well if the inputs have similar low-level features.</p>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[cross-entropy]]></title>
-    <link href="http://larryim.cc/15041905263785.html"/>
-    <updated>2017-08-31T22:42:06+08:00</updated>
-    <id>http://larryim.cc/15041905263785.html</id>
-    <content type="html"><![CDATA[
-<p>\[<br/>
-L_i = -\log\left(\frac{e^{f_{y_i}}}{ \sum_j e^{f_j} }\right) \hspace{0.5in} \text{or equivalently} \hspace{0.5in} L_i = -f_{y_i} + \log\sum_j e^{f_j}<br/>
-\]</p>
-
-<p>where we are using the notation \(f_j\) to mean the j-th element of the vector of class scores \(f\). As before, the full loss for the dataset is the mean of \(L_i\) over all training examples together with a regularization term \(R(W)\). The function \(f_j(z) = \frac{e^{z_j}}{\sum_k e^{z_k}} \) is called the <strong>softmax function</strong>: It takes a vector of arbitrary real-valued scores (in \(z\)) and squashes it to a vector of values between zero and one that sum to one. The full cross-entropy loss that involves the softmax function might look scary if you&#39;re seeing it for the first time but it is relatively easy to motivate.</p>
-
-<p><strong>Information theory view</strong>. The <em>cross-entropy</em> between a &quot;true&quot; distribution \(p\) and an estimated distribution \(q\) is defined as:</p>
-
-<p>\[<br/>
-H(p,q) = - \sum_x p(x) \log q(x)<br/>
-\]</p>
-
-<p>The Softmax classifier is hence minimizing the cross-entropy between the estimated class probabilities ( \(q = e^{f_{y_i}}  / \sum_j e^{f_j} \) as seen above) and the &quot;true&quot; distribution, which in this interpretation is the distribution where all probability mass is on the correct class (i.e. \(p = [0, \ldots 1, \ldots, 0]\) contains a single 1 at the \(y_i\) -th position.). Moreover, since the cross-entropy can be written in terms of entropy and the Kullback-Leibler divergence as \(H(p,q) = H(p) + D_{KL}(p\|\|q)\), and the entropy of the delta function \(p\) is zero, this is also equivalent to minimizing the KL divergence between the two distributions (a measure of distance). In other words, the cross-entropy objective <em>wants</em> the predicted distribution to have all of its mass on the correct answer.</p>
-
-<p><strong>Probabilistic interpretation</strong>. Looking at the expression, we see that</p>
-
-<p>\[<br/>
-P(y_i \mid x_i; W) = \frac{e^{f_{y_i}}}{\sum_j e^{f_j} }<br/>
-\]</p>
-
-<p>can be interpreted as the (normalized) probability assigned to the correct label \(y_i\) given the image \(x_i\) and parameterized by \(W\). To see this, remember that the Softmax classifier interprets the scores inside the output vector \(f\) as the unnormalized log probabilities. Exponentiating these quantities therefore gives the (unnormalized) probabilities, and the division performs the normalization so that the probabilities sum to one. In the probabilistic interpretation, we are therefore minimizing the negative log likelihood of the correct class, which can be interpreted as performing <em>Maximum Likelihood Estimation</em> (MLE). A nice feature of this view is that we can now also interpret the regularization term \(R(W)\) in the full loss function as coming from a Gaussian prior over the weight matrix \(W\), where instead of MLE we are performing the <em>Maximum a posteriori</em> (MAP) estimation. We mention these interpretations to help your intuitions, but the full details of this derivation are beyond the scope of this class.</p>
-
-<p><strong>Practical issues: Numeric stability</strong>. When you&#39;re writing code for computing the Softmax function in practice, the intermediate terms \(e^{f_{y_i}}\) and \(\sum_j e^{f_j}\) may be very large due to the exponentials. Dividing large numbers can be numerically unstable, so it is important to use a normalization trick. Notice that if we multiply the top and bottom of the fraction by a constant \(C\) and push it into the sum, we get the following (mathematically equivalent) expression:</p>
-
-<p>\[<br/>
-\frac{e^{f_{y_i}}}{\sum_j e^{f_j}}<br/>
-= \frac{Ce^{f_{y_i}}}{C\sum_j e^{f_j}}<br/>
-= \frac{e^{f_{y_i} + \log C}}{\sum_j e^{f_j + \log C}}<br/>
-\]</p>
-
-<p>We are free to choose the value of \(C\). This will not change any of the results, but we can use this value to improve the numerical stability of the computation. A common choice for \(C\) is to set \(\log C = -\max_j f_j \). This simply states that we should shift the values inside the vector \(f\) so that the highest value is zero. In code:</p>
-
-<pre><code class="language-python">f = np.array([123, 456, 789]) # example with 3 classes and each having large scores
-p = np.exp(f) / np.sum(np.exp(f)) # Bad: Numeric problem, potential blowup
-
-# instead: first shift the values of f so that the highest number is 0:
-f -= np.max(f) # f becomes [-666, -333, 0]
-p = np.exp(f) / np.sum(np.exp(f)) # safe to do, gives the correct answer
-
-</code></pre>
-
-<p><strong>Possibly confusing naming conventions</strong>. To be precise, the <em>SVM classifier</em> uses the <em>hinge loss</em>, or also sometimes called the <em>max-margin loss</em>. The <em>Softmax classifier</em> uses the <em>cross-entropy loss</em>. The Softmax classifier gets its name from the <em>softmax function</em>, which is used to squash the raw class scores into normalized positive values that sum to one, so that the cross-entropy loss can be applied. In particular, note that technically it doesn&#39;t make sense to talk about the &quot;softmax loss&quot;, since softmax is just the squashing function, but it is a relatively commonly used shorthand.</p>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Cross-Validation]]></title>
-    <link href="http://larryim.cc/cross-validation.html"/>
-    <updated>2017-08-28T09:35:39+08:00</updated>
-    <id>http://larryim.cc/cross-validation.html</id>
-    <content type="html"><![CDATA[
-<p><code>cross-validation</code> splits the training set into complementary subsets, and each model is trained against a different combination of these subsets and validates against the remaining parts. Once the model type and hyperparameters on the full training set, and the generalized error is measured on the test set.</p>
-
-<p><img src="media/15038841395536/15042349862270.jpg" alt="demo of cross-validation"/></p>
-
-<p>A great convenient is to use Scikit-Learn&#39;s <code>cross-validation</code> feature. The following code performs <code>K-fold cross-validation</code>: it randomly splits the training set into 10 distinct subsets called <code>folds</code>, then it trains and evaluates the Decision Tree model 10 times, picking a different fold for evaluation every time and training on the other 9 folds.</p>
-
-<pre><code class="language-python">from sklearn.model_selection import cross_val_score
-scores = cross_val_score(tree_reg, housing_prepared, housing_labels,
-                             scoring=&quot;neg_mean_squared_error&quot;, cv=10)
-    rmse_scores = np.sqrt(-scores)
-</code></pre>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[K-means clustering]]></title>
-    <link href="http://larryim.cc/15037532856914.html"/>
-    <updated>2017-08-26T21:14:45+08:00</updated>
-    <id>http://larryim.cc/15037532856914.html</id>
-    <content type="html"><![CDATA[
-<p>Optimization objective:<br/>
-\[J(c^{(1)},...,c^{(m)},\mu_1,...,\mu_k)=\frac{1}{m}\sum^m_{i=1}\rVert x^{(i)}-\mu_{c^{(i)}}\rVert^2\]</p>
-
-<p>Randomly initialize \(K\) cluster centroid \(\mu_1, \mu_2,...,\mu_k\)</p>
-
-<p>Repeat{<br/>
-    for \(i=1\) to \(m\)<br/>
-    \( c^{(i)}=\) index (from 1 to \(K\) of cluster centroid closest to \(x^{(i)}\)</p>
-
-<h3 id="toc_0">Random initialization</h3>
-
-<p>Randomly pick \(K\) training examples, and set \(\mu_1, \mu_2,...,\mu_k\) equal to these \(K\) examples.</p>
-
-<p>\[\text{For }i = 1 \text{  to  } 100 {\\<br/>
-\text{    Randomly initialize K cluster centroid } \mu_1, \mu_2,...,\mu_k\\<br/>
-\text{    Run K-means}\\<br/>
-\text{    Compute cost function (distortion)}\\<br/>
-}\\<br/>
-\]</p>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Feature Engineering]]></title>
-    <link href="http://larryim.cc/15036679491914.html"/>
-    <updated>2017-08-25T21:32:29+08:00</updated>
-    <id>http://larryim.cc/15036679491914.html</id>
-    <content type="html"><![CDATA[
-<p>As the saying goes: garbage in, garbage out. Your system will only be capable of learn‐ ing if the training data contains enough relevant features and not too many irrelevant ones. A critical part of the success of a Machine Learning project is coming up with a good set of features to train on. This process, called feature engineering, involves:</p>
-
-<ul>
-<li><code>Feature selection</code>: selecting the most useful features to train on among existing features.</li>
-<li><code>Feature extraction</code>: combining existing features to produce a more useful one (as we saw earlier, dimensionality reduction algorithms can help).</li>
-<li><code>Creating new features</code> by gathering new data.</li>
-</ul>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Machine Learning(7): Support Vector Machines]]></title>
-    <link href="http://larryim.cc/support-vector-machine.html"/>
-    <updated>2017-08-25T19:52:02+08:00</updated>
-    <id>http://larryim.cc/support-vector-machine.html</id>
-    <content type="html"><![CDATA[
-<h2 id="toc_0">Training Objective</h2>
-
-<p>The smaller the weight vector <code>w</code>, the larger the margin. So we want to minimize \(\lVert w\rVert\) to get a large margin.</p>
-
-<h3 id="toc_1">Hard Margin</h3>
-
-<p>If we also want to avoid any margin violation (<code>hard margin</code>), then we need the decision function to be greater than 1 for all positive trainig instances, and lower than  -1 for negative training instances. If we define \(t^{(i)} = -1\) for negative instances (if \(y^{(i)}&gt;0\)) and \(t^{(i)}=1\) for positive instances (if \(y^{(i)}=1\)), then we can express this constraint as \(t^{(i)}(w^T\cdot x^{(i)}+b) \le 1\) for all instances. </p>
-
-<p>** Hard Margin linear SVM classifier objective**</p>
-
-<p>\[<br/>
-\min_{w,b} \frac{1}{2}w^T\cdot w \\<br/>
-\text{subject to } t^{(i)}(w^T\cdot x^{(i)}+b) \le 1  \quad for \quad i =1,2,...,m<br/>
-\]</p>
-
-<h3 id="toc_2">Soft Margin</h3>
-
-<p>To get the soft margin objective, we need to introduce a <code>slack variable</code> \(\zeta^(i)\le0\) for each instance: \(\zeta^{(i)}\) measures how much the \(i^{th}\) instance is allowed to violate the margin. We now have two conflicting objectives: making the slack variables as small as possible to reduce the margin violations, and makeing \(\frac{1}{2}w^T\cdot w \) as small as possible to increase the margin.</p>
-
-<p>** Soft Margin linear SVM classifier objective**</p>
-
-<p>\[<br/>
-\min_{w,b} \frac{1}{2}w^T\cdot w + C\sum^m_{i=1}\zeta^{(i)}\\<br/>
-\text{subject to } t^{(i)}(w^T\cdot x^{(i)}+b) \le 1 - \zeta^{(i)} \quad for \quad i =1,2,...,m<br/>
-\]</p>
-
-<h2 id="toc_3">Implementation</h2>
-
-<pre><code class="language-python">import numpy as np
-from sklearn import datasets
-from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import StandardScaler
-from sklearn.svm import LinearSVC
-from sklearn.svm import SVC
-import matplotlib.pyplot as plt
-</code></pre>
-
-<h2 id="toc_4">Soft Margin Classification</h2>
-
-<pre><code class="language-python">
-# load data sets
-iris = datasets.load_iris()
-x = iris[&#39;data&#39;][:,(2,3)] # petal length, petal width
-y = (iris[&#39;target&#39;] == 2).astype(np.float64) # Iris-Virginica
-</code></pre>
-
-<pre><code class="language-python">%matplotlib inline
-plt.scatter(x[:,0], x[:,1], c=y)
-</code></pre>
-
-<pre><code>&lt;matplotlib.collections.PathCollection at 0x110ecf0f0&gt;
-</code></pre>
-
-<p><img src="media/15036619229303/output_4_1.png" alt="png"/></p>
-
-<pre><code class="language-python"># plot decision boundary
-def make_meshgrid(x, y, h=.02):
-    &quot;&quot;&quot;Create a mesh of points to plot in
-
-    Parameters
-    ----------
-    x: data to base x-axis meshgrid on
-    y: data to base y-axis meshgrid on
-    h: stepsize for meshgrid, optional
-
-    Returns
-    -------
-    xx, yy : ndarray
-    &quot;&quot;&quot;
-    x_min, x_max = x.min() - 1, x.max() + 1
-    y_min, y_max = y.min() - 1, y.max() + 1
-    xx, yy = np.meshgrid(np.arange(x_min, x_max, h),
-                         np.arange(y_min, y_max, h))
-    return xx, yy
-
-def plot_contours(model, xx, yy, **params):
-    &quot;&quot;&quot;Plot the decision boundaries for a classifier.
-
-    Parameters
-    ----------
-    ax: matplotlib axes object
-    clf: a classifier
-    xx: meshgrid ndarray
-    yy: meshgrid ndarray
-    params: dictionary of params to pass to contourf, optional
-    &quot;&quot;&quot;
-    Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
-    Z = Z.reshape(xx.shape)
-    out = plt.contourf(xx, yy, Z, **params)
-    return out
-</code></pre>
-
-<pre><code class="language-python"># svm
-svm_clf = Pipeline([
-    (&#39;scalar&#39;, StandardScaler()),
-    (&#39;linear_svc&#39;, LinearSVC(C=1, loss=&#39;hinge&#39;))])
-svm_clf.fit(x, y)
-</code></pre>
-
-<pre><code>Pipeline(steps=[(&#39;scalar&#39;, StandardScaler(copy=True, with_mean=True, with_std=True)), (&#39;linear_svc&#39;, LinearSVC(C=1, class_weight=None, dual=True, fit_intercept=True,
-     intercept_scaling=1, loss=&#39;hinge&#39;, max_iter=1000, multi_class=&#39;ovr&#39;,
-     penalty=&#39;l2&#39;, random_state=None, tol=0.0001, verbose=0))])
-</code></pre>
-
-<pre><code class="language-python">plot_contours(svm_clf, xx, yy,
-              cmap=plt.cm.coolwarm, alpha=0.8)
-plt.hold
-plt.scatter(x[:,0], x[:,1], c=y)
-</code></pre>
-
-<pre><code>&lt;matplotlib.collections.PathCollection at 0x111e5c128&gt;
-</code></pre>
-
-<p><img src="media/15036619229303/output_7_1.png" alt="png"/></p>
-
-<h2 id="toc_5">Nonelinear SVM Classification</h2>
-
-<p>One approach to handling nonlinear datasets is to add more features, such as polynomial features. In some cases result in a linearly separable dataset.</p>
-
-<pre><code class="language-python">from sklearn.preprocessing import PolynomialFeatures
-
-polynomial_svm_clf = Pipeline([
-    (&#39;poly_features&#39;, PolynomialFeatures(degree=3)),
-    (&#39;scaler&#39;, StandardScaler()),
-    (&#39;svm, clf&#39;, LinearSVC(C=10, loss=&#39;hinge&#39;))
-])
-
-polynomial_svm_clf.fit(x, y)
-</code></pre>
-
-<pre><code>Pipeline(steps=[(&#39;poly_features&#39;, PolynomialFeatures(degree=3, include_bias=True, interaction_only=False)), (&#39;scaler&#39;, StandardScaler(copy=True, with_mean=True, with_std=True)), (&#39;svm, clf&#39;, LinearSVC(C=10, class_weight=None, dual=True, fit_intercept=True,
-     intercept_scaling=1, loss=&#39;hinge&#39;, max_iter=1000, multi_class=&#39;ovr&#39;,
-     penalty=&#39;l2&#39;, random_state=None, tol=0.0001, verbose=0))])
-</code></pre>
-
-<pre><code class="language-python">xx, yy = make_meshgrid(x[:,0], x[:,1])
-plot_contours(polynomial_svm_clf, xx, yy,
-              cmap=plt.cm.coolwarm, alpha=0.8)
-plt.hold
-plt.scatter(x[:,0], x[:,1], c=y)
-</code></pre>
-
-<pre><code>&lt;matplotlib.collections.PathCollection at 0x112f0a470&gt;
-</code></pre>
-
-<p><img src="media/15036619229303/output_10_1.png" alt="png"/></p>
-
-<h2 id="toc_6">Gaussian RBF Kernal</h2>
-
-<p>Define the similarity function to be the Gaussian Radial Basis Function (RBF):</p>
-
-<p>\[\phi(x, \gamma) = exp(-\gamma \lVert x-l\rVert ^2)\]</p>
-
-<p>Let&#39;s try the Gaussian RBF kernel using the <code>SVC</code> class:</p>
-
-<pre><code class="language-python">rbf_kernel_svm_clf = Pipeline([
-    (&#39;svm_clf&#39;, SVC(kernel=&#39;rbf&#39;, gamma=0.1, C=0.1))
-])
-rbf_kernel_svm_clf.fit(x,y)
-</code></pre>
-
-<pre><code>Pipeline(steps=[(&#39;svm_clf&#39;, SVC(C=0.1, cache_size=200, class_weight=None, coef0=0.0,
-  decision_function_shape=None, degree=3, gamma=0.1, kernel=&#39;rbf&#39;,
-  max_iter=-1, probability=False, random_state=None, shrinking=True,
-  tol=0.001, verbose=False))])
-</code></pre>
-
-<pre><code class="language-python">plot_contours(rbf_kernel_svm_clf, xx, yy,
-              cmap=plt.cm.coolwarm, alpha=0.8)
-plt.hold
-plt.scatter(x[:,0], x[:,1], c=y)
-</code></pre>
-
-<pre><code>&lt;matplotlib.collections.PathCollection at 0x114174518&gt;
-</code></pre>
-
-<p><img src="media/15036619229303/output_13_1.png" alt="png"/></p>
-
-<p>Other kernals such as <code>sigmoid</code>, <code>precomputed</code> are also used. With so many kernels to choose from, as a rule of thumb, you should always try the linear kernel first, especailly if the training set is very large or if it has plenty of features. If the training set is not too large, you should try the Gaussian RBF kernel as well; it works well in most cases.</p>
-
-<h2 id="toc_7">Complexity</h2>
-
-<p>Time complexity of algorithms above:</p>
-
-<ul>
-<li><code>LinearSVC</code>: \(O(m\times n)\)</li>
-<li><code>SGDClassifier</code>: \(O(m\times n)\)</li>
-<li><code>SVC</code>: \(O(m^2\times n) \text{ to } O(m^3\times n)\)</li>
-</ul>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[TensorFlow(5): Vector and Matrix Product in Numpy and TensorFlow]]></title>
-    <link href="http://larryim.cc/15035780907547.html"/>
-    <updated>2017-08-24T20:34:50+08:00</updated>
-    <id>http://larryim.cc/15035780907547.html</id>
-    <content type="html"><![CDATA[
-<h2 id="toc_0">Numpy</h2>
-
-<p>Following are common vector and matrix product operations in Numpy, they are quite simple and straightforward:</p>
-
-<ul>
-<li><p>Inner Product   \(\quad a^Tb\quad \):  <code>np.inner()</code></p></li>
-<li><p>Outer Product  \(\quad ab^T\quad \):  <code>np.outer()</code></p></li>
-<li><p>Dot Product  \(\quad a \cdot b = \sum a_ib_i\quad \): <code>np.dot()</code></p></li>
-<li><p>Elementwise Product  \(\quad c_i = a_ib_i\quad \): <code>np.multiply()</code></p></li>
-</ul>
-
-<p>Note: inner product is defined on vector spaces over a field 𝕂 (finite or infinite dimensional). Dot product refers specifically to the product of vectors in \(ℝ^n\)</p>
-
-<p>The difference between the following implementations of the dot/inner/outer/elementwise product are demonstrated as follows:</p>
-
-<pre><code class="language-python">W = np.ones((2, 7), dtype=&#39;float32&#39;)
-x1 = [9, 2, 5, 0, 0, 7, 5]
-x2 = [9, 2, 2, 9, 0, 9, 2]
-print(&#39;vector dot product&#39;, np.dot(x1,x2)) # dot product
-print(&#39;inner&#39;, np.inner(x1,x2)) # inner product
-print(&#39;outter&#39;, np.outer(x1,x2)) # outter product
-print(&#39;element-wsie&#39;, np.multiply(x1,x2)) # Element-wise product
-print(&#39;matrix dot product&#39;, np.dot(W, x1)) # dot product
-</code></pre>
-
-<pre><code>dot for vector 168
-inner 168
-outter [[81 18 18 81  0 81 18]
- [18  4  4 18  0 18  4]
- [45 10 10 45  0 45 10]
- [ 0  0  0  0  0  0  0]
- [ 0  0  0  0  0  0  0]
- [63 14 14 63  0 63 14]
- [45 10 10 45  0 45 10]]
-element-wsie [81  4 10  0  0 63 10]
-dot for matrix [ 28.  28.]
-</code></pre>
-
-<h2 id="toc_1">TensorFlow</h2>
-
-<p>Vector inner/outer Product are a bit complex in TensorFlow. </p>
-
-<pre><code class="language-python">import tensorflow as tf
-import numpy as np
-
-x = tf.Variable([[1, -2, 3]], tf.float32, name=&#39;x&#39;)
-y = tf.Variable([[-1, 2, -3]], tf.float32, name=&#39;y&#39;)
-
-## inner product
-inner_product1 = tf.reduce_sum(tf.multiply(x, y))
-inner_product2 = tf.matmul(x, y, transpose_a=False, transpose_b= True) # different from inner_product1
-
-## outer product
-outer_product2 = tf.matmul(x, y, transpose_a= True)
-
-## matrix dot product
-X = tf.constant(np.random.randn(3,3), name=&#39;X&#39;)
-W = tf.constant(np.random.randn(3,3), name=&#39;W&#39;)
-matrix_product = tf.matmul(W, X)
-
-sess = tf.InteractiveSession()
-init_op = tf.global_variables_initializer()
-
-# run
-sess.run(init_op)
-print(sess.run(inner_product1))
-print(sess.run(inner_product2))
-print(sess.run(outer_product2))
-print(sess.run(matrix_product))
-</code></pre>
-
-<pre><code>-14
-[[-14]]
-[[-1  2 -3]
- [ 2 -4  6]
- [-3  6 -9]]
-[[-0.88722509 -0.94128018 -2.1999658 ]
- [-0.67967623  1.33193446 -0.75612585]
- [ 0.31741623  1.3271727  -0.04311113]]
-</code></pre>
 
 ]]></content>
   </entry>

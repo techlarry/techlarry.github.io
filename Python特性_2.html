@@ -111,6 +111,8 @@
         
             <li><a href="Tensorflow.html">Tensorflow</a></li>
         
+            <li><a href="%E5%B7%A5%E4%BD%9C%E4%B8%8E%E5%AD%A6%E4%B9%A0.html">工作与学习</a></li>
+        
             <li><a href="Data%20Science.html">Data Science</a></li>
          
 
@@ -133,6 +135,66 @@
 	<div class="large-8 medium-8 columns">
 		<div class="markdown-body home-categories">
 		
+			<div class="article">
+                <a class="clearlink" href="14969929726510.html">
+                
+                  <h1>Python 类属性与实例属性</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>Python属于动态语言，类属性很好体现了python动态语言这一特性。<br/>
+对于属性，通常可以通过类属性和实例属性的形式调用。<br/>
+看一个例子：</p>
+
+<pre><code class="language-python">class AAA():
+    aaa = 10
+    
+obj1 = AAA()
+obj2 = AAA()
+print(obj1.aaa, obj2.aaa, AAA.aaa) # result: 10 10 10
+
+obj1.aaa += 2
+print(obj1.aaa, obj2.aaa, AAA.aaa) # result: 12 10 10
+
+AAA.aaa += 4
+print(obj1.aaa,obj2.aaa,AAA.aaa)  # result: 12 14 14
+</code></pre>
+
+<p>上例中，<code>AAA.aaa</code>就属于<strong>类属性</strong>形式，<code>obj1.aaa</code>属于<strong>实例属性</strong>的形式</p>
+
+<h2 id="toc_0">属性查找机制</h2>
+
+<p>Python中属性查找是一个向上查找的机制，具体可参考下图所示：<br/>
+       <img src="media/14969929726510/Screen%20Shot%202017-06-09%20at%203.39.06%20PM.png" alt="Screen Shot 2017-06-09 at 3.39.06 P"/></p>
+
+<p>所以<br/>
+* 当调用类属性<code>AAA.aaa</code>时，直接从<code>AAA</code>获取其属性<code>aaa</code><br/>
+* 当调用实例属性<code>obj1.aaa</code>时，python按照由下到上的顺序查找属性，当<code>job1</code>和<code>job2</code>没有时，到类<code>AAA</code>中去查找</p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/6/9</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
 			<div class="article">
                 <a class="clearlink" href="14969760398302.html">
                 
@@ -545,108 +607,6 @@ p.score = 100
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="14970764330712.html">
-                
-                  <h1>属性@property的使用</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h3 id="toc_0">为什么要使用<code>getter</code>和<code>setter</code>方法</h3>
-
-<p>在绑定属性时，如果可以直接设置属性，虽然写起来很简单，但是没有办法检查参数，并且可以随意更改参数。</p>
-
-<pre><code class="language-python">s = People()
-s.salary = -1000
-</code></pre>
-
-<p>这显然不符合逻辑。为了限制salary的范围，可以通过一个<code>setSalary</code>方法来设置工资，再通过一个<code>getSalary</code>来获得工资，这样在<code>setSalary</code>方法里，就可以检查参数。</p>
-
-<h3 id="toc_1">私有属性添加<code>getter</code>和<code>setter</code>方法</h3>
-
-<pre><code class="language-python">class People(object):
-    def __init__(self):
-        self.__salary = 0
-    def getSalary(self):
-        return self.__salary
-    def setSalary(self, value):
-        if not isinstance(value, int):
-            raise ValueError(&#39;Money must be an integer!&#39;)
-        if value &lt;0 or value &gt; 10000:
-            raise ValueError(&#39;Money must between 0~10000!&#39;)
-        
-        self.__salary = value
-</code></pre>
-
-<h3 id="toc_2">注意点</h3>
-
-<p>t.num到底是调用<code>getter</code>还是<code>setter</code>，要根据实际的场景来判断，</p>
-
-<ol>
-<li>如果是给t.num赋值，那么一定调用<code>setNum()</code></li>
-<li>如果是获取t.num的值，那么久一定调用<code>getNum()</code></li>
-</ol>
-
-<h3 id="toc_3">@property装饰器</h3>
-
-<p>但是直接调用<code>getter()</code>和<code>setter()</code>比较复杂。Python内置的<code>@property</code>装饰器可以把这两种方法转化为属性进行调用。看一下例子：</p>
-
-<pre><code class="language-python">class People(object):
-    def __init__(self):
-        self.__salary = 0
-    
-    @property
-    def salary(self):
-        return self.__salary
-    
-    @salary.setter
-    def salary(self, value):
-        if not isinstance(value, int):
-            raise ValueError(&#39;Salary must be an integer!&#39;)
-        if value &lt;0 or value &gt; 10000:
-            raise ValueError(&#39;Salary must between 0~10000!&#39;)
-        
-        self.__salary = value
-        
-    @property
-    def tax(self):
-        self.__tax = self.__salary*0.1
-        return self.__tax
-</code></pre>
-
-<p>当不定义setter方法时，那么就定义了一个只读属性(例子中<code>tax</code>属性是只读属性)。</p>
-
-<p>@property 成为属性函数，可以对属性赋值时做必要的检查，并保证代码的清晰短小，主要有2个作用：</p>
-
-<ol>
-<li>将方法转换为只读</li>
-<li>重新实现一个属性的设置和读取方法，可做边界判定</li>
-</ol>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/5/10</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -727,6 +687,8 @@ s.salary = -1000
         
             <a href="Tensorflow.html"><strong>Tensorflow</strong></a>
         
+            <a href="%E5%B7%A5%E4%BD%9C%E4%B8%8E%E5%AD%A6%E4%B9%A0.html"><strong>工作与学习</strong></a>
+        
             <a href="Data%20Science.html"><strong>Data Science</strong></a>
          
         </p>
@@ -744,31 +706,31 @@ s.salary = -1000
 	      
 		      
 			      <li class="post">
-			        <a href="SqueezeNet.html">SqueezeNet</a>
+			        <a href="machine_Learning_foundation_4.html">Machine Learning Foundations (4): Feasibility of Learning</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="Visualizing_and_understaning_CNN.html">Visualizing and Understanding CNN</a>
+			        <a href="15087235268574.html">Machine Learning Foundations (3): Types of Learning</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="15050418178399.html">Recurrent Neural Network</a>
+			        <a href="15087235262377.html">Machine Learning Foundations (2): Learning to answer Yes or No</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="15050120680855.html">Image Captioning</a>
+			        <a href="15087235092833.html">Machine Learning Foundations (1): The Learning Problem</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="15049402475273.html">Machine Learning (10): Large Scale Machine Learning</a>
+			        <a href="15086547919641.html">JSON</a>
 			      </li>
 		     
 		  

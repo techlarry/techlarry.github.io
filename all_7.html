@@ -111,6 +111,8 @@
         
             <li><a href="Tensorflow.html">Tensorflow</a></li>
         
+            <li><a href="%E5%B7%A5%E4%BD%9C%E4%B8%8E%E5%AD%A6%E4%B9%A0.html">工作与学习</a></li>
+        
             <li><a href="Data%20Science.html">Data Science</a></li>
          
 
@@ -134,91 +136,70 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15025201109276.html">
+                <a class="clearlink" href="what_is_a_tensorflow_session.html">
                 
-                  <h1>MySQL(3): Storage Engines</h1>
+                  <h1>TensorFlow(3):What is a tensorflow session?</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<p>You can use the <code>SHOW TABLE STATUS</code> command to display information about tables, which include types of storage engines.</p>
+                        	<p>by <a href="http://danijar.com/what-is-a-tensorflow-session/">Danijar Hafner</a>, modified by <a href="http://larryim.cc">larry</a></p>
 
-<pre><code class="language-sql">mysql root@localhost:rookery&gt; show table status\G
-***************************[ 1. row ]***************************
-Name            | bird_families
-Engine          | InnoDB
-Version         | 10
-Row_format      | Dynamic
-Rows            | 12
-Avg_row_length  | 1365
-Data_length     | 16384
-Max_data_length | 0
-Index_length    | 16384
-Data_free       | 0
-Auto_increment  | 113
-Create_time     | 2017-08-11 00:18:18
-Update_time     | 2017-08-12 13:11:47
-Check_time      | &lt;null&gt;
-Collation       | latin1_bin
-Checksum        | &lt;null&gt;
-Create_options  |
-Comment         |
-</code></pre>
-
-<h2 id="toc_0">InnoDB</h2>
-
-<p><code>InnoDB</code> is the default transactional storage engine for MySQL and the most important and broadly useful engine overall. <em>You should use InnoDB for your tables unless you have a compelling need to use a different engine</em>.</p>
-
-<h2 id="toc_1">Reference</h2>
-
-<ol>
-<li>Baron S, Peter Z, Vadim T. 2012. High Performance MySQL 3rd Edition.</li>
-</ol>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/8/12</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E5%BA%93.html'>数据库</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15023384623586.html">
-                
-                  <h1>NP-completeness</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p><code>NP</code> stands for <code>None-deterministic Polynomial</code>. This means that the problem can be solved in Polynomial time using a None-deterministic Turing machine.</p>
-
-<h2 id="toc_0">Polynomial-Time Solvability</h2>
-
-<p>A problem is <code>polynomial-time solvable</code> if there is an algorithm that correctly solves it in \(O(n^k)\) time, for some constant \(k\).</p>
-
-<p>Definition: P = the set of polynomial-time solvable problems.</p>
-
-<h2 id="toc_1">Reference</h2>
+<p>I’ve seen a lot of confusion over the rules of <code>tf.Graph</code> and <code>tf.Session</code> in TensorFlow. It’s simple:</p>
 
 <ul>
-<li><a href="https://stackoverflow.com/questions/210829/what-is-an-np-complete-in-computer-science">What is an NP-complete in computer science?</a></li>
+<li>A <code>graph</code> defines the computation. It doesn’t compute anything, it doesn’t hold any values, it just defines the operations that you specified in your code.</li>
+<li>A <code>session</code> allows you to execute graphs or part of graphs. It allocates resources (on one or more machines) for that and holds the actual values of intermediate results and variables.</li>
 </ul>
+
+<p>Let’s look at an example.</p>
+
+<h3 id="toc_0">Defining the Graph</h3>
+
+<p>We define a graph with a variable and three operations: <code>x</code> returns the current value of our variable. <code>init</code> assigns the initial value of 42 to that variable. <code>x_assign</code> assigns the new value of 13 to that variable.</p>
+
+<pre><code class="language-python">import tensorflow as tf
+graph = tf.Graph()
+with graph.as_default():
+  x = tf.Variable(42, name=&#39;foo&#39;)
+  init = tf.global_variables_initializer()
+  x_assign = x.assign(13)
+</code></pre>
+
+<p>On a side note: TensorFlow creates a default graph for you, so we don’t need the first two lines of the code above. The default graph is also what the sessions in the next section use when not manually specifying a graph.</p>
+
+<h3 id="toc_1">Running Computations in a Session</h3>
+
+<p>To run any of the three defined operations, we need to create a session for that graph. The session will also allocate memory to store the current value of the variable.</p>
+
+<pre><code class="language-python">with tf.Session(graph=graph) as sess:
+  sess.run(init)
+  sess.run(x_assign)
+  print(sess.run(x))
+</code></pre>
+
+<pre><code>13
+</code></pre>
+
+<p>As you can see, the value of our variable is only valid within one session. If we try to query the value afterwards in a second session, TensorFlow will raise an error because the variable is not initialized there.</p>
+
+<pre><code class="language-python">with tf.Session(graph=graph) as sess:
+  print(sess.run(x))
+# Error: Attempting to use uninitialized value foo
+
+</code></pre>
+
+<p>Of course, we can use the graph in more than one session, we just have to initialize the variables again. The values in the new session will be completely independent from the first one:</p>
+
+<pre><code class="language-python">with tf.Session(graph=graph) as sess:
+  sess.run(init)
+  print(sess.run(x))
+</code></pre>
+
+<pre><code>42
+</code></pre>
+
+<p>Hopefully this short workthrough helped you to better understand <code>tf.Session</code>. </p>
 
                         
                       </div>
@@ -227,8 +208,10 @@ Comment         |
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2017/8/10</span>
-                    
+                    <span class="date">2017/8/18</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Tensorflow.html'>Tensorflow</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -242,62 +225,190 @@ Comment         |
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="Dynamic_Programming_Optimal_Binary_Search_Tree.html">
+                <a class="clearlink" href="bit_manipulation_2.html">
                 
-                  <h1>Dynamic Programming (4): Optimal Binary Search Tree</h1>
+                  <h1>Bit manipulation (2)</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<p>An <code>Optimal Binary Search Tree (Optimal BST)</code> is a binary search tree which provides the smallest possible search time for a given sequence of access probabilities. The cost of a BST node is the level of that node plus one multiplied by its frequency.</p>
+                        	<h2 id="toc_0">下面列举了一些常见的二进制位的变换操作。</h2>
 
-<p><strong>Problem Statement</strong>: Given a sorted array \(keys[0.. n-1]\) of search keys and an array \(freq[0.. n-1]\) of frequency counts, where \(freq[i]\) is the number of searches to \(keys[i]\). Construct a binary search tree of all keys such that the total cost of all the searches is as small as possible.</p>
+<table>
+<thead>
+<tr>
+<th>功能</th>
+<th>示例</th>
+<th>位运算</th>
+</tr>
+</thead>
 
-<h2 id="toc_0">Optimal Substructure</h2>
+<tbody>
+<tr>
+<td>去掉最后一位</td>
+<td>(101101-&gt;10110)</td>
+<td>x &gt;&gt; 1</td>
+</tr>
+<tr>
+<td>在最后加一个0</td>
+<td>(101101-&gt;1011010)</td>
+<td>x &gt;&gt; 1</td>
+</tr>
+<tr>
+<td>在最后加一个1</td>
+<td>(101101-&gt;1011011)</td>
+<td>x &lt;&lt; 1+1</td>
+</tr>
+<tr>
+<td>把最后一位变成1</td>
+<td>(101100-&gt;101101)</td>
+<td>x or 1</td>
+</tr>
+<tr>
+<td>把最后一位变成0</td>
+<td>(101101-&gt;101100)</td>
+<td>x or 1-1</td>
+</tr>
+<tr>
+<td>最后一位取反</td>
+<td>(101101-&gt;101100)</td>
+<td>x xor 1</td>
+</tr>
+<tr>
+<td>把右数第k位变成1</td>
+<td>(101001-&gt;101101,k=3)</td>
+<td>x or (1 &lt;&lt; (k-1))</td>
+</tr>
+<tr>
+<td>把右数第k位变成0</td>
+<td>(101101-&gt;101001,k=3)</td>
+<td>x and not (1 &lt;&lt; (k-1))</td>
+</tr>
+<tr>
+<td>右数第k位取反</td>
+<td>(101001-&gt;101101,k=3)</td>
+<td>x xor (1 &lt;&lt; (k-1))</td>
+</tr>
+<tr>
+<td>取末三位</td>
+<td>(1101101-&gt;101)</td>
+<td>x and 7</td>
+</tr>
+<tr>
+<td>取末k位</td>
+<td>(1101101-&gt;1101,k=5)</td>
+<td>x and (1 &lt;&lt; k-1)</td>
+</tr>
+<tr>
+<td>取右数第k位</td>
+<td>(1101101-&gt;1,k=4)</td>
+<td>x &gt;&gt; (k-1) and 1</td>
+</tr>
+<tr>
+<td>把末k位变成1</td>
+<td>(101001-&gt;101111,k=4)</td>
+<td>x or (1 &lt;&lt; k-1)</td>
+</tr>
+<tr>
+<td>末k位取反</td>
+<td>(101001-&gt;100110,k=4)</td>
+<td>x xor (1 &lt;&lt; k-1)</td>
+</tr>
+<tr>
+<td>把右边连续的1变成0</td>
+<td>(100101111-&gt;100100000)</td>
+<td>x and (x+1)</td>
+</tr>
+<tr>
+<td>把右起第一个0变成1</td>
+<td>(100101111-&gt;100111111)</td>
+<td>x or (x+1)</td>
+</tr>
+<tr>
+<td>把右边连续的0变成1</td>
+<td>(11011000-&gt;11011111)</td>
+<td>x or (x-1)</td>
+</tr>
+<tr>
+<td>取右边连续的1</td>
+<td>(100101111-&gt;1111)</td>
+<td>(x xor (x+1)) &gt;&gt; 1</td>
+</tr>
+<tr>
+<td>去掉右起第一个1的左边</td>
+<td>(100101000-&gt;1000)</td>
+<td>x and (x xor (x-1))</td>
+</tr>
+</tbody>
+</table>
 
-<p>The optimal cost of node \(i,...,j\) can be recursively calculated using the following formula.</p>
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/8/17</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Leetcode.html'>Leetcode</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
 
-<p>\(Cost(i,j) = \sum \limits^{j}_{k=i}freq[k] + \min \limits_{r=i}^j[Cost(i,r-1)+Cost(r+1,j)]\)</p>
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="bit_manipulation.html">
+                
+                  <h1>Bit manipulation</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h2 id="toc_0">136. Single Number</h2>
 
-<p>We try all nodes one by one as root (\(r\) varies from \(i\) to \(j\)). When we make \(r\)th node as root, we recursively calculate optimal cost from \(i\) to \(r-1\) and \(r+1\) to \(j\). </p>
+<p><a href="https://leetcode.com/problems/single-number/description/">LeetCode Single Number</a></p>
 
-<h3 id="toc_1">Implementation: top-down with memoization</h3>
+<p>Given an array of integers, every element appears <em>twice</em> except for one. Find that single one.</p>
 
-<pre><code class="language-python">def optimal_bst(freq):
-    def opt_cost(hash_table, freq, i, j):
+<p><strong>Note</strong>:<br/><br/>
+Your algorithm should have a linear runtime complexity. Could you implement it without using extra memory?</p>
+
+<p><code>^</code>(<code>xor</code>, <code>Exclusive or</code>):  outputs true whenever the inputs differ:</p>
+
+<pre><code class="language-python">0 ^ 0 = 0 
+n ^ 0 = n 
+n ^ n = 0
+</code></pre>
+
+<p><strong>Solution</strong>:</p>
+
+<pre><code class="language-python">class Solution(object):
+    def singleNumber(self, nums):
         &quot;&quot;&quot;
-        Optimal Binary Search Tree
-        Recursive Method used here
+        :type nums: List[int]
+        :rtype: int
         &quot;&quot;&quot;
-
-        # base case: only 0~1 element
-        if j &lt; i:
-            return 0
-        if j == i:
-            return freq[i]
-
-        # if already exists
-        if (i, j) in hash_table:
-            return hash_table[(i, j)]
-
-        min_cost = sys.maxsize
-        for r in range(i, j + 1):
-            cost = opt_cost(hash_table, freq, i, r - 1) + opt_cost(hash_table, freq, r + 1, j)
-            if cost &lt; min_cost:
-                min_cost = cost
-
-        hash_table[(i, j)] = sum(freq[i:j + 1]) + min_cost
-        return hash_table[(i, j)]
-
-    return opt_cost({}, freq, 0, len(freq) - 1)
+        n = 0
+        for num in nums:
+            n = n^num
+        return n     
 </code></pre>
 
-<h2 id="toc_2">Reference</h2>
+<h2 id="toc_1">137 Single Number II</h2>
 
-<ul>
-<li><a href="http://ac.els-cdn.com/S0304397596003209/1-s2.0-S0304397596003209-main.pdf?_tid=1505980e-7cd4-11e7-83de-00000aacb361&amp;acdnat=1502263778_53b76d131a06906e9fe3adfadc778677">Optimal Binary Search Tree</a></li>
-<li><a href="http://www.geeksforgeeks.org/dynamic-programming-set-24-optimal-binary-search-tree/">Optimal Binary Search Tree GeeksforGeeks</a></li>
-</ul>
+<p>Given an array of integers, every element appears <em>three</em> times except for one, which appears exactly once. Find that single one.</p>
+
+<p><strong>Note</strong>:<br/>
+Your algorithm should have a linear runtime complexity. Could you implement it without using extra memory?</p>
 
                         
                       </div>
@@ -306,10 +417,10 @@ Comment         |
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2017/8/9</span>
+                    <span class="date">2017/8/16</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Dynamic%20Programming.html'>Dynamic Programming</a></span>
+          					    <span class="posted-in"><a href='Leetcode.html'>Leetcode</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -323,132 +434,14 @@ Comment         |
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="Dynamic_Programming_Knapsack_Problem.html">
+                <a class="clearlink" href="15028699473698.html">
                 
-                  <h1>Dynamic Programming (3): 0-1 Knapsack Problem</h1>
+                  <h1>Thread</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<p>The most common problem being solved is the <code>0-1 knapsack problem</code>, which restricts the number \(w_i\) of copies of each kind of item to zero or one. Given a set of \(n\) items numbered from 1 up to \(n\), each with a weight \(w_i\) and a value \(v_i\), along with a maximum weight capacity \(W\),</p>
-
-<p>\[\begin{equation}<br/>
-\begin{split}<br/>
-&amp;\text{maximize} \sum_{i=1}^nv_ix_i\\<br/>
-&amp;\text{subject to} \sum_{i=1}^n w_ix_i \le W \quad \text{and} \quad x_i \in \{0,1\}\\<br/>
-\end{split}<br/>
-\end{equation}\]</p>
-
-<p>Informally, the problem is to maximize the sum of the values of the items in the knapsack so that the sum of the weights is less than or equal to the knapsack&#39;s capacity.</p>
-
-<h2 id="toc_0">Bottom-up method</h2>
-
-<h3 id="toc_1">Solving</h3>
-
-<p>Assume \(w_i, w_2,..., w_n, W\) are strictly positive integers. Define \(m[i,w]\) to be the maximum value that can be attained with weight less than or queal to \(w\) using items up to \(i\) (first \(i\) items).</p>
-
-<p>We can define \(m[i,w]\) recursively as follows:</p>
-
-<ul>
-<li>\(m[0, w]=0 \)</li>
-<li>\(m[i,w]=m[i-1, w]\) \(if w_i &gt; w\) ( the new item is more than the current weight limit)</li>
-<li>\(m[i,w]= max(m[i-1,w],m[i-1,w-w_i]+v_i\)) if \(w_i \le w\)</li>
-</ul>
-
-<p>The following is pseudo code for the dynamic program:</p>
-
-<pre><code class="language-python">// Input:
-// Values (stored in array v)
-// Weights (stored in array w)
-// Number of distinct items (n)
-// Knapsack capacity (W)
-  
-for j from 0 to W do:
-     m[0, j] := 0
-  
-for i from 1 to n do:
-    for j from 0 to W do:
-        if w[i] &gt; j then:
-            m[i, j] := m[i-1, j]
-        else:
-            m[i, j] := max(m[i-1, j], m[i-1, j-w[i]] + v[i])
-</code></pre>
-
-<h3 id="toc_2">Implementation</h3>
-
-<pre><code class="language-python">def knapsack01(value, weight, w_size):
-    &quot;&quot;&quot;
-    kanapsack01 solves a 0-1 knapsack problem,
-    input: values(value) and weights(W) of items to put into knapsack ( size of which is w_size)
-    output: the index of items that maximize the value of items putted in the knapsack
-    the index of items counts from 0, and corresponding value
-    &quot;&quot;&quot;
-    n = len(value)  # the number of items
-    # maximum value that can be attained with weight &lt;= weight using first i items
-    m = np.zeros(shape=(n+1, w_size+1), dtype=int)
-    for i in range(w_size+1):
-        m[0, i] = 0
-
-    if not isinstance(w_size, int):
-        raise ValueError(&#39;knapsack_size should be an integer&#39;)
-
-    for i in range(1, n+1):  # items
-        for j in range(1, w_size+1):  # sizes
-            if weight[i-1] &gt; j:
-                m[i, j] = m[i - 1, j]
-            else:
-                m[i, j] = max(m[i - 1, j], m[i - 1, j - weight[i-1]] + value[i-1])
-
-    max_val = m[-1, -1]
-    items = set()
-
-    while max_val &gt; 0 and i &gt; 0:
-        if max_val - value[i-1] in m[i - 1, :]:
-            max_val = max_val - value[i-1]
-            items.add(i-1)
-            i -= 1
-        else:
-            i -= 1
-    return items, m[-1, -1]
-</code></pre>
-
-<h2 id="toc_3">top-down with memoization</h2>
-
-<pre><code class="language-python">def knapsack01_recursive(hash_table, value, weight, i, j):
-    # base case: when 1 items here
-    if i == 1:
-        if weight[i - 1] &lt; j:
-            hash_table[(i, j)] = value[i - 1]
-            return value[i - 1]
-        else:
-            hash_table[(i, j)] = 0
-        return 0
-
-    # sub-problem computed
-    if (i, j) in hash_table:
-        return hash_table[(i, j)]
-    else:
-        if weight[i - 1] &gt; j:
-            # only case 1
-            hash_table[(i, j)] = knapsack01_recursive(hash_table, value, weight, i - 1, j)
-        else:
-            #  case 1, item i-1 excluded
-            case1 = knapsack01_recursive(hash_table, value, weight, i - 1, j)
-            # case 2, item i-1 included
-            case2 = knapsack01_recursive(hash_table, value, weight, i - 1, j - weight[i - 1]) + value[i - 1]
-            hash_table[(i, j)] = max(case1, case2)
-
-    return hash_table[(i, j)]
-</code></pre>
-
-<h2 id="toc_4">Reference</h2>
-
-<ul>
-<li><a href="https://en.wikipedia.org/wiki/Knapsack_problem#cite_ref-plateau85_15-0">Knapsack Problem WIKIPEDIA</a></li>
-<li><a href="https://stackoverflow.com/questions/5683066/knapsack-problem-classic">Knapsack problem Stack Overflow</a></li>
-<li><a href="http://www.es.ele.tue.nl/education/5MC10/Solutions/knapsack.pdf">The knapsack Problem PPT</a></li>
-</ul>
-
+                        	
                         
                       </div>
                   </div>
@@ -456,10 +449,10 @@ for i from 1 to n do:
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2017/8/9</span>
+                    <span class="date">2017/8/16</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Dynamic%20Programming.html'>Dynamic Programming</a></span>
+          					    <span class="posted-in"><a href='%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F.html'>操作系统</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -473,57 +466,14 @@ for i from 1 to n do:
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="Dynamic_Programming_Maximum_weight_independent_set.html">
+                <a class="clearlink" href="15028699346565.html">
                 
-                  <h1>Dynamic Programming (2): Maximum weight independent set</h1>
+                  <h1>Process</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<p><strong>Input</strong>: A path graph \(G=(V,E)\) with nonnegative weights on vertices.<br/>
-<strong>Output</strong>: an <code>independent set</code> of maximum total weight.</p>
-
-<p><strong>Background</strong>:<br/>
-A <code>path graph</code> is a tree with two nodes of vertex degree 1, and the other \(n-2\) nodes of vertex degree 2. A path graph is therefore a graph that can be drawn so that all of its vertices and edges lie on a single straight line.</p>
-
-<p>A <code>Independent set</code> is a set of vertices in a graph, no two of which are adjacent.</p>
-
-<h2 id="toc_0">Proposed algorithm</h2>
-
-<p>A dynamic programming approach can solve the problem in linear time:</p>
-
-<ul>
-<li>Recursively compute \(S_1=\) max-weight independent set of \(G&#39;\) (formed by popping the last vertex off the path)</li>
-<li>Recursively compute \(S_2=\) max-weight independent set of \(G&quot;\) (formed by popping off the last two vertices of the path)</li>
-<li>Return \(S_1\) or \(S_2 \cup{v_n}\), whichever is better.</li>
-</ul>
-
-<h3 id="toc_1">Implementation</h3>
-
-<pre><code class="language-python">def maximum_weight_independent_set(weights):
-    &quot;&quot;&quot;
-    Compute Maximum weight independent set for a path graph.
-    Weights of vertexes in the path graph are given.
-    Return maximum weight independent set.
-    &quot;&quot;&quot;
-    num = len(weights)
-    a = [0] * (num + 1)
-    in_set = []  # independent set
-    a[0], a[1] = 0, weights[0]
-
-    for i in range(2, num + 1):
-        a[i] = max(a[i - 1], a[i - 2] + weights[i - 1])
-
-    while i &gt;= 1:
-        if a[i - 1] &gt;= a[i - 2] + weights[i - 1]:
-            i -= 1
-        else:
-            in_set.append(i - 1)
-            i -= 2
-    in_set.reverse()
-    return in_set
-</code></pre>
-
+                        	
                         
                       </div>
                   </div>
@@ -531,10 +481,10 @@ A <code>path graph</code> is a tree with two nodes of vertex degree 1, and the o
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2017/8/8</span>
+                    <span class="date">2017/8/16</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Dynamic%20Programming.html'>Dynamic Programming</a></span>
+          					    <span class="posted-in"><a href='%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F.html'>操作系统</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -627,6 +577,8 @@ A <code>path graph</code> is a tree with two nodes of vertex degree 1, and the o
         
             <a href="Tensorflow.html"><strong>Tensorflow</strong></a>
         
+            <a href="%E5%B7%A5%E4%BD%9C%E4%B8%8E%E5%AD%A6%E4%B9%A0.html"><strong>工作与学习</strong></a>
+        
             <a href="Data%20Science.html"><strong>Data Science</strong></a>
          
         </p>
@@ -644,31 +596,31 @@ A <code>path graph</code> is a tree with two nodes of vertex degree 1, and the o
 	      
 		      
 			      <li class="post">
-			        <a href="SqueezeNet.html">SqueezeNet</a>
+			        <a href="machine_Learning_foundation_4.html">Machine Learning Foundations (4): Feasibility of Learning</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="Visualizing_and_understaning_CNN.html">Visualizing and Understanding CNN</a>
+			        <a href="15087235268574.html">Machine Learning Foundations (3): Types of Learning</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="15050418178399.html">Recurrent Neural Network</a>
+			        <a href="15087235262377.html">Machine Learning Foundations (2): Learning to answer Yes or No</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="15050120680855.html">Image Captioning</a>
+			        <a href="15087235092833.html">Machine Learning Foundations (1): The Learning Problem</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="15049402475273.html">Machine Learning (10): Large Scale Machine Learning</a>
+			        <a href="15086547919641.html">JSON</a>
 			      </li>
 		     
 		  
