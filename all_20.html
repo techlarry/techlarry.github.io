@@ -143,58 +143,6 @@ var _hmt = _hmt || [];
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="14969731064895.html">
-                
-                  <h1>列表</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h2 id="toc_0">列表生成式</h2>
-
-<p>列表生成式,即List Comprehensions,Python内置的非常简单却强大的可以用来创建list的生成式。</p>
-
-<p>例子</p>
-
-<pre><code class="language-python">&gt;&gt;&gt;&gt; a = [ i for i in range(1,19)]
-&gt;&gt;&gt;&gt; b = [i for i in ragne(10) if i%2 == 0]
-&gt;&gt;&gt;&gt; c = [i for i in range(3) for j in range(2)]
-&gt;&gt;&gt;&gt; d = [(i,j) for i in range(3) for j in range(2)]
-</code></pre>
-
-<h3 id="toc_1">range的风险</h3>
-
-<pre><code class="language-python">&gt;&gt;&gt; range(1,1000000000)
-</code></pre>
-
-<p>内存空间太大，但在python3中已经解决: 在需要时，才生成</p>
-
-<h2 id="toc_2">列表去重</h2>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/6/9</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
                 <a class="clearlink" href="14969711309826.html">
                 
                   <h1>内置LIST，DICT 时间复杂度</h1>
@@ -534,6 +482,108 @@ p.score = 100
                 </div>
               </div><!-- article -->
         
+			<div class="article">
+                <a class="clearlink" href="14970764330712.html">
+                
+                  <h1>属性@property的使用</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h3 id="toc_0">为什么要使用<code>getter</code>和<code>setter</code>方法</h3>
+
+<p>在绑定属性时，如果可以直接设置属性，虽然写起来很简单，但是没有办法检查参数，并且可以随意更改参数。</p>
+
+<pre><code class="language-python">s = People()
+s.salary = -1000
+</code></pre>
+
+<p>这显然不符合逻辑。为了限制salary的范围，可以通过一个<code>setSalary</code>方法来设置工资，再通过一个<code>getSalary</code>来获得工资，这样在<code>setSalary</code>方法里，就可以检查参数。</p>
+
+<h3 id="toc_1">私有属性添加<code>getter</code>和<code>setter</code>方法</h3>
+
+<pre><code class="language-python">class People(object):
+    def __init__(self):
+        self.__salary = 0
+    def getSalary(self):
+        return self.__salary
+    def setSalary(self, value):
+        if not isinstance(value, int):
+            raise ValueError(&#39;Money must be an integer!&#39;)
+        if value &lt;0 or value &gt; 10000:
+            raise ValueError(&#39;Money must between 0~10000!&#39;)
+        
+        self.__salary = value
+</code></pre>
+
+<h3 id="toc_2">注意点</h3>
+
+<p>t.num到底是调用<code>getter</code>还是<code>setter</code>，要根据实际的场景来判断，</p>
+
+<ol>
+<li>如果是给t.num赋值，那么一定调用<code>setNum()</code></li>
+<li>如果是获取t.num的值，那么久一定调用<code>getNum()</code></li>
+</ol>
+
+<h3 id="toc_3">@property装饰器</h3>
+
+<p>但是直接调用<code>getter()</code>和<code>setter()</code>比较复杂。Python内置的<code>@property</code>装饰器可以把这两种方法转化为属性进行调用。看一下例子：</p>
+
+<pre><code class="language-python">class People(object):
+    def __init__(self):
+        self.__salary = 0
+    
+    @property
+    def salary(self):
+        return self.__salary
+    
+    @salary.setter
+    def salary(self, value):
+        if not isinstance(value, int):
+            raise ValueError(&#39;Salary must be an integer!&#39;)
+        if value &lt;0 or value &gt; 10000:
+            raise ValueError(&#39;Salary must between 0~10000!&#39;)
+        
+        self.__salary = value
+        
+    @property
+    def tax(self):
+        self.__tax = self.__salary*0.1
+        return self.__tax
+</code></pre>
+
+<p>当不定义setter方法时，那么就定义了一个只读属性(例子中<code>tax</code>属性是只读属性)。</p>
+
+<p>@property 成为属性函数，可以对属性赋值时做必要的检查，并保证代码的清晰短小，主要有2个作用：</p>
+
+<ol>
+<li>将方法转换为只读</li>
+<li>重新实现一个属性的设置和读取方法，可做边界判定</li>
+</ol>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/5/10</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
               
 
 
@@ -643,12 +693,6 @@ p.score = 100
 		  
 		      
 			      <li class="post">
-			        <a href="15088177317059.html">Machine Learning Foundations (7): The VC dimension</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
 			        <a href="active_learning_intro.html">主动学习</a>
 			      </li>
 		     
@@ -656,6 +700,12 @@ p.score = 100
 		      
 			      <li class="post">
 			        <a href="15086547919641.html">JSON</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="cdiscount_challenge.html">Cdiscount’s Image Classification Challenge</a>
 			      </li>
 		     
 		  
