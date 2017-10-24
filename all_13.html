@@ -145,475 +145,6 @@ var _hmt = _hmt || [];
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="mysql_introduction.html">
-                
-                  <h1>MySQL(1): Introduction</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<ul>
-<li>
-<a href="#toc_0">client and server</a>
-</li>
-<li>
-<a href="#toc_1">basic command</a>
-</li>
-<li>
-<a href="#toc_2">GUI</a>
-</li>
-<li>
-<a href="#toc_3">auto-completion and syntax highlighting</a>
-</li>
-<li>
-<a href="#toc_4">Starting to Explore Databases</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_5">Reference</a>
-
-
-<p>MySQL is an open source, multithread, relational database management system.</p>
-
-<h2 id="toc_0">client and server</h2>
-
-<p>The <code>server</code> maintains, controls and protects your data, storing it in files on the computer where the server is running in various formats. It listens for requests from <code>client</code>.</p>
-
-<p>For MySQL, <code>mysqld</code>(the <em>d</em> stands for <em>daemon</em>) is the server. <code>mysql</code> is a standard MySQL client. With its text-based interface, a user can log in and execute SQL queries.</p>
-
-<h2 id="toc_1">basic command</h2>
-
-<ul>
-<li>The <code>mysql_safe</code> script is the most common way to start <code>mysqld</code>, because this script can restart the daemon if it crashes.</li>
-<li>The <code>mysqlaccess</code> tool creates user accounts and sets their privileges.</li>
-<li>The<code>mysqladmin</code> utility can be used to manage the database server itself from the command-line. </li>
-<li>The <code>mysqlshow</code> tool may be used to examine a server’s status, as well as information about databases and tables.</li>
-<li>The <code>mysqldump</code> utility is the most popular one for exporting data and table structures to a plain-text file, known as a <code>dump</code> file. </li>
-<li>The command <code>mysql -u root -p</code> is usually used to start the client <code>mysql</code>, after which the passport should be filled.</li>
-<li>The command <code>mysql -u root -p -e &quot;SELECT User,Host FROM mysql.user;&quot;</code> gives a list of username and host combination on the server.</li>
-</ul>
-
-<h2 id="toc_2">GUI</h2>
-
-<p><a href="https://sequelpro.com">Sequel Pro</a> is a fast, easy-to-use Mac database management application for working with MySQL databases. see <a href="https://segmentfault.com/a/1190000006255923">detail in Chinese</a></p>
-
-<p><a href="https://www.mysql.com/products/workbench">WorkBench</a> provides data modeling, SQL development, and comprehensive administration tools for server configuration, user administration, backup, and much more.</p>
-
-<p>Although GUIs are easy-to-use, in the long run they&#39;re not useful. The text-based <code>mysql</code> client causes you to think and remember more, and it&#39;s not that difficult to use or confusing. And the command-line method of using <code>mysql</code> allows you to interact with the server without much overhead.</p>
-
-<p>``</p>
-
-<h2 id="toc_3">auto-completion and syntax highlighting</h2>
-
-<p><a href="http://www.mycli.net">Mycli</a> is a command-line interface which support MariaDB, MySQL with auto-completion and syntax highlighting.</p>
-
-<p><img src="media/15016407791054/15025066875709.gif" alt=""/></p>
-
-<h2 id="toc_4">Starting to Explore Databases</h2>
-
-<p>For each of SQL statements, we heave to specify the database name. If you will be working mainly in one database, you can set the default database so that you don&#39;t have to specify the database each time:</p>
-
-<pre><code class="language-SQL">USE database_name
-</code></pre>
-
-<h1 id="toc_5">Reference</h1>
-
-<ol>
-<li>Russell T D. 2015. Learning MySQL and MariaDB. O&#39;REILLY.</li>
-</ol>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/8/2</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E5%BA%93.html'>数据库</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="greedy_algorithm_a_scheduling_problem.html">
-                
-                  <h1>Greedy algorithm (2): A Scheduling Application</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p><strong>Problem Statement</strong>: You want to schedule jobs (processes) on a processor. Each job has properties:</p>
-
-<ul>
-<li>weight \(w_j\) (“priority”) </li>
-<li>length \(l_j\)</li>
-</ul>
-
-<p>The <code>completion time</code> \(C_j\) of job \(j\) is Sum of job lengths up to and including job \(j\).</p>
-
-<p>The goal is to <strong>Minimize weighted sum of completion times</strong>, i.e.</p>
-
-<p>\[\sum_{j=1}^n w_j*C_j\]</p>
-
-<h2 id="toc_0">Algorithm</h2>
-
-<p>Order jobs by decreasing value of \(\frac{w_j}{l_j}\), i.e. jobs have larger weight and shorter length execute earlier.</p>
-
-<h3 id="toc_1">Greedy Exchange</h3>
-
-<p><code>Greedy Exchange</code> is one of the techniques used in proving the correctness of greedy algorithms. The idea of a greedy exchange proof is to morph a solution produced by an optimal algorithm into the solution produced by your greedy algorithm. This shows that any optimal solution is no better than the greedy solution, which proves that greedy does in fact return an optimal solution.</p>
-
-<h3 id="toc_2">Proof</h3>
-
-<h4 id="toc_3">Step1: label algorithm&#39;s solution and an optimal solution</h4>
-
-<p>Let \(\sigma\) be greedy schedule, and \(\sigma^*\) be optimal schedule. </p>
-
-<h4 id="toc_4">Step2: Compare greedy with optimal</h4>
-
-<p>Greedy schedule \(\sigma\) is just \(1,2,3,...,n\). And if optimal schedule \(\sigma^* \ne \sigma \), then \(\exists\) consecutive jobs \(i,j\), which \(i&gt;j\).</p>
-
-<h4 id="toc_5">Step3: Exchange</h4>
-
-<p>Suppose we exchange order of \(i,j\) in \(\sigma\):</p>
-
-<ul>
-<li>the cost of exchange \(w_jl_j\)</li>
-<li>the benefit of exchange is \(w_jl_i\)</li>
-</ul>
-
-<p>Note: <br/>
-\[i &gt;j \rightarrow w_i/l_i \le wj/lj \rightarrow w_il_j \le w_jl_i \]<br/>
-Exchanging \(i,j\) in \(\sigma^*\) has net benefit of \(w_jl_i-w_il_j \ge0\).</p>
-
-<p>\(\rightarrow\) After at most \(C_n^2\) such exchanges, \(\sigma^*\) can transform into \(\sigma\)<br/>
-\(\rightarrow \sigma \) at least as good as \(\sigma^*\)<br/>
- \(\rightarrow \) Greedy is optimal.</p>
-
-<h2 id="toc_6">Implemenation</h2>
-
-<pre><code class="language-python">import numpy as np
-import unittest
-
-class JobSchedule:
-    &quot;&quot;&quot;
-    greedy algorithm that schedules jobs in decreasing order of ratio (weight/length)
-    &quot;&quot;&quot;
-    def __init__(self):
-        self.job_num = 0 # the number of jobs
-        self.job_weight = []
-        self.job_length = []
-        self.schedule_time = None
-        self.order = None # the ordering of jobs
-
-    def buildjobs(self, textfile):
-        &quot;&quot;&quot;
-        build jobs from a text file
-
-        The file describes a set of jobs with positive and integral weights and lengths.
-        It has the format
-        [number_of_jobs]
-        [job_1_weight] [job_1_length]
-
-        &quot;&quot;&quot;
-        count = 0
-        with open(textfile) as infile:
-            for line in infile.readlines():
-                line = line.strip(&#39;\n&#39;)
-                if count == 0:
-                    self.job_num = int(line)
-                else:
-                    job_weight, job_length = (int(num) for num in line.split())
-                    self.job_weight.append(job_weight)
-                    self.job_length.append(job_length)
-                count += 1
-
-        if count-1 != self.job_num:
-            raise ValueError
-
-    def scheduling(self):
-        &quot;&quot;&quot;
-        return the sum of weighted completion times of the resulting schedule
-        &quot;&quot;&quot;
-        # ratios of weight and length for every job
-        ratios = [self.job_weight[i]/self.job_length[i] for i in range(self.job_num)]
-        self.order = np.lexsort((self.job_length, ratios))
-        self.order=self.order[::-1]
-        print([ (self.job_weight[i], self.job_length[i],self.job_weight[i]/self.job_length[i]) for i in self.order])
-        # calculating the sum of weighted completion times of the resulting schedule
-        count = 0
-        job_length = 0
-        for job_ind in self.order:
-            job_length = job_length + self.job_length[job_ind]
-            count += self.job_weight[job_ind]*job_length
-        self.schedule_time = count
-        return self.schedule_time
-
-
-class TestJobSchedule(unittest.TestCase):
-
-    def testcase1(self):
-        jobs_to_schedule = JobSchedule()
-        jobs_to_schedule.buildjobs(&#39;testcase1.txt&#39;)
-        assert jobs_to_schedule.scheduling() == 16
-
-    def testcase2(self):
-        jobs_to_schedule = JobSchedule()
-        jobs_to_schedule.buildjobs(&#39;testcase2.txt&#39;)
-        assert jobs_to_schedule.scheduling() == 67247
-
-
-if __name__ == &quot;__main__&quot;:
-    unittest.main()
-</code></pre>
-
-<h2 id="toc_7">References</h2>
-
-<ol>
-<li><a href="http://www.cs.cornell.edu/courses/cs482/2003su/handouts/greedy_exchange.pdf">Greedy exchange</a></li>
-<li><a href="https://www.coursera.org/learn/algorithms-greedy/">Algorithms Specialization</a></li>
-</ol>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/8/1</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Greedy.html'>Greedy</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="greedy_algorithm_introduction.html">
-                
-                  <h1>Greedy algorithm (1): Introduction</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<ul>
-<li>
-<a href="#toc_0">Definition</a>
-</li>
-<li>
-<a href="#toc_1">Contrast with Divide &amp; Conquer</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_2">Examples</a>
-<ul>
-<li>
-<a href="#toc_3">The Optimal Caching Algorithm</a>
-</li>
-<li>
-<a href="#toc_4">A Scheduling Problem</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_5">Reference</a>
-
-
-<h3 id="toc_0">Definition</h3>
-
-<p>A <code>greedy algorithm</code> always makes the choice that looks best at the moment. That is, it makes a locally optimal choice in the hope that this choice will lead to a globally optimal solution. (Cormen et al., 2009)</p>
-
-<h3 id="toc_1">Contrast with Divide &amp; Conquer</h3>
-
-<ol>
-<li>Easy to propose multiple greedy algorithms for many problems. </li>
-<li>Easy running time analysis. (Contrast with Master method etc.)</li>
-<li>Hard to establish correctness.
-(Contrast with straightforward inductive correctness proofs.)</li>
-</ol>
-
-<p><strong>DANGER: Most greedy algorithms are NOT correct. (Even if your intuition says otherwise!)</strong></p>
-
-<h2 id="toc_2">Examples</h2>
-
-<h3 id="toc_3">The Optimal Caching Algorithm</h3>
-
-<p>Theorem: [Bélády&#39;s 1960s] <code>Farthest-in-Future</code> is the optimal algorithm that minimizes the number of cache misses.</p>
-
-<p><code>Bélády&#39;s Algorithm</code>:</p>
-
-<p>When \(d_i\) is requested but not in the cache,<br/>
-evict the cache item that will next be used farthest into the future.</p>
-
-<h3 id="toc_4">A Scheduling Problem</h3>
-
-<p>Assume: Each job has a:</p>
-
-<ul>
-<li>weight \(w_j\) (“priority”) </li>
-<li>length \(l_j\)</li>
-</ul>
-
-<p>The completion time \(C_j\) of job \(j\) = Sum of job lengths up to and including \(j\).</p>
-
-<p>Goal: Minimize the weighted sum of completion times: \(\min \sum ^n_j= w_jC_j\)</p>
-
-<h2 id="toc_5">Reference</h2>
-
-<ol>
-<li>Cormen, Leiserson, Rivest, and Stein. 2009. Introduction to Algorithms (3rd edition)</li>
-</ol>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/7/31</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Greedy.html'>Greedy</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="python_generator.html">
-                
-                  <h1>Generator</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>Any function that contains a <code>yield</code> statement is called a <code>generator</code>.</p>
-
-<h3 id="toc_0">yield statement</h3>
-
-<p>Each time a value is yielded (with <code>yield</code>), the function freezes; that is, it stops its execution at exactly that point and waits to be reawakened.</p>
-
-<h3 id="toc_1">generator comprehension</h3>
-
-<p><code>Generator comprehension</code> works in the same way as <code>list comprehension</code>, except that a list isn&#39;t constructed. Instead, a <code>generator</code> is returned.</p>
-
-<pre><code class="language-python">&gt;&gt;&gt; h = (i for i in range(10))
-&gt;&gt;&gt; h
-&lt;generator object &lt;genexpr&gt; at 0x104d76ba0&gt;
-&gt;&gt;&gt; list(h)
-[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-</code></pre>
-
-<p>When using <code>generator comprehension</code>, if there already exists parentheses, you don&#39;t need to add another pair.</p>
-
-<pre><code class="language-python">&gt;&gt;&gt; sorted(100-i for i in range(10))
-[91, 92, 93, 94, 95, 96, 97, 98, 99, 100]
-</code></pre>
-
-<h3 id="toc_2">Recursive generator</h3>
-
-<p><code>generators</code> are ideal for complex recursive algorithms that gradually build a result. </p>
-
-<p>A <code>recursive generator</code> could be used to flatten a nested list.</p>
-
-<pre><code class="language-python">def flatten(nested):
-    &quot;&quot;&quot;
-    When flatten is called, you have two possibilites: the base case and the recursive case.
-
-    In the base case, the function is told to flatten a single element.
-    In the recursive case, flatten it.
-
-    &gt;&gt;&gt; list(flatten([[[1], 2], 3, 4, [5, [6, 7]], 8]))
-    [1, 2, 3, 4, 5, 6, 7, 8]
-    &gt;&gt;&gt; list(flatten([&#39;foo&#39;, [&#39;bar&#39;, [&#39;baz&#39;]]]))
-    [&#39;foo&#39;, &#39;bar&#39;, &#39;baz&#39;]
-    &quot;&quot;&quot;
-    try:
-        try:
-            nested + &#39; &#39;
-        except TypeError:
-            pass
-        else:
-            raise TypeError
-        
-        for sublist in nested:
-            for element in flatten(sublist):
-                yield element
-
-    except TypeError:
-        yield nested
-
-
-if __name__ == &quot;__main__&quot;:
-    import doctest
-    doctest.testmod(verbose=True)
-</code></pre>
-
-<p>An <code>inorder traversal</code> (also <code>postoder traversal</code> and <code>preorder traversal</code>) of a <code>binary search tree</code> might use the <code>recursive generator</code>, detailed code here <a href="http://larryim.cc/binary_search_tree.html">Binary Search Tree</a></p>
-
-<h3 id="toc_3">Generator methods</h3>
-
-<p>We may supply generators with values after they have started running, by using a communications channel between the <code>generator</code> and the “outside world,” with the following two end points:</p>
-
-<ul>
-<li><p>The outside world has access to a method on the generator called <code>send</code>, which works just like <code>next</code>, except that it takes a single argument (the “message” to send—an arbitrary object).</p></li>
-<li><p>Inside the suspended generator, <strong><code>yield</code> may now be used as an <code>expression</code>, rather than a <code>statement</code></strong>. In other words, when the generator is resumed, yield returns a value—the value sent from the outside through <code>send</code>. If <code>next</code> was used, <code>yield</code> returns <code>None</code>.</p></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/7/23</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
                 <a class="clearlink" href="python_iterator.html">
                 
                   <h1>Iterators</h1>
@@ -688,6 +219,928 @@ if __name__ == &quot;__main__&quot;:
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="Hash_Table_4_Universal_Hashing.html">
+                
+                  <h1>Hash Table (4): Universal Hashing</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>Let \(H\) be a finite collection of hash functions that map a given universe \(U\) of keys into the range \(\{0,1,...,m-1\}\). Such a collection is said to be <code>universal</code> if for each pair of distinct keys \(k,l \in U\), the number of <code>hash function</code> \(h \in H\) for which \(h(k) = h(l)\) is at most \(\frac{|H|}{m}\), i.e.</p>
+
+<p>\[ \forall k,l \in U, k\ne l: \Pr_{h\in H }[h(x)=h(y)]\le \frac{1}{m}  \]</p>
+
+<h2 id="toc_0">Why Universal Hashing?</h2>
+
+<p>Some malicious adversary might chooses the keys which all hash to the same slot, yielding an average retrieval time of \(\Theta(n)\). Instead of fixed hash functions, randomly chosen hash functions can yield good performance on average.</p>
+
+<h2 id="toc_1">Designing a universal class of hash functions</h2>
+
+<p>In short, you can generate family of hash functions using following simple equation:</p>
+
+<pre><code class="language-python">h(x,a,b) = ((ax+b) mod p) mod m
+</code></pre>
+
+<p>\(x\) is key you want to hash<br/>
+\(a\) is any number you can choose between \(1\) to \(p-1\) inclusive.<br/>
+\(b\) is any number you can choose between \(0\) to \(p-1\) inclusive.<br/>
+\(p\) is a prime number that is greater than max possible value of \(x\)<br/>
+\(m\) is a max possible value you want for hash code + 1<br/>
+By selecting different values of \(a\) and \(b\) you can generate many hash codes that are independent of each other.</p>
+
+<h2 id="toc_2">Implementation</h2>
+
+<pre><code class="language-python">import random
+
+
+class UniversalHash:
+    &quot;&quot;&quot;
+    &gt;&gt;&gt; h=UniversalHash()
+    &gt;&gt;&gt; h[54]=&quot;cat&quot;
+    &gt;&gt;&gt; h[26]=&quot;dog&quot;
+    &gt;&gt;&gt; h[93]=&quot;lion&quot;
+    &gt;&gt;&gt; h[77]=&quot;bird&quot;
+    &gt;&gt;&gt; h[31]=&quot;cow&quot;
+    &gt;&gt;&gt; h[44]=&quot;goat&quot;
+    &gt;&gt;&gt; 54 in h
+    True
+    &quot;&quot;&quot;
+    def __init__(self):
+        self.size = 100
+        self.slots = [None] * self.size
+        self.data = [None] * self.size
+        (self.p, self.a, self.b) = self.generate_hash_constants()
+
+
+    def generate_hash_constants(self):
+        &quot;&quot;&quot;
+        generate a, b, p for universal hashing
+        &quot;&quot;&quot;
+        p = self._get_prime()  # set p a  random prime number
+        a = random.randint(1, p - 1)  # A has a random value between 1 and p - 1.
+        b = random.randint(1, p - 1)  # B has a random value between 1 and p - 1
+        return p, a, b
+
+    def put(self, key, data):
+        hash_value = self.hash_function(key)
+        if self.slots[hash_value] is None:
+            self.slots[hash_value] = key
+            self.data[hash_value] = data
+        elif self.slots[hash_value] == key:
+            self.data[hash_value] = data
+        else:
+            # rehash
+            next_slot = self.rehash(hash_value, len(self.slots))
+            while self.slots[next_slot] is not None and self.slots[next_slot] != key:
+                next_slot = self.rehash(hash_value, len(self.slots))
+
+            if self.slots[next_slot] is None:
+                self.slots[next_slot] = key
+                self.data[hash_value] = data
+            else:
+                self.data[hash_value] = data
+
+    def hash_function(self, key):
+        &quot;&quot;&quot;
+        hash_function implements the simple remainder method
+        &quot;&quot;&quot;
+        return round(self.a * key + self.b) % self.p % self.size
+
+    def rehash(self, old_hash, size):
+        &quot;&quot;&quot;
+        linear probing with a plus 1
+        &quot;&quot;&quot;
+        return (old_hash+1) % size
+
+    def get(self, key):
+        start_slot = self.hash_function(key)
+        data = None
+        stop = False
+        found = False
+        position = start_slot
+        while self.slots[position] is not None and \
+                not found and not stop:
+            if self.slots[position] == key:
+                found = True
+                data = self.data[position]
+            else:
+                position = self.rehash(position, len(self.slots))
+            if position == start_slot:
+                stop = True
+        return data
+
+    def _is_prime(self,n):
+        if n &lt;= 2 or n%2 == 0:
+            return False
+
+        return not any((n%i == 0 for i in range(3, n-1)))
+
+    def _get_prime(self, p=0):
+        &quot;&quot;&quot;
+        get a prime number
+        &quot;&quot;&quot;
+        if p == 0:
+            p = random.randint(1000000,10000000)
+        while not self._is_prime(p):
+            p += 1
+
+        return p
+
+    def __getitem__(self, key):
+        return self.get(key)
+
+    def __setitem__(self, key, data):
+        self.put(key, data)
+
+    def __len__(self):
+        &quot;&quot;&quot;
+        return length
+        &quot;&quot;&quot;
+        count = 0
+        for item in self.slots:
+            if item is not None:
+                count += 1
+
+        return count
+
+    def __contains__(self, item):
+        &quot;&quot;&quot;
+        定义了使用in和not in进行成员测试时类的行为
+        &quot;&quot;&quot;
+        return self.get(item) is not None
+
+    def __iter__(self):
+        &quot;&quot;&quot;
+        iterator
+        &quot;&quot;&quot;
+        for item in self.slots:
+            if item is not None:
+                yield item
+
+if __name__ == &quot;__main__&quot;:
+    import doctest
+    doctest.testmod(verbose=True)
+
+</code></pre>
+
+<h2 id="toc_3">Resources</h2>
+
+<ol>
+<li><a href="https://www.cse.iitb.ac.in/%7Esri/cs213/lec-Hashing.pdf">Hash Functions and Hash Tables</a></li>
+<li>Cormen, Leiserson, Rivest, and Stein, Introduction to Algorithms (3rd edition)</li>
+</ol>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/7/23</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Hash%20Table.html'>Hash Table</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="Hash_Table_3_A_variant_of_2_Sum_Algorithm.html">
+                
+                  <h1>Hash Table (3): A variant of 2-Sum Algorithm</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>The goal of the arcticle is to implement a variant of the <code>2-SUM algorithm</code>.</p>
+
+<p>The file contains 1 million integers, both positive and negative (repetitions exists!). This is your array of integers, with the \(i\)th row of the file specifying the \(i\)th entry of the array.</p>
+
+<p>The task is to compute the number of target values \(t\) in the interval \([-10000,10000]\)(inclusive) such that there are distinct numbers \(x,y\) in the input file that satisfy \(x+y=t\). </p>
+
+<h2 id="toc_0">Implementation</h2>
+
+<p>The key process lies in the <code>hash function</code>, which might be set to appropriate small value based on the origin value:<br/>
+\[\text{hash_function}= \frac{\text{number}}{\text{factor}}\]</p>
+
+<p>The <code>factor</code> is selected based on the number of <code>slots</code> needed in the algorithm. i.e.<br/>
+\[\frac{\text{the range of keys}}{\text{factor}}\approx \text{the number of slots} &lt; \text{the number of keys}\]</p>
+
+<p>There, factor is \(\frac{\text{the number of key}}{2}\)</p>
+
+<pre><code class="language-python">class HashTable(object):
+
+    def __init__(self):
+
+        self.size = 5000000
+        self.slots = [set() for i in range(self.size)]
+        self.data = set()
+
+    def put(self, key, data):
+
+        hash_value = self.hash_function(key)
+        self.slots[hash_value].add(data)
+        self.data.add(data)
+
+    def hash_function(self, key):
+
+        return key//(self.size//2)
+
+    def get(self, key):
+        &quot;&quot;&quot;
+        there key == data
+        &quot;&quot;&quot;
+        slot = self.hash_function(key)
+        if key in self.slots[slot]:
+            return key
+        else:
+            return None
+
+    def buildfromfile(self, textfile):
+
+        with open(text_file, &#39;r&#39;) as infile:
+            for line in infile.readlines():
+                self.put(int(line), int(line))
+
+    def two_sum_count(self):
+        &quot;&quot;&quot;
+        Compute the number of target values t in the interval[low, high] (inclusive),
+        such that there are distinct numbers x, y that satisfy x+y = t
+        &quot;&quot;&quot;
+        sums = set()
+
+        for key1 in self.data:
+            left = self.hash_function(-key1-10000)
+            right = self.hash_function(-key1+10000)
+
+            for slot in self.slots[left:right+1]:
+
+                for key2 in slot:
+
+                    if 10000 &gt; key1 + key2 &gt; -10000:
+                        sums.add(key1+key2)
+
+        return len(sums)
+
+
+if __name__ == &quot;__main__&quot;:
+
+    # target files for counting
+    text_file = &#39;two_sum.txt&#39;
+
+    hashnumber = HashTable()
+    hashnumber.buildfromfile(text_file)
+    print(hashnumber.two_sum_count())
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/7/23</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Hash%20Table.html'>Hash Table</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="heap_median_maintenance.html">
+                
+                  <h1>Heap (2): Median Maintenance</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p><strong>Problem Statement</strong>: The goal of the problem is to implement the <code>Median Maintenance</code> algorithm. The text file contains a list of the integers; you should treat this as a stream of numbers, arriving one by one. Letting \(x_i\) denote the \(i\)th number of the file, the \(k\)th median \(m_k\) is defined as the median of the numbers \(x_1,…,x_k\). (So, if \(k\) is odd, then \(m_k\) is \(((k+1)/2)\)th smallest number among \(x_1,…,x_k\); if \(k\) is even, then \(m_k\) is the \((k/2)\)th smallest number among \(x_1,…,x_k\).)</p>
+
+<h1 id="toc_0">Solution</h1>
+
+<p>We might use a max heap to represent elements that are less than the median, and a min heap to represent elements that are greater than the median.</p>
+
+<p>After balancing the heaps, the number of elements in two heaps differs at most by 1. </p>
+
+<pre><code class="language-python">Step 1: Add next item to one of the heaps
+
+   if next item &lt; maxHeap root:
+        add it to maxHeap
+   else:
+        add it to minHeap
+
+Step 2: Balance the heaps (after this step heaps will be either balanced or
+   one of them will contain 1 more item)
+
+   if number of elements in one of the heaps &gt; the other by
+   more than 1:
+        remove the root element from the one containing more elements 
+        and add to the other one
+
+Step 3: Calculate the median:
+
+   if the heaps contain equal amount of elements:
+        median = root of maxHeap
+   else:
+        median = root of the heap with more elements
+</code></pre>
+
+<h2 id="toc_1">Implementation</h2>
+
+<pre><code class="language-python">import doctest
+import sys
+
+class MinHeap(object):
+    &quot;&quot;&quot;
+    Min Heap
+    &gt;&gt;&gt; bh = MinHeap()
+    &gt;&gt;&gt; bh.buildHeap([9,5,14,18,-17,27,33,19,11,21])
+    &gt;&gt;&gt; bh.findMin()
+    -17
+    &gt;&gt;&gt; bh.delMin()
+    -17
+    &gt;&gt;&gt; bh.list[1:]
+    [5, 9, 14, 11, 21, 27, 33, 19, 18]
+    &gt;&gt;&gt; bh.insert(-100)
+    &gt;&gt;&gt; bh.delMin()
+    -100
+    &quot;&quot;&quot;
+
+    def __init__(self):
+        &quot;&quot;&quot;
+        add self.list 0 with initialization in order to divide
+        &quot;&quot;&quot;
+        self.list = [-sys.maxsize]
+        self.size = 0
+
+
+    def insert(self, k):
+        &quot;&quot;&quot;
+        Insert element to the MinBinaryHeap
+        &quot;&quot;&quot;
+        self.list.append(k)
+        self.size += 1
+        self.perc_up(self.size)
+
+
+    def findMin(self):
+        &quot;&quot;&quot;
+        Find the min element and return it
+        &quot;&quot;&quot;
+        return self.list[1]
+
+
+    def delMin(self):
+        &quot;&quot;&quot;
+        Delete the min element
+        and return it
+        &quot;&quot;&quot;
+        retrival = self.list[1]
+        self.size -= 1
+        self.list[1] = self.list[-1]
+        self.list.pop()
+        self.perc_down(1)
+
+        return retrival
+
+
+    def isEmpty(self):
+        &quot;&quot;&quot;
+        Return if the MinBinaryHeap is empty
+        &quot;&quot;&quot;
+        return self.size == 0
+
+    def __len__(self):
+        &quot;&quot;&quot;
+        Magic Method: return the length of MinBinaryHeap
+        &quot;&quot;&quot;
+        return self.size
+
+
+    def buildHeap(self, alist):
+        &quot;&quot;&quot;
+        Build a MinBinaryHeap from alist which is a collection of data
+        &quot;&quot;&quot;
+        self.list.extend(alist)
+        self.size = len(alist)
+
+        i = self.size//2
+        while i &gt; 0:
+            self.perc_down(i)
+            i -= 1
+
+    def perc_up(self, i):
+        &quot;&quot;&quot;&quot;
+        perc_up i
+        &quot;&quot;&quot;
+        while i//2&gt;0:
+            if self.list[i] &lt; self.list[i // 2]:
+                self.list[i], self.list[i // 2] = self.list[i // 2], self.list[i]
+            i = i // 2
+
+    def perc_down(self, i):
+        &quot;&quot;&quot;
+        perc down i
+        &quot;&quot;&quot;
+        while (i * 2) &lt;= self.size:
+            mc = self.minChild(i)
+            if self.list[i] &gt; self.list[mc]:
+                self.list[i], self.list[mc] = self.list[mc], self.list[i]
+            i = mc
+
+    def minChild(self, i):
+        &quot;&quot;&quot;
+        find the min child
+        &quot;&quot;&quot;
+        if i * 2 + 1 &gt; self.size:
+            return i * 2
+        else:
+            if self.list[i * 2] &lt; self.list[i * 2 + 1]:
+                return i * 2
+            else:
+                return i * 2 + 1
+
+    def __iter__(self):
+        return iter(self.list[1:])
+
+
+class MaxHeap(object):
+    &quot;&quot;&quot;
+    Max Heap
+    &gt;&gt;&gt; bh = MaxHeap()
+    &gt;&gt;&gt; bh.buildHeap([9,5,14,18,-17,27,33,19,11,21])
+    &gt;&gt;&gt; bh.delMax()
+    33
+    &gt;&gt;&gt; bh.insert(100)
+    &gt;&gt;&gt; bh.delMax()
+    100
+    &gt;&gt;&gt; len(bh)
+    9
+    &quot;&quot;&quot;
+
+    def __init__(self):
+        self.heap = MinHeap()
+
+    def insert(self, k):
+        self.heap.insert(-k)
+
+    def delMax(self):
+        return -self.heap.delMin()
+
+    def buildHeap(self, alist):
+        for i in range(len(alist)):
+            alist[i] = -alist[i]
+        self.heap.buildHeap(alist)
+
+    def findMax(self):
+        return -self.heap.findMin()
+
+    def __len__(self):
+        return self.heap.size
+
+    def __iter__(self):
+        for i in range(1, self.heap.size+1):
+            yield -self.heap.list[i]
+
+
+def median_maintenance(textfile):
+
+    min_heap = MinHeap()  # &gt; medium
+    max_heap = MaxHeap()  # &lt; medium
+
+    medians = []
+    count = 0
+
+    with open(textfile) as infile:
+        for line in infile:
+            item = int(line)
+            count += 1
+
+            # Step 1: Add next item to one of the hepas
+            # special case: initialize
+            if count == 1:
+                max_heap.insert(item)
+            else:
+                if item &lt; max_heap.findMax():
+                    max_heap.insert(item)
+                else:
+                    min_heap.insert(item)
+
+            # Step2: Balance the heap
+            if abs(len(max_heap) - len(min_heap)) &gt; 1:
+                if len(max_heap) &gt; len(min_heap):
+                    min_heap.insert(max_heap.delMax())
+                else:
+                    max_heap.insert(min_heap.delMin())
+
+            # Step3: calculate median
+            if len(max_heap) == len(min_heap):
+                median = max_heap.findMax()
+            else:
+                if len(max_heap) &gt; len(min_heap):
+                    median = max_heap.findMax()
+                else:
+                    median = min_heap.findMin()
+
+            medians.append(median)
+
+            # test
+            #for element in max_heap:
+            #    print(element, end=&#39; &#39;)
+            #for element in min_heap:
+            #    print(element, end=&#39; &#39;)
+            #print(&#39;total elem:&#39;,len(max_heap)+len(min_heap))
+
+
+    return medians
+
+if __name__ == &#39;__main__&#39;:
+    # doctest.testmod(verbose=True)
+    #textfile = &#39;SmallTest.txt&#39;
+    textfile = &#39;Median.txt&#39;
+    medians = median_maintenance(textfile)
+    answer = sum(medians)%10000
+    print(answer)
+</code></pre>
+
+<h2 id="toc_2">Resources</h2>
+
+<ol>
+<li><a href="https://stackoverflow.com/questions/14189540/python-topn-max-heap-use-heapq-or-self-implement">max heap implementation</a></li>
+<li><a href="https://stackoverflow.com/questions/10657503/find-running-median-from-a-stream-of-integers">median maintenance</a></li>
+</ol>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/7/21</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html'>Python数据结构与算法</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="binary_search_tree.html">
+                
+                  <h1>Python树(三)：Binary Search Tree</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>A <code>binary search tree</code>  is a tree that keys that are less than the parent are found in the left subtree, and keys that are greater than the parent are found in the right subtree.</p>
+
+<p>Let \(x\) be a node in a binary search tree. If \(y\) is a node in the left subtree of \(x\), then \(y.key\le x.key\). If \(y\) is a node in the right subtree of \(x\), then \(y.key\le x.key\).</p>
+
+<h2 id="toc_0">Implementation</h2>
+
+<ul>
+<li><code>Map()</code> Create a new, empty map.</li>
+<li><code>put(key,val)</code> Add a new key-value pair to the map. If the key is already in the map then replace the old value with the new value.</li>
+<li><code>get(key)</code> Given a key, return the value stored in the map or <code>None</code> otherwise.</li>
+<li><code>del</code> Delete the key-value pair from the map using a statement of the form <code>del map[key]</code>.</li>
+<li><code>len()</code> Return the number of key-value pairs stored in the map.</li>
+<li><code>in</code> Return <code>True</code> for a statement of the form <code>key in map</code>, if the given key is in the map.</li>
+</ul>
+
+<p>To implement the binary search tree,  the method of <code>the nodes and references approached</code> similar to <code>binary tree</code>(<a href="http://larryim.cc/tree_2.html">Link</a>) The <code>BinarySearchTree</code> class has a reference to the <code>TreeNode</code> that is the root of the binary search tree. </p>
+
+<h3 id="toc_1"><code>delete</code> method</h3>
+
+<p>Once we’ve found the node containing the key we want to delete, there are three cases that we must consider:</p>
+
+<ul>
+<li>The node to be deleted has no children.</li>
+<li>The node to be deleted has only one child.</li>
+<li>The node to be deleted has two children.</li>
+</ul>
+
+<p>The first case is straightforward. If the current node has no children all we need to do is delete the node and remove the reference to this node in the parent. The code for this case is shown in here.</p>
+
+<p>The second case is only slightly more complicated. If a node has only a single child, then we can simply promote the child to take the place of its parent. The code for this case is shown in the next listing. As you look at this code you will see that there are six cases to consider. Since the cases are symmetric with respect to either having a left or right child we will just discuss the case where the current node has a left child. The decision proceeds as follows:</p>
+
+<ul>
+<li>If the current node is a left child then we only need to update the parent reference of the left child to point to the parent of the current node, and then update the left child reference of the parent to point to the current node’s left child.</li>
+<li>If the current node is a right child then we only need to update the parent reference of the left child to point to the parent of the current node, and then update the right child reference of the parent to point to the current node’s left child.</li>
+<li>If the current node has no parent, it must be the root. In this case we will just replace the key, payload, leftChild, and rightChild data by calling the <code>replaceNodeData</code> method on the root.</li>
+</ul>
+
+<p>The third case is the most difficult case to handle. If a node has two children, then it is unlikely that we can simply promote one of them to take the node’s place. We can, however, search the tree for a node that can be used to replace the one scheduled for deletion. What we need is a node that will preserve the binary search tree relationships for both of the existing left and right subtrees. The node that will do this is the node that has the next-largest key in the tree. We call this node the <code>successor</code>, and we will look at a way to find the successor shortly. The successor is guaranteed to have no more than one child, so we know how to remove it using the two cases for deletion that we have already implemented. Once the successor has been removed, we simply put it in the tree in place of the node to be deleted.</p>
+
+<h3 id="toc_2"><code>successor</code> Method</h3>
+
+<p>The code to find the successor is a method of the <code>TreeNode</code> class. This code makes use of the same properties of binary search trees that cause an <code>inorder traversal</code> to print out the nodes in the tree from smallest to largest. There are three cases to consider when looking for the successor:</p>
+
+<ul>
+<li>If the node has a right child, then the successor is the smallest key in the right subtree.</li>
+<li>If the node has no right child and is the left child of its parent, then the parent is the successor.</li>
+<li>If the node is the right child of its parent, and itself has no right child, then the successor to this node is the successor of its parent, excluding this node.</li>
+</ul>
+
+<pre><code class="language-python">
+class BinarySearchTree(object):
+
+    def __init__(self):
+        self.root = None
+        self.size = 0
+
+    def put(self, key, val):
+        if self.root:
+            self._put(key, val, self.root)
+        else:
+            self.root = TreeNode(key, val)
+        self.size = self.size + 1
+
+    def _put(self, key, val, currentNode):
+        if key &lt; currentNode.key:
+            if currentNode.hasLeftChild():
+                self._put(key, val, currentNode.leftChild)
+            else:
+                currentNode.leftChild = TreeNode(key, val, parent=currentNode)
+        else:
+            if currentNode.hasRightChild():
+                self._put(key, val, currentNode.rightChild)
+            else:
+                currentNode.rightChild = TreeNode(key, val, parent=currentNode)
+
+    def __setitem__(self, k, v):
+        self.put(k, v)
+
+    def get(self, key):
+        if self.root:
+            res = self._get(key, self.root)
+            if res:
+                return res.payload
+            else:
+                return None
+        else:
+            return None
+
+    def _get(self, key, currentNode):
+        if not currentNode:
+            return None
+        elif currentNode.key == key:
+            return currentNode
+        elif key &lt; currentNode.key:
+            return self._get(key, currentNode.leftChild)
+        else:
+            return self._get(key, currentNode.rightChild)
+
+    def __getitem__(self, key):
+        res = self.get(key)
+        if res:
+            return res
+        else:
+            raise KeyError(&#39;Error, key not in tree&#39;)
+
+    def __contains__(self, key):
+        if self._get(key, self.root):
+            return True
+        else:
+            return False
+
+    def length(self):
+        return self.size
+
+    def __len__(self):
+        return self.size
+
+    def __iter__(self):
+        return self.root.__iter__()
+
+    def delete(self, key):
+        if self.size &gt; 1:
+            nodeToRemove = self._get(key, self.root)
+            if nodeToRemove:
+                self.remove(nodeToRemove)
+                self.size = self.size - 1
+            else:
+                raise KeyError(&#39;Error, key not in tree&#39;)
+        elif self.size == 1 and self.root.key == key:
+            self.root = None
+            self.size = self.size - 1
+        else:
+            raise KeyError(&#39;Error, key not in tree&#39;)
+
+    def __delitem__(self, key):
+        self.delete(key)
+
+    def remove(self, currentNode):
+        if currentNode.isLeaf():  # leaf
+            if currentNode == currentNode.parent.leftChild:
+                currentNode.parent.leftChild = None
+            else:
+                currentNode.parent.rightChild = None
+        elif currentNode.hasBothChildren():  # interior
+            succ = currentNode.findSuccessor()
+            succ.spliceOut()
+            currentNode.key = succ.key
+            currentNode.payload = succ.payload
+        else:  # this node has one child
+            if currentNode.hasLeftChild():
+                if currentNode.isLeftChild():
+                    currentNode.leftChild.parent = currentNode.parent
+                    currentNode.parent.leftChild = currentNode.leftChild
+                elif currentNode.isRightChild():
+                    currentNode.leftChild.parent = currentNode.parent
+                    currentNode.parent.rightChild = currentNode.leftChild
+                else:
+                    currentNode.replaceNodeData(currentNode.leftChild.key,
+                                                currentNode.leftChild.payload,
+                                                currentNode.leftChild.leftChild,
+                                                currentNode.leftChild.rightChild)
+            else:
+                if currentNode.isLeftChild():
+                    currentNode.rightChild.parent = currentNode.parent
+                    currentNode.parent.leftChild = currentNode.rightChild
+                elif currentNode.isRightChild():
+                    currentNode.rightChild.parent = currentNode.parent
+                    currentNode.parent.rightChild = currentNode.rightChild
+                else:
+                    currentNode.replaceNodeData(currentNode.rightChild.key,
+                                                currentNode.rightChild.payload,
+                                                currentNode.rightChild.leftChild,
+                                                currentNode.rightChild.rightChild)
+
+    def inorder(self):
+        self._inorder(self.root)
+
+    def _inorder(self, tree):
+        if tree != None:
+            self._inorder(tree.leftChild)
+            print(tree.key)
+            self._inorder(tree.rightChild)
+
+    def postorder(self):
+        self._postorder(self.root)
+
+    def _postorder(self, tree):
+        if tree:
+            self._postorder(tree.rightChild)
+            self._postorder(tree.leftChild)
+            print(tree.key)
+
+    def preorder(self):
+        self._preorder(self, self.root)
+
+    def _preorder(self, tree):
+        if tree:
+            print(tree.key)
+            self._preorder(tree.leftChild)
+            self._preorder(tree.rightChild)
+
+
+class TreeNode:
+    def __init__(self, key, val, left=None, right=None, parent=None):
+        self.key = key
+        self.payload = val
+        self.leftChild = left
+        self.rightChild = right
+        self.parent = parent
+        self.balanceFactor = 0
+
+    def hasLeftChild(self):
+        return self.leftChild
+
+    def hasRightChild(self):
+        return self.rightChild
+
+    def isLeftChild(self):
+        return self.parent and self.parent.leftChild == self
+
+    def isRightChild(self):
+        return self.parent and self.parent.rightChild == self
+
+    def isRoot(self):
+        return not self.parent
+
+    def isLeaf(self):
+        return not (self.rightChild or self.leftChild)
+
+    def hasAnyChildren(self):
+        return self.rightChild or self.leftChild
+
+    def hasBothChildren(self):
+        return self.rightChild and self.leftChild
+
+    def replaceNodeData(self, key, value, lc, rc):
+        self.key = key
+        self.payload = value
+        self.leftChild = lc
+        self.rightChild = rc
+        if self.hasLeftChild():
+            self.leftChild.parent = self
+        if self.hasRightChild():
+            self.rightChild.parent = self
+
+    def findSuccessor(self):
+        succ = None
+        if self.hasRightChild():
+            succ = self.rightChild.findMin()
+        else:
+            if self.parent:
+                if self.isLeftChild():
+                    succ = self.parent
+                else:
+                    self.parent.rightChild = None
+                    succ = self.parent.findSuccessor()
+                    self.parent.rightChild = self
+        return succ
+
+    def spliceOut(self):
+        if self.isLeaf():
+            if self.isLeftChild():
+                self.parent.leftChild = None
+            else:
+                self.parent.rightChild = None
+        elif self.hasAnyChildren():
+            if self.hasLeftChild():
+                if self.isLeftChild():
+                    self.parent.leftChild = self.leftChild
+                else:
+                    self.parent.rightChild = self.leftChild
+                self.leftChild.parent = self.parent
+            else:
+                if self.isLeftChild():
+                    self.parent.leftChild = self.rightChild
+                else:
+                    self.parent.rightChild = self.rightChild
+                self.rightChild.parent = self.parent
+
+    def findMin(self):
+        current = self
+        while current.hasLeftChild():
+            current = current.leftChild
+        return current
+
+    def __iter__(self):
+        &quot;&quot;&quot;The standard inorder traversal of a binary tree.&quot;&quot;&quot;
+        if self:
+            if self.hasLeftChild():
+                for elem in self.leftChild:
+                    yield elem
+            yield self.key
+            if self.hasRightChild():
+                for elem in self.rightChild:
+                    yield elem
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/7/19</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Tree.html'>Tree</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -799,6 +1252,12 @@ if __name__ == &quot;__main__&quot;:
 	      
 		      
 			      <li class="post">
+			        <a href="15088244818278.html">Machine Learning Foundations - Mathematical Foundations</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15088177470889.html">Machine Learning Foundations (8): The noise and error</a>
 			      </li>
 		     
@@ -812,12 +1271,6 @@ if __name__ == &quot;__main__&quot;:
 		      
 			      <li class="post">
 			        <a href="15088176831066.html">Machine Learning Foundations (6): Theory of generalization</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15088159325268.html">Machine Learning Foundations (5): Training versus Testing</a>
 			      </li>
 		     
 		  
