@@ -4,7 +4,7 @@
   <title><![CDATA[techlarry]]></title>
   <link href="http://larryim.cc/atom.xml" rel="self"/>
   <link href="http://larryim.cc/"/>
-  <updated>2017-10-24T13:47:39+08:00</updated>
+  <updated>2017-10-24T14:04:19+08:00</updated>
   <id>http://larryim.cc/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -74,6 +74,20 @@
 <a href="#toc_15">The Statistical Learning Flow</a>
 </li>
 </ul>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_16">(5): Training versus Testing</a>
+<ul>
+<li>
+<a href="#toc_17">Dichotomy</a>
+</li>
+<li>
+<a href="#toc_18">Growth function</a>
+</li>
+<li>
+<a href="#toc_19">Break point</a>
 </li>
 </ul>
 </li>
@@ -212,6 +226,69 @@
 
 <p>if \(\mathcal{A}\) finds one \(g\) with \(E_{in}(g)\approx 0\),<br/>
 PAC gaurantee for \(E_{out}(g)\approx 0\) \(\rightarrow\) learning possilbe!</p>
+
+<h2 id="toc_16">(5): Training versus Testing</h2>
+
+<p>For batch and supervised binary classification, \(g\approx f\Longleftrightarrow E_{out}(g)\approx 0\) achieved through \(E_{out}(g)\approx E_{in}(g)\) and \(E_{in}(g)\approx 0\).</p>
+
+<p>In order to achieve two conditions above, learning split to two central questions:</p>
+
+<ul>
+<li>Can we make sure that \(E_{out}(g)\) is close enough to \(E_{in}(g)\)?</li>
+<li>Can we make \(E_{in}(g)\) small enough?</li>
+</ul>
+
+<p>In order to understand trade-off for &#39;right&#39; \(\mathcal{H}\), we establish a finite quantity that replace \(M\),</p>
+
+<p>\[\mathbb{P}[|E_{in}9g)-E_{out}(g)|&gt;\epsilon] \le 2\cdot m_\mathcal{H} \cdot \exp(-2\epsilon^2 N)\]</p>
+
+<h3 id="toc_17">Dichotomy</h3>
+
+<p>Define hypothesis set \(\mathcal{H}\):</p>
+
+<p>\(\mathcal{H}=\{\text{hypothesis}\quad h: \mathcal{X}\rightarrow{\text{x,o}}\}\)</p>
+
+<p>And we call hypothesis &#39;limited&#39; to the eyes of \(x_1, x_2,..., x_N\) a dichtonomy:</p>
+
+<p>\[h(x_1,x_2,...,x_N)=(h(x_1),h(x_2),...,h(x_N)) \in\{\text{x,o}\}^N\]</p>
+
+<p>Corresponding dichotomies \(\mathcal{H}(x_1,x_2,...,x_N)\) is all dichotomies implemented by \(\mathcal{H}\) on \(x_1,x_2,...,x_N\):</p>
+
+<p><strong>Note</strong>: hypotheses \(\mathcal{H}\) and \(\mathcal{H}(x_1,x_2,...,x_N)\) are different!</p>
+
+<h3 id="toc_18">Growth function</h3>
+
+<p>Growth functions remove its dependence on inputs \((x_1,x_2,...,x_N)\), by taking max of all possible \((x_1,x_2,...,x_N)\): </p>
+
+<p>\[m_\mathcal{H}(N) = \max\limits_{x_1,x_2,...,x_N\in\mathcal{X}}|\mathcal{H}(x_1,x_2,...,x_N)|\]</p>
+
+<p>Growth function is finite, its upper-bound is \(2^N\).</p>
+
+<p>Growth functions in different situation:</p>
+
+<ul>
+<li>positive rays: \(m_\mathcal{H}(N)=N+1\)</li>
+<li>positive intervals: \(m_\mathcal{H}(N)=\frac{1}{2}N^2+\frac{1}{2}N+1\)</li>
+<li>convex sets: \(m_\mathcal{H}(N)=2^N \)</li>
+<li>2D perceptrons: \(m_\mathcal{H}(N)=2^N \text{in some cases}\)</li>
+</ul>
+
+<h3 id="toc_19">Break point</h3>
+
+<p>if \(m_H(K) &lt; 2^k\), call k a <strong>break point</strong> for \(\mathcal{H}\).</p>
+
+<ul>
+<li>since \(k\) is a break point, \(k+1, k+2, k+3,...,\) also break points</li>
+</ul>
+
+<p>minimum break points for different \(\mathcal{H}\):</p>
+
+<ul>
+<li>positive rays: k=2</li>
+<li>positive intervals: k=3</li>
+<li>convex sets: none</li>
+<li>2D perceptrons: k=4</li>
+</ul>
 
 ]]></content>
   </entry>
