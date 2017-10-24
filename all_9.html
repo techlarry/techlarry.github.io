@@ -136,6 +136,109 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15025954300059.html">
+                
+                  <h1>CS231n:</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p><code>score function</code> that maps the raw data to class scores. For visual recognition, score function maps the pixel values of an image to confidence scores for each class.</p>
+
+<p><code>loss function</code> that quantifies the agreement between the predicated scores and the ground truth labels.</p>
+
+<p><strong>Linear classifier.</strong> We will start out with arguably the simplest possible function( a <code>score function</code>), a linear mapping:</p>
+
+<p>\[<br/>
+f(x_i, W, b) =  W x_i + b<br/>
+\]</p>
+
+<p>Convolutional Neural Networks will map image pixels to scores exactly as shown above, but the mapping ( \(f \)) will be more complex and will contain more parameters.</p>
+
+<p><strong>Bias trick</strong>: A commonly used trick is to combine the two sets of parameters (\(W, b\)) into a single matrix that holds both of them by extending the vector \(x_i\) with one additional dimension that always holds the constant \(1\) - a default <em>bias dimension</em>. With the extra dimension, the new <code>score function</code> will simplify to a single matrix multiply:</p>
+
+<p>\[<br/>
+f(x_i, W) =  W x_i<br/>
+\]</p>
+
+<p><img src="media/15025954300059/15041865704757.jpg" alt=""/></p>
+
+<p><strong>Loss Function</strong>: We want to set parameters W so that the predicted class scores are consistent with the ground truth labels in the training data. We are going to measure our unhappiness with outcomes with a <code>loss function</code> (or sometimes also referred to as the <code>cost function</code> or the <code>objective</code>). Intuitively, the loss will be high if we’re doing a poor job of classifying the training data, and it will be low if we’re doing well.</p>
+
+<ul>
+<li><code>Multiclass Support Vector Machine</code> (SVM): The <code>score function</code> computes the vector \(f(x_i, W)\) of class scores, which we will abbreviate to \(s\) (short for scores). For example, the score for the j-th class is the j-th element: \(s_j=f(x_i,W)_j\). The Multiclass SVM loss for the i-th example is then formalized as follows:</li>
+</ul>
+
+<p>\[<br/>
+L_i = \sum_{j\neq y_i} \max(0, s_j - s_{y_i} + \Delta)<br/>
+\]</p>
+
+<p>The SVM loss function wants the score of the correct class \(y_i\) to be larger than the incorrect class scores by at least by \(\Delta\) (delta). If this is not the case, we will accumulate loss.  Hyperparameter \(\Delta\) can safely be set to \(\Delta=1.0\) in all cases</p>
+
+<p><strong><code>hinge loss</code></strong>: The function <code>max(0,1-t)$ is called the</code>hinge loss` function.</p>
+
+<p><img src="media/15025954300059/Hinge%20Loss%20Function.png" alt="Hinge Loss Function"/></p>
+
+<p><strong>Regularization</strong>:</p>
+
+<p>Including the regularization penalty completes the full Multiclass Support Vector Machine loss, which is made up of two components: the <strong>data loss</strong> (which is the average loss \(L_i\) over all examples) and the <strong>regularization loss</strong>. That is, the full Multiclass SVM loss becomes:</p>
+
+<p>\[<br/>
+L =  \underbrace{ \frac{1}{N} \sum_i L_i }_\text{data loss} + \underbrace{ \lambda R(W) }_\text{regularization loss} \\\\<br/>
+\]<br/>
+Or expanding this out in its full form:</p>
+
+<p>\[<br/>
+L = \frac{1}{N} \sum_i \sum_{j\neq y_i} \left[ \max(0, f(x_i; W)_j - f(x_i; W)_{y_i} + \Delta) \right] + \lambda \sum_k\sum_l W_{k,l}^2<br/>
+\]</p>
+
+<p>Where \(N\) is the number of training examples.</p>
+
+<p>Code. Here is the loss function (without regularization) implemented in Python, in both unvectorized and half-vectorized form:</p>
+
+<p><strong>Softmax classifier</strong>: Another commonly seen classifiers besides <code>SVM classifier</code> is the <code>Softmax classifier</code>, which has a <code>cross-entropy loss</code>:</p>
+
+<p>\[<br/>
+L_i = -\log\left(\frac{e^{f_{y_i}}}{ \sum_j e^{f_j} }\right) \hspace{0.5in} \text{or equivalently} \hspace{0.5in} L_i = -f_{y_i} + \log\sum_j e^{f_j}<br/>
+\]</p>
+
+<p>where we are using the notation \(f_j\) to mean the j-th element of the vector of class scores \(f\). As before, the full loss for the dataset is the mean of \(L_i\) over all training examples together with a regularization term \(R(W)\). The function \(f_j(z) = \frac{e^{z_j}}{\sum_k e^{z_k}} \) is called the <strong>softmax function</strong>: It takes a vector of arbitrary real-valued scores (in \(z\)) and squashes it to a vector of values between zero and one that sum to one.</p>
+
+<p>The difference between <code>SVM classifiers</code> and <code>Soft-max classifiers</code>:</p>
+
+<p><img src="media/15025954300059/15041909839867.png" alt=""/></p>
+
+<h2 id="toc_0">Reference</h2>
+
+<ul>
+<li>CS231n Convolutional Neural Network</li>
+<li>Aurelien Geron. Hands-On Machine Learning with Scikit-Learn &amp; TensorFlow</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/8/13</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Deep%20Learning.html'>Deep Learning</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15025903235887.html">
                 
                   <h1>Latex 技巧</h1>
@@ -157,6 +260,18 @@
 </code></pre>
 
 <p>\(c(i,j) = \sum \limits^{j}_{k=i}f[k] + \min \limits_{r=i}^j \prod \limits^{m}_np(x^i)\)</p>
+
+<h2 id="toc_2">字体</h2>
+
+<p>花式字体<code>math calligraphy</code>，常用于随机变量，例如: \(\mathcal{X, Y}\)</p>
+
+<pre><code class="language-latex">\mathcal{X, Y}
+</code></pre>
+
+<p>空心加粗字体<code>blackboard bold</code>，常用于实数集R: \(\mathbb{R}\)</p>
+
+<pre><code>\mathbb{R}
+</code></pre>
 
                         
                       </div>
@@ -416,87 +531,6 @@ Comment         |
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="Dynamic_Programming_Optimal_Binary_Search_Tree.html">
-                
-                  <h1>Dynamic Programming (4): Optimal Binary Search Tree</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>An <code>Optimal Binary Search Tree (Optimal BST)</code> is a binary search tree which provides the smallest possible search time for a given sequence of access probabilities. The cost of a BST node is the level of that node plus one multiplied by its frequency.</p>
-
-<p><strong>Problem Statement</strong>: Given a sorted array \(keys[0.. n-1]\) of search keys and an array \(freq[0.. n-1]\) of frequency counts, where \(freq[i]\) is the number of searches to \(keys[i]\). Construct a binary search tree of all keys such that the total cost of all the searches is as small as possible.</p>
-
-<h2 id="toc_0">Optimal Substructure</h2>
-
-<p>The optimal cost of node \(i,...,j\) can be recursively calculated using the following formula.</p>
-
-<p>\(Cost(i,j) = \sum \limits^{j}_{k=i}freq[k] + \min \limits_{r=i}^j[Cost(i,r-1)+Cost(r+1,j)]\)</p>
-
-<p>We try all nodes one by one as root (\(r\) varies from \(i\) to \(j\)). When we make \(r\)th node as root, we recursively calculate optimal cost from \(i\) to \(r-1\) and \(r+1\) to \(j\). </p>
-
-<h3 id="toc_1">Implementation: top-down with memoization</h3>
-
-<pre><code class="language-python">def optimal_bst(freq):
-    def opt_cost(hash_table, freq, i, j):
-        &quot;&quot;&quot;
-        Optimal Binary Search Tree
-        Recursive Method used here
-        &quot;&quot;&quot;
-
-        # base case: only 0~1 element
-        if j &lt; i:
-            return 0
-        if j == i:
-            return freq[i]
-
-        # if already exists
-        if (i, j) in hash_table:
-            return hash_table[(i, j)]
-
-        min_cost = sys.maxsize
-        for r in range(i, j + 1):
-            cost = opt_cost(hash_table, freq, i, r - 1) + opt_cost(hash_table, freq, r + 1, j)
-            if cost &lt; min_cost:
-                min_cost = cost
-
-        hash_table[(i, j)] = sum(freq[i:j + 1]) + min_cost
-        return hash_table[(i, j)]
-
-    return opt_cost({}, freq, 0, len(freq) - 1)
-</code></pre>
-
-<h2 id="toc_2">Reference</h2>
-
-<ul>
-<li><a href="http://ac.els-cdn.com/S0304397596003209/1-s2.0-S0304397596003209-main.pdf?_tid=1505980e-7cd4-11e7-83de-00000aacb361&amp;acdnat=1502263778_53b76d131a06906e9fe3adfadc778677">Optimal Binary Search Tree</a></li>
-<li><a href="http://www.geeksforgeeks.org/dynamic-programming-set-24-optimal-binary-search-tree/">Optimal Binary Search Tree GeeksforGeeks</a></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/8/9</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Dynamic%20Programming.html'>Dynamic Programming</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -596,6 +630,12 @@ Comment         |
 	      
 		      
 			      <li class="post">
+			        <a href="15087498983979.html">主动学习</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="machine_Learning_foundation_4.html">Machine Learning Foundations (4): Feasibility of Learning</a>
 			      </li>
 		     
@@ -615,12 +655,6 @@ Comment         |
 		      
 			      <li class="post">
 			        <a href="15087235092833.html">Machine Learning Foundations (1): The Learning Problem</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15086547919641.html">JSON</a>
 			      </li>
 		     
 		  
