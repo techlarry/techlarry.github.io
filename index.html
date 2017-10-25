@@ -121,6 +121,8 @@ var _hmt = _hmt || [];
             <li><a href="Tensorflow.html">Tensorflow</a></li>
         
             <li><a href="Data%20Science.html">Data Science</a></li>
+        
+            <li><a href="C/C++.html">C/C++</a></li>
          
 
       </ul>
@@ -143,6 +145,187 @@ var _hmt = _hmt || [];
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15089188725996.html">
+                
+                  <h1>Linux 内存布局</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p><img src="media/15089188725996/15089292733459.png" alt=""/></p>
+
+<p>典型内存空间布局<br/>
+一个典型的Linux C程序内存空间由如下几部分组成：</p>
+
+<ul>
+<li>代码段（<code>.text</code>）。这里存放的是CPU要执行的指令。代码段是可共享的，相同的代码在内存中只会有一个拷贝，同时这个段是只读的，防止程序由于错误而修改自身的指令。</li>
+<li>初始化数据段（<code>.data</code>）。这里存放的是程序中需要明确赋初始值的变量，例如位于所有函数之外的全局变量：<code>int val=&quot;100</code>。需要强调的是，以上两段都是位于程序的可执行文件中，内核在调用exec函数启动该程序时从源程序文件中读入。</li>
+<li>未初始化数据段（<code>.bss</code>）。位于这一段中的数据，内核在执行该程序前，将其初始化为0或者null。例如出现在任何函数之外的全局变量：int sum;</li>
+<li>栈（<code>Stack</code>）。函数中的局部变量以及在函数调用过程中产生的临时变量都保存在此段中。</li>
+<li>堆（<code>Heap</code>）。这个段用于在程序中进行动态内存申请，例如经常用到的malloc，new系列函数就是从这个段中申请内存。</li>
+</ul>
+
+<pre><code class="language-C"> #include&lt;stdio.h&gt;    
+ #include &lt;malloc.h&gt;    
+     
+ void print(char *,int);    
+ int main()    
+{    
+      char *s1 = &quot;abcde&quot;;  //&quot;abcde&quot;作为字符串常量存储在常量区 s1、s2、s5拥有相同的地址  
+      char *s2 = &quot;abcde&quot;;    
+      char s3[] = &quot;abcd&quot;;    
+      long int *s4[100];    
+      char *s5 = &quot;abcde&quot;;    
+      int a = 5;    
+      int b =6;//a,b在栈上，&amp;a&gt;&amp;b地址反向增长    
+     
+     printf(&quot;variables address in main function: s1=%p  s2=%p s3=%p s4=%p s5=%p a=%p b=%p \n&quot;,     
+             s1,s2,s3,s4,s5,&amp;a,&amp;b);   
+     printf(&quot;variables address in processcall:n&quot;);    
+        print(&quot;ddddddddd&quot;,5);//参数入栈从右至左进行,p先进栈,str后进 &amp;p&gt;&amp;str    
+     printf(&quot;main=%p print=%p \n&quot;,main,print);    
+     //打印代码段中主函数和子函数的地址，编译时先编译的地址低，后编译的地址高main&lt;print    
+ }    
+  
+ void print(char *str,int p)    
+{    
+     char *s1 = &quot;abcde&quot;;  //abcde在常量区，s1在栈上    
+     char *s2 = &quot;abcde&quot;;  //abcde在常量区，s2在栈上 s2-s1=6可能等于0，编译器优化了相同的常量，只在内存保存一份    
+     //而&amp;s1&gt;&amp;s2    
+     char s3[] = &quot;abcdeee&quot;;//abcdeee在常量区，s3在栈上，数组保存的内容为abcdeee的一份拷贝    
+     long int *s4[100];    
+     char *s5 = &quot;abcde&quot;;    
+     int a = 5;    
+     int b =6;    
+     int c;    
+     int d;           //a,b,c,d均在栈上，&amp;a&gt;&amp;b&gt;&amp;c&gt;&amp;d地址反向增长    
+     char *q=str;   
+     int m=p;           
+     char *r=(char *)malloc(1);    
+     char *w=(char *)malloc(1) ;  // r&lt;w 堆正向增长    
+    
+     printf(&quot;s1=%p s2=%p s3=%p s4=%p s5=%p a=%p b=%p c=%p d=%p str=%p q=%p p=%p m=%p r=%p w=%p \n&quot;,    
+            s1,s2,s3,s4,s5,&amp;a,&amp;b,&amp;c,&amp;d,&amp;str,q,&amp;p,&amp;m,r,w);   
+     /* 栈和堆是在程序运行时候动态分配的，局部变量均在栈上分配。 
+        栈是反向增长的，地址递减；malloc等分配的内存空间在堆空间。堆是正向增长的，地址递增。   
+        r,w变量在栈上(则&amp;r&gt;&amp;w)，r,w所指内容在堆中(即r&lt;w)。*/   
+ }    
+   
+</code></pre>
+
+<h2 id="toc_0">堆和栈区别</h2>
+
+<p><img src="media/15089188725996/15089298484521.jpg" alt=""/></p>
+
+<h2 id="toc_1">参考</h2>
+
+<p><a href="http://blog.csdn.net/zhangzhebjut/article/details/39060253">http://blog.csdn.net/zhangzhebjut/article/details/39060253</a></p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/10/25</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='C/C++.html'>C/C++</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15089186263565.html">
+                
+                  <h1>Valgrind</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p><code>Valgrind</code> is an instrumentation framework for building dynamic analysis tools. There are Valgrind tools that can automatically detect many memory management and threading bugs, and profile your programs in detail. You can also use Valgrind to build new tools.</p>
+
+<p>The Valgrind distribution currently includes six production-quality tools: </p>
+
+<ul>
+<li>a memory error detector</li>
+<li>two thread error detectors </li>
+<li>a cache and branch-prediction profiler</li>
+<li>a call-graph generating cache and branch-prediction profiler</li>
+<li>a heap profiler.</li>
+</ul>
+
+<p>It also includes three experimental tools: </p>
+
+<ul>
+<li>a stack/global array overrun detector,</li>
+<li>a second heap profiler that examines how heap blocks are used</li>
+<li>a SimPoint basic block vector generator.</li>
+</ul>
+
+<h2 id="toc_0">Installing on Mac</h2>
+
+<p>The simplest way to install <code>valgrind</code> is using <code>brew</code>:</p>
+
+<pre><code>brew install --HEAD valgrind
+</code></pre>
+
+<h2 id="toc_1">Demo</h2>
+
+<p>Writing a C program named &#39;arrays.c&#39; without freeing the memory after allocating it dynamically using <code>malloc</code>, for example,</p>
+
+<pre><code>int* heap_array = (int*) malloc(sizeof(int) * 5);
+free(heap_array); ## deleting the statement...
+</code></pre>
+
+<p>After running by command</p>
+
+<pre><code>valgrind ./arrays
+</code></pre>
+
+<p>you will see &quot;<strong>definitely lost: 20 bytes in 1 blocks</strong>!!&quot;</p>
+
+<p><img src="media/15089186263565/Screen%20Shot%202017-10-25%20at%204.35.47%20PM.png" alt="Screen Shot 2017-10-25 at 4.35.47 P"/></p>
+
+<h2 id="toc_2">Reference</h2>
+
+<ul>
+<li><a href="https://stackoverflow.com/questions/26564125/yosemite-and-valgrind">Yosemite and Valgrind</a></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/10/25</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='C/C++.html'>C/C++</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="machine_learning_techniques_SVM.html">
                 
                   <h1>Machine Learning Techniques: Support Vector Machine (SVM)</h1>
@@ -150,7 +333,30 @@ var _hmt = _hmt || [];
                       
                       <div class="a-content-text">
                         
-                        	<h2 id="toc_0">Linear SVM</h2>
+                        	<ul>
+<li>
+<a href="#toc_0">Linear SVM</a>
+<ul>
+<li>
+<a href="#toc_1">Standard Large-Margin Problem</a>
+</li>
+<li>
+<a href="#toc_2">Support Vector Machine</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_3">Dual Support Vector Machine</a>
+<ul>
+<li>
+<a href="#toc_4">Lagrange Dual Problem</a>
+</li>
+</ul>
+</li>
+</ul>
+
+
+<h2 id="toc_0">Linear SVM</h2>
 
 <p><img src="media/15088454152744/large_margin.png" alt="large_margin"/></p>
 
@@ -168,6 +374,39 @@ var _hmt = _hmt || [];
 <h3 id="toc_2">Support Vector Machine</h3>
 
 <p><img src="media/15088454152744/svm%20with%20qp%20solver.png" alt="svm with qp solve"/></p>
+
+<h2 id="toc_3">Dual Support Vector Machine</h2>
+
+<p>\[\text{SVM} \equiv \min\limits_{b,w} (\max\limits_{\text{all}\,\alpha_n \ge 0} \mathcal{L}(b,w,\alpha))\]</p>
+
+<h3 id="toc_4">Lagrange Dual Problem</h3>
+
+<p>for any fixed \(\alpha&#39;\)  with all \(\alpha&#39;_n\ge\) 0,<br/>
+\[\min\limits_{b,w} (\max\limits_{\text{all}\,\alpha_n \ge 0} \mathcal{L}(b,w,\alpha)) \ge \min\limits_{b,w}\mathcal{L}(b,w,\alpha&#39;)\]</p>
+
+<p>for best \(\alpha&#39;\ge 0\) on RHS,</p>
+
+<p>\[\min\limits_{b,w} (\max\limits_{\text{all}\,\alpha_n \ge 0} \mathcal{L}(b,w,\alpha)) \ge \max\limits_{\text{all}\,\alpha_n \ge 0}(\min\limits_{b,w}  \mathcal{L}(b,w,\alpha))\]</p>
+
+<p>Strong duality of Quadratic Programming<br/>
+\[\min\limits_{b,w} (\max\limits_{\text{all}\,\alpha_n \ge 0} \mathcal{L}(b,w,\alpha)) \ge \max\limits_{\text{all}\,\alpha_n \ge 0}(\min\limits_{b,w}  \mathcal{L}(b,w,\alpha))\]</p>
+
+<ul>
+<li>&#39;&gt;=&#39;: weak duality</li>
+<li>&#39;=&#39;: strong duality, true for QP if
+
+<ul>
+<li>convex primal</li>
+<li>feasible primal</li>
+<li>linear constraints</li>
+</ul></li>
+</ul>
+
+<p>Dual Formulation of Support Vector Machine:</p>
+
+<p><img src="media/15088454152744/Screen%20Shot%202017-10-25%20at%201.43.46%20PM.png" alt="Screen Shot 2017-10-25 at 1.43.46 P"/></p>
+
+<p><img src="media/15088454152744/Screen%20Shot%202017-10-25%20at%201.46.05%20PM.png" alt="Screen Shot 2017-10-25 at 1.46.05 P"/></p>
 
                         
                       </div>
@@ -588,163 +827,6 @@ PAC gaurantee for \(E_{out}(g)\approx 0\) \(\rightarrow\) learning possilbe!</p>
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15086547919641.html">
-                
-                  <h1>JSON</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p><code>JSON</code> stands for <code>Javascript Object Notation</code>. It is a lightweight data interchange format, similar to <code>XML</code>, <code>SOAP</code> and <code>YAML</code>.</p>
-
-<p><code>JSON</code> syntax is based around three simple data types:</p>
-
-<ul>
-<li>Name-value pair</li>
-<li>JSON Object: a collection of name-value pairs or Arrays encased in curly brackets.</li>
-<li>JSON Array: a lift of values encased in square brackets.</li>
-</ul>
-
-<p>E.g. a student in an university with basic information: name, id number, GPA etc:</p>
-
-<pre><code class="language-python">
-{
-    &quot;name&quot;:&quot;Jacob Bellamy&quot;,
-    &quot;id_number&quot;:3352976,
-    &quot;gpa&quot;:8.2,
-    &quot;courses&quot;:[&quot;Compsci 101&quot;, &quot;Compsci 105&quot;, &quot;Phil 101&quot;, &quot;Maths 108&quot;],
-    &quot;fees_paid&quot;: True,
-    &quot;address&quot;: {
-        &quot;street_address&quot;: &quot;1 Horse Lane&quot;,
-        &quot;city&quot;: &quot;Auckland&quot;,
-        &quot;post_code&quot;: 1632}
-}
-</code></pre>
-
-<h2 id="toc_0">Python之<code>json</code>模块</h2>
-
-<p>Python的<code>json</code>模块可以用来编码和解码JSON数据。其最主要的两个函数是<code>json.dumps()</code>(encoding,编码)和<code>json.loads()</code>(decoding, 解码).</p>
-
-<pre><code class="language-python">import json
-
-student_info = {
-    &quot;name&quot;:&quot;Jacob Bellamy&quot;,
-    &quot;id_number&quot;:3352976,
-    &quot;gpa&quot;:8.2,
-    &quot;courses&quot;:[&quot;Compsci 101&quot;, &quot;Compsci 105&quot;, &quot;Phil 101&quot;, &quot;Maths 108&quot;],
-    &quot;fees_paid&quot;: True,
-    &quot;address&quot;: {
-        &quot;street_address&quot;: &quot;1 Horse Lane&quot;,
-        &quot;city&quot;: &quot;Auckland&quot;,
-        &quot;post_code&quot;: 1632}
-}
-
-student_info_json = json.dumps(student_info)
-
-print(student_info_json)
-</code></pre>
-
-<pre><code>{&quot;name&quot;: &quot;Jacob Bellamy&quot;, &quot;id_number&quot;: 3352976, &quot;gpa&quot;: 8.2, &quot;courses&quot;: [&quot;Compsci 101&quot;, &quot;Compsci 105&quot;, &quot;Phil 101&quot;, &quot;Maths 108&quot;], &quot;fees_paid&quot;: true, &quot;address&quot;: {&quot;street_address&quot;: &quot;1 Horse Lane&quot;, &quot;city&quot;: &quot;Auckland&quot;, &quot;post_code&quot;: 1632}}
-</code></pre>
-
-<p>如果你要处理的是文件而不是字符串，你可以使用<code>json.dump()</code> 和 <code>json.load()</code> 来编码和解码<code>JSON</code>数据。例如：</p>
-
-<pre><code class="language-python"># Writing JSON data
-with open(&#39;student_info.json&#39;, &#39;w&#39;) as f:
-    json.dump(student_info_json, f)
- 
-# Reading data back
-with open(&#39;student_info.json&#39;, &#39;r&#39;) as f:
-    data = json.load(f)
-data
-</code></pre>
-
-<pre><code>&#39;{&quot;name&quot;: &quot;Jacob Bellamy&quot;, &quot;id_number&quot;: 3352976, &quot;gpa&quot;: 8.2, &quot;courses&quot;: [&quot;Compsci 101&quot;, &quot;Compsci 105&quot;, &quot;Phil 101&quot;, &quot;Maths 108&quot;], &quot;fees_paid&quot;: true, &quot;address&quot;: {&quot;street_address&quot;: &quot;1 Horse Lane&quot;, &quot;city&quot;: &quot;Auckland&quot;, &quot;post_code&quot;: 1632}}&#39;
-</code></pre>
-
-<h2 id="toc_1">Binary JSON - BSON</h2>
-
-<p><code>BSON</code> /ˈbiːsən/, standing for <code>Binary JSON</code>, is a computer data interchange format used mainly as a data storage and network transfer format in the <code>MongoDB</code> database.</p>
-
-<pre><code class="language-python">import bson      #installed with the pymongo package
-data = bson.decode_file_iter(open(&#39;example.bson&#39;, &#39;rb&#39;))
-</code></pre>
-
-<h2 id="toc_2">Reference</h2>
-
-<ul>
-<li>Brad Miller, David Ranum. 2013. Problem Solving with Algorithms and Data Structures.</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/10/22</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="cdiscount_challenge.html">
-                
-                  <h1>Cdiscount’s Image Classification Challenge</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p><a href="https://www.kaggle.com/c/cdiscount-image-classification-challenge">Link</a></p>
-
-<p><code>Cdiscount.com</code> generated nearly 3 billion euros last year, making it France’s largest non-food e-commerce company. While the company already sells everything from TVs to trampolines, the list of products is still rapidly growing. By the end of this year, Cdiscount.com will have over 30 million products up for sale. This is up from 10 million products only 2 years ago. Ensuring that so many products are well classified is a challenging task.</p>
-
-<p>Currently, <code>Cdiscount.com</code> applies machine learning algorithms to the text description of the products in order to automatically predict their category. As these methods now seem close to their maximum potential, Cdiscount.com believes that the next quantitative improvement will be driven by the application of data science techniques to images.</p>
-
-<p><strong>In this challenge you will be building a model that automatically classifies the products based on their images</strong>. As a quick tour of Cdiscount.com&#39;s website can confirm, one product can have one or several images. The data set Cdiscount.com is making available is unique and characterized by superlative numbers in several ways:</p>
-
-<ul>
-<li>Almost 9 million products: half of the current catalogue</li>
-<li>More than 15 million images at 180x180 resolution</li>
-<li>More than 5000 categories: yes this is quite an extreme multi-class classification!</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/10/22</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html'>机器学习</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -826,6 +908,8 @@ data = bson.decode_file_iter(open(&#39;example.bson&#39;, &#39;rb&#39;))
             <a href="Tensorflow.html"><strong>Tensorflow</strong></a>
         
             <a href="Data%20Science.html"><strong>Data Science</strong></a>
+        
+            <a href="C/C++.html"><strong>C/C++</strong></a>
          
         </p>
 
@@ -842,6 +926,18 @@ data = bson.decode_file_iter(open(&#39;example.bson&#39;, &#39;rb&#39;))
 	      
 		      
 			      <li class="post">
+			        <a href="15089188725996.html">Linux 内存布局</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15089186263565.html">Valgrind</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="machine_learning_techniques_SVM.html">Machine Learning Techniques: Support Vector Machine (SVM)</a>
 			      </li>
 		     
@@ -855,18 +951,6 @@ data = bson.decode_file_iter(open(&#39;example.bson&#39;, &#39;rb&#39;))
 		      
 			      <li class="post">
 			        <a href="active_learning_intro.html">主动学习</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15086547919641.html">JSON</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="cdiscount_challenge.html">Cdiscount’s Image Classification Challenge</a>
 			      </li>
 		     
 		  

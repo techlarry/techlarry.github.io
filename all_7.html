@@ -17,7 +17,7 @@ var _hmt = _hmt || [];
   techlarry
   
   </title>
-  <meta name="keywords" content="MySQL, Database" />
+  
   
   <link href="atom.xml" rel="alternate" title="techlarry" type="application/atom+xml">
     <link rel="stylesheet" href="asset/css/foundation.min.css" />
@@ -121,6 +121,8 @@ var _hmt = _hmt || [];
             <li><a href="Tensorflow.html">Tensorflow</a></li>
         
             <li><a href="Data%20Science.html">Data Science</a></li>
+        
+            <li><a href="C/C++.html">C/C++</a></li>
          
 
       </ul>
@@ -142,6 +144,236 @@ var _hmt = _hmt || [];
 	<div class="large-8 medium-8 columns">
 		<div class="markdown-body home-categories">
 		
+			<div class="article">
+                <a class="clearlink" href="what_is_a_tensorflow_session.html">
+                
+                  <h1>TensorFlow(3):What is a tensorflow session?</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>by <a href="http://danijar.com/what-is-a-tensorflow-session/">Danijar Hafner</a>, modified by <a href="http://larryim.cc">larry</a></p>
+
+<p>I’ve seen a lot of confusion over the rules of <code>tf.Graph</code> and <code>tf.Session</code> in TensorFlow. It’s simple:</p>
+
+<ul>
+<li>A <code>graph</code> defines the computation. It doesn’t compute anything, it doesn’t hold any values, it just defines the operations that you specified in your code.</li>
+<li>A <code>session</code> allows you to execute graphs or part of graphs. It allocates resources (on one or more machines) for that and holds the actual values of intermediate results and variables.</li>
+</ul>
+
+<p>Let’s look at an example.</p>
+
+<h3 id="toc_0">Defining the Graph</h3>
+
+<p>We define a graph with a variable and three operations: <code>x</code> returns the current value of our variable. <code>init</code> assigns the initial value of 42 to that variable. <code>x_assign</code> assigns the new value of 13 to that variable.</p>
+
+<pre><code class="language-python">import tensorflow as tf
+graph = tf.Graph()
+with graph.as_default():
+  x = tf.Variable(42, name=&#39;foo&#39;)
+  init = tf.global_variables_initializer()
+  x_assign = x.assign(13)
+</code></pre>
+
+<p>On a side note: TensorFlow creates a default graph for you, so we don’t need the first two lines of the code above. The default graph is also what the sessions in the next section use when not manually specifying a graph.</p>
+
+<h3 id="toc_1">Running Computations in a Session</h3>
+
+<p>To run any of the three defined operations, we need to create a session for that graph. The session will also allocate memory to store the current value of the variable.</p>
+
+<pre><code class="language-python">with tf.Session(graph=graph) as sess:
+  sess.run(init)
+  sess.run(x_assign)
+  print(sess.run(x))
+</code></pre>
+
+<pre><code>13
+</code></pre>
+
+<p>As you can see, the value of our variable is only valid within one session. If we try to query the value afterwards in a second session, TensorFlow will raise an error because the variable is not initialized there.</p>
+
+<pre><code class="language-python">with tf.Session(graph=graph) as sess:
+  print(sess.run(x))
+# Error: Attempting to use uninitialized value foo
+
+</code></pre>
+
+<p>Of course, we can use the graph in more than one session, we just have to initialize the variables again. The values in the new session will be completely independent from the first one:</p>
+
+<pre><code class="language-python">with tf.Session(graph=graph) as sess:
+  sess.run(init)
+  print(sess.run(x))
+</code></pre>
+
+<pre><code>42
+</code></pre>
+
+<p>Hopefully this short workthrough helped you to better understand <code>tf.Session</code>. </p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/8/18</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Tensorflow.html'>Tensorflow</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="bit_manipulation_2.html">
+                
+                  <h1>Bit manipulation (2)</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h2 id="toc_0">下面列举了一些常见的二进制位的变换操作。</h2>
+
+<table>
+<thead>
+<tr>
+<th>功能</th>
+<th>示例</th>
+<th>位运算</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>去掉最后一位</td>
+<td>(101101-&gt;10110)</td>
+<td>x &gt;&gt; 1</td>
+</tr>
+<tr>
+<td>在最后加一个0</td>
+<td>(101101-&gt;1011010)</td>
+<td>x &gt;&gt; 1</td>
+</tr>
+<tr>
+<td>在最后加一个1</td>
+<td>(101101-&gt;1011011)</td>
+<td>x &lt;&lt; 1+1</td>
+</tr>
+<tr>
+<td>把最后一位变成1</td>
+<td>(101100-&gt;101101)</td>
+<td>x or 1</td>
+</tr>
+<tr>
+<td>把最后一位变成0</td>
+<td>(101101-&gt;101100)</td>
+<td>x or 1-1</td>
+</tr>
+<tr>
+<td>最后一位取反</td>
+<td>(101101-&gt;101100)</td>
+<td>x xor 1</td>
+</tr>
+<tr>
+<td>把右数第k位变成1</td>
+<td>(101001-&gt;101101,k=3)</td>
+<td>x or (1 &lt;&lt; (k-1))</td>
+</tr>
+<tr>
+<td>把右数第k位变成0</td>
+<td>(101101-&gt;101001,k=3)</td>
+<td>x and not (1 &lt;&lt; (k-1))</td>
+</tr>
+<tr>
+<td>右数第k位取反</td>
+<td>(101001-&gt;101101,k=3)</td>
+<td>x xor (1 &lt;&lt; (k-1))</td>
+</tr>
+<tr>
+<td>取末三位</td>
+<td>(1101101-&gt;101)</td>
+<td>x and 7</td>
+</tr>
+<tr>
+<td>取末k位</td>
+<td>(1101101-&gt;1101,k=5)</td>
+<td>x and (1 &lt;&lt; k-1)</td>
+</tr>
+<tr>
+<td>取右数第k位</td>
+<td>(1101101-&gt;1,k=4)</td>
+<td>x &gt;&gt; (k-1) and 1</td>
+</tr>
+<tr>
+<td>把末k位变成1</td>
+<td>(101001-&gt;101111,k=4)</td>
+<td>x or (1 &lt;&lt; k-1)</td>
+</tr>
+<tr>
+<td>末k位取反</td>
+<td>(101001-&gt;100110,k=4)</td>
+<td>x xor (1 &lt;&lt; k-1)</td>
+</tr>
+<tr>
+<td>把右边连续的1变成0</td>
+<td>(100101111-&gt;100100000)</td>
+<td>x and (x+1)</td>
+</tr>
+<tr>
+<td>把右起第一个0变成1</td>
+<td>(100101111-&gt;100111111)</td>
+<td>x or (x+1)</td>
+</tr>
+<tr>
+<td>把右边连续的0变成1</td>
+<td>(11011000-&gt;11011111)</td>
+<td>x or (x-1)</td>
+</tr>
+<tr>
+<td>取右边连续的1</td>
+<td>(100101111-&gt;1111)</td>
+<td>(x xor (x+1)) &gt;&gt; 1</td>
+</tr>
+<tr>
+<td>去掉右起第一个1的左边</td>
+<td>(100101000-&gt;1000)</td>
+<td>x and (x xor (x-1))</td>
+</tr>
+</tbody>
+</table>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/8/17</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Leetcode.html'>Leetcode</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
 			<div class="article">
                 <a class="clearlink" href="bit_manipulation.html">
                 
@@ -274,383 +506,6 @@ Your algorithm should have a linear runtime complexity. Could you implement it w
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="python_GIL_global_interpreter_lock.html">
-                
-                  <h1>Python GIL</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<ul>
-<li>
-<a href="#toc_0">An example</a>
-</li>
-<li>
-<a href="#toc_1">Introduction</a>
-<ul>
-<li>
-<a href="#toc_2">Visualization:</a>
-</li>
-<li>
-<a href="#toc_3">Cooperative Multitasking</a>
-</li>
-<li>
-<a href="#toc_4">Preemptive Multitasking</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_5">解决办法</a>
-<ul>
-<li>
-<a href="#toc_6">用<code>multiprocessing</code>替代<code>Thread</code></a>
-</li>
-<li>
-<a href="#toc_7">利用<code>ctypes</code>绕过<code>GIL</code></a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_8">Reference</a>
-</li>
-</ul>
-
-
-<h2 id="toc_0">An example</h2>
-
-<p>In the following Python program, it seems that the program may reach 100% CPU usuage. In fact, it takes only 50% of CPU resources.</p>
-
-<pre><code class="language-python">import threading
-
-
-# 子线程死循环
-def test():
-    while True:
-        pass
-
-
-t1 = threading.Thread(target=test)
-t1.start()
-
-# 主线程死循环
-while True:
-    pass
-</code></pre>
-
-<h2 id="toc_1">Introduction</h2>
-
-<p>Python全局解释器锁(<code>Global Interpreter Lock</code>)是用于同步线程的一种机制，它使得任何时刻仅有一个线程在执行。上面例子中虽然两个线程是死循环，而且有两个物理CPU内核，但因为 <code>GIL</code>的限制，两个线程只是做着分时切换，总的CPU占用率还略低于50％。</p>
-
-<p><strong>Note: One thread runs Python, while N others sleep or await I/O</strong></p>
-
-<h3 id="toc_2">Visualization:</h3>
-
-<p>All of those red regions indicate times where the operating system has scheduled a Python thread on one of the cores, but it can&#39;t run because the thread on the other core is holding it.</p>
-
-<p><img src="media/15028686628076/15028730462252.png" alt="demo for GIL"/><br/>
-<img src="media/15028686628076/15028733300914.png" alt=""/></p>
-
-<h3 id="toc_3">Cooperative Multitasking</h3>
-
-<p>When it begins a task, such as network I/O, that is of long or uncertain duration and does not require running any Python code, a thread relinquishes the <code>GIL</code> so another thread can take it and run Python. This polite conduct is called <code>cooperative multitasking</code>(协同式多任务处理), and it allows concurrency; many threads can wait for different events at the same time.</p>
-
-<p>For <code>cooperative multitasking</code>, processes voluntarily yield control periodically or when idle in order to enable multiple applications to be run simultaneously. All programs must cooperate for the entire scheduling scheme to work.</p>
-
-<p>Say that two threads each connect a <code>socket</code>:</p>
-
-<pre><code class="language-python">def do_connect():
-    s = socket.socket()
-    s.connect((&#39;python.org&#39;, 80))  # drop the GIL
-
-for i in range(2):
-    t = threading.Thread(target=do_connect)
-    t.start()
-</code></pre>
-
-<p>Only one of these two threads can execute Python at a time, but once the thread has begun connecting, it drops the GIL so the other thread can run. This means that both threads could be waiting for their sockets to connect concurrently, which is a good thing. They can do more work in the same amount of time.</p>
-
-<p>Let&#39;s try to open the box and see how a Python thread actually drops the GIL while it waits for a connection to be established, in <code>socketmodule.c</code>:</p>
-
-<pre><code class="language-C">/* s.connect((host, port)) method */
-static PyObject *
-sock_connect(PySocketSockObject *s, PyObject *addro)
-{
-    sock_addr_t addrbuf;
-    int addrlen;
-    int res;
-
-    /* convert (host, port) tuple to C address */
-    getsockaddrarg(s, addro, SAS2SA(&amp;addrbuf), &amp;addrlen);
-
-    Py_BEGIN_ALLOW_THREADS
-    res = connect(s-&gt;sock_fd, addr, addrlen);
-    Py_END_ALLOW_THREADS
-
-    /* error handling and so on .... */
-}
-</code></pre>
-
-<p>The <code>Py_BEGIN_ALLOW_THREADS</code> macro is where the thread drops the <code>GIL</code>; it is defined simply as:</p>
-
-<pre><code>PyThread_release_lock(interpreter_lock);
-</code></pre>
-
-<p>And of course <code>Py_END_ALLOW_THREADS</code> reacquires the lock. A thread might block at this spot, waiting for another thread to release the lock; once that happens, the waiting thread grabs the GIL back and resumes executing your Python code. In short: While N threads are blocked on network I/O or waiting to reacquire the <code>GIL</code>, one thread can run Python.</p>
-
-<p>Let&#39;s contrast cooperative multitasking with the other kind of multitasking.</p>
-
-<h3 id="toc_4">Preemptive Multitasking</h3>
-
-<p>A Python thread can voluntarily release the <code>GIL,</code> but it can also have the GIL seized from it preemptively(<code>Preemptive multitasking</code>, 抢占式多任务处理).</p>
-
-<p>Let&#39;s back up and talk about how Python is executed. Your program is run in two stages. First, your Python program is compiled into a simpler binary format called <code>bytecode</code>. Second, the Python interpreter&#39;s main loop, a function mellifluously named <code>PyEval_EvalFrameEx()</code>, reads the <code>bytecode</code> and executes the instructions in it one by one.</p>
-
-<p>While the interpreter steps through your<code>bytecode</code> it periodically drops the <code>GIL</code>, without asking permission of the thread whose code it is executing, so other threads can run:</p>
-
-<pre><code class="language-C">for (;;) {
-    if (--ticker &lt; 0) {
-        ticker = check_interval;
-    
-        /* Give another thread a chance */
-        PyThread_release_lock(interpreter_lock);
-    
-        /* Other threads may run now */
-    
-        PyThread_acquire_lock(interpreter_lock, 1);
-    }
-
-    bytecode = *next_instr++;
-    switch (bytecode) {
-        /* execute the next instruction ... */ 
-    }
-}
-</code></pre>
-
-<p>By default the check interval is 1000 <code>bytecodes</code>. All threads run this same code and have the lock taken from them periodically in the same way. In Python 3 the GIL&#39;s implementation is more complex, and the check interval is not a fixed number of <code>bytecodes</code>, but 15 milliseconds. For your code, however, these differences are not significant.</p>
-
-<h2 id="toc_5">解决办法</h2>
-
-<h3 id="toc_6">用<code>multiprocessing</code>替代<code>Thread</code></h3>
-
-<p>利用<code>multiprocessing</code>模块，可以很方便的处理。但进程会增加程序实现时线程间数据通讯和同步的困难。</p>
-
-<h3 id="toc_7">利用<code>ctypes</code>绕过<code>GIL</code></h3>
-
-<p><code>ctypes</code>可以让Python 接调用任意的C动态库的导出函数。</p>
-
-<pre><code class="language-python">from ctypes import *
-from threading import Thread
-
-#加载动态库
-lib = cdll.LoadLibrary(&quot;./libdeadloop.so&quot;)
-
-#创建一个子线程，让其执行ｃ语言编写的函数，此函数是一个死循环
-t = Thread(target=lib.DeadLoop)
-t.start()
-
-#主线程，也调用ｃ语言编写的那个死循环函数
-#lib.DeadLoop()
-
-while True:
-    pass
-</code></pre>
-
-<h2 id="toc_8">Reference</h2>
-
-<ul>
-<li><a href="https://opensource.com/article/17/4/grok-gil">Grok the GIL: How to write fast and thread-safe Python</a></li>
-<li><a href="http://www.dabeaz.com/GIL/">Understanding the Python GIL, David Beazley</a></li>
-<li><a href="https://en.wikipedia.org/wiki/Cooperative_multitasking">Cooperative multitasking WEKIPEDIA</a></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/8/16</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="python_and_mysql.html">
-                
-                  <h1>Python and MySQL</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>There are a lot of python driver available for MySQL and two stand out the most. The one, traditionally everybody’s choice, sort of industrial standard <code>MySQLdb</code>. It uses a C module to link to MySQL’s client library.  For Python3, use <code>PyMySQL</code> instead, because <code>MySQLdb</code> don&#39;t support Python3. Oracle’s <code>mysql-connector</code> on the other hand is pure python so no MySQL libraries and no compilation is necessary.</p>
-
-<h2 id="toc_0">MySQL Connector/Python</h2>
-
-<p>To use Python with MySQL, you can use the MySQL Connector/Python (<a href="https://dev.mysql.com/downloads/connector/python/">Download Here</a>). For those with anaconda, just install with <code>conda</code>:</p>
-
-<pre><code>conda install -c anaconda mysql-connector-python 
-</code></pre>
-
-<p>MySQL Connector/Python includes support for:</p>
-
-<ul>
-<li>Almost all features provided by MySQL Server.</li>
-<li>Converting parameter values back and forth between Python and MySQL data types.</li>
-<li>All MySQL extensions to standard SQL syntax.</li>
-</ul>
-
-<pre><code class="language-python">import re
-import mysql.connector
-
-# establishes the connection to MySQL.
-cnx = mysql.connector.connect(user=&#39;root&#39;, password=&#39;8032804254qq&#39;,
-                              host=&#39;127.0.0.1&#39;, database=&#39;rookery&#39;, port=&#39;3306&#39;)
-
-# creates a cursor object (cur) to use for executing queries on the database.
-
-
-cur = cnx.cursor(buffered=True)
-
-# query mysql database for list of user accounts
-sql_stmnt = &quot;SELECT DISTINCT User, Host FROM mysql.db &quot;
-sql_stmnt += &quot;WHERE Db IN(&#39;rookery&#39;,&#39;birdwatchers&#39;) &quot;
-sql_stmnt += &quot;ORDER BY User, Host&quot;
-cur.execute(sql_stmnt)
-
-# loop through list of user accounts
-for user_accounts in cur.fetchall():
-    user_name = user_accounts[0]
-    host_address = user_accounts[1]
-    user_account = user_name.decode(&#39;utf-8&#39;) + &quot;@&quot; + host_address.decode(&#39;utf-8&#39;)
-
-# display user account heading
-print(&#39;User Account:&#39;, (user_name, host_address))
-print(&quot;------------------------------------------&quot;)
-
-# query mysql for grants for user account
-sql_stmnt = &quot;show grants for &quot; + user_account
-cur.execute(sql_stmnt)
-
-# loop through grant entries for user account
-for grants in cur.fetchall():
-    # skip &#39;usage&#39; entry
-    if re.search(&#39;USAGE&#39;, grants[0]):
-        continue
-    # extract name of database and table
-    dbtb = re.search(&#39;ON\s(.*)\.+?(.+?)\sTO&#39;, grants[0])
-    db = dbtb.group(1)
-    tb = dbtb.group(2)
-
-    # change wildcard for tables to &#39;all&#39;
-    if re.search(&#39;\*&#39;, tb): tb = &quot;all&quot;
-
-    # display database and table name for privileges
-    print(&quot;database: &quot;, db, &quot;table: &quot;, tb)
-
-    # extract and display privileges for user account # for database and table
-    privs = re.search(&#39;GRANT\s(.+?)\sON&#39;, grants[0])
-    print(&#39;privileges: &#39;, privs.group(1))
-
-cur.close()
-cnx.close()
-</code></pre>
-
-<h2 id="toc_1">PyMySQL</h2>
-
-<p><a href="https://github.com/PyMySQL/PyMySQL">PyMySQL</a> is to be a drop-in replacement for <code>MySQLdb</code> and work on <code>CPython</code>, <code>PyPy</code> and <code>IronPython</code>.</p>
-
-<h3 id="toc_2">Installation</h3>
-
-<pre><code class="language-bash">$ pip install PyMySQL
-</code></pre>
-
-<h3 id="toc_3">Example</h3>
-
-<pre><code class="language-python">import pymysql
-
-# connect to the datacase
-connection = pymysql.connect(host=&#39;localhost&#39;, user=&#39;root&#39;, password=&#39;8032804254qq&#39;, db=&#39;test&#39;)
-
-with connection.cursor() as cursor:
-    &quot;&quot;&quot;
-    Create Table | CREATE TABLE `books` (
-    `book_id` int(3) NOT NULL AUTO_INCREMENT,
-    `title` text DEFAULT NULL,
-    `status` bit(1) DEFAULT b&#39;0&#39;,
-    PRIMARY KEY (`book_id`)
-    ) ENGINE=MyISAM AUTO_INCREMENT=103 DEFAULT CHARSET=utf8
-    &quot;&quot;&quot;
-    # create a new record
-    sql = &quot;INSERT INTO `books` (`title`, `status`) VALUES (%s, %s)&quot;
-    cursor.execute(sql, (&#39;GRE Reading&#39;, 1))
-    
-    # connection is not autocommit by default. So you must commit to save your changes.
-    connection.commit()
-
-with connection.cursor() as cursor:
-    sql = &quot;select `book_id`, `title`, `status` from `books`&quot;
-    cursor.execute(sql)
-    # read records
-    for book in cursor.fetchall():
-        book = list(book)
-        book[2] = ord(book[2])
-        print(book)
-</code></pre>
-
-<h2 id="toc_4">Difference? which is better?</h2>
-
-<p><code>MySQLdb</code> is a thin python wrapper around C module which implements API for MySQL database.</p>
-
-<p><code>MySQL Connector</code>is a Python module that reimplements the <a href="https://www.python.org/dev/peps/pep-0249/"><code>MySQL Database API</code></a> in Python. It is written in Python and does not have any dependencies except for the Python Standard Library. It is slower, but does not require the C library and so is more portable.</p>
-
-<h3 id="toc_5">Query Performance</h3>
-
-<p>Obviously, <code>MySQLdb</code> has better performance, especially when it comes to large data sets.</p>
-
-<p><img src="media/15026944183320/Untitled.png" alt="Untitled"/></p>
-
-<h2 id="toc_6">Reference</h2>
-
-<p>1.<a href="https://stackoverflow.com/questions/32575857/the-differences-between-mysqldb-and-mysqlconnector">The differences between MySQLdb and mysqlconnector</a><br/>
-2.<a href="http://charlesnagy.info/it/python/python-mysqldb-vs-mysql-connector-query-performance">Python MySQLdb vs mysql-connector query performance</a><br/>
-3. <a href="https://wiki.openstack.org/wiki/PyMySQL_evaluation">PyMySQL evaluation</a></p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/8/14</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E5%BA%93.html'>数据库</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -732,6 +587,8 @@ with connection.cursor() as cursor:
             <a href="Tensorflow.html"><strong>Tensorflow</strong></a>
         
             <a href="Data%20Science.html"><strong>Data Science</strong></a>
+        
+            <a href="C/C++.html"><strong>C/C++</strong></a>
          
         </p>
 
@@ -748,6 +605,18 @@ with connection.cursor() as cursor:
 	      
 		      
 			      <li class="post">
+			        <a href="15089188725996.html">Linux 内存布局</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15089186263565.html">Valgrind</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="machine_learning_techniques_SVM.html">Machine Learning Techniques: Support Vector Machine (SVM)</a>
 			      </li>
 		     
@@ -761,18 +630,6 @@ with connection.cursor() as cursor:
 		      
 			      <li class="post">
 			        <a href="active_learning_intro.html">主动学习</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15086547919641.html">JSON</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="cdiscount_challenge.html">Cdiscount’s Image Classification Challenge</a>
 			      </li>
 		     
 		  

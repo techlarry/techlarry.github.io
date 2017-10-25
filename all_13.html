@@ -121,6 +121,8 @@ var _hmt = _hmt || [];
             <li><a href="Tensorflow.html">Tensorflow</a></li>
         
             <li><a href="Data%20Science.html">Data Science</a></li>
+        
+            <li><a href="C/C++.html">C/C++</a></li>
          
 
       </ul>
@@ -142,6 +144,313 @@ var _hmt = _hmt || [];
 	<div class="large-8 medium-8 columns">
 		<div class="markdown-body home-categories">
 		
+			<div class="article">
+                <a class="clearlink" href="Hash_Table_4_Universal_Hashing.html">
+                
+                  <h1>Hash Table (4): Universal Hashing</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>Let \(H\) be a finite collection of hash functions that map a given universe \(U\) of keys into the range \(\{0,1,...,m-1\}\). Such a collection is said to be <code>universal</code> if for each pair of distinct keys \(k,l \in U\), the number of <code>hash function</code> \(h \in H\) for which \(h(k) = h(l)\) is at most \(\frac{|H|}{m}\), i.e.</p>
+
+<p>\[ \forall k,l \in U, k\ne l: \Pr_{h\in H }[h(x)=h(y)]\le \frac{1}{m}  \]</p>
+
+<h2 id="toc_0">Why Universal Hashing?</h2>
+
+<p>Some malicious adversary might chooses the keys which all hash to the same slot, yielding an average retrieval time of \(\Theta(n)\). Instead of fixed hash functions, randomly chosen hash functions can yield good performance on average.</p>
+
+<h2 id="toc_1">Designing a universal class of hash functions</h2>
+
+<p>In short, you can generate family of hash functions using following simple equation:</p>
+
+<pre><code class="language-python">h(x,a,b) = ((ax+b) mod p) mod m
+</code></pre>
+
+<p>\(x\) is key you want to hash<br/>
+\(a\) is any number you can choose between \(1\) to \(p-1\) inclusive.<br/>
+\(b\) is any number you can choose between \(0\) to \(p-1\) inclusive.<br/>
+\(p\) is a prime number that is greater than max possible value of \(x\)<br/>
+\(m\) is a max possible value you want for hash code + 1<br/>
+By selecting different values of \(a\) and \(b\) you can generate many hash codes that are independent of each other.</p>
+
+<h2 id="toc_2">Implementation</h2>
+
+<pre><code class="language-python">import random
+
+
+class UniversalHash:
+    &quot;&quot;&quot;
+    &gt;&gt;&gt; h=UniversalHash()
+    &gt;&gt;&gt; h[54]=&quot;cat&quot;
+    &gt;&gt;&gt; h[26]=&quot;dog&quot;
+    &gt;&gt;&gt; h[93]=&quot;lion&quot;
+    &gt;&gt;&gt; h[77]=&quot;bird&quot;
+    &gt;&gt;&gt; h[31]=&quot;cow&quot;
+    &gt;&gt;&gt; h[44]=&quot;goat&quot;
+    &gt;&gt;&gt; 54 in h
+    True
+    &quot;&quot;&quot;
+    def __init__(self):
+        self.size = 100
+        self.slots = [None] * self.size
+        self.data = [None] * self.size
+        (self.p, self.a, self.b) = self.generate_hash_constants()
+
+
+    def generate_hash_constants(self):
+        &quot;&quot;&quot;
+        generate a, b, p for universal hashing
+        &quot;&quot;&quot;
+        p = self._get_prime()  # set p a  random prime number
+        a = random.randint(1, p - 1)  # A has a random value between 1 and p - 1.
+        b = random.randint(1, p - 1)  # B has a random value between 1 and p - 1
+        return p, a, b
+
+    def put(self, key, data):
+        hash_value = self.hash_function(key)
+        if self.slots[hash_value] is None:
+            self.slots[hash_value] = key
+            self.data[hash_value] = data
+        elif self.slots[hash_value] == key:
+            self.data[hash_value] = data
+        else:
+            # rehash
+            next_slot = self.rehash(hash_value, len(self.slots))
+            while self.slots[next_slot] is not None and self.slots[next_slot] != key:
+                next_slot = self.rehash(hash_value, len(self.slots))
+
+            if self.slots[next_slot] is None:
+                self.slots[next_slot] = key
+                self.data[hash_value] = data
+            else:
+                self.data[hash_value] = data
+
+    def hash_function(self, key):
+        &quot;&quot;&quot;
+        hash_function implements the simple remainder method
+        &quot;&quot;&quot;
+        return round(self.a * key + self.b) % self.p % self.size
+
+    def rehash(self, old_hash, size):
+        &quot;&quot;&quot;
+        linear probing with a plus 1
+        &quot;&quot;&quot;
+        return (old_hash+1) % size
+
+    def get(self, key):
+        start_slot = self.hash_function(key)
+        data = None
+        stop = False
+        found = False
+        position = start_slot
+        while self.slots[position] is not None and \
+                not found and not stop:
+            if self.slots[position] == key:
+                found = True
+                data = self.data[position]
+            else:
+                position = self.rehash(position, len(self.slots))
+            if position == start_slot:
+                stop = True
+        return data
+
+    def _is_prime(self,n):
+        if n &lt;= 2 or n%2 == 0:
+            return False
+
+        return not any((n%i == 0 for i in range(3, n-1)))
+
+    def _get_prime(self, p=0):
+        &quot;&quot;&quot;
+        get a prime number
+        &quot;&quot;&quot;
+        if p == 0:
+            p = random.randint(1000000,10000000)
+        while not self._is_prime(p):
+            p += 1
+
+        return p
+
+    def __getitem__(self, key):
+        return self.get(key)
+
+    def __setitem__(self, key, data):
+        self.put(key, data)
+
+    def __len__(self):
+        &quot;&quot;&quot;
+        return length
+        &quot;&quot;&quot;
+        count = 0
+        for item in self.slots:
+            if item is not None:
+                count += 1
+
+        return count
+
+    def __contains__(self, item):
+        &quot;&quot;&quot;
+        定义了使用in和not in进行成员测试时类的行为
+        &quot;&quot;&quot;
+        return self.get(item) is not None
+
+    def __iter__(self):
+        &quot;&quot;&quot;
+        iterator
+        &quot;&quot;&quot;
+        for item in self.slots:
+            if item is not None:
+                yield item
+
+if __name__ == &quot;__main__&quot;:
+    import doctest
+    doctest.testmod(verbose=True)
+
+</code></pre>
+
+<h2 id="toc_3">Resources</h2>
+
+<ol>
+<li><a href="https://www.cse.iitb.ac.in/%7Esri/cs213/lec-Hashing.pdf">Hash Functions and Hash Tables</a></li>
+<li>Cormen, Leiserson, Rivest, and Stein, Introduction to Algorithms (3rd edition)</li>
+</ol>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/7/23</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Hash%20Table.html'>Hash Table</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="Hash_Table_3_A_variant_of_2_Sum_Algorithm.html">
+                
+                  <h1>Hash Table (3): A variant of 2-Sum Algorithm</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>The goal of the arcticle is to implement a variant of the <code>2-SUM algorithm</code>.</p>
+
+<p>The file contains 1 million integers, both positive and negative (repetitions exists!). This is your array of integers, with the \(i\)th row of the file specifying the \(i\)th entry of the array.</p>
+
+<p>The task is to compute the number of target values \(t\) in the interval \([-10000,10000]\)(inclusive) such that there are distinct numbers \(x,y\) in the input file that satisfy \(x+y=t\). </p>
+
+<h2 id="toc_0">Implementation</h2>
+
+<p>The key process lies in the <code>hash function</code>, which might be set to appropriate small value based on the origin value:<br/>
+\[\text{hash_function}= \frac{\text{number}}{\text{factor}}\]</p>
+
+<p>The <code>factor</code> is selected based on the number of <code>slots</code> needed in the algorithm. i.e.<br/>
+\[\frac{\text{the range of keys}}{\text{factor}}\approx \text{the number of slots} &lt; \text{the number of keys}\]</p>
+
+<p>There, factor is \(\frac{\text{the number of key}}{2}\)</p>
+
+<pre><code class="language-python">class HashTable(object):
+
+    def __init__(self):
+
+        self.size = 5000000
+        self.slots = [set() for i in range(self.size)]
+        self.data = set()
+
+    def put(self, key, data):
+
+        hash_value = self.hash_function(key)
+        self.slots[hash_value].add(data)
+        self.data.add(data)
+
+    def hash_function(self, key):
+
+        return key//(self.size//2)
+
+    def get(self, key):
+        &quot;&quot;&quot;
+        there key == data
+        &quot;&quot;&quot;
+        slot = self.hash_function(key)
+        if key in self.slots[slot]:
+            return key
+        else:
+            return None
+
+    def buildfromfile(self, textfile):
+
+        with open(text_file, &#39;r&#39;) as infile:
+            for line in infile.readlines():
+                self.put(int(line), int(line))
+
+    def two_sum_count(self):
+        &quot;&quot;&quot;
+        Compute the number of target values t in the interval[low, high] (inclusive),
+        such that there are distinct numbers x, y that satisfy x+y = t
+        &quot;&quot;&quot;
+        sums = set()
+
+        for key1 in self.data:
+            left = self.hash_function(-key1-10000)
+            right = self.hash_function(-key1+10000)
+
+            for slot in self.slots[left:right+1]:
+
+                for key2 in slot:
+
+                    if 10000 &gt; key1 + key2 &gt; -10000:
+                        sums.add(key1+key2)
+
+        return len(sums)
+
+
+if __name__ == &quot;__main__&quot;:
+
+    # target files for counting
+    text_file = &#39;two_sum.txt&#39;
+
+    hashnumber = HashTable()
+    hashnumber.buildfromfile(text_file)
+    print(hashnumber.two_sum_count())
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/7/23</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Hash%20Table.html'>Hash Table</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
 			<div class="article">
                 <a class="clearlink" href="heap_median_maintenance.html">
                 
@@ -1241,243 +1550,6 @@ print(&#39;result = %d&#39; %postorder_eval(pt))
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="magic_method_item_access.html">
-                
-                  <h1>Magic Methods: Item Access</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>Useful magic methods allows you to create objects that behave like sequences or mappings.</p>
-
-<h2 id="toc_0">Sequence and Mapping Protocol</h2>
-
-<p><code>protocol</code> in Python usually describe the rules governing some form of behavior. The <code>protocol</code> states which methods you should implement and what those methods should do. So, to be a sequence means,  to follow the sequence protocol.</p>
-
-<ul>
-<li><code>__len__(self)</code>: This method should return the number of items contained in the collection. For a sequence, this would simply be the number of elements. For a mapping, it would be the number of key-value pairs. If <code>__len__</code> returns zero (and you don’t implement <code>__nonzero__</code>, which overrides this behavior), the object is treated as false in a Boolean context (as with empty lists, tuples, strings, and dictionaries).</li>
-<li><code>__getitem__(self, key)</code>: This should return the value corresponding to the given key. For a sequence, the key should be an integer from \(0\) to \(n–1\) (or, it could be negative, as noted later), where \(n\) is the length of the sequence. For a mapping, you could really have any kind of keys.</li>
-<li><code>__setitem__(self, key, value)</code>: This should store value in a manner associated with key, so it can later be retrieved with <code>__getitem__</code>. Of course, you define this method only for mutable objects.</li>
-<li><code>__delitem__(self, key)</code>: This is called when someone uses the <code>del</code> statement on a part of the object, and should delete the element associated with key. Again, only mutable objects (and not all of them—only those for which you want to let items be removed) should define this method.</li>
-</ul>
-
-<h2 id="toc_1">Example</h2>
-
-<pre><code class="language-python">def checkIndex(key):
-    &quot;&quot;&quot;
-    Is the given key an acceptable index?
-    To be acceptable, the key should be a non-negative integer. If it
-    is not an integer, a TypeError is raised; if it is negative, an
-    IndexError is raised (since the sequence is of infinite length).
-    &quot;&quot;&quot;
-    if not isinstance(key, int):
-        raise TypeError
-    if key &lt; 0:
-        raise IndexError
-
-
-class ArithmeticSequence:
-    def __init__(self, start=0, step=1):
-        &quot;&quot;&quot;
-        Initialize the arithmetic sequence.
-        start   - the first value in the sequence
-        step    - the difference between two adjacent values
-        changed - a dictionary of values that have been modified by the user
-        &quot;&quot;&quot;
-        self.start = start
-        self.step = step
-        self.changed = {}
-
-    def __getitem__(self, key):
-        &quot;&quot;&quot;
-        Get an item from the arithmetic sequence.
-        &quot;&quot;&quot;
-        checkIndex(key)
-        try:
-            return self.changed[key]
-        except KeyError:
-            return self.start + key*self.step
-    # Store the start value
-    # Store the step value
-    # No items have been modified
-    # Modified?
-    # otherwise...
-    # ...calculate the value
-
-    def __setitem__(self, key, value):
-        &quot;&quot;&quot;
-        Change an item in the arithmetic sequence.
-        &quot;&quot;&quot;
-        checkIndex(key)
-        self.changed[key] = value                 # Store the changed value
-
-    def __delitem__(self, key):
-        &quot;&quot;&quot;
-        Delete the key provided from sequence
-        &quot;&quot;&quot;
-        checkIndex(key)
-        del self.changed[key]
-
-
-
-if __name__ == &quot;__main__&quot;:
-    s = ArithmeticSequence(1, 2)
-    print(s[4])
-    s[4]=3
-    print(s[4])
-    del s[4]
-    print(s[4])
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/7/18</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15002564768282.html">
-                
-                  <h1>Database System Concept (1): Introduction</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>A <code>database-management system</code> (DBMS，数据库管理系统) is a collection of interrelated data and a set of programs to access those data.  The collection of data, usually referred to as the <code>database</code>. The primary goal of a DBMS is to provide a way to store and retrieve database information that is both <code>convenient</code> and <code>efficient</code>.</p>
-
-<h2 id="toc_0">Purpose of Database System</h2>
-
-<p>Keeping organizational information in a file-processing system has a number of major disadvantages:</p>
-
-<ul>
-<li>Data redundancy and inconsistency
-
-<ul>
-<li>Users of one program may be unaware of potentially useful data held by other programs.</li>
-</ul></li>
-<li>Difficulty in accessing data
-
-<ul>
-<li>Programs are written to satisfy particular functions.<br/></li>
-<li>Any new requirement needs a new program.</li>
-</ul></li>
-<li>Data isolation
-
-<ul>
-<li>Same data is held by different programs </li>
-<li>Each program maintains its own set of data</li>
-</ul></li>
-<li>Integrity problems</li>
-<li>Atomicity problems</li>
-<li>Concurrent-access anomalies</li>
-<li>Security problems</li>
-</ul>
-
-<h2 id="toc_1">View of data</h2>
-
-<h3 id="toc_2">Data Abstraction</h3>
-
-<p>The need for efficiency has led designers to use complex data structures to represent data in the database.</p>
-
-<ul>
-<li><code>Physical level</code>. The lowest level of abstraction <em>how</em> the data are actually stored</li>
-<li><code>Logical level</code>. The next-higher level of abstraction describes <em>what</em> data are stored in the database, and what relationships exist among those data. Each record is described by a type definition, and the interrelationship of these record types is defined as well.</li>
-<li><code>View level</code>. The highest level of abstraction describes only part of the entire data. The system may provide many views for the same database. Computer users see a set of application programs that hide details of the data types.</li>
-</ul>
-
-<p><img src="media/15002564768282/Screen%20Shot%202017-07-17%20at%2010.08.36%20AM.png" alt="The three views of data abstraction"/></p>
-
-<h3 id="toc_3">Instances and Schemas</h3>
-
-<ul>
-<li><code>Instance</code>: the collection of information stored in the database at a particular moment</li>
-<li><code>schema</code>: the overall design of the database.</li>
-</ul>
-
-<p>Database systems have several schemas, partitioned according to the levels of abstraction. The <code>Physical schema</code> describes the database design at the physical level, while the <code>logical schema</code> describes the database design at the logical level.</p>
-
-<p>Applications programs are said to exhibit <code>physical data independence</code> if they do not depend on the <code>physical schema</code>, and thus need not be rewritten if the physical schema changes.</p>
-
-<h3 id="toc_4">Data Models</h3>
-
-<p><code>Data Model</code>(数据库): a collection of conceptual tools for describing data, data relationships, data semantics, and consistency constraints.</p>
-
-<ul>
-<li><code>Relational Model</code>(关系数据库)</li>
-<li><code>Entity-Relationship Model</code> (实体对象模型)</li>
-<li><code>Object-Based Data Model</code> (基于对象的数据模型)</li>
-<li><code>Semistructed Data Model</code></li>
-</ul>
-
-<h2 id="toc_5">Database Language</h2>
-
-<p>A database system provides a <code>data-definition language</code>(DDL) to specify the database schema and a <code>data-manipulation language</code>(DML) to express database queries and updates.</p>
-
-<h2 id="toc_6">Data Storage and Querying</h2>
-
-<p>A database system is partitioned into modules that deal with each of the responsibilities of the overall system. The functional components of a database system can be broadly divided into the <code>storage manager</code> and the <code>query processor</code></p>
-
-<p>The <code>storage manager</code> is the component of a database system that provides the interface between the low-level data stored in the database and the application programs and queries submitted to the system. it is responsible for storing, retrieving, and updating data in the database. The storage manager translates the various DML statement into low-level file-system commands.</p>
-
-<p>The <code>query processor</code> includes:</p>
-
-<ul>
-<li><code>DDL interpreter</code>, which interprets DDL statements and records the definitions in the data dictionary.</li>
-<li><code>DML compiler</code>, which translates DML statements in a query language into an evaluation plan consisting of low-level instructions that the query evaluation engine understands.</li>
-<li><code>Query evaluation engine</code>, which executes low-level instructions generated by the DML compiler.</li>
-</ul>
-
-<h2 id="toc_7">Transaction management</h2>
-
-<p><code>Transaction management</code> ensures that the database remains in a consistent (correct) state despite system failures. The transaction manager ensures that concurrent transaction executions proceed without conflicting.</p>
-
-<h2 id="toc_8">Database Architecture</h2>
-
-<p>The architecture of a database system is greatly influenced by the underlying computer system on which the database system runs. Database system can be centralized, or client-server, where one server machine executes work on behalf of multiple client machines.</p>
-
-<p><img src="media/15002564768282/Screen%20Shot%202017-07-17%20at%2010.55.20%20AM.png" alt="System Structure"/></p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/7/17</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E5%BA%93.html'>数据库</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1559,6 +1631,8 @@ if __name__ == &quot;__main__&quot;:
             <a href="Tensorflow.html"><strong>Tensorflow</strong></a>
         
             <a href="Data%20Science.html"><strong>Data Science</strong></a>
+        
+            <a href="C/C++.html"><strong>C/C++</strong></a>
          
         </p>
 
@@ -1575,6 +1649,18 @@ if __name__ == &quot;__main__&quot;:
 	      
 		      
 			      <li class="post">
+			        <a href="15089188725996.html">Linux 内存布局</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15089186263565.html">Valgrind</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="machine_learning_techniques_SVM.html">Machine Learning Techniques: Support Vector Machine (SVM)</a>
 			      </li>
 		     
@@ -1588,18 +1674,6 @@ if __name__ == &quot;__main__&quot;:
 		      
 			      <li class="post">
 			        <a href="active_learning_intro.html">主动学习</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15086547919641.html">JSON</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="cdiscount_challenge.html">Cdiscount’s Image Classification Challenge</a>
 			      </li>
 		     
 		  
