@@ -106,7 +106,7 @@ var _hmt = _hmt || [];
         
             <li><a href="English.html">English</a></li>
         
-            <li><a href="%20%E7%90%86%E8%A7%A3%E8%AE%A1%E7%AE%97%E6%9C%BA.html"> 理解计算机</a></li>
+            <li><a href="CSAPP.html">CSAPP</a></li>
         
             <li><a href="Deep%20Learning.html">Deep Learning</a></li>
         
@@ -121,8 +121,6 @@ var _hmt = _hmt || [];
             <li><a href="Tensorflow.html">Tensorflow</a></li>
         
             <li><a href="Data%20Science.html">Data Science</a></li>
-        
-            <li><a href="C/C++.html">C/C++</a></li>
          
 
       </ul>
@@ -144,6 +142,68 @@ var _hmt = _hmt || [];
 	<div class="large-8 medium-8 columns">
 		<div class="markdown-body home-categories">
 		
+			<div class="article">
+                <a class="clearlink" href="14973620419454.html">
+                
+                  <h1>魔法方法(一)：自定义序列</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>Python中的魔法方法可以理解为对类中的内置方法的重载。</p>
+
+<h2 id="toc_0">自定义序列</h2>
+
+<p>有许多办法可以让Python类表现得像是内建序列类型(字典，元组，列表，字符串等)。</p>
+
+<h3 id="toc_1">预备知识</h3>
+
+<p>协议类似某些语言中的接口，里面包含的是一些必须实现的方法。在Python中，协议完全是非正式的，也不需要显式的声明，事实上，它们更像是一种参考标准。</p>
+
+<p>在Python中实现自定义容器类型需要用到一些协议。首先，不可变容器类型有如下协议：想实现一个不可变容器，你需要定义 <code>__len__</code> 和 <code>__getitem__</code> (后面会具体说明）。可变容器的协议除了上面提到的两个方法之外，还需要定义 <code>__setitem__</code> 和 <code>__delitem__</code> 。最后，如果你想让你的对象可以迭代，你需要定义 <code>__iter__</code> ，这个方法返回一个迭代器。迭代器必须遵守迭代器协议，需要定义 <code>__iter__</code> （返回它自己）和 <code>next</code> 方法。</p>
+
+<h3 id="toc_2">容器背后的魔法方法</h3>
+
+<ul>
+<li><p><code>__len__(self)</code><br/>
+返回容器的长度，可变和不可变类型都需要实现。</p></li>
+<li><p><code>__getitem__(self, key)</code><br/>
+定义对容器中某一项使用 self[key] 的方式进行读取操作时的行为。这也是可变和不可变容器类型都需要实现的一个方法。它应该在键的类型错误式产生 <code>TypeError</code> 异常，同时在没有与键值相匹配的内容时产生 <code>KeyError</code> 异常。</p></li>
+<li><p><code>__setitem__(self, key)</code><br/>
+定义对容器中某一项使用 self[key] 的方式进行赋值操作时的行为。它是可变容器类型必须实现的一个方法，同样应该在合适的时候产生 <code>KeyError</code> 和 <code>TypeError</code> 异常。</p></li>
+<li><p><code>__iter__(self, key)</code><br/>
+它应该返回当前容器的一个迭代器。迭代器以一连串内容的形式返回，最常见的是使用<code>iter()</code>函数调用，以及在类似 for x in container: 的循环中被调用。迭代器是他们自己的对象，需要定义 <code>__iter__</code>方法并在其中返回自己。</p></li>
+<li><p><code>__reversed__(self)</code><br/>
+定义了对容器使用<code>reversed()</code>内建函数时的行为。它应该返回一个反转之后的序列。当你的序列类是有序时，类似列表和元组，再实现这个方法，</p></li>
+<li><p><code>__contains__(self, item)</code><br/>
+<code>__contains__</code>定义了使用<code>in</code>和<code>not in</code>进行成员测试时类的行为。你可能好奇为什么这个方法不是序列协议的一部分，原因是，如果<code>__contains__</code>没有定义，Python就会迭代整个序列，如果找到了需要的一项就返回<code>True</code>。</p></li>
+<li><p><code>__missing__(self ,key)</code><br/>
+<code>__missing__</code>在字典的子类中使用，它定义了当试图访问一个字典中不存在的键时的行为（目前为止是指字典的实例，例如我有一个字典 d ， “george” 不是字典中的一个键，当试图访问 d[“george’] 时就会调用 d.__missing__(“george”))。</p></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/6/13</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
 			<div class="article">
                 <a class="clearlink" href="hash_table_1_introduction.html">
                 
@@ -738,59 +798,6 @@ repeat until converge{</p>
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="14970832553234.html">
-                
-                  <h1>调试</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h2 id="toc_0">pdb</h2>
-
-<p>pdb是基于命令行的调试工具，是Python的调试器，非常类似GNU的GDB（调试c/c++）</p>
-
-<pre><code class="language-python">python -m pdb some.py # -m是模块的意思, pdb模块
-</code></pre>
-
-<h3 id="toc_1">命令</h3>
-
-<ul>
-<li>输入命令<code>l</code> (list) 查看代码</li>
-<li>输入命令<code>n</code> (next) 可以单步执行代码</li>
-<li>输入命令<code>c</code> (continue) 继续执行代码</li>
-<li>输入命令<code>b</code> (break) 添加断点</li>
-<li>输入命令<code>clear</code> 清除断点</li>
-<li>输入命令<code>p</code> (print) 打印一个变量的值</li>
-<li>输入命令<code>s</code> (step) 进入到一个函数</li>
-<li>输入命令<code>a</code> (args) 打印所有的形参数据</li>
-<li>输入命令<code>r</code> (return) 快速执行到函数的最后一行</li>
-<li>输入命令<code>q</code> quit 退出调试</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/6/10</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Linux%20%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B.html'>Linux 系统编程</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -857,7 +864,7 @@ repeat until converge{</p>
         
             <a href="English.html"><strong>English</strong></a>
         
-            <a href="%20%E7%90%86%E8%A7%A3%E8%AE%A1%E7%AE%97%E6%9C%BA.html"><strong> 理解计算机</strong></a>
+            <a href="CSAPP.html"><strong>CSAPP</strong></a>
         
             <a href="Deep%20Learning.html"><strong>Deep Learning</strong></a>
         
@@ -872,8 +879,6 @@ repeat until converge{</p>
             <a href="Tensorflow.html"><strong>Tensorflow</strong></a>
         
             <a href="Data%20Science.html"><strong>Data Science</strong></a>
-        
-            <a href="C/C++.html"><strong>C/C++</strong></a>
          
         </p>
 
@@ -888,6 +893,12 @@ repeat until converge{</p>
                 <div class="side-content">
                 <ul class="posts-list">
 	      
+		      
+			      <li class="post">
+			        <a href="15090149817905.html">Hardware/Software Interface</a>
+			      </li>
+		     
+		  
 		      
 			      <li class="post">
 			        <a href="15089188725996.html">Linux 内存布局</a>
@@ -909,12 +920,6 @@ repeat until converge{</p>
 		      
 			      <li class="post">
 			        <a href="15088244818278.html">Machine Learning Foundations - Mathematical Foundations</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="active_learning_intro.html">主动学习</a>
 			      </li>
 		     
 		  

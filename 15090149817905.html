@@ -14,7 +14,7 @@ var _hmt = _hmt || [];
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  搜索 - techlarry
+  Hardware/Software Interface - techlarry
   
   </title>
   
@@ -143,14 +143,14 @@ var _hmt = _hmt || [];
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>搜索</h1>
+          <h1>Hardware/Software Interface</h1>
      
         <div class="read-more clearfix">
-          <span class="date">2017/6/13</span>
+          <span class="date">2017/10/26</span>
 
           <span>posted in&nbsp;</span> 
           
-              <span class="posted-in"><a href='Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html'>Python数据结构与算法</a></span>
+              <span class="posted-in"><a href='CSAPP.html'>CSAPP</a></span>
            
          
           <span class="comments">
@@ -163,93 +163,13 @@ var _hmt = _hmt || [];
       </div><!-- article -->
 
       <div class="article-content">
-      <p>搜索是在一个项目集合中找到一个特定项目的算法过程。返回值一般是<code>bool</code>:<code>True</code> or <code>False</code>. 搜索的几种常见方法：顺序查找、二分法查找、二叉树查找、哈希查找</p>
+      <p><code>Hardware/Software Interface</code>是由华盛顿大学在Coursera上开设的课程，与华盛顿大学CSE351课程保持一致。虽然目前这门课已经在Coursera下线，但完整视频、作业、实验仍旧在华盛顿大学<a href="https://courses.cs.washington.edu/courses/cse351/17sp/videos.html">CSE351课程主页</a>上可以观看和下载。</p>
 
-<h2 id="toc_0">在python中查找</h2>
+<p>完成课程实验需要用到特定的环境，不然配置起来及其繁琐。幸好，可以下载已经配置好的虚拟机进行实验。虚拟机的地址目前仍旧有效，点击<a href="https://spark-public.s3.amazonaws.com/hardware/VM.7z">这里</a>下载(<code>MD5: 9A2A35B58FF716A84F17610FDEC972EC</code>)。</p>
 
-<p>在python中，查找一个元素是否在列表中非常简单，可以用<code>in</code>操作符</p>
+<p>课程所用教科书是<code>CSAPP</code>(Computer System: A programmer&#39;s Perspective)第二版。非常幸运，教科书、作业和实验内容以及答案已经有人专门整理，并放在Github上了，可以直接<a href="https://github.com/ldfaiztt/CSE351">点击</a>下载。</p>
 
-<pre><code class="language-python">&gt;&gt;&gt; 15 in [3,5,2,4,1]
-False
-&gt;&gt;&gt; 3 in [3,5,2,4,1]
-True
-&gt;&gt;&gt;
-</code></pre>
-
-<h2 id="toc_1">顺序查找</h2>
-
-<p>顺序查找从列表中的第一个项目开始，我们按照顺序次序，简单地从一个项移动到另一个项，直到找到我们正在查找的项或遍历完整个列表。如果我们遍历完整个列表，则说明正在搜索的项不存在。</p>
-
-<p><img src="media/14973149842140/14973392316280.png" alt=""/></p>
-
-<pre><code class="language-python">def sequential_search(alist, item):
-    &quot;&quot;&quot;
-    顺序查找
-    &quot;&quot;&quot;
-
-    for i in range(len(alist)):
-        if alist[i] == item:
-            return True
-
-    return False
-</code></pre>
-
-<h2 id="toc_2">二分查找</h2>
-
-<p>二分查找过程类似于查字典。首先，假设表中元素是按升序排列，将表中间位置记录的关键字与查找关键字比较，如果两者相等，则查找成功；否则利用中间位置记录将表分成前、后两个子表，如果中间位置记录的关键字大于查找关键字，则进一步查找前一子表，否则进一步查找后一子表。重复以上过程，直到找到满足条件的记录，使查找成功，或直到子表不存在为止，此时查找不成功。</p>
-
-<ul>
-<li>优点是比较次数少，查找速度快，平均性能好</li>
-<li>缺点是要求待查表为有序表，且插入删除困难</li>
-<li>因此，折半查找方法适用于不经常变动而查找频繁的有序列表。</li>
-</ul>
-
-<p><img src="media/14973149842140/14973392434825.png" alt=""/></p>
-
-<pre><code class="language-python">
-def binary_search(alist, item):
-    &quot;&quot;&quot;
-    二分查找, 递归
-    &quot;&quot;&quot;
-
-    n = len(alist)
-    if n &gt;0:
-        mid = n//2
-
-        if alist[mid] == item:
-            return True
-        elif alist[mid] &gt; item:
-            return binary_search(alist[:mid], item)
-        else:
-            return binary_search(alist[mid+1:], item)
-    return False
-
-def binary_search2(alist, item):
-    &quot;&quot;&quot;
-    二分查找，非递归
-    &quot;&quot;&quot;
-    n = len(alist)
-    first = 0
-    last = n-1
-    while first &lt;= last:
-        mid = (first+last)//2
-        if alist[mid] == item:
-            return True
-        elif alist[mid] &gt; item:
-            last = mid-1
-        else:
-            first = mid+1
-
-    return False
-
-</code></pre>
-
-<h2 id="toc_3">时间复杂度</h2>
-
-<ul>
-<li>最优时间复杂度: \(O(1)\)</li>
-<li>最坏时间复杂度: \(O(\log n)\)</li>
-</ul>
+<p>下载完所有资料后，尽情的学习吧！</p>
 
 
     
@@ -260,16 +180,13 @@ def binary_search2(alist, item):
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="hash_table_1_introduction.html" 
-          title="Previous Post: Hash Table (1): Introduction">&laquo; Hash Table (1): Introduction</a>
-      
         </p>
         </div>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="14972614146835.html" 
-          title="Next Post: Machine Learning (2): Linear Regression with Multiple Variables">Machine Learning (2): Linear Regression with Multiple Variables &raquo;</a>
+          <a  href="15089188725996.html" 
+          title="Next Post: Linux 内存布局">Linux 内存布局 &raquo;</a>
       
       </p>
         </div>
