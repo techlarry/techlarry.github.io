@@ -4,7 +4,7 @@
   <title><![CDATA[techlarry]]></title>
   <link href="http://larryim.cc/atom.xml" rel="self"/>
   <link href="http://larryim.cc/"/>
-  <updated>2017-10-28T22:31:04+08:00</updated>
+  <updated>2017-10-28T23:15:38+08:00</updated>
   <id>http://larryim.cc/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -18,6 +18,38 @@
     <updated>2017-10-28T10:10:09+08:00</updated>
     <id>http://larryim.cc/C++baics.html</id>
     <content type="html"><![CDATA[
+<p>The article summarizes the key points, concepts of C++, with detailed examples, from a C Programmer standpoint.</p>
+
+<ul>
+<li>
+<a href="#toc_0">C++ Advantage</a>
+</li>
+<li>
+<a href="#toc_1">C++ is better than C</a>
+</li>
+<li>
+<a href="#toc_2">Overloading</a>
+</li>
+<li>
+<a href="#toc_3">Generics</a>
+<ul>
+<li>
+<a href="#toc_4">Multiple template arguments</a>
+</li>
+<li>
+<a href="#toc_5">Overloading Operator</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_6">natural way to build widgets: <code>class</code></a>
+</li>
+<li>
+<a href="#toc_7">Reference</a>
+</li>
+</ul>
+
+
 <h2 id="toc_0">C++ Advantage</h2>
 
 <ul>
@@ -27,35 +59,40 @@
 <li><code>static cast &lt;type&gt;</code></li>
 </ul></li>
 <li><code>for</code> statement can include declaration initializer</li>
-<li><code>endl</code> iomanipulator can be placed in an iostream.</li>
+<li><code>endl</code> io-manipulator can be placed in an iostream.</li>
 </ul>
 
 <h2 id="toc_1">C++ is better than C</h2>
 
 <ul>
-<li>More type safty
+<li>More <code>type safety</code>(the extent to which a programming language discourages or prevents type errors)
 
 <ul>
-<li>int, double, char, pointer</li>
+<li>The new operator returns a pointer of a specific type based on the operand, versus the void pointer from C&#39;s <code>malloc</code>.</li>
+<li>Certain code written in C that uses void pointers can be rewritten using C++ templates to give a type to an argument whose type is variable.</li>
+<li>Using <code>static_cast</code> and <code>dynamic_cast</code></li>
 </ul></li>
 <li>More Libraries
 
 <ul>
-<li>reuse, STL </li>
+<li>STL(Standard Template Library)</li>
 </ul></li>
 <li>Less reliance on preprocessor
 
 <ul>
-<li><code># define</code>  goes away<br/></li>
+<li><code># define</code>  goes away, easy to use <code>const &lt;type&gt;</code> instead.</li>
 </ul></li>
 <li>OO vs imperative
 
 <ul>
-<li><code>imperative programming</code>(命令式编程)</li>
+<li>OO is better</li>
 </ul></li>
-<li><code>inline</code>, <code>const</code></li>
 <li><code>namespace</code></li>
-<li>safe cast <code>static_cast &lt;type&gt;</code></li>
+<li>safe cast 
+
+<ul>
+<li>using <code>static_cast &lt;type&gt;</code></li>
+</ul></li>
 <li><code>iostream</code></li>
 <li>Declarations anywhere including
 
@@ -66,15 +103,31 @@
 
 <h2 id="toc_2">Overloading</h2>
 
-<p>Swap in C</p>
+<p><code>Overloaded functions</code> are an important polymorphic mechanism in C++. <code>signature matching algorithm</code> decides the way to pick the appropriate functions.</p>
 
-<pre><code class="language-C"> void swap(int* i, int* j){
+<p><strong><code>Basic Signature Matching Algorithm</code></strong>:</p>
+
+<ul>
+<li>Use an exact match if found.</li>
+<li>Try standard type promotions.</li>
+<li>Try standard type conversions.</li>
+<li>Try user-defined conversions.</li>
+<li>...</li>
+</ul>
+
+<p><strong>Example: Swap in C</strong> </p>
+
+<pre><code class="language-C"> //first swap function
+ //Call by reference simulated with pointers
+ void swap(int* i, int* j){
     int temp=*i;
     *i=*j;
     *j=temp;
  }
 
-void swap_double(double* i, double* j){
+//second swap function
+//Call by reference simulated with pointers
+void swap_double(double* i, double* j){ 
     double temp=*i;
     *i=*j;
     *j=temp;
@@ -96,9 +149,11 @@ void swap_double(double* i, double* j){
 <p>In C each function in a given scope most have a unique name(no function overloading).</p>
 
 <ul>
-<li>C: Call by reference simulated with pointers</li>
-<li>C++: has call by reference argument passing</li>
+<li>C: Call by reference simulated with pointers (the previous example)</li>
+<li>C++: Call by reference argument passing (see the example below)</li>
 </ul>
+
+<p><strong>Example: Swap in C++</strong>:</p>
 
 <pre><code class="language-C++">#include &lt;iostream&gt;
 using namespace std;
@@ -141,10 +196,12 @@ int main()
 <p>Generics in C++: programing using templates.</p>
 
 <ul>
-<li>The compiler uses the template to write code appropriate to each set of parameters.</li>
-<li>The m, n parameters are ints - so the compiled code is <code>swap(int&amp;, int&amp;)</code> signature.</li>
+<li>The compiler uses <code>template</code> to write code appropriate to each set of parameters.</li>
+<li>The \(m\), \(n\) parameters are ints - so the compiled code is <code>swap(int&amp;, int&amp;)</code> signature.</li>
 <li>Similarly, for the other two signatures. So the compiler is compiling code appropriate to each distinct signature.</li>
 </ul>
+
+<p><strong>Example: Swap Using templates</strong>:</p>
 
 <pre><code class="language-C++">#include &lt;iostream&gt;
 #include &lt;complex&gt;
@@ -174,9 +231,9 @@ int main()
 }
 </code></pre>
 
-<h2 id="toc_4">Generics and Functions</h2>
+<p>Another example, how in C do you write a function to sum a array in doubles?</p>
 
-<p>How in C do you write a function to sum a array in doubles?</p>
+<p><strong>Example: Sum a array in C</strong>:</p>
 
 <pre><code class="language-C">double sum(double data[], int size)
 {
@@ -192,6 +249,8 @@ int main()
 <ul>
 <li>writing code that can use an arbitrary type or types; in C++ this is done with template.</li>
 </ul>
+
+<p><strong>Example: Sum a array in C++ Using template</strong>:</p>
 
 <pre><code class="language-C++">template &lt;class T&gt; //T is generic type
 T sum(const T data[], int size, T s=0)
@@ -211,7 +270,7 @@ int main()
 }
 </code></pre>
 
-<h3 id="toc_5">Multiple template arguments</h3>
+<h3 id="toc_4">Multiple template arguments</h3>
 
 <ul>
 <li>We have used templates with one template parameter, but it is useful to have more that one distinct type in a template.</li>
@@ -232,7 +291,9 @@ int main()
 </ul></li>
 </ul>
 
-<h3 id="toc_6">Operator Overloading</h3>
+<h3 id="toc_5">Overloading Operator</h3>
+
+<p>Unary and binary operators can be overloaded as nonstatic member functions. Implicitly, they are acting on a class value.</p>
 
 <pre><code class="language-C++">#include&lt;iostream&gt; 
 #include&lt;cstdint&gt; 
@@ -284,14 +345,14 @@ int main(){
 
 </code></pre>
 
-<h3 id="toc_7">natural way to build widgets</h3>
+<h2 id="toc_6">natural way to build widgets: <code>class</code></h2>
 
 <p><strong>C type extension</strong>:</p>
 
 <ul>
-<li>In C you can &#39;add&#39; a type using struct</li>
-<li>In C++ struct is different - struct is a named scope that can include functions (methods) and have different layers of opacity (data hiding). While C++ retains struct it has the new keyword class.</li>
-<li>Class is almost equivalent to struct - but with different data hiding defaults.</li>
+<li>In C you can &#39;add&#39; a type using <code>struct</code></li>
+<li>In C++ <code>struct</code> is different - <code>struct</code> is a named scope that can include functions (methods) and have different layers of opacity (data hiding). While C++ retains <code>struct</code> it has the new keyword <code>class</code>.</li>
+<li><code>class</code> is almost equivalent to <code>struct</code> - but with different data hiding defaults.</li>
 </ul>
 
 <pre><code class="language-C++">typedef struct point {double x,y;} point;
@@ -307,7 +368,7 @@ void add_points(point* p1, point* p2, point* sum)
 <li>File scope functions manipulate the struct using pointer operations</li>
 </ul>
 
-<p><strong>C++ point</strong></p>
+<p><strong>Naive C++ point</strong></p>
 
 <pre><code class="language-C++">class point{
     public:
@@ -319,7 +380,7 @@ void add_points(point* p1, point* p2, point* sum)
 <li><code>public</code>, <code>private</code>, <code>protected</code> are access keywords.</li>
 </ul>
 
-<p><strong>Better Point</strong>:</p>
+<p><strong>Better C++ Point</strong>:</p>
 
 <pre><code class="language-C++">#include &lt;iostream&gt;
 using namespace std;
@@ -376,15 +437,24 @@ int main()
 <li>Default constructor - the constructor whose signature is void.</li>
 </ul>
 
+<h2 id="toc_7">Reference</h2>
+
+<ul>
+<li>Ira Pohl. C++ for C Programmers,University of California, Santa Cruz</li>
+<li>Ira Pohl. <a href="https://users.soe.ucsc.edu/%7Epohl/">C++ by Dissection</a>.</li>
+</ul>
+
 ]]></content>
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[C 语言的各种版本]]></title>
-    <link href="http://larryim.cc/15091487975421.html"/>
+    <title type="html"><![CDATA[C Basics]]></title>
+    <link href="http://larryim.cc/C_language.html"/>
     <updated>2017-10-28T07:59:57+08:00</updated>
-    <id>http://larryim.cc/15091487975421.html</id>
+    <id>http://larryim.cc/C_language.html</id>
     <content type="html"><![CDATA[
+<h2 id="toc_0">C 语言的各种版本</h2>
+
 <p><img src="media/15091487975421/15091488073990.png" alt=""/></p>
 
 <p>广泛应用的仍然是<code>ANSI C</code>(C89).</p>
@@ -985,7 +1055,7 @@ PAC gaurantee for \(E_{out}(g)\approx 0\) \(\rightarrow\) learning possilbe!</p>
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[JSON]]></title>
+    <title type="html"><![CDATA[JSON/BSON]]></title>
     <link href="http://larryim.cc/15086547919641.html"/>
     <updated>2017-10-22T14:46:31+08:00</updated>
     <id>http://larryim.cc/15086547919641.html</id>
