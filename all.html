@@ -123,6 +123,8 @@ var _hmt = _hmt || [];
             <li><a href="Tensorflow.html">Tensorflow</a></li>
         
             <li><a href="Data%20Science.html">Data Science</a></li>
+        
+            <li><a href="Big%20Data.html">Big Data</a></li>
          
 
       </ul>
@@ -144,6 +146,46 @@ var _hmt = _hmt || [];
 	<div class="large-8 medium-8 columns">
 		<div class="markdown-body home-categories">
 		
+			<div class="article">
+                <a class="clearlink" href="Spark_introduction.html">
+                
+                  <h1>Spark</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p><code>Spark</code>是一个用来实现快速而通用的集群计算的平台。<code>Spark</code>扩展了广泛使用的<code>MapReduce</code>计算模型，而且高效地支持更多计算模式，包括交互式查询和流处理。</p>
+
+<h2 id="toc_0">Reference</h2>
+
+<ul>
+<li>Holden Karau, Andy Konwinski, Patrick Wendell, et al. 2015. Learning Spark: Lightning-Fast Big Data Analysis. O&#39;Reilly Media</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/10/29</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Big%20Data.html'>Big Data</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
 			<div class="article">
                 <a class="clearlink" href="C++baics.html">
                 
@@ -179,7 +221,10 @@ var _hmt = _hmt || [];
 <a href="#toc_6">natural way to build widgets: <code>class</code></a>
 </li>
 <li>
-<a href="#toc_7">Reference</a>
+<a href="#toc_7">Constructor</a>
+</li>
+<li>
+<a href="#toc_8">Reference</a>
 </li>
 </ul>
 
@@ -214,7 +259,7 @@ var _hmt = _hmt || [];
 <li>Less reliance on preprocessor
 
 <ul>
-<li><code># define</code>  goes away, easy to use <code>const &lt;type&gt;</code> instead.</li>
+<li><code># define</code>  goes away, easy to use <code>const &lt;type&gt;</code> and <code>inline</code> (substitute macros in C)instead.</li>
 </ul></li>
 <li>OO vs imperative
 
@@ -563,15 +608,37 @@ int main()
 <li><code>p1.getx()</code>, <code>p1.setx(3.5)</code></li>
 </ul>
 
-<p><strong>A special method: constructor</strong>:</p>
+<h2 id="toc_7">Constructor</h2>
+
+<pre><code class="language-C++">class point{
+    public:
+        //constructor, initializer list
+        point(double x=0.0, double y=0.0): x(x), y(y){} 
+        double getx(){return x;}
+        void setx(double v){x=v;}
+    private:
+        double x,y;
+};
+</code></pre>
+
+<p><strong>A special method constructor</strong>:</p>
 
 <ul>
-<li><code>point(){x=y=0.0;}</code></li>
-<li><code>point(){this-&gt;x=0.0; this-&gt;y=0.0}</code></li>
+<li><code>point(){x=y=0.0;}</code>: ordinary assignment</li>
+<li><code>point(){this-&gt;x=0.0; this-&gt;y=0.0}</code> :initialized list</li>
+<li><code>point():x(0.0), y(0.0){}</code> : best way</li>
 <li>Default constructor - the constructor whose signature is void.</li>
 </ul>
 
-<h2 id="toc_7">Reference</h2>
+<p><strong>Constructor overloading</strong>:</p>
+
+<ul>
+<li>It is useful to have multiple ways to initialize an object like point.</li>
+<li><code>point(double x, double y)</code></li>
+<li><code>{this -&gt; x=x; this-&gt;y=y};</code></li>
+</ul>
+
+<h2 id="toc_8">Reference</h2>
 
 <ul>
 <li>Ira Pohl. C++ for C Programmers,University of California, Santa Cruz</li>
@@ -777,87 +844,6 @@ int main()
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15089186263565.html">
-                
-                  <h1>Valgrind</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p><code>Valgrind</code> is an instrumentation framework for building dynamic analysis tools. There are Valgrind tools that can automatically detect many memory management and threading bugs, and profile your programs in detail. You can also use Valgrind to build new tools.</p>
-
-<p>The Valgrind distribution currently includes six production-quality tools: </p>
-
-<ul>
-<li>a memory error detector</li>
-<li>two thread error detectors </li>
-<li>a cache and branch-prediction profiler</li>
-<li>a call-graph generating cache and branch-prediction profiler</li>
-<li>a heap profiler.</li>
-</ul>
-
-<p>It also includes three experimental tools: </p>
-
-<ul>
-<li>a stack/global array overrun detector,</li>
-<li>a second heap profiler that examines how heap blocks are used</li>
-<li>a SimPoint basic block vector generator.</li>
-</ul>
-
-<h2 id="toc_0">Installing on Mac</h2>
-
-<p>The simplest way to install <code>valgrind</code> is using <code>brew</code>:</p>
-
-<pre><code>brew install --HEAD valgrind
-</code></pre>
-
-<h2 id="toc_1">Demo</h2>
-
-<p>Writing a C program named &#39;arrays.c&#39; without freeing the memory after allocating it dynamically using <code>malloc</code>, for example,</p>
-
-<pre><code>int* heap_array = (int*) malloc(sizeof(int) * 5);
-free(heap_array); ## deleting the statement...
-</code></pre>
-
-<p>After running by command</p>
-
-<pre><code>valgrind ./arrays
-</code></pre>
-
-<p>you will see &quot;<strong>definitely lost: 20 bytes in 1 blocks</strong>!!&quot;</p>
-
-<p><img src="media/15089186263565/Screen%20Shot%202017-10-25%20at%204.35.47%20PM.png" alt="Screen Shot 2017-10-25 at 4.35.47 P"/></p>
-
-<h2 id="toc_2">Reference</h2>
-
-<ul>
-<li><a href="https://stackoverflow.com/questions/26564125/yosemite-and-valgrind">Yosemite and Valgrind</a></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/10/25</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Computer%20System.html'>Computer System</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -941,6 +927,8 @@ free(heap_array); ## deleting the statement...
             <a href="Tensorflow.html"><strong>Tensorflow</strong></a>
         
             <a href="Data%20Science.html"><strong>Data Science</strong></a>
+        
+            <a href="Big%20Data.html"><strong>Big Data</strong></a>
          
         </p>
 
@@ -955,6 +943,12 @@ free(heap_array); ## deleting the statement...
                 <div class="side-content">
                 <ul class="posts-list">
 	      
+		      
+			      <li class="post">
+			        <a href="Spark_introduction.html">Spark</a>
+			      </li>
+		     
+		  
 		      
 			      <li class="post">
 			        <a href="C++baics.html">C++ Basics</a>
@@ -976,12 +970,6 @@ free(heap_array); ## deleting the statement...
 		      
 			      <li class="post">
 			        <a href="15089188725996.html">Linux 内存布局</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15089186263565.html">Valgrind</a>
 			      </li>
 		     
 		  

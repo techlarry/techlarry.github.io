@@ -123,6 +123,8 @@ var _hmt = _hmt || [];
             <li><a href="Tensorflow.html">Tensorflow</a></li>
         
             <li><a href="Data%20Science.html">Data Science</a></li>
+        
+            <li><a href="Big%20Data.html">Big Data</a></li>
          
 
       </ul>
@@ -144,6 +146,80 @@ var _hmt = _hmt || [];
 	<div class="large-8 medium-8 columns">
 		<div class="markdown-body home-categories">
 		
+			<div class="article">
+                <a class="clearlink" href="15041905263785.html">
+                
+                  <h1>cross-entropy</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>\[<br/>
+L_i = -\log\left(\frac{e^{f_{y_i}}}{ \sum_j e^{f_j} }\right) \hspace{0.5in} \text{or equivalently} \hspace{0.5in} L_i = -f_{y_i} + \log\sum_j e^{f_j}<br/>
+\]</p>
+
+<p>where we are using the notation \(f_j\) to mean the j-th element of the vector of class scores \(f\). As before, the full loss for the dataset is the mean of \(L_i\) over all training examples together with a regularization term \(R(W)\). The function \(f_j(z) = \frac{e^{z_j}}{\sum_k e^{z_k}} \) is called the <strong>softmax function</strong>: It takes a vector of arbitrary real-valued scores (in \(z\)) and squashes it to a vector of values between zero and one that sum to one. The full cross-entropy loss that involves the softmax function might look scary if you&#39;re seeing it for the first time but it is relatively easy to motivate.</p>
+
+<p><strong>Information theory view</strong>. The <em>cross-entropy</em> between a &quot;true&quot; distribution \(p\) and an estimated distribution \(q\) is defined as:</p>
+
+<p>\[<br/>
+H(p,q) = - \sum_x p(x) \log q(x)<br/>
+\]</p>
+
+<p>The Softmax classifier is hence minimizing the cross-entropy between the estimated class probabilities ( \(q = e^{f_{y_i}}  / \sum_j e^{f_j} \) as seen above) and the &quot;true&quot; distribution, which in this interpretation is the distribution where all probability mass is on the correct class (i.e. \(p = [0, \ldots 1, \ldots, 0]\) contains a single 1 at the \(y_i\) -th position.). Moreover, since the cross-entropy can be written in terms of entropy and the Kullback-Leibler divergence as \(H(p,q) = H(p) + D_{KL}(p\|\|q)\), and the entropy of the delta function \(p\) is zero, this is also equivalent to minimizing the KL divergence between the two distributions (a measure of distance). In other words, the cross-entropy objective <em>wants</em> the predicted distribution to have all of its mass on the correct answer.</p>
+
+<p><strong>Probabilistic interpretation</strong>. Looking at the expression, we see that</p>
+
+<p>\[<br/>
+P(y_i \mid x_i; W) = \frac{e^{f_{y_i}}}{\sum_j e^{f_j} }<br/>
+\]</p>
+
+<p>can be interpreted as the (normalized) probability assigned to the correct label \(y_i\) given the image \(x_i\) and parameterized by \(W\). To see this, remember that the Softmax classifier interprets the scores inside the output vector \(f\) as the unnormalized log probabilities. Exponentiating these quantities therefore gives the (unnormalized) probabilities, and the division performs the normalization so that the probabilities sum to one. In the probabilistic interpretation, we are therefore minimizing the negative log likelihood of the correct class, which can be interpreted as performing <em>Maximum Likelihood Estimation</em> (MLE). A nice feature of this view is that we can now also interpret the regularization term \(R(W)\) in the full loss function as coming from a Gaussian prior over the weight matrix \(W\), where instead of MLE we are performing the <em>Maximum a posteriori</em> (MAP) estimation. We mention these interpretations to help your intuitions, but the full details of this derivation are beyond the scope of this class.</p>
+
+<p><strong>Practical issues: Numeric stability</strong>. When you&#39;re writing code for computing the Softmax function in practice, the intermediate terms \(e^{f_{y_i}}\) and \(\sum_j e^{f_j}\) may be very large due to the exponentials. Dividing large numbers can be numerically unstable, so it is important to use a normalization trick. Notice that if we multiply the top and bottom of the fraction by a constant \(C\) and push it into the sum, we get the following (mathematically equivalent) expression:</p>
+
+<p>\[<br/>
+\frac{e^{f_{y_i}}}{\sum_j e^{f_j}}<br/>
+= \frac{Ce^{f_{y_i}}}{C\sum_j e^{f_j}}<br/>
+= \frac{e^{f_{y_i} + \log C}}{\sum_j e^{f_j + \log C}}<br/>
+\]</p>
+
+<p>We are free to choose the value of \(C\). This will not change any of the results, but we can use this value to improve the numerical stability of the computation. A common choice for \(C\) is to set \(\log C = -\max_j f_j \). This simply states that we should shift the values inside the vector \(f\) so that the highest value is zero. In code:</p>
+
+<pre><code class="language-python">f = np.array([123, 456, 789]) # example with 3 classes and each having large scores
+p = np.exp(f) / np.sum(np.exp(f)) # Bad: Numeric problem, potential blowup
+
+# instead: first shift the values of f so that the highest number is 0:
+f -= np.max(f) # f becomes [-666, -333, 0]
+p = np.exp(f) / np.sum(np.exp(f)) # safe to do, gives the correct answer
+
+</code></pre>
+
+<p><strong>Possibly confusing naming conventions</strong>. To be precise, the <em>SVM classifier</em> uses the <em>hinge loss</em>, or also sometimes called the <em>max-margin loss</em>. The <em>Softmax classifier</em> uses the <em>cross-entropy loss</em>. The Softmax classifier gets its name from the <em>softmax function</em>, which is used to squash the raw class scores into normalized positive values that sum to one, so that the cross-entropy loss can be applied. In particular, note that technically it doesn&#39;t make sense to talk about the &quot;softmax loss&quot;, since softmax is just the squashing function, but it is a relatively commonly used shorthand.</p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/8/31</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Deep%20Learning.html'>Deep Learning</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
 			<div class="article">
                 <a class="clearlink" href="cross-validation.html">
                 
@@ -498,118 +574,6 @@ plt.scatter(x[:,0], x[:,1], c=y)
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15035780907547.html">
-                
-                  <h1>TensorFlow(5): Vector and Matrix Product in Numpy and TensorFlow</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h2 id="toc_0">Numpy</h2>
-
-<p>Following are common vector and matrix product operations in Numpy, they are quite simple and straightforward:</p>
-
-<ul>
-<li><p>Inner Product   \(\quad a^Tb\quad \):  <code>np.inner()</code></p></li>
-<li><p>Outer Product  \(\quad ab^T\quad \):  <code>np.outer()</code></p></li>
-<li><p>Dot Product  \(\quad a \cdot b = \sum a_ib_i\quad \): <code>np.dot()</code></p></li>
-<li><p>Elementwise Product  \(\quad c_i = a_ib_i\quad \): <code>np.multiply()</code></p></li>
-</ul>
-
-<p>Note: inner product is defined on vector spaces over a field 𝕂 (finite or infinite dimensional). Dot product refers specifically to the product of vectors in \(ℝ^n\)</p>
-
-<p>The difference between the following implementations of the dot/inner/outer/elementwise product are demonstrated as follows:</p>
-
-<pre><code class="language-python">W = np.ones((2, 7), dtype=&#39;float32&#39;)
-x1 = [9, 2, 5, 0, 0, 7, 5]
-x2 = [9, 2, 2, 9, 0, 9, 2]
-print(&#39;vector dot product&#39;, np.dot(x1,x2)) # dot product
-print(&#39;inner&#39;, np.inner(x1,x2)) # inner product
-print(&#39;outter&#39;, np.outer(x1,x2)) # outter product
-print(&#39;element-wsie&#39;, np.multiply(x1,x2)) # Element-wise product
-print(&#39;matrix dot product&#39;, np.dot(W, x1)) # dot product
-</code></pre>
-
-<pre><code>dot for vector 168
-inner 168
-outter [[81 18 18 81  0 81 18]
- [18  4  4 18  0 18  4]
- [45 10 10 45  0 45 10]
- [ 0  0  0  0  0  0  0]
- [ 0  0  0  0  0  0  0]
- [63 14 14 63  0 63 14]
- [45 10 10 45  0 45 10]]
-element-wsie [81  4 10  0  0 63 10]
-dot for matrix [ 28.  28.]
-</code></pre>
-
-<h2 id="toc_1">TensorFlow</h2>
-
-<p>Vector inner/outer Product are a bit complex in TensorFlow. </p>
-
-<pre><code class="language-python">import tensorflow as tf
-import numpy as np
-
-x = tf.Variable([[1, -2, 3]], tf.float32, name=&#39;x&#39;)
-y = tf.Variable([[-1, 2, -3]], tf.float32, name=&#39;y&#39;)
-
-## inner product
-inner_product1 = tf.reduce_sum(tf.multiply(x, y))
-inner_product2 = tf.matmul(x, y, transpose_a=False, transpose_b= True) # different from inner_product1
-
-## outer product
-outer_product2 = tf.matmul(x, y, transpose_a= True)
-
-## matrix dot product
-X = tf.constant(np.random.randn(3,3), name=&#39;X&#39;)
-W = tf.constant(np.random.randn(3,3), name=&#39;W&#39;)
-matrix_product = tf.matmul(W, X)
-
-sess = tf.InteractiveSession()
-init_op = tf.global_variables_initializer()
-
-# run
-sess.run(init_op)
-print(sess.run(inner_product1))
-print(sess.run(inner_product2))
-print(sess.run(outer_product2))
-print(sess.run(matrix_product))
-</code></pre>
-
-<pre><code>-14
-[[-14]]
-[[-1  2 -3]
- [ 2 -4  6]
- [-3  6 -9]]
-[[-0.88722509 -0.94128018 -2.1999658 ]
- [-0.67967623  1.33193446 -0.75612585]
- [ 0.31741623  1.3271727  -0.04311113]]
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/8/24</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Tensorflow.html'>Tensorflow</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -693,6 +657,8 @@ print(sess.run(matrix_product))
             <a href="Tensorflow.html"><strong>Tensorflow</strong></a>
         
             <a href="Data%20Science.html"><strong>Data Science</strong></a>
+        
+            <a href="Big%20Data.html"><strong>Big Data</strong></a>
          
         </p>
 
@@ -707,6 +673,12 @@ print(sess.run(matrix_product))
                 <div class="side-content">
                 <ul class="posts-list">
 	      
+		      
+			      <li class="post">
+			        <a href="Spark_introduction.html">Spark</a>
+			      </li>
+		     
+		  
 		      
 			      <li class="post">
 			        <a href="C++baics.html">C++ Basics</a>
@@ -728,12 +700,6 @@ print(sess.run(matrix_product))
 		      
 			      <li class="post">
 			        <a href="15089188725996.html">Linux 内存布局</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15089186263565.html">Valgrind</a>
 			      </li>
 		     
 		  

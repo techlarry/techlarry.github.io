@@ -14,7 +14,7 @@ var _hmt = _hmt || [];
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  Machine Learning (2): Linear Regression with Multiple Variables - techlarry
+  Spark - techlarry
   
   </title>
   
@@ -147,14 +147,14 @@ var _hmt = _hmt || [];
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>Machine Learning (2): Linear Regression with Multiple Variables</h1>
+          <h1>Spark</h1>
      
         <div class="read-more clearfix">
-          <span class="date">2017/6/12</span>
+          <span class="date">2017/10/29</span>
 
           <span>posted in&nbsp;</span> 
           
-              <span class="posted-in"><a href='%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html'>机器学习</a></span>
+              <span class="posted-in"><a href='Big%20Data.html'>Big Data</a></span>
            
          
           <span class="comments">
@@ -167,142 +167,14 @@ var _hmt = _hmt || [];
       </div><!-- article -->
 
       <div class="article-content">
-      <ul>
-<li>
-<a href="#toc_0">Multiple Features (variables)</a>
-</li>
-<li>
-<a href="#toc_1">Gradient descent</a>
-<ul>
-<li>
-<a href="#toc_2">Feature Scaling</a>
-</li>
-<li>
-<a href="#toc_3">Learning rate</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_4">Computing Parameters Analytically</a>
-<ul>
-<li>
-<a href="#toc_5">Normal equation:</a>
-</li>
-<li>
-<a href="#toc_6">Gradient descent v.s. Normal equation</a>
-</li>
-<li>
-<a href="#toc_7">Normal Equation Non-invertible</a>
-</li>
-</ul>
-</li>
-</ul>
+      <p><code>Spark</code>是一个用来实现快速而通用的集群计算的平台。<code>Spark</code>扩展了广泛使用的<code>MapReduce</code>计算模型，而且高效地支持更多计算模式，包括交互式查询和流处理。</p>
 
-
-<h2 id="toc_0">Multiple Features (variables)</h2>
-
-<p>Notation:<br/>
-\(m\) = the number of training examples<br/>
-\(n\) = the number of features<br/>
-\(x^{(i)}\)  = the input (feature) of \(i^{th}\) training example<br/>
-\(x^{(i)}_j\) =  value of feature \(j\) of \(i^{th}\) training example</p>
-
-<p>The multivariable form of the hypothesis function accommodating these multiple features is as follows:</p>
-
-<p>\[h_θ(x)=θ_0+θ_1x_1+θ_2x_2+θ_3x_3+⋯+θ_nx_n=\theta^Tx\] (\(n+1\)- dimensional vector)</p>
-
-<p>For convenience of notation, define \(x_0=1\)</p>
-
-<h2 id="toc_1">Gradient descent</h2>
-
-<p><strong>Hypothesis</strong>: <br/>
-\[h_\theta(x) = \theta^Tx\]</p>
-
-<p><strong>Parameters</strong>:<br/>
-\[\theta\]</p>
-
-<p><strong>Cost Function</strong>:<br/>
-\[J(\theta)=\frac{1}{2m}\Sigma^m_{i=1}(h_\theta(x^{(i)})-y^{(i)})^2\]</p>
-
-<p><strong>Gradient descent</strong>:<br/>
-Repeat until converge{</p>
-
-<p>\(\theta_j := \theta_j -\alpha\frac{\partial}{\partial \theta_j}J(\theta)=\theta_j -\alpha\frac{1}{m}(h_\theta(x^{(i)})-y^{(i)})x_j^{(i)}\)  (simultaneously update for every j= 0,1,...,n)</p>
-
-<h3 id="toc_2">Feature Scaling</h3>
-
-<p>We can speed up gradient descent by having each of our input values in roughly the same range. This is because \(\theta\) will descend quickly on small ranges and slowly on large ranges, and so will oscillate inefficiently down to the optimum when the variables are very uneven.</p>
-
-<p><strong>Idea: Make sure features are on a similar scale.</strong></p>
-
-<p>Two techniques to help with this are <strong>feature scaling</strong> and <strong>mean normalization</strong>.</p>
+<h2 id="toc_0">Reference</h2>
 
 <ul>
-<li><p><strong>Feature scaling</strong> involves dividing the input values by the range (i.e. the maximum value minus the minimum value) of the input variable, resulting in a new range of just 1. </p></li>
-<li><p><strong>Mean normalization</strong> involves subtracting the average value for an input variable from the values for that input variable resulting in a new average value for the input variable of just zero. </p></li>
+<li>Holden Karau, Andy Konwinski, Patrick Wendell, et al. 2015. Learning Spark: Lightning-Fast Big Data Analysis. O&#39;Reilly Media</li>
+<li></li>
 </ul>
-
-<p>Replace \(x_i\) with \( x_i -\mu_i\) to make features have approximately zero mean (Do not apply to \(x_0=1\))</p>
-
-<p>\[x_i =\frac{ x_i - \mu_i}{S_i}\]</p>
-
-<p>where  \(\mu_i\) is average value of \(x_i\) in training set, \(S_i\) is the range (max-min) or standard deviation of \(x_i\).</p>
-
-<p>E.g. \[x_1=\frac{size-1000}{2000}\]<br/>
-\[x_2=\frac{\#bedrooms-2}{5}\]</p>
-
-<h3 id="toc_3">Learning rate</h3>
-
-<p><strong>Debugging</strong>: How to make sure gradient descent is working correctly.</p>
-
-<p>-- How to choose learning rate \(\alpha\).</p>
-
-<p>Gradient descent is working correctly if \(J(\theta)\) decreases after every iteration.</p>
-
-<p>Use smaller \(\alpha\). For sufficiently small \(\alpha\), \(J(\theta)\) should decrease on every iteration.</p>
-
-<p><strong>Automatic convergence test</strong>. Declare convergence if \(J(\theta)\) decreases by less than \(E\) in one iteration, where \(E\) is some small value such as \(10^{−3}\). However in practice it&#39;s difficult to choose this threshold value.</p>
-
-<p><strong>Summary</strong>:</p>
-
-<ul>
-<li>If  \(\alpha\)  is too small: slow convergence.</li>
-<li>If \(\alpha\) is too large: may not decrease on every iteration; may not converge.</li>
-</ul>
-
-<h2 id="toc_4">Computing Parameters Analytically</h2>
-
-<h3 id="toc_5">Normal equation:</h3>
-
-<p>Gradient descent gives one way of minimizing \(J\). The &quot;Normal Equation&quot; method minimizes \(J\) by explicitly taking its derivatives with respect to the \(θj\) ’s, and setting them to zero. This allows us to find the optimum theta without iteration. The normal equation formula is given below:</p>
-
-<p>\[\theta = (X^TX)^{-1}X^Ty\]</p>
-
-<p>Matlab command: </p>
-
-<pre><code class="language-Matlab">pinv(X&#39;*X)*X&#39;*y
-</code></pre>
-
-<p>where <code>pinv</code> is <code>peudoinversion</code> of matrix. It is different to <code>inv</code>.</p>
-
-<h3 id="toc_6">Gradient descent v.s. Normal equation</h3>
-
-<p><img src="media/14972614146835/Screen%20Shot%202017-06-27%20at%202.38.45%20PM.png" alt="Screen Shot 2017-06-27 at 2.38.45 P"/></p>
-
-<h3 id="toc_7">Normal Equation Non-invertible</h3>
-
-<p>The common reason causes non-invertible:</p>
-
-<ul>
-<li>Redundant features(linearly dependent)
-E.g. \(x_1\) = size in feet\(^2\), \(x_2\) = size in m\(^2\)</li>
-<li>Too many features(e.g. \(m&lt;=n\)).
--- Delete some features, or use regularization.</li>
-</ul>
-
-<p>where \(m\) is the number of training examples, \(n\) is the number of features.</p>
-
-<p>Solutions to the above problems include deleting a feature that is linearly dependent with another or deleting one or more features when there are too many features.</p>
 
 
     
@@ -313,16 +185,13 @@ E.g. \(x_1\) = size in feet\(^2\), \(x_2\) = size in m\(^2\)</li>
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="14973149842140.html" 
-          title="Previous Post: 搜索">&laquo; 搜索</a>
-      
         </p>
         </div>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="14970886401689.html" 
-          title="Next Post: Machine Learning (1): Introduction to Machine Learning">Machine Learning (1): Introduction to Machine Learning &raquo;</a>
+          <a  href="C++baics.html" 
+          title="Next Post: C++ Basics">C++ Basics &raquo;</a>
       
       </p>
         </div>
