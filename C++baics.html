@@ -191,13 +191,22 @@ var _hmt = _hmt || [];
 </ul>
 </li>
 <li>
-<a href="#toc_6">natural way to build widgets: <code>class</code></a>
+<a href="#toc_6">Natural way to build widgets: <code>class</code></a>
 </li>
 <li>
 <a href="#toc_7">Constructor</a>
 </li>
 <li>
-<a href="#toc_8">Reference</a>
+<a href="#toc_8">Destructor</a>
+</li>
+<li>
+<a href="#toc_9">Scope and storage class</a>
+</li>
+<li>
+<a href="#toc_10">Memory Management</a>
+</li>
+<li>
+<a href="#toc_11">Reference</a>
 </li>
 </ul>
 
@@ -497,7 +506,7 @@ int main(){
 
 </code></pre>
 
-<h2 id="toc_6">natural way to build widgets: <code>class</code></h2>
+<h2 id="toc_6">Natural way to build widgets: <code>class</code></h2>
 
 <p><strong>C type extension</strong>:</p>
 
@@ -585,6 +594,8 @@ int main()
 
 <p>A <code>constructor</code> is a member function whose name is the same as the class name; it creates objects of the class type. This process involves initializing data members and, frequently, allocating storage from the heap by using <code>new</code>.</p>
 
+<p><code>default constructor</code> does not requires a initializing value(no arguments),</p>
+
 <pre><code class="language-C++">class point{
     public:
         //constructor, initializer list
@@ -613,7 +624,112 @@ int main()
 <li><code>{this -&gt; x=x; this-&gt;y=y};</code></li>
 </ul>
 
-<h2 id="toc_8">Reference</h2>
+<p>It is also the case that usually there are several constructors per class. Each constructor signature represents a useful way to declare and initialize an object of that type.</p>
+
+<p><strong>Example: Improved Points Using constructor</strong></p>
+
+<pre><code class="language-C++">#include &lt;iostream&gt;
+
+using namespace std;
+
+class point{
+    public:
+        point(): x(0), y(0) {} //default
+        point(double u): x(u), y(0) {} //double to point
+        point(double u, double v): x(u), y(v) {}
+        void print() const { cout &lt;&lt; &quot;(&quot; &lt;&lt; x &lt;&lt; &quot;,&quot; &lt;&lt; y &lt;&lt; &quot;)&quot;; }
+        void set(double u, double v) {x =u; y=v;}
+        void plus(point c) {x += c.x; y+=c.y;}
+    private:
+        double x, y;
+};
+
+
+double parabola(double x, double p)
+{
+    return (x*x)/p;
+}
+
+void graph(double a, double b, double incr, 
+    double f(double, double), double p, point gr[])
+{
+    double x = a;
+    for (int i=0; x &lt;=b; ++i, x += incr)
+        gr[i].set(x, f(x, p));
+}
+
+
+const int no_of_pts = 20;
+
+
+int main()
+{
+    point g[no_of_pts]; // use default ctor
+
+    graph(0, 2, 0.1, parabola, 5, g);
+    cout &lt;&lt; &quot;First 20 samples:&quot; &lt;&lt; endl;
+    for (int i=0; i&lt; no_of_pts; ++i)
+    {
+        g[i].print();
+        if (i%5==4)
+            cout &lt;&lt; endl;
+        else
+            cout &lt;&lt; &quot;  &quot;;
+    }
+}
+</code></pre>
+
+<h2 id="toc_8">Destructor</h2>
+
+<p>A <code>destructor</code> is a member function whose name is the class preceded by the tilde character, ~. A destructor&#39;s usual purpose is finalizing or destroying objects of the class type. Finalizing objects involves retrieving resources allocated to the object. Frequently this requires using <code>delete</code> to deallocate store assigned to the object.</p>
+
+<h2 id="toc_9">Scope and storage class</h2>
+
+<p>The C++ has two principle forms of scope: <code>local scope</code> and <code>file scope</code>. <code>Local scope</code> is scoped to a block(e.g. compound statements, function bodies). <code>File scope</code> has names that are external(global).  </p>
+
+<p>The four storage classes are <code>auto</code>, <code>extern</code>, <code>register</code>, and <code>static</code>.</p>
+
+<p><strong><code>auto</code></strong>:</p>
+
+<ul>
+<li>allocated within a block, and its lifetime is limited to the execution of that block.</li>
+</ul>
+
+<p><strong><code>register</code></strong>:</p>
+
+<ul>
+<li>tells the compiler that the associated variables should be stored in high-speed memory registers</li>
+</ul>
+
+<p><strong><code>static</code></strong>:</p>
+
+<ul>
+<li><code>static</code> variables retain its previous value when the block is reentered.</li>
+<li><code>static</code> functions are visible only within the file in which they are defined.</li>
+</ul>
+
+<h2 id="toc_10">Memory Management</h2>
+
+<p>In C++:</p>
+
+<ul>
+<li><code>new</code> (allocator) instead of <code>malloc()</code> in C </li>
+<li><code>delete</code> (deallocator) instead of <code>free()</code> in C</li>
+<li>Both work with a heap -- heap is dynamically allocated memory - unlike Java not automatically garbage collected.</li>
+</ul>
+
+<p><strong>Simple use of <code>new</code> and <code>delete</code></strong>:</p>
+
+<pre><code class="language-C++">char* s = new char[size]; //get of heap
+int* p = new int(9); //single int initialized
+delete [] s; //delete an array
+delete p; //delete single element
+
+// These will get used with dynamic data structures 
+// in constructors and destructors
+</code></pre>
+
+<h2 id="toc_11">Reference</h2>
 
 <ul>
 <li>Ira Pohl. C++ for C Programmers,University of California, Santa Cruz</li>
