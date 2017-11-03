@@ -147,118 +147,6 @@ var _hmt = _hmt || [];
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="Hash_Table_3_A_variant_of_2_Sum_Algorithm.html">
-                
-                  <h1>Hash Table (3): A variant of 2-Sum Algorithm</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>The goal of the arcticle is to implement a variant of the <code>2-SUM algorithm</code>.</p>
-
-<p>The file contains 1 million integers, both positive and negative (repetitions exists!). This is your array of integers, with the \(i\)th row of the file specifying the \(i\)th entry of the array.</p>
-
-<p>The task is to compute the number of target values \(t\) in the interval \([-10000,10000]\)(inclusive) such that there are distinct numbers \(x,y\) in the input file that satisfy \(x+y=t\). </p>
-
-<h2 id="toc_0">Implementation</h2>
-
-<p>The key process lies in the <code>hash function</code>, which might be set to appropriate small value based on the origin value:<br/>
-\[\text{hash_function}= \frac{\text{number}}{\text{factor}}\]</p>
-
-<p>The <code>factor</code> is selected based on the number of <code>slots</code> needed in the algorithm. i.e.<br/>
-\[\frac{\text{the range of keys}}{\text{factor}}\approx \text{the number of slots} &lt; \text{the number of keys}\]</p>
-
-<p>There, factor is \(\frac{\text{the number of key}}{2}\)</p>
-
-<pre><code class="language-python">class HashTable(object):
-
-    def __init__(self):
-
-        self.size = 5000000
-        self.slots = [set() for i in range(self.size)]
-        self.data = set()
-
-    def put(self, key, data):
-
-        hash_value = self.hash_function(key)
-        self.slots[hash_value].add(data)
-        self.data.add(data)
-
-    def hash_function(self, key):
-
-        return key//(self.size//2)
-
-    def get(self, key):
-        &quot;&quot;&quot;
-        there key == data
-        &quot;&quot;&quot;
-        slot = self.hash_function(key)
-        if key in self.slots[slot]:
-            return key
-        else:
-            return None
-
-    def buildfromfile(self, textfile):
-
-        with open(text_file, &#39;r&#39;) as infile:
-            for line in infile.readlines():
-                self.put(int(line), int(line))
-
-    def two_sum_count(self):
-        &quot;&quot;&quot;
-        Compute the number of target values t in the interval[low, high] (inclusive),
-        such that there are distinct numbers x, y that satisfy x+y = t
-        &quot;&quot;&quot;
-        sums = set()
-
-        for key1 in self.data:
-            left = self.hash_function(-key1-10000)
-            right = self.hash_function(-key1+10000)
-
-            for slot in self.slots[left:right+1]:
-
-                for key2 in slot:
-
-                    if 10000 &gt; key1 + key2 &gt; -10000:
-                        sums.add(key1+key2)
-
-        return len(sums)
-
-
-if __name__ == &quot;__main__&quot;:
-
-    # target files for counting
-    text_file = &#39;two_sum.txt&#39;
-
-    hashnumber = HashTable()
-    hashnumber.buildfromfile(text_file)
-    print(hashnumber.two_sum_count())
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/7/23</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Hash%20Table.html'>Hash Table</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
                 <a class="clearlink" href="heap_median_maintenance.html">
                 
                   <h1>Heap (2): Median Maintenance</h1>
@@ -1469,6 +1357,131 @@ if __name__ == &quot;__main__&quot;:
                 </div>
               </div><!-- article -->
         
+			<div class="article">
+                <a class="clearlink" href="15002564768282.html">
+                
+                  <h1>Database System Concept (1): Introduction</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>A <code>database-management system</code> (DBMS，数据库管理系统) is a collection of interrelated data and a set of programs to access those data.  The collection of data, usually referred to as the <code>database</code>. The primary goal of a DBMS is to provide a way to store and retrieve database information that is both <code>convenient</code> and <code>efficient</code>.</p>
+
+<h2 id="toc_0">Purpose of Database System</h2>
+
+<p>Keeping organizational information in a file-processing system has a number of major disadvantages:</p>
+
+<ul>
+<li>Data redundancy and inconsistency
+
+<ul>
+<li>Users of one program may be unaware of potentially useful data held by other programs.</li>
+</ul></li>
+<li>Difficulty in accessing data
+
+<ul>
+<li>Programs are written to satisfy particular functions.<br/></li>
+<li>Any new requirement needs a new program.</li>
+</ul></li>
+<li>Data isolation
+
+<ul>
+<li>Same data is held by different programs </li>
+<li>Each program maintains its own set of data</li>
+</ul></li>
+<li>Integrity problems</li>
+<li>Atomicity problems</li>
+<li>Concurrent-access anomalies</li>
+<li>Security problems</li>
+</ul>
+
+<h2 id="toc_1">View of data</h2>
+
+<h3 id="toc_2">Data Abstraction</h3>
+
+<p>The need for efficiency has led designers to use complex data structures to represent data in the database.</p>
+
+<ul>
+<li><code>Physical level</code>. The lowest level of abstraction <em>how</em> the data are actually stored</li>
+<li><code>Logical level</code>. The next-higher level of abstraction describes <em>what</em> data are stored in the database, and what relationships exist among those data. Each record is described by a type definition, and the interrelationship of these record types is defined as well.</li>
+<li><code>View level</code>. The highest level of abstraction describes only part of the entire data. The system may provide many views for the same database. Computer users see a set of application programs that hide details of the data types.</li>
+</ul>
+
+<p><img src="media/15002564768282/Screen%20Shot%202017-07-17%20at%2010.08.36%20AM.png" alt="The three views of data abstraction"/></p>
+
+<h3 id="toc_3">Instances and Schemas</h3>
+
+<ul>
+<li><code>Instance</code>: the collection of information stored in the database at a particular moment</li>
+<li><code>schema</code>: the overall design of the database.</li>
+</ul>
+
+<p>Database systems have several schemas, partitioned according to the levels of abstraction. The <code>Physical schema</code> describes the database design at the physical level, while the <code>logical schema</code> describes the database design at the logical level.</p>
+
+<p>Applications programs are said to exhibit <code>physical data independence</code> if they do not depend on the <code>physical schema</code>, and thus need not be rewritten if the physical schema changes.</p>
+
+<h3 id="toc_4">Data Models</h3>
+
+<p><code>Data Model</code>(数据库): a collection of conceptual tools for describing data, data relationships, data semantics, and consistency constraints.</p>
+
+<ul>
+<li><code>Relational Model</code>(关系数据库)</li>
+<li><code>Entity-Relationship Model</code> (实体对象模型)</li>
+<li><code>Object-Based Data Model</code> (基于对象的数据模型)</li>
+<li><code>Semistructed Data Model</code></li>
+</ul>
+
+<h2 id="toc_5">Database Language</h2>
+
+<p>A database system provides a <code>data-definition language</code>(DDL) to specify the database schema and a <code>data-manipulation language</code>(DML) to express database queries and updates.</p>
+
+<h2 id="toc_6">Data Storage and Querying</h2>
+
+<p>A database system is partitioned into modules that deal with each of the responsibilities of the overall system. The functional components of a database system can be broadly divided into the <code>storage manager</code> and the <code>query processor</code></p>
+
+<p>The <code>storage manager</code> is the component of a database system that provides the interface between the low-level data stored in the database and the application programs and queries submitted to the system. it is responsible for storing, retrieving, and updating data in the database. The storage manager translates the various DML statement into low-level file-system commands.</p>
+
+<p>The <code>query processor</code> includes:</p>
+
+<ul>
+<li><code>DDL interpreter</code>, which interprets DDL statements and records the definitions in the data dictionary.</li>
+<li><code>DML compiler</code>, which translates DML statements in a query language into an evaluation plan consisting of low-level instructions that the query evaluation engine understands.</li>
+<li><code>Query evaluation engine</code>, which executes low-level instructions generated by the DML compiler.</li>
+</ul>
+
+<h2 id="toc_7">Transaction management</h2>
+
+<p><code>Transaction management</code> ensures that the database remains in a consistent (correct) state despite system failures. The transaction manager ensures that concurrent transaction executions proceed without conflicting.</p>
+
+<h2 id="toc_8">Database Architecture</h2>
+
+<p>The architecture of a database system is greatly influenced by the underlying computer system on which the database system runs. Database system can be centralized, or client-server, where one server machine executes work on behalf of multiple client machines.</p>
+
+<p><img src="media/15002564768282/Screen%20Shot%202017-07-17%20at%2010.55.20%20AM.png" alt="System Structure"/></p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/7/17</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E5%BA%93.html'>数据库</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
               
 
 
@@ -1570,19 +1583,13 @@ if __name__ == &quot;__main__&quot;:
 	      
 		      
 			      <li class="post">
+			        <a href="15094507460676.html">Introduction to big data</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="Spark_introduction.html">Spark</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="C++baics.html">C++ Basics</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="C_language.html">C Basics</a>
 			      </li>
 		     
 		  
@@ -1595,6 +1602,12 @@ if __name__ == &quot;__main__&quot;:
 		      
 			      <li class="post">
 			        <a href="15089188725996.html">Linux 内存布局</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15089186263565.html">Valgrind</a>
 			      </li>
 		     
 		  
