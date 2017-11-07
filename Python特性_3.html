@@ -126,8 +126,6 @@ var _hmt = _hmt || [];
         
             <li><a href="Tensorflow.html">Tensorflow</a></li>
         
-            <li><a href="Data%20Science.html">Data Science</a></li>
-        
             <li><a href="Big%20Data.html">Big Data</a></li>
          
 
@@ -150,6 +148,107 @@ var _hmt = _hmt || [];
 	<div class="large-8 medium-8 columns">
 		<div class="markdown-body home-categories">
 		
+			<div class="article">
+                <a class="clearlink" href="14969760531704.html">
+                
+                  <h1>python是动态语言</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>C语言是静态语言，运行之前需要先编译，不允许在运行过程中修改代码。</p>
+
+<p>动态编程语言，在运行时可以改变其结果的语言：例如新的函数、对象、甚至代码可以被引进，已有的函数可以被删除或是其他结构上的变化。</p>
+
+<h2 id="toc_0">运行的过程中给实例/类添加属性(实例属性/类属性)</h2>
+
+<pre><code class="language-python">class Person(object):
+    def __init__(self, name=None, age=None):
+             self.name = name
+             self.age = age
+P = Person(&#39;X man&#39;,&#39;24&#39;)
+P.sex = &#39;male&#39;  # 给对象添加属性
+Person.sex = &#39;female&#39; #给类添加属性
+</code></pre>
+
+<h2 id="toc_1">运行的过程中给实例/类添加方法</h2>
+
+<p>给实例添加方法时，一般需使用<code>MethodType</code>函数。</p>
+
+<pre><code class="language-python">class Person(object):
+    def __init__(self, name=None, age=None):
+             self.name = name
+             self.age = age
+    def eat(self):
+        print(&#39;---%s is eating&#39;%self.name)
+        
+def run(self):
+    print(&#39;---%s is running&#39;%self.name)
+    
+p1= Person(&#39;P1&#39;, 10)
+p1.eat()
+p1.run = run
+#虽然p1对象中 run属性已经指向了第10行的函数，但是这句代码还不正确
+#因为run属性的函数是后来添加的，即p1.run()的时候，并没有把p1当作第1个参数
+
+import types
+p1.run = types.MethodType(run,p1)
+p1.run()
+</code></pre>
+
+<p>但是静态方法(static method)和类方法(class method)可以直接添加</p>
+
+<pre><code class="language-python">@staticmethod
+def test():
+    print(&quot;---static method-----&quot;)
+p1.test = test
+p1.test()
+
+@classmethod
+def printNum(cls):
+    print(&#39;----class method---&#39;)
+    
+Person.printNum = printNum
+Person.printNum()
+</code></pre>
+
+<h2 id="toc_2">限制属性 __slots__</h2>
+
+<p>定义一个特殊的__slot__变量，限制class实例能添加的属性</p>
+
+<pre><code class="language-python">class Person(object):
+    __slots__=(&quot;name&quot;,&quot;age&quot;)
+
+p = Person()
+p.name = &quot;老王&quot;
+p.age = 10
+p.score = 100
+&gt;&gt;&gt;&gt; AttributeError: &#39;Person&#39; object has no attribute &#39;score&#39;
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/6/6</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
 			<div class="article">
                 <a class="clearlink" href="14970764330712.html">
                 
@@ -638,8 +737,6 @@ test2()
             <a href="%E6%95%B0%E6%8D%AE%E5%BA%93.html"><strong>数据库</strong></a>
         
             <a href="Tensorflow.html"><strong>Tensorflow</strong></a>
-        
-            <a href="Data%20Science.html"><strong>Data Science</strong></a>
         
             <a href="Big%20Data.html"><strong>Big Data</strong></a>
          
