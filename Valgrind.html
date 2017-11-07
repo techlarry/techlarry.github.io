@@ -14,7 +14,7 @@ var _hmt = _hmt || [];
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  作用域 - techlarry
+  Valgrind - techlarry
   
   </title>
   
@@ -151,14 +151,14 @@ var _hmt = _hmt || [];
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>作用域</h1>
+          <h1>Valgrind</h1>
      
         <div class="read-more clearfix">
-          <span class="date">2017/6/6</span>
+          <span class="date">2017/10/25</span>
 
           <span>posted in&nbsp;</span> 
           
-              <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
+              <span class="posted-in"><a href='Computer%20System.html'>Computer System</a></span>
            
          
           <span class="comments">
@@ -171,33 +171,54 @@ var _hmt = _hmt || [];
       </div><!-- article -->
 
       <div class="article-content">
-      <h2 id="toc_0">命名空间</h2>
+      <p><code>Valgrind</code> is an instrumentation framework for building dynamic analysis tools. There are Valgrind tools that can automatically detect many memory management and threading bugs, and profile your programs in detail. You can also use Valgrind to build new tools.</p>
 
-<p>命名空间就是生效的范围</p>
-
-<h2 id="toc_1">全局，局部</h2>
-
-<p>查看局部变量</p>
-
-<pre><code class="language-python">&gt;&gt;&gt;&gt; locals() 
-</code></pre>
-
-<p>查看全局变量</p>
-
-<pre><code class="language-python">&gt;&gt;&gt;&gt; globals() 
-</code></pre>
-
-<h2 id="toc_2">LEGB规则</h2>
-
-<p>python 使用<code>LEGB</code>的顺序来查找一个符号对应的对象</p>
-
-<p>locals-&gt; enclosing function-&gt;globals-&gt;builtins</p>
+<p>The Valgrind distribution currently includes six production-quality tools: </p>
 
 <ul>
-<li>locals, 当前所在命名空间（如函数、模块），函数的参数也属于命名空间中的变量</li>
-<li>enclosing，外部嵌套函数的命名空间（闭包中常见）</li>
-<li>globals, 全局变量，函数定义所在模块的命名空间</li>
-<li>builtins, 内建模块的命名空间</li>
+<li>a memory error detector</li>
+<li>two thread error detectors </li>
+<li>a cache and branch-prediction profiler</li>
+<li>a call-graph generating cache and branch-prediction profiler</li>
+<li>a heap profiler.</li>
+</ul>
+
+<p>It also includes three experimental tools: </p>
+
+<ul>
+<li>a stack/global array overrun detector,</li>
+<li>a second heap profiler that examines how heap blocks are used</li>
+<li>a SimPoint basic block vector generator.</li>
+</ul>
+
+<h2 id="toc_0">Installing on Mac</h2>
+
+<p>The simplest way to install <code>valgrind</code> is using <code>brew</code>:</p>
+
+<pre><code>brew install --HEAD valgrind
+</code></pre>
+
+<h2 id="toc_1">Demo</h2>
+
+<p>Writing a C program named &#39;arrays.c&#39; without freeing the memory after allocating it dynamically using <code>malloc</code>, for example,</p>
+
+<pre><code>int* heap_array = (int*) malloc(sizeof(int) * 5);
+free(heap_array); ## deleting the statement...
+</code></pre>
+
+<p>After running by command</p>
+
+<pre><code>valgrind ./arrays
+</code></pre>
+
+<p>you will see &quot;<strong>definitely lost: 20 bytes in 1 blocks</strong>!!&quot;</p>
+
+<p><img src="media/15089186263565/Screen%20Shot%202017-10-25%20at%204.35.47%20PM.png" alt="Screen Shot 2017-10-25 at 4.35.47 P"/></p>
+
+<h2 id="toc_2">Reference</h2>
+
+<ul>
+<li><a href="https://stackoverflow.com/questions/26564125/yosemite-and-valgrind">Yosemite and Valgrind</a></li>
 </ul>
 
 
@@ -209,16 +230,16 @@ var _hmt = _hmt || [];
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="14969711309827.html" 
-          title="Previous Post: 数据结构介绍">&laquo; 数据结构介绍</a>
+          <a href="15089188725996.html" 
+          title="Previous Post: Linux 内存布局">&laquo; Linux 内存布局</a>
       
         </p>
         </div>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="14969760531704.html" 
-          title="Next Post: python是动态语言">python是动态语言 &raquo;</a>
+          <a  href="machine_learning_techniques_SVM.html" 
+          title="Next Post: Machine Learning Techniques: Support Vector Machine (SVM)">Machine Learning Techniques: Support Vector Machine (SVM) &raquo;</a>
       
       </p>
         </div>

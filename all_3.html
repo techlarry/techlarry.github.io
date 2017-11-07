@@ -151,39 +151,6 @@ var _hmt = _hmt || [];
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="machine_learning_route.html">
-                
-                  <h1>机器学习路线</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p><img src="media/15057007673036/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.png" alt="机器学习"/></p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/9/18</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html'>机器学习</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
                 <a class="clearlink" href="SqueezeNet.html">
                 
                   <h1>SqueezeNet</h1>
@@ -429,6 +396,148 @@ var _hmt = _hmt || [];
                 </div>
               </div><!-- article -->
         
+			<div class="article">
+                <a class="clearlink" href="15049402475273.html">
+                
+                  <h1>Machine Learning (10): Large Scale Machine Learning</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<ul>
+<li>
+<a href="#toc_0">Learning with Large Datasets</a>
+</li>
+<li>
+<a href="#toc_1">Stochastic Gradient Descent</a>
+<ul>
+<li>
+<a href="#toc_2">Mini-Batch Gradient Descent</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_3">Stochastic Gradient Descent Convergence</a>
+</li>
+<li>
+<a href="#toc_4">Online Learning</a>
+</li>
+<li>
+<a href="#toc_5">Map Reduce and Data Parallelism</a>
+</li>
+</ul>
+
+
+<h2 id="toc_0">Learning with Large Datasets</h2>
+
+<p>We mainly benefit from a very large dataset when our algorithm has high variance when m is small. Recall that if our algorithm has high bias, more data will not have any benefit.</p>
+
+<p>Datasets can often approach such sizes as m = 100,000,000. In this case, our gradient descent step will have to make a summation over all one hundred million examples. We will want to try to avoid this -- the approaches for doing so are described below.</p>
+
+<h2 id="toc_1">Stochastic Gradient Descent</h2>
+
+<p>Stochastic gradient descent is an alternative to classic (or batch) gradient descent and is more efficient and scalable to large data sets.</p>
+
+<p>Stochastic gradient descent is written out in a different but similar way:</p>
+
+<p>\(cost(\theta,(x^{(i)}, y^{(i)})) = \dfrac{1}{2}(h_{\theta}(x^{(i)}) - y^{(i)})^2\)</p>
+
+<p>The only difference in the above cost function is the elimination of the m constant within \(\dfrac{1}{2}\).</p>
+
+<p>\(J_{train}(\theta) = \dfrac{1}{m} \displaystyle \sum_{i=1}^m cost(\theta, (x^{(i)}, y^{(i)}))\)</p>
+
+<p>\(J_{train}\) is now just the average of the cost applied to all of our training examples.</p>
+
+<p>The algorithm is as follows</p>
+
+<ol>
+<li><p>Randomly &#39;shuffle&#39; the dataset</p></li>
+<li><p>For \(i = 1\dots m\)</p></li>
+</ol>
+
+<p>\(\Theta_j := \Theta_j - \alpha (h_{\Theta}(x^{(i)}) - y^{(i)}) \cdot x^{(i)}_j\)</p>
+
+<p>This algorithm will only try to fit one training example at a time. This way we can make progress in gradient descent without having to scan all m training examples first. Stochastic gradient descent will be unlikely to converge at the global minimum and will instead wander around it randomly, but usually yields a result that is close enough. Stochastic gradient descent will usually take 1-10 passes through your data set to get near the global minimum.</p>
+
+<h3 id="toc_2">Mini-Batch Gradient Descent</h3>
+
+<p>Mini-batch gradient descent can sometimes be even faster than stochastic gradient descent. Instead of using all m examples as in batch gradient descent, and instead of using only 1 example as in stochastic gradient descent, we will use some in-between number of examples b.</p>
+
+<p>Typical values for b range from 2-100 or so.</p>
+
+<p>For example, with b=10 and m=1000:</p>
+
+<p>Repeat:</p>
+
+<p>For \(i = 1,11,21,31,\dots,991\)</p>
+
+<p>\(\theta_j := \theta_j - \alpha \dfrac{1}{10} \displaystyle \sum_{k=i}^{i+9} (h_\theta(x^{(k)}) - y^{(k)})x_j^{(k)}\)</p>
+
+<p>We&#39;re simply summing over ten examples at a time. The advantage of computing more than one example at a time is that we can use vectorized implementations over the b examples.</p>
+
+<h2 id="toc_3">Stochastic Gradient Descent Convergence</h2>
+
+<p>How do we choose the learning rate α for stochastic gradient descent? Also, how do we debug stochastic gradient descent to make sure it is getting as close as possible to the global optimum?</p>
+
+<p>One strategy is to plot the average cost of the hypothesis applied to every 1000 or so training examples. We can compute and save these costs during the gradient descent iterations.</p>
+
+<p>With a smaller learning rate, it is <strong>possible</strong> that you may get a slightly better solution with stochastic gradient descent. That is because stochastic gradient descent will oscillate and jump around the global minimum, and it will make smaller random jumps with a smaller learning rate.</p>
+
+<p>If you increase the number of examples you average over to plot the performance of your algorithm, the plot&#39;s line will become smoother.</p>
+
+<p>With a very small number of examples for the average, the line will be too noisy and it will be difficult to find the trend.</p>
+
+<p>One strategy for trying to actually converge at the global minimum is to <strong>slowly decrease α over time</strong> . For example \(\alpha = \dfrac{\text{const1}}{\text{iterationNumber + const2}}\)</p>
+
+<p>However, this is not often done because people don&#39;t want to have to fiddle with even more parameters.</p>
+
+<h2 id="toc_4">Online Learning</h2>
+
+<p>With a continuous stream of users to a website, we can run an endless loop that gets (x,y), where we collect some user actions for the features in x to predict some behavior y.</p>
+
+<p>You can update θ for each individual (x,y) pair as you collect them. This way, you can adapt to new pools of users, since you are continuously updating theta.</p>
+
+<h2 id="toc_5">Map Reduce and Data Parallelism</h2>
+
+<p>We can divide up batch gradient descent and dispatch the cost function for a subset of the data to many different machines so that we can train our algorithm in parallel.</p>
+
+<p>You can split your training set into z subsets corresponding to the number of machines you have. On each of those machines calculate \(\displaystyle \sum_{i=p}^{q}(h_{\theta}(x^{(i)}) - y^{(i)}) \cdot x_j^{(i)}\), where we&#39;ve split the data starting at p and ending at q.</p>
+
+<p>MapReduce will take all these dispatched (or &#39;mapped&#39;) jobs and &#39;reduce&#39; them by calculating:</p>
+
+<p>\(\Theta_j := \Theta_j - \alpha \dfrac{1}{z}(temp_j^{(1)} + temp_j^{(2)} + \cdots + temp_j^{(z)})\)</p>
+
+<p>For all \(j = 0, \dots, n\).</p>
+
+<p>This is simply taking the computed cost from all the machines, calculating their average, multiplying by the learning rate, and updating theta.</p>
+
+<p>Your learning algorithm is MapReduceable if it can be <u>expressed as computing sums of functions over the training set</u> . Linear regression and logistic regression are easily parallelizable.</p>
+
+<p>For neural networks, you can compute forward propagation and back propagation on subsets of your data on many machines. Those machines can report their derivatives back to a &#39;master&#39; server that will combine them.</p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/9/9</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html'>机器学习</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
               
 
 
@@ -530,12 +639,6 @@ var _hmt = _hmt || [];
 	      
 		      
 			      <li class="post">
-			        <a href="15097967286089.html">如何系统的学习C++语言</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
 			        <a href="introdution_to_big_data.html">Introduction to big data</a>
 			      </li>
 		     
@@ -555,6 +658,12 @@ var _hmt = _hmt || [];
 		      
 			      <li class="post">
 			        <a href="15089188725996.html">Linux 内存布局</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="Valgrind.html">Valgrind</a>
 			      </li>
 		     
 		  
