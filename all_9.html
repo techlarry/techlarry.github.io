@@ -57,6 +57,8 @@ var _hmt = _hmt || [];
         
         <li id=""><a target="_self" href="category.html">Category</a></li>
         
+        <li id=""><a target="_self" href="notebook.html">NoteBook</a></li>
+        
         </ul>
 
         <ul class="right" id="search-wrap">
@@ -89,6 +91,8 @@ var _hmt = _hmt || [];
         <li><a target="_self" href="about.html">About</a></li>
         
         <li><a target="_self" href="category.html">Category</a></li>
+        
+        <li><a target="_self" href="notebook.html">NoteBook</a></li>
         
 
     <li><label>Categories</label></li>
@@ -146,6 +150,170 @@ var _hmt = _hmt || [];
 	<div class="large-8 medium-8 columns">
 		<div class="markdown-body home-categories">
 		
+			<div class="article">
+                <a class="clearlink" href="python_and_mysql.html">
+                
+                  <h1>Python and MySQL</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>There are a lot of python driver available for MySQL and two stand out the most. The one, traditionally everybody’s choice, sort of industrial standard <code>MySQLdb</code>. It uses a C module to link to MySQL’s client library.  For Python3, use <code>PyMySQL</code> instead, because <code>MySQLdb</code> don&#39;t support Python3. Oracle’s <code>mysql-connector</code> on the other hand is pure python so no MySQL libraries and no compilation is necessary.</p>
+
+<h2 id="toc_0">MySQL Connector/Python</h2>
+
+<p>To use Python with MySQL, you can use the MySQL Connector/Python (<a href="https://dev.mysql.com/downloads/connector/python/">Download Here</a>). For those with anaconda, just install with <code>conda</code>:</p>
+
+<pre><code>conda install -c anaconda mysql-connector-python 
+</code></pre>
+
+<p>MySQL Connector/Python includes support for:</p>
+
+<ul>
+<li>Almost all features provided by MySQL Server.</li>
+<li>Converting parameter values back and forth between Python and MySQL data types.</li>
+<li>All MySQL extensions to standard SQL syntax.</li>
+</ul>
+
+<pre><code class="language-python">import re
+import mysql.connector
+
+# establishes the connection to MySQL.
+cnx = mysql.connector.connect(user=&#39;root&#39;, password=&#39;8032804254qq&#39;,
+                              host=&#39;127.0.0.1&#39;, database=&#39;rookery&#39;, port=&#39;3306&#39;)
+
+# creates a cursor object (cur) to use for executing queries on the database.
+
+
+cur = cnx.cursor(buffered=True)
+
+# query mysql database for list of user accounts
+sql_stmnt = &quot;SELECT DISTINCT User, Host FROM mysql.db &quot;
+sql_stmnt += &quot;WHERE Db IN(&#39;rookery&#39;,&#39;birdwatchers&#39;) &quot;
+sql_stmnt += &quot;ORDER BY User, Host&quot;
+cur.execute(sql_stmnt)
+
+# loop through list of user accounts
+for user_accounts in cur.fetchall():
+    user_name = user_accounts[0]
+    host_address = user_accounts[1]
+    user_account = user_name.decode(&#39;utf-8&#39;) + &quot;@&quot; + host_address.decode(&#39;utf-8&#39;)
+
+# display user account heading
+print(&#39;User Account:&#39;, (user_name, host_address))
+print(&quot;------------------------------------------&quot;)
+
+# query mysql for grants for user account
+sql_stmnt = &quot;show grants for &quot; + user_account
+cur.execute(sql_stmnt)
+
+# loop through grant entries for user account
+for grants in cur.fetchall():
+    # skip &#39;usage&#39; entry
+    if re.search(&#39;USAGE&#39;, grants[0]):
+        continue
+    # extract name of database and table
+    dbtb = re.search(&#39;ON\s(.*)\.+?(.+?)\sTO&#39;, grants[0])
+    db = dbtb.group(1)
+    tb = dbtb.group(2)
+
+    # change wildcard for tables to &#39;all&#39;
+    if re.search(&#39;\*&#39;, tb): tb = &quot;all&quot;
+
+    # display database and table name for privileges
+    print(&quot;database: &quot;, db, &quot;table: &quot;, tb)
+
+    # extract and display privileges for user account # for database and table
+    privs = re.search(&#39;GRANT\s(.+?)\sON&#39;, grants[0])
+    print(&#39;privileges: &#39;, privs.group(1))
+
+cur.close()
+cnx.close()
+</code></pre>
+
+<h2 id="toc_1">PyMySQL</h2>
+
+<p><a href="https://github.com/PyMySQL/PyMySQL">PyMySQL</a> is to be a drop-in replacement for <code>MySQLdb</code> and work on <code>CPython</code>, <code>PyPy</code> and <code>IronPython</code>.</p>
+
+<h3 id="toc_2">Installation</h3>
+
+<pre><code class="language-bash">$ pip install PyMySQL
+</code></pre>
+
+<h3 id="toc_3">Example</h3>
+
+<pre><code class="language-python">import pymysql
+
+# connect to the datacase
+connection = pymysql.connect(host=&#39;localhost&#39;, user=&#39;root&#39;, password=&#39;8032804254qq&#39;, db=&#39;test&#39;)
+
+with connection.cursor() as cursor:
+    &quot;&quot;&quot;
+    Create Table | CREATE TABLE `books` (
+    `book_id` int(3) NOT NULL AUTO_INCREMENT,
+    `title` text DEFAULT NULL,
+    `status` bit(1) DEFAULT b&#39;0&#39;,
+    PRIMARY KEY (`book_id`)
+    ) ENGINE=MyISAM AUTO_INCREMENT=103 DEFAULT CHARSET=utf8
+    &quot;&quot;&quot;
+    # create a new record
+    sql = &quot;INSERT INTO `books` (`title`, `status`) VALUES (%s, %s)&quot;
+    cursor.execute(sql, (&#39;GRE Reading&#39;, 1))
+    
+    # connection is not autocommit by default. So you must commit to save your changes.
+    connection.commit()
+
+with connection.cursor() as cursor:
+    sql = &quot;select `book_id`, `title`, `status` from `books`&quot;
+    cursor.execute(sql)
+    # read records
+    for book in cursor.fetchall():
+        book = list(book)
+        book[2] = ord(book[2])
+        print(book)
+</code></pre>
+
+<h2 id="toc_4">Difference? which is better?</h2>
+
+<p><code>MySQLdb</code> is a thin python wrapper around C module which implements API for MySQL database.</p>
+
+<p><code>MySQL Connector</code>is a Python module that reimplements the <a href="https://www.python.org/dev/peps/pep-0249/"><code>MySQL Database API</code></a> in Python. It is written in Python and does not have any dependencies except for the Python Standard Library. It is slower, but does not require the C library and so is more portable.</p>
+
+<h3 id="toc_5">Query Performance</h3>
+
+<p>Obviously, <code>MySQLdb</code> has better performance, especially when it comes to large data sets.</p>
+
+<p><img src="media/15026944183320/Untitled.png" alt="Untitled"/></p>
+
+<h2 id="toc_6">Reference</h2>
+
+<p>1.<a href="https://stackoverflow.com/questions/32575857/the-differences-between-mysqldb-and-mysqlconnector">The differences between MySQLdb and mysqlconnector</a><br/>
+2.<a href="http://charlesnagy.info/it/python/python-mysqldb-vs-mysql-connector-query-performance">Python MySQLdb vs mysql-connector query performance</a><br/>
+3. <a href="https://wiki.openstack.org/wiki/PyMySQL_evaluation">PyMySQL evaluation</a></p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/8/14</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E5%BA%93.html'>数据库</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
 			<div class="article">
                 <a class="clearlink" href="15026939409542.html">
                 
@@ -453,133 +621,6 @@ L_i = -\log\left(\frac{e^{f_{y_i}}}{ \sum_j e^{f_j} }\right) \hspace{0.5in} \tex
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="TensorFlow_introduction.html">
-                
-                  <h1>TensorFlow(1): Tensorflow Introduction</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<ul>
-<li>
-<a href="#toc_0">Install</a>
-</li>
-<li>
-<a href="#toc_1">TensorFlow Python docset</a>
-</li>
-<li>
-<a href="#toc_2">Basics</a>
-<ul>
-<li>
-<ul>
-<li>
-<a href="#toc_3">Graph and Operation</a>
-</li>
-<li>
-<a href="#toc_4">Session</a>
-</li>
-<li>
-<a href="#toc_5">Steps</a>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_6">Learning Resources</a>
-</li>
-</ul>
-
-
-<p><a href="https://www.tensorflow.org">Tensorflow</a> is an open-source software library for Machine Intelligence.</p>
-
-<h2 id="toc_0">Install</h2>
-
-<p>Using <code>conda</code> tool under <code>Anaconda</code> to install tensorflow is a very convenient and direct way.</p>
-
-<h2 id="toc_1">TensorFlow Python docset</h2>
-
-<p>Build TensorFlow Python docset is complex, many dependent utilities and procedures are needed. Fortunately,  a feed for TensorFlow Python docset has been built for us.</p>
-
-<p>Add feed below to Dash/Zeal, and install docset. (<a href="https://github.com/ppwwyyxx/dash-docset-tensorflow">Project site</a>)</p>
-
-<pre><code>https://raw.githubusercontent.com/ppwwyyxx/dash-docset-tensorflow/master/TensorFlow.xml
-</code></pre>
-
-<h2 id="toc_2">Basics</h2>
-
-<h4 id="toc_3">Graph and Operation</h4>
-
-<p>A data flow <code>graph</code> representing a TensorFlow computation. It can be viewed via <code>TensorBoard</code>.</p>
-
-<p>An <code>Operation</code> is a node in a TensorFlow <code>Graph</code> that takes zero or more <code>Tensor</code> object as input, and produces zero or more <code>Tensor</code> objects as output.</p>
-
-<p>For example <code>c = tf.matmul(a, b)</code> creates an Operation of type <code>MatMul</code> that takes tensors \(a\) and \(b\) as input, and produces \(c\) as output.</p>
-
-<h4 id="toc_4">Session</h4>
-
-<p>If you are not using an <code>InteractiveSession</code>, then you should build the entire computation graph before starting a session and launching the graph.</p>
-
-<p>Note that there are two typical ways to create and use sessions in tensorflow:</p>
-
-<p><strong>Method 1</strong>:</p>
-
-<pre><code class="language-python">sess = tf.Session()
-# Run the variables initialization (if needed), run the operations
-result = sess.run(..., feed_dict = {...})
-sess.close() # Close the session
-</code></pre>
-
-<p><strong>Method 2</strong>:</p>
-
-<pre><code class="language-python">with tf.Session() as sess: 
-    # run the variables initialization (if needed), run the operations
-    result = sess.run(..., feed_dict = {...})
-    # This takes care of closing the session for you :)
-</code></pre>
-
-<h4 id="toc_5">Steps</h4>
-
-<p>Writing and running programs in TensorFlow has the following steps:</p>
-
-<ul>
-<li>Create Tensors (variables) that are not yet executed/evaluated.</li>
-<li>Write operations between those Tensors.</li>
-<li>Initialize your Tensors.</li>
-<li>Create a Session.</li>
-<li>Run the Session. This will run the operations you&#39;d written above.</li>
-</ul>
-
-<h2 id="toc_6">Learning Resources</h2>
-
-<ol>
-<li><a href="https://web.stanford.edu/class/cs20si/">CS 20SI: Tensorflow for Deep Learning Research</a></li>
-</ol>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/8/12</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Tensorflow.html'>Tensorflow</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -681,6 +722,12 @@ sess.close() # Close the session
 	      
 		      
 			      <li class="post">
+			        <a href="15097967286089.html">如何系统的学习C++语言</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="introdution_to_big_data.html">Introduction to big data</a>
 			      </li>
 		     
@@ -700,12 +747,6 @@ sess.close() # Close the session
 		      
 			      <li class="post">
 			        <a href="15089188725996.html">Linux 内存布局</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15089186263565.html">Valgrind</a>
 			      </li>
 		     
 		  
