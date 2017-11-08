@@ -338,7 +338,7 @@ var _hmt = _hmt || [];
 <a href="#toc_11">Content Based Recommendations</a>
 </li>
 <li>
-<a href="#toc_12">Collaborative Filtering</a>
+<a href="#toc_12">Feature Finder</a>
 </li>
 <li>
 <a href="#toc_13">Collaborative Filtering Algorithm</a>
@@ -580,7 +580,7 @@ plt.show()
 
 <p>We can introduce two features, \(x_1\) and \(x_2\) which represents how much romance or how much action a movie may have (on a scale of 0−1).</p>
 
-<p>One approach is that we could do linear regression for every single user. For each user \(j\), learn a parameter \(\theta^{(j)} \in \mathbb{R}^3\). Predict user \(j\) as rating movie \(i\) with \((\theta^{(j)})^Tx^{(i)}\) stars.</p>
+<p>One approach is that we could do linear regression for every single user. For each user \(j\), learn a parameter \(\theta^{(j)} \in \mathbb{R}^3\). <u>Predict user \(j\) as rating movie \(i\) with \((\theta^{(j)})^Tx^{(i)}\) stars</u>.</p>
 
 <ul>
 <li><p>\(\theta^{(j)} =\) parameter vector for user \(j\)</p></li>
@@ -607,7 +607,7 @@ plt.show()
 
 <p>The only real difference is that we <strong>eliminate the constant</strong> \(\dfrac{1}{m}\).</p>
 
-<h3 id="toc_12">Collaborative Filtering</h3>
+<h3 id="toc_12">Feature Finder</h3>
 
 <p>It can be very difficult to find features such as &quot;amount of romance&quot; or &quot;amount of action&quot; in a movie. To figure this out, we can use <u>feature finders</u> .</p>
 
@@ -623,17 +623,23 @@ plt.show()
 
 <p>To speed things up, we can simultaneously minimize our features and our parameters:</p>
 
+<p><img src="media/15045011015887/Collaborative%20Filtering.png" alt="Collaborative Filtering"/></p>
+
 <p>\(J(x,\theta) = \dfrac{1}{2} \displaystyle \sum_{(i,j):r(i,j)=1}((\theta^{(j)})^Tx^{(i)} - y^{(i,j)})^2 + \dfrac{\lambda}{2}\sum_{i=1}^{n_m} \sum_{k=1}^{n} (x_k^{(i)})^2 + \dfrac{\lambda}{2}\sum_{j=1}^{n_u} \sum_{k=1}^{n} (\theta_k^{(j)})^2\)</p>
 
-<p>It looks very complicated, but we&#39;ve only combined the cost function for theta and the cost function for \(x\).</p>
+<p>It looks very complicated, but we&#39;ve only combined the cost function for \(\theta\) and the cost function for \(x\).</p>
 
-<p>Because the algorithm can learn them itself, the bias units where x0=1 have been removed, therefore x∈ℝn and θ∈ℝn.</p>
+<p>Because the algorithm can learn them itself, the bias units where \(x_0=1\) have been removed, therefore \(x\in \mathcal{R}^ n\) and \(\theta \in \mathcal{R} ^n\).</p>
 
-<p>These are the steps in the algorithm:</p>
+<p>These are three steps in the algorithm:</p>
 
 <ol>
 <li><p>Initialize \(x^{(i)},...,x^{(n_m)},\theta^{(1)},...,\theta^{(n_u)}\) to small random values. This serves to break symmetry and ensures that the algorithm learns features \(x^{(i)},...,x^{(n_m)}\) that are different from each other.</p></li>
-<li><p>Minimize \(J(x^{(i)},...,x^{(n_m)},\theta^{(1)},...,\theta^{(n_u)})\) using gradient descent (or an advanced optimization algorithm).E.g. for every \(j=1,...,n_u,i=1,...n_m\):\(x_k^{(i)} := x_k^{(i)} - \alpha\left (\displaystyle \sum_{j:r(i,j)=1}{((\theta^{(j)})^T x^{(i)} - y^{(i,j)}) \theta_k^{(j)}} + \lambda x_k^{(i)} \right)\)\(\theta_k^{(j)} := \theta_k^{(j)} - \alpha\left (\displaystyle \sum_{i:r(i,j)=1}{((\theta^{(j)})^T x^{(i)} - y^{(i,j)}) x_k^{(i)}} + \lambda \theta_k^{(j)} \right)\)</p></li>
+<li><p>Minimize \(J(x^{(i)},...,x^{(n_m)},\theta^{(1)},...,\theta^{(n_u)})\) using gradient descent (or an advanced optimization algorithm).  E.g. for every \(j=1,...,n_u,i=1,...n_m\):</p>
+
+<p>\(x_k^{(i)} := x_k^{(i)} - \alpha\left (\displaystyle \sum_{j:r(i,j)=1}{((\theta^{(j)})^T x^{(i)} - y^{(i,j)}) \theta_k^{(j)}} + \lambda x_k^{(i)} \right)\)</p>
+
+<p>\(\theta_k^{(j)} := \theta_k^{(j)} - \alpha\left (\displaystyle \sum_{i:r(i,j)=1}{((\theta^{(j)})^T x^{(i)} - y^{(i,j)}) x_k^{(i)}} + \lambda \theta_k^{(j)} \right)\)</p></li>
 <li><p>For a user with parameters θ and a movie with (learned) features x, predict a star rating of \(\theta^Tx\).</p></li>
 </ol>
 
