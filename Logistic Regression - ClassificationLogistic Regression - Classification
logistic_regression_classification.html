@@ -14,7 +14,7 @@ var _hmt = _hmt || [];
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  调试 - techlarry
+  Machine Learning (3): Logistic Regression - Classification - techlarry
   
   </title>
   
@@ -149,14 +149,14 @@ var _hmt = _hmt || [];
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>调试</h1>
+          <h1>Machine Learning (3): Logistic Regression - Classification</h1>
      
         <div class="read-more clearfix">
-          <span class="date">2017/6/10</span>
+          <span class="date">2017/6/27</span>
 
           <span>posted in&nbsp;</span> 
           
-              <span class="posted-in"><a href='Linux%20%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B.html'>Linux 系统编程</a></span>
+              <span class="posted-in"><a href='%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html'>机器学习</a></span>
            
          
           <span class="comments">
@@ -169,26 +169,151 @@ var _hmt = _hmt || [];
       </div><!-- article -->
 
       <div class="article-content">
-      <h2 id="toc_0">pdb</h2>
+      <ul>
+<li>
+<a href="#toc_0">Binary Classification</a>
+<ul>
+<li>
+<a href="#toc_1">Examples</a>
+</li>
+<li>
+<a href="#toc_2">Hypothesis Representation</a>
+</li>
+<li>
+<a href="#toc_3">Decision boundary</a>
+</li>
+<li>
+<a href="#toc_4">Cost Function</a>
+</li>
+<li>
+<a href="#toc_5">Gradient Descent</a>
+</li>
+<li>
+<a href="#toc_6">Advanced Optimization</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_7">Multiclass classification</a>
+<ul>
+<li>
+<a href="#toc_8">Example</a>
+</li>
+<li>
+<a href="#toc_9">Method</a>
+</li>
+</ul>
+</li>
+</ul>
 
-<p>pdb是基于命令行的调试工具，是Python的调试器，非常类似GNU的GDB（调试c/c++）</p>
 
-<pre><code class="language-python">python -m pdb some.py # -m是模块的意思, pdb模块
-</code></pre>
+<p>The classification problem is just like the regression problem, except that the values \(y\) we now want to predict take on only a small number of discrete values.</p>
 
-<h3 id="toc_1">命令</h3>
+<h2 id="toc_0">Binary Classification</h2>
+
+<p><strong>Binary classification problem</strong> : \(y\) can take on only two values, 0 and 1.</p>
+
+<h3 id="toc_1">Examples</h3>
 
 <ul>
-<li>输入命令<code>l</code> (list) 查看代码</li>
-<li>输入命令<code>n</code> (next) 可以单步执行代码</li>
-<li>输入命令<code>c</code> (continue) 继续执行代码</li>
-<li>输入命令<code>b</code> (break) 添加断点</li>
-<li>输入命令<code>clear</code> 清除断点</li>
-<li>输入命令<code>p</code> (print) 打印一个变量的值</li>
-<li>输入命令<code>s</code> (step) 进入到一个函数</li>
-<li>输入命令<code>a</code> (args) 打印所有的形参数据</li>
-<li>输入命令<code>r</code> (return) 快速执行到函数的最后一行</li>
-<li>输入命令<code>q</code> quit 退出调试</li>
+<li>Email: Spam/Not Spam?</li>
+<li>Online Transaction: Fraudulent(Yes/NO)?</li>
+<li>Tumor: Malignant/ Benign?</li>
+</ul>
+
+<p>Given \(x(i)\), the corresponding \(y(i)\) is also called the <strong>label</strong> for the training example.</p>
+
+<h3 id="toc_2">Hypothesis Representation</h3>
+
+<p>It doesn&#39;t make sense for \(h_\theta(x)\) to take values larger than 1 or smaller than0, when we know that \( y\in \{0,1\}\). To fix this, let&#39;s change the form for our hypotheses \(h_\theta(x)\) to satisfy \(0\leq_\theta(x)\leq 1\). This is accomplished by plugging \(\theta^Tx\) into the Logistic Function.</p>
+
+<p><strong>Logistic Function</strong>:<br/>
+also called <code>sigmoid</code> (/&#39;sɪgmɔɪd/) function<br/>
+   \[\begin{align*}&amp; h_\theta (x) = g ( \theta^T x ) \newline \newline&amp; z = \theta^T x \newline&amp; g(z) = \dfrac{1}{1 + e^{-z}}\end{align*}\]</p>
+
+<ol>
+<li><p>The sigmoid function g(z), maps any real number to the (0, 1) interval, making it useful for transforming an arbitrary-valued function into a function better suited for classification.</p></li>
+<li><p>\(h_\theta(x)\) gives us the probability that our output is 1. Probability that prediction is 0 is just the complement of probability that it is 1:</p></li>
+</ol>
+
+<p>\[\begin{align*}&amp; h_\theta(x) = P(y=1 | x ; \theta) = 1 - P(y=0 | x ; \theta) \newline&amp; P(y = 0 | x;\theta) + P(y = 1 | x ; \theta) = 1\end{align*}\]</p>
+
+<h3 id="toc_3">Decision boundary</h3>
+
+<p>The <strong>decision boundary</strong> is the line that separates the area where \(y\) = 0 and where \(y = 1\). It is defined by hypothesis function.</p>
+
+<h3 id="toc_4">Cost Function</h3>
+
+<p>We cannot use the same cost function that we use for linear regression because the Logistic Function will cause the output to be wary, causing many local optima.</p>
+
+<p>Instead, our cost function for logistic regression looks like:</p>
+
+<p>\[\begin{align*}&amp; J(\theta) = \dfrac{1}{m} \sum_{i=1}^m \mathrm{Cost}(h_\theta(x^{(i)}),y^{(i)}) \newline &amp; \mathrm{Cost}(h_\theta(x),y) = -\log(h_\theta(x)) \; &amp; \text{if y = 1} \newline &amp; \mathrm{Cost}(h_\theta(x),y) = -\log(1-h_\theta(x)) \; &amp; \text{if y = 0}\end{align*}\]</p>
+
+<p>Cost function&#39;s two conditional cases can be compressed into one case:<br/>
+\[Cost(h_\theta(x),y)= -y \log(h_\theta(x))-(1-y) \log(1-h_\theta(x))\]</p>
+
+<p>The entire cost function can be written as follows:</p>
+
+<p>\[ J(\theta) = -\dfrac{1}{m} \sum_{i=1}^m[ y ^{(i)}\log(h_\theta(x^{(i)}))+(1-y^{(i)}) \log(1-h_\theta(x^{(i)}))]\]</p>
+
+<p>A vectorized implementation is:<br/>
+\[h=g(X\theta)\]<br/>
+\[J(\theta)=\frac{1}{m}(-y^T\log(h)-(1-y)^T\log(1-h))\]</p>
+
+<p>And the gradient of the cost is a vector of the same length as \(\theta\) where the \(j^{th}\) element is defined as follows:</p>
+
+<p>\[\frac{\partial J(\theta)}{\partial \theta_j}=\frac{1}{m}\Sigma_{i=1}^m(h_\theta(x^{(i)})-y^{(i)})x^{(i)}_j\]</p>
+
+<p>A vectorized implementation is:<br/>
+\[\frac{\partial J(\theta)}{\partial \theta_j}=\frac{1}{m}(h-y)^TX\]</p>
+
+<h3 id="toc_5">Gradient Descent</h3>
+
+<p>Repeat until {</p>
+
+<p>\[\theta_j:=\theta_j-\frac{\alpha}{m}\Sigma^m_{i=1}(h_\theta(x^{(i)})-y^{(i)})x^{(i)}_j\]<br/>
+}</p>
+
+<p>A vectorized implementation is:</p>
+
+<p>\[\theta:=\theta-\frac{\alpha}{m}X^T(g(X\theta)-y)\]</p>
+
+<h3 id="toc_6">Advanced Optimization</h3>
+
+<p>There are more sophisticated, faster ways to optimize \(\theta\) that can be used instead of gradient descent:</p>
+
+<ul>
+<li>Conjugate gradient</li>
+<li>BFGS</li>
+<li>L-BFGS</li>
+</ul>
+
+<p>You should not write these algorithms yourself, but use the libraries provided by Octave and Matlab instead.</p>
+
+<h2 id="toc_7">Multiclass classification</h2>
+
+<h3 id="toc_8">Example</h3>
+
+<ul>
+<li>Email foldering/tagging: Work, friends, family, hobby</li>
+<li>Medical diagrams: Not ill, Cold, Flu</li>
+<li>Weather: Sunny, Cloudy, Rain, Snow</li>
+</ul>
+
+<h3 id="toc_9">Method</h3>
+
+<p>Since \(y = \{0,1...n\}\), we divide our problem into \(n+1\) (+1 because the index starts at 0) binary classification problems; in each one, we predict the probability that &#39;y&#39; is a member of one of our classes.</p>
+
+<p>We are basically choosing one class and then lumping all the others into a single second class. We do this repeatedly, applying binary logistic regression to each case, and then use the hypothesis that returned the highest value as our prediction.</p>
+
+<p>\[\begin{align*}&amp; y \in \lbrace0, 1 ... n\rbrace \newline&amp; h_\theta^{(0)}(x) = P(y = 0 | x ; \theta) \newline&amp; h_\theta^{(1)}(x) = P(y = 1 | x ; \theta) \newline&amp; \cdots \newline&amp; h_\theta^{(n)}(x) = P(y = n | x ; \theta) \newline&amp; \mathrm{prediction} = \max_i( h_\theta ^{(i)}(x) )\newline\end{align*}\]</p>
+
+<p><strong>To summarize</strong>:</p>
+
+<ul>
+<li>Train a logistic regression classifier hθ(x) for each class to predict the probability that  \(y = i\).</li>
+<li>To make a prediction on a new x, pick the class that maximizes \(h_\theta(x)\).</li>
 </ul>
 
 
@@ -200,16 +325,16 @@ var _hmt = _hmt || [];
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="linear_regression_with_multiple_variables.html" 
-          title="Previous Post: Machine Learning (2): Linear Regression with Multiple Variables">&laquo; Machine Learning (2): Linear Regression with Multiple Variables</a>
+          <a href="14987012023353.html" 
+          title="Previous Post: 口语">&laquo; 口语</a>
       
         </p>
         </div>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="14970829036232.html" 
-          title="Next Post: Python排序">Python排序 &raquo;</a>
+          <a  href="14985240916710.html" 
+          title="Next Post: Python科学计算三维可视化">Python科学计算三维可视化 &raquo;</a>
       
       </p>
         </div>
