@@ -183,6 +183,14 @@ var _hmt = _hmt || [];
 </li>
 <li>
 <a href="#toc_3">Principal Component Analysis</a>
+<ul>
+<li>
+<a href="#toc_4">Choosing the Number of Principal Components</a>
+</li>
+<li>
+<a href="#toc_5">Advice for Applying PCA</a>
+</li>
+</ul>
 </li>
 </ul>
 
@@ -329,6 +337,45 @@ Repeat:
 Ureduce = U(:,1:k);     % take the first k directions
 Z = X * Ureduce;        % compute the projected data points
 </code></pre>
+
+<h3 id="toc_4">Choosing the Number of Principal Components</h3>
+
+<p>How do we choose <u>number of principal components</u> \(k\)? </p>
+
+<p>One way to choose k is by using the following formula:</p>
+
+<ul>
+<li><p>Given the average squared projection error: \(\dfrac{1}{m}\sum^m_{i=1}||x^{(i)} - x_{approx}^{(i)}||^2\)</p></li>
+<li><p>Also given the total variation in the data: \(\dfrac{1}{m}\sum^m_{i=1}||x^{(i)}||^2\)</p></li>
+<li><p>Choose k to be the smallest value such that: \(\dfrac{\dfrac{1}{m}\sum^m_{i=1}||x^{(i)} - x_{approx}^{(i)}||^2}{\dfrac{1}{m}\sum^m_{i=1}||x^{(i)}||^2} \leq 0.01\)</p></li>
+</ul>
+
+<p>In other words, the squared projection error divided by the total variation should be less than one percent, so that <strong>99% of the variance is retained</strong> .</p>
+
+<p><strong>Algorithm for choosing k</strong></p>
+
+<ol>
+<li><p>Try PCA with k=1,2,…</p></li>
+<li><p>Compute \(U_{reduce}, z, x\)</p></li>
+<li><p>Check the formula given above that <u>99% of the variance is retained</u>. If not, go to step one and increase k.</p></li>
+</ol>
+
+<p>This procedure would actually be horribly inefficient. In Octave, we will call svd:</p>
+
+<pre>[U,S,V] = svd(Sigma)
+</pre>
+
+<p>Which gives us a matrix S. We can actually check for 99% of retained variance using the S matrix as follows:</p>
+
+<p>\(\dfrac{\sum_{i=1}^kS_{ii}}{\sum_{i=1}^nS_{ii}} \geq 0.99\)</p>
+
+<h3 id="toc_5">Advice for Applying PCA</h3>
+
+<p>The most common use of PCA is to speed up supervised learning.</p>
+
+<p>Given a training set with a large number of features (e.g. \(x^{(1)},\dots,x^{(m)} \in \mathbb{R}^{10000}\) ) we can use PCA to reduce the number of features in each example of the training set (e.g. \(z^{(1)},\dots,z^{(m)} \in \mathbb{R}^{1000}\)).</p>
+
+<p>Note that we should define the PCA reduction from \(x^{(i)}\) to \(z^{(i)}\) only on the training set and not on the cross-validation or test sets. You can apply the mapping z(i) to your cross-validation and test sets after it is defined on the training set.</p>
 
 
     
