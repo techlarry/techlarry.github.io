@@ -53,8 +53,6 @@ var _hmt = _hmt || [];
         
         <li id=""><a target="_self" href="archives.html">Archives</a></li>
         
-        <li id=""><a target="_self" href="about.html">About</a></li>
-        
         <li id=""><a target="_self" href="category.html">Category</a></li>
         
         <li id=""><a target="_self" href="notebook.html">NoteBook</a></li>
@@ -87,8 +85,6 @@ var _hmt = _hmt || [];
         <li><a target="_self" href="index.html">Home</a></li>
         
         <li><a target="_self" href="archives.html">Archives</a></li>
-        
-        <li><a target="_self" href="about.html">About</a></li>
         
         <li><a target="_self" href="category.html">Category</a></li>
         
@@ -150,6 +146,110 @@ var _hmt = _hmt || [];
 	<div class="large-8 medium-8 columns">
 		<div class="markdown-body home-categories">
 		
+			<div class="article">
+                <a class="clearlink" href="python_generator.html">
+                
+                  <h1>Generator</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>Any function that contains a <code>yield</code> statement is called a <code>generator</code>.</p>
+
+<h3 id="toc_0">yield statement</h3>
+
+<p>Each time a value is yielded (with <code>yield</code>), the function freezes; that is, it stops its execution at exactly that point and waits to be reawakened.</p>
+
+<h3 id="toc_1">generator comprehension</h3>
+
+<p><code>Generator comprehension</code> works in the same way as <code>list comprehension</code>, except that a list isn&#39;t constructed. Instead, a <code>generator</code> is returned.</p>
+
+<pre><code class="language-python">&gt;&gt;&gt; h = (i for i in range(10))
+&gt;&gt;&gt; h
+&lt;generator object &lt;genexpr&gt; at 0x104d76ba0&gt;
+&gt;&gt;&gt; list(h)
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+</code></pre>
+
+<p>When using <code>generator comprehension</code>, if there already exists parentheses, you don&#39;t need to add another pair.</p>
+
+<pre><code class="language-python">&gt;&gt;&gt; sorted(100-i for i in range(10))
+[91, 92, 93, 94, 95, 96, 97, 98, 99, 100]
+</code></pre>
+
+<h3 id="toc_2">Recursive generator</h3>
+
+<p><code>generators</code> are ideal for complex recursive algorithms that gradually build a result. </p>
+
+<p>A <code>recursive generator</code> could be used to flatten a nested list.</p>
+
+<pre><code class="language-python">def flatten(nested):
+    &quot;&quot;&quot;
+    When flatten is called, you have two possibilites: the base case and the recursive case.
+
+    In the base case, the function is told to flatten a single element.
+    In the recursive case, flatten it.
+
+    &gt;&gt;&gt; list(flatten([[[1], 2], 3, 4, [5, [6, 7]], 8]))
+    [1, 2, 3, 4, 5, 6, 7, 8]
+    &gt;&gt;&gt; list(flatten([&#39;foo&#39;, [&#39;bar&#39;, [&#39;baz&#39;]]]))
+    [&#39;foo&#39;, &#39;bar&#39;, &#39;baz&#39;]
+    &quot;&quot;&quot;
+    try:
+        try:
+            nested + &#39; &#39;
+        except TypeError:
+            pass
+        else:
+            raise TypeError
+        
+        for sublist in nested:
+            for element in flatten(sublist):
+                yield element
+
+    except TypeError:
+        yield nested
+
+
+if __name__ == &quot;__main__&quot;:
+    import doctest
+    doctest.testmod(verbose=True)
+</code></pre>
+
+<p>An <code>inorder traversal</code> (also <code>postoder traversal</code> and <code>preorder traversal</code>) of a <code>binary search tree</code> might use the <code>recursive generator</code>, detailed code here <a href="http://larryim.cc/binary_search_tree.html">Binary Search Tree</a></p>
+
+<h3 id="toc_3">Generator methods</h3>
+
+<p>We may supply generators with values after they have started running, by using a communications channel between the <code>generator</code> and the “outside world,” with the following two end points:</p>
+
+<ul>
+<li><p>The outside world has access to a method on the generator called <code>send</code>, which works just like <code>next</code>, except that it takes a single argument (the “message” to send—an arbitrary object).</p></li>
+<li><p>Inside the suspended generator, <strong><code>yield</code> may now be used as an <code>expression</code>, rather than a <code>statement</code></strong>. In other words, when the generator is resumed, yield returns a value—the value sent from the outside through <code>send</code>. If <code>next</code> was used, <code>yield</code> returns <code>None</code>.</p></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/7/23</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
 			<div class="article">
                 <a class="clearlink" href="python_iterator.html">
                 
@@ -831,334 +931,6 @@ if __name__ == &#39;__main__&#39;:
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="binary_search_tree.html">
-                
-                  <h1>Python树(三)：Binary Search Tree</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>A <code>binary search tree</code>  is a tree that keys that are less than the parent are found in the left subtree, and keys that are greater than the parent are found in the right subtree.</p>
-
-<p>Let \(x\) be a node in a binary search tree. If \(y\) is a node in the left subtree of \(x\), then \(y.key\le x.key\). If \(y\) is a node in the right subtree of \(x\), then \(y.key\le x.key\).</p>
-
-<h2 id="toc_0">Implementation</h2>
-
-<ul>
-<li><code>Map()</code> Create a new, empty map.</li>
-<li><code>put(key,val)</code> Add a new key-value pair to the map. If the key is already in the map then replace the old value with the new value.</li>
-<li><code>get(key)</code> Given a key, return the value stored in the map or <code>None</code> otherwise.</li>
-<li><code>del</code> Delete the key-value pair from the map using a statement of the form <code>del map[key]</code>.</li>
-<li><code>len()</code> Return the number of key-value pairs stored in the map.</li>
-<li><code>in</code> Return <code>True</code> for a statement of the form <code>key in map</code>, if the given key is in the map.</li>
-</ul>
-
-<p>To implement the binary search tree,  the method of <code>the nodes and references approached</code> similar to <code>binary tree</code>(<a href="http://larryim.cc/tree_2.html">Link</a>) The <code>BinarySearchTree</code> class has a reference to the <code>TreeNode</code> that is the root of the binary search tree. </p>
-
-<h3 id="toc_1"><code>delete</code> method</h3>
-
-<p>Once we’ve found the node containing the key we want to delete, there are three cases that we must consider:</p>
-
-<ul>
-<li>The node to be deleted has no children.</li>
-<li>The node to be deleted has only one child.</li>
-<li>The node to be deleted has two children.</li>
-</ul>
-
-<p>The first case is straightforward. If the current node has no children all we need to do is delete the node and remove the reference to this node in the parent. The code for this case is shown in here.</p>
-
-<p>The second case is only slightly more complicated. If a node has only a single child, then we can simply promote the child to take the place of its parent. The code for this case is shown in the next listing. As you look at this code you will see that there are six cases to consider. Since the cases are symmetric with respect to either having a left or right child we will just discuss the case where the current node has a left child. The decision proceeds as follows:</p>
-
-<ul>
-<li>If the current node is a left child then we only need to update the parent reference of the left child to point to the parent of the current node, and then update the left child reference of the parent to point to the current node’s left child.</li>
-<li>If the current node is a right child then we only need to update the parent reference of the left child to point to the parent of the current node, and then update the right child reference of the parent to point to the current node’s left child.</li>
-<li>If the current node has no parent, it must be the root. In this case we will just replace the key, payload, leftChild, and rightChild data by calling the <code>replaceNodeData</code> method on the root.</li>
-</ul>
-
-<p>The third case is the most difficult case to handle. If a node has two children, then it is unlikely that we can simply promote one of them to take the node’s place. We can, however, search the tree for a node that can be used to replace the one scheduled for deletion. What we need is a node that will preserve the binary search tree relationships for both of the existing left and right subtrees. The node that will do this is the node that has the next-largest key in the tree. We call this node the <code>successor</code>, and we will look at a way to find the successor shortly. The successor is guaranteed to have no more than one child, so we know how to remove it using the two cases for deletion that we have already implemented. Once the successor has been removed, we simply put it in the tree in place of the node to be deleted.</p>
-
-<h3 id="toc_2"><code>successor</code> Method</h3>
-
-<p>The code to find the successor is a method of the <code>TreeNode</code> class. This code makes use of the same properties of binary search trees that cause an <code>inorder traversal</code> to print out the nodes in the tree from smallest to largest. There are three cases to consider when looking for the successor:</p>
-
-<ul>
-<li>If the node has a right child, then the successor is the smallest key in the right subtree.</li>
-<li>If the node has no right child and is the left child of its parent, then the parent is the successor.</li>
-<li>If the node is the right child of its parent, and itself has no right child, then the successor to this node is the successor of its parent, excluding this node.</li>
-</ul>
-
-<pre><code class="language-python">
-class BinarySearchTree(object):
-
-    def __init__(self):
-        self.root = None
-        self.size = 0
-
-    def put(self, key, val):
-        if self.root:
-            self._put(key, val, self.root)
-        else:
-            self.root = TreeNode(key, val)
-        self.size = self.size + 1
-
-    def _put(self, key, val, currentNode):
-        if key &lt; currentNode.key:
-            if currentNode.hasLeftChild():
-                self._put(key, val, currentNode.leftChild)
-            else:
-                currentNode.leftChild = TreeNode(key, val, parent=currentNode)
-        else:
-            if currentNode.hasRightChild():
-                self._put(key, val, currentNode.rightChild)
-            else:
-                currentNode.rightChild = TreeNode(key, val, parent=currentNode)
-
-    def __setitem__(self, k, v):
-        self.put(k, v)
-
-    def get(self, key):
-        if self.root:
-            res = self._get(key, self.root)
-            if res:
-                return res.payload
-            else:
-                return None
-        else:
-            return None
-
-    def _get(self, key, currentNode):
-        if not currentNode:
-            return None
-        elif currentNode.key == key:
-            return currentNode
-        elif key &lt; currentNode.key:
-            return self._get(key, currentNode.leftChild)
-        else:
-            return self._get(key, currentNode.rightChild)
-
-    def __getitem__(self, key):
-        res = self.get(key)
-        if res:
-            return res
-        else:
-            raise KeyError(&#39;Error, key not in tree&#39;)
-
-    def __contains__(self, key):
-        if self._get(key, self.root):
-            return True
-        else:
-            return False
-
-    def length(self):
-        return self.size
-
-    def __len__(self):
-        return self.size
-
-    def __iter__(self):
-        return self.root.__iter__()
-
-    def delete(self, key):
-        if self.size &gt; 1:
-            nodeToRemove = self._get(key, self.root)
-            if nodeToRemove:
-                self.remove(nodeToRemove)
-                self.size = self.size - 1
-            else:
-                raise KeyError(&#39;Error, key not in tree&#39;)
-        elif self.size == 1 and self.root.key == key:
-            self.root = None
-            self.size = self.size - 1
-        else:
-            raise KeyError(&#39;Error, key not in tree&#39;)
-
-    def __delitem__(self, key):
-        self.delete(key)
-
-    def remove(self, currentNode):
-        if currentNode.isLeaf():  # leaf
-            if currentNode == currentNode.parent.leftChild:
-                currentNode.parent.leftChild = None
-            else:
-                currentNode.parent.rightChild = None
-        elif currentNode.hasBothChildren():  # interior
-            succ = currentNode.findSuccessor()
-            succ.spliceOut()
-            currentNode.key = succ.key
-            currentNode.payload = succ.payload
-        else:  # this node has one child
-            if currentNode.hasLeftChild():
-                if currentNode.isLeftChild():
-                    currentNode.leftChild.parent = currentNode.parent
-                    currentNode.parent.leftChild = currentNode.leftChild
-                elif currentNode.isRightChild():
-                    currentNode.leftChild.parent = currentNode.parent
-                    currentNode.parent.rightChild = currentNode.leftChild
-                else:
-                    currentNode.replaceNodeData(currentNode.leftChild.key,
-                                                currentNode.leftChild.payload,
-                                                currentNode.leftChild.leftChild,
-                                                currentNode.leftChild.rightChild)
-            else:
-                if currentNode.isLeftChild():
-                    currentNode.rightChild.parent = currentNode.parent
-                    currentNode.parent.leftChild = currentNode.rightChild
-                elif currentNode.isRightChild():
-                    currentNode.rightChild.parent = currentNode.parent
-                    currentNode.parent.rightChild = currentNode.rightChild
-                else:
-                    currentNode.replaceNodeData(currentNode.rightChild.key,
-                                                currentNode.rightChild.payload,
-                                                currentNode.rightChild.leftChild,
-                                                currentNode.rightChild.rightChild)
-
-    def inorder(self):
-        self._inorder(self.root)
-
-    def _inorder(self, tree):
-        if tree != None:
-            self._inorder(tree.leftChild)
-            print(tree.key)
-            self._inorder(tree.rightChild)
-
-    def postorder(self):
-        self._postorder(self.root)
-
-    def _postorder(self, tree):
-        if tree:
-            self._postorder(tree.rightChild)
-            self._postorder(tree.leftChild)
-            print(tree.key)
-
-    def preorder(self):
-        self._preorder(self, self.root)
-
-    def _preorder(self, tree):
-        if tree:
-            print(tree.key)
-            self._preorder(tree.leftChild)
-            self._preorder(tree.rightChild)
-
-
-class TreeNode:
-    def __init__(self, key, val, left=None, right=None, parent=None):
-        self.key = key
-        self.payload = val
-        self.leftChild = left
-        self.rightChild = right
-        self.parent = parent
-        self.balanceFactor = 0
-
-    def hasLeftChild(self):
-        return self.leftChild
-
-    def hasRightChild(self):
-        return self.rightChild
-
-    def isLeftChild(self):
-        return self.parent and self.parent.leftChild == self
-
-    def isRightChild(self):
-        return self.parent and self.parent.rightChild == self
-
-    def isRoot(self):
-        return not self.parent
-
-    def isLeaf(self):
-        return not (self.rightChild or self.leftChild)
-
-    def hasAnyChildren(self):
-        return self.rightChild or self.leftChild
-
-    def hasBothChildren(self):
-        return self.rightChild and self.leftChild
-
-    def replaceNodeData(self, key, value, lc, rc):
-        self.key = key
-        self.payload = value
-        self.leftChild = lc
-        self.rightChild = rc
-        if self.hasLeftChild():
-            self.leftChild.parent = self
-        if self.hasRightChild():
-            self.rightChild.parent = self
-
-    def findSuccessor(self):
-        succ = None
-        if self.hasRightChild():
-            succ = self.rightChild.findMin()
-        else:
-            if self.parent:
-                if self.isLeftChild():
-                    succ = self.parent
-                else:
-                    self.parent.rightChild = None
-                    succ = self.parent.findSuccessor()
-                    self.parent.rightChild = self
-        return succ
-
-    def spliceOut(self):
-        if self.isLeaf():
-            if self.isLeftChild():
-                self.parent.leftChild = None
-            else:
-                self.parent.rightChild = None
-        elif self.hasAnyChildren():
-            if self.hasLeftChild():
-                if self.isLeftChild():
-                    self.parent.leftChild = self.leftChild
-                else:
-                    self.parent.rightChild = self.leftChild
-                self.leftChild.parent = self.parent
-            else:
-                if self.isLeftChild():
-                    self.parent.leftChild = self.rightChild
-                else:
-                    self.parent.rightChild = self.rightChild
-                self.rightChild.parent = self.parent
-
-    def findMin(self):
-        current = self
-        while current.hasLeftChild():
-            current = current.leftChild
-        return current
-
-    def __iter__(self):
-        &quot;&quot;&quot;The standard inorder traversal of a binary tree.&quot;&quot;&quot;
-        if self:
-            if self.hasLeftChild():
-                for elem in self.leftChild:
-                    yield elem
-            yield self.key
-            if self.hasRightChild():
-                for elem in self.rightChild:
-                    yield elem
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/7/19</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Tree.html'>Tree</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1260,7 +1032,13 @@ class TreeNode:
 	      
 		      
 			      <li class="post">
-			        <a href="scalable%20machine%20learning.html">Scalable Machine Learning</a>
+			        <a href="15108229432607.html">`Filter`, `Map`, `Reduce`</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="scalable%20machine%20learning.html">CS190: Scalable Machine Learning</a>
 			      </li>
 		     
 		  
@@ -1279,12 +1057,6 @@ class TreeNode:
 		      
 			      <li class="post">
 			        <a href="Spark_introduction.html">Spark</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="hardware/software_interface.html">Hardware/Software Interface</a>
 			      </li>
 		     
 		  

@@ -53,8 +53,6 @@ var _hmt = _hmt || [];
         
         <li id=""><a target="_self" href="archives.html">Archives</a></li>
         
-        <li id=""><a target="_self" href="about.html">About</a></li>
-        
         <li id=""><a target="_self" href="category.html">Category</a></li>
         
         <li id=""><a target="_self" href="notebook.html">NoteBook</a></li>
@@ -87,8 +85,6 @@ var _hmt = _hmt || [];
         <li><a target="_self" href="index.html">Home</a></li>
         
         <li><a target="_self" href="archives.html">Archives</a></li>
-        
-        <li><a target="_self" href="about.html">About</a></li>
         
         <li><a target="_self" href="category.html">Category</a></li>
         
@@ -150,6 +146,48 @@ var _hmt = _hmt || [];
 	<div class="large-8 medium-8 columns">
 		<div class="markdown-body home-categories">
 		
+			<div class="article">
+                <a class="clearlink" href="15108229432607.html">
+                
+                  <h1>`Filter`, `Map`, `Reduce`</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<pre><code class="language-python">&gt;&gt;&gt; foo = [2, 18, 9, 22, 17, 24, 8, 12, 27]
+&gt;&gt;&gt; print filter(lambda x: x % 3 == 0, foo)
+[18, 9, 24, 12, 27]
+&gt;&gt;&gt; 
+&gt;&gt;&gt; print map(lambda x: x * 2 + 10, foo)
+[14, 46, 28, 54, 44, 58, 26, 34, 64]
+&gt;&gt;&gt; 
+&gt;&gt;&gt; print reduce(lambda x, y: x + y, foo)
+139
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/11/16</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
 			<div class="article">
                 <a class="clearlink" href="15086547919641.html">
                 
@@ -628,110 +666,6 @@ while True:
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="python_generator.html">
-                
-                  <h1>Generator</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>Any function that contains a <code>yield</code> statement is called a <code>generator</code>.</p>
-
-<h3 id="toc_0">yield statement</h3>
-
-<p>Each time a value is yielded (with <code>yield</code>), the function freezes; that is, it stops its execution at exactly that point and waits to be reawakened.</p>
-
-<h3 id="toc_1">generator comprehension</h3>
-
-<p><code>Generator comprehension</code> works in the same way as <code>list comprehension</code>, except that a list isn&#39;t constructed. Instead, a <code>generator</code> is returned.</p>
-
-<pre><code class="language-python">&gt;&gt;&gt; h = (i for i in range(10))
-&gt;&gt;&gt; h
-&lt;generator object &lt;genexpr&gt; at 0x104d76ba0&gt;
-&gt;&gt;&gt; list(h)
-[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-</code></pre>
-
-<p>When using <code>generator comprehension</code>, if there already exists parentheses, you don&#39;t need to add another pair.</p>
-
-<pre><code class="language-python">&gt;&gt;&gt; sorted(100-i for i in range(10))
-[91, 92, 93, 94, 95, 96, 97, 98, 99, 100]
-</code></pre>
-
-<h3 id="toc_2">Recursive generator</h3>
-
-<p><code>generators</code> are ideal for complex recursive algorithms that gradually build a result. </p>
-
-<p>A <code>recursive generator</code> could be used to flatten a nested list.</p>
-
-<pre><code class="language-python">def flatten(nested):
-    &quot;&quot;&quot;
-    When flatten is called, you have two possibilites: the base case and the recursive case.
-
-    In the base case, the function is told to flatten a single element.
-    In the recursive case, flatten it.
-
-    &gt;&gt;&gt; list(flatten([[[1], 2], 3, 4, [5, [6, 7]], 8]))
-    [1, 2, 3, 4, 5, 6, 7, 8]
-    &gt;&gt;&gt; list(flatten([&#39;foo&#39;, [&#39;bar&#39;, [&#39;baz&#39;]]]))
-    [&#39;foo&#39;, &#39;bar&#39;, &#39;baz&#39;]
-    &quot;&quot;&quot;
-    try:
-        try:
-            nested + &#39; &#39;
-        except TypeError:
-            pass
-        else:
-            raise TypeError
-        
-        for sublist in nested:
-            for element in flatten(sublist):
-                yield element
-
-    except TypeError:
-        yield nested
-
-
-if __name__ == &quot;__main__&quot;:
-    import doctest
-    doctest.testmod(verbose=True)
-</code></pre>
-
-<p>An <code>inorder traversal</code> (also <code>postoder traversal</code> and <code>preorder traversal</code>) of a <code>binary search tree</code> might use the <code>recursive generator</code>, detailed code here <a href="http://larryim.cc/binary_search_tree.html">Binary Search Tree</a></p>
-
-<h3 id="toc_3">Generator methods</h3>
-
-<p>We may supply generators with values after they have started running, by using a communications channel between the <code>generator</code> and the “outside world,” with the following two end points:</p>
-
-<ul>
-<li><p>The outside world has access to a method on the generator called <code>send</code>, which works just like <code>next</code>, except that it takes a single argument (the “message” to send—an arbitrary object).</p></li>
-<li><p>Inside the suspended generator, <strong><code>yield</code> may now be used as an <code>expression</code>, rather than a <code>statement</code></strong>. In other words, when the generator is resumed, yield returns a value—the value sent from the outside through <code>send</code>. If <code>next</code> was used, <code>yield</code> returns <code>None</code>.</p></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/7/23</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -833,7 +767,13 @@ if __name__ == &quot;__main__&quot;:
 	      
 		      
 			      <li class="post">
-			        <a href="scalable%20machine%20learning.html">Scalable Machine Learning</a>
+			        <a href="15108229432607.html">`Filter`, `Map`, `Reduce`</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="scalable%20machine%20learning.html">CS190: Scalable Machine Learning</a>
 			      </li>
 		     
 		  
@@ -852,12 +792,6 @@ if __name__ == &quot;__main__&quot;:
 		      
 			      <li class="post">
 			        <a href="Spark_introduction.html">Spark</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="hardware/software_interface.html">Hardware/Software Interface</a>
 			      </li>
 		     
 		  

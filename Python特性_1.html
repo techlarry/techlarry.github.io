@@ -53,8 +53,6 @@ var _hmt = _hmt || [];
         
         <li id=""><a target="_self" href="archives.html">Archives</a></li>
         
-        <li id=""><a target="_self" href="about.html">About</a></li>
-        
         <li id=""><a target="_self" href="category.html">Category</a></li>
         
         <li id=""><a target="_self" href="notebook.html">NoteBook</a></li>
@@ -87,8 +85,6 @@ var _hmt = _hmt || [];
         <li><a target="_self" href="index.html">Home</a></li>
         
         <li><a target="_self" href="archives.html">Archives</a></li>
-        
-        <li><a target="_self" href="about.html">About</a></li>
         
         <li><a target="_self" href="category.html">Category</a></li>
         
@@ -150,6 +146,110 @@ var _hmt = _hmt || [];
 	<div class="large-8 medium-8 columns">
 		<div class="markdown-body home-categories">
 		
+			<div class="article">
+                <a class="clearlink" href="python_generator.html">
+                
+                  <h1>Generator</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>Any function that contains a <code>yield</code> statement is called a <code>generator</code>.</p>
+
+<h3 id="toc_0">yield statement</h3>
+
+<p>Each time a value is yielded (with <code>yield</code>), the function freezes; that is, it stops its execution at exactly that point and waits to be reawakened.</p>
+
+<h3 id="toc_1">generator comprehension</h3>
+
+<p><code>Generator comprehension</code> works in the same way as <code>list comprehension</code>, except that a list isn&#39;t constructed. Instead, a <code>generator</code> is returned.</p>
+
+<pre><code class="language-python">&gt;&gt;&gt; h = (i for i in range(10))
+&gt;&gt;&gt; h
+&lt;generator object &lt;genexpr&gt; at 0x104d76ba0&gt;
+&gt;&gt;&gt; list(h)
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+</code></pre>
+
+<p>When using <code>generator comprehension</code>, if there already exists parentheses, you don&#39;t need to add another pair.</p>
+
+<pre><code class="language-python">&gt;&gt;&gt; sorted(100-i for i in range(10))
+[91, 92, 93, 94, 95, 96, 97, 98, 99, 100]
+</code></pre>
+
+<h3 id="toc_2">Recursive generator</h3>
+
+<p><code>generators</code> are ideal for complex recursive algorithms that gradually build a result. </p>
+
+<p>A <code>recursive generator</code> could be used to flatten a nested list.</p>
+
+<pre><code class="language-python">def flatten(nested):
+    &quot;&quot;&quot;
+    When flatten is called, you have two possibilites: the base case and the recursive case.
+
+    In the base case, the function is told to flatten a single element.
+    In the recursive case, flatten it.
+
+    &gt;&gt;&gt; list(flatten([[[1], 2], 3, 4, [5, [6, 7]], 8]))
+    [1, 2, 3, 4, 5, 6, 7, 8]
+    &gt;&gt;&gt; list(flatten([&#39;foo&#39;, [&#39;bar&#39;, [&#39;baz&#39;]]]))
+    [&#39;foo&#39;, &#39;bar&#39;, &#39;baz&#39;]
+    &quot;&quot;&quot;
+    try:
+        try:
+            nested + &#39; &#39;
+        except TypeError:
+            pass
+        else:
+            raise TypeError
+        
+        for sublist in nested:
+            for element in flatten(sublist):
+                yield element
+
+    except TypeError:
+        yield nested
+
+
+if __name__ == &quot;__main__&quot;:
+    import doctest
+    doctest.testmod(verbose=True)
+</code></pre>
+
+<p>An <code>inorder traversal</code> (also <code>postoder traversal</code> and <code>preorder traversal</code>) of a <code>binary search tree</code> might use the <code>recursive generator</code>, detailed code here <a href="http://larryim.cc/binary_search_tree.html">Binary Search Tree</a></p>
+
+<h3 id="toc_3">Generator methods</h3>
+
+<p>We may supply generators with values after they have started running, by using a communications channel between the <code>generator</code> and the “outside world,” with the following two end points:</p>
+
+<ul>
+<li><p>The outside world has access to a method on the generator called <code>send</code>, which works just like <code>next</code>, except that it takes a single argument (the “message” to send—an arbitrary object).</p></li>
+<li><p>Inside the suspended generator, <strong><code>yield</code> may now be used as an <code>expression</code>, rather than a <code>statement</code></strong>. In other words, when the generator is resumed, yield returns a value—the value sent from the outside through <code>send</code>. If <code>next</code> was used, <code>yield</code> returns <code>None</code>.</p></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/7/23</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
 			<div class="article">
                 <a class="clearlink" href="python_iterator.html">
                 
@@ -603,125 +703,6 @@ if __name__ == &quot;__main__&quot;:
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="anaconda.html">
-                
-                  <h1>Anaconda</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p><a href="https://www.continuum.io/why-anaconda">Anaconda </a>(/ˌænə&#39;kɑndə/)是一个用于科学计算的python发行版，支持各种系统，提供了包管理和环境管理的功能。Anaconda 利用<code>conda</code>来进行package和environment的管理。</p>
-
-<h2 id="toc_0">Conda的包管理</h2>
-
-<p><code>Conda</code>既是一个工具，也是一个可执行命令，其核心功能是包管理和环境管理。包管理与<code>pip</code>使用类似。</p>
-
-<pre><code class="language-python"># 安装package
-conda install package
-
-# 查看已经安装的packages
-conda list
-
-# 查找package信息
-conda search package
-
-# 更新package
-conda update -n python27 package
-
-# 删除package
-conda remove -n python27 package
-</code></pre>
-
-<h2 id="toc_1">Conda的环境管理</h2>
-
-<pre><code class="language-bash"># 创建一个名为python27的环境，指定Python版本是2.7
-conda create --name python27 python=2.7
-
-# 安装好后，使用activate激活某个环境
-source activate python27 # 激活后，会发现terminal输入的地方多了python27的字样，实际上，此时系统做的事情就是把默认环境从PATH中去除，再把2.7对应的命令加入PATH
-
-# 如果想返回python 2.7环境，运行
-source deactivate python27 # for Linux &amp; Mac
-
-# 删除一个已有的环境
-conda remove --name python27 --all
-</code></pre>
-
-<h2 id="toc_2">使用Requirement.txt 安装</h2>
-
-<pre><code>while read requirement; do conda install --yes $requirement; done &lt; requirements.txt
-</code></pre>
-
-<h2 id="toc_3">使用Pycharm</h2>
-
-<p>在<code>Pycharm</code>配置里选用<code>Anaconda</code>的<code>python</code>编译器所在位置即可。</p>
-
-<h2 id="toc_4">Jupyter NoteBook</h2>
-
-<p><code>Anaconda</code>默认自带<code>Jupyter Notebook</code>，可以很方便的运行Python代码、记录笔记。</p>
-
-<h3 id="toc_5">主题</h3>
-
-<p><code>Jupyter Notebook</code>的<a href="%5Bhttps://github.com/dunovank/jupyter-themes">主题</a>可以调整，首先安装主题:</p>
-
-<pre><code>pip install --upgrade jupyterthemes
-</code></pre>
-
-<p>选择好主题后，切换主题:</p>
-
-<pre><code>jt -t theme_name -T -N
-</code></pre>
-
-<h2 id="toc_6">Bash Kernel</h2>
-
-<p><code>Bash kernel</code>(<a href="https://github.com/takluyver/bash_kernel">Project Link</a>)可以通过pip安装</p>
-
-<pre><code>pip install bash_kernel
-python -m bash_kernel.install
-</code></pre>
-
-<h2 id="toc_7">Install Python2/3 Kernel</h2>
-
-<p>Install install with</p>
-
-<pre><code>python3 -m pip install ipykernel
-python3 -m ipykernel install --user
-</code></pre>
-
-<h2 id="toc_8">Resources</h2>
-
-<p><a href="https://conda.io/docs/_downloads/conda-cheatsheet.pdf">Conda Cheat Sheet</a></p>
-
-<h2 id="toc_9">Reference</h2>
-
-<ul>
-<li><a href="https://ipython.readthedocs.io/en/latest/install/kernel_install.html">Installing the IPython kernel</a></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/7/13</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -823,7 +804,13 @@ python3 -m ipykernel install --user
 	      
 		      
 			      <li class="post">
-			        <a href="scalable%20machine%20learning.html">Scalable Machine Learning</a>
+			        <a href="15108229432607.html">`Filter`, `Map`, `Reduce`</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="scalable%20machine%20learning.html">CS190: Scalable Machine Learning</a>
 			      </li>
 		     
 		  
@@ -842,12 +829,6 @@ python3 -m ipykernel install --user
 		      
 			      <li class="post">
 			        <a href="Spark_introduction.html">Spark</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="hardware/software_interface.html">Hardware/Software Interface</a>
 			      </li>
 		     
 		  
