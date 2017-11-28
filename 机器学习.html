@@ -147,6 +147,130 @@ var _hmt = _hmt || [];
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15124807146530.html">
+                
+                  <h1>Covariance Matrix and its application in Spark</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>A <code>covariance matrix</code>(协方差矩阵, 离差矩阵) is a matrix whose element in the \(i,j\) position is the covariance between the \(i^{th}\) and \(j^{th}\) elements of a <code>random vector</code>(随机向量,多元随机变量). Each element of a random vector is a scalar <code>random variable</code>(随机变量).</p>
+
+<p>Because the covariance of the \(i^{th}\) random variable with itself is simply that random variable&#39;s variance, each element on the principal diagonal of the covariance matrix is the variance of one of the random variables:</p>
+
+<p>The covariance between random variables \(X, Y\):</p>
+
+<p>\[\text{cov}(X,Y)=\text{E}[(X-E[X])(Y-E[Y])]\]</p>
+
+<p>Then the covariance matrix \(\sum\) is the matrix whose \((i,j)\) is the covariance</p>
+
+<p>\[\sum(i,j) =\text{cov}(X_i,X_j)=\text{E}[(X_i-E[X_i])(Y_i-E[Y_i])]\]</p>
+
+<p>where \(X=[X_1,...,X_n]\)</p>
+
+<h2 id="toc_0">Distributed Computing: Spark</h2>
+
+<p>Setup: Raw data \(\mathbf{P} \in \mathbb{R}^{n \times d}\)</p>
+
+<ul>
+<li>Step 1: Zero Mean Data \(X=\text{E}(P)\)
+
+<ul>
+<li>Compute \(d\) feature means, \(m\in \mathbf{R}^d\)</li>
+<li>Communication \(m\) to all workers</li>
+<li>Subtract \(m\) from each data point</li>
+</ul></li>
+<li>Step 2: Compute Covariance Matrix \( \mathbf{C}_{\mathbf X} = \frac{1}{n} \mathbf{X}^\top \mathbf{X} \,.\)
+
+<ul>
+<li>compute the outer product of each data point, </li>
+<li>add together these outer products, and divide by the number of data points</li>
+</ul></li>
+</ul>
+
+<p><img src="media/15124807146530/compute_covariance_matrix.png" alt="compute_covariance_matrix"/></p>
+
+<p>Spark Code in Python:</p>
+
+<pre><code class="language-python">def estimateCovariance(data):
+    &quot;&quot;&quot;Compute the covariance matrix for a given rdd.
+   
+    Args:
+        data (RDD of np.ndarray):  An `RDD` consisting of NumPy arrays.
+
+    Returns:
+        np.ndarray: A multi-dimensional array where the number of rows and columns both equal the length of the arrays in the input `RDD`.
+    &quot;&quot;&quot;
+    mean = data.mean()
+    normalized = data.map(lambda x: x-mean)
+    return normalized.map(lambda x: np.outer(x, x)).sum()/data.count()
+</code></pre>
+
+<h2 id="toc_1">Reference</h2>
+
+<ol>
+<li><a href="https://en.wikipedia.org/wiki/Covariance_matrix">Covariance matrix from wikipedia</a></li>
+</ol>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/11/25</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html'>机器学习</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15114480120681.html">
+                
+                  <h1></h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h2 id="toc_0">real-world application v. s.competition</h2>
+
+<p><img src="media/15114480120681/real%20machine%20learning.png" alt="real machine learning"/></p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/11/23</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html'>机器学习</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="scalable%20machine%20learning.html">
                 
                   <h1>CS190: Scalable Machine Learning</h1>
@@ -738,95 +862,6 @@ PAC gaurantee for \(E_{out}(g)\approx 0\) \(\rightarrow\) learning possilbe!</p>
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="active_learning_intro.html">
-                
-                  <h1>主动学习</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>主动学习算法通过迭代抽样，主动寻找有利于提升效果的样本，从而减少了训练集的大小。</p>
-
-<p>获取训练样本不仅费时、费力，而且训练集包含大量的冗余样本。</p>
-
-<p>主动学习算法主要分为两阶段：第一阶段为<strong>初始化阶段</strong>，随机从未标注样本中选取小部分，由督导者\(\mathcal{S}\)标注，作为训练集建立初始分类器模型；第二阶段为<strong>循环查询阶段</strong>，督导者\(\mathcal{S}\)从未标注样本集\(U\)中，按照某种查询标准\(Q\)，选取一定的未标注样本进行标注，并加到训练样本集\(L\)中，重新训练分类器，直至达到训练停止标准为止。</p>
-
-<h1 id="toc_0">Reference</h1>
-
-<ul>
-<li>LIU Kang, QIAN Xu, WANG Ziqiang. Survey on active learning algorithms. Computer Engineering and Applications, 2012, 48（34）：1-4.</li>
-<li>Zongwei Zhou1, Jae Shin1, Lei Zhang, et al. 2017. Fine-tuning Convolutional Neural Networks for Biomedical Image Analysis: Actively and Incrementally. CVPR. <a href="http://openaccess.thecvf.com/content_cvpr_2017/papers/Zhou_Fine-Tuning_Convolutional_Neural_CVPR_2017_paper.pdf">pdf</a> </li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/10/23</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html'>机器学习</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="cdiscount_challenge.html">
-                
-                  <h1>Cdiscount’s Image Classification Challenge</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p><a href="https://www.kaggle.com/c/cdiscount-image-classification-challenge">Link</a></p>
-
-<p><code>Cdiscount.com</code> generated nearly 3 billion euros last year, making it France’s largest non-food e-commerce company. While the company already sells everything from TVs to trampolines, the list of products is still rapidly growing. By the end of this year, Cdiscount.com will have over 30 million products up for sale. This is up from 10 million products only 2 years ago. Ensuring that so many products are well classified is a challenging task.</p>
-
-<p>Currently, <code>Cdiscount.com</code> applies machine learning algorithms to the text description of the products in order to automatically predict their category. As these methods now seem close to their maximum potential, Cdiscount.com believes that the next quantitative improvement will be driven by the application of data science techniques to images.</p>
-
-<p><strong>In this challenge you will be building a model that automatically classifies the products based on their images</strong>. As a quick tour of Cdiscount.com&#39;s website can confirm, one product can have one or several images. The data set Cdiscount.com is making available is unique and characterized by superlative numbers in several ways:</p>
-
-<ul>
-<li>Almost 9 million products: half of the current catalogue</li>
-<li>More than 15 million images at 180x180 resolution</li>
-<li>More than 5000 categories: yes this is quite an extreme multi-class classification!</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/10/22</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html'>机器学习</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -928,6 +963,24 @@ PAC gaurantee for \(E_{out}(g)\approx 0\) \(\rightarrow\) learning possilbe!</p>
 	      
 		      
 			      <li class="post">
+			        <a href="15124807146530.html">Covariance Matrix and its application in Spark</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15114480120681.html"></a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15114445635476.html">MongoDB</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15108229432607.html">`Filter`, `Map`, `Reduce`</a>
 			      </li>
 		     
@@ -935,24 +988,6 @@ PAC gaurantee for \(E_{out}(g)\approx 0\) \(\rightarrow\) learning possilbe!</p>
 		      
 			      <li class="post">
 			        <a href="scalable%20machine%20learning.html">CS190: Scalable Machine Learning</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15108128842368.html">`MLlib`: Machine Learning in Apache Spark</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="introdution_to_big_data.html">Introduction to big data</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="Spark_introduction.html">Spark</a>
 			      </li>
 		     
 		  

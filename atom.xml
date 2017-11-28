@@ -4,13 +4,114 @@
   <title><![CDATA[techlarry]]></title>
   <link href="http://larryim.cc/atom.xml" rel="self"/>
   <link href="http://larryim.cc/"/>
-  <updated>2017-11-19T16:19:35+08:00</updated>
+  <updated>2017-11-21T00:09:17+08:00</updated>
   <id>http://larryim.cc/</id>
   <author>
     <name><![CDATA[]]></name>
     
   </author>
   <generator uri="http://www.mweb.im/">MWeb</generator>
+  
+  <entry>
+    <title type="html"><![CDATA[Covariance Matrix and its application in Spark]]></title>
+    <link href="http://larryim.cc/15124807146530.html"/>
+    <updated>2017-12-05T21:31:54+08:00</updated>
+    <id>http://larryim.cc/15124807146530.html</id>
+    <content type="html"><![CDATA[
+<p>A <code>covariance matrix</code>(协方差矩阵, 离差矩阵) is a matrix whose element in the \(i,j\) position is the covariance between the \(i^{th}\) and \(j^{th}\) elements of a <code>random vector</code>(随机向量,多元随机变量). Each element of a random vector is a scalar <code>random variable</code>(随机变量).</p>
+
+<p>Because the covariance of the \(i^{th}\) random variable with itself is simply that random variable&#39;s variance, each element on the principal diagonal of the covariance matrix is the variance of one of the random variables:</p>
+
+<p>The covariance between random variables \(X, Y\):</p>
+
+<p>\[\text{cov}(X,Y)=\text{E}[(X-E[X])(Y-E[Y])]\]</p>
+
+<p>Then the covariance matrix \(\sum\) is the matrix whose \((i,j)\) is the covariance</p>
+
+<p>\[\sum(i,j) =\text{cov}(X_i,X_j)=\text{E}[(X_i-E[X_i])(Y_i-E[Y_i])]\]</p>
+
+<p>where \(X=[X_1,...,X_n]\)</p>
+
+<h2 id="toc_0">Distributed Computing: Spark</h2>
+
+<p>Setup: Raw data \(\mathbf{P} \in \mathbb{R}^{n \times d}\)</p>
+
+<ul>
+<li>Step 1: Zero Mean Data \(X=\text{E}(P)\)
+
+<ul>
+<li>Compute \(d\) feature means, \(m\in \mathbf{R}^d\)</li>
+<li>Communication \(m\) to all workers</li>
+<li>Subtract \(m\) from each data point</li>
+</ul></li>
+<li>Step 2: Compute Covariance Matrix \( \mathbf{C}_{\mathbf X} = \frac{1}{n} \mathbf{X}^\top \mathbf{X} \,.\)
+
+<ul>
+<li>compute the outer product of each data point, </li>
+<li>add together these outer products, and divide by the number of data points</li>
+</ul></li>
+</ul>
+
+<p><img src="media/15124807146530/compute_covariance_matrix.png" alt="compute_covariance_matrix"/></p>
+
+<p>Spark Code in Python:</p>
+
+<pre><code class="language-python">def estimateCovariance(data):
+    &quot;&quot;&quot;Compute the covariance matrix for a given rdd.
+   
+    Args:
+        data (RDD of np.ndarray):  An `RDD` consisting of NumPy arrays.
+
+    Returns:
+        np.ndarray: A multi-dimensional array where the number of rows and columns both equal the length of the arrays in the input `RDD`.
+    &quot;&quot;&quot;
+    mean = data.mean()
+    normalized = data.map(lambda x: x-mean)
+    return normalized.map(lambda x: np.outer(x, x)).sum()/data.count()
+</code></pre>
+
+<h2 id="toc_1">Reference</h2>
+
+<ol>
+<li><a href="https://en.wikipedia.org/wiki/Covariance_matrix">Covariance matrix from wikipedia</a></li>
+</ol>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[]]></title>
+    <link href="http://larryim.cc/15114480120681.html"/>
+    <updated>2017-11-23T22:40:12+08:00</updated>
+    <id>http://larryim.cc/15114480120681.html</id>
+    <content type="html"><![CDATA[
+<h2 id="toc_0">real-world application v. s.competition</h2>
+
+<p><img src="media/15114480120681/real%20machine%20learning.png" alt="real machine learning"/></p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[MongoDB]]></title>
+    <link href="http://larryim.cc/15114445635476.html"/>
+    <updated>2017-11-23T21:42:43+08:00</updated>
+    <id>http://larryim.cc/15114445635476.html</id>
+    <content type="html"><![CDATA[
+<p><code>NoSQL</code>(<code>Not Only Sql</code>，非关系型数据库)，最初是为了大规模web应用，具有分布式、开源、可水平扩展等特点。它满足了对数据库高并发读写、对海量数据的高效率存储和访问、对数据库的高扩展性和高可用性的需求。</p>
+
+<h2 id="toc_0">数据逻辑结构</h2>
+
+<p><code>MongoDB</code>的逻辑结构主要由文档(<code>document</code>)、集合(<code>collection</code>)、数据库(<code>database</code>)这三部分组成的。</p>
+
+<h2 id="toc_1">replica set</h2>
+
+<p><code>Replica sets</code> distribute data across two or more machines for redundancy and automate failover in the event of server and network outages. <u>if the primary node fails, the cluster will pick a secondary node and automatically promote it to primary. When the former primary comes back online, it’ll do so as a secondary.</u></p>
+
+<p><img src="media/15114445635476/replica%20set.png" alt="replica set"/></p>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[`Filter`, `Map`, `Reduce`]]></title>
@@ -1122,116 +1223,6 @@ V = E_{x\sim P_{data}}[\log D(x)] + E_{x\sim P_G}[\log (1-D(x)]<br/>
 <li>Model Size</li>
 <li>Speed</li>
 <li>Energy Efficiency</li>
-</ul>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[机器学习路线]]></title>
-    <link href="http://larryim.cc/machine_learning_route.html"/>
-    <updated>2017-09-18T10:12:47+08:00</updated>
-    <id>http://larryim.cc/machine_learning_route.html</id>
-    <content type="html"><![CDATA[
-<p><img src="media/15057007673036/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.png" alt="机器学习"/></p>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[SqueezeNet]]></title>
-    <link href="http://larryim.cc/SqueezeNet.html"/>
-    <updated>2017-09-17T13:30:15+08:00</updated>
-    <id>http://larryim.cc/SqueezeNet.html</id>
-    <content type="html"><![CDATA[
-<p><code>SqueezeNet</code> achieves <code>AlexNet</code>-level accuracy on ImageNet with 50x fewer parameters, offering at least three advantages:</p>
-
-<ul>
-<li>Less communications across servers</li>
-<li>less bandwidth to export model</li>
-<li>more feasible to deploy</li>
-</ul>
-
-<p>The <code>SqueezeNet</code>architecture is available for download <a href="https://github.com/DeepScale/SqueezeNet">here</a></p>
-
-<h2 id="toc_0">Strategy</h2>
-
-<ul>
-<li>Replace \(3\times3\) filters with \(1\times1\) filters: 9X fewer parameters needed</li>
-<li>Decrease the number of input channels to \(3\times3\) filters</li>
-<li>Downsample late: large activation maps lead to higher accuracy.</li>
-</ul>
-
-<h3 id="toc_1">The Fire module</h3>
-
-<p>A Fire module is comprised of a <code>squeeze layer</code> (which has only 1x1 filters), feeding into an <code>expand layer</code> that has a mix of 1x1 and 3x3 convolution filters.</p>
-
-<p><img src="media/15056262155227/fire%20module.png" alt="fire module"/></p>
-
-<p>The following function defines <code>Fire Module</code> by TensorFlow in Python</p>
-
-<pre><code class="language-python">def fire_module(x,inp,sp,e11p,e33p):
-    with tf.variable_scope(&quot;fire&quot;):
-        with tf.variable_scope(&quot;squeeze&quot;):
-            W = tf.get_variable(&quot;weights&quot;,shape=[1,1,inp,sp])
-            b = tf.get_variable(&quot;bias&quot;,shape=[sp])
-            s = tf.nn.conv2d(x,W,[1,1,1,1],&quot;VALID&quot;)+b
-            s = tf.nn.relu(s)
-        with tf.variable_scope(&quot;e11&quot;):
-            W = tf.get_variable(&quot;weights&quot;,shape=[1,1,sp,e11p])
-            b = tf.get_variable(&quot;bias&quot;,shape=[e11p])
-            e11 = tf.nn.conv2d(s,W,[1,1,1,1],&quot;VALID&quot;)+b
-            e11 = tf.nn.relu(e11)
-        with tf.variable_scope(&quot;e33&quot;):
-            W = tf.get_variable(&quot;weights&quot;,shape=[3,3,sp,e33p])
-            b = tf.get_variable(&quot;bias&quot;,shape=[e33p])
-            e33 = tf.nn.conv2d(s,W,[1,1,1,1],&quot;SAME&quot;)+b
-            e33 = tf.nn.relu(e33)
-        return tf.concat([e11,e33],3)
-</code></pre>
-
-<h3 id="toc_2">The SqueezeNet Architecture</h3>
-
-<p><code>SqueezeNet</code> begins with a standalone convolution layer (conv1), followed by 8 <code>Fire modules</code> (ﬁre2-9), ending with a final conv layer (conv10).</p>
-
-<p><img src="media/15056262155227/Squeezenet_Architecture.png" alt="Squeezenet_Architecture"/></p>
-
-<h2 id="toc_3">Reference</h2>
-
-<ul>
-<li>Iandola F N, Han S, Moskewicz M W, et al. 2016. SqueezeNet- AlexNet-level accuracy with 50x fewer parameters and &lt; 0.5 MB model size</li>
-</ul>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Visualizing and Understanding CNN]]></title>
-    <link href="http://larryim.cc/Visualizing_and_understaning_CNN.html"/>
-    <updated>2017-09-17T18:42:40+08:00</updated>
-    <id>http://larryim.cc/Visualizing_and_understaning_CNN.html</id>
-    <content type="html"><![CDATA[
-<ol>
-<li><strong>Saliency Maps</strong>: Saliency maps are a quick way to tell which part of the image influenced the classification decision made by the network.</li>
-<li><strong>Fooling Images</strong>: We can perturb an input image so that it appears the same to humans, but will be misclassified by the pretrained network.</li>
-<li><strong>Class Visualization</strong>: We can synthesize an image to maximize the classification score of a particular class; this can give us some sense of what the network is looking for when it classifies images of that class.</li>
-</ol>
-
-<h2 id="toc_0">Saliency Map</h2>
-
-<p>A <strong>saliency map</strong> tells us the degree to which each pixel in the image affects the classification score for that image. To obtain <code>saliency map</code>, first compute the gradient of the unnormalized score corresponding to the correct class (which is a scalar) with respect to the pixels of the image. If the image has shape <code>(H, W, 3)</code> then this gradient will also have shape <code>(H, W, 3)</code>; for each pixel in the image, this gradient tells us the amount by which the classification score will change if the pixel changes by a small amount. Second, In the case of the multi-channel (e.g. RGB) image, take the absolute value of this gradient, then take the maximum value over the 3 input channels; the final saliency map thus has shape <code>(H, W)</code> and all entries are nonnegative.</p>
-
-<h5 id="toc_1">The <code>Saliency Map</code> learnt by <code>SqueezeNet</code>, trained on the data of ImageNet ILSVRC 2012 Classification dataset are as follows:</h5>
-
-<p><img src="media/15056449604256/saliency_map.png" alt="saliency_map"/></p>
-
-<h2 id="toc_2">Fooling images</h2>
-
-<h2 id="toc_3">Reference</h2>
-
-<ul>
-<li>Karen Simonyan, Andrea Vedaldi, and Andrew Zisserman. &quot;Deep Inside Convolutional Networks- Visualising Image Classification Models and Saliency Maps</li>
-<li>Szegedy et al, &quot;Intriguing properties of neural networks&quot;, ICLR 2014</li>
 </ul>
 
 ]]></content>

@@ -17,7 +17,7 @@ var _hmt = _hmt || [];
   techlarry
   
   </title>
-  
+  <meta name="keywords" content="C++; Constructor; Destructor" />
   
   <link href="atom.xml" rel="alternate" title="techlarry" type="application/atom+xml">
     <link rel="stylesheet" href="asset/css/foundation.min.css" />
@@ -146,6 +146,413 @@ var _hmt = _hmt || [];
 	<div class="large-8 medium-8 columns">
 		<div class="markdown-body home-categories">
 		
+			<div class="article">
+                <a class="clearlink" href="14970764330712.html">
+                
+                  <h1>属性@property的使用</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h3 id="toc_0">为什么要使用<code>getter</code>和<code>setter</code>方法</h3>
+
+<p>在绑定属性时，如果可以直接设置属性，虽然写起来很简单，但是没有办法检查参数，并且可以随意更改参数。</p>
+
+<pre><code class="language-python">s = People()
+s.salary = -1000
+</code></pre>
+
+<p>这显然不符合逻辑。为了限制salary的范围，可以通过一个<code>setSalary</code>方法来设置工资，再通过一个<code>getSalary</code>来获得工资，这样在<code>setSalary</code>方法里，就可以检查参数。</p>
+
+<h3 id="toc_1">私有属性添加<code>getter</code>和<code>setter</code>方法</h3>
+
+<pre><code class="language-python">class People(object):
+    def __init__(self):
+        self.__salary = 0
+    def getSalary(self):
+        return self.__salary
+    def setSalary(self, value):
+        if not isinstance(value, int):
+            raise ValueError(&#39;Money must be an integer!&#39;)
+        if value &lt;0 or value &gt; 10000:
+            raise ValueError(&#39;Money must between 0~10000!&#39;)
+        
+        self.__salary = value
+</code></pre>
+
+<h3 id="toc_2">注意点</h3>
+
+<p>t.num到底是调用<code>getter</code>还是<code>setter</code>，要根据实际的场景来判断，</p>
+
+<ol>
+<li>如果是给t.num赋值，那么一定调用<code>setNum()</code></li>
+<li>如果是获取t.num的值，那么久一定调用<code>getNum()</code></li>
+</ol>
+
+<h3 id="toc_3">@property装饰器</h3>
+
+<p>但是直接调用<code>getter()</code>和<code>setter()</code>比较复杂。Python内置的<code>@property</code>装饰器可以把这两种方法转化为属性进行调用。看一下例子：</p>
+
+<pre><code class="language-python">class People(object):
+    def __init__(self):
+        self.__salary = 0
+    
+    @property
+    def salary(self):
+        return self.__salary
+    
+    @salary.setter
+    def salary(self, value):
+        if not isinstance(value, int):
+            raise ValueError(&#39;Salary must be an integer!&#39;)
+        if value &lt;0 or value &gt; 10000:
+            raise ValueError(&#39;Salary must between 0~10000!&#39;)
+        
+        self.__salary = value
+        
+    @property
+    def tax(self):
+        self.__tax = self.__salary*0.1
+        return self.__tax
+</code></pre>
+
+<p>当不定义setter方法时，那么就定义了一个只读属性(例子中<code>tax</code>属性是只读属性)。</p>
+
+<p>@property 成为属性函数，可以对属性赋值时做必要的检查，并保证代码的清晰短小，主要有2个作用：</p>
+
+<ol>
+<li>将方法转换为只读</li>
+<li>重新实现一个属性的设置和读取方法，可做边界判定</li>
+</ol>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/5/10</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="14969760733622.html">
+                
+                  <h1>Python 高级</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h2 id="toc_0">模块重新导入</h2>
+
+<p>模块导入： import xxx, from xxx import xxxx<br/>
+增加路径 </p>
+
+<pre><code class="language-python">import sys
+sys.path.append(path)
+</code></pre>
+
+<p>模块重新导入</p>
+
+<pre><code class="language-python">from imp import reload
+reload(module name)
+</code></pre>
+
+<h2 id="toc_1">02 模块循环导入问题</h2>
+
+<p>不可以循环导入，不能在模块之间相互调用</p>
+
+<p>怎样避免循环导入：导入语句放在后面需要导入时再倒入，例如放在函数体内导入</p>
+
+<h2 id="toc_2">03/04 ==与is的区别</h2>
+
+<ul>
+<li>== 判断值是否相等</li>
+<li>Is  id(a), id(b)是否相等，<strong>比较两个引用是否指向了同一个对象（引用比较）</strong></li>
+</ul>
+
+<h2 id="toc_3">05-07 深拷贝与浅拷贝</h2>
+
+<ul>
+<li>浅拷贝是一个对象的顶层拷贝，拷贝了引用，并没有拷贝内容
+= 就是浅拷贝</li>
+<li>深拷贝是对于一个对象所有层次的拷贝（递归）
+<code>python
+import copy
+c = copy.deepcopy(a)
+</code>
+copy.deepcopy深拷贝会把引用都拷贝出来（递归）
+copy.copy() 
+使用copy模块的copy功能的时候，它会根据当前拷贝的数据类型是可变类型还是不可变类型，有不同的处理方式：如果拷贝可变类型，只能识别第一层拷贝；如果拷贝不可变类型，是浅拷贝</li>
+</ul>
+
+<h2 id="toc_4">08 不同进制的讲解</h2>
+
+<p>略</p>
+
+<h2 id="toc_5">09 原码，反码，补码，进制的转换</h2>
+
+<p>有符号数和无符号数的概念<br/>
+规则：把二进制数中的最高位（最左边的那位）用作符号位</p>
+
+<p>对于有符号数，最高位被计算机系统规定为符号位（0为正，1为负）<br/>
+对于无符号数，最高位被计算机系统规定为数据位</p>
+
+<p>数字在计算机中，是用二进制补码的形式来保存的，因此-1+1需要按照补码进行相加才是正确的结果</p>
+
+<p>1）如何计算补码？<br/>
+正数：原码=反码=补码<br/>
+负数：反码=符号位不变，其他位取反<br/>
+      补码=反码+1<br/>
+溢出：越界<br/>
+    2) 从补码转回原码<br/>
+    负数补码转换原码的规则：<br/>
+    原码=补码的符号位不变，数据位取反，尾+1</p>
+
+<p>进制的转换 bin, int, oct, hex</p>
+
+<p>0b 二进制<br/>
+0o八进制<br/>
+0x十六进制</p>
+
+<p>转换成十进制 int(&quot;&quot;,16/8/2)</p>
+
+<h2 id="toc_6">10 位运算</h2>
+
+<p>把一个数的各位整体向左移动一个位，就变成原来的2倍</p>
+
+<h3 id="toc_7">位运算的介绍</h3>
+
+<ul>
+<li>&amp; 按位于</li>
+<li>|按位或</li>
+<li><sup>按位异或</sup></li>
+<li>～按位取反</li>
+<li>&lt;&lt;按位左移 &gt;&gt;按位右移</li>
+</ul>
+
+<h3 id="toc_8">位运算</h3>
+
+<ul>
+<li>按位与： 全1才1否则0：只有对应的两个二进位均为1时，结果位才为1，否则为0</li>
+<li>按位或：有1就1： 只要对应的二个二进位有一个位1时，结果位就为1，否则为0</li>
+<li>按位异或：不同为1: 当对应的二进位不相同时，结果为1，否则为0</li>
+</ul>
+
+<h2 id="toc_9">12 私有化</h2>
+
+<p>属性的名字前面加上下划线，属于私有属性，不能从外部调用的<br/>
+方法：setNum(), getNum() 设置两个方法，一个设置属性，一个获取数据</p>
+
+<ul>
+<li>xx: 公有变量</li>
+<li>_xx: 单前置下划线，私有化属性或方法，from somemodule import * 禁止导入，类对象和子类可以访问</li>
+<li>__xx__: 双前后下划线，用于名字空间的魔法对象或属性。例如：__init__</li>
+<li>__xx: 双前置下划线，私有，无法在外部直接访问（名子重整所以访问不到）</li>
+<li>xx_: 单后置下划线，用于避免与python关键词的冲突</li>
+</ul>
+
+<p>通过name mangling （名字重整）,目的是防止类意外重写基类的方法或者属性：__classname__privateatribute</p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/4/9</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="14969760668045.html">
+                
+                  <h1>闭包，装饰器</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h3 id="toc_0">函数引用</h3>
+
+<pre><code class="language-python">&gt;&gt;&gt; def test():
+...     print(&#39;lala&#39;)
+...
+&gt;&gt;&gt; test()
+lala
+&gt;&gt;&gt; test
+&lt;function test at 0x109a51950&gt; 
+
+&gt;&gt;&gt; b = test  # b指向函数体test
+
+&gt;&gt;&gt; b
+&lt;function test at 0x109a51950&gt;
+
+&gt;&gt;&gt; b()  # 通过引用调用函数
+lala
+</code></pre>
+
+<h3 id="toc_1">闭包</h3>
+
+<p>在函数内部再定义一个函数，并且这个函数用到了外边函数的变量，那么将这个函数以及用到的一些变量统称为闭包</p>
+
+<pre><code class="language-python">def test(number):
+  def test_in(number_in):
+    print(&quot;in test_in, number_in is %d&quot;%number_in)
+    return number+number_in
+  return test_in
+
+ret = test(100)  # ret 指向函数体
+ret(1)  # 调用函数
+</code></pre>
+
+<p>闭包的实际例子：</p>
+
+<pre><code class="language-python">def line_conf(a,b):
+  def line(x):
+    return a*x + b
+  return line
+
+line1 = line_conf(1,1)
+line2 = line_conf(4,5)
+
+print(line1(5))
+print(line2(5))
+</code></pre>
+
+<ol>
+<li>闭包又花了变量，原来需要类对象完成的工作，闭包也可以完成</li>
+<li>由于必报引用了外部函数的局部变量，则外部函数的局部变量没有及时释放，消耗内存</li>
+</ol>
+
+<h2 id="toc_2">装饰器</h2>
+
+<p>装饰器是程序开发中经常会用到的一个功能，用好了装饰器，开发效率如虎添翼。<br/>
+* 只要python解释器执行到了装饰器代码部分，那么就会自动装饰，而不是等到调用的时候才装饰<br/>
+* 有多个装饰器时，先执行后面的装饰</p>
+
+<pre><code class="language-python">def w1(func):
+  print(&#39;---正在装饰1-----&#39;)
+  def inner():
+    print(&#39;-----装在验证权限1------&#39;)
+    func()
+  return inner
+  
+def w2(func):
+  print(&#39;---正在装饰2-----&#39;)
+  def inner():
+    print(&#39;-----装在验证权限2------&#39;)
+    func()
+  return inner
+
+@w1
+@w2
+def f1():
+  print(&quot;---f1---&quot;)
+
+f1()
+
+&gt;&gt;&gt;
+---正在装饰2-----
+---正在装饰1-----
+-----装在验证权限1------
+-----装在验证权限2------
+---f1---
+</code></pre>
+
+<h3 id="toc_3">通用装饰器</h3>
+
+<p>无参数、有参数、不定长参数、有返回值、无返回值 示例</p>
+
+<pre><code class="language-python">def func(functionName):
+
+  def func_in(*args, **kwargs):
+    ret = functionName(*args, **kwargs)
+    return ret
+    
+  return func_in
+</code></pre>
+
+<h3 id="toc_4">带有参数的装饰器</h3>
+
+<p>同一个装饰器，在装饰不同函数时，起到不同的效果</p>
+
+<pre><code class="language-python">def func_arg(arg):
+    def func(functionName):
+        def func_in():
+            print(&quot;---记录日志-arg=%s--&quot;%arg)
+            if arg==&quot;heihei&quot;:
+                functionName()
+                functionName()
+            else:
+                functionName()
+        return func_in
+    return func
+
+#1. 先执行func_arg(&quot;heihei&quot;)函数,这个函数return 的结果是func这个函数的引用
+#2. @func
+#3. 使用@func对test进行装饰
+@func_arg(&quot;heihei&quot;)
+def test():
+    print(&quot;--test--&quot;)
+
+#带有参数的装饰器,能够起到在运行时,有不同的功能
+@func_arg(&quot;haha&quot;)
+def test2():
+    print(&quot;--test2--&quot;)
+
+test()
+test2()
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/4/5</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
 			<div class="article">
                 <a class="clearlink" href="C++STL.html">
                 
@@ -860,43 +1267,6 @@ delete p; //delete single element
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="C_language.html">
-                
-                  <h1>C Basics</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h2 id="toc_0">C 语言的各种版本</h2>
-
-<p><img src="media/15091487975421/15091488073990.png" alt=""/></p>
-
-<p>广泛应用的仍然是<code>ANSI C</code>(C89).</p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2016/10/28</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='C/C++.html'>C/C++</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -908,7 +1278,7 @@ delete p; //delete single element
 			  </div>
 			  <div class="large-6 columns">
 			<p class="text-right" style="padding-top:25px;">
-			
+			 <a href="all_24.html">&raquo; Next Page</a> 
 			</p>
 			  </div>
 			</div>
@@ -998,6 +1368,24 @@ delete p; //delete single element
 	      
 		      
 			      <li class="post">
+			        <a href="15124807146530.html">Covariance Matrix and its application in Spark</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15114480120681.html"></a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15114445635476.html">MongoDB</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15108229432607.html">`Filter`, `Map`, `Reduce`</a>
 			      </li>
 		     
@@ -1005,24 +1393,6 @@ delete p; //delete single element
 		      
 			      <li class="post">
 			        <a href="scalable%20machine%20learning.html">CS190: Scalable Machine Learning</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15108128842368.html">`MLlib`: Machine Learning in Apache Spark</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="introdution_to_big_data.html">Introduction to big data</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="Spark_introduction.html">Spark</a>
 			      </li>
 		     
 		  
