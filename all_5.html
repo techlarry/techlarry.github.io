@@ -147,6 +147,78 @@ var _hmt = _hmt || [];
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15050120680855.html">
+                
+                  <h1>Image Captioning</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<ul>
+<li>
+<a href="#toc_0">Vanilla RNN</a>
+</li>
+<li>
+<a href="#toc_1">LSTM</a>
+</li>
+<li>
+<a href="#toc_2">COCO</a>
+</li>
+<li>
+<a href="#toc_3">Reference</a>
+</li>
+</ul>
+
+
+<h2 id="toc_0">Vanilla RNN</h2>
+
+<p><img src="media/15050120680855/Screen%20Shot%202017-09-10%20at%206.52.08%20PM.png" alt="Vanilla RNN gradient flow"/></p>
+
+<h2 id="toc_1">LSTM</h2>
+
+<p>Long Short Term Memory (LSTM)</p>
+
+<p>Backward flow of gradients in RNN can explode or vanish.</p>
+
+<p>Exploding is controlled with gradient clipping. Vanishing is controlled with additive interactions (LSTM)</p>
+
+<p><img src="media/15050120680855/Screen%20Shot%202017-09-10%20at%206.52.27%20PM.png" alt="LSTM"/></p>
+
+<h2 id="toc_2">COCO</h2>
+
+<p><code>COCO</code>（Common Objects in Context） is a large-scale <code>object detection</code>(物体检测), <code>semantic segmentation</code>(语义分割), and captioning dataset. <code>COCO</code> has several main features: <code>Object segmentation</code>, <code>Recognition in context</code>.</p>
+
+<h2 id="toc_3">Reference</h2>
+
+<ul>
+<li>Tsung Y L, Michael M, Serge B, et al. Microsoft COCO: Common Objects in Context.  arXiv:<a href="https://arxiv.org/abs/1405.0312">1405.0312</a></li>
+<li>Karpathy et al. Deep Visual-Semantic Alignments for Generating Image Descriptions, CVPR 2015</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/9/10</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Deep%20Learning.html'>Deep Learning</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="large_scale_machine_learning.html">
                 
                   <h1>Machine Learning (10): Large Scale Machine Learning</h1>
@@ -1014,88 +1086,6 @@ running_var = momentum * running_var + (1 - momentum) * sample_var<br/>
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15046658203135.html">
-                
-                  <h1>TensorFlow Q</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h3 id="toc_0">Q1: what&#39;s the difference between <code>tf.placeholder</code> and <code>tf.Variable</code></h3>
-
-<p>In general, we use <code>tf.placeholder</code> to feed actual training examples, while using <code>tf.Variable</code> for parameters such as weights (\(W\)) and biases (\(b\)) for models.</p>
-
-<p>With <code>tf.Variable</code>, we have to provide an initial value when declaring it. And we don&#39;t have to provide an initial value until running time with a <code>feed_dict</code>.</p>
-
-<h3 id="toc_1">Q2: what&#39;s the difference between <code>tf.random_normal</code> and <code>tf.trucated_normal</code></h3>
-
-<p><code>tf.trucated_normal</code> generates values following a normal distribution with specified mean and standard deviation, except that values whose magnitude is more than 2 standard deviations from the mean are dropped and re-picked.</p>
-
-<pre><code>import tensorflow as tf
-import matplotlib.pyplot as plt
-%matplotlib inline
-Session = tf.InteractiveSession()
-</code></pre>
-
-<pre><code>mean = 0.0
-std = 1.0
-shape = (10000,)
-hist_range = (-5, 5)
-
-A = tf.truncated_normal(shape, mean, std)
-B = tf.random_normal(shape, mean, std)
-a, b = Session.run([A, B])
-</code></pre>
-
-<pre><code>f, (ax1, ax2) = plt.subplots(2,1)
-f1 = ax1.hist(a, bins= 100, range=hist_range)
-f2 = ax2.hist(b, bins= 100, range=hist_range)
-</code></pre>
-
-<p><img src="media/15046658203135/output_2_0.png" alt="output_2_0"/></p>
-
-<h3 id="toc_2">Q3: What&#39;s the difference between <code>tf.Variable</code> and <code>tf.get_variable</code></h3>
-
-<p><code>tf.get_variable</code> will make it way easier to refactor code if you need to share variables at any time.</p>
-
-<pre><code class="language-python">import tensorflow as tf
-
-with tf.variable_scope(&quot;scope1&quot;):
-    w1 = tf.get_variable(&quot;w1&quot;, shape=[2,3])
-    w2 = tf.Variable(1.0, name=&quot;w2&quot;)
-with tf.variable_scope(&quot;scope1&quot;, reuse=True):
-    w1_p = tf.get_variable(&quot;w1&quot;, shape=[2,3])
-    w2_p = tf.Variable(1.0, name=&quot;w2&quot;)
-
-print(w1 is w1_p, w2 is w2_p)
-
-#Output: True  False
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/9/6</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Tensorflow.html'>Tensorflow</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1197,7 +1187,13 @@ print(w1 is w1_p, w2 is w2_p)
 	      
 		      
 			      <li class="post">
-			        <a href="15124807146530.html">Covariance Matrix and its application in Spark</a>
+			        <a href="PCA.html">PCA及数学基础</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="covariance_spark.html">Covariance Matrix and its solution in Spark</a>
 			      </li>
 		     
 		  
@@ -1216,12 +1212,6 @@ print(w1 is w1_p, w2 is w2_p)
 		      
 			      <li class="post">
 			        <a href="15108229432607.html">`Filter`, `Map`, `Reduce`</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="scalable%20machine%20learning.html">CS190: Scalable Machine Learning</a>
 			      </li>
 		     
 		  

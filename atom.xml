@@ -4,7 +4,7 @@
   <title><![CDATA[techlarry]]></title>
   <link href="http://larryim.cc/atom.xml" rel="self"/>
   <link href="http://larryim.cc/"/>
-  <updated>2017-11-21T00:09:17+08:00</updated>
+  <updated>2017-12-06T00:04:32+08:00</updated>
   <id>http://larryim.cc/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -13,10 +13,103 @@
   <generator uri="http://www.mweb.im/">MWeb</generator>
   
   <entry>
-    <title type="html"><![CDATA[Covariance Matrix and its application in Spark]]></title>
-    <link href="http://larryim.cc/15124807146530.html"/>
+    <title type="html"><![CDATA[PCA及数学基础]]></title>
+    <link href="http://larryim.cc/PCA.html"/>
+    <updated>2017-11-28T22:32:35+08:00</updated>
+    <id>http://larryim.cc/PCA.html</id>
+    <content type="html"><![CDATA[
+<p>主成分分析(Principal Component Analysis, PCA)主要是用来可视化数据和数据压缩。</p>
+
+<p>PCA的目的是找到一组可以代表原始数据的低维数据。设原始数据为\(X\in \mathbf{R}^{n\times d}\)，有\(d\)个特征。压缩后的数据为\(\mathbf{Z=XP} \in \mathbf{R}^{n\times k}\), 有\(k\)个特征(feature)。</p>
+
+<p>那么找到的这\(k\)个特征，有什么好的约束呢？<br/>
+（Variance/Covariance constraints）</p>
+
+<ul>
+<li>这k个特征无关，也就是说协相关矩阵除对角线以外的元素全部为0</li>
+<li>应该根据特征的variance选择，越大越好。因为variance越大，越能代表feature。也就是说应该选择协相关矩阵对角元素大的feature。</li>
+</ul>
+
+<p>所以 \(\mathbf{P}\)应该等于X的协方差矩阵的最大\(k\)个特征向量。</p>
+
+<p>协方差矩阵的分布式求解方法见本博客<a href="http://larryim.cc/covariance_spark.html">Covariance Matrix and its solution in Spark</a></p>
+
+<p>下面是特征分解的基础知识，可以在线性代数课本上找到：</p>
+
+<p>特征分解(Eigendecomposition)是将矩阵分解为由特征值和特征向量表示矩阵之积的方法。</p>
+
+<p>令 \(A\)是一个\(N\times N\)的方阵，且有\(N\)个线性无关的特征向量\(q_i(i=1,...,N)\)。这样，A可以被分解为<br/>
+\[\mathbf{A=Q\Lambda Q}^{-1}\]<br/>
+其中\(\mathbf{Q}\)是\(N\times N\)的方阵，且其第\(i\)列为\(A\)的特征向量\(q_i\)。\(\mathbf{\Lambda}\)是对角矩阵，其对角线上的元素为对应的特征值，也即\(\Lambda_{ii}=\lambda_i\).</p>
+
+<p>在python 中使用 <code>numpy.linalg.eigh</code>，</p>
+
+<p>那么，怎么样选择\(k\)的大小呢？一般认为保留99%或95%的variance. 由于协方差矩阵的对角元素就是对应特征向量的特征值，又是variance，所以我们选择k个对角元素，保留所要求的variance:</p>
+
+<p>\[\text{find} \min k \quad \text{s.t.} \frac{\sum^k_{i=1}\lambda_i}{\sum^k_{i=1}\lambda_i} &gt; 99\%\]</p>
+
+<h2 id="toc_0">PCA in Spark</h2>
+
+<pre><code class="language-Python">def estimateCovariance(data):
+    &quot;&quot;&quot;Compute the covariance matrix for a given rdd.
+
+    Note:
+        The multi-dimensional covariance array should be calculated using outer products.  Don&#39;t
+        forget to normalize the data by first subtracting the mean.
+
+    Args:
+        data (RDD of np.ndarray):  An `RDD` consisting of NumPy arrays.
+
+    Returns:
+        np.ndarray: A multi-dimensional array where the number of rows and columns both equal the
+            length of the arrays in the input `RDD`.
+    &quot;&quot;&quot;
+    mean = data.mean()
+    normalized = data.map(lambda x: x-mean)
+    return normalized.map(lambda x: np.outer(x, x)).sum()/data.count()
+    
+def pca(data, k=2):
+    &quot;&quot;&quot;Computes the top `k` principal components, corresponding scores, and all eigenvalues.
+
+    Note:
+        All eigenvalues should be returned in sorted order (largest to smallest). `eigh` returns
+        each eigenvectors as a column.  This function should also return eigenvectors as columns.
+
+    Args:
+        data (RDD of np.ndarray): An `RDD` consisting of NumPy arrays.
+        k (int): The number of principal components to return.
+
+    Returns:
+        tuple of (np.ndarray, RDD of np.ndarray, np.ndarray): A tuple of (eigenvectors, `RDD` of
+            scores, eigenvalues).  Eigenvectors is a multi-dimensional array where the number of
+            rows equals the length of the arrays in the input `RDD` and the number of columns equals
+            `k`.  The `RDD` of scores has the same number of rows as `data` and consists of arrays
+            of length `k`.  Eigenvalues is an array of length d (the number of features).
+    &quot;&quot;&quot;
+    cov = estimateCovariance(data)
+    eigVals, eigVecs = eigh(cov)
+    inds = np.argsort(eigVals)[::-1]
+    topkComponent = eigVecs[:,inds[0:k]]
+    scores = data.map(lambda x: np.dot(x, topkComponent))
+    # Return the `k` principal components, `k` scores, and all eigenvalues
+    return (eigVecs[inds], scores, eigVals[inds])
+</code></pre>
+
+<h2 id="toc_1">Reference</h2>
+
+<ol>
+<li>Machine Learning Course from Coursera. Andrew Ng</li>
+<li>CS190: Scalable Machine Learning</li>
+</ol>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Covariance Matrix and its solution in Spark]]></title>
+    <link href="http://larryim.cc/covariance_spark.html"/>
     <updated>2017-12-05T21:31:54+08:00</updated>
-    <id>http://larryim.cc/15124807146530.html</id>
+    <id>http://larryim.cc/covariance_spark.html</id>
     <content type="html"><![CDATA[
 <p>A <code>covariance matrix</code>(协方差矩阵, 离差矩阵) is a matrix whose element in the \(i,j\) position is the covariance between the \(i^{th}\) and \(j^{th}\) elements of a <code>random vector</code>(随机向量,多元随机变量). Each element of a random vector is a scalar <code>random variable</code>(随机变量).</p>
 
@@ -54,7 +147,7 @@
 
 <p><img src="media/15124807146530/compute_covariance_matrix.png" alt="compute_covariance_matrix"/></p>
 
-<p>Spark Code in Python:</p>
+<p><u>Spark Code in Python</u>:</p>
 
 <pre><code class="language-python">def estimateCovariance(data):
     &quot;&quot;&quot;Compute the covariance matrix for a given rdd.
@@ -1206,23 +1299,6 @@ V = E_{x\sim P_{data}}[\log D(x)] + E_{x\sim P_G}[\log (1-D(x)]<br/>
 
 <ul>
 <li><a href="https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence">KL Divergence WEKIPEDIA</a></li>
-</ul>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Efficient Methods and Hardware for Deep Learning]]></title>
-    <link href="http://larryim.cc/15057176549019.html"/>
-    <updated>2017-09-18T14:54:14+08:00</updated>
-    <id>http://larryim.cc/15057176549019.html</id>
-    <content type="html"><![CDATA[
-<h2 id="toc_0">Challenges</h2>
-
-<ul>
-<li>Model Size</li>
-<li>Speed</li>
-<li>Energy Efficiency</li>
 </ul>
 
 ]]></content>

@@ -14,7 +14,7 @@ var _hmt = _hmt || [];
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  Google Cloud Platform - techlarry
+  PCA及数学基础 - techlarry
   
   </title>
   
@@ -147,10 +147,10 @@ var _hmt = _hmt || [];
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>Google Cloud Platform</h1>
+          <h1>PCA及数学基础</h1>
      
         <div class="read-more clearfix">
-          <span class="date">2017/9/4</span>
+          <span class="date">2017/11/28</span>
 
           
            
@@ -165,35 +165,89 @@ var _hmt = _hmt || [];
       </div><!-- article -->
 
       <div class="article-content">
-      <p>Google Cloud Platform enables developers to <strong>build</strong>, <strong>test</strong> and <strong>deploy</strong> applications on Google&#39;s <em>highly-scalable</em>, <em>secure</em>, and <em>reliable</em> infrastructure.</p>
+      <p>主成分分析(Principal Component Analysis, PCA)主要是用来可视化数据和数据压缩。</p>
 
-<p>All Google Cloud Platform services are associated with a project that is used to:</p>
+<p>PCA的目的是找到一组可以代表原始数据的低维数据。设原始数据为\(X\in \mathbf{R}^{n\times d}\)，有\(d\)个特征。压缩后的数据为\(\mathbf{Z=XP} \in \mathbf{R}^{n\times k}\), 有\(k\)个特征(feature)。</p>
+
+<p>那么找到的这\(k\)个特征，有什么好的约束呢？<br/>
+（Variance/Covariance constraints）</p>
 
 <ul>
-<li>Track resource and quota usage</li>
-<li>Enable billing</li>
-<li>Manage permissions and credentials</li>
-<li>Enable services and APIs</li>
+<li>这k个特征无关，也就是说协相关矩阵除对角线以外的元素全部为0</li>
+<li>应该根据特征的variance选择，越大越好。因为variance越大，越能代表feature。也就是说应该选择协相关矩阵对角元素大的feature。</li>
 </ul>
 
-<h2 id="toc_0">VM Instances</h2>
+<p>所以 \(\mathbf{P}\)应该等于X的协方差矩阵的最大\(k\)个特征向量。</p>
 
-<p>Run the following code to start or stop an compute instance called <code>instance-name</code>.</p>
+<p>协方差矩阵的分布式求解方法见本博客<a href="http://larryim.cc/covariance_spark.html">Covariance Matrix and its solution in Spark</a></p>
 
-<pre><code class="language-bash">gcloud compute instances start/stop instance-name
+<p>下面是特征分解的基础知识，可以在线性代数课本上找到：</p>
+
+<p>特征分解(Eigendecomposition)是将矩阵分解为由特征值和特征向量表示矩阵之积的方法。</p>
+
+<p>令 \(A\)是一个\(N\times N\)的方阵，且有\(N\)个线性无关的特征向量\(q_i(i=1,...,N)\)。这样，A可以被分解为<br/>
+\[\mathbf{A=Q\Lambda Q}^{-1}\]<br/>
+其中\(\mathbf{Q}\)是\(N\times N\)的方阵，且其第\(i\)列为\(A\)的特征向量\(q_i\)。\(\mathbf{\Lambda}\)是对角矩阵，其对角线上的元素为对应的特征值，也即\(\Lambda_{ii}=\lambda_i\).</p>
+
+<p>在python 中使用 <code>numpy.linalg.eigh</code>，</p>
+
+<p>那么，怎么样选择\(k\)的大小呢？一般认为保留99%或95%的variance. 由于协方差矩阵的对角元素就是对应特征向量的特征值，又是variance，所以我们选择k个对角元素，保留所要求的variance:</p>
+
+<p>\[\text{find} \min k \quad \text{s.t.} \frac{\sum^k_{i=1}\lambda_i}{\sum^k_{i=1}\lambda_i} &gt; 99\%\]</p>
+
+<h2 id="toc_0">PCA in Spark</h2>
+
+<pre><code class="language-Python">def estimateCovariance(data):
+    &quot;&quot;&quot;Compute the covariance matrix for a given rdd.
+
+    Note:
+        The multi-dimensional covariance array should be calculated using outer products.  Don&#39;t
+        forget to normalize the data by first subtracting the mean.
+
+    Args:
+        data (RDD of np.ndarray):  An `RDD` consisting of NumPy arrays.
+
+    Returns:
+        np.ndarray: A multi-dimensional array where the number of rows and columns both equal the
+            length of the arrays in the input `RDD`.
+    &quot;&quot;&quot;
+    mean = data.mean()
+    normalized = data.map(lambda x: x-mean)
+    return normalized.map(lambda x: np.outer(x, x)).sum()/data.count()
+    
+def pca(data, k=2):
+    &quot;&quot;&quot;Computes the top `k` principal components, corresponding scores, and all eigenvalues.
+
+    Note:
+        All eigenvalues should be returned in sorted order (largest to smallest). `eigh` returns
+        each eigenvectors as a column.  This function should also return eigenvectors as columns.
+
+    Args:
+        data (RDD of np.ndarray): An `RDD` consisting of NumPy arrays.
+        k (int): The number of principal components to return.
+
+    Returns:
+        tuple of (np.ndarray, RDD of np.ndarray, np.ndarray): A tuple of (eigenvectors, `RDD` of
+            scores, eigenvalues).  Eigenvectors is a multi-dimensional array where the number of
+            rows equals the length of the arrays in the input `RDD` and the number of columns equals
+            `k`.  The `RDD` of scores has the same number of rows as `data` and consists of arrays
+            of length `k`.  Eigenvalues is an array of length d (the number of features).
+    &quot;&quot;&quot;
+    cov = estimateCovariance(data)
+    eigVals, eigVecs = eigh(cov)
+    inds = np.argsort(eigVals)[::-1]
+    topkComponent = eigVecs[:,inds[0:k]]
+    scores = data.map(lambda x: np.dot(x, topkComponent))
+    # Return the `k` principal components, `k` scores, and all eigenvalues
+    return (eigVecs[inds], scores, eigVals[inds])
 </code></pre>
 
-<p>After starting your compute instance, you might need to access the instance in the zone which is <code>zone-name</code> here, via the terminal by <code>ssh</code> </p>
+<h2 id="toc_1">Reference</h2>
 
-<pre><code class="language-bash">gcloud compute ssh instance-name --zone zone-name
-</code></pre>
-
-<h2 id="toc_1">Setup Environment</h2>
-
-<p>Following the guide of <a href="http://cs231n.github.io/gce-tutorial/">CS231n</a>, using an off-the-shelf script <code>setup_googlecloud.sh</code>, and activate the environment created by the script</p>
-
-<pre><code class="language-bash">source .env/bin/activate
-</code></pre>
+<ol>
+<li>Machine Learning Course from Coursera. Andrew Ng</li>
+<li>CS190: Scalable Machine Learning</li>
+</ol>
 
 
     
@@ -204,16 +258,13 @@ var _hmt = _hmt || [];
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="15046649572570.html" 
-          title="Previous Post: Pandas">&laquo; Pandas</a>
-      
         </p>
         </div>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="virtualenv.html" 
-          title="Next Post: Python `virtualenv` on mac">Python `virtualenv` on mac &raquo;</a>
+          <a  href="covariance_spark.html" 
+          title="Next Post: Covariance Matrix and its solution in Spark">Covariance Matrix and its solution in Spark &raquo;</a>
       
       </p>
         </div>
@@ -336,7 +387,7 @@ s.setAttribute('data-timestamp', +new Date());
 	      
 		      
 			      <li class="post">
-			        <a href="PCA.html">PCA及数学基础</a>
+			        <a href="15118795552158.html">PCA及数学基础</a>
 			      </li>
 		     
 		  
