@@ -176,7 +176,7 @@ var _hmt = _hmt || [];
 
 <ul>
 <li>这k个特征无关，也就是说协相关矩阵除对角线以外的元素全部为0</li>
-<li>应该根据特征的variance选择，越大越好。因为variance越大，越能代表feature。也就是说应该选择协相关矩阵对角元素大的feature。</li>
+<li>应该根据特征的方差(variance)选择，越大越好。因为variance越大，越能代表feature。也就是说应该选择协相关矩阵对角元素大的feature。</li>
 </ul>
 
 <p>所以 \(\mathbf{P}\)应该等于X的协方差矩阵的最大\(k\)个特征向量。</p>
@@ -191,20 +191,24 @@ var _hmt = _hmt || [];
 \[\mathbf{A=Q\Lambda Q}^{-1}\]<br/>
 其中\(\mathbf{Q}\)是\(N\times N\)的方阵，且其第\(i\)列为\(A\)的特征向量\(q_i\)。\(\mathbf{\Lambda}\)是对角矩阵，其对角线上的元素为对应的特征值，也即\(\Lambda_{ii}=\lambda_i\).</p>
 
-<p>在python 中使用 <code>numpy.linalg.eigh</code>，</p>
-
 <p>那么，怎么样选择\(k\)的大小呢？一般认为保留99%或95%的variance. 由于协方差矩阵的对角元素就是对应特征向量的特征值，又是variance，所以我们选择k个对角元素，保留所要求的variance:</p>
 
 <p>\[\text{find} \min k \quad \text{s.t.} \frac{\sum^k_{i=1}\lambda_i}{\sum^k_{i=1}\lambda_i} &gt; 99\%\]</p>
 
 <h2 id="toc_0">PCA in Spark</h2>
 
+<p>在python 中使用 <code>numpy.linalg.eigh</code>计算特征值和特征向量.</p>
+
+<p>基本步骤如下：</p>
+
+<ul>
+<li>计算协方差矩阵 <code>estimateCovariance()</code></li>
+<li>计算主成分和对应方差 <code>pca()</code></li>
+<li>计算保留的成分比例<code>varianceExplained()</code></li>
+</ul>
+
 <pre><code class="language-Python">def estimateCovariance(data):
     &quot;&quot;&quot;Compute the covariance matrix for a given rdd.
-
-    Note:
-        The multi-dimensional covariance array should be calculated using outer products.  Don&#39;t
-        forget to normalize the data by first subtracting the mean.
 
     Args:
         data (RDD of np.ndarray):  An `RDD` consisting of NumPy arrays.
@@ -220,9 +224,6 @@ var _hmt = _hmt || [];
 def pca(data, k=2):
     &quot;&quot;&quot;Computes the top `k` principal components, corresponding scores, and all eigenvalues.
 
-    Note:
-        All eigenvalues should be returned in sorted order (largest to smallest). `eigh` returns
-        each eigenvectors as a column.  This function should also return eigenvectors as columns.
 
     Args:
         data (RDD of np.ndarray): An `RDD` consisting of NumPy arrays.
@@ -241,10 +242,30 @@ def pca(data, k=2):
     topkComponent = eigVecs[:,inds[0:k]]
     scores = data.map(lambda x: np.dot(x, topkComponent))
     # Return the `k` principal components, `k` scores, and all eigenvalues
-    return (eigVecs[inds], scores, eigVals[inds])
+    return (topkComponent, scores, eigVals[inds])
+    
+    
+def varianceExplained(data, k=1):
+    &quot;&quot;&quot;Calculate the fraction of variance explained by the top `k` eigenvectors.
+
+    Args:
+        data (RDD of np.ndarray): An RDD that contains NumPy arrays which store the
+            features for an observation.
+        k: The number of principal components to consider.
+
+    Returns:
+        float: A number between 0 and 1 representing the percentage of variance explained
+            by the top `k` eigenvectors.
+    &quot;&quot;&quot;
+    components, scores, eigenvalues = pca(data)
+    return sum(eigenvalues[0:k])/sum(eigenvalues)
 </code></pre>
 
-<h2 id="toc_1">Reference</h2>
+<h2 id="toc_1">应用</h2>
+
+<p>斑马鱼(zebrafish)大脑的响应可视化](<a href="http://larryim.cc/)%E3%80%82">http://larryim.cc/)。</a></p>
+
+<h2 id="toc_2">Reference</h2>
 
 <ol>
 <li>Machine Learning Course from Coursera. Andrew Ng</li>
