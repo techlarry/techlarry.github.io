@@ -154,7 +154,26 @@ var _hmt = _hmt || [];
                       
                       <div class="a-content-text">
                         
-                        	<p>Nand2Tetris 计算机系统要素是一门教你从零开始构建现代计算机的课程。该课程已经在Coursera上开设(分为上下两门课程)，有免费的课本和课程需要的代码，也有专门的论坛来交流学习，课程相关资源如下：</p>
+                        	<ul>
+<li>
+<a href="#toc_0">1.布尔逻辑</a>
+</li>
+<li>
+<a href="#toc_1">2.布尔运算 Boolean Arithmetic</a>
+</li>
+<li>
+<a href="#toc_2">3.时序逻辑 Sequential Logic</a>
+</li>
+<li>
+<a href="#toc_3">机器语言</a>
+</li>
+<li>
+<a href="#toc_4">计算机体系结构</a>
+</li>
+</ul>
+
+
+<p>Nand2Tetris 计算机系统要素是一门教你从零开始构建现代计算机的课程。该课程已经在Coursera上开设(分为上下两门课程)，有免费的课本和课程需要的代码，也有专门的论坛来交流学习，课程相关资源如下：</p>
 
 <ul>
 <li><a href="https://www.coursera.org/learn/build-a-computer">Coursera Course Part1</a></li>
@@ -166,13 +185,155 @@ var _hmt = _hmt || [];
 
 <p>该课程适合学生掌握了计算机入门课程和数据结构以后学习，课程涉及布尔逻辑及运算、机器语言、计算机体系结构、汇编、虚拟机、编译器、操作系统。课程内容与CMU的深入理解计算机系统不一样，个人感觉涉及面更广、更加注重实战。</p>
 
-<h2 id="toc_0">布尔逻辑</h2>
+<h2 id="toc_0">1.布尔逻辑</h2>
 
-<h2 id="toc_1">布尔运算</h2>
+<h2 id="toc_1">2.布尔运算 Boolean Arithmetic</h2>
 
-<h2 id="toc_2">时序逻辑</h2>
+<p>半加器(Half Adder): 进行二进制数加法的第一步就是要能够对两个二进制位进行相加。我们把结果的LSB(Least Significant Bit)称为sum，MSB(Most Significant Bit)称为carry。</p>
 
-<p>计算机芯片分为两种：组合芯片(<code>combinational chip</code>)和时序芯片(<code>sequential chip</code> or <code>clocked chip</code>时钟芯片)。组合芯片的操作具有即时性(<code>instantaneous</code>)。时序芯片的操作受时钟控制，输入的改变只有在下一个时钟周期才反应到芯片的输出管脚上: <code>out(t)=out(t-1)</code>。</p>
+<p><img src="media/15128019428341/Half%20Adder.png" alt="Half Adde"/></p>
+
+<p>HDL语言：</p>
+
+<pre><code class="language-hdl">CHIP HalfAdder {
+    IN a, b;    // 1-bit inputs
+    OUT sum,    // Right bit of a + b 
+        carry;  // Left bit of a + b
+
+    PARTS:
+    And(a=a, b=b, out=carry);
+    Xor(a=a, b=b, out=sum);
+}
+</code></pre>
+
+<p>全加器：用来对三个位相加。</p>
+
+<p><img src="media/15128019428341/Full%20Adder.png" alt="Full Adde"/></p>
+
+<p>HDL 语言：</p>
+
+<pre><code>CHIP FullAdder {
+    IN a, b, c;  // 1-bit inputs
+    OUT sum,     // Right bit of a + b + c
+        carry;   // Left bit of a + b + c
+
+    PARTS:
+    HalfAdder(a=a, b=b, sum=sum1, carry=carry1);
+    HalfAdder(a=c, b=sum1, sum=sum, carry=carry2);
+    Or(a=carry1, b=carry2, out=carry);
+}
+</code></pre>
+
+<p>加法器(Adder): 存储器和寄存器电路用n-位的形式来表示整数，n可以是16、32、64等等-这依赖于所在的计算机平台。进行n-位加法的芯片称为多位加法器(multi-bit adder),或者简称为加法器。下图为16位加法器</p>
+
+<p><img src="media/15128019428341/16-bits%20Adder.png" alt="16-bits Adde"/></p>
+
+<p>HDL:</p>
+
+<pre><code>CHIP Add16 {
+    IN a[16], b[16];
+    OUT out[16];
+
+    PARTS:
+   HalfAdder(a=a[0], b=b[0], carry=carry1, sum=out[0]);
+   FullAdder(a=a[1], b=b[1], c=carry1, carry=carry2, sum=out[1]);
+   FullAdder(a=a[2], b=b[2], c=carry2, carry=carry3, sum=out[2]);
+   FullAdder(a=a[3], b=b[3], c=carry3, carry=carry4, sum=out[3]);
+   FullAdder(a=a[4], b=b[4], c=carry4, carry=carry5, sum=out[4]);
+   FullAdder(a=a[5], b=b[5], c=carry5, carry=carry6, sum=out[5]);
+   FullAdder(a=a[6], b=b[6], c=carry6, carry=carry7, sum=out[6]);
+   FullAdder(a=a[7], b=b[7], c=carry7, carry=carry8, sum=out[7]);
+   FullAdder(a=a[8], b=b[8], c=carry8, carry=carry9, sum=out[8]);
+   FullAdder(a=a[9], b=b[9], c=carry9, carry=carry10, sum=out[9]);
+   FullAdder(a=a[10], b=b[10], c=carry10, carry=carry11, sum=out[10]);
+   FullAdder(a=a[11], b=b[11], c=carry11, carry=carry12, sum=out[11]);
+   FullAdder(a=a[12], b=b[12], c=carry12, carry=carry13, sum=out[12]);
+   FullAdder(a=a[13], b=b[13], c=carry13, carry=carry14, sum=out[13]);
+   FullAdder(a=a[14], b=b[14], c=carry14, carry=carry15, sum=out[14]);
+   FullAdder(a=a[15], b=b[15], c=carry15, carry=carry, sum=out[15]);
+
+}
+</code></pre>
+
+<p>算数逻辑单元(Arithmetic Logic Unit, ALU): 计算一组固定的函数\(out=f_i(x,y)\),这里\(x\)和\(y\)是芯片的两个16位输入，\(out\)是芯片的16位输出, \(f_i\)是位于一个函数表中的函数，该函数表通过6个控制位(control bit)的输入位(zx, nx, zy, ny, f, no)来告诉ALU用哪一个函数来进行何种计算。</p>
+
+<p><img src="media/15128019428341/ALU.png" alt="ALU"/></p>
+
+<p>HDL:</p>
+
+<pre><code>*
+ * The ALU (Arithmetic Logic Unit).
+ * Computes one of the following functions:
+ * x+y, x-y, y-x, 0, 1, -1, x, y, -x, -y, !x, !y,
+ * x+1, y+1, x-1, y-1, x&amp;y, x|y on two 16-bit inputs, 
+ * according to 6 input bits denoted zx,nx,zy,ny,f,no.
+ * In addition, the ALU computes two 1-bit outputs:
+ * if the ALU output == 0, zr is set to 1; otherwise zr is set to 0;
+ * if the ALU output &lt; 0, ng is set to 1; otherwise ng is set to 0.
+ */
+
+// Implementation: the ALU logic manipulates the x and y inputs
+// and operates on the resulting values, as follows:
+// if (zx == 1) set x = 0        // 16-bit constant
+// if (nx == 1) set x = !x       // bitwise not
+// if (zy == 1) set y = 0        // 16-bit constant
+// if (ny == 1) set y = !y       // bitwise not
+// if (f == 1)  set out = x + y  // integer 2&#39;s complement addition
+// if (f == 0)  set out = x &amp; y  // bitwise and
+// if (no == 1) set out = !out   // bitwise not
+// if (out == 0) set zr = 1
+// if (out &lt; 0) set ng = 1
+
+CHIP ALU {
+    IN  
+        x[16], y[16],  // 16-bit inputs        
+        zx, // zero the x input?
+        nx, // negate the x input?
+        zy, // zero the y input?
+        ny, // negate the y input?
+        f,  // compute out = x + y (if 1) or x &amp; y (if 0)
+        no; // negate the out output?
+
+    OUT 
+        out[16], // 16-bit output
+        zr, // 1 if (out == 0), 0 otherwise
+        ng; // 1 if (out &lt; 0),  0 otherwise
+
+    PARTS:
+    // if (zx==1) set x = 0
+    Mux16(a=x,b=false,sel=zx,out=zxout);
+
+    // if (zy==1) set y = 0
+    Mux16(a=y,b=false,sel=zy,out=zyout); 
+
+    // if (nx==1) set x = ~x
+    // if (ny==1) set y = ~y  
+    Not16(in=zxout,out=notx);
+    Not16(in=zyout,out=noty);
+    Mux16(a=zxout,b=notx,sel=nx,out=nxout); 
+    Mux16(a=zyout,b=noty,sel=ny,out=nyout);
+
+    // if (f==1)  set out = x + y 
+    // if (f==0)  set out = x &amp; y
+    Add16(a=nxout,b=nyout,out=addout);
+    And16(a=nxout,b=nyout,out=andout);
+    Mux16(a=andout,b=addout,sel=f,out=fout);
+    
+    // if (no==1) set out = ~out
+    // 1 if (out&lt;0),  0 otherwise
+    Not16(in=fout,out=nfout);
+    Mux16(a=fout,b=nfout,sel=no,out=out,out[0..7]=zr1,out[8..15]=zr2,out[15]=ng);
+    
+    //if (out==0), zr=1
+    Or8Way(in=zr1,out=or1);
+    Or8Way(in=zr2,out=or2);
+    Or(a=or1,b=or2,out=or3);
+    Not(in=or3,out=zr);
+
+}
+</code></pre>
+
+<h2 id="toc_2">3.时序逻辑 Sequential Logic</h2>
 
 <p>时钟(Clock)：在大多数计算机里，时间的流逝是用主时钟(master clock)来表示的，它提供连续的交变信号序列。其精确的硬件实现通常基于振荡器(oscillator),其在两个信号值0-1之间交替变化。两个响铃的时间间隔称为时钟的周期。</p>
 
@@ -180,9 +341,23 @@ var _hmt = _hmt || [];
 
 <p><img src="media/15128019428341/flip-flop.png" alt="flip-flop"/></p>
 
-<p>寄存器(Registers): 具有记忆功能的设备，能“存储”某一时刻的值，实现经典的存储行为<code>out(t)=out(t-1)</code>。从另一个方面来说，DFF仅能够输出它前一时钟周期的输入，也就是<code>out(t)=in(t-1)</code>。</p>
+<p>寄存器(Registers): 具有记忆功能的设备，能“存储”某一时刻的值，实现经典的存储行为<code>out(t)=out(t-1)</code>。从另一个方面来说，DFF仅能够输出它前一时钟周期的输入，也就是<code>out(t)=in(t-1)</code>。寄存器分为地址寄存器(address register), 数据寄存器(data register), 程序计数器(program counter).</p>
 
 <p><img src="media/15128019428341/registers.png" alt="registers"/></p>
+
+<p>内存(Memories):可以通过将寄存器堆叠起来形成 <u>随机存取存储器</u> (random access memory, <code>RAM</code>)。在RAM上能够随机访问被选择的字而不会受限于访问顺序，即随机存取存储器中的任何字都能以相等的速度被直接访问。</p>
+
+<p><img src="media/15128019428341/RAM.png" alt="RA"/></p>
+
+<p>计算机芯片分为两种：组合芯片(<code>combinational chip</code>)和时序芯片(<code>sequential chip</code> or <code>clocked chip</code>时钟芯片)。组合芯片的操作具有即时性(<code>instantaneous</code>)。时序芯片的操作受时钟控制，输入的改变只有在下一个时钟周期才反应到芯片的输出管脚上: <code>out(t)=out(t-1)</code>。</p>
+
+<p><img src="media/15128019428341/combintional%20chip%20and%20sequential%20chip.png" alt="combintional chip and sequential chip"/></p>
+
+<p>计数器(Counter): 计数器是一种时序芯片，它的状态是证书，每经过一个时间周期，该整数就增加1个单位，执行函数<code>out(t)=out(t-1)+c</code>，这里就是1。典型的CPU包括一个程序计数器(program couter, PC)，它的输出是当前程序中下一步将要执行的指令地址。</p>
+
+<p>分级存储器体系(memory hierarchy):</p>
+
+<p><img src="media/15128019428341/15128077150126.png" alt=""/></p>
 
 <h2 id="toc_3">机器语言</h2>
 
