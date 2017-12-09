@@ -147,6 +147,50 @@ var _hmt = _hmt || [];
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="active_learning_intro.html">
+                
+                  <h1>主动学习</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>主动学习算法通过迭代抽样，主动寻找有利于提升效果的样本，从而减少了训练集的大小。</p>
+
+<p>获取训练样本不仅费时、费力，而且训练集包含大量的冗余样本。</p>
+
+<p>主动学习算法主要分为两阶段：第一阶段为<strong>初始化阶段</strong>，随机从未标注样本中选取小部分，由督导者\(\mathcal{S}\)标注，作为训练集建立初始分类器模型；第二阶段为<strong>循环查询阶段</strong>，督导者\(\mathcal{S}\)从未标注样本集\(U\)中，按照某种查询标准\(Q\)，选取一定的未标注样本进行标注，并加到训练样本集\(L\)中，重新训练分类器，直至达到训练停止标准为止。</p>
+
+<h1 id="toc_0">Reference</h1>
+
+<ul>
+<li>LIU Kang, QIAN Xu, WANG Ziqiang. Survey on active learning algorithms. Computer Engineering and Applications, 2012, 48（34）：1-4.</li>
+<li>Zongwei Zhou1, Jae Shin1, Lei Zhang, et al. 2017. Fine-tuning Convolutional Neural Networks for Biomedical Image Analysis: Actively and Incrementally. CVPR. <a href="http://openaccess.thecvf.com/content_cvpr_2017/papers/Zhou_Fine-Tuning_Convolutional_Neural_CVPR_2017_paper.pdf">pdf</a> </li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/10/23</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html'>机器学习</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15086547919641.html">
                 
                   <h1>JSON/BSON</h1>
@@ -453,125 +497,6 @@ if (!)
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15058297239665.html">
-                
-                  <h1>GAN</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<ul>
-<li>
-<a href="#toc_0">Maximum Likelihood Estimation</a>
-<ul>
-<li>
-<a href="#toc_1">$P_G(x;theta)$ is a NN</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_2">Basic Idea of GAN</a>
-</li>
-<li>
-<a href="#toc_3">Reference</a>
-</li>
-</ul>
-
-
-<h2 id="toc_0">Maximum Likelihood Estimation</h2>
-
-<p>Given a data distribution \(P_{data}(x)\). We want to find \(\theta\) such that \(P_G(x;\theta)\) close to \(P_{data}(x)\). Here, \(P_G(x;\theta)\)  is a distribution (e.g. Gaussian Mixture Model) parameterized by \(\theta\) (e.g. means and variances of the Gaussians).</p>
-
-<p>Likelihood of generating the samples can be expressed by</p>
-
-<p>\[\begin{equation}<br/>
-L=\prod\limits_{i=1}^mP_G(x^i;\theta)<br/>
-\end{equation}<br/>
-\]</p>
-
-<p>The problem can be restated that finding \(\theta^*\) maximizing the likelihood:</p>
-
-<p>\[\begin{equation}<br/>
-\theta^* = arg \max\limits_\theta \prod\limits_{i=1}^m P_G(x^i;\theta)\\<br/>
-=arg \max\limits_\theta \log\prod\limits_{i=1}^m P_G(x^i;\theta)\\<br/>
-=arg \max\limits_\theta \prod\limits_{i=1}^m \log P_G(x^i;\theta)\\<br/>
-\approx arg \max\limits_\theta E_{x\sim P_{data}}^m [\log P_G(x;\theta)]\\<br/>
-= arg \max\limits_\theta\int_xP_{data}(x)\log P_G(x;\theta)dx - \int_xP_{data}(x)\log P_{data}(x) dx \\<br/>
-= arg \min\limits_\theta KL(P_{data}(x)||P_G(x;\theta))<br/>
-\end{equation}<br/>
-\]</p>
-
-<p><strong>KL Divergence</strong>:  <code>KL Divergence</code> is  a measure of how one probability distribution diverges from a second expected probability distribution. For distributions \(P\) and \(Q\) of a continuous random variable, the Kullback-Leibler divergence is defined to be the intergral:</p>
-
-<p>\[\begin{equation}<br/>
- D_{KL}(P|Q)=\int_{-\infty}^{\infty}p(x)\log\frac{p(x)}{q(x)}dx<br/>
- \end{equation}<br/>
- \]</p>
-
-<p>Where \(p\) and \(q\) denote the densities of \(P\) and \(Q\).</p>
-
-<h3 id="toc_1">\(P_G(x;\theta)\) is a NN</h3>
-
-<p>It is hard to use Gaussian Mixture Model as \(P_G(x;\theta)\) to approximate \(P_{data}(x;\theta)\), because of the complicity of the data. A very good natural idea is trying to using neural network which is very powerful.</p>
-
-<p><img src="media/15058297239665/Screen%20Shot%202017-09-19%20at%2010.36.46%20PM.png" alt="NN"/></p>
-
-<p>However, it is Hard to learn by <code>maximum likelihood</code>.  <code>GAN</code> solves the problem.</p>
-
-<h2 id="toc_2">Basic Idea of GAN</h2>
-
-<ul>
-<li>Generator G
-
-<ul>
-<li>G is a function, input \(z\), output \(x\)</li>
-<li>Given a prior distribution \(P_{prior}(z)\), a probability distribution \(P_G (x)\) is defined by function G</li>
-</ul></li>
-<li>Discriminator D
-
-<ul>
-<li>D is a function, input \(x\), output scalar</li>
-<li>Evaluate the “difference” between \(P_G(x)\) and \(P_{data}(x)\)</li>
-</ul></li>
-</ul>
-
-<p>Objective: Given function \(V(G, D)\), to find \(G^* = arg \min \limits_G\max\limits_DV(G,D)\)</p>
-
-<p>\[\begin{equation}<br/>
-V = E_{x\sim P_{data}}[\log D(x)] + E_{x\sim P_G}[\log (1-D(x)]<br/>
-\end{equation}<br/>
-\]</p>
-
-<h2 id="toc_3">Reference</h2>
-
-<ul>
-<li><a href="https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence">KL Divergence WEKIPEDIA</a></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/9/19</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Deep%20Learning.html'>Deep Learning</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -673,6 +598,12 @@ V = E_{x\sim P_{data}}[\log D(x)] + E_{x\sim P_G}[\log (1-D(x)]<br/>
 	      
 		      
 			      <li class="post">
+			        <a href="nand2tetris.html">Nand2Tetris: The elements of computing systems</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="PCA.html">PCA基础及在Spark中的应用</a>
 			      </li>
 		     
@@ -692,12 +623,6 @@ V = E_{x\sim P_{data}}[\log D(x)] + E_{x\sim P_G}[\log (1-D(x)]<br/>
 		      
 			      <li class="post">
 			        <a href="15114445635476.html">MongoDB</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15108229432607.html">`Filter`, `Map`, `Reduce`</a>
 			      </li>
 		     
 		  
