@@ -4,7 +4,7 @@
   <title><![CDATA[techlarry]]></title>
   <link href="http://larryim.cc/atom.xml" rel="self"/>
   <link href="http://larryim.cc/"/>
-  <updated>2017-12-09T15:41:48+08:00</updated>
+  <updated>2017-12-09T16:45:10+08:00</updated>
   <id>http://larryim.cc/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -59,7 +59,7 @@
 
 <p>HDL语言：</p>
 
-<pre><code class="language-hdl">CHIP HalfAdder {
+<pre><code>CHIP HalfAdder {
     IN a, b;    // 1-bit inputs
     OUT sum,    // Right bit of a + b 
         carry;  // Left bit of a + b
@@ -88,7 +88,7 @@
 }
 </code></pre>
 
-<p>加法器(Adder): 存储器和寄存器电路用n-位的形式来表示整数，n可以是16、32、64等等-这依赖于所在的计算机平台。进行n-位加法的芯片称为多位加法器(multi-bit adder),或者简称为加法器。下图为16位加法器</p>
+<p>加法器(Adder): 存储器和寄存器电路用n位的形式来表示整数，n可以是16、32、64等等, 这依赖于所在的计算机平台。进行n位加法的芯片称为多位加法器(multi-bit adder),或者简称为加法器。下图为16位加法器</p>
 
 <p><img src="media/15128019428341/16-bits%20Adder.png" alt="16-bits Adde"/></p>
 
@@ -201,13 +201,57 @@ CHIP ALU {
 
 <p>时钟(Clock)：在大多数计算机里，时间的流逝是用主时钟(master clock)来表示的，它提供连续的交变信号序列。其精确的硬件实现通常基于振荡器(oscillator),其在两个信号值0-1之间交替变化。两个响铃的时间间隔称为时钟的周期。</p>
 
-<p>触发器(Flip-Flop): 计算机里最基本的时序单元，有多个变种。数据触发器(Data Flip-Flop, <code>DFF</code>)，其接口包含1比特位输入和1比特位输出。DFF简单地将前一个时间周期的输入值作为当前周期的输出。</p>
+<p>触发器(Flip-Flop): 计算机里最基本的时序单元，有多个变种。数据触发器(Data Flip-Flop, <code>DFF</code>)，其接口包含1比特位输入和1比特位输出。 <u>DFF简单地将前一个时间周期的输入值作为当前周期的输出</u> 。</p>
 
 <p><img src="media/15128019428341/flip-flop.png" alt="flip-flop"/></p>
 
 <p>寄存器(Registers): 具有记忆功能的设备，能“存储”某一时刻的值，实现经典的存储行为<code>out(t)=out(t-1)</code>。从另一个方面来说，DFF仅能够输出它前一时钟周期的输入，也就是<code>out(t)=in(t-1)</code>。寄存器分为地址寄存器(address register), 数据寄存器(data register), 程序计数器(program counter).</p>
 
 <p><img src="media/15128019428341/registers.png" alt="registers"/></p>
+
+<p>1-位寄存器:</p>
+
+<pre><code class="language-hdl">/**
+ * 1-bit register:
+ * If load[t] == 1 then out[t+1] = in[t]
+ *                 else out does not change (out[t+1] = out[t])
+ */
+
+CHIP Bit {
+    IN in, load;
+    OUT out;
+
+    PARTS:
+    Mux(a= out1, b=in,  sel=load, out=out2);
+    DFF(in=out2, out=out1, out=out);
+}
+</code></pre>
+
+<p>寄存器：由1-位寄存器来构建w-位寄存器是非常简单的。所需要做的就是构建一组w比特门，然后将寄存器的load输入赋予每个门。</p>
+
+<pre><code>CHIP Register {
+    IN in[16], load;
+    OUT out[16];
+
+    PARTS:
+    Bit(in=in[0], load=load, out=out[0]);
+    Bit(in=in[1], load=load, out=out[1]);
+    Bit(in=in[2], load=load, out=out[2]);
+    Bit(in=in[3], load=load, out=out[3]);
+    Bit(in=in[4], load=load, out=out[4]);
+    Bit(in=in[5], load=load, out=out[5]);
+    Bit(in=in[6], load=load, out=out[6]);
+    Bit(in=in[7], load=load, out=out[7]);
+    Bit(in=in[8], load=load, out=out[8]);
+    Bit(in=in[9], load=load, out=out[9]);
+    Bit(in=in[10], load=load, out=out[10]);
+    Bit(in=in[11], load=load, out=out[11]);
+    Bit(in=in[12], load=load, out=out[12]);
+    Bit(in=in[13], load=load, out=out[13]);
+    Bit(in=in[14], load=load, out=out[14]);
+    Bit(in=in[15], load=load, out=out[15]);
+}
+</code></pre>
 
 <p>内存(Memories):可以通过将寄存器堆叠起来形成 <u>随机存取存储器</u> (random access memory, <code>RAM</code>)。在RAM上能够随机访问被选择的字而不会受限于访问顺序，即随机存取存储器中的任何字都能以相等的速度被直接访问。</p>
 
