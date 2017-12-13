@@ -165,15 +165,15 @@ var _hmt = _hmt || [];
 <a href="#toc_2">3.时序逻辑 Sequential Logic</a>
 </li>
 <li>
-<a href="#toc_3">4.机器语言</a>
+<a href="#toc_3">4.机器语言 Machine Language</a>
 </li>
 <li>
-<a href="#toc_4">5.计算机体系结构</a>
+<a href="#toc_4">5.计算机体系结构 Computer Architecture</a>
 </li>
 </ul>
 
 
-<p>Nand2Tetris 计算机系统要素是一门教你从零开始构建现代计算机的课程。该课程已经在Coursera上开设(分为上下两门课程)，有免费的课本和课程需要的代码，也有专门的论坛来交流学习，课程相关资源如下：</p>
+<p><code>Nand2Tetris 计算机系统要素</code>是一门教你从零开始构建现代计算机的课程。该课程已经在Coursera上开设(分为上下两门课程)，有免费的课本和课程需要的代码，也有专门的论坛来交流学习，课程相关资源如下：</p>
 
 <ul>
 <li><a href="https://www.coursera.org/learn/build-a-computer">Coursera Course Part1</a></li>
@@ -468,7 +468,6 @@ CHIP RAM64 {
     OUT out[16];
 
     PARTS:
-    // Put your code here:
     DMux8Way(in=load, sel=address[3..5], a=loada, b=loadb, c=loadc, d=loadd, e=loade, f=loadf, g=loadg, h=loadh);
     RAM8(in=in, load=loada, address=address[0..2], out=outa);
     RAM8(in=in, load=loadb, address=address[0..2], out=outb);
@@ -492,7 +491,15 @@ CHIP RAM64 {
 
 <p><img src="media/15128019428341/PC.png" alt="PC"/></p>
 
-<pre><code>CHIP PC {
+<pre><code>/**
+ * A 16-bit counter with load and reset control bits.
+ * if      (reset[t] == 1) out[t+1] = 0
+ * else if (load[t] == 1)  out[t+1] = in[t]
+ * else if (inc[t] == 1)   out[t+1] = out[t] + 1  (integer addition)
+ * else                    out[t+1] = out[t]
+ */
+ 
+CHIP PC {
     IN in[16],load,inc,reset;
     OUT out[16];
 
@@ -508,13 +515,39 @@ CHIP RAM64 {
 }
 </code></pre>
 
-<p>分级存储器体系(memory hierarchy):</p>
+<p>分级存储器体系(<a href="https://en.wikipedia.org/wiki/Memory_hierarchy">memory hierarchy</a>):</p>
+
+<p><img src="media/15128019428341/memory%20hierarchy.png" alt="memory hierarchy"/></p>
 
 <p><img src="media/15128019428341/15128077150126.png" alt=""/></p>
 
-<h2 id="toc_3">4.机器语言</h2>
+<h2 id="toc_3">4.机器语言 Machine Language</h2>
 
-<h2 id="toc_4">5.计算机体系结构</h2>
+<p>机器语言用来对底层程序进行编码，从而形成一系列机器指令。应用这些指令，程序员可以命令处理器执行算数和逻辑餐座，在内存中进行存取操作，让数据在寄存器之间传递，验证布尔表达式的值，等等。机器语言的设计目标是直接运行在指定的硬件平台上，能够对这个平台进行全面操控；与机器语言相反，高级语言具有通用性和较强的表达能力。</p>
+
+<p>机器语言是整个计算机题系统意义最深奥的接口 -- 它也是硬件和软件相接的中间线。因此，既可以将机器语言看作编程工作，也可以将其看作硬件平台内部不可分割的一部分。</p>
+
+<h2 id="toc_4">5.计算机体系结构 Computer Architecture</h2>
+
+<p>存储程序的概念：指令没有被嵌入到硬件中，而是被存储在计算机的存储设备(memory)里，当计算机载入不同的程序指令时，同样的硬件平台可以实现不同的功能。</p>
+
+<p>冯·诺伊曼体系结构(概念上的):冯·诺伊曼体系结构的基础是一个中央处理单元(CPU),它与内存进行交互，负责从输入设备接收数据，向输出设备发送数据。</p>
+
+<p><img src="media/15128019428341/%E5%86%AF%E8%AF%BA%E4%BC%8A%E6%9B%BC.png" alt="冯诺伊曼"/></p>
+
+<p>RAM: RAM不光存储数据和指令，还可以通过 <u>内存映像</u> (Memory Maps) 在CPU和计算机输入/输出设备之间充当借口。下图中屏幕和键盘都通过内存映像与计算机平台进行接口。</p>
+
+<p><img src="media/15128019428341/memory.png" alt="memory"/></p>
+
+<p>CPU包括执行指令的ALU、一组寄存器和一些用于取指令和对指令解码的控制逻辑(上上图)。用来执行下面的任务：</p>
+
+<ul>
+<li>指令解码(Instruction decoding):解析出指令所代表意思(指令的功能)。</li>
+<li>指令执行(Instruction execution):发信号指示计算机的各个部分应该做什么工作来执行指令（指令的功能）。</li>
+<li>读取下一条指令(Next instruction fetching):指出下一步执行哪一条指令（指令的功能以及ALU的输出）。</li>
+</ul>
+
+<p><img src="media/15128019428341/CPU.png" alt="CPU"/></p>
 
                         
                       </div>
@@ -722,7 +755,7 @@ CHIP RAM64 {
 		  
 		      
 			      <li class="post">
-			        <a href="15114480120681.html"></a>
+			        <a href="data_science_competition.html">Data Science Competition</a>
 			      </li>
 		     
 		  
