@@ -156,7 +156,7 @@ var _hmt = _hmt || [];
                         
                         	<ul>
 <li>
-<a href="#toc_0">1.布尔逻辑</a>
+<a href="#toc_0">1.布尔逻辑 Boolean Logic</a>
 </li>
 <li>
 <a href="#toc_1">2.布尔运算 Boolean Arithmetic</a>
@@ -185,7 +185,9 @@ var _hmt = _hmt || [];
 
 <p>该课程适合学生掌握了计算机入门课程和数据结构以后学习，课程涉及布尔逻辑及运算、机器语言、计算机体系结构、汇编、虚拟机、编译器、操作系统。课程内容与CMU的深入理解计算机系统不一样，个人感觉涉及面更广、更加注重实战。</p>
 
-<h2 id="toc_0">1.布尔逻辑</h2>
+<p>下面是课程的简单总结：</p>
+
+<h2 id="toc_0">1.布尔逻辑 Boolean Logic</h2>
 
 <p><strong>多通道/多位Multiplexor</strong>: 一个拥有m个通道、每个通道数据宽度为n位的multiplexor选择器，将m个n位输入变量中选择一个并从其单一的n位输出总线上输出。可以用k个控制位来指定这个选择(\(k=\log_2 m\))。</p>
 
@@ -539,6 +541,21 @@ CHIP PC {
 
 <p><img src="media/15128019428341/memory.png" alt="memory"/></p>
 
+<pre><code>CHIP Memory {
+    IN in[16], load, address[15];
+    OUT out[16];
+
+    PARTS:
+
+    DMux4Way(in=load, sel=address[13..14], a=ram1, b=ram2, c=screen, d=kbd);
+    Or(a=ram1, b=ram2, out=ram);
+    RAM16K(in=in, load=ram, address=address[0..13], out=ramout);
+    Screen(in=in, load=screen, address=address[0..12], out=scrout);
+    Keyboard(out=kbout);
+    Mux4Way16(a=ramout, b=ramout, c=scrout, d=kbout, sel=address[13..14], out=out);
+}
+</code></pre>
+
 <p>CPU包括执行指令的ALU、一组寄存器和一些用于取指令和对指令解码的控制逻辑(上上图)。用来执行下面的任务：</p>
 
 <ul>
@@ -547,7 +564,60 @@ CHIP PC {
 <li>读取下一条指令(Next instruction fetching):指出下一步执行哪一条指令（指令的功能以及ALU的输出）。</li>
 </ul>
 
-<p><img src="media/15128019428341/CPU.png" alt="CPU"/></p>
+<p><img src="media/15128019428341/CPU_in_out.png" alt="CPU_in_out"/></p>
+
+<pre><code>
+CHIP CPU {
+
+    IN  inM[16],         // M value input  (M = contents of RAM[A])
+        instruction[16], // Instruction for execution
+        reset;           // Signals whether to re-start the current program
+                         // (reset == 1) or continue executing the current
+                         // program (reset == 0).
+
+    OUT outM[16],        // M value output
+        writeM,          // Write into M? 
+        addressM[15],    // RAM address (of M)
+        pc[15];          // ROM address (of next instruction)
+
+    PARTS:
+    // get type of instruction
+    Not(in=instruction[15], out=Ainstruction);
+    Not(in=Ainstruction, out=Cinstruction);
+    
+    And(a=Cinstruction, b=instruction[5], out=ALUtoA);    // C-inst and dest to A-reg?
+    Mux16(a=instruction, b=ALUout, sel=ALUtoA, out=Aregin);
+    
+    Or(a=Ainstruction, b=ALUtoA, out=loadA);    // load A if A-inst or C-inst&amp;dest to A-reg
+    ARegister(in=Aregin, load=loadA, out=Aout);
+    
+    Mux16(a=Aout, b=inM, sel=instruction[12], out=AMout);   // select A or M based on a-bit
+
+    And(a=Cinstruction, b=instruction[4], out=loadD);
+    DRegister(in=ALUout, load=loadD, out=Dout);    // load the D register from ALU
+    
+    ALU(x=Dout, y=AMout, zx=instruction[11], nx=instruction[10], 
+        zy=instruction[9], ny=instruction[8], f=instruction[7],
+        no=instruction[6], out=ALUout, zr=ZRout, ng=NGout); // calculate
+        
+    // Set outputs for writing memory
+    Or16(a=false, b=Aout, out[0..14]=addressM);
+    Or16(a=false, b=ALUout, out=outM);
+    And(a=Cinstruction, b=instruction[3], out=writeM);
+    
+    // calc PCload &amp; PCinc - whether to load PC with A reg
+    And(a=ZRout, b=instruction[1], out=jeq);    // is zero and jump if zero
+    And(a=NGout, b=instruction[2], out=jlt);    // is neg and jump if neg
+    Or(a=ZRout, b=NGout, out=zeroOrNeg);
+    Not(in=zeroOrNeg, out=positive);            // is positive (not zero and not neg)
+    And(a=positive, b=instruction[0], out=jgt); // is pos and jump if pos
+    Or(a=jeq, b=jlt, out=jle);
+    Or(a=jle, b=jgt, out=jumpToA);              // load PC if cond met and jump if cond
+    And(a=Cinstruction, b=jumpToA, out=PCload); // Only jump if C instruction
+    Not(in=PCload, out=PCinc);                  // only inc if not load
+    PC(in=Aout, inc=PCinc, load=PCload, reset=reset, out[0..14]=pc);
+}
+</code></pre>
 
                         
                       </div>
@@ -737,6 +807,12 @@ CHIP PC {
 	      
 		      
 			      <li class="post">
+			        <a href="15132289229128.html">CMU 15-213 Introduction to Computer Systems</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="nand2tetris.html">Nand2Tetris: The elements of computing systems</a>
 			      </li>
 		     
@@ -756,12 +832,6 @@ CHIP PC {
 		      
 			      <li class="post">
 			        <a href="data_science_competition.html">Data Science Competition</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15114445635476.html">MongoDB</a>
 			      </li>
 		     
 		  

@@ -4,13 +4,26 @@
   <title><![CDATA[techlarry]]></title>
   <link href="http://larryim.cc/atom.xml" rel="self"/>
   <link href="http://larryim.cc/"/>
-  <updated>2017-12-13T23:56:17+08:00</updated>
+  <updated>2017-12-14T00:39:42+08:00</updated>
   <id>http://larryim.cc/</id>
   <author>
     <name><![CDATA[]]></name>
     
   </author>
   <generator uri="http://www.mweb.im/">MWeb</generator>
+  
+  <entry>
+    <title type="html"><![CDATA[CMU 15-213 Introduction to Computer Systems]]></title>
+    <link href="http://larryim.cc/15132289229128.html"/>
+    <updated>2017-12-14T13:22:02+08:00</updated>
+    <id>http://larryim.cc/15132289229128.html</id>
+    <content type="html"><![CDATA[
+<p>CMU 15-213 <code>Introduction to Computer Systems</code>可能是世界上最受欢迎的一门课。与这门课对应的课本CSAPP在全球被广泛采用，也被无数学生拜读。课程内容涉及广泛、由浅入深，是进入计算机科学的最佳课程，也是各种击破BAT笔试题的必备良药(<a href="https://book.douban.com/review/5627139/">这篇帖子描述了笔试题所对应的章节</a>)。</p>
+
+<p>非常幸运的是，CMU(Carnegie Mellon University)在网上分享了上课视频和其他所有资料，点击<a href="https://scs.hosted.panopto.com/Panopto/Pages/Sessions/List.aspx#folderID=%22b96d90ae-9871-4fae-91e2-b1627b43e25e%22&amp;sortColumn=0&amp;sortAscending=true">这里</a>观看。</p>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Nand2Tetris: The elements of computing systems]]></title>
@@ -20,7 +33,7 @@
     <content type="html"><![CDATA[
 <ul>
 <li>
-<a href="#toc_0">1.布尔逻辑</a>
+<a href="#toc_0">1.布尔逻辑 Boolean Logic</a>
 </li>
 <li>
 <a href="#toc_1">2.布尔运算 Boolean Arithmetic</a>
@@ -37,7 +50,7 @@
 </ul>
 
 
-<p>Nand2Tetris 计算机系统要素是一门教你从零开始构建现代计算机的课程。该课程已经在Coursera上开设(分为上下两门课程)，有免费的课本和课程需要的代码，也有专门的论坛来交流学习，课程相关资源如下：</p>
+<p><code>Nand2Tetris 计算机系统要素</code>是一门教你从零开始构建现代计算机的课程。该课程已经在Coursera上开设(分为上下两门课程)，有免费的课本和课程需要的代码，也有专门的论坛来交流学习，课程相关资源如下：</p>
 
 <ul>
 <li><a href="https://www.coursera.org/learn/build-a-computer">Coursera Course Part1</a></li>
@@ -49,7 +62,7 @@
 
 <p>该课程适合学生掌握了计算机入门课程和数据结构以后学习，课程涉及布尔逻辑及运算、机器语言、计算机体系结构、汇编、虚拟机、编译器、操作系统。课程内容与CMU的深入理解计算机系统不一样，个人感觉涉及面更广、更加注重实战。</p>
 
-<h2 id="toc_0">1.布尔逻辑</h2>
+<h2 id="toc_0">1.布尔逻辑 Boolean Logic</h2>
 
 <p><strong>多通道/多位Multiplexor</strong>: 一个拥有m个通道、每个通道数据宽度为n位的multiplexor选择器，将m个n位输入变量中选择一个并从其单一的n位输出总线上输出。可以用k个控制位来指定这个选择(\(k=\log_2 m\))。</p>
 
@@ -403,6 +416,21 @@ CHIP PC {
 
 <p><img src="media/15128019428341/memory.png" alt="memory"/></p>
 
+<pre><code>CHIP Memory {
+    IN in[16], load, address[15];
+    OUT out[16];
+
+    PARTS:
+
+    DMux4Way(in=load, sel=address[13..14], a=ram1, b=ram2, c=screen, d=kbd);
+    Or(a=ram1, b=ram2, out=ram);
+    RAM16K(in=in, load=ram, address=address[0..13], out=ramout);
+    Screen(in=in, load=screen, address=address[0..12], out=scrout);
+    Keyboard(out=kbout);
+    Mux4Way16(a=ramout, b=ramout, c=scrout, d=kbout, sel=address[13..14], out=out);
+}
+</code></pre>
+
 <p>CPU包括执行指令的ALU、一组寄存器和一些用于取指令和对指令解码的控制逻辑(上上图)。用来执行下面的任务：</p>
 
 <ul>
@@ -411,7 +439,60 @@ CHIP PC {
 <li>读取下一条指令(Next instruction fetching):指出下一步执行哪一条指令（指令的功能以及ALU的输出）。</li>
 </ul>
 
-<p><img src="media/15128019428341/CPU.png" alt="CPU"/></p>
+<p><img src="media/15128019428341/CPU_in_out.png" alt="CPU_in_out"/></p>
+
+<pre><code>
+CHIP CPU {
+
+    IN  inM[16],         // M value input  (M = contents of RAM[A])
+        instruction[16], // Instruction for execution
+        reset;           // Signals whether to re-start the current program
+                         // (reset == 1) or continue executing the current
+                         // program (reset == 0).
+
+    OUT outM[16],        // M value output
+        writeM,          // Write into M? 
+        addressM[15],    // RAM address (of M)
+        pc[15];          // ROM address (of next instruction)
+
+    PARTS:
+    // get type of instruction
+    Not(in=instruction[15], out=Ainstruction);
+    Not(in=Ainstruction, out=Cinstruction);
+    
+    And(a=Cinstruction, b=instruction[5], out=ALUtoA);    // C-inst and dest to A-reg?
+    Mux16(a=instruction, b=ALUout, sel=ALUtoA, out=Aregin);
+    
+    Or(a=Ainstruction, b=ALUtoA, out=loadA);    // load A if A-inst or C-inst&amp;dest to A-reg
+    ARegister(in=Aregin, load=loadA, out=Aout);
+    
+    Mux16(a=Aout, b=inM, sel=instruction[12], out=AMout);   // select A or M based on a-bit
+
+    And(a=Cinstruction, b=instruction[4], out=loadD);
+    DRegister(in=ALUout, load=loadD, out=Dout);    // load the D register from ALU
+    
+    ALU(x=Dout, y=AMout, zx=instruction[11], nx=instruction[10], 
+        zy=instruction[9], ny=instruction[8], f=instruction[7],
+        no=instruction[6], out=ALUout, zr=ZRout, ng=NGout); // calculate
+        
+    // Set outputs for writing memory
+    Or16(a=false, b=Aout, out[0..14]=addressM);
+    Or16(a=false, b=ALUout, out=outM);
+    And(a=Cinstruction, b=instruction[3], out=writeM);
+    
+    // calc PCload &amp; PCinc - whether to load PC with A reg
+    And(a=ZRout, b=instruction[1], out=jeq);    // is zero and jump if zero
+    And(a=NGout, b=instruction[2], out=jlt);    // is neg and jump if neg
+    Or(a=ZRout, b=NGout, out=zeroOrNeg);
+    Not(in=zeroOrNeg, out=positive);            // is positive (not zero and not neg)
+    And(a=positive, b=instruction[0], out=jgt); // is pos and jump if pos
+    Or(a=jeq, b=jlt, out=jle);
+    Or(a=jle, b=jgt, out=jumpToA);              // load PC if cond met and jump if cond
+    And(a=Cinstruction, b=jumpToA, out=PCload); // Only jump if C instruction
+    Not(in=PCload, out=PCinc);                  // only inc if not load
+    PC(in=Aout, inc=PCinc, load=PCload, reset=reset, out[0..14]=pc);
+}
+</code></pre>
 
 ]]></content>
   </entry>
@@ -1532,102 +1613,6 @@ data = bson.decode_file_iter(open(&#39;example.bson&#39;, &#39;rb&#39;))
     <updated>2017-09-29T00:42:23+08:00</updated>
     <id>http://larryim.cc/15066169438683.html</id>
     <content type="html"><![CDATA[
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[C++面试经典100题]]></title>
-    <link href="http://larryim.cc/15066079292359.html"/>
-    <updated>2017-09-28T22:12:09+08:00</updated>
-    <id>http://larryim.cc/15066079292359.html</id>
-    <content type="html"><![CDATA[
-<h2 id="toc_0">1. 请填写BOOL , float, 指针变量与“零值”比较的 if 语句</h2>
-
-<p>提示：这里“零值”可以是0, 0.0 , <code>FALSE</code> 或者“空指针”。例如 <code>int</code> 变量 \(n\) 与“零值”<br/>
-比较的<code>if</code>语句为：</p>
-
-<pre><code>if ( n == 0 )
-if ( n != 0 )
-</code></pre>
-
-<p>以此类推。</p>
-
-<p>(1)请写出 BOOL flag 与“零值”比较的 if 语句：<br/>
-标准答案：</p>
-
-<pre><code>if ( flag )
-if ( !flag )
-``
-
-如下写法均属不良风格，不得分。
-
-</code></pre>
-
-<p>if (flag == TRUE)<br/>
-if (flag == 1 )<br/>
-if (flag == FALSE)<br/>
-if (flag == 0)<br/>
-```</p>
-
-<p>(2)请写出 <code>float x</code> 与“零值”比较的<code>if</code>语句：<br/>
-标准答案示例：</p>
-
-<pre><code>const float EPSINON = 0.00001;
-if ((x &gt;= - EPSINON) &amp;&amp; (x &lt;= EPSINON)
-</code></pre>
-
-<p>不可将浮点变量用<code>==</code>或<code>！=</code>与数字比较，应该设法转化成<code>&gt;=</code>或<code>&lt;=</code>此<br/>
-类形式。<br/>
-如下是错误的写法，不得分。</p>
-
-<pre><code>if (x == 0.0)
-if (x != 0.0)
-</code></pre>
-
-<p>(3)请写出 <code>char *p</code> 与“零值”比较的 <code>if</code> 语句：<br/>
-标准答案：对于空指针值，用<code>#NULL</code> 表示</p>
-
-<pre><code>if (p == NULL)
-if (p != NULL)
-</code></pre>
-
-<p>如下写法均属不良风格，不得分。</p>
-
-<pre><code>if (p == 0)
-if (p != 0)
-if (p)
-if (!)
-</code></pre>
-
-<h2 id="toc_1">2.32位C++程序，计算sizeof的值</h2>
-
-<p><img src="media/15066079292359/15066082580402.jpg" alt=""/></p>
-
-<p><code>sizeof(str) = 6</code>; //字符串数组，大小是六个字节(加上&#39;\0&#39;共六个)。<br/>
-<code>sizeof(p) = 4</code>; // 指针的内容就是一个指向目标地址的整数，所以不管指向<code>char</code>、<code>int</code>还是其他，32位机指针一律是4个字节。</p>
-
-<p><code>sizeof(n) = 4</code>; // <code>int</code>型变量是4个字节。<br/>
-右侧：<br/>
-<code>sizeof(str) = 4</code>; // 这里的str不再是100字节。当数组作为函数的参数进行传递时，也就是作为参数入栈，那么该数组自动退化成同类型的指针。<br/>
-<code>sizeof(p) = 4</code>; // 同样，指针类型一律4个字节。</p>
-
-<h2 id="toc_2">3. long a=0x801010; a+5=?</h2>
-
-<p>0x801010 用二进制表示 为：“ 1000 0000 0001 0000 0001 0000” ，十进制的值为 8392720 ，再加 上 5 就是 8392725 。</p>
-
-<h2 id="toc_3">4. 用变量 <code>a</code> 给出下面的定义</h2>
-
-<ul>
-<li>一个有 10 个指针的数组，该指针是指向一个整型数的;</li>
-<li>一个指向有 10 个整型数数组的指针 ;</li>
-<li>一个指向函数的指针，该函数有一个整型参数并返 回一个整型数 ;</li>
-<li><p>一个有 10 个指针的数组，该指针指向一个函数，该 函数有一个整型参数并返回一个整型数 ;</p></li>
-<li><p>int * a[10]; </p></li>
-<li><p>int (*a)[10]</p></li>
-<li><p>int (*a)(int); </p></li>
-<li><p>int (*a[10])(int)</p></li>
-</ul>
 
 ]]></content>
   </entry>

@@ -147,6 +147,41 @@ var _hmt = _hmt || [];
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15132289229128.html">
+                
+                  <h1>CMU 15-213 Introduction to Computer Systems</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>CMU 15-213 <code>Introduction to Computer Systems</code>可能是世界上最受欢迎的一门课。与这门课对应的课本CSAPP在全球被广泛采用，也被无数学生拜读。课程内容涉及广泛、由浅入深，是进入计算机科学的最佳课程，也是各种击破BAT笔试题的必备良药(<a href="https://book.douban.com/review/5627139/">这篇帖子描述了笔试题所对应的章节</a>)。</p>
+
+<p>非常幸运的是，CMU(Carnegie Mellon University)在网上分享了上课视频和其他所有资料，点击<a href="https://scs.hosted.panopto.com/Panopto/Pages/Sessions/List.aspx#folderID=%22b96d90ae-9871-4fae-91e2-b1627b43e25e%22&amp;sortColumn=0&amp;sortAscending=true">这里</a>观看。</p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/12/14</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Computer%20System.html'>Computer System</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="nand2tetris.html">
                 
                   <h1>Nand2Tetris: The elements of computing systems</h1>
@@ -156,7 +191,7 @@ var _hmt = _hmt || [];
                         
                         	<ul>
 <li>
-<a href="#toc_0">1.布尔逻辑</a>
+<a href="#toc_0">1.布尔逻辑 Boolean Logic</a>
 </li>
 <li>
 <a href="#toc_1">2.布尔运算 Boolean Arithmetic</a>
@@ -173,7 +208,7 @@ var _hmt = _hmt || [];
 </ul>
 
 
-<p>Nand2Tetris 计算机系统要素是一门教你从零开始构建现代计算机的课程。该课程已经在Coursera上开设(分为上下两门课程)，有免费的课本和课程需要的代码，也有专门的论坛来交流学习，课程相关资源如下：</p>
+<p><code>Nand2Tetris 计算机系统要素</code>是一门教你从零开始构建现代计算机的课程。该课程已经在Coursera上开设(分为上下两门课程)，有免费的课本和课程需要的代码，也有专门的论坛来交流学习，课程相关资源如下：</p>
 
 <ul>
 <li><a href="https://www.coursera.org/learn/build-a-computer">Coursera Course Part1</a></li>
@@ -185,7 +220,7 @@ var _hmt = _hmt || [];
 
 <p>该课程适合学生掌握了计算机入门课程和数据结构以后学习，课程涉及布尔逻辑及运算、机器语言、计算机体系结构、汇编、虚拟机、编译器、操作系统。课程内容与CMU的深入理解计算机系统不一样，个人感觉涉及面更广、更加注重实战。</p>
 
-<h2 id="toc_0">1.布尔逻辑</h2>
+<h2 id="toc_0">1.布尔逻辑 Boolean Logic</h2>
 
 <p><strong>多通道/多位Multiplexor</strong>: 一个拥有m个通道、每个通道数据宽度为n位的multiplexor选择器，将m个n位输入变量中选择一个并从其单一的n位输出总线上输出。可以用k个控制位来指定这个选择(\(k=\log_2 m\))。</p>
 
@@ -539,6 +574,21 @@ CHIP PC {
 
 <p><img src="media/15128019428341/memory.png" alt="memory"/></p>
 
+<pre><code>CHIP Memory {
+    IN in[16], load, address[15];
+    OUT out[16];
+
+    PARTS:
+
+    DMux4Way(in=load, sel=address[13..14], a=ram1, b=ram2, c=screen, d=kbd);
+    Or(a=ram1, b=ram2, out=ram);
+    RAM16K(in=in, load=ram, address=address[0..13], out=ramout);
+    Screen(in=in, load=screen, address=address[0..12], out=scrout);
+    Keyboard(out=kbout);
+    Mux4Way16(a=ramout, b=ramout, c=scrout, d=kbout, sel=address[13..14], out=out);
+}
+</code></pre>
+
 <p>CPU包括执行指令的ALU、一组寄存器和一些用于取指令和对指令解码的控制逻辑(上上图)。用来执行下面的任务：</p>
 
 <ul>
@@ -547,7 +597,60 @@ CHIP PC {
 <li>读取下一条指令(Next instruction fetching):指出下一步执行哪一条指令（指令的功能以及ALU的输出）。</li>
 </ul>
 
-<p><img src="media/15128019428341/CPU.png" alt="CPU"/></p>
+<p><img src="media/15128019428341/CPU_in_out.png" alt="CPU_in_out"/></p>
+
+<pre><code>
+CHIP CPU {
+
+    IN  inM[16],         // M value input  (M = contents of RAM[A])
+        instruction[16], // Instruction for execution
+        reset;           // Signals whether to re-start the current program
+                         // (reset == 1) or continue executing the current
+                         // program (reset == 0).
+
+    OUT outM[16],        // M value output
+        writeM,          // Write into M? 
+        addressM[15],    // RAM address (of M)
+        pc[15];          // ROM address (of next instruction)
+
+    PARTS:
+    // get type of instruction
+    Not(in=instruction[15], out=Ainstruction);
+    Not(in=Ainstruction, out=Cinstruction);
+    
+    And(a=Cinstruction, b=instruction[5], out=ALUtoA);    // C-inst and dest to A-reg?
+    Mux16(a=instruction, b=ALUout, sel=ALUtoA, out=Aregin);
+    
+    Or(a=Ainstruction, b=ALUtoA, out=loadA);    // load A if A-inst or C-inst&amp;dest to A-reg
+    ARegister(in=Aregin, load=loadA, out=Aout);
+    
+    Mux16(a=Aout, b=inM, sel=instruction[12], out=AMout);   // select A or M based on a-bit
+
+    And(a=Cinstruction, b=instruction[4], out=loadD);
+    DRegister(in=ALUout, load=loadD, out=Dout);    // load the D register from ALU
+    
+    ALU(x=Dout, y=AMout, zx=instruction[11], nx=instruction[10], 
+        zy=instruction[9], ny=instruction[8], f=instruction[7],
+        no=instruction[6], out=ALUout, zr=ZRout, ng=NGout); // calculate
+        
+    // Set outputs for writing memory
+    Or16(a=false, b=Aout, out[0..14]=addressM);
+    Or16(a=false, b=ALUout, out=outM);
+    And(a=Cinstruction, b=instruction[3], out=writeM);
+    
+    // calc PCload &amp; PCinc - whether to load PC with A reg
+    And(a=ZRout, b=instruction[1], out=jeq);    // is zero and jump if zero
+    And(a=NGout, b=instruction[2], out=jlt);    // is neg and jump if neg
+    Or(a=ZRout, b=NGout, out=zeroOrNeg);
+    Not(in=zeroOrNeg, out=positive);            // is positive (not zero and not neg)
+    And(a=positive, b=instruction[0], out=jgt); // is pos and jump if pos
+    Or(a=jeq, b=jlt, out=jle);
+    Or(a=jle, b=jgt, out=jumpToA);              // load PC if cond met and jump if cond
+    And(a=Cinstruction, b=jumpToA, out=PCload); // Only jump if C instruction
+    Not(in=PCload, out=PCinc);                  // only inc if not load
+    PC(in=Aout, inc=PCinc, load=PCload, reset=reset, out[0..14]=pc);
+}
+</code></pre>
 
                         
                       </div>
@@ -832,49 +935,6 @@ def varianceExplained(data, k=1):
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15114445635476.html">
-                
-                  <h1>MongoDB</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p><code>NoSQL</code>(<code>Not Only Sql</code>，非关系型数据库)，最初是为了大规模web应用，具有分布式、开源、可水平扩展等特点。它满足了对数据库高并发读写、对海量数据的高效率存储和访问、对数据库的高扩展性和高可用性的需求。</p>
-
-<h2 id="toc_0">数据逻辑结构</h2>
-
-<p><code>MongoDB</code>的逻辑结构主要由文档(<code>document</code>)、集合(<code>collection</code>)、数据库(<code>database</code>)这三部分组成的。</p>
-
-<h2 id="toc_1">replica set</h2>
-
-<p><code>Replica sets</code> distribute data across two or more machines for redundancy and automate failover in the event of server and network outages. <u>if the primary node fails, the cluster will pick a secondary node and automatically promote it to primary. When the former primary comes back online, it’ll do so as a secondary.</u></p>
-
-<p><img src="media/15114445635476/replica%20set.png" alt="replica set"/></p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/11/23</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E5%BA%93.html'>数据库</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -976,6 +1036,12 @@ def varianceExplained(data, k=1):
 	      
 		      
 			      <li class="post">
+			        <a href="15132289229128.html">CMU 15-213 Introduction to Computer Systems</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="nand2tetris.html">Nand2Tetris: The elements of computing systems</a>
 			      </li>
 		     
@@ -995,12 +1061,6 @@ def varianceExplained(data, k=1):
 		      
 			      <li class="post">
 			        <a href="data_science_competition.html">Data Science Competition</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15114445635476.html">MongoDB</a>
 			      </li>
 		     
 		  

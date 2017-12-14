@@ -147,6 +147,169 @@ var _hmt = _hmt || [];
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="14969760668045.html">
+                
+                  <h1>闭包，装饰器</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h3 id="toc_0">函数引用</h3>
+
+<pre><code class="language-python">&gt;&gt;&gt; def test():
+...     print(&#39;lala&#39;)
+...
+&gt;&gt;&gt; test()
+lala
+&gt;&gt;&gt; test
+&lt;function test at 0x109a51950&gt; 
+
+&gt;&gt;&gt; b = test  # b指向函数体test
+
+&gt;&gt;&gt; b
+&lt;function test at 0x109a51950&gt;
+
+&gt;&gt;&gt; b()  # 通过引用调用函数
+lala
+</code></pre>
+
+<h3 id="toc_1">闭包</h3>
+
+<p>在函数内部再定义一个函数，并且这个函数用到了外边函数的变量，那么将这个函数以及用到的一些变量统称为闭包</p>
+
+<pre><code class="language-python">def test(number):
+  def test_in(number_in):
+    print(&quot;in test_in, number_in is %d&quot;%number_in)
+    return number+number_in
+  return test_in
+
+ret = test(100)  # ret 指向函数体
+ret(1)  # 调用函数
+</code></pre>
+
+<p>闭包的实际例子：</p>
+
+<pre><code class="language-python">def line_conf(a,b):
+  def line(x):
+    return a*x + b
+  return line
+
+line1 = line_conf(1,1)
+line2 = line_conf(4,5)
+
+print(line1(5))
+print(line2(5))
+</code></pre>
+
+<ol>
+<li>闭包又花了变量，原来需要类对象完成的工作，闭包也可以完成</li>
+<li>由于必报引用了外部函数的局部变量，则外部函数的局部变量没有及时释放，消耗内存</li>
+</ol>
+
+<h2 id="toc_2">装饰器</h2>
+
+<p>装饰器是程序开发中经常会用到的一个功能，用好了装饰器，开发效率如虎添翼。<br/>
+* 只要python解释器执行到了装饰器代码部分，那么就会自动装饰，而不是等到调用的时候才装饰<br/>
+* 有多个装饰器时，先执行后面的装饰</p>
+
+<pre><code class="language-python">def w1(func):
+  print(&#39;---正在装饰1-----&#39;)
+  def inner():
+    print(&#39;-----装在验证权限1------&#39;)
+    func()
+  return inner
+  
+def w2(func):
+  print(&#39;---正在装饰2-----&#39;)
+  def inner():
+    print(&#39;-----装在验证权限2------&#39;)
+    func()
+  return inner
+
+@w1
+@w2
+def f1():
+  print(&quot;---f1---&quot;)
+
+f1()
+
+&gt;&gt;&gt;
+---正在装饰2-----
+---正在装饰1-----
+-----装在验证权限1------
+-----装在验证权限2------
+---f1---
+</code></pre>
+
+<h3 id="toc_3">通用装饰器</h3>
+
+<p>无参数、有参数、不定长参数、有返回值、无返回值 示例</p>
+
+<pre><code class="language-python">def func(functionName):
+
+  def func_in(*args, **kwargs):
+    ret = functionName(*args, **kwargs)
+    return ret
+    
+  return func_in
+</code></pre>
+
+<h3 id="toc_4">带有参数的装饰器</h3>
+
+<p>同一个装饰器，在装饰不同函数时，起到不同的效果</p>
+
+<pre><code class="language-python">def func_arg(arg):
+    def func(functionName):
+        def func_in():
+            print(&quot;---记录日志-arg=%s--&quot;%arg)
+            if arg==&quot;heihei&quot;:
+                functionName()
+                functionName()
+            else:
+                functionName()
+        return func_in
+    return func
+
+#1. 先执行func_arg(&quot;heihei&quot;)函数,这个函数return 的结果是func这个函数的引用
+#2. @func
+#3. 使用@func对test进行装饰
+@func_arg(&quot;heihei&quot;)
+def test():
+    print(&quot;--test--&quot;)
+
+#带有参数的装饰器,能够起到在运行时,有不同的功能
+@func_arg(&quot;haha&quot;)
+def test2():
+    print(&quot;--test2--&quot;)
+
+test()
+test2()
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/4/5</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="C++STL.html">
                 
                   <h1>C++ STL</h1>
@@ -998,6 +1161,12 @@ delete p; //delete single element
 	      
 		      
 			      <li class="post">
+			        <a href="15132289229128.html">CMU 15-213 Introduction to Computer Systems</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="nand2tetris.html">Nand2Tetris: The elements of computing systems</a>
 			      </li>
 		     
@@ -1017,12 +1186,6 @@ delete p; //delete single element
 		      
 			      <li class="post">
 			        <a href="data_science_competition.html">Data Science Competition</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15114445635476.html">MongoDB</a>
 			      </li>
 		     
 		  
