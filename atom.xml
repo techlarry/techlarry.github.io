@@ -4,7 +4,7 @@
   <title><![CDATA[techlarry]]></title>
   <link href="http://larryim.cc/atom.xml" rel="self"/>
   <link href="http://larryim.cc/"/>
-  <updated>2017-12-14T13:31:00+08:00</updated>
+  <updated>2017-12-16T16:42:40+08:00</updated>
   <id>http://larryim.cc/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -13,12 +13,87 @@
   <generator uri="http://www.mweb.im/">MWeb</generator>
   
   <entry>
-    <title type="html"><![CDATA[CMU 15-213 Introduction to Computer Systems]]></title>
+    <title type="html"><![CDATA[C++ OStream]]></title>
+    <link href="http://larryim.cc/C_plus_plus_ostream.html"/>
+    <updated>2017-12-16T16:31:39+08:00</updated>
+    <id>http://larryim.cc/C_plus_plus_ostream.html</id>
+    <content type="html"><![CDATA[
+<ul>
+<li>设定输出域宽度: <code>setw</code></li>
+</ul>
+
+<pre><code class="language-C++">// 设定域的输出长度为8，而实际字符串长度为4，所有前面补四个空格。
+cout &lt;&lt; &quot;[&quot; &lt;&lt; setw(8) &lt;&lt; &quot;AAAA&quot; &lt;&lt; &quot;]&quot;;        // [    AAAA]
+</code></pre>
+
+<p>如果<code>setw</code>的数值小于实际数据长度，<code>setw</code>的值无效，比如上述例子：</p>
+
+<pre><code class="language-C++">//因为3小于实际字符串长度4，最终输出整个字符串。
+cout &lt;&lt; &quot;[&quot; &lt;&lt; setw(3) &lt;&lt; &quot;AAAA&quot; &lt;&lt; &quot;]&quot;         // [AAAA]
+</code></pre>
+
+<ul>
+<li>对齐方式：<code>left</code>/<code>right</code>/<code>internal</code></li>
+</ul>
+
+<p>在设定了输出域的宽度<code>setw</code>后，如果设置对齐方式，左对齐还是右对齐(缺省是右对齐(<code>right</code>))</p>
+
+<pre><code class="language-C++"> cout &lt;&lt; &quot;[&quot; &lt;&lt; setw(8) &lt;&lt; left &lt;&lt; &quot;AAAA&quot; &lt;&lt; &quot;]&quot;;       // [AAAA    ]
+ cout &lt;&lt; &quot;[&quot; &lt;&lt; setw(8) &lt;&lt; right &lt;&lt; &quot;AAAA&quot; &lt;&lt; &quot;]&quot;;      // [    AAAA]
+ cout &lt;&lt; &quot;[&quot; &lt;&lt; setw(8) &lt;&lt; &quot;AAAA&quot; &lt;&lt; &quot;]&quot;;                    // [    AAAA]
+</code></pre>
+
+<ul>
+<li>填充字符: <code>setfill</code></li>
+</ul>
+
+<p>域宽度不够时，还可以指定，用来代替缺省的空格</p>
+
+<pre><code class="language-C++"> cout &lt;&lt; &quot;[&quot; &lt;&lt; setw(8) &lt;&lt; setfill(&#39;0&#39;) &lt;&lt; &quot;AAAA&quot; &lt;&lt; &quot;]&quot;; // [0000AAAA]
+使用字符&#39;0&#39;作为填充
+ cout &lt;&lt; &quot;[&quot; &lt;&lt; setw(8) &lt;&lt; setfill(&#39;0&#39;) &lt;&lt; left &lt;&lt; &quot;AAAA&quot; &lt;&lt; &quot;]&quot;;    // [AAAA0000]
+</code></pre>
+
+<ul>
+<li>输出正负号: <code>showpos</code></li>
+</ul>
+
+<pre><code class="language-C++"> cout &lt;&lt; &quot;[&quot; &lt;&lt; showpos &lt;&lt; 123 &lt;&lt; &quot;]&quot;;   // [+123]
+ cout &lt;&lt; &quot;[&quot; &lt;&lt; showpos &lt;&lt; -456 &lt;&lt; &quot;]&quot;;  // [-456]
+ cout &lt;&lt; &quot;[&quot; &lt;&lt; showpos &lt;&lt; 0 &lt;&lt; &quot;]&quot;;     // [+0]
+</code></pre>
+
+<ul>
+<li>输出16进制数字值: <code>hex</code></li>
+</ul>
+
+<pre><code class="language-C++">cout &lt;&lt; &quot;[&quot; &lt;&lt; hex &lt;&lt; 20  &lt;&lt; &quot;]&quot;;   //  [14]
+</code></pre>
+
+<ul>
+<li>可以加前缀<code>0x</code>: <code>showbase</code></li>
+</ul>
+
+<pre><code class="language-C++">cout &lt;&lt; &quot;[&quot; &lt;&lt; showbase &lt;&lt; hex &lt;&lt; setw(2) &lt;&lt; setfill(&#39;0&#39;) &lt;&lt; 5  &lt;&lt; &quot;]&quot;;  // [0x5]
+</code></pre>
+
+<ul>
+<li>16进制值(A-F)大写: <code>uppercase</code></li>
+</ul>
+
+<pre><code class="language-C++">cout &lt;&lt; &quot;[&quot; &lt;&lt; hex &lt;&lt; uppercase &lt;&lt; setw(2) &lt;&lt; setfill(&#39;0&#39;) &lt;&lt; 10  &lt;&lt; &quot;]&quot;;  // [0A]
+</code></pre>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[CMU 213 Introduction to Computer Systems]]></title>
     <link href="http://larryim.cc/introduction_to_computer_system_CMU.html"/>
     <updated>2017-12-14T13:22:02+08:00</updated>
     <id>http://larryim.cc/introduction_to_computer_system_CMU.html</id>
     <content type="html"><![CDATA[
-<p>CMU 15-213 <code>Introduction to Computer Systems</code>可能是世界上最受欢迎的一门课。与这门课对应的课本CSAPP在全球被广泛采用，也被无数学生拜读。课程内容涉及广泛、由浅入深，是进入计算机科学的最佳课程，也是各种击破BAT笔试题的必备良药(<a href="https://book.douban.com/review/5627139/">这篇帖子描述了笔试题所对应的章节</a>)。</p>
+<p>CMU 213 <code>Introduction to Computer Systems</code>可能是世界上最受欢迎的一门课。与这门课对应的课本CSAPP在全球被广泛采用，也被无数学生拜读。课程内容涉及广泛、由浅入深，是进入计算机科学的最佳课程，也是各种击破BAT笔试题的必备良药(<a href="https://book.douban.com/review/5627139/">这篇帖子描述了笔试题所对应的章节</a>)。</p>
 
 <p>非常幸运的是，CMU(Carnegie Mellon University)在网上分享了上课视频和其他所有资料，点击<a href="https://scs.hosted.panopto.com/Panopto/Pages/Sessions/List.aspx#folderID=%22b96d90ae-9871-4fae-91e2-b1627b43e25e%22&amp;sortColumn=0&amp;sortAscending=true">这里</a>观看。</p>
 
@@ -1616,16 +1691,6 @@ data = bson.decode_file_iter(open(&#39;example.bson&#39;, &#39;rb&#39;))
 <li>More than 15 million images at 180x180 resolution</li>
 <li>More than 5000 categories: yes this is quite an extreme multi-class classification!</li>
 </ul>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Towards Accurate Multi-person Pose Estimation in the Wild]]></title>
-    <link href="http://larryim.cc/15066169438683.html"/>
-    <updated>2017-09-29T00:42:23+08:00</updated>
-    <id>http://larryim.cc/15066169438683.html</id>
-    <content type="html"><![CDATA[
 
 ]]></content>
   </entry>
