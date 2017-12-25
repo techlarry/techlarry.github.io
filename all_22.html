@@ -123,6 +123,8 @@ var _hmt = _hmt || [];
             <li><a href="Big%20Data.html">Big Data</a></li>
         
             <li><a href="%E6%96%87%E7%8C%AE%E9%98%85%E8%AF%BB.html">文献阅读</a></li>
+        
+            <li><a href="Tools.html">Tools</a></li>
          
 
       </ul>
@@ -144,6 +146,252 @@ var _hmt = _hmt || [];
 	<div class="large-8 medium-8 columns">
 		<div class="markdown-body home-categories">
 		
+			<div class="article">
+                <a class="clearlink" href="14969929726510.html">
+                
+                  <h1>Python 类属性与实例属性</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>Python属于动态语言，类属性很好体现了python动态语言这一特性。<br/>
+对于属性，通常可以通过类属性和实例属性的形式调用。<br/>
+看一个例子：</p>
+
+<pre><code class="language-python">class AAA():
+    aaa = 10
+    
+obj1 = AAA()
+obj2 = AAA()
+print(obj1.aaa, obj2.aaa, AAA.aaa) # result: 10 10 10
+
+obj1.aaa += 2
+print(obj1.aaa, obj2.aaa, AAA.aaa) # result: 12 10 10
+
+AAA.aaa += 4
+print(obj1.aaa,obj2.aaa,AAA.aaa)  # result: 12 14 14
+</code></pre>
+
+<p>上例中，<code>AAA.aaa</code>就属于<strong>类属性</strong>形式，<code>obj1.aaa</code>属于<strong>实例属性</strong>的形式</p>
+
+<h2 id="toc_0">属性查找机制</h2>
+
+<p>Python中属性查找是一个向上查找的机制，具体可参考下图所示：<br/>
+       <img src="media/14969929726510/Screen%20Shot%202017-06-09%20at%203.39.06%20PM.png" alt="Screen Shot 2017-06-09 at 3.39.06 P"/></p>
+
+<p>所以<br/>
+* 当调用类属性<code>AAA.aaa</code>时，直接从<code>AAA</code>获取其属性<code>aaa</code><br/>
+* 当调用实例属性<code>obj1.aaa</code>时，python按照由下到上的顺序查找属性，当<code>job1</code>和<code>job2</code>没有时，到类<code>AAA</code>中去查找</p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/6/9</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="14969804243106.html">
+                
+                  <h1>栈与队列</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h2 id="toc_0">栈</h2>
+
+<p>栈(<code>stack</code>)，是一种容器，可存入数据元素、访问元素、删除元素，它的特点是只能在容器的一端加入数据（<code>push</code>）和输出数据(<code>pop</code>)的运算。没有了位置概念，保证任何时候可以访问，删除的元素都是此前最后存入的那个元素，确定了一种默认的访问顺序。</p>
+
+<p>栈数据结构只允许在一端进行操作，按照后进先出(<code>LIFO, Last In First Out</code>)的原理运作。</p>
+
+<p>栈可以用顺序表实现，也可以用链表实现。</p>
+
+<p><img src="media/14969804243106/Screen%20Shot%202017-06-10%20at%203.14.14%20PM.png" alt="Screen Shot 2017-06-10 at 3.14.14 P"/></p>
+
+<h3 id="toc_1">栈的操作</h3>
+
+<ul>
+<li><code>Stack()</code> 创建一个新的空栈</li>
+<li><code>push(item)</code> 添加一个新的元素item到栈顶</li>
+<li><code>pop()</code> 弹出栈顶元素</li>
+<li><code>peek()</code> 返回栈顶元素</li>
+<li><code>is_empty()</code> 判断栈是否为空</li>
+<li><code>size()</code> 返回栈的元素个数</li>
+</ul>
+
+<pre><code class="language-python">class Stack(object):
+    &quot;&quot;&quot;
+    创建一个新的空栈
+    &quot;&quot;&quot;
+    def __init__(self):
+        self.__list = []
+
+    def push(self, item):
+        &quot;&quot;&quot;
+        添加一个新的元素item到栈顶
+        &quot;&quot;&quot;
+        self.__list.append(item)
+
+    def pop(self):
+        &quot;&quot;&quot;
+        弹出栈顶元素
+        &quot;&quot;&quot;
+        return self.__list.pop()
+
+    def peek(self):
+        &quot;&quot;&quot;
+        返回栈顶元素
+        &quot;&quot;&quot;
+        if self.is_empty():
+            return None
+        else:
+            return self.__list[-1]
+
+    def is_empty(self):
+        &quot;&quot;&quot;
+        判断栈是否为空
+        &quot;&quot;&quot;
+        return not self.__list  ## 空链表、空字典等是假
+
+    def size(self):
+        &quot;&quot;&quot;
+        返回栈的元素个数
+        &quot;&quot;&quot;
+        return self.__list.__len__()
+</code></pre>
+
+<h2 id="toc_2">队列</h2>
+
+<p>队列(<code>queue</code>,美音/kju/)只是允许在一端进行插入操作，而在另一段进行删除操作的线性表。队列是一种先进先出（<code>First In First Out, FIFO</code>）的线性表。允许插入的一端为队尾，允许删除的一端为队头。队列不允许在中间部位进行操作。</p>
+
+<p><img src="media/14969804243106/Screen%20Shot%202017-06-10%20at%203.21.23%20PM.png" alt="Screen Shot 2017-06-10 at 3.21.23 P"/></p>
+
+<h3 id="toc_3">队列的操作</h3>
+
+<ul>
+<li><code>Queue()</code> 创建一个空的队列</li>
+<li><code>enqueue(item)</code> 往队列中添加一个item元素</li>
+<li><code>dequeue()</code> 从队列头部删除一个元素</li>
+<li><code>is_empty()</code> 判断一个队列是否为空</li>
+<li><code>size()</code> 返回队列的大小</li>
+</ul>
+
+<pre><code class="language-python">class Queue(object):
+    &quot;&quot;&quot;队列&quot;&quot;&quot;
+    def __init__(self):
+        self.__list = []
+
+    def enqueue(self, item):
+        &quot;&quot;&quot;往队列中添加一个item元素&quot;&quot;&quot;
+        self.__list.append(item)
+
+    def dequeue(self):
+        &quot;&quot;&quot;从队列头部删除一个元素&quot;&quot;&quot;
+        return self.__list.pop(0)
+
+    def is_empty(self):
+        &quot;&quot;&quot;判断一个队列是否为空&quot;&quot;&quot;
+        return not self.__list
+
+    def size(self):
+        &quot;&quot;&quot;返回队列的大小&quot;&quot;&quot;
+        return len(self.__list)
+</code></pre>
+
+<h2 id="toc_4">双端队列</h2>
+
+<p>双端队列(deque，全名double-ended queue, (pronounced “deck”))，是一种具有队列和栈的性质的数据结构。</p>
+
+<p>双端队列中的元素可以从两端弹出，其限定插入和删除操作在表的两端进行。双端队列可以在队列任意一端入队和出队。</p>
+
+<p><img src="media/14969804243106/14970822950255.png" alt=""/></p>
+
+<h3 id="toc_5">双端队列的操作</h3>
+
+<ul>
+<li><code>Deque()</code> 创建一个空的双端队列</li>
+<li><code>add_front(item)</code> 从队头加入一个item元素</li>
+<li><code>add_rear(item)</code> 从队尾加入一个item元素</li>
+<li><code>remove_front()</code> 从队头删除一个item元素</li>
+<li><code>remove_rear()</code> 从队尾删除一个item元素</li>
+<li><code>is_empty()</code> 判断双端队列是否为空</li>
+<li><code>size()</code> 返回队列的大小</li>
+</ul>
+
+<pre><code class="language-python">class Deque():
+    &quot;&quot;&quot;
+    创建一个空的双端队列
+    &quot;&quot;&quot;
+    def __init__(self):
+        self.__list = []
+
+    def add_front(self, item):
+        &quot;&quot;&quot;从队头加入一个item元素&quot;&quot;&quot;
+        self.__list.insert(0, item)
+
+    def add_rear(self, item):
+        &quot;&quot;&quot;从队尾加入一个item元素&quot;&quot;&quot;
+        self.__list.append(item)
+    
+    def remove_front(self):
+        &quot;&quot;&quot;从队头删除一个item元素&quot;&quot;&quot;
+        return self.__list.pop(0)
+
+    def remove_rear(self):
+        &quot;&quot;&quot;从队尾删除一个item元素&quot;&quot;&quot;
+        return self.__list.pop()
+    
+    def is_empty(self):
+        &quot;&quot;&quot;判断双端队列是否为空&quot;&quot;&quot;
+        return not self.__list
+
+    def size(self):
+        &quot;&quot;&quot;返回队列的大小&quot;&quot;&quot;
+        return self.__list.__len__()
+    ```
+
+
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/6/9</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html'>Python数据结构与算法</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
 			<div class="article">
                 <a class="clearlink" href="%E9%93%BE%E8%A1%A8.html">
                 
@@ -1003,183 +1251,6 @@ Kiss
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="14969731064895.html">
-                
-                  <h1>列表</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h2 id="toc_0">列表生成式</h2>
-
-<p>列表生成式,即List Comprehensions,Python内置的非常简单却强大的可以用来创建list的生成式。</p>
-
-<p>例子</p>
-
-<pre><code class="language-python">&gt;&gt;&gt;&gt; a = [ i for i in range(1,19)]
-&gt;&gt;&gt;&gt; b = [i for i in ragne(10) if i%2 == 0]
-&gt;&gt;&gt;&gt; c = [i for i in range(3) for j in range(2)]
-&gt;&gt;&gt;&gt; d = [(i,j) for i in range(3) for j in range(2)]
-</code></pre>
-
-<h3 id="toc_1">range的风险</h3>
-
-<pre><code class="language-python">&gt;&gt;&gt; range(1,1000000000)
-</code></pre>
-
-<p>内存空间太大，但在python3中已经解决: 在需要时，才生成</p>
-
-<h2 id="toc_2">列表去重</h2>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/6/9</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="14969711309826.html">
-                
-                  <h1>内置LIST，DICT 时间复杂度</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h2 id="toc_0">timeit 模块</h2>
-
-<pre><code class="language-python">class timeit.Timer(stmt=&#39;pass&#39;, setup=&#39;pass&#39;, timer=&lt;timer function&gt;)
-</code></pre>
-
-<ul>
-<li>Timer是测量小段代码执行速度的类。</li>
-<li>stmt参数是要测试的代码语句（statment）；</li>
-<li>setup参数是运行代码时需要的设置；</li>
-<li>timer参数是一个定时器函数，与平台有关。</li>
-</ul>
-
-<p>timeit.Timer.timeit(number=1000000)</p>
-
-<p>Timer类中测试语句执行速度的对象方法。number参数是测试代码时的测试次数，默认为1000000次。方法返回执行代码的平均耗时，一个float类型的秒数。</p>
-
-<pre><code class="language-python">from timeit import Timer
-
-li1 = [1,2]
-li2 = [23,5]
-li = li1+li2
-
-li = [i for i in range(10000)]
-li = list(range(10000))
-
-def t1():
-    li = []
-    for i in range(10000):
-        li.append(i)
-
-def t2():
-    li = []
-    for i in range(10000):
-        li += [i]
-
-def t3():
-    li = [ i for i in range(10000)]
-
-def t4():
-    li = list(range(10000))
-
-timer1 = Timer(&#39;t1()&#39;,&quot;from __main__ import t1&quot;)
-timer2 = Timer(&#39;t2()&#39;,&#39;from __main__ import t2&#39;)
-timer3 = Timer(&#39;t3()&#39;,&#39;from __main__ import t3&#39;)
-timer4 = Timer(&#39;t4()&#39;,&#39;from __main__ import t4&#39;)
-
-
-print(&#39;append&#39;,timer1.timeit(1000))
-print(&#39;+&#39;,timer2.timeit(1000))
-print(&#39;comprehesion&#39;,timer3.timeit(1000))
-print(&#39;list(range)&#39;,timer4.timeit(1000))
-
-
-# pop
-x = range(2000000)
-pop_zero = Timer(&quot;x.pop(0)&quot;, &quot;from __main__ import x&quot;)
-pop_end = Timer(&quot;x.pop()&quot;, &quot;from __main__ import x&quot;)
-print(&#39;pop zero&#39;, pop_zero.timeit(1000))
-print(&#39;pop end&#39;, pop_end.timeit(1000))
-
-</code></pre>
-
-<h2 id="toc_1">list 内置操作的时间复杂度</h2>
-
-<pre><code>* Operatation Big-O Efficiency
-* indexx[]          O(1)
-* index assignment  O(1)
-* append            O(1)
-* pop()             O(1)    #弹出
-* pop(i)            O(n)    #插入
-* insert(i, item)   O(n)
-* del operator      O(n)
-* iteration         O(n)
-* contains(in)      O(n)
-* get slice[x:y]    O(k)    # 取切片
-* del slice         O(n)    #删除切片
-* set slice         O(n+k)  #设置切片
-* reverse           O(n)
-* concatenate       O(k)
-* sort              O(nlogn)
-* multiply          O(nk)
-</code></pre>
-
-<h2 id="toc_2">dict 内置操作的时间复杂度</h2>
-
-<pre><code>* copy                O(n)
-* get item            O(n)   #取
-* set item            O(n)   #设置
-* delete tiem         O(n)   #删除键
-* contains(in)        O(1)    #包含，不用遍历
-* iteration           O(n)    #迭代
-
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/6/9</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html'>Python数据结构与算法</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1263,6 +1334,8 @@ print(&#39;pop end&#39;, pop_end.timeit(1000))
             <a href="Big%20Data.html"><strong>Big Data</strong></a>
         
             <a href="%E6%96%87%E7%8C%AE%E9%98%85%E8%AF%BB.html"><strong>文献阅读</strong></a>
+        
+            <a href="Tools.html"><strong>Tools</strong></a>
          
         </p>
 
@@ -1279,6 +1352,18 @@ print(&#39;pop end&#39;, pop_end.timeit(1000))
 	      
 		      
 			      <li class="post">
+			        <a href="15142095393509.html">gdb</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="Objdump.html">Objdump</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="berkey_cs162_operating_system_and_systems_programming.html">Berkley CS162: Operating Systems and Systems Programming</a>
 			      </li>
 		     
@@ -1292,18 +1377,6 @@ print(&#39;pop end&#39;, pop_end.timeit(1000))
 		      
 			      <li class="post">
 			        <a href="introduction_to_computer_system_CMU.html">CMU 213 Introduction to Computer Systems</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="nand2tetris.html">Nand2Tetris: The elements of computing systems</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="PCA.html">PCA基础及在Spark中的应用</a>
 			      </li>
 		     
 		  

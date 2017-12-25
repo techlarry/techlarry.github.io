@@ -14,7 +14,7 @@ var _hmt = _hmt || [];
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  Anaconda - techlarry
+  gdb - techlarry
   
   </title>
   
@@ -147,14 +147,14 @@ var _hmt = _hmt || [];
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>Anaconda</h1>
+          <h1>gdb</h1>
      
         <div class="read-more clearfix">
-          <span class="date">2017/7/13</span>
+          <span class="date">2017/12/25</span>
 
           <span>posted in&nbsp;</span> 
           
-              <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
+              <span class="posted-in"><a href='Tools.html'>Tools</a></span>
            
          
           <span class="comments">
@@ -167,92 +167,47 @@ var _hmt = _hmt || [];
       </div><!-- article -->
 
       <div class="article-content">
-      <p><a href="https://www.continuum.io/why-anaconda">Anaconda </a>(/ˌænə&#39;kɑndə/)是一个用于科学计算的python发行版，支持各种系统，提供了包管理和环境管理的功能。Anaconda 利用<code>conda</code>来进行package和environment的管理。</p>
-
-<h2 id="toc_0">Conda的包管理</h2>
-
-<p><code>Conda</code>既是一个工具，也是一个可执行命令，其核心功能是包管理和环境管理。包管理与<code>pip</code>使用类似。</p>
-
-<pre><code class="language-python"># 安装package
-conda install package
-
-# 查看已经安装的packages
-conda list
-
-# 查找package信息
-conda search package
-
-# 更新package
-conda update -n python27 package
-
-# 删除package
-conda remove -n python27 package
-</code></pre>
-
-<h2 id="toc_1">Conda的环境管理</h2>
-
-<pre><code class="language-bash"># 创建一个名为python27的环境，指定Python版本是2.7
-conda create --name python27 python=2.7
-
-# 安装好后，使用activate激活某个环境
-source activate python27 # 激活后，会发现terminal输入的地方多了python27的字样，实际上，此时系统做的事情就是把默认环境从PATH中去除，再把2.7对应的命令加入PATH
-
-# 如果想返回python 2.7环境，运行
-source deactivate python27 # for Linux &amp; Mac
-
-# 删除一个已有的环境
-conda remove --name python27 --all
-</code></pre>
-
-<h2 id="toc_2">使用Requirement.txt 安装</h2>
-
-<pre><code>while read requirement; do conda install --yes $requirement; done &lt; requirements.txt
-</code></pre>
-
-<h2 id="toc_3">使用Pycharm</h2>
-
-<p>在<code>Pycharm</code>配置里选用<code>Anaconda</code>的<code>python</code>编译器所在位置即可。</p>
-
-<h2 id="toc_4">Jupyter NoteBook</h2>
-
-<p><code>Anaconda</code>默认自带<code>Jupyter Notebook</code>，可以很方便的运行Python代码、记录笔记。</p>
-
-<h3 id="toc_5">主题</h3>
-
-<p><code>Jupyter Notebook</code>的<a href="%5Bhttps://github.com/dunovank/jupyter-themes">主题</a>可以调整，首先安装主题:</p>
-
-<pre><code>pip install --upgrade jupyterthemes
-</code></pre>
-
-<p>选择好主题后，切换主题:</p>
-
-<pre><code>jt -t theme_name -T -N
-</code></pre>
-
-<h2 id="toc_6">Bash Kernel</h2>
-
-<p><code>Bash kernel</code>(<a href="https://github.com/takluyver/bash_kernel">Project Link</a>)可以通过pip安装</p>
-
-<pre><code>pip install bash_kernel
-python -m bash_kernel.install
-</code></pre>
-
-<h2 id="toc_7">Install Python2/3 Kernel</h2>
-
-<p>Install install with</p>
-
-<pre><code>python3 -m pip install ipykernel
-python3 -m ipykernel install --user
-</code></pre>
-
-<h2 id="toc_8">Resources</h2>
-
-<p><a href="https://conda.io/docs/_downloads/conda-cheatsheet.pdf">Conda Cheat Sheet</a></p>
-
-<h2 id="toc_9">Reference</h2>
+      <ul>
+<li><code>break &lt;location&gt;</code>
 
 <ul>
-<li><a href="https://ipython.readthedocs.io/en/latest/install/kernel_install.html">Installing the IPython kernel</a></li>
+<li>Stop execution at function name or address </li>
+<li>Reset breakpoints when restarting gdb </li>
+</ul></li>
+<li><code>run &lt;args&gt;</code> 
+
+<ul>
+<li>Run program with args <args> </li>
+<li>Convenient for specifying text file with answers</li>
+</ul></li>
+<li><code>disas &lt;fun&gt;</code>, but not dis </li>
+<li><p><code>stepi</code> / <code>nexti</code> </p>
+
+<ul>
+<li>Steps / does not step through function calls</li>
+</ul></li>
+<li><p><code>info registers</code> </p>
+
+<ul>
+<li>Print hex values in every register </li>
+</ul></li>
+<li><p><code>print (/x or /d) $eax</code> - Yes, use $ </p>
+
+<ul>
+<li>Print hex or decimal contents of %eax </li>
+</ul></li>
+<li><p><code>x $register</code>, <code>x 0xaddress</code> </p>
+
+<ul>
+<li>Prints what’s in the register / at the given address</li>
+<li>By default, prints one word (4 bytes) </li>
+<li>Specify format: /s, /[num][size][format] *
+
+<ul>
+<li> x/8a 0x15213 *</li>
+<li> x/4wd 0xdeadbeef</li>
+</ul></li>
+</ul></li>
 </ul>
 
 
@@ -264,16 +219,13 @@ python3 -m ipykernel install --user
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="testing.html" 
-          title="Previous Post: Testing">&laquo; Testing</a>
-      
         </p>
         </div>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="database_and_SQL.html" 
-          title="Next Post: MySQL (2): Database and SQL">MySQL (2): Database and SQL &raquo;</a>
+          <a  href="Objdump.html" 
+          title="Next Post: Objdump">Objdump &raquo;</a>
       
       </p>
         </div>

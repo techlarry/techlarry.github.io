@@ -4,13 +4,102 @@
   <title><![CDATA[techlarry]]></title>
   <link href="http://larryim.cc/atom.xml" rel="self"/>
   <link href="http://larryim.cc/"/>
-  <updated>2017-12-23T10:10:41+08:00</updated>
+  <updated>2017-12-23T10:23:09+08:00</updated>
   <id>http://larryim.cc/</id>
   <author>
     <name><![CDATA[]]></name>
     
   </author>
   <generator uri="http://www.mweb.im/">MWeb</generator>
+  
+  <entry>
+    <title type="html"><![CDATA[gdb]]></title>
+    <link href="http://larryim.cc/15142095393509.html"/>
+    <updated>2017-12-25T21:45:39+08:00</updated>
+    <id>http://larryim.cc/15142095393509.html</id>
+    <content type="html"><![CDATA[
+<ul>
+<li><code>break &lt;location&gt;</code>
+
+<ul>
+<li>Stop execution at function name or address </li>
+<li>Reset breakpoints when restarting gdb </li>
+</ul></li>
+<li><code>run &lt;args&gt;</code> 
+
+<ul>
+<li>Run program with args <args> </li>
+<li>Convenient for specifying text file with answers</li>
+</ul></li>
+<li><code>disas &lt;fun&gt;</code>, but not dis </li>
+<li><p><code>stepi</code> / <code>nexti</code> </p>
+
+<ul>
+<li>Steps / does not step through function calls</li>
+</ul></li>
+<li><p><code>info registers</code> </p>
+
+<ul>
+<li>Print hex values in every register </li>
+</ul></li>
+<li><p><code>print (/x or /d) $eax</code> - Yes, use $ </p>
+
+<ul>
+<li>Print hex or decimal contents of %eax </li>
+</ul></li>
+<li><p><code>x $register</code>, <code>x 0xaddress</code> </p>
+
+<ul>
+<li>Prints what’s in the register / at the given address</li>
+<li>By default, prints one word (4 bytes) </li>
+<li>Specify format: /s, /[num][size][format] *
+
+<ul>
+<li> x/8a 0x15213 *</li>
+<li> x/4wd 0xdeadbeef</li>
+</ul></li>
+</ul></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Objdump]]></title>
+    <link href="http://larryim.cc/Objdump.html"/>
+    <updated>2017-12-25T21:14:03+08:00</updated>
+    <id>http://larryim.cc/Objdump.html</id>
+    <content type="html"><![CDATA[
+<h2 id="toc_0">disassemble</h2>
+
+<p><code>objdump -d</code> display the assembler mnemonics for the machine instructions from obj-file.</p>
+
+<p>There are <em>3 columns</em> in the output:</p>
+
+<ul>
+<li>memory addresses</li>
+<li>machine language instructions</li>
+<li>assembly language</li>
+</ul>
+
+<h2 id="toc_1">examine the symbol table</h2>
+
+<p><code>objdump -t</code> prints the symbol table entries of the file.</p>
+
+<p>There are <em>7 columns</em> in the output:</p>
+
+<ul>
+<li>value</li>
+<li>class</li>
+<li>type</li>
+<li>size</li>
+<li>line</li>
+<li>section</li>
+<li>symbol-name</li>
+</ul>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Berkley CS162: Operating Systems and Systems Programming]]></title>
@@ -1104,14 +1193,14 @@ def varianceExplained(data, k=1):
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[C++ Tool]]></title>
+    <title type="html"><![CDATA[C++ Tools]]></title>
     <link href="http://larryim.cc/c_plus_plus_tool.html"/>
     <updated>2017-10-25T16:03:46+08:00</updated>
     <id>http://larryim.cc/c_plus_plus_tool.html</id>
     <content type="html"><![CDATA[
 <ul>
-<li>GNU gcc
-gdb</li>
+<li>GNU gcc</li>
+<li>gdb</li>
 <li>valgrind</li>
 </ul>
 
@@ -1137,6 +1226,11 @@ gcc-7 test.c -S -Og
 </code></pre>
 
 <h2 id="toc_2">gdb</h2>
+
+<p>同样的，使用<code>homebrew</code>安装：</p>
+
+<pre><code>brew install gdb
+</code></pre>
 
 <p><a href="http://csapp.cs.cmu.edu/3e/docs/gdbnotes-x86-64.pdf">Cheat Sheet</a><br/>
 <a href="http://beej.us/guide/bggdb/">Tutorial</a></p>
@@ -1664,118 +1758,6 @@ PAC gaurantee for \(E_{out}(g)\approx 0\) \(\rightarrow\) learning possilbe!</p>
 
 <p><strong>0/1 error</strong>(often for classification): err(\(\tilde y,y)=[\tilde y\ne y]\) <br/>
 <strong>squared error</strong>(often for regression): err(\(\tilde y,y)=(\tilde y\ne y)^2\)</p>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[主动学习]]></title>
-    <link href="http://larryim.cc/active_learning_intro.html"/>
-    <updated>2017-10-23T17:11:38+08:00</updated>
-    <id>http://larryim.cc/active_learning_intro.html</id>
-    <content type="html"><![CDATA[
-<p>主动学习算法通过迭代抽样，主动寻找有利于提升效果的样本，从而减少了训练集的大小。</p>
-
-<p>获取训练样本不仅费时、费力，而且训练集包含大量的冗余样本。</p>
-
-<p>主动学习算法主要分为两阶段：第一阶段为<strong>初始化阶段</strong>，随机从未标注样本中选取小部分，由督导者\(\mathcal{S}\)标注，作为训练集建立初始分类器模型；第二阶段为<strong>循环查询阶段</strong>，督导者\(\mathcal{S}\)从未标注样本集\(U\)中，按照某种查询标准\(Q\)，选取一定的未标注样本进行标注，并加到训练样本集\(L\)中，重新训练分类器，直至达到训练停止标准为止。</p>
-
-<h1 id="toc_0">Reference</h1>
-
-<ul>
-<li>LIU Kang, QIAN Xu, WANG Ziqiang. Survey on active learning algorithms. Computer Engineering and Applications, 2012, 48（34）：1-4.</li>
-<li>Zongwei Zhou1, Jae Shin1, Lei Zhang, et al. 2017. Fine-tuning Convolutional Neural Networks for Biomedical Image Analysis: Actively and Incrementally. CVPR. <a href="http://openaccess.thecvf.com/content_cvpr_2017/papers/Zhou_Fine-Tuning_Convolutional_Neural_CVPR_2017_paper.pdf">pdf</a> </li>
-</ul>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[JSON/BSON]]></title>
-    <link href="http://larryim.cc/15086547919641.html"/>
-    <updated>2017-10-22T14:46:31+08:00</updated>
-    <id>http://larryim.cc/15086547919641.html</id>
-    <content type="html"><![CDATA[
-<p><code>JSON</code> stands for <code>Javascript Object Notation</code>. It is a lightweight data interchange format, similar to <code>XML</code>, <code>SOAP</code> and <code>YAML</code>.</p>
-
-<p><code>JSON</code> syntax is based around three simple data types:</p>
-
-<ul>
-<li>Name-value pair</li>
-<li>JSON Object: a collection of name-value pairs or Arrays encased in curly brackets.</li>
-<li>JSON Array: a lift of values encased in square brackets.</li>
-</ul>
-
-<p>E.g. a student in an university with basic information: name, id number, GPA etc:</p>
-
-<pre><code class="language-python">
-{
-    &quot;name&quot;:&quot;Jacob Bellamy&quot;,
-    &quot;id_number&quot;:3352976,
-    &quot;gpa&quot;:8.2,
-    &quot;courses&quot;:[&quot;Compsci 101&quot;, &quot;Compsci 105&quot;, &quot;Phil 101&quot;, &quot;Maths 108&quot;],
-    &quot;fees_paid&quot;: True,
-    &quot;address&quot;: {
-        &quot;street_address&quot;: &quot;1 Horse Lane&quot;,
-        &quot;city&quot;: &quot;Auckland&quot;,
-        &quot;post_code&quot;: 1632}
-}
-</code></pre>
-
-<h2 id="toc_0">Python之<code>json</code>模块</h2>
-
-<p>Python的<code>json</code>模块可以用来编码和解码JSON数据。其最主要的两个函数是<code>json.dumps()</code>(encoding,编码)和<code>json.loads()</code>(decoding, 解码).</p>
-
-<pre><code class="language-python">import json
-
-student_info = {
-    &quot;name&quot;:&quot;Jacob Bellamy&quot;,
-    &quot;id_number&quot;:3352976,
-    &quot;gpa&quot;:8.2,
-    &quot;courses&quot;:[&quot;Compsci 101&quot;, &quot;Compsci 105&quot;, &quot;Phil 101&quot;, &quot;Maths 108&quot;],
-    &quot;fees_paid&quot;: True,
-    &quot;address&quot;: {
-        &quot;street_address&quot;: &quot;1 Horse Lane&quot;,
-        &quot;city&quot;: &quot;Auckland&quot;,
-        &quot;post_code&quot;: 1632}
-}
-
-student_info_json = json.dumps(student_info)
-
-print(student_info_json)
-</code></pre>
-
-<pre><code>{&quot;name&quot;: &quot;Jacob Bellamy&quot;, &quot;id_number&quot;: 3352976, &quot;gpa&quot;: 8.2, &quot;courses&quot;: [&quot;Compsci 101&quot;, &quot;Compsci 105&quot;, &quot;Phil 101&quot;, &quot;Maths 108&quot;], &quot;fees_paid&quot;: true, &quot;address&quot;: {&quot;street_address&quot;: &quot;1 Horse Lane&quot;, &quot;city&quot;: &quot;Auckland&quot;, &quot;post_code&quot;: 1632}}
-</code></pre>
-
-<p>如果你要处理的是文件而不是字符串，你可以使用<code>json.dump()</code> 和 <code>json.load()</code> 来编码和解码<code>JSON</code>数据。例如：</p>
-
-<pre><code class="language-python"># Writing JSON data
-with open(&#39;student_info.json&#39;, &#39;w&#39;) as f:
-    json.dump(student_info_json, f)
- 
-# Reading data back
-with open(&#39;student_info.json&#39;, &#39;r&#39;) as f:
-    data = json.load(f)
-data
-</code></pre>
-
-<pre><code>&#39;{&quot;name&quot;: &quot;Jacob Bellamy&quot;, &quot;id_number&quot;: 3352976, &quot;gpa&quot;: 8.2, &quot;courses&quot;: [&quot;Compsci 101&quot;, &quot;Compsci 105&quot;, &quot;Phil 101&quot;, &quot;Maths 108&quot;], &quot;fees_paid&quot;: true, &quot;address&quot;: {&quot;street_address&quot;: &quot;1 Horse Lane&quot;, &quot;city&quot;: &quot;Auckland&quot;, &quot;post_code&quot;: 1632}}&#39;
-</code></pre>
-
-<h2 id="toc_1">Binary JSON - BSON</h2>
-
-<p><code>BSON</code> /ˈbiːsən/, standing for <code>Binary JSON</code>, is a computer data interchange format used mainly as a data storage and network transfer format in the <code>MongoDB</code> database.</p>
-
-<pre><code class="language-python">import bson      #installed with the pymongo package
-data = bson.decode_file_iter(open(&#39;example.bson&#39;, &#39;rb&#39;))
-</code></pre>
-
-<h2 id="toc_2">Reference</h2>
-
-<ul>
-<li>Brad Miller, David Ranum. 2013. Problem Solving with Algorithms and Data Structures.</li>
-</ul>
 
 ]]></content>
   </entry>
