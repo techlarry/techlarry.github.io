@@ -147,14 +147,27 @@ var _hmt = _hmt || [];
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15142095393509.html">
+                <a class="clearlink" href="develop_tools.html">
                 
-                  <h1>gdb</h1>
+                  <h1>Develop tools</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<ul>
+                        	<h2 id="toc_0">gdb</h2>
+
+<p>GDB（GNU Debugger）作为一个调试工具，其功能强大。</p>
+
+<h3 id="toc_1">调试信息</h3>
+
+<p>要调试C/C++的程序，首先在编译时，我们必须要把调试信息(symbol table)加到可执行文件中。使用编译器（cc/gcc/g++）的 <code>-g</code> 参数(Generate source-level debug information)可以做到这一点。</p>
+
+<pre><code>g++ -g HelloWorld.cpp -o HelloWorld
+</code></pre>
+
+<h3 id="toc_2">常用命令</h3>
+
+<ul>
 <li><code>break &lt;location&gt;</code>
 
 <ul>
@@ -195,40 +208,21 @@ var _hmt = _hmt || [];
 <li> x/4wd 0xdeadbeef</li>
 </ul></li>
 </ul></li>
+<li><p><code>list</code>: view source code</p></li>
 </ul>
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/12/25</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Tools.html'>Tools</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
+<h3 id="toc_3">远程调试</h3>
 
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="Objdump.html">
-                
-                  <h1>Objdump</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h2 id="toc_0">disassemble</h2>
+<p>有时候需要调试的程序并不在本机上，<code>gdb</code>是支持远程调试的，具体命令如下：</p>
+
+<pre><code>(gdb) target remote IP:PORT
+</code></pre>
+
+<p>这时，本机的GDB客户端可以远程连接到被调试机器上，对程序进行调试。当然，前提是在远端的机器上，必须要启动好GDB服务端程序。</p>
+
+<h2 id="toc_4">Objdump</h2>
+
+<h3 id="toc_5">disassemble</h3>
 
 <p><code>objdump -d</code> display the assembler mnemonics for the machine instructions from obj-file.</p>
 
@@ -240,7 +234,7 @@ var _hmt = _hmt || [];
 <li>assembly language</li>
 </ul>
 
-<h2 id="toc_1">examine the symbol table</h2>
+<h3 id="toc_6">examine the symbol table</h3>
 
 <p><code>objdump -t</code> prints the symbol table entries of the file.</p>
 
@@ -254,6 +248,47 @@ var _hmt = _hmt || [];
 <li>line</li>
 <li>section</li>
 <li>symbol-name</li>
+</ul>
+
+<h2 id="toc_7">tmux</h2>
+
+<p><code>tmux</code>有两个主要功能：</p>
+
+<ul>
+<li>Split窗口。可以在一个terminal下打开多个会话</li>
+<li>避免网络不稳定。由于网络不稳定导致的SSH断开，在重新连接后，可以直接回到原来的工作环境。</li>
+</ul>
+
+<p>常用按键：</p>
+
+<h1 id="toc_8">常用按键</h1>
+
+<p>这里需要说明一点的是，tmux的任何指令，都包含一个前缀，也就是说，你按了前缀(一组按键， 默认是Ctrl+b)以后，系统才知道你接下来的指令是发送给tmux的。</p>
+
+<ul>
+<li>C-b ? 显示快捷键帮助</li>
+<li>C-b C-o 调换窗口位置，类似与vim 里的C-w</li>
+<li>C-b 空格键 采用下一个内置布局</li>
+<li>C-b ! 把当前窗口变为新窗口</li>
+<li>C-b “ 横向分隔窗口</li>
+<li>C-b % 纵向分隔窗口</li>
+<li>C-b q 显示分隔窗口的编号</li>
+<li>C-b o 跳到下一个分隔窗口</li>
+<li>C-b 上下键 上一个及下一个分隔窗口</li>
+<li>C-b C-方向键 调整分隔窗口大小</li>
+<li>C-b c 创建新窗口</li>
+<li>C-b 0~9 选择几号窗口</li>
+<li>C-b c 创建新窗口</li>
+<li>C-b n 选择下一个窗口</li>
+<li>C-b l 切换到最后使用的窗口</li>
+<li>C-b p 选择前一个窗口</li>
+<li>C-b w 以菜单方式显示及选择窗口</li>
+<li>C-b t 显示时钟</li>
+<li>C-b ; 切换到最后一个使用的面板</li>
+<li>C-b x 关闭面板</li>
+<li>C-b &amp; 关闭窗口</li>
+<li>C-b s 以菜单方式显示和选择会话</li>
+<li>C-b d 退出tumx，并保存当前会话，这时，tmux仍在后台运行，可以通过tmux attach进入 到指定的会话 </li>
 </ul>
 
                         
@@ -380,19 +415,7 @@ var _hmt = _hmt || [];
 	      
 		      
 			      <li class="post">
-			        <a href="15142095393509.html">gdb</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="Objdump.html">Objdump</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="berkey_cs162_operating_system_and_systems_programming.html">Berkley CS162: Operating Systems and Systems Programming</a>
+			        <a href="develop_tools.html">Develop tools</a>
 			      </li>
 		     
 		  
@@ -405,6 +428,18 @@ var _hmt = _hmt || [];
 		      
 			      <li class="post">
 			        <a href="introduction_to_computer_system_CMU.html">CMU 213 Introduction to Computer Systems</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="nand2tetris.html">Nand2Tetris: The elements of computing systems</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="PCA.html">PCA基础及在Spark中的应用</a>
 			      </li>
 		     
 		  

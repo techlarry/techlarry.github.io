@@ -147,243 +147,6 @@ var _hmt = _hmt || [];
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="magic_method_item_access.html">
-                
-                  <h1>Magic Methods: Item Access</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>Useful magic methods allows you to create objects that behave like sequences or mappings.</p>
-
-<h2 id="toc_0">Sequence and Mapping Protocol</h2>
-
-<p><code>protocol</code> in Python usually describe the rules governing some form of behavior. The <code>protocol</code> states which methods you should implement and what those methods should do. So, to be a sequence means,  to follow the sequence protocol.</p>
-
-<ul>
-<li><code>__len__(self)</code>: This method should return the number of items contained in the collection. For a sequence, this would simply be the number of elements. For a mapping, it would be the number of key-value pairs. If <code>__len__</code> returns zero (and you don’t implement <code>__nonzero__</code>, which overrides this behavior), the object is treated as false in a Boolean context (as with empty lists, tuples, strings, and dictionaries).</li>
-<li><code>__getitem__(self, key)</code>: This should return the value corresponding to the given key. For a sequence, the key should be an integer from \(0\) to \(n–1\) (or, it could be negative, as noted later), where \(n\) is the length of the sequence. For a mapping, you could really have any kind of keys.</li>
-<li><code>__setitem__(self, key, value)</code>: This should store value in a manner associated with key, so it can later be retrieved with <code>__getitem__</code>. Of course, you define this method only for mutable objects.</li>
-<li><code>__delitem__(self, key)</code>: This is called when someone uses the <code>del</code> statement on a part of the object, and should delete the element associated with key. Again, only mutable objects (and not all of them—only those for which you want to let items be removed) should define this method.</li>
-</ul>
-
-<h2 id="toc_1">Example</h2>
-
-<pre><code class="language-python">def checkIndex(key):
-    &quot;&quot;&quot;
-    Is the given key an acceptable index?
-    To be acceptable, the key should be a non-negative integer. If it
-    is not an integer, a TypeError is raised; if it is negative, an
-    IndexError is raised (since the sequence is of infinite length).
-    &quot;&quot;&quot;
-    if not isinstance(key, int):
-        raise TypeError
-    if key &lt; 0:
-        raise IndexError
-
-
-class ArithmeticSequence:
-    def __init__(self, start=0, step=1):
-        &quot;&quot;&quot;
-        Initialize the arithmetic sequence.
-        start   - the first value in the sequence
-        step    - the difference between two adjacent values
-        changed - a dictionary of values that have been modified by the user
-        &quot;&quot;&quot;
-        self.start = start
-        self.step = step
-        self.changed = {}
-
-    def __getitem__(self, key):
-        &quot;&quot;&quot;
-        Get an item from the arithmetic sequence.
-        &quot;&quot;&quot;
-        checkIndex(key)
-        try:
-            return self.changed[key]
-        except KeyError:
-            return self.start + key*self.step
-    # Store the start value
-    # Store the step value
-    # No items have been modified
-    # Modified?
-    # otherwise...
-    # ...calculate the value
-
-    def __setitem__(self, key, value):
-        &quot;&quot;&quot;
-        Change an item in the arithmetic sequence.
-        &quot;&quot;&quot;
-        checkIndex(key)
-        self.changed[key] = value                 # Store the changed value
-
-    def __delitem__(self, key):
-        &quot;&quot;&quot;
-        Delete the key provided from sequence
-        &quot;&quot;&quot;
-        checkIndex(key)
-        del self.changed[key]
-
-
-
-if __name__ == &quot;__main__&quot;:
-    s = ArithmeticSequence(1, 2)
-    print(s[4])
-    s[4]=3
-    print(s[4])
-    del s[4]
-    print(s[4])
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/7/18</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15002564768282.html">
-                
-                  <h1>Database System Concept (1): Introduction</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>A <code>database-management system</code> (DBMS，数据库管理系统) is a collection of interrelated data and a set of programs to access those data.  The collection of data, usually referred to as the <code>database</code>. The primary goal of a DBMS is to provide a way to store and retrieve database information that is both <code>convenient</code> and <code>efficient</code>.</p>
-
-<h2 id="toc_0">Purpose of Database System</h2>
-
-<p>Keeping organizational information in a file-processing system has a number of major disadvantages:</p>
-
-<ul>
-<li>Data redundancy and inconsistency
-
-<ul>
-<li>Users of one program may be unaware of potentially useful data held by other programs.</li>
-</ul></li>
-<li>Difficulty in accessing data
-
-<ul>
-<li>Programs are written to satisfy particular functions.<br/></li>
-<li>Any new requirement needs a new program.</li>
-</ul></li>
-<li>Data isolation
-
-<ul>
-<li>Same data is held by different programs </li>
-<li>Each program maintains its own set of data</li>
-</ul></li>
-<li>Integrity problems</li>
-<li>Atomicity problems</li>
-<li>Concurrent-access anomalies</li>
-<li>Security problems</li>
-</ul>
-
-<h2 id="toc_1">View of data</h2>
-
-<h3 id="toc_2">Data Abstraction</h3>
-
-<p>The need for efficiency has led designers to use complex data structures to represent data in the database.</p>
-
-<ul>
-<li><code>Physical level</code>. The lowest level of abstraction <em>how</em> the data are actually stored</li>
-<li><code>Logical level</code>. The next-higher level of abstraction describes <em>what</em> data are stored in the database, and what relationships exist among those data. Each record is described by a type definition, and the interrelationship of these record types is defined as well.</li>
-<li><code>View level</code>. The highest level of abstraction describes only part of the entire data. The system may provide many views for the same database. Computer users see a set of application programs that hide details of the data types.</li>
-</ul>
-
-<p><img src="media/15002564768282/Screen%20Shot%202017-07-17%20at%2010.08.36%20AM.png" alt="The three views of data abstraction"/></p>
-
-<h3 id="toc_3">Instances and Schemas</h3>
-
-<ul>
-<li><code>Instance</code>: the collection of information stored in the database at a particular moment</li>
-<li><code>schema</code>: the overall design of the database.</li>
-</ul>
-
-<p>Database systems have several schemas, partitioned according to the levels of abstraction. The <code>Physical schema</code> describes the database design at the physical level, while the <code>logical schema</code> describes the database design at the logical level.</p>
-
-<p>Applications programs are said to exhibit <code>physical data independence</code> if they do not depend on the <code>physical schema</code>, and thus need not be rewritten if the physical schema changes.</p>
-
-<h3 id="toc_4">Data Models</h3>
-
-<p><code>Data Model</code>(数据库): a collection of conceptual tools for describing data, data relationships, data semantics, and consistency constraints.</p>
-
-<ul>
-<li><code>Relational Model</code>(关系数据库)</li>
-<li><code>Entity-Relationship Model</code> (实体对象模型)</li>
-<li><code>Object-Based Data Model</code> (基于对象的数据模型)</li>
-<li><code>Semistructed Data Model</code></li>
-</ul>
-
-<h2 id="toc_5">Database Language</h2>
-
-<p>A database system provides a <code>data-definition language</code>(DDL) to specify the database schema and a <code>data-manipulation language</code>(DML) to express database queries and updates.</p>
-
-<h2 id="toc_6">Data Storage and Querying</h2>
-
-<p>A database system is partitioned into modules that deal with each of the responsibilities of the overall system. The functional components of a database system can be broadly divided into the <code>storage manager</code> and the <code>query processor</code></p>
-
-<p>The <code>storage manager</code> is the component of a database system that provides the interface between the low-level data stored in the database and the application programs and queries submitted to the system. it is responsible for storing, retrieving, and updating data in the database. The storage manager translates the various DML statement into low-level file-system commands.</p>
-
-<p>The <code>query processor</code> includes:</p>
-
-<ul>
-<li><code>DDL interpreter</code>, which interprets DDL statements and records the definitions in the data dictionary.</li>
-<li><code>DML compiler</code>, which translates DML statements in a query language into an evaluation plan consisting of low-level instructions that the query evaluation engine understands.</li>
-<li><code>Query evaluation engine</code>, which executes low-level instructions generated by the DML compiler.</li>
-</ul>
-
-<h2 id="toc_7">Transaction management</h2>
-
-<p><code>Transaction management</code> ensures that the database remains in a consistent (correct) state despite system failures. The transaction manager ensures that concurrent transaction executions proceed without conflicting.</p>
-
-<h2 id="toc_8">Database Architecture</h2>
-
-<p>The architecture of a database system is greatly influenced by the underlying computer system on which the database system runs. Database system can be centralized, or client-server, where one server machine executes work on behalf of multiple client machines.</p>
-
-<p><img src="media/15002564768282/Screen%20Shot%202017-07-17%20at%2010.55.20%20AM.png" alt="System Structure"/></p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/7/17</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E5%BA%93.html'>数据库</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
                 <a class="clearlink" href="recursion_iteration.html">
                 
                   <h1>Recursion Iteration Performace</h1>
@@ -712,6 +475,299 @@ if __name__ == &#39;__main__&#39;:
                 </div>
               </div><!-- article -->
         
+			<div class="article">
+                <a class="clearlink" href="testing.html">
+                
+                  <h1>Testing</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p><a href="https://en.wikipedia.org/wiki/Unit_testing">Unit testing</a> is a software testing method by which individual units of source code, sets of one or more computer program modules together with associated control data, usage procedures, and operating procedures, are tested to determine whether they are fit for use.</p>
+
+<h2 id="toc_0">Test-driven programming</h2>
+
+<p>&quot;<strong>Test first and code later</strong>&quot; practice, known as test-driven programming, instead of test after code.</p>
+
+<h3 id="toc_1">Requirement Specification</h3>
+
+<p>When developing a piece of software, you must first know what problem the software will solve—what objectives it will meet. You can clarify your goals for the program by writing a <strong>requirement specification</strong>, a document (or just some quick notes) describing requirements the program must satisfy. </p>
+
+<h3 id="toc_2">The 1-2-3-4 of Testing</h3>
+
+<p>Here’s a breakdown of the test-driven development process:</p>
+
+<ul>
+<li>Figure out the new feature you want. Possibly document it, and then write a test for it.</li>
+<li>Write some skeleton code for the feature, so that you program runs without any syntax errors. See your test fail.</li>
+<li>Write dummy code for skeleton code, just to appease the test.</li>
+<li>Rewrite the code so that it actually pass the test.</li>
+</ul>
+
+<h2 id="toc_3">Testing Tools</h2>
+
+<p>Two brilliant modules are available to automate the testing process:</p>
+
+<ul>
+<li><code>unittest</code>: A generic testing framework.</li>
+<li><code>doctest</code>: A simpler module, designed for checking documentation, but excellent for writing unit tests as well.</li>
+</ul>
+
+<h3 id="toc_4">doctest</h3>
+
+<p>The <code>testmod</code> function checks both the module docstring and function docstring.</p>
+
+<p>E.g.</p>
+
+<pre><code class="language-python">def square(x):
+    &quot;&quot;&quot;
+    squares a number and returns the result.
+    &gt;&gt;&gt; square(2)
+    4
+    &gt;&gt;&gt; square(3)
+    9
+    &quot;&quot;&quot;
+    return x*x
+
+if __name__ == &quot;__main__&quot;:
+    import doctest, doc_test_example
+    doctest.testmod(doc_test_example, verbose=True)
+</code></pre>
+
+<p>Run the example. To get some more output, just add <code>-v</code>(for verbose)</p>
+
+<pre><code class="language-bash">$ python doc_test_example.py -v
+Trying:
+    square(2)
+Expecting:
+    4
+ok
+Trying:
+    square(3)
+Expecting:
+    9
+ok
+1 items had no tests:
+    doc_test_example
+1 items passed all tests:
+   2 tests in doc_test_example.square
+2 tests in 2 items.
+2 passed and 0 failed.
+Test passed.
+</code></pre>
+
+<h3 id="toc_5">unittest</h3>
+
+<p><code>unittest</code> which is based on the popular test framework <code>JUnit</code>, is more flexible and powerful. It allows to write very large and thorough test sets in a more structured manner.</p>
+
+<p><strong>注意： 测试方法应该以test为前缀命名</strong></p>
+
+<p>E.g.</p>
+
+<pre><code class="language-python">import unittest
+import doc_test_example as my_math
+
+class ProductTestCase(unittest.TestCase):
+
+    def testIntegers(self):
+        for x in xrange(-10,10):
+            p = my_math.square(x)
+            self.failUnless(p == x*x, &#39;Integer multiplication failed&#39;)
+
+    def testFloats(self):
+        for x in xrange(-10,10):
+            x = x/10.0
+            p = my_math.square(x)
+            self.failUnless(p == x*x, &#39;Float multiplication failed&#39;)
+
+
+if __name__ == &quot;__main__&quot;:
+    unittest.main()
+</code></pre>
+
+<p>Another example to test <code>dijkstra&#39;s algorithm</code> see <a href="http://larryim.cc/dijkstra_algorithm.html">here</a></p>
+
+<p>Methods such as <code>failUnless</code> check a condition to determine whether the given test succeeds or fails. </p>
+
+<p>The <code>unittest</code> module distinguishes between <code>errors</code>, where an exception is raised, and <code>failures</code>, which result from calls to <code>failUnless</code> and the like. </p>
+
+<h2 id="toc_6">Source Code Checking</h2>
+
+<p><a href="https://www.pylint.org">Pylint</a> and PyChecker are good tools for checking Python source code, looking for mistakes.</p>
+
+<p><code>Pylint</code> is a tool that checks for errors in Python code, tries to enforce a coding standard and looks for code smells. It can also look for certain type errors, it can recommend suggestions about how particular blocks can be refactored and can offer you details about the code’s complexity.</p>
+
+<p><code>Pylint</code> can be integrated with <code>Pycharm</code>, see <a href="https://pylint.readthedocs.io/en/latest/user_guide/ide-integration.html#pylint-in-pycharm">detail</a>.</p>
+
+<h3 id="toc_7">Resources</h3>
+
+<ul>
+<li><a href="https://www.ibm.com/developerworks/cn/linux/l-cn-pylint/index.html">如何使用 Pylint 来规范 Python 代码风格</a></li>
+<li><a href="https://www.python.org/dev/peps/pep-0008/">Style Guide for Python Code</a></li>
+</ul>
+
+<h2 id="toc_8">Profile</h2>
+
+<p><strong>When in doubt, use brute force</strong></p>
+
+<p>The standard library includes nice profiler modules called <code>profile</code> and <code>cProfile</code>.  </p>
+
+<p>A <code>profile</code> is a set of statistics that describes how often and for how long various parts of the program executed. </p>
+
+<pre><code class="language-python">&gt;&gt;&gt; import profile
+&gt;&gt;&gt; from my_math import square
+&gt;&gt;&gt; profile.run(&#39;square(1, 2)&#39;)
+</code></pre>
+
+<p>Another way to use <code>profile</code> in command-line:</p>
+
+<pre><code class="language-bash">$ python -m profile prof1py
+</code></pre>
+
+<p>The standard library also contains a module called <code>timeit</code>, which is a simple way of timing small snippets of Python code.</p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/7/14</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="anaconda.html">
+                
+                  <h1>Anaconda</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p><a href="https://www.continuum.io/why-anaconda">Anaconda </a>(/ˌænə&#39;kɑndə/)是一个用于科学计算的python发行版，支持各种系统，提供了包管理和环境管理的功能。Anaconda 利用<code>conda</code>来进行package和environment的管理。</p>
+
+<h2 id="toc_0">Conda的包管理</h2>
+
+<p><code>Conda</code>既是一个工具，也是一个可执行命令，其核心功能是包管理和环境管理。包管理与<code>pip</code>使用类似。</p>
+
+<pre><code class="language-python"># 安装package
+conda install package
+
+# 查看已经安装的packages
+conda list
+
+# 查找package信息
+conda search package
+
+# 更新package
+conda update -n python27 package
+
+# 删除package
+conda remove -n python27 package
+</code></pre>
+
+<h2 id="toc_1">Conda的环境管理</h2>
+
+<pre><code class="language-bash"># 创建一个名为python27的环境，指定Python版本是2.7
+conda create --name python27 python=2.7
+
+# 安装好后，使用activate激活某个环境
+source activate python27 # 激活后，会发现terminal输入的地方多了python27的字样，实际上，此时系统做的事情就是把默认环境从PATH中去除，再把2.7对应的命令加入PATH
+
+# 如果想返回python 2.7环境，运行
+source deactivate python27 # for Linux &amp; Mac
+
+# 删除一个已有的环境
+conda remove --name python27 --all
+</code></pre>
+
+<h2 id="toc_2">使用Requirement.txt 安装</h2>
+
+<pre><code>while read requirement; do conda install --yes $requirement; done &lt; requirements.txt
+</code></pre>
+
+<h2 id="toc_3">使用Pycharm</h2>
+
+<p>在<code>Pycharm</code>配置里选用<code>Anaconda</code>的<code>python</code>编译器所在位置即可。</p>
+
+<h2 id="toc_4">Jupyter NoteBook</h2>
+
+<p><code>Anaconda</code>默认自带<code>Jupyter Notebook</code>，可以很方便的运行Python代码、记录笔记。</p>
+
+<h3 id="toc_5">主题</h3>
+
+<p><code>Jupyter Notebook</code>的<a href="%5Bhttps://github.com/dunovank/jupyter-themes">主题</a>可以调整，首先安装主题:</p>
+
+<pre><code>pip install --upgrade jupyterthemes
+</code></pre>
+
+<p>选择好主题后，切换主题:</p>
+
+<pre><code>jt -t theme_name -T -N
+</code></pre>
+
+<h2 id="toc_6">Bash Kernel</h2>
+
+<p><code>Bash kernel</code>(<a href="https://github.com/takluyver/bash_kernel">Project Link</a>)可以通过pip安装</p>
+
+<pre><code>pip install bash_kernel
+python -m bash_kernel.install
+</code></pre>
+
+<h2 id="toc_7">Install Python2/3 Kernel</h2>
+
+<p>Install install with</p>
+
+<pre><code>python3 -m pip install ipykernel
+python3 -m ipykernel install --user
+</code></pre>
+
+<h2 id="toc_8">Resources</h2>
+
+<p><a href="https://conda.io/docs/_downloads/conda-cheatsheet.pdf">Conda Cheat Sheet</a></p>
+
+<h2 id="toc_9">Reference</h2>
+
+<ul>
+<li><a href="https://ipython.readthedocs.io/en/latest/install/kernel_install.html">Installing the IPython kernel</a></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/7/13</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
               
 
 
@@ -813,19 +869,7 @@ if __name__ == &#39;__main__&#39;:
 	      
 		      
 			      <li class="post">
-			        <a href="15142095393509.html">gdb</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="Objdump.html">Objdump</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="berkey_cs162_operating_system_and_systems_programming.html">Berkley CS162: Operating Systems and Systems Programming</a>
+			        <a href="develop_tools.html">Develop tools</a>
 			      </li>
 		     
 		  
@@ -838,6 +882,18 @@ if __name__ == &#39;__main__&#39;:
 		      
 			      <li class="post">
 			        <a href="introduction_to_computer_system_CMU.html">CMU 213 Introduction to Computer Systems</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="nand2tetris.html">Nand2Tetris: The elements of computing systems</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="PCA.html">PCA基础及在Spark中的应用</a>
 			      </li>
 		     
 		  
