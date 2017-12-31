@@ -147,6 +147,312 @@ var _hmt = _hmt || [];
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="Dynamic_Programming_Optimal_Binary_Search_Tree.html">
+                
+                  <h1>Dynamic Programming (4): Optimal Binary Search Tree</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>An <code>Optimal Binary Search Tree (Optimal BST)</code> is a binary search tree which provides the smallest possible search time for a given sequence of access probabilities. The cost of a BST node is the level of that node plus one multiplied by its frequency.</p>
+
+<p><strong>Problem Statement</strong>: Given a sorted array \(keys[0.. n-1]\) of search keys and an array \(freq[0.. n-1]\) of frequency counts, where \(freq[i]\) is the number of searches to \(keys[i]\). Construct a binary search tree of all keys such that the total cost of all the searches is as small as possible.</p>
+
+<h2 id="toc_0">Optimal Substructure</h2>
+
+<p>The optimal cost of node \(i,...,j\) can be recursively calculated using the following formula.</p>
+
+<p>\(Cost(i,j) = \sum \limits^{j}_{k=i}freq[k] + \min \limits_{r=i}^j[Cost(i,r-1)+Cost(r+1,j)]\)</p>
+
+<p>We try all nodes one by one as root (\(r\) varies from \(i\) to \(j\)). When we make \(r\)th node as root, we recursively calculate optimal cost from \(i\) to \(r-1\) and \(r+1\) to \(j\). </p>
+
+<h3 id="toc_1">Implementation: top-down with memoization</h3>
+
+<pre><code class="language-python">def optimal_bst(freq):
+    def opt_cost(hash_table, freq, i, j):
+        &quot;&quot;&quot;
+        Optimal Binary Search Tree
+        Recursive Method used here
+        &quot;&quot;&quot;
+
+        # base case: only 0~1 element
+        if j &lt; i:
+            return 0
+        if j == i:
+            return freq[i]
+
+        # if already exists
+        if (i, j) in hash_table:
+            return hash_table[(i, j)]
+
+        min_cost = sys.maxsize
+        for r in range(i, j + 1):
+            cost = opt_cost(hash_table, freq, i, r - 1) + opt_cost(hash_table, freq, r + 1, j)
+            if cost &lt; min_cost:
+                min_cost = cost
+
+        hash_table[(i, j)] = sum(freq[i:j + 1]) + min_cost
+        return hash_table[(i, j)]
+
+    return opt_cost({}, freq, 0, len(freq) - 1)
+</code></pre>
+
+<h2 id="toc_2">Reference</h2>
+
+<ul>
+<li><a href="http://ac.els-cdn.com/S0304397596003209/1-s2.0-S0304397596003209-main.pdf?_tid=1505980e-7cd4-11e7-83de-00000aacb361&amp;acdnat=1502263778_53b76d131a06906e9fe3adfadc778677">Optimal Binary Search Tree</a></li>
+<li><a href="http://www.geeksforgeeks.org/dynamic-programming-set-24-optimal-binary-search-tree/">Optimal Binary Search Tree GeeksforGeeks</a></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/8/9</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Dynamic%20Programming.html'>Dynamic Programming</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="Dynamic_Programming_Knapsack_Problem.html">
+                
+                  <h1>Dynamic Programming (3): 0-1 Knapsack Problem</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>The most common problem being solved is the <code>0-1 knapsack problem</code>, which restricts the number \(w_i\) of copies of each kind of item to zero or one. Given a set of \(n\) items numbered from 1 up to \(n\), each with a weight \(w_i\) and a value \(v_i\), along with a maximum weight capacity \(W\),</p>
+
+<p>\[\begin{equation}<br/>
+\begin{split}<br/>
+&amp;\text{maximize} \sum_{i=1}^nv_ix_i\\<br/>
+&amp;\text{subject to} \sum_{i=1}^n w_ix_i \le W \quad \text{and} \quad x_i \in \{0,1\}\\<br/>
+\end{split}<br/>
+\end{equation}\]</p>
+
+<p>Informally, the problem is to maximize the sum of the values of the items in the knapsack so that the sum of the weights is less than or equal to the knapsack&#39;s capacity.</p>
+
+<h2 id="toc_0">Bottom-up method</h2>
+
+<h3 id="toc_1">Solving</h3>
+
+<p>Assume \(w_i, w_2,..., w_n, W\) are strictly positive integers. Define \(m[i,w]\) to be the maximum value that can be attained with weight less than or queal to \(w\) using items up to \(i\) (first \(i\) items).</p>
+
+<p>We can define \(m[i,w]\) recursively as follows:</p>
+
+<ul>
+<li>\(m[0, w]=0 \)</li>
+<li>\(m[i,w]=m[i-1, w]\) \(if w_i &gt; w\) ( the new item is more than the current weight limit)</li>
+<li>\(m[i,w]= max(m[i-1,w],m[i-1,w-w_i]+v_i\)) if \(w_i \le w\)</li>
+</ul>
+
+<p>The following is pseudo code for the dynamic program:</p>
+
+<pre><code class="language-python">// Input:
+// Values (stored in array v)
+// Weights (stored in array w)
+// Number of distinct items (n)
+// Knapsack capacity (W)
+  
+for j from 0 to W do:
+     m[0, j] := 0
+  
+for i from 1 to n do:
+    for j from 0 to W do:
+        if w[i] &gt; j then:
+            m[i, j] := m[i-1, j]
+        else:
+            m[i, j] := max(m[i-1, j], m[i-1, j-w[i]] + v[i])
+</code></pre>
+
+<h3 id="toc_2">Implementation</h3>
+
+<pre><code class="language-python">def knapsack01(value, weight, w_size):
+    &quot;&quot;&quot;
+    kanapsack01 solves a 0-1 knapsack problem,
+    input: values(value) and weights(W) of items to put into knapsack ( size of which is w_size)
+    output: the index of items that maximize the value of items putted in the knapsack
+    the index of items counts from 0, and corresponding value
+    &quot;&quot;&quot;
+    n = len(value)  # the number of items
+    # maximum value that can be attained with weight &lt;= weight using first i items
+    m = np.zeros(shape=(n+1, w_size+1), dtype=int)
+    for i in range(w_size+1):
+        m[0, i] = 0
+
+    if not isinstance(w_size, int):
+        raise ValueError(&#39;knapsack_size should be an integer&#39;)
+
+    for i in range(1, n+1):  # items
+        for j in range(1, w_size+1):  # sizes
+            if weight[i-1] &gt; j:
+                m[i, j] = m[i - 1, j]
+            else:
+                m[i, j] = max(m[i - 1, j], m[i - 1, j - weight[i-1]] + value[i-1])
+
+    max_val = m[-1, -1]
+    items = set()
+
+    while max_val &gt; 0 and i &gt; 0:
+        if max_val - value[i-1] in m[i - 1, :]:
+            max_val = max_val - value[i-1]
+            items.add(i-1)
+            i -= 1
+        else:
+            i -= 1
+    return items, m[-1, -1]
+</code></pre>
+
+<h2 id="toc_3">top-down with memoization</h2>
+
+<pre><code class="language-python">def knapsack01_recursive(hash_table, value, weight, i, j):
+    # base case: when 1 items here
+    if i == 1:
+        if weight[i - 1] &lt; j:
+            hash_table[(i, j)] = value[i - 1]
+            return value[i - 1]
+        else:
+            hash_table[(i, j)] = 0
+        return 0
+
+    # sub-problem computed
+    if (i, j) in hash_table:
+        return hash_table[(i, j)]
+    else:
+        if weight[i - 1] &gt; j:
+            # only case 1
+            hash_table[(i, j)] = knapsack01_recursive(hash_table, value, weight, i - 1, j)
+        else:
+            #  case 1, item i-1 excluded
+            case1 = knapsack01_recursive(hash_table, value, weight, i - 1, j)
+            # case 2, item i-1 included
+            case2 = knapsack01_recursive(hash_table, value, weight, i - 1, j - weight[i - 1]) + value[i - 1]
+            hash_table[(i, j)] = max(case1, case2)
+
+    return hash_table[(i, j)]
+</code></pre>
+
+<h2 id="toc_4">Reference</h2>
+
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Knapsack_problem#cite_ref-plateau85_15-0">Knapsack Problem WIKIPEDIA</a></li>
+<li><a href="https://stackoverflow.com/questions/5683066/knapsack-problem-classic">Knapsack problem Stack Overflow</a></li>
+<li><a href="http://www.es.ele.tue.nl/education/5MC10/Solutions/knapsack.pdf">The knapsack Problem PPT</a></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/8/9</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Dynamic%20Programming.html'>Dynamic Programming</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="Dynamic_Programming_Maximum_weight_independent_set.html">
+                
+                  <h1>Dynamic Programming (2): Maximum weight independent set</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p><strong>Input</strong>: A path graph \(G=(V,E)\) with nonnegative weights on vertices.<br/>
+<strong>Output</strong>: an <code>independent set</code> of maximum total weight.</p>
+
+<p><strong>Background</strong>:<br/>
+A <code>path graph</code> is a tree with two nodes of vertex degree 1, and the other \(n-2\) nodes of vertex degree 2. A path graph is therefore a graph that can be drawn so that all of its vertices and edges lie on a single straight line.</p>
+
+<p>A <code>Independent set</code> is a set of vertices in a graph, no two of which are adjacent.</p>
+
+<h2 id="toc_0">Proposed algorithm</h2>
+
+<p>A dynamic programming approach can solve the problem in linear time:</p>
+
+<ul>
+<li>Recursively compute \(S_1=\) max-weight independent set of \(G&#39;\) (formed by popping the last vertex off the path)</li>
+<li>Recursively compute \(S_2=\) max-weight independent set of \(G&quot;\) (formed by popping off the last two vertices of the path)</li>
+<li>Return \(S_1\) or \(S_2 \cup{v_n}\), whichever is better.</li>
+</ul>
+
+<h3 id="toc_1">Implementation</h3>
+
+<pre><code class="language-python">def maximum_weight_independent_set(weights):
+    &quot;&quot;&quot;
+    Compute Maximum weight independent set for a path graph.
+    Weights of vertexes in the path graph are given.
+    Return maximum weight independent set.
+    &quot;&quot;&quot;
+    num = len(weights)
+    a = [0] * (num + 1)
+    in_set = []  # independent set
+    a[0], a[1] = 0, weights[0]
+
+    for i in range(2, num + 1):
+        a[i] = max(a[i - 1], a[i - 2] + weights[i - 1])
+
+    while i &gt;= 1:
+        if a[i - 1] &gt;= a[i - 2] + weights[i - 1]:
+            i -= 1
+        else:
+            in_set.append(i - 1)
+            i -= 2
+    in_set.reverse()
+    return in_set
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/8/8</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Dynamic%20Programming.html'>Dynamic Programming</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="Dynamic_Programming_Introduction.html">
                 
                   <h1>Dynamic Programming (1): Introduction</h1>
@@ -422,571 +728,6 @@ z   0.07 001011000
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="clustering%20on%20big%20graph.html">
-                
-                  <h1>Clustering on big graph</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p><strong>Question</strong>: what is the largest value of k such that there is a <code>k-clustering</code> with spacing at least 3?  That is, how many clusters are needed to ensure that no pair of nodes with all but 2 bits in common get split into different clusters?</p>
-
-<p><strong>Input</strong>: <br/>
-[first bit of node 1] … [last bit of node 1]<br/>
-[first bit of node 2] … [last bit of node 2]</p>
-
-<p>For example, the third line of the file “0 1 1 0 0 1 1 0 0 1 0 1 1 1 1 1 1 0 1 0 1 1 0 1″ denotes the 24 bits associated with node #2.</p>
-
-<p><strong>Background</strong>:<br/>
-The distance between two nodes \(u\) and \(v\) in this problem is defined as the <code>Hamming distance</code>--- the number of differing bits --- between the two nodes&#39; labels. </p>
-
-<p><strong>Note</strong>: NOTE: The graph implicitly defined by the data file is so big that you probably can&#39;t write it out explicitly, let alone sort the edges by cost. So you will have to be a little creative to complete this part of the question. For example, is there some way you can identify the smallest distances without explicitly looking at every pair of nodes?</p>
-
-<h2 id="toc_0">METHOD</h2>
-
-<ul>
-<li>We put all the nodes into a hash table, which of size is \(2^n\), where \(n=24\) is the length of input bits. </li>
-</ul>
-
-<p><strong>Detail</strong>: We use <code>list</code> to represent the hash table in python, of which index will be the numerical value of the input, and value will be the node number index. The node number index also denotes where each node is own cluster (i.e index of cluster).</p>
-
-<ul>
-<li>In order to find a \(k\)-clustering with spacing at least 3, we just need to find neighbors that the distance between neighbors and nodes are 1 or 2.</li>
-</ul>
-
-<p><strong>Detail</strong>: We use bit manipulation to find potential   neighbors of a node. According to <code>Hamming distance</code>, the distance means the number of differing bits. Since the distance should be 1 or 2, neighbor of node are such points that differ  from node in no more than 2 bits. Total number of potential neighbor is \(C^2_{24}+C^1_{24} = 300\) . The property of XOR is used to compute its neighbors directly: </p>
-
-<pre><code class="language-python">if x ^ y == z: 
-    x ^ z = y 
-</code></pre>
-
-<p>Hence, In order to find neighbors \(y\), we just compute <code>x^z</code>, where \(z\) is no more than 3 1s in the 24-bit binary integer.</p>
-
-<ul>
-<li>In order to keep track of connected clusters, the <code>disjoint-set</code> data structure is used here.</li>
-</ul>
-
-<h2 id="toc_1">Procedure</h2>
-
-<pre><code class="language-python">for each node in Graph (200K iterations):
-    for each code that is 0 or 1 or 2 units apart from this vertex:
-        Add these 2 vertexes to a cluster.
-</code></pre>
-
-<h2 id="toc_2">Implementation</h2>
-
-<pre><code class="language-python">class HashTable:
-    def __init__(self, size):
-        self.size = size
-        self.slots = [None for i in range(self.size)]
-
-    def add(self, key, value):
-        if self.slots[key]:
-            self.slots[key].append(value)
-        else:
-            self.slots[key] = [value]
-
-    def values(self):
-        key = 1
-        for val in self.slots:
-            if val:
-                yield (key, val)
-        key += 1
-
-
-class BigClustring:
-
-    def __init__(self):
-        self.hash_table = None
-        self.num = None
-        self.len_bit = None
-        self.disjoint_set = DisjointSet()
-        self.val = []
-
-    def read_from_file(self, file_name):
-        with open(file_name) as infile:
-            line = infile.readline()
-            line = line.strip(&#39;\n&#39;)
-            self.num, self.len_bit = [int(num) for num in line.split()]
-            self.hash_table = HashTable(2 ** self.len_bit)
-
-            node = 1
-            for line in infile.readlines():
-                line = line.strip(&#39;\n&#39;)
-                line = line.replace(&#39; &#39;, &#39;&#39;)
-                val = int(line, 2)
-                self.hash_table.add(val, node)
-                self.disjoint_set.make_set(node)
-                self.val.append(val)
-                node += 1
-
-        if self.num + 1 != node:
-            raise ValueError
-
-    def hamming(self):
-        &quot;&quot;&quot;
-        return binary integer at hamming distance 1 or 2
-        &quot;&quot;&quot;
-        self.hamm = []
-        for i in range(self.len_bit):
-            for j in range(self.len_bit):
-                self.hamm.append(1 &lt;&lt; i | 1 &lt;&lt; j)
-
-    def neighbors(self, val):
-        &quot;&quot;&quot;
-        return node_index of neighbors for val
-        &quot;&quot;&quot;
-        for key in self.hamm:
-            if self.hash_table.slots[key ^ val] is not None:
-                yield self.hash_table.slots[key ^ val][0]
-
-    def cluster(self):
-        &quot;&quot;&quot;
-        cluster nodes with 0-1-2 distances
-        &quot;&quot;&quot;
-
-        # first cluster the 0 distance nodes
-        for key, val in self.hash_table.values():
-            if len(val) &gt; 1:
-                # union
-                for val1 in val:
-                    for val2 in val:
-                        if val1 != val2:
-                            self.disjoint_set.union(val1, val2)
-
-        # second cluster the 1-2 distance nodes
-        node = 1
-        for val in self.val:
-            neighbors = self.neighbors(val)
-            for neighbor in neighbors:
-                self.disjoint_set.union(node, neighbor)
-            node += 1
-        return len(self.disjoint_set)
-</code></pre>
-
-<h2 id="toc_3">Reference</h2>
-
-<ol>
-<li><a href="https://rstudio-pubs-static.s3.amazonaws.com/72033_dcd43db591574873aac22be4cde29af6.html">Clustering on big graph, python</a></li>
-<li><a href="https://en.wikipedia.org/wiki/Hamming_distance">Hamming Distance WIKIPEDIA</a></li>
-</ol>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/8/5</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html'>Python数据结构与算法</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="bitwise%20operator%20in%20python.html">
-                
-                  <h1>Bitwise Operation</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<ul>
-<li>
-<a href="#toc_0">The method of complements</a>
-<ul>
-<li>
-<a href="#toc_1">One&#39;s complement (反码)</a>
-</li>
-<li>
-<a href="#toc_2">Two&#39;s complement (补码)</a>
-<ul>
-<li>
-<a href="#toc_3">Implementation</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_4">One or Two</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_5">Reference</a>
-</li>
-</ul>
-
-
-<p>There are 6 <code>Bitwise Operators</code>(位操作符) in Python:</p>
-
-<ul>
-<li><code>x&lt;&lt;y</code>: Returns \(x\) with the bits shifted to the left by y places (and new bits on the right-hand-side are zeros). This is the same as multiplying x by \(2^y\).</li>
-<li><code>x&gt;&gt;y</code>: Returns \(x\) with the bits shifted to the right by y places. This is the same as //&#39;ing \(x\) by \(2^y\).</li>
-<li><code>x&amp;y</code>(bitwise AND): Each bit of the output is 1 if the corresponding bit of \(x\) AND of \(y\) is 1, otherwise it&#39;s 0.</li>
-<li><code>x|y</code> (bitwise OR): Each bit of the output is 0 if the corresponding bit of \(x\) AND of \(y\) is 0, otherwise it&#39;s 1.</li>
-<li><code>~ x</code> ( bitwise NOT, or complement): Returns the complement of \(x\) - the number you get by switching each 1 for a 0 and each 0 for a 1. This is the same as \(-x-1\).</li>
-<li><code>^</code> (bitwise Exclusive OR): outputs true only when inputs differ (one is 1, the other is 0).</li>
-</ul>
-
-<p><code>Bitwise Operators</code> operate on numbers, but instead of treating that number as if it were a single value, they treat it as if it were a string of bits, written  in <code>two&#39;s-complement</code> binary.</p>
-
-<h2 id="toc_0">The method of complements</h2>
-
-<p>The <code>method of complements</code> is a technique used to subtract one number from another using only addition of positive numbers.</p>
-
-<p>Many early computers, use <code>one&#39;s complement</code> notation. The IBM 700/7000 series used to use <code>sign/magnitude</code> notation. Almost all subsequent minicomputers and microcomputers use <code>two&#39;s complement</code>  in the computer industry.</p>
-
-<h3 id="toc_1">One&#39;s complement (反码)</h3>
-
-<p>The one&#39;s complement of a <code>binary number</code> is defined as the value obtained by inverting all the bits in the binary representation of the number (swapping 0s for 1s and vice versa). </p>
-
-<p>Positive numbers are the same simple, binary system used by <code>two&#39;s complement</code> and <code>sign-magnitude</code>. Negative values are the bit complement of the corresponding positive value. </p>
-
-<p>The table below shows all possible values in a 4-bit system, from −7 to +7.</p>
-
-<pre><code>      +      −
- 0   0000   1111   — Note that both +0 and −0 return TRUE when tested for zero
- 1   0001   1110   — and FALSE when tested for non-zero. 
- 2   0010   1101
- 3   0011   1100
- 4   0100   1011
- 5   0101   1010
- 6   0110   1001
- 7   0111   1000
-</code></pre>
-
-<p><strong>Negative zero</strong> is the condition where all bits in a signed word are 1. </p>
-
-<pre><code>1111 1111
-</code></pre>
-
-<h3 id="toc_2">Two&#39;s complement (补码)</h3>
-
-<p>A <code>two&#39;s complement</code> number system encodes positive and negative numbers in a binary number representation. The weight of each bit is a power of two, except for the <code>most significant bit</code>(最高有效位), whose weight is the negative of corresponding power of two.</p>
-
-<p>The method to convert a negative integer into a two&#39;s complement is implemented as follows:</p>
-
-<pre><code>eg. -3
-Start with positive 0000 0011
-flip bits 1111 1100
-add one 1111 1101
-</code></pre>
-
-<h4 id="toc_3">Implementation</h4>
-
-<p>The naive implementation of <code>Two&#39;s complement</code> in Python is as follows:</p>
-
-<pre><code class="language-python">def int_to_two_complement(val, num_bits):
-
-    if val &lt; 0:
-        # major procedure as follows:
-        # 1. take the absolute
-        # 2. flip
-        # 3. add one
-
-        # absolute of val: use int to transform str to int
-        val = bin(val)[3:].rjust(num_bits, &#39;0&#39;)
-
-        # flip it: bitwise complement
-        flip_val = &#39;&#39;
-        flip_bit = {&#39;0&#39;: &#39;1&#39;, &#39;1&#39;: &#39;0&#39;}
-        for bit in val:
-            flip_val += flip_bit[bit]
-        val = flip_val
-
-        # add one
-        val = list(val)
-        if val[-1] == &#39;0&#39;:
-            val[-1] = &#39;1&#39;
-        else:
-            index = -1
-            while val[index] == &#39;1&#39;:
-                index -= 1
-            val[-1] = &#39;0&#39;
-            val[index - 1] = &#39;1&#39;
-        val = &#39;&#39;.join(val)
-        val = int(val)
-
-    else:
-
-        # fill zeros before the binary number converted by bin, the result = bin(val)
-        val = bin(val)[2:].rjust(num_bits, &#39;0&#39;)
-    return val
-</code></pre>
-
-<h3 id="toc_4">One or Two</h3>
-
-<p>A <code>two&#39;s complement</code> integer equals its <code>one&#39;s complement</code> integer plus one.</p>
-
-<p>\[X_{two} = 2^n-x = x_{one}+1\]</p>
-
-<h2 id="toc_5">Reference</h2>
-
-<p>1.<a href="https://en.wikipedia.org/wiki/Most_significant_bit">Most Significant Bit</a><br/>
-2.<a href="https://wiki.python.org/moin/BitwiseOperators">wiki-python</a><br/>
-3.<a href="https://stackoverflow.com/questions/1604464/twos-complement-in-python">two&#39;s complement in python -Stackoverflow</a><br/>
-4. <a href="https://en.wikipedia.org/wiki/Two&#x27;s_complement#Subtraction_from_2N">Two&#39;s complement WIKIPEDIA</a></p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/8/5</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html'>Python数据结构与算法</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="minimum_spanning_tree_prim_kruskal.html">
-                
-                  <h1>Minimum Spanning Tree: Prim's, Kruskal's Algorithm and Clustering</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<ul>
-<li>
-<a href="#toc_0">Concepts</a>
-</li>
-<li>
-<a href="#toc_1">Prim&#39;s algorithm</a>
-<ul>
-<li>
-<a href="#toc_2">Implementation</a>
-</li>
-<li>
-<a href="#toc_3">Prim&#39;s v.s. Dijkstra&#39;s</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_4">Kruskal&#39;s Algorithm</a>
-<ul>
-<li>
-<a href="#toc_5">Implementation</a>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_6">Clustering</a>
-<ul>
-<li>
-<a href="#toc_7">Implementation</a>
-</li>
-</ul>
-
-
-<p>Let \(G=(V, E)\) be a connected, undirected graph with a real-valued weight function \(w\) defined on \(E\). If an acyclic subset \(T\in E\) that connects all of the vertices and whose total weight \(w(T)=\sum_{(u,v)\in T}w(u,v)\) is minimized, \(T\) forms a <code>Minimum Spanning Tree</code>.</p>
-
-<h2 id="toc_0">Concepts</h2>
-
-<ul>
-<li><code>safe edge</code>: An edge that may be added to \(A\) without violating the invariant that \(A\) is a subset of some <code>minimum spanning tree</code>.</li>
-<li><code>cut</code>: A <code>cut</code> \((S, V-S)\) of an undirected graph \(G=(V,E)\) is a partition of \(V\).</li>
-<li><code>cross</code>: We say that an edge \((u,v)\in E\) <code>crosses</code> the cut \((S,V-S)\) if one of its endpoints is in \(S\) and the other is in \(V-S\).</li>
-<li><code>respect</code>: If no edge in \(A\) (a subset of some <code>minimum spanning tree</code>) <code>crosses</code> the cut, the cut <code>respects</code> a set \(A\) of edges.</li>
-<li><code>light edge</code>: An edge is a <code>light edge</code> crossing a cut if its weight is the minimum of any edge crossing the cut. </li>
-</ul>
-
-<h2 id="toc_1">Prim&#39;s algorithm</h2>
-
-<p>In <code>Prim&#39;s algorithm</code>, each step adds a light edge to minimum spanning tree. The running time of the Prim&#39;s algorithm is \(O(E \log(V))\)</p>
-
-<h3 id="toc_2">Implementation</h3>
-
-<pre><code class="language-python">def prim(agraph, start):
-    &quot;&quot;&quot;
-    Prim&#39;s algorithm for minimum spanning tree
-    Using min-heap data structure
-
-    return a minimum spanning tree
-    &quot;&quot;&quot;
-    # vertex of minimun spanning tree
-    mst_vertex = []
-    pq = PriorityQueue()
-    for v in agraph:
-        v.setDistance(sys.maxsize)
-        v.setPred(None)
-    start.setDistance(0)
-    pq.buildHeap([(v.getDistance(), v) for v in agraph])
-    while not pq.isEmpty():
-        u = pq.delMin()
-        mst_vertex.append(u)
-        for adjacent in u.getConnections():
-            newcost = u.getWeight(adjacent)
-            if adjacent in pq and newcost &lt; adjacent.getDistance():
-                adjacent.setPred(u)
-                adjacent.setDistance(newcost)
-                pq.decreaseKey(adjacent, newcost)
-
-    # edges of minimum spanning tree
-    mst = []
-    for i in range(1, len(mst_vertex)):
-        # u, v, cost
-        mst.append((mst_vertex[i-1], mst_vertex[i],  mst_vertex[i].getDistance()))
-
-    return mst
-</code></pre>
-
-<h3 id="toc_3">Prim&#39;s v.s. Dijkstra&#39;s</h3>
-
-<p><code>Prim&#39;s algorithm</code> are similar to <code>Dijkstra&#39;s algorithm</code>, both of which use a <code>priority queue</code>. And  each of them belongs to <code>greedy algorithm</code>. There is trivial difference when implementing:</p>
-
-<p>\[\text{Prim&#39;s} p(v) = \min_{(u,v): u\in S} w(u,v)\]<br/>
-\[\text{Dijkstra&#39;s} s(v) = \min_{(u,v): u\in S} \text{dist(su,u)} w(u,v)\]</p>
-
-<h2 id="toc_4">Kruskal&#39;s Algorithm</h2>
-
-<p>In <code>Kruskal&#39;s algorithm</code>, always add edges in increasing weight, skipping those whose addition would create a cycle.</p>
-
-<p>In order to keep track of the connected components of a minimum spanning tree when implementing Kruskal&#39;s algorithm, a disjoint-set data structure should be used. The pseudo code for <code>MST-KRUSKAL</code>:</p>
-
-<pre><code class="language-python">mst = []
-for each vertex in G:
-    make-set(vertex)
-sort the edges of G into nondecreasing order by weight of edges
-for each edge (u,v) in G:
-    if find-set(u) != find_set(v):
-        mst = mst + (u,v)
-        union(u,v)
-return mst
-</code></pre>
-
-<p>If we use <code>union-by-rank</code> and <code>path-compression</code> heuristics in <code>disjoint-set</code> data structure, the running time of <code>Kruskal&#39;s algorithm</code> is \(O(E\lg V)\).</p>
-
-<h3 id="toc_5">Implementation</h3>
-
-<pre><code class="language-python">def kruskal_mst(agraph):
-    &quot;&quot;&quot;
-    Return a minimum spanning tree using kruskal&#39;s algorithm
-    &quot;&quot;&quot;
-    # minimum spanning tree
-    mst = []
-
-    # disjoint set
-    disjoint_set = DisjointSet()
-
-    # make set
-    for vertex in agraph.Vertices():
-        disjoint_set.make_set(vertex)
-
-    # edges of the graph
-    edges = agraph.edges()
-    edges.sort(key=lambda tup: tup[2])
-
-    for u, v, cost in edges:
-        if disjoint_set.find_set(u) != disjoint_set.find_set(v):
-            mst.append((u, v, cost))
-            disjoint_set.union(u, v)
-    return mst
-</code></pre>
-
-<h1 id="toc_6">Clustering</h1>
-
-<p><strong>Max-Spacing k clustering</strong>: Given a set of objects \(p_1, . . . , p_n\), a distance function \(d(p_i,p_j)\) specifies their similarity.  \(d(p_i,p_j)\) may be an actual distance, or some abstract representation of how dissimilar of two things are. </p>
-
-<p><strong>OUR GOAL</strong>: Divide the \(n\) items up into \(k\) groups so that the minimum distance between items in different groups is maximized.</p>
-
-<p><strong>IDEA</strong>: </p>
-
-<ul>
-<li>we maintain clusters as a set of connected components of a graph. </li>
-<li>And Iteratively combine the clusters containing the two closest items by adding an edge between them.</li>
-<li>Stop when there are \(k\) clusters.</li>
-</ul>
-
-<p>You&#39;ll find this is exactly <code>Kruskal&#39;s algorithm</code>.</p>
-
-<h3 id="toc_7">Implementation</h3>
-
-<pre><code class="language-python">def clustering(agraph, k):
-    &quot;&quot;&quot;
-    Max-Spacing k clustering
-
-    Return maximum spacing of a k-clustering
-    and corresponding mst.
-    &quot;&quot;&quot;
-    # minimum spanning tree
-    mst = []
-
-    # disjoint set
-    disjoint_set = DisjointSet()
-
-    # make set
-    for vertex in agraph.Vertices():
-        disjoint_set.make_set(vertex)
-
-    # edges of the graph
-    edges = agraph.edges()
-    edges.sort(key=lambda tup: tup[2])
-
-    for u, v, cost in edges:
-        if len(disjoint_set) &gt;= k:
-
-            if disjoint_set.find_set(u) != disjoint_set.find_set(v):
-                mst.append((u, v, cost))
-                max_cost = cost
-                disjoint_set.union(u, v)
-        else:
-            break
-
-
-    return max_cost, mst
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/8/4</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Tree.html'>Tree</a></span>
-          				  
-          					    <span class="posted-in"><a href='Graph.html'>Graph</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1088,31 +829,31 @@ return mst
 	      
 		      
 			      <li class="post">
-			        <a href="develop_tools.html">Develop tools</a>
+			        <a href="gdb_too_gnu.html">gdb</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15146536465849.html">x86-64汇编</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="tmux_tool_linux.html">tmux</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15142076431845.html">OS161</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
 			        <a href="C_plus_plus_ostream.html">C++ Ostream</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="introduction_to_computer_system_CMU.html">CMU 213 Introduction to Computer Systems</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="nand2tetris.html">Nand2Tetris: The elements of computing systems</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="PCA.html">PCA基础及在Spark中的应用</a>
 			      </li>
 		     
 		  
