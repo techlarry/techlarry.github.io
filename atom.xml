@@ -4,13 +4,75 @@
   <title><![CDATA[techlarry]]></title>
   <link href="http://larryim.cc/atom.xml" rel="self"/>
   <link href="http://larryim.cc/"/>
-  <updated>2018-01-02T01:25:46+08:00</updated>
+  <updated>2018-01-03T02:40:43+08:00</updated>
   <id>http://larryim.cc/</id>
   <author>
     <name><![CDATA[]]></name>
     
   </author>
   <generator uri="http://www.mweb.im/">MWeb</generator>
+  
+  <entry>
+    <title type="html"><![CDATA[如何得到Python程序对应的汇编代码]]></title>
+    <link href="http://larryim.cc/15149151386908.html"/>
+    <updated>2018-01-03T01:45:38+08:00</updated>
+    <id>http://larryim.cc/15149151386908.html</id>
+    <content type="html"><![CDATA[
+<p>学完了汇编语言之后，非常好奇Python程序产生的汇编代码。其实Python作为一种解释语言，其源代码是直接被<code>CPython</code>编译器编译成字节码(<code>btyecode</code>)的；然后在虚拟机中依次解释执行字节码所对应的机器码(<code>machine code</code>)。当需要重用时，字节码以<code>.pyc</code>和<code>.pyo</code>文件存在。当再次运行代码时，虚拟机直接运行<code>.pyc</code>和<code>.pyo</code>文件，省去了重新编译的过程。</p>
+
+<p>Python提供了<code>dis</code>模块，在代码运行时加入<code>-m dis</code>就可以得到源代码对应的汇编代码。其实<code>dis</code>在这里反汇编了字节码。</p>
+
+<p>也可以在源代码中直接调用<code>dis</code>模块：</p>
+
+<pre><code class="language-python">import dis
+def f(x):
+    return 1 &lt; x ** 2 &lt; 100
+
+dis.dis(f)
+</code></pre>
+
+<p>得到的字节码指令(<code>byte code instruction</code>)如下所示：</p>
+
+<pre><code>   4           0 LOAD_CONST               1 (1)
+              3 LOAD_FAST                0 (x)
+              6 LOAD_CONST               2 (2)
+              9 BINARY_POWER
+             10 DUP_TOP
+             11 ROT_THREE
+             12 COMPARE_OP               0 (&lt;)
+             15 JUMP_IF_FALSE_OR_POP    25
+             18 LOAD_CONST               3 (100)
+             21 COMPARE_OP               0 (&lt;)
+             24 RETURN_VALUE
+        &gt;&gt;   25 ROT_TWO
+             26 POP_TOP
+             27 RETURN_VALUE
+</code></pre>
+
+<p>字节码指令的含义可以通过<a href="https://docs.python.org/2/library/dis.html#bytecodes">官方文件</a>查找。</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[目标文件]]></title>
+    <link href="http://larryim.cc/15148364443259.html"/>
+    <updated>2018-01-02T03:54:04+08:00</updated>
+    <id>http://larryim.cc/15148364443259.html</id>
+    <content type="html"><![CDATA[
+<p><code>UNIX</code>系统提供了一系列命令帮助理解和处理目标文件。这些工具包括：</p>
+
+<p><code>ar</code> ：创建静态库，插入、删除、列出和提取成员；<br/>
+STRINGS ：列出目标文件中所有可以打印的字符串；<br/>
+STRIP ：从目标文件中删除符号表信息；<br/>
+NM ：列出目标文件符号表中定义的符号；<br/>
+SIZE ：列出目标文件中节的名字和大小；<br/>
+READELF ：显示一个目标文件的完整结构，包括ELF 头中编码的所有信息。<br/>
+OBJDUMP ：显示目标文件的所有信息，最有用的功能是反汇编.text节中的二进制指令。<br/>
+LDD ：列出可执行文件在运行时需要的共享库。</p>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[gdb]]></title>
@@ -1253,188 +1315,6 @@ def varianceExplained(data, k=1):
 <h2 id="toc_3">参考资料</h2>
 
 <p>Randal E B, David O H. 2015. Computer Systems: A programmer&#39;s Perspective, 3rd.</p>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[C++ Tools]]></title>
-    <link href="http://larryim.cc/c_plus_plus_tool.html"/>
-    <updated>2017-10-25T16:03:46+08:00</updated>
-    <id>http://larryim.cc/c_plus_plus_tool.html</id>
-    <content type="html"><![CDATA[
-<ul>
-<li>GNU gcc</li>
-<li>gdb</li>
-<li>valgrind</li>
-</ul>
-
-<h2 id="toc_0">GNU GCC</h2>
-
-<h3 id="toc_1">安装</h3>
-
-<p>在mac上通过<code>homebrew</code> 安装是安装<code>gnu gcc</code>最快捷、省心的方式，注意需要提前安装<code>xcode</code>和<code>command-line tools</code>：</p>
-
-<pre><code>brew install gcc
-</code></pre>
-
-<p>安装完成以后，由于mac上默认的编译器是<code>clang</code>，所以当在终端键入<code>gcc</code>的时候，其实调用的是<code>clang</code>:</p>
-
-<pre><code class="language-bash">$gcc
-clang: error: no input files
-</code></pre>
-
-<p>所以用<code>gcc-7</code>的方式调用<code>gcc</code>.</p>
-
-<pre><code class="language-bash">// gcc 产生汇编代码
-gcc-7 test.c -S -Og
-</code></pre>
-
-<h2 id="toc_2">gdb</h2>
-
-<p>同样的，使用<code>homebrew</code>安装：</p>
-
-<pre><code>brew install gdb
-</code></pre>
-
-<p><a href="http://csapp.cs.cmu.edu/3e/docs/gdbnotes-x86-64.pdf">Cheat Sheet</a><br/>
-<a href="http://beej.us/guide/bggdb/">Tutorial</a></p>
-
-<h2 id="toc_3">valgrind</h2>
-
-<p><code>Valgrind</code>(/ˈvælɡrɪnd/) is an instrumentation framework for building dynamic analysis tools. There are Valgrind tools that can automatically detect many memory management and threading bugs, and profile your programs in detail. You can also use Valgrind to build new tools.</p>
-
-<p>The Valgrind distribution currently includes six production-quality tools: </p>
-
-<ul>
-<li>a memory error detector</li>
-<li>two thread error detectors </li>
-<li>a cache and branch-prediction profiler</li>
-<li>a call-graph generating cache and branch-prediction profiler</li>
-<li>a heap profiler.</li>
-</ul>
-
-<p>It also includes three experimental tools: </p>
-
-<ul>
-<li>a stack/global array overrun detector,</li>
-<li>a second heap profiler that examines how heap blocks are used</li>
-<li>a SimPoint basic block vector generator.</li>
-</ul>
-
-<h3 id="toc_4">Installing on Mac</h3>
-
-<p>The simplest way to install <code>valgrind</code> is using <code>brew</code>:</p>
-
-<pre><code>brew install --HEAD valgrind
-</code></pre>
-
-<h3 id="toc_5">Demo</h3>
-
-<p>Writing a C program named &#39;arrays.c&#39; without freeing the memory after allocating it dynamically using <code>malloc</code>, for example,</p>
-
-<pre><code>int* heap_array = (int*) malloc(sizeof(int) * 5);
-free(heap_array); ## deleting the statement...
-</code></pre>
-
-<p>After running by command</p>
-
-<pre><code>valgrind ./arrays
-</code></pre>
-
-<p>you will see &quot;<strong>definitely lost: 20 bytes in 1 blocks</strong>!!&quot;</p>
-
-<p><img src="media/15089186263565/Screen%20Shot%202017-10-25%20at%204.35.47%20PM.png" alt="Screen Shot 2017-10-25 at 4.35.47 P"/></p>
-
-<h3 id="toc_6">Reference</h3>
-
-<ul>
-<li><a href="https://stackoverflow.com/questions/26564125/yosemite-and-valgrind">Yosemite and Valgrind</a></li>
-</ul>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Machine Learning Techniques: Support Vector Machine (SVM)]]></title>
-    <link href="http://larryim.cc/machine_learning_techniques_SVM.html"/>
-    <updated>2017-10-24T19:43:35+08:00</updated>
-    <id>http://larryim.cc/machine_learning_techniques_SVM.html</id>
-    <content type="html"><![CDATA[
-<ul>
-<li>
-<a href="#toc_0">Linear SVM</a>
-<ul>
-<li>
-<a href="#toc_1">Standard Large-Margin Problem</a>
-</li>
-<li>
-<a href="#toc_2">Support Vector Machine</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_3">Dual Support Vector Machine</a>
-<ul>
-<li>
-<a href="#toc_4">Lagrange Dual Problem</a>
-</li>
-</ul>
-</li>
-</ul>
-
-
-<h2 id="toc_0">Linear SVM</h2>
-
-<p><img src="media/15088454152744/large_margin.png" alt="large_margin"/></p>
-
-<p>Our goal is to find <code>largest-margin</code> separating hyperplane.</p>
-
-<p><strong>Distance to Hyperplane</strong>: distance(\(x,b,w) = \frac{1}{\lVert w\rVert}|w^Tx+b|\)</p>
-
-<h3 id="toc_1">Standard Large-Margin Problem</h3>
-
-<p>Now the problem becomes:<br/>
-<img src="media/15088454152744/hyperplane%20distance.png" alt="hyperplane distance"/></p>
-
-<p><img src="media/15088454152744/standard%20problem.png" alt="standard proble"/></p>
-
-<h3 id="toc_2">Support Vector Machine</h3>
-
-<p><img src="media/15088454152744/svm%20with%20qp%20solver.png" alt="svm with qp solve"/></p>
-
-<h2 id="toc_3">Dual Support Vector Machine</h2>
-
-<p>\[\text{SVM} \equiv \min\limits_{b,w} (\max\limits_{\text{all}\,\alpha_n \ge 0} \mathcal{L}(b,w,\alpha))\]</p>
-
-<h3 id="toc_4">Lagrange Dual Problem</h3>
-
-<p>for any fixed \(\alpha&#39;\)  with all \(\alpha&#39;_n\ge\) 0,<br/>
-\[\min\limits_{b,w} (\max\limits_{\text{all}\,\alpha_n \ge 0} \mathcal{L}(b,w,\alpha)) \ge \min\limits_{b,w}\mathcal{L}(b,w,\alpha&#39;)\]</p>
-
-<p>for best \(\alpha&#39;\ge 0\) on RHS,</p>
-
-<p>\[\min\limits_{b,w} (\max\limits_{\text{all}\,\alpha_n \ge 0} \mathcal{L}(b,w,\alpha)) \ge \max\limits_{\text{all}\,\alpha_n \ge 0}(\min\limits_{b,w}  \mathcal{L}(b,w,\alpha))\]</p>
-
-<p>Strong duality of Quadratic Programming<br/>
-\[\min\limits_{b,w} (\max\limits_{\text{all}\,\alpha_n \ge 0} \mathcal{L}(b,w,\alpha)) \ge \max\limits_{\text{all}\,\alpha_n \ge 0}(\min\limits_{b,w}  \mathcal{L}(b,w,\alpha))\]</p>
-
-<ul>
-<li>&#39;&gt;=&#39;: weak duality</li>
-<li>&#39;=&#39;: strong duality, true for QP if
-
-<ul>
-<li>convex primal</li>
-<li>feasible primal</li>
-<li>linear constraints</li>
-</ul></li>
-</ul>
-
-<p>Dual Formulation of Support Vector Machine:</p>
-
-<p><img src="media/15088454152744/Screen%20Shot%202017-10-25%20at%201.43.46%20PM.png" alt="Screen Shot 2017-10-25 at 1.43.46 P"/></p>
-
-<p><img src="media/15088454152744/Screen%20Shot%202017-10-25%20at%201.46.05%20PM.png" alt="Screen Shot 2017-10-25 at 1.46.05 P"/></p>
 
 ]]></content>
   </entry>

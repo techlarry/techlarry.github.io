@@ -53,11 +53,9 @@ var _hmt = _hmt || [];
         
         <li id=""><a target="_self" href="archives.html">Archives</a></li>
         
-        <li id=""><a target="_self" href="category.html">Category</a></li>
-        
         <li id=""><a target="_self" href="notebook.html">NoteBook</a></li>
         
-        <li id=""><a target="_self" href="wiki">wiki</a></li>
+        <li id=""><a target="_self" href="wiki">WIKI</a></li>
         
         </ul>
 
@@ -88,11 +86,9 @@ var _hmt = _hmt || [];
         
         <li><a target="_self" href="archives.html">Archives</a></li>
         
-        <li><a target="_self" href="category.html">Category</a></li>
-        
         <li><a target="_self" href="notebook.html">NoteBook</a></li>
         
-        <li><a target="_self" href="wiki">wiki</a></li>
+        <li><a target="_self" href="wiki">WIKI</a></li>
         
 
     <li><label>Categories</label></li>
@@ -150,6 +146,108 @@ var _hmt = _hmt || [];
 	<div class="large-8 medium-8 columns">
 		<div class="markdown-body home-categories">
 		
+			<div class="article">
+                <a class="clearlink" href="15149151386908.html">
+                
+                  <h1>如何得到Python程序对应的汇编代码</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>学完了汇编语言之后，非常好奇Python程序产生的汇编代码。其实Python作为一种解释语言，其源代码是直接被<code>CPython</code>编译器编译成字节码(<code>btyecode</code>)的；然后在虚拟机中依次解释执行字节码所对应的机器码(<code>machine code</code>)。当需要重用时，字节码以<code>.pyc</code>和<code>.pyo</code>文件存在。当再次运行代码时，虚拟机直接运行<code>.pyc</code>和<code>.pyo</code>文件，省去了重新编译的过程。</p>
+
+<p>Python提供了<code>dis</code>模块，在代码运行时加入<code>-m dis</code>就可以得到源代码对应的汇编代码。其实<code>dis</code>在这里反汇编了字节码。</p>
+
+<p>也可以在源代码中直接调用<code>dis</code>模块：</p>
+
+<pre><code class="language-python">import dis
+def f(x):
+    return 1 &lt; x ** 2 &lt; 100
+
+dis.dis(f)
+</code></pre>
+
+<p>得到的字节码指令(<code>byte code instruction</code>)如下所示：</p>
+
+<pre><code>   4           0 LOAD_CONST               1 (1)
+              3 LOAD_FAST                0 (x)
+              6 LOAD_CONST               2 (2)
+              9 BINARY_POWER
+             10 DUP_TOP
+             11 ROT_THREE
+             12 COMPARE_OP               0 (&lt;)
+             15 JUMP_IF_FALSE_OR_POP    25
+             18 LOAD_CONST               3 (100)
+             21 COMPARE_OP               0 (&lt;)
+             24 RETURN_VALUE
+        &gt;&gt;   25 ROT_TWO
+             26 POP_TOP
+             27 RETURN_VALUE
+</code></pre>
+
+<p>字节码指令的含义可以通过<a href="https://docs.python.org/2/library/dis.html#bytecodes">官方文件</a>查找。</p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/1/3</span>
+                    
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15148364443259.html">
+                
+                  <h1>目标文件</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p><code>UNIX</code>系统提供了一系列命令帮助理解和处理目标文件。这些工具包括：</p>
+
+<p><code>ar</code> ：创建静态库，插入、删除、列出和提取成员；<br/>
+STRINGS ：列出目标文件中所有可以打印的字符串；<br/>
+STRIP ：从目标文件中删除符号表信息；<br/>
+NM ：列出目标文件符号表中定义的符号；<br/>
+SIZE ：列出目标文件中节的名字和大小；<br/>
+READELF ：显示一个目标文件的完整结构，包括ELF 头中编码的所有信息。<br/>
+OBJDUMP ：显示目标文件的所有信息，最有用的功能是反汇编.text节中的二进制指令。<br/>
+LDD ：列出可执行文件在运行时需要的共享库。</p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/1/2</span>
+                    
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
 			<div class="article">
                 <a class="clearlink" href="gdb_too_gnu.html">
                 
@@ -359,155 +457,6 @@ The instruction pointer register (%rip) points to the next instruction to execut
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15142076431845.html">
-                
-                  <h1>OS161</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p><a href="http://os161.eecs.harvard.edu">OS161</a>是哈佛大学推出的一款用于教学的操作系统。它运行在一个模拟器上，与BSD类似。目前的版本是2.x版本，支持多处理器和其他现代特性。</p>
-
-<p><a href="http://os161.eecs.harvard.edu/resources/layout.html">OS161 layout</a></p>
-
-<h2 id="toc_0">用gdb调试内核</h2>
-
-<p>首先运行<code>kernel</code></p>
-
-<pre><code>sys161 kernel
-</code></pre>
-
-<p>像正常一样运行<code>gdb</code></p>
-
-<pre><code>gdb kernel
-</code></pre>
-
-<p>在完成加载后，在<code>gdb</code>中输入以下内容使其连接到<code>System/161</code></p>
-
-<pre><code>target remote unix:.sockets/gdb
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/12/25</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Computer%20System.html'>Computer System</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="C_plus_plus_ostream.html">
-                
-                  <h1>C++ Ostream</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<ul>
-<li>设定输出域宽度: <code>setw</code></li>
-</ul>
-
-<pre><code class="language-C++">// 设定域的输出长度为8，而实际字符串长度为4，所有前面补四个空格。
-cout &lt;&lt; &quot;[&quot; &lt;&lt; setw(8) &lt;&lt; &quot;AAAA&quot; &lt;&lt; &quot;]&quot;;        // [    AAAA]
-</code></pre>
-
-<p>如果<code>setw</code>的数值小于实际数据长度，<code>setw</code>的值无效，比如上述例子：</p>
-
-<pre><code class="language-C++">//因为3小于实际字符串长度4，最终输出整个字符串。
-cout &lt;&lt; &quot;[&quot; &lt;&lt; setw(3) &lt;&lt; &quot;AAAA&quot; &lt;&lt; &quot;]&quot;         // [AAAA]
-</code></pre>
-
-<ul>
-<li>对齐方式：<code>left</code>/<code>right</code>/<code>internal</code></li>
-</ul>
-
-<p>在设定了输出域的宽度<code>setw</code>后，如果设置对齐方式，左对齐还是右对齐(缺省是右对齐(<code>right</code>))</p>
-
-<pre><code class="language-C++"> cout &lt;&lt; &quot;[&quot; &lt;&lt; setw(8) &lt;&lt; left &lt;&lt; &quot;AAAA&quot; &lt;&lt; &quot;]&quot;;       // [AAAA    ]
- cout &lt;&lt; &quot;[&quot; &lt;&lt; setw(8) &lt;&lt; right &lt;&lt; &quot;AAAA&quot; &lt;&lt; &quot;]&quot;;      // [    AAAA]
- cout &lt;&lt; &quot;[&quot; &lt;&lt; setw(8) &lt;&lt; &quot;AAAA&quot; &lt;&lt; &quot;]&quot;;                    // [    AAAA]
-</code></pre>
-
-<ul>
-<li>填充字符: <code>setfill</code></li>
-</ul>
-
-<p>域宽度不够时，还可以指定，用来代替缺省的空格</p>
-
-<pre><code class="language-C++">//使用字符&#39;0&#39;作为填充
- cout &lt;&lt; &quot;[&quot; &lt;&lt; setw(8) &lt;&lt; setfill(&#39;0&#39;) &lt;&lt; &quot;AAAA&quot; &lt;&lt; &quot;]&quot;; // [0000AAAA]
- cout &lt;&lt; &quot;[&quot; &lt;&lt; setw(8) &lt;&lt; setfill(&#39;0&#39;) &lt;&lt; left &lt;&lt; &quot;AAAA&quot; &lt;&lt; &quot;]&quot;;    // [AAAA0000]
-</code></pre>
-
-<ul>
-<li>输出正负号: <code>showpos</code></li>
-</ul>
-
-<pre><code class="language-C++"> cout &lt;&lt; &quot;[&quot; &lt;&lt; showpos &lt;&lt; 123 &lt;&lt; &quot;]&quot;;   // [+123]
- cout &lt;&lt; &quot;[&quot; &lt;&lt; showpos &lt;&lt; -456 &lt;&lt; &quot;]&quot;;  // [-456]
- cout &lt;&lt; &quot;[&quot; &lt;&lt; showpos &lt;&lt; 0 &lt;&lt; &quot;]&quot;;     // [+0]
-</code></pre>
-
-<ul>
-<li>输出16进制数字值: <code>hex</code></li>
-</ul>
-
-<pre><code class="language-C++">cout &lt;&lt; &quot;[&quot; &lt;&lt; hex &lt;&lt; 20  &lt;&lt; &quot;]&quot;;   //  [14]
-</code></pre>
-
-<ul>
-<li>可以加前缀<code>0x</code>: <code>showbase</code></li>
-</ul>
-
-<pre><code class="language-C++">cout &lt;&lt; &quot;[&quot; &lt;&lt; showbase &lt;&lt; hex &lt;&lt; setw(2) &lt;&lt; setfill(&#39;0&#39;) &lt;&lt; 5  &lt;&lt; &quot;]&quot;;  // [0x5]
-</code></pre>
-
-<ul>
-<li>16进制值(A-F)大写: <code>uppercase</code></li>
-</ul>
-
-<pre><code class="language-C++">cout &lt;&lt; &quot;[&quot; &lt;&lt; hex &lt;&lt; uppercase &lt;&lt; setw(2) &lt;&lt; setfill(&#39;0&#39;) &lt;&lt; 10  &lt;&lt; &quot;]&quot;;  // [0A]
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/12/16</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='C/C++.html'>C/C++</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -609,6 +558,18 @@ cout &lt;&lt; &quot;[&quot; &lt;&lt; setw(3) &lt;&lt; &quot;AAAA&quot; &lt;&lt; 
 	      
 		      
 			      <li class="post">
+			        <a href="15149151386908.html">如何得到Python程序对应的汇编代码</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15148364443259.html">目标文件</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="gdb_too_gnu.html">gdb</a>
 			      </li>
 		     
@@ -622,18 +583,6 @@ cout &lt;&lt; &quot;[&quot; &lt;&lt; setw(3) &lt;&lt; &quot;AAAA&quot; &lt;&lt; 
 		      
 			      <li class="post">
 			        <a href="tmux_tool_linux.html">tmux</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15142076431845.html">OS161</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="C_plus_plus_ostream.html">C++ Ostream</a>
 			      </li>
 		     
 		  
