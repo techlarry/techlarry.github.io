@@ -152,7 +152,9 @@ var _hmt = _hmt || [];
         <div class="read-more clearfix">
           <span class="date">2017/12/31</span>
 
+          <span>posted in&nbsp;</span> 
           
+              <span class="posted-in"><a href='Computer%20System.html'>Computer System</a></span>
            
          
           <span class="comments">
@@ -165,14 +167,48 @@ var _hmt = _hmt || [];
       </div><!-- article -->
 
       <div class="article-content">
-      <p><code>AT&amp;T</code>汇编格式的注释格式是</p>
+      <h2 id="toc_0">汇编代码格式</h2>
+
+<p>现在主要存在<code>ATT</code>和<code>Intel</code>两种汇编代码格式。<code>ATT</code>格式是<code>GCC</code>, <code>OBJDUMP</code>常用工具的默认格式。其他的诸如Microsoft的工具和来自Intel的文档都是<code>Intel</code>格式的。本文使用<code>ATT</code>格式。</p>
+
+<p><code>ATT</code>汇编格式的注释格式有两种</p>
 
 <pre><code># this is a comment
 /* this is a comment */
 </code></pre>
 
-<p>with x86-64, the program counter is named %rip<br/>
-The instruction pointer register (%rip) points to the next instruction to execute. It is heavily used as the base for position-independent code addressing.</p>
+<h2 id="toc_1">寄存器</h2>
+
+<p><code>x86-64</code>体系结构广泛存在于个人电脑中。它拥有16个整数寄存器，分别存储64位的值。这些寄存器可以存储地址或整数数据，其分布如下：</p>
+
+<p><img src="media/15146536465849/sfd.png" alt="sfd"/></p>
+
+<p>根据惯例，寄存器%rbx, %rbp和%r12~%r15被划分为<strong>被调用者保存寄存器</strong>。所有其他的寄存器，除了栈指针%rsp都分类为<strong>调用者保存寄存器</strong>。在函数被调用时，不能改变这些<strong>被</strong>调用者寄存器；如果要改变的话，只能把<strong>被</strong>调用者寄存器的值压入栈中，在使用后，从栈中恢复<strong>被</strong>调用者寄存器。</p>
+
+<h3 id="toc_2">rip 寄存器</h3>
+
+<p>%rip 的名称来自于(instruction pointer register,指令指针寄存器)。%rip其实就是程序计数器(Program Counter, PC), 存放着下一条指令的地址。不可以直接修改%rip。</p>
+
+<p>-&gt; <code>instruction pointer = program counter = %rip</code></p>
+
+<p>%rip的其他很重要的一个用法就是rip相对寻址(rip relative addressing)。即<code>%rip + displacement</code>的用法。</p>
+
+<p>例如，</p>
+
+<pre><code class="language-assembly">mov    0x202a62(%rip),%rdi        # 6044d0 &lt;infile&gt;  rdi = infile
+</code></pre>
+
+<p>表示传输%rip+0x202a62的地址对应的内存上的内容到%rdi。</p>
+
+<h2 id="toc_3">指令</h2>
+
+<p>指令主要有<code>mov</code>数据传送指令，<code>push</code>、<code>pop</code>压入和压出栈数据，<code>add</code>,<code>sub</code>等算数操作指令，<code>ret</code>, <code>call</code>等转移控制指令。</p>
+
+<h3 id="toc_4">ret, call指令</h3>
+
+<p>在x86-64上，ret指令，相当于从栈中弹出地址A，然后把PC设置为A。<br/>
+<code>pop %rip</code><br/>
+而call指令，刚好相反，把%rip 压入栈中，然后跳到函数对应的地址。</p>
 
 
     
