@@ -49,13 +49,11 @@ var _hmt = _hmt || [];
       <div style="position: relative;width:100%;"><div style="position: absolute; width:100%;">
         <ul id="main-menu" class="left">
         
-        <li id=""><a target="_self" href="index.html">Home</a></li>
+        <li id=""><a target="_self" href="wiki">WIKI</a></li>
         
         <li id=""><a target="_self" href="archives.html">Archives</a></li>
         
-        <li id=""><a target="_self" href="notebook.html">NoteBook</a></li>
-        
-        <li id=""><a target="_self" href="wiki">WIKI</a></li>
+        <li id=""><a target="_self" href="notebook.html">NOTEBOOK</a></li>
         
         </ul>
 
@@ -82,13 +80,11 @@ var _hmt = _hmt || [];
 <aside class="left-off-canvas-menu">
       <ul class="off-canvas-list">
         
-        <li><a target="_self" href="index.html">Home</a></li>
+        <li><a target="_self" href="wiki">WIKI</a></li>
         
         <li><a target="_self" href="archives.html">Archives</a></li>
         
-        <li><a target="_self" href="notebook.html">NoteBook</a></li>
-        
-        <li><a target="_self" href="wiki">WIKI</a></li>
+        <li><a target="_self" href="notebook.html">NOTEBOOK</a></li>
         
 
     <li><label>Categories</label></li>
@@ -147,9 +143,9 @@ var _hmt = _hmt || [];
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15149151386908.html">
+                <a class="clearlink" href="python_assembly_code.html">
                 
-                  <h1>如何得到Python程序对应的汇编代码</h1>
+                  <h1>Python源代码对应的汇编代码</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
@@ -253,7 +249,7 @@ LDD ：列出可执行文件在运行时需要的共享库。</p>
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="gdb_too_gnu.html">
+                <a class="clearlink" href="gdb_tool_gnu.html">
                 
                   <h1>gdb</h1>
                   <div class="a-content">
@@ -264,7 +260,7 @@ LDD ：列出可执行文件在运行时需要的共享库。</p>
 
 <h3 id="toc_0">调试信息</h3>
 
-<p>要调试C/C++的程序，首先在编译时，我们必须要把调试信息(symbol table)加到可执行文件中。使用编译器（cc/gcc/g++）的 <code>-g</code> 参数(Generate source-level debug information)可以做到这一点。</p>
+<p>要调试C/C++的程序，首先在编译时，我们必须要把调试信息(debugging symbols)加到可执行文件中。使用编译器（cc/gcc/g++）的 <code>-g</code> 参数(Generate source-level debug information)可以做到这一点。</p>
 
 <pre><code>g++ -g HelloWorld.cpp -o HelloWorld
 </code></pre>
@@ -323,6 +319,83 @@ LDD ：列出可执行文件在运行时需要的共享库。</p>
 </code></pre>
 
 <p>这时<code>gdb</code>可以远程连接到被调试机器上，对程序进行调试。前提是在远端的机器上，必须要启动好<code>gdb</code>服务端程序。</p>
+
+<h2 id="toc_3">TUI</h2>
+
+<p>gdb tui（TextUser Interface）为dgb调试的文本用户界面，可以方便地显示源代码、汇编和寄存器文本窗口，tui使用效果如下图所示。</p>
+
+<p><img src="media/15147536807060/gdb-tui.png" alt="gdb-tui"/></p>
+
+<p>gdb tui可以直接运行<code>gdbtui</code>或者在gdb中用<code>ctrl-c, ctrl-a</code>打开。</p>
+
+<p>上图中是打开了汇编窗口的，可通过命令<code>layout split</code>显示源代码和汇编窗口。其他常见的窗口显示命令为：</p>
+
+<ul>
+<li><code>layout src/asm/regs</code>：显示源代码/汇编/寄存器窗口</li>
+<li><code>layout split</code>：显示源代码和汇编窗口</li>
+<li><code>focus cmd/src/asm/regs</code>: 聚焦命令/源代码/汇编/寄存器窗口</li>
+</ul>
+
+<h2 id="toc_4">命令行参数</h2>
+
+<p>很多程序在运行时都需要参数。例如下面C程序：</p>
+
+<pre><code class="language-C">#include &lt;stdio.h&gt;
+int main(int argc,char *argv[])
+{
+    int i = argc;
+    printf(&quot;argc=%d\n&quot;,i);
+        for(i = 0;i &lt; argc;i++)
+        printf(&quot;argv[%d]=%s\n&quot;,i,argv[i]);
+        return 1;
+}
+</code></pre>
+
+<pre><code> ./demo_get_opt a b c
+argc = 4
+argv[0] = ./demo_get_opt
+argv[1] = a
+argv[2] = b
+argv[3] = c
+</code></pre>
+
+<p>运行gbb时一共有三种方法可以指定参数。</p>
+
+<p>第一种是在用<code>set args</code>指定参数</p>
+
+<ul>
+<li><code>set args</code> 可指定运行时参数。（如：<code>set args a b c</code>或者<code>set args -f 20 -t 40</code>）</li>
+<li><code>show args</code> 命令可以查看设置好的运行参数。</li>
+</ul>
+
+<pre><code>(gdb) set args a b c
+(gdb) r
+Starting program: /home/vagrant/demo_get_opt a b c
+argc = 4
+argv[0] = /home/vagrant/demo_get_opt
+argv[1] = a
+argv[2] = b
+argv[3] = c
+</code></pre>
+
+<p>第二种是在运行时设定参数</p>
+
+<ul>
+<li><code>r/run args</code> (如 <code>r a b c</code>)</li>
+</ul>
+
+<pre><code>(gdb) r a b c
+argc = 4
+argv[0] = /home/vagrant/demo_get_opt
+argv[1] = a
+argv[2] = b
+argv[3] = c
+</code></pre>
+
+<p>第三种是在gdb启动时加上<code>--args</code>参数</p>
+
+<pre><code>gdb --args  ./demo_get_opt a b c
+</code></pre>
 
                         
                       </div>
@@ -598,7 +671,7 @@ LDD ：列出可执行文件在运行时需要的共享库。</p>
 	      
 		      
 			      <li class="post">
-			        <a href="15149151386908.html">如何得到Python程序对应的汇编代码</a>
+			        <a href="python_assembly_code.html">Python源代码对应的汇编代码</a>
 			      </li>
 		     
 		  
@@ -610,7 +683,7 @@ LDD ：列出可执行文件在运行时需要的共享库。</p>
 		  
 		      
 			      <li class="post">
-			        <a href="gdb_too_gnu.html">gdb</a>
+			        <a href="gdb_tool_gnu.html">gdb</a>
 			      </li>
 		     
 		  
