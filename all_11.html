@@ -17,7 +17,7 @@ var _hmt = _hmt || [];
   techlarry
   
   </title>
-  <meta name="keywords" content="MySQL, Database" />
+  <meta name="keywords" content="Python, GIL, Global Interpreter Lock" />
   
   <link href="atom.xml" rel="alternate" title="techlarry" type="application/atom+xml">
     <link rel="stylesheet" href="asset/css/foundation.min.css" />
@@ -142,6 +142,346 @@ var _hmt = _hmt || [];
 	<div class="large-8 medium-8 columns">
 		<div class="markdown-body home-categories">
 		
+			<div class="article">
+                <a class="clearlink" href="getting_started_with_tensorflow.html">
+                
+                  <h1>TensorFlow(2): Getting started with TensorFlow</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<ul>
+<li>
+<a href="#toc_0">TensorFlow Core tutorial</a>
+<ul>
+<li>
+<a href="#toc_1">importing TensorFlow</a>
+</li>
+<li>
+<a href="#toc_2">The Computational Graph</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_3">tf.train API</a>
+<ul>
+<li>
+<a href="#toc_4">Complete program</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_5">tf.estimator</a>
+<ul>
+<li>
+<a href="#toc_6">Basic usage</a>
+</li>
+</ul>
+</li>
+</ul>
+
+
+<h2 id="toc_0">TensorFlow Core tutorial</h2>
+
+<h3 id="toc_1">importing TensorFlow</h3>
+
+<pre><code class="language-python">import tensorflow as tf
+</code></pre>
+
+<h3 id="toc_2">The Computational Graph</h3>
+
+<p>A <code>computational graph</code> is a series of TensorFlow operations arranged into a graph of nodes. Let&#39;s build a simple computational graph. Each node takes zero or more tensors as inputs and produces a tensor as an output. One type of node is a constant. Like all TensorFlow constant, it takes no inputs, and it outputs a value it stores internally. We can create two floating point Tensor <code>node1</code> and <code>node2</code> as follows:</p>
+
+<pre><code class="language-python">node1 = tf.constant(3.0, dtype=tf.float32)
+node2 = tf.constant(4.0) # also tf.float32 implicitly
+print(node1, node2)
+</code></pre>
+
+<pre><code>Tensor(&quot;Const:0&quot;, shape=(), dtype=float32)
+Tensor(&quot;Const_1:0&quot;, shape=(), dtype=float32)
+</code></pre>
+
+<p>To produce output values for <code>node1</code> and <code>nodes2</code>, evaluation is needed. To actually evaluate the nodes, we must run the computational graph within a <code>session</code>. A session encapsulates the control and state of the Tensorflow runtime.</p>
+
+<p>The following code creates a <code>Session</code> object and then invokes its <code>run</code> method to run enough of the computational graph to evaluate <code>node1</code> and <code>node2</code>. By running the computational graph in a session as follows:</p>
+
+<pre><code class="language-python">sess = tf.Session()
+print(sess.run([node1, node2]))
+</code></pre>
+
+<pre><code>[3.0, 4.0]
+</code></pre>
+
+<p>We can build more complicated computations by combining <code>Tensor</code> nodes with operations(Operations are also nodes). For example, we can add our two constant nodes and produce a new graph as follows:</p>
+
+<pre><code class="language-python">node3 = tf.add(node1, node2)
+print(&#39;node3:&#39;, node3)
+print(&#39;sess.run(node3):&#39;, sess.run(node3))
+</code></pre>
+
+<pre><code>node3: Tensor(&quot;Add:0&quot;, shape=(), dtype=float32)
+sess.run(node3): 7.0
+</code></pre>
+
+<p>TensorFlow provides a utility called <code>TensorBoard</code> that can display a picture of the computational graph. Here is a screenshot showing how <code>TensorBoard</code> visualizes the graph:<br/>
+<img src="media/15033740189206/getting_started_add.png" alt=""/></p>
+
+<p>As it stands, this graph is not especially interesting because it always produces a constant result. A graph can be parameterized to accept external inputs, known as <code>placeholders</code>. A <code>placeholder</code> is a promise to provide a value later.</p>
+
+<pre><code class="language-python">a = tf.placeholder(tf.float32)
+b = tf.placeholder(tf.float32)
+adder_node = a + b # + provides a shortcut for tf.add(a,b)
+</code></pre>
+
+<p>The preceding three lines are a bit like a function or a lambda in which we define two input parameters (a and b) and then an operation on them. We can evaluate this graph with multiple inputs by using the feed_dict argument to the <code>run method</code> to feed concrete values to the placeholder:</p>
+
+<pre><code class="language-python">print(sess.run(adder_node, {a:3, b:4.5}))
+print(sess.run(adder_node, {a:[1,3], b:[2,4]}))
+</code></pre>
+
+<pre><code>7.5
+[ 3.  7.]
+</code></pre>
+
+<p>In <code>TensorBoard</code>, the graph looks like this:</p>
+
+<p><img src="media/15033740189206/getting_started_adder.png" alt=""/></p>
+
+<p>We can make the computational graph more complex by adding another operation. For example,</p>
+
+<pre><code class="language-python">add_and_triple = adder_node * 3.
+print(sess.run(add_and_triple,{a:3, b:4.5}))
+</code></pre>
+
+<pre><code>22.5
+</code></pre>
+
+<p>The preceding computational graph would look as follows in <code>TensorBoard</code>:<br/>
+<img src="media/15033740189206/getting_started_triple.png" alt=""/></p>
+
+<p>In machine learning we will typically want a model that can take arbitrary inputs, such as the one above. To make the model trainable, we need to be able to modify the graph to get new outputs with the same input. <code>variables</code> allow us to add trainable parameters to a graph. They are constructed with a type and initial value:</p>
+
+<pre><code class="language-python">W = tf.Variable([.3], dtype=tf.float32)
+b = tf.Variable([-.3], dtype=tf.float32)
+x = tf.placeholder(tf.float32)
+linear_model = W*x +b 
+</code></pre>
+
+<p>Constants are initialized when you call <code>tf.constant</code>, and their value can never change. By contrast, variables are not initialized when you call <code>tf.Variable</code>. To initialize all the variables in a TensorFlow program, you must explicitly call a special operation as follows:</p>
+
+<pre><code class="language-python">init = tf.global_variables_initializer()
+sess.run(init)
+</code></pre>
+
+<p>It is important to realize <code>init</code> is a handle to the TensorFlow sub-graph that initializes all the global variables. Until we call <code>sess.run</code>, the variables are uninitialized.</p>
+
+<p>Since <code>x</code> is a placeholder, we can evaluate <code>linear_model</code> for several values of <code>x</code> simultaneously as follows:</p>
+
+<pre><code class="language-python">print(sess.run(linear_model,{x:[1,2,3,4]}))
+</code></pre>
+
+<pre><code>[ 0.          0.30000001  0.60000002  0.90000004]
+</code></pre>
+
+<p>We&#39;ve create a model, but we don&#39;t know how good it is yet. To evaluate the model on training data, we need a <code>y</code> placeholder to provide the desired values, and we need to write a loss function.</p>
+
+<p>A <code>loss function</code> measures how far apart the current model is from the provided data. We&#39;ll use a standard loss model for linear regression, which sums the squares of the deltas between the current model and the provided data. <code>linear_model -y</code> creates a vector where each element is the corresponding example&#39;s error delta. We call <code>tf.square</code> to square that error. Then, we sum all the squared errors to create a single scalar that abstacts the error of all examples using <code>tf.reduce_sum</code>:</p>
+
+<pre><code class="language-python">y = tf.placeholder(tf.float32)
+squared_deltas = tf.square(linear_model - y)
+loss = tf.reduce_sum(squared_deltas)
+print(sess.run(loss, {x:[1,2,3,4], y:[0,-1,-2,-3]}))
+</code></pre>
+
+<pre><code>23.66
+</code></pre>
+
+<p>We could improve this manually by reassigning the values of <code>W</code> and <code>b</code> to the perfect values of -1 and 1. A variable is initialized to the value provided to <code>tf.Variable</code> but can be changed using operations like <code>tf.assign</code>. FOr example, <code>W=-1</code> and <code>b=1</code> are the optimal parameters for our model. We can change <code>W</code> and <code>b</code> accordingly:</p>
+
+<pre><code class="language-python">fixW = tf.assign(W, [-1.])
+fixb = tf.assign(b, [1.])
+sess.run([fixW, fixb])
+print(sess.run(loss, {x:[1,2,3,4], y:[0,-1,-2,-3]}))
+</code></pre>
+
+<pre><code>0.0
+</code></pre>
+
+<p>We guessed the &quot;perfect&quot; values of <code>W</code> and <code>b</code>, but the whole point of machine learning is to find the correct model parameters automatically. We will show how to accomplish this in the next section.</p>
+
+<h2 id="toc_3">tf.train API</h2>
+
+<p>A complete discussion of machine learning is out of the scope of this tutorial. However, TensorFlow provides <code>optimizers</code> that slowly change each variable in order to minimize the loss function. The simplest optimizer is <code>gradient descent</code>. It modifies each variable according to the magnitude of the derivative of loss with respect to that variable. In general, computing symbolic derivatives manually is tedious and error-prone. Consequently, <code>TensorFlow</code> can automatically produce derivatives given only a description of the model using the function <code>tf.gradients</code>. For simplicity, <code>optimizers</code> typically do this for you. For example,</p>
+
+<pre><code class="language-python">optimizer = tf.train.GradientDescentOptimizer(0.01)
+train = optimizer.minimize(loss)
+
+sess.run(init) # reset values to incorrect defaults
+for i in range(1000):
+    sess.run(train, {x:[1,2,3,4], y:[0,-1,-2,-3]})
+print(sess.run([W,b]))
+</code></pre>
+
+<pre><code>[array([-0.9999969], dtype=float32), array([ 0.99999082], dtype=float32)]
+</code></pre>
+
+<p>Now we have done actual machine learning! Although doing this simple linear regression doesn&#39;t require much TensorFlow core code, more complicated models and methods to feed data into your model necessitate more code. Thus TensorFlow provides higher level abstractions for common patterns, structures, and functionality. We will learn how to use some of these abstractions in the next section.</p>
+
+<h3 id="toc_4">Complete program</h3>
+
+<pre><code class="language-python">import tensorflow as tf
+
+# Model parameters
+W = tf.Variable([.3], dtype=tf.float32)
+b = tf.Variable([-.3], dtype=tf.float32)
+# Model input and output
+x = tf.placeholder(tf.float32)
+linear_model = W * x + b
+y = tf.placeholder(tf.float32)
+
+# loss
+loss = tf.reduce_sum(tf.square(linear_model - y)) # sum of the squares
+# optimizer
+optimizer = tf.train.GradientDescentOptimizer(0.01)
+train = optimizer.minimize(loss)
+
+# training data
+x_train = [1, 2, 3, 4]
+y_train = [0, -1, -2, -3]
+# training loop
+init = tf.global_variables_initializer()
+sess = tf.Session()
+sess.run(init) # reset values to wrong
+for i in range(1000):
+  sess.run(train, {x: x_train, y: y_train})
+
+# evaluate training accuracy
+curr_W, curr_b, curr_loss = sess.run([W, b, loss], {x: x_train, y: y_train})
+print(&quot;W: %s b: %s loss: %s&quot;%(curr_W, curr_b, curr_loss))
+</code></pre>
+
+<pre><code>W: [-0.9999969] b: [ 0.99999082] loss: 5.69997e-11
+</code></pre>
+
+<p>This more complicated program can still be visualized in TensorBoard:</p>
+
+<p><img src="media/15033740189206/getting_started_final.png" alt=""/></p>
+
+<h2 id="toc_5">tf.estimator</h2>
+
+<p><code>tf.estimator</code> is a high-level TensorFlow library that simplifies the mechanics of machine learning, including the following:</p>
+
+<ul>
+<li>running training loops</li>
+<li>running evaluation loops</li>
+<li>managing data sets</li>
+<li><code>tf.estimator</code> defines many common models.</li>
+</ul>
+
+<h3 id="toc_6">Basic usage</h3>
+
+<p>Notice how much simpler the linear regression program becomes with <code>tf.estimator</code>:</p>
+
+<pre><code class="language-python"># NumPy is often used to load, manipulate and preprocess data.
+import numpy as np
+
+# Declare list of features. We only have one numeric feature. There are many
+# other types of columns that are more complicated and useful.
+feature_columns = [tf.feature_column.numeric_column(&quot;x&quot;, shape=[1])]
+
+# An estimator is the front end to invoke training (fitting) and evaluation
+# (inference). There are many predefined types like linear regression,
+# linear classification, and many neural network classifiers and regressors.
+# The following code provides an estimator that does linear regression.
+estimator = tf.estimator.LinearRegressor(feature_columns=feature_columns)
+
+# TensorFlow provides many helper methods to read and set up data sets.
+# Here we use two data sets: one for training and one for evaluation
+# We have to tell the function how many batches
+# of data (num_epochs) we want and how big each batch should be.
+x_train = np.array([1., 2., 3., 4.])
+y_train = np.array([0., -1., -2., -3.])
+x_eval = np.array([2., 5., 8., 1.])
+y_eval = np.array([-1.01, -4.1, -7, 0.])
+input_fn = tf.estimator.inputs.numpy_input_fn(
+    {&quot;x&quot;: x_train}, y_train, batch_size=4, num_epochs=None, shuffle=True)
+train_input_fn = tf.estimator.inputs.numpy_input_fn(
+    {&quot;x&quot;: x_train}, y_train, batch_size=4, num_epochs=1000, shuffle=False)
+eval_input_fn = tf.estimator.inputs.numpy_input_fn(
+    {&quot;x&quot;: x_eval}, y_eval, batch_size=4, num_epochs=1000, shuffle=False)
+
+# We can invoke 1000 training steps by invoking the  method and passing the
+# training data set.
+estimator.train(input_fn=input_fn, steps=1000)
+
+# Here we evaluate how well our model did.
+train_metrics = estimator.evaluate(input_fn=train_input_fn)
+eval_metrics = estimator.evaluate(input_fn=eval_input_fn)
+print(&quot;train metrics: %r&quot;% train_metrics)
+print(&quot;eval metrics: %r&quot;% eval_metrics)
+</code></pre>
+
+<pre><code>INFO:tensorflow:Using default config.
+WARNING:tensorflow:Using temporary folder as model directory: /var/folders/66/y1hc77j572v71r0gm2r39rfr0000gn/T/tmp2rnith_a
+INFO:tensorflow:Using config: {&#39;_model_dir&#39;: &#39;/var/folders/66/y1hc77j572v71r0gm2r39rfr0000gn/T/tmp2rnith_a&#39;, &#39;_tf_random_seed&#39;: 1, &#39;_save_summary_steps&#39;: 100, &#39;_save_checkpoints_secs&#39;: 600, &#39;_save_checkpoints_steps&#39;: None, &#39;_session_config&#39;: None, &#39;_keep_checkpoint_max&#39;: 5, &#39;_keep_checkpoint_every_n_hours&#39;: 10000, &#39;_log_step_count_steps&#39;: 100}
+INFO:tensorflow:Create CheckpointSaverHook.
+INFO:tensorflow:Saving checkpoints for 1 into /var/folders/66/y1hc77j572v71r0gm2r39rfr0000gn/T/tmp2rnith_a/model.ckpt.
+INFO:tensorflow:loss = 19.0, step = 1
+INFO:tensorflow:global_step/sec: 592.325
+INFO:tensorflow:loss = 0.192443, step = 101 (0.171 sec)
+INFO:tensorflow:global_step/sec: 710.314
+INFO:tensorflow:loss = 0.0370785, step = 201 (0.141 sec)
+INFO:tensorflow:global_step/sec: 669.791
+INFO:tensorflow:loss = 0.0173565, step = 301 (0.150 sec)
+INFO:tensorflow:global_step/sec: 729.609
+INFO:tensorflow:loss = 0.00361388, step = 401 (0.136 sec)
+INFO:tensorflow:global_step/sec: 814
+INFO:tensorflow:loss = 0.000215951, step = 501 (0.123 sec)
+INFO:tensorflow:global_step/sec: 793.172
+INFO:tensorflow:loss = 0.0001734, step = 601 (0.127 sec)
+INFO:tensorflow:global_step/sec: 776.415
+INFO:tensorflow:loss = 3.66416e-05, step = 701 (0.128 sec)
+INFO:tensorflow:global_step/sec: 845.781
+INFO:tensorflow:loss = 3.03422e-06, step = 801 (0.118 sec)
+INFO:tensorflow:global_step/sec: 849.689
+INFO:tensorflow:loss = 1.18453e-06, step = 901 (0.118 sec)
+INFO:tensorflow:Saving checkpoints for 1000 into /var/folders/66/y1hc77j572v71r0gm2r39rfr0000gn/T/tmp2rnith_a/model.ckpt.
+INFO:tensorflow:Loss for final step: 3.72255e-07.
+INFO:tensorflow:Starting evaluation at 2017-08-21-05:57:38
+INFO:tensorflow:Restoring parameters from /var/folders/66/y1hc77j572v71r0gm2r39rfr0000gn/T/tmp2rnith_a/model.ckpt-1000
+INFO:tensorflow:Finished evaluation at 2017-08-21-05:57:40
+INFO:tensorflow:Saving dict for global step 1000: average_loss = 6.05797e-08, global_step = 1000, loss = 2.42319e-07
+INFO:tensorflow:Starting evaluation at 2017-08-21-05:57:40
+INFO:tensorflow:Restoring parameters from /var/folders/66/y1hc77j572v71r0gm2r39rfr0000gn/T/tmp2rnith_a/model.ckpt-1000
+INFO:tensorflow:Finished evaluation at 2017-08-21-05:57:42
+INFO:tensorflow:Saving dict for global step 1000: average_loss = 0.00254753, global_step = 1000, loss = 0.0101901
+train metrics: {&#39;average_loss&#39;: 6.057968e-08, &#39;loss&#39;: 2.4231872e-07, &#39;global_step&#39;: 1000}
+eval metrics: {&#39;average_loss&#39;: 0.0025475256, &#39;loss&#39;: 0.010190102, &#39;global_step&#39;: 1000}
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/8/20</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Tensorflow.html'>Tensorflow</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
 			<div class="article">
                 <a class="clearlink" href="what_is_a_tensorflow_session.html">
                 
@@ -653,170 +993,6 @@ while True:
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="python_and_mysql.html">
-                
-                  <h1>Python and MySQL</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>There are a lot of python driver available for MySQL and two stand out the most. The one, traditionally everybody’s choice, sort of industrial standard <code>MySQLdb</code>. It uses a C module to link to MySQL’s client library.  For Python3, use <code>PyMySQL</code> instead, because <code>MySQLdb</code> don&#39;t support Python3. Oracle’s <code>mysql-connector</code> on the other hand is pure python so no MySQL libraries and no compilation is necessary.</p>
-
-<h2 id="toc_0">MySQL Connector/Python</h2>
-
-<p>To use Python with MySQL, you can use the MySQL Connector/Python (<a href="https://dev.mysql.com/downloads/connector/python/">Download Here</a>). For those with anaconda, just install with <code>conda</code>:</p>
-
-<pre><code>conda install -c anaconda mysql-connector-python 
-</code></pre>
-
-<p>MySQL Connector/Python includes support for:</p>
-
-<ul>
-<li>Almost all features provided by MySQL Server.</li>
-<li>Converting parameter values back and forth between Python and MySQL data types.</li>
-<li>All MySQL extensions to standard SQL syntax.</li>
-</ul>
-
-<pre><code class="language-python">import re
-import mysql.connector
-
-# establishes the connection to MySQL.
-cnx = mysql.connector.connect(user=&#39;root&#39;, password=&#39;8032804254qq&#39;,
-                              host=&#39;127.0.0.1&#39;, database=&#39;rookery&#39;, port=&#39;3306&#39;)
-
-# creates a cursor object (cur) to use for executing queries on the database.
-
-
-cur = cnx.cursor(buffered=True)
-
-# query mysql database for list of user accounts
-sql_stmnt = &quot;SELECT DISTINCT User, Host FROM mysql.db &quot;
-sql_stmnt += &quot;WHERE Db IN(&#39;rookery&#39;,&#39;birdwatchers&#39;) &quot;
-sql_stmnt += &quot;ORDER BY User, Host&quot;
-cur.execute(sql_stmnt)
-
-# loop through list of user accounts
-for user_accounts in cur.fetchall():
-    user_name = user_accounts[0]
-    host_address = user_accounts[1]
-    user_account = user_name.decode(&#39;utf-8&#39;) + &quot;@&quot; + host_address.decode(&#39;utf-8&#39;)
-
-# display user account heading
-print(&#39;User Account:&#39;, (user_name, host_address))
-print(&quot;------------------------------------------&quot;)
-
-# query mysql for grants for user account
-sql_stmnt = &quot;show grants for &quot; + user_account
-cur.execute(sql_stmnt)
-
-# loop through grant entries for user account
-for grants in cur.fetchall():
-    # skip &#39;usage&#39; entry
-    if re.search(&#39;USAGE&#39;, grants[0]):
-        continue
-    # extract name of database and table
-    dbtb = re.search(&#39;ON\s(.*)\.+?(.+?)\sTO&#39;, grants[0])
-    db = dbtb.group(1)
-    tb = dbtb.group(2)
-
-    # change wildcard for tables to &#39;all&#39;
-    if re.search(&#39;\*&#39;, tb): tb = &quot;all&quot;
-
-    # display database and table name for privileges
-    print(&quot;database: &quot;, db, &quot;table: &quot;, tb)
-
-    # extract and display privileges for user account # for database and table
-    privs = re.search(&#39;GRANT\s(.+?)\sON&#39;, grants[0])
-    print(&#39;privileges: &#39;, privs.group(1))
-
-cur.close()
-cnx.close()
-</code></pre>
-
-<h2 id="toc_1">PyMySQL</h2>
-
-<p><a href="https://github.com/PyMySQL/PyMySQL">PyMySQL</a> is to be a drop-in replacement for <code>MySQLdb</code> and work on <code>CPython</code>, <code>PyPy</code> and <code>IronPython</code>.</p>
-
-<h3 id="toc_2">Installation</h3>
-
-<pre><code class="language-bash">$ pip install PyMySQL
-</code></pre>
-
-<h3 id="toc_3">Example</h3>
-
-<pre><code class="language-python">import pymysql
-
-# connect to the datacase
-connection = pymysql.connect(host=&#39;localhost&#39;, user=&#39;root&#39;, password=&#39;8032804254qq&#39;, db=&#39;test&#39;)
-
-with connection.cursor() as cursor:
-    &quot;&quot;&quot;
-    Create Table | CREATE TABLE `books` (
-    `book_id` int(3) NOT NULL AUTO_INCREMENT,
-    `title` text DEFAULT NULL,
-    `status` bit(1) DEFAULT b&#39;0&#39;,
-    PRIMARY KEY (`book_id`)
-    ) ENGINE=MyISAM AUTO_INCREMENT=103 DEFAULT CHARSET=utf8
-    &quot;&quot;&quot;
-    # create a new record
-    sql = &quot;INSERT INTO `books` (`title`, `status`) VALUES (%s, %s)&quot;
-    cursor.execute(sql, (&#39;GRE Reading&#39;, 1))
-    
-    # connection is not autocommit by default. So you must commit to save your changes.
-    connection.commit()
-
-with connection.cursor() as cursor:
-    sql = &quot;select `book_id`, `title`, `status` from `books`&quot;
-    cursor.execute(sql)
-    # read records
-    for book in cursor.fetchall():
-        book = list(book)
-        book[2] = ord(book[2])
-        print(book)
-</code></pre>
-
-<h2 id="toc_4">Difference? which is better?</h2>
-
-<p><code>MySQLdb</code> is a thin python wrapper around C module which implements API for MySQL database.</p>
-
-<p><code>MySQL Connector</code>is a Python module that reimplements the <a href="https://www.python.org/dev/peps/pep-0249/"><code>MySQL Database API</code></a> in Python. It is written in Python and does not have any dependencies except for the Python Standard Library. It is slower, but does not require the C library and so is more portable.</p>
-
-<h3 id="toc_5">Query Performance</h3>
-
-<p>Obviously, <code>MySQLdb</code> has better performance, especially when it comes to large data sets.</p>
-
-<p><img src="media/15026944183320/Untitled.png" alt="Untitled"/></p>
-
-<h2 id="toc_6">Reference</h2>
-
-<p>1.<a href="https://stackoverflow.com/questions/32575857/the-differences-between-mysqldb-and-mysqlconnector">The differences between MySQLdb and mysqlconnector</a><br/>
-2.<a href="http://charlesnagy.info/it/python/python-mysqldb-vs-mysql-connector-query-performance">Python MySQLdb vs mysql-connector query performance</a><br/>
-3. <a href="https://wiki.openstack.org/wiki/PyMySQL_evaluation">PyMySQL evaluation</a></p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/8/14</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E5%BA%93.html'>数据库</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -918,6 +1094,12 @@ with connection.cursor() as cursor:
 	      
 		      
 			      <li class="post">
+			        <a href="Linking.html">链接</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="python_assembly_code.html">Python源代码对应的汇编代码</a>
 			      </li>
 		     
@@ -937,12 +1119,6 @@ with connection.cursor() as cursor:
 		      
 			      <li class="post">
 			        <a href="15146536465849.html">x86-64汇编</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="tmux_tool_linux.html">tmux</a>
 			      </li>
 		     
 		  

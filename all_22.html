@@ -143,6 +143,125 @@ var _hmt = _hmt || [];
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="14973149842140.html">
+                
+                  <h1>搜索</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>搜索是在一个项目集合中找到一个特定项目的算法过程。返回值一般是<code>bool</code>:<code>True</code> or <code>False</code>. 搜索的几种常见方法：顺序查找、二分法查找、二叉树查找、哈希查找</p>
+
+<h2 id="toc_0">在python中查找</h2>
+
+<p>在python中，查找一个元素是否在列表中非常简单，可以用<code>in</code>操作符</p>
+
+<pre><code class="language-python">&gt;&gt;&gt; 15 in [3,5,2,4,1]
+False
+&gt;&gt;&gt; 3 in [3,5,2,4,1]
+True
+&gt;&gt;&gt;
+</code></pre>
+
+<h2 id="toc_1">顺序查找</h2>
+
+<p>顺序查找从列表中的第一个项目开始，我们按照顺序次序，简单地从一个项移动到另一个项，直到找到我们正在查找的项或遍历完整个列表。如果我们遍历完整个列表，则说明正在搜索的项不存在。</p>
+
+<p><img src="media/14973149842140/14973392316280.png" alt=""/></p>
+
+<pre><code class="language-python">def sequential_search(alist, item):
+    &quot;&quot;&quot;
+    顺序查找
+    &quot;&quot;&quot;
+
+    for i in range(len(alist)):
+        if alist[i] == item:
+            return True
+
+    return False
+</code></pre>
+
+<h2 id="toc_2">二分查找</h2>
+
+<p>二分查找过程类似于查字典。首先，假设表中元素是按升序排列，将表中间位置记录的关键字与查找关键字比较，如果两者相等，则查找成功；否则利用中间位置记录将表分成前、后两个子表，如果中间位置记录的关键字大于查找关键字，则进一步查找前一子表，否则进一步查找后一子表。重复以上过程，直到找到满足条件的记录，使查找成功，或直到子表不存在为止，此时查找不成功。</p>
+
+<ul>
+<li>优点是比较次数少，查找速度快，平均性能好</li>
+<li>缺点是要求待查表为有序表，且插入删除困难</li>
+<li>因此，折半查找方法适用于不经常变动而查找频繁的有序列表。</li>
+</ul>
+
+<p><img src="media/14973149842140/14973392434825.png" alt=""/></p>
+
+<pre><code class="language-python">
+def binary_search(alist, item):
+    &quot;&quot;&quot;
+    二分查找, 递归
+    &quot;&quot;&quot;
+
+    n = len(alist)
+    if n &gt;0:
+        mid = n//2
+
+        if alist[mid] == item:
+            return True
+        elif alist[mid] &gt; item:
+            return binary_search(alist[:mid], item)
+        else:
+            return binary_search(alist[mid+1:], item)
+    return False
+
+def binary_search2(alist, item):
+    &quot;&quot;&quot;
+    二分查找，非递归
+    &quot;&quot;&quot;
+    n = len(alist)
+    first = 0
+    last = n-1
+    while first &lt;= last:
+        mid = (first+last)//2
+        if alist[mid] == item:
+            return True
+        elif alist[mid] &gt; item:
+            last = mid-1
+        else:
+            first = mid+1
+
+    return False
+
+</code></pre>
+
+<h2 id="toc_3">时间复杂度</h2>
+
+<ul>
+<li>最优时间复杂度: \(O(1)\)</li>
+<li>最坏时间复杂度: \(O(\log n)\)</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/6/13</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html'>Python数据结构与算法</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="linear_regression_with_multiple_variables.html">
                 
                   <h1>Machine Learning (2): Linear Regression with Multiple Variables</h1>
@@ -639,192 +758,6 @@ print(obj1.aaa,obj2.aaa,AAA.aaa)  # result: 12 14 14
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="14969804243106.html">
-                
-                  <h1>栈与队列</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h2 id="toc_0">栈</h2>
-
-<p>栈(<code>stack</code>)，是一种容器，可存入数据元素、访问元素、删除元素，它的特点是只能在容器的一端加入数据（<code>push</code>）和输出数据(<code>pop</code>)的运算。没有了位置概念，保证任何时候可以访问，删除的元素都是此前最后存入的那个元素，确定了一种默认的访问顺序。</p>
-
-<p>栈数据结构只允许在一端进行操作，按照后进先出(<code>LIFO, Last In First Out</code>)的原理运作。</p>
-
-<p>栈可以用顺序表实现，也可以用链表实现。</p>
-
-<p><img src="media/14969804243106/Screen%20Shot%202017-06-10%20at%203.14.14%20PM.png" alt="Screen Shot 2017-06-10 at 3.14.14 P"/></p>
-
-<h3 id="toc_1">栈的操作</h3>
-
-<ul>
-<li><code>Stack()</code> 创建一个新的空栈</li>
-<li><code>push(item)</code> 添加一个新的元素item到栈顶</li>
-<li><code>pop()</code> 弹出栈顶元素</li>
-<li><code>peek()</code> 返回栈顶元素</li>
-<li><code>is_empty()</code> 判断栈是否为空</li>
-<li><code>size()</code> 返回栈的元素个数</li>
-</ul>
-
-<pre><code class="language-python">class Stack(object):
-    &quot;&quot;&quot;
-    创建一个新的空栈
-    &quot;&quot;&quot;
-    def __init__(self):
-        self.__list = []
-
-    def push(self, item):
-        &quot;&quot;&quot;
-        添加一个新的元素item到栈顶
-        &quot;&quot;&quot;
-        self.__list.append(item)
-
-    def pop(self):
-        &quot;&quot;&quot;
-        弹出栈顶元素
-        &quot;&quot;&quot;
-        return self.__list.pop()
-
-    def peek(self):
-        &quot;&quot;&quot;
-        返回栈顶元素
-        &quot;&quot;&quot;
-        if self.is_empty():
-            return None
-        else:
-            return self.__list[-1]
-
-    def is_empty(self):
-        &quot;&quot;&quot;
-        判断栈是否为空
-        &quot;&quot;&quot;
-        return not self.__list  ## 空链表、空字典等是假
-
-    def size(self):
-        &quot;&quot;&quot;
-        返回栈的元素个数
-        &quot;&quot;&quot;
-        return self.__list.__len__()
-</code></pre>
-
-<h2 id="toc_2">队列</h2>
-
-<p>队列(<code>queue</code>,美音/kju/)只是允许在一端进行插入操作，而在另一段进行删除操作的线性表。队列是一种先进先出（<code>First In First Out, FIFO</code>）的线性表。允许插入的一端为队尾，允许删除的一端为队头。队列不允许在中间部位进行操作。</p>
-
-<p><img src="media/14969804243106/Screen%20Shot%202017-06-10%20at%203.21.23%20PM.png" alt="Screen Shot 2017-06-10 at 3.21.23 P"/></p>
-
-<h3 id="toc_3">队列的操作</h3>
-
-<ul>
-<li><code>Queue()</code> 创建一个空的队列</li>
-<li><code>enqueue(item)</code> 往队列中添加一个item元素</li>
-<li><code>dequeue()</code> 从队列头部删除一个元素</li>
-<li><code>is_empty()</code> 判断一个队列是否为空</li>
-<li><code>size()</code> 返回队列的大小</li>
-</ul>
-
-<pre><code class="language-python">class Queue(object):
-    &quot;&quot;&quot;队列&quot;&quot;&quot;
-    def __init__(self):
-        self.__list = []
-
-    def enqueue(self, item):
-        &quot;&quot;&quot;往队列中添加一个item元素&quot;&quot;&quot;
-        self.__list.append(item)
-
-    def dequeue(self):
-        &quot;&quot;&quot;从队列头部删除一个元素&quot;&quot;&quot;
-        return self.__list.pop(0)
-
-    def is_empty(self):
-        &quot;&quot;&quot;判断一个队列是否为空&quot;&quot;&quot;
-        return not self.__list
-
-    def size(self):
-        &quot;&quot;&quot;返回队列的大小&quot;&quot;&quot;
-        return len(self.__list)
-</code></pre>
-
-<h2 id="toc_4">双端队列</h2>
-
-<p>双端队列(deque，全名double-ended queue, (pronounced “deck”))，是一种具有队列和栈的性质的数据结构。</p>
-
-<p>双端队列中的元素可以从两端弹出，其限定插入和删除操作在表的两端进行。双端队列可以在队列任意一端入队和出队。</p>
-
-<p><img src="media/14969804243106/14970822950255.png" alt=""/></p>
-
-<h3 id="toc_5">双端队列的操作</h3>
-
-<ul>
-<li><code>Deque()</code> 创建一个空的双端队列</li>
-<li><code>add_front(item)</code> 从队头加入一个item元素</li>
-<li><code>add_rear(item)</code> 从队尾加入一个item元素</li>
-<li><code>remove_front()</code> 从队头删除一个item元素</li>
-<li><code>remove_rear()</code> 从队尾删除一个item元素</li>
-<li><code>is_empty()</code> 判断双端队列是否为空</li>
-<li><code>size()</code> 返回队列的大小</li>
-</ul>
-
-<pre><code class="language-python">class Deque():
-    &quot;&quot;&quot;
-    创建一个空的双端队列
-    &quot;&quot;&quot;
-    def __init__(self):
-        self.__list = []
-
-    def add_front(self, item):
-        &quot;&quot;&quot;从队头加入一个item元素&quot;&quot;&quot;
-        self.__list.insert(0, item)
-
-    def add_rear(self, item):
-        &quot;&quot;&quot;从队尾加入一个item元素&quot;&quot;&quot;
-        self.__list.append(item)
-    
-    def remove_front(self):
-        &quot;&quot;&quot;从队头删除一个item元素&quot;&quot;&quot;
-        return self.__list.pop(0)
-
-    def remove_rear(self):
-        &quot;&quot;&quot;从队尾删除一个item元素&quot;&quot;&quot;
-        return self.__list.pop()
-    
-    def is_empty(self):
-        &quot;&quot;&quot;判断双端队列是否为空&quot;&quot;&quot;
-        return not self.__list
-
-    def size(self):
-        &quot;&quot;&quot;返回队列的大小&quot;&quot;&quot;
-        return self.__list.__len__()
-    ```
-
-
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/6/9</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html'>Python数据结构与算法</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -926,6 +859,12 @@ print(obj1.aaa,obj2.aaa,AAA.aaa)  # result: 12 14 14
 	      
 		      
 			      <li class="post">
+			        <a href="Linking.html">链接</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="python_assembly_code.html">Python源代码对应的汇编代码</a>
 			      </li>
 		     
@@ -945,12 +884,6 @@ print(obj1.aaa,obj2.aaa,AAA.aaa)  # result: 12 14 14
 		      
 			      <li class="post">
 			        <a href="15146536465849.html">x86-64汇编</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="tmux_tool_linux.html">tmux</a>
 			      </li>
 		     
 		  
