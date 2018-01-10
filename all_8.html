@@ -96,6 +96,8 @@ var _hmt = _hmt || [];
         
             <li><a href="Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html">Python数据结构与算法</a></li>
         
+            <li><a href="Course.html">Course</a></li>
+        
             <li><a href="Python%E7%89%B9%E6%80%A7.html">Python特性</a></li>
         
             <li><a href="%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html">机器学习</a></li>
@@ -142,6 +144,81 @@ var _hmt = _hmt || [];
 	<div class="large-8 medium-8 columns">
 		<div class="markdown-body home-categories">
 		
+			<div class="article">
+                <a class="clearlink" href="batch_normalization.html">
+                
+                  <h1>Batch Normalization</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>The idea is relatively straightforward. Machine learning methods tend to work better when their input data consists of uncorrelated features with <strong>zero mean</strong> and <strong>unit variance</strong>. When training a neural network, we can preprocess the data before feeding it to the network to explicitly decorrelate its features; this will ensure that the first layer of the network sees data that follows a nice distribution. However even if we preprocess the input data, the activations at deeper layers of the network will likely no longer be decorrelated and will no longer have zero mean or unit variance since they are output from earlier layers in the network. Even worse, during the training process the distribution of features at each layer of the network will shift as the weights of each layer are updated.</p>
+
+<h2 id="toc_0">Covariate Shift</h2>
+
+<p>While stochastic gradient is simple and effective, it requires careful tuning of the model hyper-parameters, specifically the learning rate used in optimization, as well as the initial values for the model parameters. The train- ing is complicated by the fact that the inputs to each layer are affected by the parameters of all preceding layers – so that small changes to the network parameters amplify as the network becomes deeper.</p>
+
+<p>The change in the distribution of layers&#39; inputs presents a problem because the layers need to continuously adapt to the new distribution. When the input distribution to a learning system changes, it is said to experience <code>covariate shift</code>. This is typically handled via domain adaption.</p>
+
+<p><code>Internal Covariate Shift</code> refers to the change in the distribution of internal nodes of a deep network due to change in network parameters, in the course of training. <code>Batch Normalization</code>, that takes a step towards reducing internal covariance shift, and in doing so dramatically accelerates the training of deep neural nets. It accomplishes this via a normalization step that fixes the means and variances of layer inputs. It also has a beneficial effect on the dependence of gradients on the scale of the parameters or of their initial values. This allows us to use much higher learning rates without the risk of divergence. </p>
+
+<h2 id="toc_1">Algorithm</h2>
+
+<h3 id="toc_2">Forward</h3>
+
+<p>Given some input values \(\mathcal{B} = x^{(1)},...,x^{(m)}\) over a mini-batch in the layer \(l\) of neural network; </p>
+
+<p>\[\mu_{\mathcal{B}} = \frac{1}{m}\sum_i^m x_i  \text{     (mini-batch mean)}\\<br/>
+\sigma^2=\frac{1}{m}\sum_i(x_i-\mu_{\mathcal{B}})^2  \text{     (mini-batch variance)}\\<br/>
+\hat{x}_i=\frac{x_i-\mu_{\mathcal{B}}}{\sqrt{\sigma_{\mathcal{\mathcal{B}}}^2+\varepsilon}} \text{     (normalize)}\\<br/>
+y_i=\gamma \hat{x}_i+\beta \text{     (scale and shift)}<br/>
+\]</p>
+
+<p>At each iteration, we update the running averages for mean and variance using an exponential decay based on the momentum parameter:<br/>
+<code><br/>
+running_mean = momentum * running_mean + (1 - momentum) * sample_mean<br/>
+running_var = momentum * running_var + (1 - momentum) * sample_var<br/>
+</code></p>
+
+<h2 id="toc_3">Backward</h2>
+
+<p><img src="media/15048405877529/Screen%20Shot%202017-09-08%20at%203.11.45%20PM.png" alt="batch-normalization-backward"/></p>
+
+<h3 id="toc_4">Test time</h3>
+
+<p>Using trained <code>runing_mean</code> and <code>running_var</code> to take forward step.</p>
+
+<h2 id="toc_5">TensorFlow</h2>
+
+<p>Applying <code>Batch Normalization</code> in TensorFlow Model is very convenient. Just add one line of code in TensorFlow: <code>tf.nn.batch-normalization</code>.</p>
+
+<h2 id="toc_6">Reference</h2>
+
+<p>Sergey Ioffe, Christian Szegedy. 2015. Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift. arXiv:<a href="https://arxiv.org/abs/1502.03167v3">1501.02167v3</a></p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/9/8</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Deep%20Learning.html'>Deep Learning</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
 			<div class="article">
                 <a class="clearlink" href="15046658203135.html">
                 
@@ -376,230 +453,6 @@ print(w1 is w1_p, w2 is w2_p)
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="support-vector-machine.html">
-                
-                  <h1>Machine Learning(7): Support Vector Machines</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h2 id="toc_0">Training Objective</h2>
-
-<p>The smaller the weight vector <code>w</code>, the larger the margin. So we want to minimize \(\lVert w\rVert\) to get a large margin.</p>
-
-<h3 id="toc_1">Hard Margin</h3>
-
-<p>If we also want to avoid any margin violation (<code>hard margin</code>), then we need the decision function to be greater than 1 for all positive trainig instances, and lower than  -1 for negative training instances. If we define \(t^{(i)} = -1\) for negative instances (if \(y^{(i)}&gt;0\)) and \(t^{(i)}=1\) for positive instances (if \(y^{(i)}=1\)), then we can express this constraint as \(t^{(i)}(w^T\cdot x^{(i)}+b) \le 1\) for all instances. </p>
-
-<ol>
-<li>
-<strong>Hard Margin linear SVM classifier objective</strong></li>
-</ol>
-
-<p>\[<br/>
-\min_{w,b} \frac{1}{2}w^T\cdot w \\<br/>
-\text{subject to } t^{(i)}(w^T\cdot x^{(i)}+b) \le 1  \quad for \quad i =1,2,...,m<br/>
-\]</p>
-
-<h3 id="toc_2">Soft Margin</h3>
-
-<p>To get the soft margin objective, we need to introduce a <code>slack variable</code> \(\zeta^(i)\le0\) for each instance: \(\zeta^{(i)}\) measures how much the \(i^{th}\) instance is allowed to violate the margin. We now have two conflicting objectives: making the slack variables as small as possible to reduce the margin violations, and makeing \(\frac{1}{2}w^T\cdot w \) as small as possible to increase the margin.</p>
-
-<p><strong>Soft Margin linear SVM classifier objective</strong></p>
-
-<p>\[<br/>
-\min_{w,b} \frac{1}{2}w^T\cdot w + C\sum^m_{i=1}\zeta^{(i)}\\<br/>
-\text{subject to } t^{(i)}(w^T\cdot x^{(i)}+b) \le 1 - \zeta^{(i)} \quad for \quad i =1,2,...,m<br/>
-\]</p>
-
-<h2 id="toc_3">Implementation</h2>
-
-<pre><code class="language-python">import numpy as np
-from sklearn import datasets
-from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import StandardScaler
-from sklearn.svm import LinearSVC
-from sklearn.svm import SVC
-import matplotlib.pyplot as plt
-</code></pre>
-
-<h2 id="toc_4">Soft Margin Classification</h2>
-
-<pre><code class="language-python">
-# load data sets
-iris = datasets.load_iris()
-x = iris[&#39;data&#39;][:,(2,3)] # petal length, petal width
-y = (iris[&#39;target&#39;] == 2).astype(np.float64) # Iris-Virginica
-</code></pre>
-
-<pre><code class="language-python">%matplotlib inline
-plt.scatter(x[:,0], x[:,1], c=y)
-</code></pre>
-
-<pre><code>&lt;matplotlib.collections.PathCollection at 0x110ecf0f0&gt;
-</code></pre>
-
-<p><img src="media/15036619229303/output_4_1.png" alt="png"/></p>
-
-<pre><code class="language-python"># plot decision boundary
-def make_meshgrid(x, y, h=.02):
-    &quot;&quot;&quot;Create a mesh of points to plot in
-
-    Parameters
-    ----------
-    x: data to base x-axis meshgrid on
-    y: data to base y-axis meshgrid on
-    h: stepsize for meshgrid, optional
-
-    Returns
-    -------
-    xx, yy : ndarray
-    &quot;&quot;&quot;
-    x_min, x_max = x.min() - 1, x.max() + 1
-    y_min, y_max = y.min() - 1, y.max() + 1
-    xx, yy = np.meshgrid(np.arange(x_min, x_max, h),
-                         np.arange(y_min, y_max, h))
-    return xx, yy
-
-def plot_contours(model, xx, yy, **params):
-    &quot;&quot;&quot;Plot the decision boundaries for a classifier.
-
-    Parameters
-    ----------
-    ax: matplotlib axes object
-    clf: a classifier
-    xx: meshgrid ndarray
-    yy: meshgrid ndarray
-    params: dictionary of params to pass to contourf, optional
-    &quot;&quot;&quot;
-    Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
-    Z = Z.reshape(xx.shape)
-    out = plt.contourf(xx, yy, Z, **params)
-    return out
-</code></pre>
-
-<pre><code class="language-python"># svm
-svm_clf = Pipeline([
-    (&#39;scalar&#39;, StandardScaler()),
-    (&#39;linear_svc&#39;, LinearSVC(C=1, loss=&#39;hinge&#39;))])
-svm_clf.fit(x, y)
-</code></pre>
-
-<pre><code>Pipeline(steps=[(&#39;scalar&#39;, StandardScaler(copy=True, with_mean=True, with_std=True)), (&#39;linear_svc&#39;, LinearSVC(C=1, class_weight=None, dual=True, fit_intercept=True,
-     intercept_scaling=1, loss=&#39;hinge&#39;, max_iter=1000, multi_class=&#39;ovr&#39;,
-     penalty=&#39;l2&#39;, random_state=None, tol=0.0001, verbose=0))])
-</code></pre>
-
-<pre><code class="language-python">plot_contours(svm_clf, xx, yy,
-              cmap=plt.cm.coolwarm, alpha=0.8)
-plt.hold
-plt.scatter(x[:,0], x[:,1], c=y)
-</code></pre>
-
-<pre><code>&lt;matplotlib.collections.PathCollection at 0x111e5c128&gt;
-</code></pre>
-
-<p><img src="media/15036619229303/output_7_1.png" alt="png"/></p>
-
-<h2 id="toc_5">Nonelinear SVM Classification</h2>
-
-<p>One approach to handling nonlinear datasets is to add more features, such as polynomial features. In some cases result in a linearly separable dataset.</p>
-
-<pre><code class="language-python">from sklearn.preprocessing import PolynomialFeatures
-
-polynomial_svm_clf = Pipeline([
-    (&#39;poly_features&#39;, PolynomialFeatures(degree=3)),
-    (&#39;scaler&#39;, StandardScaler()),
-    (&#39;svm, clf&#39;, LinearSVC(C=10, loss=&#39;hinge&#39;))
-])
-
-polynomial_svm_clf.fit(x, y)
-</code></pre>
-
-<pre><code>Pipeline(steps=[(&#39;poly_features&#39;, PolynomialFeatures(degree=3, include_bias=True, interaction_only=False)), (&#39;scaler&#39;, StandardScaler(copy=True, with_mean=True, with_std=True)), (&#39;svm, clf&#39;, LinearSVC(C=10, class_weight=None, dual=True, fit_intercept=True,
-     intercept_scaling=1, loss=&#39;hinge&#39;, max_iter=1000, multi_class=&#39;ovr&#39;,
-     penalty=&#39;l2&#39;, random_state=None, tol=0.0001, verbose=0))])
-</code></pre>
-
-<pre><code class="language-python">xx, yy = make_meshgrid(x[:,0], x[:,1])
-plot_contours(polynomial_svm_clf, xx, yy,
-              cmap=plt.cm.coolwarm, alpha=0.8)
-plt.hold
-plt.scatter(x[:,0], x[:,1], c=y)
-</code></pre>
-
-<pre><code>&lt;matplotlib.collections.PathCollection at 0x112f0a470&gt;
-</code></pre>
-
-<p><img src="media/15036619229303/output_10_1.png" alt="png"/></p>
-
-<h2 id="toc_6">Gaussian RBF Kernal</h2>
-
-<p>Define the similarity function to be the Gaussian Radial Basis Function (RBF):</p>
-
-<p>\[\phi(x, \gamma) = exp(-\gamma \lVert x-l\rVert ^2)\]</p>
-
-<p>Let&#39;s try the Gaussian RBF kernel using the <code>SVC</code> class:</p>
-
-<pre><code class="language-python">rbf_kernel_svm_clf = Pipeline([
-    (&#39;svm_clf&#39;, SVC(kernel=&#39;rbf&#39;, gamma=0.1, C=0.1))
-])
-rbf_kernel_svm_clf.fit(x,y)
-</code></pre>
-
-<pre><code>Pipeline(steps=[(&#39;svm_clf&#39;, SVC(C=0.1, cache_size=200, class_weight=None, coef0=0.0,
-  decision_function_shape=None, degree=3, gamma=0.1, kernel=&#39;rbf&#39;,
-  max_iter=-1, probability=False, random_state=None, shrinking=True,
-  tol=0.001, verbose=False))])
-</code></pre>
-
-<pre><code class="language-python">plot_contours(rbf_kernel_svm_clf, xx, yy,
-              cmap=plt.cm.coolwarm, alpha=0.8)
-plt.hold
-plt.scatter(x[:,0], x[:,1], c=y)
-</code></pre>
-
-<pre><code>&lt;matplotlib.collections.PathCollection at 0x114174518&gt;
-</code></pre>
-
-<p><img src="media/15036619229303/output_13_1.png" alt="png"/></p>
-
-<p>Other kernals such as <code>sigmoid</code>, <code>precomputed</code> are also used. With so many kernels to choose from, as a rule of thumb, you should always try the linear kernel first, especailly if the training set is very large or if it has plenty of features. If the training set is not too large, you should try the Gaussian RBF kernel as well; it works well in most cases.</p>
-
-<h2 id="toc_7">Complexity</h2>
-
-<p>Time complexity of algorithms above:</p>
-
-<ul>
-<li><code>LinearSVC</code>: \(O(m\times n)\)</li>
-<li><code>SGDClassifier</code>: \(O(m\times n)\)</li>
-<li><code>SVC</code>: \(O(m^2\times n) \text{ to } O(m^3\times n)\)</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/9/2</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html'>机器学习</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -660,6 +513,8 @@ plt.scatter(x[:,0], x[:,1], c=y)
         
             <a href="Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html"><strong>Python数据结构与算法</strong></a>
         
+            <a href="Course.html"><strong>Course</strong></a>
+        
             <a href="Python%E7%89%B9%E6%80%A7.html"><strong>Python特性</strong></a>
         
             <a href="%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html"><strong>机器学习</strong></a>
@@ -701,19 +556,19 @@ plt.scatter(x[:,0], x[:,1], c=y)
 	      
 		      
 			      <li class="post">
-			        <a href="Linking.html">链接</a>
+			        <a href="blocking_signal.html">阻塞信号和进程回收</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="python_assembly_code.html">Python源代码对应的汇编代码</a>
+			        <a href="Linking.html">从源代码到加载可执行目标文件</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="15148364443259.html">目标文件</a>
+			        <a href="python_assembly_code.html">Python汇编代码</a>
 			      </li>
 		     
 		  
@@ -725,7 +580,7 @@ plt.scatter(x[:,0], x[:,1], c=y)
 		  
 		      
 			      <li class="post">
-			        <a href="15146536465849.html">x86-64汇编</a>
+			        <a href="15147500497525.html">Objdump 反汇编</a>
 			      </li>
 		     
 		  

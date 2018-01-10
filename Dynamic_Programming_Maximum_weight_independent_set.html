@@ -96,6 +96,8 @@ var _hmt = _hmt || [];
         
             <li><a href="Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html">Python数据结构与算法</a></li>
         
+            <li><a href="Course.html">Course</a></li>
+        
             <li><a href="Python%E7%89%B9%E6%80%A7.html">Python特性</a></li>
         
             <li><a href="%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html">机器学习</a></li>
@@ -164,14 +166,25 @@ var _hmt = _hmt || [];
 
       <div class="article-content">
       <p><strong>Input</strong>: A path graph \(G=(V,E)\) with nonnegative weights on vertices.<br/>
-<strong>Output</strong>: an <code>independent set</code> of maximum total weight.</p>
+<strong>Output</strong>: an <code>independent set</code>(独立集) of maximum total weight.</p>
 
 <p><strong>Background</strong>:<br/>
 A <code>path graph</code> is a tree with two nodes of vertex degree 1, and the other \(n-2\) nodes of vertex degree 2. A path graph is therefore a graph that can be drawn so that all of its vertices and edges lie on a single straight line.</p>
 
 <p>A <code>Independent set</code> is a set of vertices in a graph, no two of which are adjacent.</p>
 
-<h2 id="toc_0">Proposed algorithm</h2>
+<p><img src="media/15022903354046/15154354379203.jpg" alt=""/></p>
+
+<h2 id="toc_0">Basis</h2>
+
+<p>An optimal solution can have one of two properties:</p>
+
+<ul>
+<li>Either the last element in the path is not part of the maximum weighted independent set (in which case we know that the solution is equally valid for the subgraph V’ formed by popping the last vertex off the path)</li>
+<li>Or the last element is part of the set (in which case we know that the predecessor cannot be part of the set, and the solution minus the last vertex is equally valid for the subgraph V’&#39; formed by popping off the last two vertices of the path)</li>
+</ul>
+
+<h2 id="toc_1">Proposed algorithm</h2>
 
 <p>A dynamic programming approach can solve the problem in linear time:</p>
 
@@ -181,7 +194,7 @@ A <code>path graph</code> is a tree with two nodes of vertex degree 1, and the o
 <li>Return \(S_1\) or \(S_2 \cup{v_n}\), whichever is better.</li>
 </ul>
 
-<h3 id="toc_1">Implementation</h3>
+<h3 id="toc_2">Implementation</h3>
 
 <pre><code class="language-python">def maximum_weight_independent_set(weights):
     &quot;&quot;&quot;
@@ -197,10 +210,10 @@ A <code>path graph</code> is a tree with two nodes of vertex degree 1, and the o
     for i in range(2, num + 1):
         a[i] = max(a[i - 1], a[i - 2] + weights[i - 1])
 
-    while i &gt;= 1:
-        if a[i - 1] &gt;= a[i - 2] + weights[i - 1]:
+    while i &gt;= 1: # start i: # last element
+        if a[i - 1] &gt;= a[i - 2] + weights[i - 1]: # last vertex not in set
             i -= 1
-        else:
+        else: # last vertex is in set
             in_set.append(i - 1)
             i -= 2
     in_set.reverse()
@@ -307,6 +320,8 @@ s.setAttribute('data-timestamp', +new Date());
         
             <a href="Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html"><strong>Python数据结构与算法</strong></a>
         
+            <a href="Course.html"><strong>Course</strong></a>
+        
             <a href="Python%E7%89%B9%E6%80%A7.html"><strong>Python特性</strong></a>
         
             <a href="%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html"><strong>机器学习</strong></a>
@@ -348,19 +363,19 @@ s.setAttribute('data-timestamp', +new Date());
 	      
 		      
 			      <li class="post">
-			        <a href="Linking.html">链接</a>
+			        <a href="blocking_signal.html">阻塞信号和进程回收</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="python_assembly_code.html">Python源代码对应的汇编代码</a>
+			        <a href="Linking.html">从源代码到加载可执行目标文件</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="15148364443259.html">目标文件</a>
+			        <a href="python_assembly_code.html">Python汇编代码</a>
 			      </li>
 		     
 		  
@@ -372,7 +387,7 @@ s.setAttribute('data-timestamp', +new Date());
 		  
 		      
 			      <li class="post">
-			        <a href="15146536465849.html">x86-64汇编</a>
+			        <a href="15147500497525.html">Objdump 反汇编</a>
 			      </li>
 		     
 		  

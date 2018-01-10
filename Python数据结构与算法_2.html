@@ -96,6 +96,8 @@ var _hmt = _hmt || [];
         
             <li><a href="Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html">Python数据结构与算法</a></li>
         
+            <li><a href="Course.html">Course</a></li>
+        
             <li><a href="Python%E7%89%B9%E6%80%A7.html">Python特性</a></li>
         
             <li><a href="%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html">机器学习</a></li>
@@ -142,6 +144,244 @@ var _hmt = _hmt || [];
 	<div class="large-8 medium-8 columns">
 		<div class="markdown-body home-categories">
 		
+			<div class="article">
+                <a class="clearlink" href="disjoint_set_data_structure.html">
+                
+                  <h1>Disjoint-Set Data Structure</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<ul>
+<li>
+<a href="#toc_0">Linked-List Implementation</a>
+</li>
+<li>
+<a href="#toc_1">Forest Implementation of Disjoint-Set</a>
+</li>
+<li>
+<a href="#toc_2">Reference</a>
+</li>
+</ul>
+
+
+<p>In order to keep track of the connected components of a minimum spanning tree when implementing <code>Kruskal&#39;s algorithm</code>, a disjoint-set data structure should be used.</p>
+
+<p><code>Disjoint-set</code> data structure, also called <code>union-find</code> data structure, is a data structure that keeps track of a set of elements partitioned into a number of disjoint subsets.</p>
+
+<p>A <code>disjoint-set</code> data structure supports following operations:</p>
+
+<ul>
+<li><code>MAKE-SET(x)</code> creates a new set whose only member is \(x\)</li>
+<li><code>UNION(x,y)</code> unites the dynamic sets that contains \(x\) and \(y\), into a new set that is the union of these two sets.</li>
+<li><code>FIND-SET(x)</code> returns the representative of the set containing \(x\).</li>
+</ul>
+
+<h2 id="toc_0">Linked-List Implementation</h2>
+
+<p>Each set is represented by its own <strong>linked list</strong>. The object for each set has attributes <em>head</em>, pointing to the first object in the list, and <em>tail</em>, pointing to the last object. Each object in the linked list contains a set member, a pointer to the next object in the list, and a pointer back to the set object.</p>
+
+<p><img src="media/15017471539381/Screen%20Shot%202017-08-03%20at%209.21.43%20PM.png" alt="Linked List implementaion"/></p>
+
+<p><strong>Weighted-Union Heuristic</strong>: And each linked list also includes the length of the list and we always append the shorter list onto the longer.</p>
+
+<p>Using the linked-list representation of disjoint sets and the weighted-union heuristic, a sequence of \(m\) MAKE-SET, UNION, and FIND-SET, \(n\) of which are MAKE-SET operations, takes \(O(m+n\lg n)\) time.</p>
+
+<pre><code class="language-python">class Node:
+    &quot;&quot;&quot;
+    class Node for double liked list
+    &quot;&quot;&quot;
+    def __init__(self, elem):
+        self.prev = None
+        self.elem = elem
+        self.next = None
+
+    def __hash__(self):
+        return hash(self.elem)
+
+    def __eq__(self, x, y):
+        return x.elem == y.elem
+
+
+class LinkedList:
+
+    def __init__(self):
+        self.head = None
+        self.tail = None
+        self.length = 0
+
+    def add(self, node):
+        &quot;&quot;&quot;
+        add element to disjoint set
+        &quot;&quot;&quot;
+        if self.head:
+            node.prev = self
+            self.tail.next = node
+            self.tail = node
+        else:
+            self.head = node
+            self.tail = node
+            node.prev = self
+        self.length += 1
+
+    def __len__(self):
+        return self.length
+
+    def set_length(self, l):
+        self.length = l
+
+    def __iter__(self):
+        next_node = self.head
+        while next_node:
+            yield next_node
+            next_node = next_node.next
+
+
+            
+
+class DisjointSet:
+
+    def __init__(self):
+        self.sets = []
+
+    def make_set(self, node):
+        &quot;&quot;&quot; 
+        creates a new set whose only member (and thus representative) is x.
+        &quot;&quot;&quot;
+        alist = LinkedList()
+        alist.add(node)
+        self.sets.append(alist)
+        return alist
+
+    def union(self, nodex, nodey):
+        &quot;&quot;&quot;
+        unites the dynamic sets that contain x and y, into a new set that is the union of these two sets.
+        &quot;&quot;&quot;
+        listx = self.find_set(nodex)
+        listy = self.find_set(nodey)
+        
+        # append the shorter list onto the longer.
+        if len(listx) &gt; len(listy):
+            listx.tail.next = listy.head
+            for y in listy:
+                y.prev = listx
+            listx.tail = listy.tail
+            listx.set_length = len(listx) + len(listy)
+            self.sets.remove(listy)
+        else:
+            listy.tail.next = listx.head
+            for x in listx:
+                x.prev = listy
+            listy.tail = listx.tail
+            listy.setlength = len(listx) + len(listy)
+            self.sets.remove(listx)
+
+
+
+    def find_set(self, node):
+        &quot;&quot;&quot;
+        returns the representative of the set containing x
+        &quot;&quot;&quot;
+        return node.prev
+
+    def connected_components(self):
+        for link_list in self.sets:
+            print(&#39;( &#39;, end=&#39;&#39;)
+            for node in link_list:
+                print(node.elem, end=&#39; &#39;)
+            print(&#39;) &#39;, end=&#39;&#39;)
+
+    def __len__(self):
+        return len(self.sets)
+
+</code></pre>
+
+<h2 id="toc_1">Forest Implementation of Disjoint-Set</h2>
+
+<p><code>Disjoint-set forest</code>, a faster implementation of disjoint sets, uses rooted trees represent sets, with each node containing one member and each tree representing one set. In a <code>disjoint-set forest</code>, each member points only to its parents. The root of each tree contains the representative and is its own parent.</p>
+
+<p><img src="media/15017471539381/15017663990040.png" alt="disjoint set forest"/></p>
+
+<p><strong>Union by Rank</strong>: For each node, we maintain a <code>rank</code>, which is an upper bound on the hight of the node. We make the root with smaller rank point to the root with larger rank during a <code>Union</code> operation.</p>
+
+<p><strong>Path Compression</strong>: When we call <code>find_set</code>, we traverse the path from a node up to its root. Instead of just returning root, we will link all the nodes in this path directly to root. </p>
+
+<p><img src="media/15017471539381/15017663772888.png" alt="path compression"/></p>
+
+<pre><code class="language-python">class DisjointSet:
+    &quot;&quot;&quot;
+    Disjoint set data structure
+    &quot;&quot;&quot;
+
+    def __init__(self):
+        self.sets = []
+        self.parent = {}
+        self.rank = {}
+
+    def make_set(self, node):
+        &quot;&quot;&quot;
+        creates a new set whose only member (and thus representative) is x.
+        &quot;&quot;&quot;
+        self.parent[node] = node
+        self.sets.append(node)
+        self.rank[node] = 0
+
+    def union(self, x, y):
+        &quot;&quot;&quot;
+        unites the dynamic sets that contain x and y, into a new set that is the union of these two sets.
+        &quot;&quot;&quot;
+        x_root = self.find_set(x)
+        y_root = self.find_set(y)
+        if x_root == y_root:
+            return
+
+        if self.rank[x_root] &gt; self.rank[y_root]:
+            self.parent[y_root] = x_root
+        else:
+            self.parent[x_root] = y_root
+            if self.rank[x_root] == self.rank[y_root]:
+                self.rank[y_root] = self.rank[y_root] + 1
+
+    def find_set(self, x):
+        &quot;&quot;&quot;
+        returns the representative of the set containing x
+        &quot;&quot;&quot;
+        if self.parent[x] != x:
+            self.parent[x] = self.find_set(self.parent[x])
+        return self.parent[x]
+
+</code></pre>
+
+<h2 id="toc_2">Reference</h2>
+
+<ol>
+<li>Cormen, Leiserson, Rivest, and Stein. 2009. Introduction to Algorithms (3rd edition)</li>
+<li><a href="https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-046j-design-and-analysis-of-algorithms-spring-2012/lecture-notes/MIT6_046JS12_lec16.pdf">Disjoint-set Data Structure MIT</a></li>
+</ol>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/8/3</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html'>Python数据结构与算法</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
 			<div class="article">
                 <a class="clearlink" href="greedy_algorithm_a_scheduling_problem.html">
                 
@@ -712,293 +952,6 @@ if __name__ == &quot;__main__&quot;:
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="heap_median_maintenance.html">
-                
-                  <h1>Heap (2): Median Maintenance</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p><strong>Problem Statement</strong>: The goal of the problem is to implement the <code>Median Maintenance</code> algorithm. The text file contains a list of the integers; you should treat this as a stream of numbers, arriving one by one. Letting \(x_i\) denote the \(i\)th number of the file, the \(k\)th median \(m_k\) is defined as the median of the numbers \(x_1,…,x_k\). (So, if \(k\) is odd, then \(m_k\) is \(((k+1)/2)\)th smallest number among \(x_1,…,x_k\); if \(k\) is even, then \(m_k\) is the \((k/2)\)th smallest number among \(x_1,…,x_k\).)</p>
-
-<h1 id="toc_0">Solution</h1>
-
-<p>We might use a max heap to represent elements that are less than the median, and a min heap to represent elements that are greater than the median.</p>
-
-<p>After balancing the heaps, the number of elements in two heaps differs at most by 1. </p>
-
-<pre><code class="language-python">Step 1: Add next item to one of the heaps
-
-   if next item &lt; maxHeap root:
-        add it to maxHeap
-   else:
-        add it to minHeap
-
-Step 2: Balance the heaps (after this step heaps will be either balanced or
-   one of them will contain 1 more item)
-
-   if number of elements in one of the heaps &gt; the other by
-   more than 1:
-        remove the root element from the one containing more elements 
-        and add to the other one
-
-Step 3: Calculate the median:
-
-   if the heaps contain equal amount of elements:
-        median = root of maxHeap
-   else:
-        median = root of the heap with more elements
-</code></pre>
-
-<h2 id="toc_1">Implementation</h2>
-
-<pre><code class="language-python">import doctest
-import sys
-
-class MinHeap(object):
-    &quot;&quot;&quot;
-    Min Heap
-    &gt;&gt;&gt; bh = MinHeap()
-    &gt;&gt;&gt; bh.buildHeap([9,5,14,18,-17,27,33,19,11,21])
-    &gt;&gt;&gt; bh.findMin()
-    -17
-    &gt;&gt;&gt; bh.delMin()
-    -17
-    &gt;&gt;&gt; bh.list[1:]
-    [5, 9, 14, 11, 21, 27, 33, 19, 18]
-    &gt;&gt;&gt; bh.insert(-100)
-    &gt;&gt;&gt; bh.delMin()
-    -100
-    &quot;&quot;&quot;
-
-    def __init__(self):
-        &quot;&quot;&quot;
-        add self.list 0 with initialization in order to divide
-        &quot;&quot;&quot;
-        self.list = [-sys.maxsize]
-        self.size = 0
-
-
-    def insert(self, k):
-        &quot;&quot;&quot;
-        Insert element to the MinBinaryHeap
-        &quot;&quot;&quot;
-        self.list.append(k)
-        self.size += 1
-        self.perc_up(self.size)
-
-
-    def findMin(self):
-        &quot;&quot;&quot;
-        Find the min element and return it
-        &quot;&quot;&quot;
-        return self.list[1]
-
-
-    def delMin(self):
-        &quot;&quot;&quot;
-        Delete the min element
-        and return it
-        &quot;&quot;&quot;
-        retrival = self.list[1]
-        self.size -= 1
-        self.list[1] = self.list[-1]
-        self.list.pop()
-        self.perc_down(1)
-
-        return retrival
-
-
-    def isEmpty(self):
-        &quot;&quot;&quot;
-        Return if the MinBinaryHeap is empty
-        &quot;&quot;&quot;
-        return self.size == 0
-
-    def __len__(self):
-        &quot;&quot;&quot;
-        Magic Method: return the length of MinBinaryHeap
-        &quot;&quot;&quot;
-        return self.size
-
-
-    def buildHeap(self, alist):
-        &quot;&quot;&quot;
-        Build a MinBinaryHeap from alist which is a collection of data
-        &quot;&quot;&quot;
-        self.list.extend(alist)
-        self.size = len(alist)
-
-        i = self.size//2
-        while i &gt; 0:
-            self.perc_down(i)
-            i -= 1
-
-    def perc_up(self, i):
-        &quot;&quot;&quot;&quot;
-        perc_up i
-        &quot;&quot;&quot;
-        while i//2&gt;0:
-            if self.list[i] &lt; self.list[i // 2]:
-                self.list[i], self.list[i // 2] = self.list[i // 2], self.list[i]
-            i = i // 2
-
-    def perc_down(self, i):
-        &quot;&quot;&quot;
-        perc down i
-        &quot;&quot;&quot;
-        while (i * 2) &lt;= self.size:
-            mc = self.minChild(i)
-            if self.list[i] &gt; self.list[mc]:
-                self.list[i], self.list[mc] = self.list[mc], self.list[i]
-            i = mc
-
-    def minChild(self, i):
-        &quot;&quot;&quot;
-        find the min child
-        &quot;&quot;&quot;
-        if i * 2 + 1 &gt; self.size:
-            return i * 2
-        else:
-            if self.list[i * 2] &lt; self.list[i * 2 + 1]:
-                return i * 2
-            else:
-                return i * 2 + 1
-
-    def __iter__(self):
-        return iter(self.list[1:])
-
-
-class MaxHeap(object):
-    &quot;&quot;&quot;
-    Max Heap
-    &gt;&gt;&gt; bh = MaxHeap()
-    &gt;&gt;&gt; bh.buildHeap([9,5,14,18,-17,27,33,19,11,21])
-    &gt;&gt;&gt; bh.delMax()
-    33
-    &gt;&gt;&gt; bh.insert(100)
-    &gt;&gt;&gt; bh.delMax()
-    100
-    &gt;&gt;&gt; len(bh)
-    9
-    &quot;&quot;&quot;
-
-    def __init__(self):
-        self.heap = MinHeap()
-
-    def insert(self, k):
-        self.heap.insert(-k)
-
-    def delMax(self):
-        return -self.heap.delMin()
-
-    def buildHeap(self, alist):
-        for i in range(len(alist)):
-            alist[i] = -alist[i]
-        self.heap.buildHeap(alist)
-
-    def findMax(self):
-        return -self.heap.findMin()
-
-    def __len__(self):
-        return self.heap.size
-
-    def __iter__(self):
-        for i in range(1, self.heap.size+1):
-            yield -self.heap.list[i]
-
-
-def median_maintenance(textfile):
-
-    min_heap = MinHeap()  # &gt; medium
-    max_heap = MaxHeap()  # &lt; medium
-
-    medians = []
-    count = 0
-
-    with open(textfile) as infile:
-        for line in infile:
-            item = int(line)
-            count += 1
-
-            # Step 1: Add next item to one of the hepas
-            # special case: initialize
-            if count == 1:
-                max_heap.insert(item)
-            else:
-                if item &lt; max_heap.findMax():
-                    max_heap.insert(item)
-                else:
-                    min_heap.insert(item)
-
-            # Step2: Balance the heap
-            if abs(len(max_heap) - len(min_heap)) &gt; 1:
-                if len(max_heap) &gt; len(min_heap):
-                    min_heap.insert(max_heap.delMax())
-                else:
-                    max_heap.insert(min_heap.delMin())
-
-            # Step3: calculate median
-            if len(max_heap) == len(min_heap):
-                median = max_heap.findMax()
-            else:
-                if len(max_heap) &gt; len(min_heap):
-                    median = max_heap.findMax()
-                else:
-                    median = min_heap.findMin()
-
-            medians.append(median)
-
-            # test
-            #for element in max_heap:
-            #    print(element, end=&#39; &#39;)
-            #for element in min_heap:
-            #    print(element, end=&#39; &#39;)
-            #print(&#39;total elem:&#39;,len(max_heap)+len(min_heap))
-
-
-    return medians
-
-if __name__ == &#39;__main__&#39;:
-    # doctest.testmod(verbose=True)
-    #textfile = &#39;SmallTest.txt&#39;
-    textfile = &#39;Median.txt&#39;
-    medians = median_maintenance(textfile)
-    answer = sum(medians)%10000
-    print(answer)
-</code></pre>
-
-<h2 id="toc_2">Resources</h2>
-
-<ol>
-<li><a href="https://stackoverflow.com/questions/14189540/python-topn-max-heap-use-heapq-or-self-implement">max heap implementation</a></li>
-<li><a href="https://stackoverflow.com/questions/10657503/find-running-median-from-a-stream-of-integers">median maintenance</a></li>
-</ol>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/7/21</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html'>Python数据结构与算法</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1059,6 +1012,8 @@ if __name__ == &#39;__main__&#39;:
         
             <a href="Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html"><strong>Python数据结构与算法</strong></a>
         
+            <a href="Course.html"><strong>Course</strong></a>
+        
             <a href="Python%E7%89%B9%E6%80%A7.html"><strong>Python特性</strong></a>
         
             <a href="%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html"><strong>机器学习</strong></a>
@@ -1100,19 +1055,19 @@ if __name__ == &#39;__main__&#39;:
 	      
 		      
 			      <li class="post">
-			        <a href="Linking.html">链接</a>
+			        <a href="blocking_signal.html">阻塞信号和进程回收</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="python_assembly_code.html">Python源代码对应的汇编代码</a>
+			        <a href="Linking.html">从源代码到加载可执行目标文件</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="15148364443259.html">目标文件</a>
+			        <a href="python_assembly_code.html">Python汇编代码</a>
 			      </li>
 		     
 		  
@@ -1124,7 +1079,7 @@ if __name__ == &#39;__main__&#39;:
 		  
 		      
 			      <li class="post">
-			        <a href="15146536465849.html">x86-64汇编</a>
+			        <a href="15147500497525.html">Objdump 反汇编</a>
 			      </li>
 		     
 		  

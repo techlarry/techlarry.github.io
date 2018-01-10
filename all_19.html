@@ -96,6 +96,8 @@ var _hmt = _hmt || [];
         
             <li><a href="Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html">Python数据结构与算法</a></li>
         
+            <li><a href="Course.html">Course</a></li>
+        
             <li><a href="Python%E7%89%B9%E6%80%A7.html">Python特性</a></li>
         
             <li><a href="%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html">机器学习</a></li>
@@ -142,6 +144,180 @@ var _hmt = _hmt || [];
 	<div class="large-8 medium-8 columns">
 		<div class="markdown-body home-categories">
 		
+			<div class="article">
+                <a class="clearlink" href="testing.html">
+                
+                  <h1>Testing</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p><a href="https://en.wikipedia.org/wiki/Unit_testing">Unit testing</a> is a software testing method by which individual units of source code, sets of one or more computer program modules together with associated control data, usage procedures, and operating procedures, are tested to determine whether they are fit for use.</p>
+
+<h2 id="toc_0">Test-driven programming</h2>
+
+<p>&quot;<strong>Test first and code later</strong>&quot; practice, known as test-driven programming, instead of test after code.</p>
+
+<h3 id="toc_1">Requirement Specification</h3>
+
+<p>When developing a piece of software, you must first know what problem the software will solve—what objectives it will meet. You can clarify your goals for the program by writing a <strong>requirement specification</strong>, a document (or just some quick notes) describing requirements the program must satisfy. </p>
+
+<h3 id="toc_2">The 1-2-3-4 of Testing</h3>
+
+<p>Here’s a breakdown of the test-driven development process:</p>
+
+<ul>
+<li>Figure out the new feature you want. Possibly document it, and then write a test for it.</li>
+<li>Write some skeleton code for the feature, so that you program runs without any syntax errors. See your test fail.</li>
+<li>Write dummy code for skeleton code, just to appease the test.</li>
+<li>Rewrite the code so that it actually pass the test.</li>
+</ul>
+
+<h2 id="toc_3">Testing Tools</h2>
+
+<p>Two brilliant modules are available to automate the testing process:</p>
+
+<ul>
+<li><code>unittest</code>: A generic testing framework.</li>
+<li><code>doctest</code>: A simpler module, designed for checking documentation, but excellent for writing unit tests as well.</li>
+</ul>
+
+<h3 id="toc_4">doctest</h3>
+
+<p>The <code>testmod</code> function checks both the module docstring and function docstring.</p>
+
+<p>E.g.</p>
+
+<pre><code class="language-python">def square(x):
+    &quot;&quot;&quot;
+    squares a number and returns the result.
+    &gt;&gt;&gt; square(2)
+    4
+    &gt;&gt;&gt; square(3)
+    9
+    &quot;&quot;&quot;
+    return x*x
+
+if __name__ == &quot;__main__&quot;:
+    import doctest, doc_test_example
+    doctest.testmod(doc_test_example, verbose=True)
+</code></pre>
+
+<p>Run the example. To get some more output, just add <code>-v</code>(for verbose)</p>
+
+<pre><code class="language-bash">$ python doc_test_example.py -v
+Trying:
+    square(2)
+Expecting:
+    4
+ok
+Trying:
+    square(3)
+Expecting:
+    9
+ok
+1 items had no tests:
+    doc_test_example
+1 items passed all tests:
+   2 tests in doc_test_example.square
+2 tests in 2 items.
+2 passed and 0 failed.
+Test passed.
+</code></pre>
+
+<h3 id="toc_5">unittest</h3>
+
+<p><code>unittest</code> which is based on the popular test framework <code>JUnit</code>, is more flexible and powerful. It allows to write very large and thorough test sets in a more structured manner.</p>
+
+<p><strong>注意： 测试方法应该以test为前缀命名</strong></p>
+
+<p>E.g.</p>
+
+<pre><code class="language-python">import unittest
+import doc_test_example as my_math
+
+class ProductTestCase(unittest.TestCase):
+
+    def testIntegers(self):
+        for x in xrange(-10,10):
+            p = my_math.square(x)
+            self.failUnless(p == x*x, &#39;Integer multiplication failed&#39;)
+
+    def testFloats(self):
+        for x in xrange(-10,10):
+            x = x/10.0
+            p = my_math.square(x)
+            self.failUnless(p == x*x, &#39;Float multiplication failed&#39;)
+
+
+if __name__ == &quot;__main__&quot;:
+    unittest.main()
+</code></pre>
+
+<p>Another example to test <code>dijkstra&#39;s algorithm</code> see <a href="http://larryim.cc/dijkstra_algorithm.html">here</a></p>
+
+<p>Methods such as <code>failUnless</code> check a condition to determine whether the given test succeeds or fails. </p>
+
+<p>The <code>unittest</code> module distinguishes between <code>errors</code>, where an exception is raised, and <code>failures</code>, which result from calls to <code>failUnless</code> and the like. </p>
+
+<h2 id="toc_6">Source Code Checking</h2>
+
+<p><a href="https://www.pylint.org">Pylint</a> and PyChecker are good tools for checking Python source code, looking for mistakes.</p>
+
+<p><code>Pylint</code> is a tool that checks for errors in Python code, tries to enforce a coding standard and looks for code smells. It can also look for certain type errors, it can recommend suggestions about how particular blocks can be refactored and can offer you details about the code’s complexity.</p>
+
+<p><code>Pylint</code> can be integrated with <code>Pycharm</code>, see <a href="https://pylint.readthedocs.io/en/latest/user_guide/ide-integration.html#pylint-in-pycharm">detail</a>.</p>
+
+<h3 id="toc_7">Resources</h3>
+
+<ul>
+<li><a href="https://www.ibm.com/developerworks/cn/linux/l-cn-pylint/index.html">如何使用 Pylint 来规范 Python 代码风格</a></li>
+<li><a href="https://www.python.org/dev/peps/pep-0008/">Style Guide for Python Code</a></li>
+</ul>
+
+<h2 id="toc_8">Profile</h2>
+
+<p><strong>When in doubt, use brute force</strong></p>
+
+<p>The standard library includes nice profiler modules called <code>profile</code> and <code>cProfile</code>.  </p>
+
+<p>A <code>profile</code> is a set of statistics that describes how often and for how long various parts of the program executed. </p>
+
+<pre><code class="language-python">&gt;&gt;&gt; import profile
+&gt;&gt;&gt; from my_math import square
+&gt;&gt;&gt; profile.run(&#39;square(1, 2)&#39;)
+</code></pre>
+
+<p>Another way to use <code>profile</code> in command-line:</p>
+
+<pre><code class="language-bash">$ python -m profile prof1py
+</code></pre>
+
+<p>The standard library also contains a module called <code>timeit</code>, which is a simple way of timing small snippets of Python code.</p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/7/14</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
 			<div class="article">
                 <a class="clearlink" href="anaconda.html">
                 
@@ -1102,58 +1278,6 @@ Just like <code>LEFT JOIN</code></li>
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="14992350772045.html">
-                
-                  <h1>首先有一个概念：回溯</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>　　回溯法(探索与回溯法)是一种选优搜索法，按选优条件向前搜索，以达到目标。但当探索到某一步时，发现原先选择并不优或达不到目标，就退回一步重新选择，这种走不通就退回再走的技术为回溯法，而满足回溯条件的某个状态的点称为“回溯点”。</p>
-
-<p>深度优先算法：</p>
-
-<p>（1）访问初始顶点v并标记顶点v已访问。<br/>
-（2）查找顶点v的第一个邻接顶点w。<br/>
-（3）若顶点v的邻接顶点w存在，则继续执行；否则回溯到v，再找v的另外一个未访问过的邻接点。<br/>
-（4）若顶点w尚未被访问，则访问顶点w并标记顶点w为已访问。<br/>
-（5）继续查找顶点w的下一个邻接顶点wi，如果v取值wi转到步骤（3）。直到连通图中所有顶点全部访问过为止。</p>
-
-<p>广度优先算法：</p>
-
-<p>（1）顶点v入队列。<br/>
-（2）当队列非空时则继续执行，否则算法结束。<br/>
-（3）出队列取得队头顶点v；访问顶点v并标记顶点v已被访问。<br/>
-（4）查找顶点v的第一个邻接顶点col。<br/>
-（5）若v的邻接顶点col未被访问过的，则col入队列。<br/>
-（6）继续查找顶点v的另一个新的邻接顶点col，转到步骤（5）。直到顶点v的所有未被访问过的邻接点处理完。转到步骤（2）。</p>
-
-<p>代码：</p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/7/5</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html'>Python数据结构与算法</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1214,6 +1338,8 @@ Just like <code>LEFT JOIN</code></li>
         
             <a href="Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html"><strong>Python数据结构与算法</strong></a>
         
+            <a href="Course.html"><strong>Course</strong></a>
+        
             <a href="Python%E7%89%B9%E6%80%A7.html"><strong>Python特性</strong></a>
         
             <a href="%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html"><strong>机器学习</strong></a>
@@ -1255,19 +1381,19 @@ Just like <code>LEFT JOIN</code></li>
 	      
 		      
 			      <li class="post">
-			        <a href="Linking.html">链接</a>
+			        <a href="blocking_signal.html">阻塞信号和进程回收</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="python_assembly_code.html">Python源代码对应的汇编代码</a>
+			        <a href="Linking.html">从源代码到加载可执行目标文件</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="15148364443259.html">目标文件</a>
+			        <a href="python_assembly_code.html">Python汇编代码</a>
 			      </li>
 		     
 		  
@@ -1279,7 +1405,7 @@ Just like <code>LEFT JOIN</code></li>
 		  
 		      
 			      <li class="post">
-			        <a href="15146536465849.html">x86-64汇编</a>
+			        <a href="15147500497525.html">Objdump 反汇编</a>
 			      </li>
 		     
 		  

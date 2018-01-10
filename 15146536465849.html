@@ -96,6 +96,8 @@ var _hmt = _hmt || [];
         
             <li><a href="Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html">Python数据结构与算法</a></li>
         
+            <li><a href="Course.html">Course</a></li>
+        
             <li><a href="Python%E7%89%B9%E6%80%A7.html">Python特性</a></li>
         
             <li><a href="%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html">机器学习</a></li>
@@ -181,13 +183,13 @@ var _hmt = _hmt || [];
 
 <p>根据惯例，寄存器%rbx, %rbp和%r12~%r15被划分为<strong>被调用者保存寄存器</strong>。所有其他的寄存器，除了栈指针%rsp都分类为<strong>调用者保存寄存器</strong>。在函数被调用时，不能改变这些<strong>被</strong>调用者寄存器；如果要改变的话，只能把<strong>被</strong>调用者寄存器的值压入栈中，在使用后，从栈中恢复<strong>被</strong>调用者寄存器。</p>
 
-<h3 id="toc_2">rip 寄存器</h3>
+<h3 id="toc_2">rip 寄存器与PC相对寻址</h3>
 
 <p>%rip 的名称来自于(instruction pointer register,指令指针寄存器)。%rip其实就是程序计数器(Program Counter, PC), 存放着下一条指令的地址。不可以直接修改%rip。</p>
 
 <p>-&gt; <code>instruction pointer = program counter = %rip</code></p>
 
-<p>%rip的其他很重要的一个用法就是rip相对寻址(rip relative addressing)。即<code>%rip + displacement</code>的用法。</p>
+<p>%rip的其他很重要的一个用法就是RIP/PC相对寻址(RIP/PC relative addressing)。即<code>%rip + displacement</code>的用法。</p>
 
 <p>例如，</p>
 
@@ -195,6 +197,8 @@ var _hmt = _hmt || [];
 </code></pre>
 
 <p>表示传输%rip+0x202a62的地址对应的内存上的内容到%rdi。</p>
+
+<p>下面说说它是怎么进行PC相对寻址的。源文件经过预处理器、编译器、汇编器处理，输出<strong>可重定位目标文件</strong>，再经过<strong>符号解析</strong>(Symbol resolution)把代码中的每个符号引用和一个符号定义关联起来之后，要完成<strong>重定位</strong>(Relocation)任务，最终输出<strong>可执行目标文件</strong>。在<strong>重定位</strong>阶段，ELF(可重定位目标文件在LINUX系统上的一种格式)文件中的<code>R_X86_64_PC32</code>重定位类型重定位了一个使用32位PC相对地址的引用。当CPU执行一条使用PC相对寻址的指令时，它就将在指令中编码的32位值加上PC的当前运行时值，得到<strong>有效地址</strong>。</p>
 
 <h2 id="toc_3">指令</h2>
 
@@ -215,8 +219,8 @@ var _hmt = _hmt || [];
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="gdb_tool_gnu.html" 
-          title="Previous Post: gdb">&laquo; gdb</a>
+          <a href="15147500497525.html" 
+          title="Previous Post: Objdump 反汇编">&laquo; Objdump 反汇编</a>
       
         </p>
         </div>
@@ -306,6 +310,8 @@ s.setAttribute('data-timestamp', +new Date());
         
             <a href="Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html"><strong>Python数据结构与算法</strong></a>
         
+            <a href="Course.html"><strong>Course</strong></a>
+        
             <a href="Python%E7%89%B9%E6%80%A7.html"><strong>Python特性</strong></a>
         
             <a href="%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html"><strong>机器学习</strong></a>
@@ -347,19 +353,19 @@ s.setAttribute('data-timestamp', +new Date());
 	      
 		      
 			      <li class="post">
-			        <a href="Linking.html">链接</a>
+			        <a href="blocking_signal.html">阻塞信号和进程回收</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="python_assembly_code.html">Python源代码对应的汇编代码</a>
+			        <a href="Linking.html">从源代码到加载可执行目标文件</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="15148364443259.html">目标文件</a>
+			        <a href="python_assembly_code.html">Python汇编代码</a>
 			      </li>
 		     
 		  
@@ -371,7 +377,7 @@ s.setAttribute('data-timestamp', +new Date());
 		  
 		      
 			      <li class="post">
-			        <a href="15146536465849.html">x86-64汇编</a>
+			        <a href="15147500497525.html">Objdump 反汇编</a>
 			      </li>
 		     
 		  
