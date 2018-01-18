@@ -293,6 +293,29 @@ argv[3] = c
 <pre><code>gdb --args  ./demo_get_opt a b c
 </code></pre>
 
+<h3 id="toc_5">查看struct及指针</h3>
+
+<p>假设有结构体队列<code>queue</code>的指针数组<code>q</code>，指针<code>qi</code>指向<code>q</code>。</p>
+
+<pre><code class="language-C">/* define a queue */
+typedef struct {
+    int size;
+    int full_size;
+    node *head;
+    node *tail;
+} queue;
+
+queue *q, *qi; 
+q = (queue *) malloc(sizeof(queue) * S);
+qi = q;
+</code></pre>
+
+<p>可以通过<code>p *q</code>的 方式获得指针所指向结构体的值:</p>
+
+<pre><code class="language-gdb">(gdb) p *q
+$1 = {size = 0, full_size = 2, head = 0x0, tail = 0x0}
+</code></pre>
+
                         
                       </div>
                   </div>
@@ -578,13 +601,19 @@ free(heap_array); ## deleting the statement...
 	      
 		      
 			      <li class="post">
-			        <a href="blocking_signal.html">阻塞信号和进程回收</a>
+			        <a href="Sync.html">同步/异步</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="Linking.html">从源代码到加载可执行目标文件</a>
+			        <a href="Signal.html">信号</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="Linking.html">链接</a>
 			      </li>
 		     
 		  
@@ -597,12 +626,6 @@ free(heap_array); ## deleting the statement...
 		      
 			      <li class="post">
 			        <a href="gdb_tool_gnu.html">gdb</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15147500497525.html">Objdump 反汇编</a>
 			      </li>
 		     
 		  

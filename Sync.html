@@ -14,7 +14,7 @@ var _hmt = _hmt || [];
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  Python排序 - techlarry
+  同步/异步 - techlarry
   
   </title>
   
@@ -145,14 +145,12 @@ var _hmt = _hmt || [];
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>Python排序</h1>
+          <h1>同步/异步</h1>
      
         <div class="read-more clearfix">
-          <span class="date">2017/6/10</span>
+          <span class="date">2018/1/18</span>
 
-          <span>posted in&nbsp;</span> 
           
-              <span class="posted-in"><a href='Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html'>Python数据结构与算法</a></span>
            
          
           <span class="comments">
@@ -165,190 +163,40 @@ var _hmt = _hmt || [];
       </div><!-- article -->
 
       <div class="article-content">
-      <ul>
-<li>
-<a href="#toc_0">排序算法的稳定性及意义</a>
-</li>
-<li>
-<a href="#toc_1">冒泡排序</a>
-<ul>
-<li>
-<a href="#toc_2">复杂度与稳定性</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_3">选择排序</a>
-</li>
-<li>
-<a href="#toc_4">插入排序</a>
-</li>
-<li>
-<a href="#toc_5">希尔排序</a>
-</li>
-<li>
-<a href="#toc_6">快速排序</a>
-</li>
-<li>
-<a href="#toc_7">归并排序</a>
-<ul>
-<li>
-<a href="#toc_8">分治法</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_9">常见排序算法效率比较</a>
-</li>
-</ul>
+      <p>...... 待续</p>
 
+<p>。。。。。 待续</p>
 
-<h2 id="toc_0">排序算法的稳定性及意义</h2>
+<p>In computer science, synchronization refers to one of two distinct but related concepts: synchronization of processes, and synchronization of data. Process synchronization refers to the idea that multiple processes are to join up or handshake at a certain point, in order to reach an agreement or commit to a certain sequence of action. Data synchronization refers to the idea of keeping multiple copies of a dataset in coherence with one another, or to maintain data integrity. Process synchronization primitives are commonly used to implement data synchronization.</p>
 
-<p>在待排序的序列中，存在具有相同关键字的记录，在排序后这些记录的相对次序保持不变，则排序算法是稳定的。</p>
+<h2 id="toc_0">进程同步/异步</h2>
 
-<p>不稳定排序无法完成多个关键字的排序。例如整数排序，位数越高的数字优先级越高，从高位数到低位数一次排序。那么每一位的排序都需要稳定算法，否则无法得到正确的结果。</p>
+<h2 id="toc_1">同步通信和异步通信</h2>
 
-<p>即，<strong>当要对多个关键词多次排序时，必须使用稳定算法</strong></p>
-
-<h2 id="toc_1">冒泡排序</h2>
-
-<p><img src="media/14970829036232/Screen%20Shot%202017-06-11%20at%2010.23.12%20AM.png" alt="Screen Shot 2017-06-11 at 10.23.12 A"/></p>
-
-<pre><code class="language-python">def bubble_sort(alist):
-    &quot;&quot;&quot;
-    冒泡排序
-    &quot;&quot;&quot;
-    if len(alist) &lt;= 1:
-        return alist
-
-    for j in range(len(alist)-1,0,-1):
-        for i in range(j):
-            if alist[i] &gt; alist[i+1]:
-                alist[i], alist[i+1] = alist[i+1], alist[i]
-
-    return alist
-</code></pre>
-
-<h3 id="toc_2">复杂度与稳定性</h3>
+<p>同步和异步通信(synchronous and asynchronous communication)：</p>
 
 <ul>
-<li>最优时间复杂度：\(O(n)\) 遍历没有发现任何可以交换的元素，排序结束</li>
-<li>最坏时间复杂度：\(O(n^2)\)</li>
-<li>稳定性：稳定</li>
+<li>同步是指：发送方发出数据后，等接收方发回响应以后才发下一个数据包的通讯方式。<br/></li>
+<li>异步是指：发送方发出数据后，不等接收方发回响应，接着发送下个数据包的通讯方式。</li>
 </ul>
 
-<h2 id="toc_3">选择排序</h2>
+<p>可以通过打电话/发邮件的例子来理解，例子来自<a href="https://stackoverflow.com/questions/10102580/how-does-synchronous-and-asynchronous-communication-work-exactly">stackoverflow</a>。</p>
 
-<p>选择排序（Selection sort）是一种简单直观的排序算法。它的工作原理如下。首先在未排序序列中找到最小（大）元素，存放到排序序列的起始位置，然后，再从剩余未排序元素中继续寻找最小（大）元素，然后放到已排序序列的末尾。以此类推，直到所有元素均排序完毕。</p>
+<p><strong>同步通信</strong>: 当我通过打电话叫你时，我拨打你的电话，然后<strong>等待</strong>你接听。然后在电话上你说了些内容，同时我在听。在你结束后，我给你发送了数据(也就是说话)，同时你接收了数据(听我说话)。在通信结束时，我们中的一个说<code>END OF TRANSMISSION</code>(就是再见)，另一个说<code>Acknoledged</code>(就是再见)，然后都挂断。</p>
 
-<h2 id="toc_4">插入排序</h2>
+<p><strong>异步通信</strong>：我写了一封信，拿到了邮局寄给你。在这期间，我<strong>没有等待</strong>，我做了很多其他的事情。然后你收到了邮件。在你阅读邮件的时候，我仍然再做其他的事情。然后你写给我了回信并寄给我。在这些事件中，都没有涉及到我。另一天，我得到了(同步)的信号(信件)来自系统(邮局)。系统(邮局)说，”这里有封信给你“。然后我停止我的工作，收你的邮件，阅读你的回信。然后我根据你的回信做了一些事情。但是这些事情你都不会注意到，因为你没有参与我对你异步回信所做的事情。</p>
 
-<p>插入排序通过构建有序序列，对于未排序数据，在已排序序列中从后向前扫描，找到相应位置并插入。插入排序在实现上，在从后向前扫描过程中，需要反复把已排序元素逐步向后挪位，为最新元素提供插入空间。</p>
+<p>在串行通信中，由于是一位一位地进行数据传送。为了把每个字节区别开来，需要收发双方在传送数据的串行信息流中，加入一些标记信号位。在数据中根据所添加的标记信号位的不同方式，分成同步通信和异步通信两种。 1.“异步通信”是一种很常用的通信方式（效率较低）异步通信在发送字符时，发送端可以在任意时刻开始发送字符，因此必须在每一个字符的开始和结束的地方加上标志，即加上开始位和停止位，以便使接收端能够正确地将每一个字符接收下来。所传送的数据以字节为单位。每个字节前加上一位起始位，每个字节的后面加上停止位。好处：异步通信的好处是通信设备简单、便宜，但传输效率较低。 2.“同步通信”的通信双方必须先建立同步，即双方的时钟要调整到同一个频率。收发双方不停地发送和接收连续的同步比特流。一种是使用全网同步，用一个非常精确的主时钟对全网所有结点上的时钟进行同步。一种是使用准同步，各结点的时钟之间允许有微小的误差，然后采用其他措施实现同步传输。同步通信是把所传送的数据以多个字节（100字节以上）为单位，在其前后添加标志。</p>
 
-<p><img src="media/14970829036232/Screen%20Shot%202017-06-12%20at%207.07.03%20PM.png" alt="Screen Shot 2017-06-12 at 7.07.03 P"/></p>
+<h2 id="toc_2">执行同步/异步</h2>
 
-<pre><code class="language-python">def insert_sort(alist):
-    &quot;&quot;&quot;
-    插入排序
-    &quot;&quot;&quot;
-    n = len(alist)
-    if n &lt;= 1:
-        return alist
+<p>起源： Oddly enough &quot;Synchronously&quot; means &quot;using the same clock&quot; so when two instructions are synchronous they use the same clock and must happen one after the other. &quot;Asynchronous&quot; means &quot;not using the same clock&quot; so the instructions are not concerned with being in step with each other. That&#39;s why it looks backwards, the term is not referring to the instructions relationship to each other. It&#39;s referring to each instructions relationship to the clock. Hope that helps.</p>
 
-    # 从第二个位置，即下表为1的元素开始向前插入
-    for i in range(1, n):
-        j = i
-        # 向前向前比较，如果小于前一个元素，交换两个元素
-        while alist[j] &lt; alist[j-1] and j &gt; 0:
-            alist[j], alist[j-1] = alist[j-1], alist[j]
-            j-=1
-    return alist
-</code></pre>
+<h2 id="toc_3">Critical Section Problem</h2>
 
-<p>复杂度与稳定性</p>
+<p>A Critical Section is a code segment that accesses shared variables and has to be executed as an atomic action. It means that in a group of cooperating processes, at a given point of time, only one process must be executing its critical section. If any other process also wants to execute its critical section, it must wait until the first one finishes.</p>
 
-<ul>
-<li>最优时间复杂度：O(\(n\)) （升序排列，序列已经处于升序状态）</li>
-<li>最坏时间复杂度：O(\(n^2\))</li>
-<li>稳定性：稳定</li>
-</ul>
-
-<h2 id="toc_5">希尔排序</h2>
-
-<p>希尔排序(Shell Sort)是插入排序的改进, 排序非稳定。希尔排序是把记录按下标的一定<em>增量</em>分组，对每组使用直接插入排序算法排序；随着增量逐渐减少，每组包含的关键词越来越多，当增量减至1时，整个文件恰被分成一组，算法便终止。</p>
-
-<pre><code class="language-python">def shell_sort(alist):
-    
-    n = len(alist)
-    gap = n//2
-    
-    # gap 变化到0之前，插入算法之行的次数
-    while gap &gt; 0:
-        
-        # 希尔排序， 与普通的插入算法的区别就是gap步长
-        for i in range(gap,n):
-            j = i
-            while alist[j] &lt; alist[j-gap] and j &gt; 0:
-                alist[j], alist[j-gap] = alist[j-gap], alist[j]
-                j-=gap
-    
-        gap = gap//2
-
-    return alist
-</code></pre>
-
-<p>复杂度与稳定性</p>
-
-<ul>
-<li>最优时间复杂度：\(O(n^{1.3})\) （不要求本身有序）</li>
-<li>最坏时间复杂度：\(O(n^2)\)</li>
-<li>稳定性：不稳定</li>
-</ul>
-
-<h2 id="toc_6">快速排序</h2>
-
-<p>快速排序(Quicksort)，通过一趟排序将要排序的数据分割成独立的两部分，其中一部分的所有数据都比另外一部分的所有数据都要小，然后再按此方法对这两部分数据分别进行快速排序，整个排序过程可以递归进行，以此达到整个数据变成有序序列。</p>
-
-<p>步骤为：</p>
-
-<ol>
-<li>从数列中挑出一个元素，称为&quot;基准&quot;(pivot)</li>
-<li>重新排序数列，所有元素比基准值小的摆放在基准前面，所有元素比基准值大的摆在基准的后面（相同的数可以到任一边）。在这个分区结束之后，该基准就处于数列的中间位置。这个称为分区(partition)操作。</li>
-<li>递归地(recursive)把小于基准值元素的子数列和大于基准值元素的子数列排序。</li>
-</ol>
-
-<p>递归的最底部情形，是数列的大小是零或一，也就是永远都已经被排序好了。虽然一直递归下去，但是这个算法总会结束，因为在每次的迭代(iteration)中，它至少会把一个元素摆到它最后的位置去。</p>
-
-<h2 id="toc_7">归并排序</h2>
-
-<p>归并排序是采用分治法的一个非常典型的应用。归并排序的思想就是先递归分解数组，再合并数组。</p>
-
-<p>将数组分解最小之后，然后合并两个有序数组，基本思路是比较两个数组的最前面的数，谁小就先取谁，取了后相应的指针就往后移一位。然后再比较，直至一个数组为空，最后把另一个数组的剩余部分复制过来即可。</p>
-
-<h3 id="toc_8">分治法</h3>
-
-<p>分治法的思想：将原问题分解为几个规模较小但类似于原问题的子问题，递归地求解这些子问题，然后再合并这些子问题的解来建立原问题的解。</p>
-
-<p>分治模式在每层递归时都有三个步骤：</p>
-
-<ul>
-<li><strong>分解</strong>原问题为若干子问题，这些子问题是原问题的规模较小的实例</li>
-<li><strong>解决</strong>这些子问题，递归地求解各子问题。然而，若子问题的规模足够小，则直接求解</li>
-<li><strong>合并</strong>这些子问题的解成原问题的解</li>
-</ul>
-
-<p>归并排序算法完全遵循分治模式。直观上其操作如下：</p>
-
-<ul>
-<li><strong>分解</strong>：分解待排序的n个元素的序列成各具n/2个元素的两个子序列</li>
-<li><strong>解决</strong>：使用归并排序递归地排序两个子序列</li>
-<li><strong>合并</strong>：合并两个已排序的子序列以产生已排序的答案。</li>
-</ul>
-
-<h2 id="toc_9">常见排序算法效率比较</h2>
-
-<p><img src="media/14970829036232/14972715837154.jpg" alt=""/></p>
+<p><img src="media/15162717674930/15162720157293.png" alt=""/></p>
 
 
     
@@ -359,16 +207,13 @@ var _hmt = _hmt || [];
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="14970832553234.html" 
-          title="Previous Post: 调试">&laquo; 调试</a>
-      
         </p>
         </div>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="14969929726510.html" 
-          title="Next Post: Python 类属性与实例属性">Python 类属性与实例属性 &raquo;</a>
+          <a  href="Signal.html" 
+          title="Next Post: 信号">信号 &raquo;</a>
       
       </p>
         </div>
