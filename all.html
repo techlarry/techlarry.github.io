@@ -175,7 +175,14 @@ var _hmt = _hmt || [];
 
 <p><strong>异步通信</strong>：我写了一封信，拿到了邮局寄给你。在这期间，我<strong>没有等待</strong>，我做了很多其他的事情。然后你收到了邮件。在你阅读邮件的时候，我仍然再做其他的事情。然后你写给我了回信并寄给我。在这些事件中，都没有涉及到我。另一天，我得到了(同步)的信号(信件)来自系统(邮局)。系统(邮局)说，”这里有封信给你“。然后我停止我的工作，收你的邮件，阅读你的回信。然后我根据你的回信做了一些事情。但是这些事情你都不会注意到，因为你没有参与我对你异步回信所做的事情。</p>
 
-<p>在串行通信中，由于是一位一位地进行数据传送。为了把每个字节区别开来，需要收发双方在传送数据的串行信息流中，加入一些标记信号位。在数据中根据所添加的标记信号位的不同方式，分成同步通信和异步通信两种。 1.“异步通信”是一种很常用的通信方式（效率较低）异步通信在发送字符时，发送端可以在任意时刻开始发送字符，因此必须在每一个字符的开始和结束的地方加上标志，即加上开始位和停止位，以便使接收端能够正确地将每一个字符接收下来。所传送的数据以字节为单位。每个字节前加上一位起始位，每个字节的后面加上停止位。好处：异步通信的好处是通信设备简单、便宜，但传输效率较低。 2.“同步通信”的通信双方必须先建立同步，即双方的时钟要调整到同一个频率。收发双方不停地发送和接收连续的同步比特流。一种是使用全网同步，用一个非常精确的主时钟对全网所有结点上的时钟进行同步。一种是使用准同步，各结点的时钟之间允许有微小的误差，然后采用其他措施实现同步传输。同步通信是把所传送的数据以多个字节（100字节以上）为单位，在其前后添加标志。</p>
+<p><img src="media/15162717674930/15162746872367.gif" alt=""/></p>
+
+<p>在串行通信中，由于是一位一位地进行数据传送。为了把每个字节区别开来，需要收发双方在传送数据的串行信息流中，加入一些标记信号位。在数据中根据所添加的标记信号位的不同方式，分成同步通信和异步通信两种。 </p>
+
+<ul>
+<li>“异步通信”是一种很常用的通信方式（效率较低）异步通信在发送字符时，发送端可以在任意时刻开始发送字符，因此必须在每一个字符的开始和结束的地方加上标志，即加上开始位和停止位，以便使接收端能够正确地将每一个字符接收下来。所传送的数据以字节为单位。每个字节前加上一位起始位，每个字节的后面加上停止位。好处：异步通信的好处是通信设备简单、便宜，但传输效率较低。</li>
+<li>“同步通信” 通信双方必须先建立同步，即双方的时钟要调整到同一个频率。收发双方不停地发送和接收连续的同步比特流。一种是使用全网同步，用一个非常精确的主时钟对全网所有结点上的时钟进行同步。一种是使用准同步，各结点的时钟之间允许有微小的误差，然后采用其他措施实现同步传输。同步通信是把所传送的数据以多个字节（100字节以上）为单位，在其前后添加标志。</li>
+</ul>
 
 <h2 id="toc_2">执行同步/异步</h2>
 
@@ -235,13 +242,19 @@ var _hmt = _hmt || [];
 <td>2</td>
 <td>SIGINT</td>
 <td>终止</td>
-<td>用户输入CTRL+C</td>
+<td>来自键盘的中断CTRL+C</td>
+</tr>
+<tr>
+<td>3</td>
+<td>SIGQUIT</td>
+<td>终止</td>
+<td>来自键盘的退出CTRL+\</td>
 </tr>
 <tr>
 <td>9</td>
 <td>SIGKILL</td>
 <td>终止</td>
-<td>杀死程序</td>
+<td>杀死程序 <code>\bin\kill -9</code></td>
 </tr>
 <tr>
 <td>11</td>
@@ -250,16 +263,28 @@ var _hmt = _hmt || [];
 <td>段故障(无效的内存引用)</td>
 </tr>
 <tr>
-<td>14</td>
-<td>SIGALRM</td>
+<td>15</td>
+<td>SIGTERM</td>
 <td>终止</td>
-<td>来自alarm函数的定时器信号</td>
+<td>软件终止信号<code>\bin\kill</code></td>
 </tr>
 <tr>
 <td>17</td>
 <td>SIGCHLD</td>
 <td>忽略</td>
 <td>子进程停止或终止</td>
+</tr>
+<tr>
+<td>18</td>
+<td>SIGCONT</td>
+<td>忽略</td>
+<td>继续进程如果该进程停止</td>
+</tr>
+<tr>
+<td>20</td>
+<td>SIGTSTP</td>
+<td>停止直到下一个SIGCONT</td>
+<td>用户输入CTRL+Z</td>
 </tr>
 </tbody>
 </table>
@@ -545,30 +570,202 @@ int main(int argc, char **argv)
                       
                       <div class="a-content-text">
                         
-                        	<p>。。。。待续</p>
+                        	<p>....待续<br/>
+....待续<br/>
+....待续<br/>
+....待续</p>
 
-<h2 id="toc_0">目标文件</h2>
+<p>链接(Linking)是将各种代码和数据片段收集并组合成为一个单一文件的过程。链接可以在编译、加载、运行时执行。在现代系统中，链接是由连接器(Linker)自动执行的。</p>
+
+<h2 id="toc_0">编译器驱动程序</h2>
+
+<p>编译器驱动程序(<code>compiler driver</code>)，代表用户在需要时调用预处理器(cpp)、编译器(ccl)、汇编器(as)和链接器(ld)。典型的编译器驱动程序，包括GNU GCC, Clang。</p>
+
+<p>例如，一个简单打印hello的<code>hello.c</code>程序，经过下面四个阶段，生成可执行目标文件：</p>
+
+<pre><code class="language-C">//file: hello.c
+#include &lt;stdio.h&gt;
+
+int main()
+{
+    int i;
+    printf(&quot;Hello World&quot;);
+}
+</code></pre>
+
+<pre><code class="language-bash">linux &gt; gcc -o hello hello.c
+</code></pre>
+
+<p><img src="media/15151885614329/compiler_system.jpeg" alt="compiler_syste"/></p>
+
+<h2 id="toc_1">目标文件</h2>
 
 <p>目标文件有三种格式：可重定位目标文件(<code>.o</code>)，可执行目标文件(<code>.out</code>)，共享目标文件(<code>.so</code>)</p>
 
 <ul>
-<li>可重定位目标文件。包含二进制代码和数据，其形式可以在编译时与其他可重定位目标文件合并起来，创建一个可执行目标文件。</li>
-<li>可执行目标文件。包含二进制代码和数据，其形式可以被直接复制到内存并执行。</li>
-<li>共享目标文件。在加载或者运行时被动态地加载进内存并链接</li>
+<li>可重定位目标文件(.o文件)。包含二进制代码和数据，其形式可以在编译时与其他可重定位目标文件合并起来，创建一个可执行目标文件。</li>
+<li>可执行目标文件(a.out文件)。包含二进制代码和数据，其形式可以被直接复制到内存并执行。</li>
+<li>共享目标文件(.so文件)。在加载或者运行时被动态地加载进内存并链接</li>
 </ul>
 
-<h3 id="toc_1">处理目标文件的工具</h3>
+<p>各个系统的目标文件格式不同，Windows使用<strong>可移植可执行</strong>(Portable Executable, <code>PE</code>)格式。现代x86-64系统使用<strong>可执行可链接格式</strong>(Executable and Linkable Format, <code>ELF</code>)。</p>
 
-<p><code>UNIX</code>系统提供了一系列命令帮助理解和处理目标文件。这些工具包括：</p>
+<h3 id="toc_2">可重定位目标文件</h3>
 
-<p><code>ar</code> ：创建静态库，插入、删除、列出和提取成员；<br/>
-STRINGS ：列出目标文件中所有可以打印的字符串；<br/>
-STRIP ：从目标文件中删除符号表信息；<br/>
-NM ：列出目标文件符号表中定义的符号；<br/>
-SIZE ：列出目标文件中节的名字和大小；<br/>
-READELF ：显示一个目标文件的完整结构，包括ELF 头中编码的所有信息。<br/>
-OBJDUMP ：显示目标文件的所有信息，最有用的功能是反汇编.text节中的二进制指令。<br/>
-LDD ：列出可执行文件在运行时需要的共享库。</p>
+<p>以可执行可链接(ELF)格式为例，一个典型的可重定位目标文件包括以下几个节：</p>
+
+<ul>
+<li>ELF头和节头部表</li>
+<li><code>.text</code> 已编译程序的机器代码</li>
+<li><code>.rodata</code> 只读数据</li>
+<li><code>.data</code>  已初始化的全局和静态C变量</li>
+<li><code>.bss</code>  未初始化的全局和静态C变量</li>
+<li><code>.symtab</code> 一个符号表</li>
+<li><code>.rel.text</code> 一个.text节中位置的列表</li>
+<li><code>.rel.data</code> 重定位信息</li>
+<li><code>.debug</code> 调试符号表</li>
+<li><code>.line</code>  原始程序行号和机器指令之间的映射</li>
+<li><code>.strtab</code>  字符串表</li>
+</ul>
+
+<p><img src="media/15151885614329/elf.png" alt="elf"/></p>
+
+<p>利用<code>READELF</code>程序可以显示程序<code>hello.c</code>生成的可执行可链接文件的信息：</p>
+
+<pre><code class="language-bash">gcc hello.c -c
+readelf -a hello.o
+</code></pre>
+
+<pre><code class="language-text">ELF Header:
+  Magic:   7f 45 4c 46 02 01 01 00 00 00 00 00 00 00 00 00
+  Class:                             ELF64
+  Data:                              2&#39;s complement, little endian
+  Version:                           1 (current)
+  OS/ABI:                            UNIX - System V
+  ABI Version:                       0
+  Type:                              REL (Relocatable file)
+  Machine:                           Advanced Micro Devices X86-64
+  Version:                           0x1
+  Entry point address:               0x0
+  Start of program headers:          0 (bytes into file)
+  Start of section headers:          304 (bytes into file)
+  Flags:                             0x0
+  Size of this header:               64 (bytes)
+  Size of program headers:           0 (bytes)
+  Number of program headers:         0
+  Size of section headers:           64 (bytes)
+  Number of section headers:         13
+  Section header string table index: 10
+
+Section Headers:
+  [Nr] Name              Type             Address           Offset
+       Size              EntSize          Flags  Link  Info  Align
+  [ 0]                   NULL             0000000000000000  00000000
+       0000000000000000  0000000000000000           0     0     0
+  [ 1] .text             PROGBITS         0000000000000000  00000040
+       0000000000000015  0000000000000000  AX       0     0     1
+  [ 2] .rela.text        RELA             0000000000000000  00000590
+       0000000000000030  0000000000000018          11     1     8
+  [ 3] .data             PROGBITS         0000000000000000  00000055
+       0000000000000000  0000000000000000  WA       0     0     1
+  [ 4] .bss              NOBITS           0000000000000000  00000055
+       0000000000000000  0000000000000000  WA       0     0     1
+  [ 5] .rodata           PROGBITS         0000000000000000  00000055
+       000000000000000c  0000000000000000   A       0     0     1
+  [ 6] .comment          PROGBITS         0000000000000000  00000061
+       000000000000002c  0000000000000001  MS       0     0     1
+  [ 7] .note.GNU-stack   PROGBITS         0000000000000000  0000008d
+       0000000000000000  0000000000000000           0     0     1
+  [ 8] .eh_frame         PROGBITS         0000000000000000  00000090
+       0000000000000038  0000000000000000   A       0     0     8
+  [ 9] .rela.eh_frame    RELA             0000000000000000  000005c0
+       0000000000000018  0000000000000018          11     8     8
+  [10] .shstrtab         STRTAB           0000000000000000  000000c8
+       0000000000000061  0000000000000000           0     0     1
+  [11] .symtab           SYMTAB           0000000000000000  00000470
+       0000000000000108  0000000000000018          12     9     8
+  [12] .strtab           STRTAB           0000000000000000  00000578
+       0000000000000015  0000000000000000           0     0     1
+Key to Flags:
+  W (write), A (alloc), X (execute), M (merge), S (strings), l (large)
+  I (info), L (link order), G (group), T (TLS), E (exclude), x (unknown)
+  O (extra OS processing required) o (OS specific), p (processor specific)
+
+There are no section groups in this file.
+
+There are no program headers in this file.
+
+Relocation section &#39;.rela.text&#39; at offset 0x590 contains 2 entries:
+  Offset          Info           Type           Sym. Value    Sym. Name + Addend
+000000000005  00050000000a R_X86_64_32       0000000000000000 .rodata + 0
+00000000000f  000a00000002 R_X86_64_PC32     0000000000000000 printf - 4
+
+Relocation section &#39;.rela.eh_frame&#39; at offset 0x5c0 contains 1 entries:
+  Offset          Info           Type           Sym. Value    Sym. Name + Addend
+000000000020  000200000002 R_X86_64_PC32     0000000000000000 .text + 0
+
+The decoding of unwind sections for machine type Advanced Micro Devices X86-64 is not currently supported.
+
+Symbol table &#39;.symtab&#39; contains 11 entries:
+   Num:    Value          Size Type    Bind   Vis      Ndx Name
+     0: 0000000000000000     0 NOTYPE  LOCAL  DEFAULT  UND
+     1: 0000000000000000     0 FILE    LOCAL  DEFAULT  ABS hello.c
+     2: 0000000000000000     0 SECTION LOCAL  DEFAULT    1
+     3: 0000000000000000     0 SECTION LOCAL  DEFAULT    3
+     4: 0000000000000000     0 SECTION LOCAL  DEFAULT    4
+     5: 0000000000000000     0 SECTION LOCAL  DEFAULT    5
+     6: 0000000000000000     0 SECTION LOCAL  DEFAULT    7
+     7: 0000000000000000     0 SECTION LOCAL  DEFAULT    8
+     8: 0000000000000000     0 SECTION LOCAL  DEFAULT    6
+     9: 0000000000000000    21 FUNC    GLOBAL DEFAULT    1 main
+    10: 0000000000000000     0 NOTYPE  GLOBAL DEFAULT  UND printf
+
+No version information found in this file.
+</code></pre>
+
+<h2 id="toc_3">静态链接</h2>
+
+<p>静态链接器有两个主要任务：</p>
+
+<ul>
+<li>符号解析(symbol resolution): 将每个符号 <u>引用</u> 正好和一个符号 <u>定义</u> 关联起来。</li>
+<li>重定位(relocation): 把每个符号定义与一个内存位置关联起来，并修改所有对这些符号的引用，使得它们指向这个内存位置。</li>
+</ul>
+
+<h3 id="toc_4">符号解析</h3>
+
+<p>符号解析是将每个符号引用和可重定位目标文件中的符号定义关联起来。链接器的输入是一组可重定位目标文件(模块)，有些是局部的( <u>局部符号</u> ，只对定义该符号的模块可见)，有些是全局的( <u>全局符号</u>，对其他模块可见)。</p>
+
+<ul>
+<li>局部符号：每个模块中每个局部符号有一个定义</li>
+<li><p>全局符号：可重定位目标文件的符号表里的全局符号是区分<strong>强</strong>和<strong>弱</strong>的，链接器根据以下规则来处理多重定义的符号名：</p>
+
+<ul>
+<li>规则1:不允许有多个同名的强符号</li>
+<li>规则2:如果有一个强符号和多个弱符号同名，那么选择强符号</li>
+<li>规则3：如果有多个弱符号同名，那么任选一个 </li>
+</ul></li>
+</ul>
+
+<h3 id="toc_5">重定位</h3>
+
+<h2 id="toc_6">加载可执行目标文件</h2>
+
+<p>当在shell中执行目标文件是，首先通过调用<strong>加载器</strong>的操作系统代码来运行它，加载器将可执行目标文件的代码和数据复制到内存，跳转到程序的第一条指令(入口点，<code>_start_</code>函数的地址)运行该程序。</p>
+
+<h2 id="toc_7">处理目标文件的工具</h2>
+
+<ul>
+<li><code>UNIX</code>系统提供了一系列命令帮助理解和处理目标文件。这些工具包括：</li>
+<li><code>ar</code> ：创建静态库，插入、删除、列出和提取成员；</li>
+<li><code>STRINGS</code> ：列出目标文件中所有可以打印的字符串；</li>
+<li><code>STRIP</code> ：从目标文件中删除符号表信息；</li>
+<li><code>NM</code> ：列出目标文件符号表中定义的符号；</li>
+<li><code>SIZE</code> ：列出目标文件中节的名字和大小；</li>
+<li><code>READELF</code> ：显示一个目标文件的完整结构，包括ELF 头中编码的所有信息。</li>
+<li><code>OBJDUMP</code> ：显示目标文件的所有信息，最有用的功能是反汇编.text节中的二进制指令。</li>
+<li><code>LDD</code> ：列出可执行文件在运行时需要的共享库。</li>
+</ul>
 
                         
                       </div>
