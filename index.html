@@ -157,6 +157,107 @@ var _hmt = _hmt || [];
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="virtual_memory_and_dynamic_allocate.html">
+                
+                  <h1>虚拟内存和动态内存分配</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h2 id="toc_0">1 物理/虚拟寻址</h2>
+
+<p>主存是由连续的<strong>字节大小</strong>的单元组成的数组，每字节都有一个唯一的<strong>物理地址</strong>(Physical Adress)。CPU访问使用物理地址访问内存的方式称为<strong>物理寻址</strong>(Physical adressing)。</p>
+
+<p>早起的PC以及数字信号处理器等使用物理寻址，物理寻址示意：</p>
+
+<p><img src="media/15164033620970/physical_address.png" alt="physical_address"/></p>
+
+<p>现代处理器通过生成一个<strong>虚拟地址</strong>(Virtual Address)来访问主存，虚拟地址经过<strong>地址翻译</strong>转换为物理地址。地址翻译由CPU内的<strong>内存管理单元</strong>(Memory Management Unit, <code>MMU</code>)负责.</p>
+
+<p><img src="media/15164033620970/virtual_memory%20.png" alt="virtual_memory "/></p>
+
+<p>虚拟内存的三个角色：</p>
+
+<ul>
+<li>作为缓存的工具，可以更有效率的使用内存：使用DRAM当做部分的虚拟地址空间的缓存</li>
+<li>作为内存管理的工具，简化内存管理：每个进程都有统一的线性地址空间</li>
+<li>作为内存保护的工具，分隔地址空间：进程的内存不会相互影响；用户程序不能访问保密的内核信息和代码</li>
+</ul>
+
+<h2 id="toc_1">2 虚拟内存的三个角色</h2>
+
+<h3 id="toc_2">2.1 作为缓存的工具</h3>
+
+<p>可以把主存DRAM看作是虚拟内存的缓存，类似于L1、L2、L3高速缓存是DRAM内存的缓存。也就是说可以把虚拟内存看成是存储器层次结构的一部分。</p>
+
+<p><img src="media/15164033620970/vm_as_cache.png" alt="vm_as_cache"/></p>
+
+<p>和其他存储器层次结构中的缓存一样，较低层上的数据被分割成块，作为与较高层之间的传输单元。这里较低层是虚拟内存，分割成<strong>虚拟页</strong>(Virtual Page, VP)，虚拟页大小为\(P=2^p\)字节。类似的，这里的较高层，物理内存DRAM，被分割为<strong>物理页</strong>(Physical Page, PP)，大小也为\(P\)，也叫做页桢。</p>
+
+<p>虚拟页的状态分为三种：</p>
+
+<ul>
+<li>未分配(Unallocated): 系统还未分配(创建)的页，不占用磁盘空间。</li>
+<li>缓存的(Cached): 当前已缓存在物理内存中的已分配页。</li>
+<li>未缓存的(Uncached): 未缓存在物理内存中的已分配页。</li>
+</ul>
+
+<p>那么具体是怎么判断一个虚拟页的状态呢？怎么知道虚拟页放在哪个物理页中呢？</p>
+
+<p>物理内存中存在一个叫<strong>页表</strong>(page table)的数据结构，由操作系统负责。页表将虚拟页映射到物理页，每次内存管理单元中的<strong>地址翻译硬件</strong>将虚拟地址转换为物理地址时都会读取页表。</p>
+
+<p>页表其实是一个页表条目(Page Table Entry, PTE)的数组。页表条目包含一个有效位(valid bit)和一个n位地址字段。</p>
+
+<p><img src="media/15164033620970/page_table.jpg" alt="page_table"/></p>
+
+<h3 id="toc_3">2.2 作为内存管理的工具</h3>
+
+<h3 id="toc_4">2.3 作为内存保护的工具</h3>
+
+<h2 id="toc_5">Linux虚拟内存系统</h2>
+
+<p>虚拟内存(<code>Virtual Memory</code>)是一个抽象概念。它为每个进程提供了假象，即每个进程都在独占地使用内存。每个进程看到的内存都是一致的，称为虚拟地址空间<code>Virtual Address Space</code>.</p>
+
+<p>虚拟内存在不同操作系统上有区别，以Linux系统为例,下面是<code>Linux  x86-64运行时的内存映像</code>。</p>
+
+<p><img src="media/15089188725996/linux_virtual_memory.png" alt="linux_virtual_memory"/></p>
+
+<p>虚拟地址空间由如下几部分组成：</p>
+
+<ul>
+<li>代码（<code>.text</code>）: 这里存放的是CPU要执行的指令。代码段是可共享的，相同的代码在内存中只会有一个拷贝，同时这个段是只读的，防止程序由于错误而修改自身的指令。</li>
+<li>初始化数据段（<code>.data</code>）: 这里存放的是程序中需要明确赋初始值的变量，例如位于所有函数之外的全局变量：<code>int val=&quot;100</code>。需要强调的是，以上两段都是位于程序的可执行文件中，内核在调用<code>exec</code>函数启动该程序时从源程序文件中读入。</li>
+<li>未初始化数据段（<code>.bss</code>）: 位于这一段中的数据，内核在执行该程序前，将其初始化为0或者<code>null</code>。例如出现在任何函数之外的全局变量：int sum;</li>
+<li>堆（<code>Heap</code>）: 这个段用于在程序中进行动态内存申请，例如经常用到的<code>malloc</code>，<code>new</code>系列函数就是从这个段中申请内存。</li>
+<li>共享库(<code>Shared Library</code>): 用来存放像C标准库和数学哭这样的共享库的代码和数据的区域。</li>
+<li>栈（<code>Stack</code>）: 函数中的局部变量以及在函数调用过程中产生的临时变量都保存在此段中，具体见下面一节。</li>
+<li>内核虚拟内存：包含内核中的代码和数据结构。</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/1/20</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Computer%20System.html'>Computer System</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="Sync.html">
                 
                   <h1>同步/异步</h1>
@@ -753,8 +854,8 @@ No version information found in this file.
 <li><p>全局符号：可重定位目标文件的符号表里的全局符号是区分<strong>强</strong>和<strong>弱</strong>的，链接器根据以下规则来处理多重定义的符号名：</p>
 
 <ul>
-<li>规则1:不允许有多个同名的强符号</li>
-<li>规则2:如果有一个强符号和多个弱符号同名，那么选择强符号</li>
+<li>规则1: 不允许有多个同名的强符号</li>
+<li>规则2: 如果有一个强符号和多个弱符号同名，那么选择强符号</li>
 <li>规则3：如果有多个弱符号同名，那么任选一个 </li>
 </ul></li>
 </ul>
@@ -763,7 +864,17 @@ No version information found in this file.
 
 <h2 id="toc_6">加载可执行目标文件</h2>
 
-<p>当在shell中执行目标文件是，首先通过调用<strong>加载器</strong>的操作系统代码来运行它，加载器将可执行目标文件的代码和数据复制到内存，跳转到程序的第一条指令(入口点，<code>_start_</code>函数的地址)运行该程序。</p>
+<p>当在shell中执行目标文件时，首先通过调用<strong>加载器</strong>(<code>loader</code>)的操作系统代码来运行它，加载器将可执行目标文件的代码和数据复制到主存，跳转到程序的第一条指令(入口点，<code>_start_</code>函数的地址)运行该程序。</p>
+
+<p>在Unix系统中，加载器是系统调用(system call)<code>execve()</code>的回调(call back)，其任务包括：</p>
+
+<ul>
+<li>确认(权限，内存要求等)</li>
+<li>复制程序到主存</li>
+<li>复制命令行参数到栈</li>
+<li>初始化寄存器(例如栈针)</li>
+<li>跳到入口点(<code>_start_</code>)</li>
+</ul>
 
 <h2 id="toc_7">处理目标文件的工具</h2>
 
@@ -854,201 +965,6 @@ dis.dis(f)
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Computer%20System.html'>Computer System</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="gdb_tool_gnu.html">
-                
-                  <h1>gdb</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p><code>gdb</code>（GNU Debugger）作为一个调试工具，其功能强大。它可以调试断点、查看反汇编代码、指令级单步执行、查看寄存器、检查内存/栈，是程序员的得力助手。</p>
-
-<h3 id="toc_0">调试信息</h3>
-
-<p>要调试C/C++的程序，首先在编译时，我们必须要把调试信息(debugging symbols, 调试符号表)加到可执行文件中。使用编译器（cc/gcc/g++）的 <code>-g</code> 参数(Generate source-level debug information)可以做到这一点。</p>
-
-<pre><code>g++ -g HelloWorld.cpp -o HelloWorld
-</code></pre>
-
-<h3 id="toc_1">常用命令</h3>
-
-<ul>
-<li><code>break &lt;location&gt;</code>
-
-<ul>
-<li>Stop execution at function name or address </li>
-<li>Reset breakpoints when restarting gdb </li>
-</ul></li>
-<li><code>run &lt;args&gt;</code> 
-
-<ul>
-<li>Run program with args <args> </li>
-<li>Convenient for specifying text file with answers</li>
-</ul></li>
-<li><code>disas &lt;fun&gt;</code>, but not dis </li>
-<li><p><code>stepi</code> / <code>nexti</code> </p>
-
-<ul>
-<li>Steps / does not step through function calls</li>
-</ul></li>
-<li><p><code>info registers</code> </p>
-
-<ul>
-<li>Print hex values in every register </li>
-</ul></li>
-<li><p><code>print (/x or /d) $eax</code> - Yes, use $ </p>
-
-<ul>
-<li>Print hex or decimal contents of %eax </li>
-</ul></li>
-<li><p><code>x $register</code>, <code>x 0xaddress</code> </p>
-
-<ul>
-<li>Prints what’s in the register / at the given address</li>
-<li>By default, prints one word (4 bytes) </li>
-<li>Specify format: /s, /[num][size][format] *
-
-<ul>
-<li> x/8a 0x15213 *</li>
-<li> x/4wd 0xdeadbeef</li>
-</ul></li>
-</ul></li>
-<li><p><code>list</code>: view source code</p></li>
-</ul>
-
-<h3 id="toc_2">远程调试</h3>
-
-<p>有时候需要调试的程序并不在本机上，<code>gdb</code>是支持远程调试的，具体命令如下：</p>
-
-<pre><code>(gdb) target remote IP:PORT
-</code></pre>
-
-<p>这时<code>gdb</code>可以远程连接到被调试机器上，对程序进行调试。前提是在远端的机器上，必须要启动好<code>gdb</code>服务端程序。</p>
-
-<h2 id="toc_3">TUI</h2>
-
-<p>gdb tui（TextUser Interface）为dgb调试的文本用户界面，可以方便地显示源代码、汇编和寄存器文本窗口，tui使用效果如下图所示。</p>
-
-<p><img src="media/15147536807060/gdb-tui.png" alt="gdb-tui"/></p>
-
-<p>gdb tui可以直接运行<code>gdbtui</code>或者在gdb中用<code>ctrl-c, ctrl-a</code>打开。</p>
-
-<p>上图中是打开了汇编窗口的，可通过命令<code>layout split</code>显示源代码和汇编窗口。其他常见的窗口显示命令为：</p>
-
-<ul>
-<li><code>layout src/asm/regs</code>：显示源代码/汇编/寄存器窗口</li>
-<li><code>layout split</code>：显示源代码和汇编窗口</li>
-<li><code>focus cmd/src/asm/regs</code>: 聚焦命令/源代码/汇编/寄存器窗口</li>
-</ul>
-
-<h2 id="toc_4">命令行参数</h2>
-
-<p>很多程序在运行时都需要参数。例如下面C程序：</p>
-
-<pre><code class="language-C">#include &lt;stdio.h&gt;
-int main(int argc,char *argv[])
-{
-    int i = argc;
-    printf(&quot;argc=%d\n&quot;,i);
-        for(i = 0;i &lt; argc;i++)
-        printf(&quot;argv[%d]=%s\n&quot;,i,argv[i]);
-        return 1;
-}
-</code></pre>
-
-<pre><code> ./demo_get_opt a b c
-argc = 4
-argv[0] = ./demo_get_opt
-argv[1] = a
-argv[2] = b
-argv[3] = c
-</code></pre>
-
-<p>运行gbb时一共有三种方法可以指定参数。</p>
-
-<p>第一种是在用<code>set args</code>指定参数</p>
-
-<ul>
-<li><code>set args</code> 可指定运行时参数。（如：<code>set args a b c</code>或者<code>set args -f 20 -t 40</code>）</li>
-<li><code>show args</code> 命令可以查看设置好的运行参数。</li>
-</ul>
-
-<pre><code>(gdb) set args a b c
-(gdb) r
-Starting program: /home/vagrant/demo_get_opt a b c
-argc = 4
-argv[0] = /home/vagrant/demo_get_opt
-argv[1] = a
-argv[2] = b
-argv[3] = c
-</code></pre>
-
-<p>第二种是在运行时设定参数</p>
-
-<ul>
-<li><code>r/run args</code> (如 <code>r a b c</code>)</li>
-</ul>
-
-<pre><code>(gdb) r a b c
-argc = 4
-argv[0] = /home/vagrant/demo_get_opt
-argv[1] = a
-argv[2] = b
-argv[3] = c
-</code></pre>
-
-<p>第三种是在gdb启动时加上<code>--args</code>参数</p>
-
-<pre><code>gdb --args  ./demo_get_opt a b c
-</code></pre>
-
-<h3 id="toc_5">查看struct及指针</h3>
-
-<p>假设有结构体队列<code>queue</code>的指针数组<code>q</code>，指针<code>qi</code>指向<code>q</code>。</p>
-
-<pre><code class="language-C">/* define a queue */
-typedef struct {
-    int size;
-    int full_size;
-    node *head;
-    node *tail;
-} queue;
-
-queue *q, *qi; 
-q = (queue *) malloc(sizeof(queue) * S);
-qi = q;
-</code></pre>
-
-<p>可以通过<code>p *q</code>的 方式获得指针所指向结构体的值:</p>
-
-<pre><code class="language-gdb">(gdb) p *q
-$1 = {size = 0, full_size = 2, head = 0x0, tail = 0x0}
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/1/1</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Tools.html'>Tools</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -1164,6 +1080,12 @@ $1 = {size = 0, full_size = 2, head = 0x0, tail = 0x0}
 	      
 		      
 			      <li class="post">
+			        <a href="virtual_memory_and_dynamic_allocate.html">虚拟内存和动态内存分配</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="Sync.html">同步/异步</a>
 			      </li>
 		     
@@ -1183,12 +1105,6 @@ $1 = {size = 0, full_size = 2, head = 0x0, tail = 0x0}
 		      
 			      <li class="post">
 			        <a href="python_assembly_code.html">Python汇编代码</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="gdb_tool_gnu.html">gdb</a>
 			      </li>
 		     
 		  

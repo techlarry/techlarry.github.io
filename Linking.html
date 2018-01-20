@@ -348,8 +348,8 @@ No version information found in this file.
 <li><p>全局符号：可重定位目标文件的符号表里的全局符号是区分<strong>强</strong>和<strong>弱</strong>的，链接器根据以下规则来处理多重定义的符号名：</p>
 
 <ul>
-<li>规则1:不允许有多个同名的强符号</li>
-<li>规则2:如果有一个强符号和多个弱符号同名，那么选择强符号</li>
+<li>规则1: 不允许有多个同名的强符号</li>
+<li>规则2: 如果有一个强符号和多个弱符号同名，那么选择强符号</li>
 <li>规则3：如果有多个弱符号同名，那么任选一个 </li>
 </ul></li>
 </ul>
@@ -358,7 +358,17 @@ No version information found in this file.
 
 <h2 id="toc_6">加载可执行目标文件</h2>
 
-<p>当在shell中执行目标文件是，首先通过调用<strong>加载器</strong>的操作系统代码来运行它，加载器将可执行目标文件的代码和数据复制到内存，跳转到程序的第一条指令(入口点，<code>_start_</code>函数的地址)运行该程序。</p>
+<p>当在shell中执行目标文件时，首先通过调用<strong>加载器</strong>(<code>loader</code>)的操作系统代码来运行它，加载器将可执行目标文件的代码和数据复制到主存，跳转到程序的第一条指令(入口点，<code>_start_</code>函数的地址)运行该程序。</p>
+
+<p>在Unix系统中，加载器是系统调用(system call)<code>execve()</code>的回调(call back)，其任务包括：</p>
+
+<ul>
+<li>确认(权限，内存要求等)</li>
+<li>复制程序到主存</li>
+<li>复制命令行参数到栈</li>
+<li>初始化寄存器(例如栈针)</li>
+<li>跳到入口点(<code>_start_</code>)</li>
+</ul>
 
 <h2 id="toc_7">处理目标文件的工具</h2>
 
@@ -517,6 +527,12 @@ s.setAttribute('data-timestamp', +new Date());
 	      
 		      
 			      <li class="post">
+			        <a href="virtual_memory_and_dynamic_allocate.html">虚拟内存和动态内存分配</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="Sync.html">同步/异步</a>
 			      </li>
 		     
@@ -536,12 +552,6 @@ s.setAttribute('data-timestamp', +new Date());
 		      
 			      <li class="post">
 			        <a href="python_assembly_code.html">Python汇编代码</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="gdb_tool_gnu.html">gdb</a>
 			      </li>
 		     
 		  
