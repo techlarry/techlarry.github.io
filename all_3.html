@@ -157,6 +157,95 @@ var _hmt = _hmt || [];
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="covariance_spark.html">
+                
+                  <h1>Covariance Matrix and its solution in Spark</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>A <code>covariance matrix</code>(协方差矩阵, 离差矩阵) is a matrix whose element in the \(i,j\) position is the covariance between the \(i^{th}\) and \(j^{th}\) elements of a <code>random vector</code>(随机向量,多元随机变量). Each element of a random vector is a scalar <code>random variable</code>(随机变量).</p>
+
+<p>Because the covariance of the \(i^{th}\) random variable with itself is simply that random variable&#39;s variance, each element on the principal diagonal of the covariance matrix is the variance of one of the random variables:</p>
+
+<p>The covariance between random variables \(X, Y\):</p>
+
+<p>\[\text{cov}(X,Y)=\text{E}[(X-E[X])(Y-E[Y])]\]</p>
+
+<p>Then the covariance matrix \(\sum\) is the matrix whose \((i,j)\) is the covariance</p>
+
+<p>\[\sum(i,j) =\text{cov}(X_i,X_j)=\text{E}[(X_i-E[X_i])(Y_i-E[Y_i])]\]</p>
+
+<p>where \(X=[X_1,...,X_n]\)</p>
+
+<h2 id="toc_0">Distributed Computing: Spark</h2>
+
+<p>Setup: Raw data \(\mathbf{P} \in \mathbb{R}^{n \times d}\)</p>
+
+<ul>
+<li>Step 1: Zero Mean Data \(X=\text{E}(P)\)
+
+<ul>
+<li>Compute \(d\) feature means, \(m\in \mathbf{R}^d\)</li>
+<li>Communication \(m\) to all workers</li>
+<li>Subtract \(m\) from each data point</li>
+</ul></li>
+<li>Step 2: Compute Covariance Matrix \( \mathbf{C}_{\mathbf X} = \frac{1}{n} \mathbf{X}^\top \mathbf{X} \,.\)
+
+<ul>
+<li>compute the outer product of each data point, </li>
+<li>add together these outer products, and divide by the number of data points</li>
+</ul></li>
+</ul>
+
+<p><img src="media/15124807146530/compute_covariance_matrix.png" alt="compute_covariance_matrix"/></p>
+
+<p><u>Spark Code in Python</u>:</p>
+
+<pre><code class="language-python">def estimateCovariance(data):
+    &quot;&quot;&quot;Compute the covariance matrix for a given rdd.
+   
+    Args:
+        data (RDD of np.ndarray):  An `RDD` consisting of NumPy arrays.
+
+    Returns:
+        np.ndarray: A multi-dimensional array where the number of rows and columns both equal the length of the arrays in the input `RDD`.
+    &quot;&quot;&quot;
+    mean = data.mean()
+    normalized = data.map(lambda x: x-mean)
+    return normalized.map(lambda x: np.outer(x, x)).sum()/data.count()
+</code></pre>
+
+<h2 id="toc_1">Reference</h2>
+
+<ol>
+<li><a href="https://en.wikipedia.org/wiki/Covariance_matrix">Covariance matrix from wikipedia</a></li>
+</ol>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/11/25</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html'>机器学习</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="data_science_competition.html">
                 
                   <h1>Data Science Competition</h1>
@@ -354,39 +443,6 @@ var _hmt = _hmt || [];
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15108128842368.html">
-                
-                  <h1>`MLlib`: Machine Learning in Apache Spark</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>[<a href="https://arxiv.org/pdf/1505.06807.pdf">https://arxiv.org/pdf/1505.06807.pdf</a>]</p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/11/16</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%96%87%E7%8C%AE%E9%98%85%E8%AF%BB.html'>文献阅读</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -490,6 +546,12 @@ var _hmt = _hmt || [];
 	      
 		      
 			      <li class="post">
+			        <a href="memory_alignment.html">内存对齐</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="virtual_memory_and_dynamic_allocate.html">虚拟内存和动态内存分配</a>
 			      </li>
 		     
@@ -509,12 +571,6 @@ var _hmt = _hmt || [];
 		      
 			      <li class="post">
 			        <a href="Linking.html">链接</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="python_assembly_code.html">Python汇编代码</a>
 			      </li>
 		     
 		  

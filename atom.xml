@@ -4,13 +4,228 @@
   <title><![CDATA[techlarry]]></title>
   <link href="http://larryim.cc/atom.xml" rel="self"/>
   <link href="http://larryim.cc/"/>
-  <updated>2018-01-20T07:57:41+08:00</updated>
+  <updated>2018-01-21T08:48:44+08:00</updated>
   <id>http://larryim.cc/</id>
   <author>
     <name><![CDATA[]]></name>
     
   </author>
   <generator uri="http://www.mweb.im/">MWeb</generator>
+  
+  <entry>
+    <title type="html"><![CDATA[内存对齐]]></title>
+    <link href="http://larryim.cc/memory_alignment.html"/>
+    <updated>2018-01-21T07:38:17+08:00</updated>
+    <id>http://larryim.cc/memory_alignment.html</id>
+    <content type="html"><![CDATA[
+<p>许多计算机系统对基本数据类型的合法地址做出了一些限制，要求某种类型对象的地址必须时某个值K(通常是2、4或8)的倍数。这种<strong>对齐限制</strong>简化了形成处理器和内存系统之间的硬件设计。例如，假设一个处理器总是从内存中取8个字节，则地址必须为8的倍数。如果我们能保证将所有的double类型的数据对齐成8的倍数，那么就可以用一个内存操作来读或者写值了。否则，我们可能需要执行两次内存访问，因为对象可能被放在两个8字节内存块中(详见内存对齐原因)。</p>
+
+<p>例如：</p>
+
+<pre><code class="language-C">#include&lt;iostream&gt;
+using namespace std;
+struct A{
+    char a;
+    int b;
+    short c;
+};
+
+struct B{
+    short c;
+    char a;
+    int b;
+};
+
+int main(){
+    cout&lt;&lt;sizeof(A)&lt;&lt;endl; //结果是12
+    cout&lt;&lt;sizeof(B)&lt;&lt;endl; //结果是8
+    return 0;
+}
+</code></pre>
+
+<p>以上结构体变量数量和类型完全相同，但是因为对齐限制，却得到了不同的结果。</p>
+
+<h2 id="toc_0">对齐原则</h2>
+
+<ul>
+<li>任何\(K\)字节的基本对象的地址必须是K的倍数: \(\text{align}(x) = \text{sizeof}(x) = K\)</li>
+<li>结构体内存对齐要求结构体内每一个成员变量都是内存对齐的；</li>
+<li>结构体本身也要对齐。</li>
+</ul>
+
+<p>除此之外，程序员可自己指定数据的对齐大小，通过使用<code>pragma pack(x)</code>预处理命令，指定对齐大小为\(\text{pack_align}=x\)。只能指定\(2^n\)作为对齐大小，对于指定对齐大小为6、9、10这样的编译器不会理会。</p>
+
+<pre><code>#pragma pack(x)
+//...
+#pragma pack()
+</code></pre>
+
+<p>使用<code>pragma pack(x)</code>预处理命令后，对齐大小为</p>
+
+<p>\[\text{align}(x) = \min(\text{sizeof}(x) , \text{pack_align})\] </p>
+
+<p>即<code>sizeof(x)</code>和指定对齐大小哪个小，对齐大小就为哪个。</p>
+
+<p>通过以下例子可以更好地掌握内存对齐原则：</p>
+
+<pre><code class="language-C">#include &lt;stdio.h&gt;
+#include &lt;assert.h&gt;
+#include &lt;stddef.h&gt;
+
+
+#pragma pack(1)
+    //此处指定对齐大小为1
+    //对于a，实际对齐大小为min(sizeof(int),1)=min(4,1)=1
+    //对于b，实际对齐大小为min(sizeof(char),1)=min(1,1)=1
+    //编译器会确保TEST_A首地址即a的地首址是1字节对齐的，此时a对齐
+    //对于b，由于b要求首地址1字节对齐，这显然对于任何地址都合适，所以a,b都是对齐的
+    //对于TEST_A数组，第一个TEST_A是对齐的（假设其地址为0），则第二个TEST_A的首地址为(0+5=5)，对于第二个TEST_A的两个变量a，b均对齐
+    //OK,对齐合理。因此整个结构体的大小为5   
+typedef struct TEST_A
+{
+    int a;
+    char b;
+} A;
+#pragma  pack()
+
+
+#pragma pack(2)
+    //此处指定对齐大小为2
+    //对于a，实际对齐大小为min(sizeof(int),2)=min(4,2)=2
+    //对于b，实际对齐大小为min(sizeof(char),2)=min(1,2)=1
+    //编译器会确保TEST_A首地址即a的地首址是2字节对齐的，此时a对齐
+    //对于b，由于b要求首地址1字节对齐，这显然对于任何地址都合适，所以a,b都是对齐的
+    //对于TEST_B数组，第一个TEST_B是对齐的（假设其地址为0），则第二个TEST_B的首地址为(0+5=5)，对于第二个TEST_B的变量a，显然地址5是不对齐于2字节的
+    //因此，需要在TEST_B的变量b后面填充1字节，此时连续相连的TEST_B数组才会对齐
+    //OK,对齐合理。因此整个结构体的大小为5+1=6
+typedef struct TEST_B
+{
+    int a;
+    char b;
+} B;
+#pragma  pack()
+
+   
+#pragma pack(4)
+    //此处指定对齐大小为4
+    //对于a，实际对齐大小为min(sizeof(int),2)=min(4,4)=4
+    //对于b，实际对齐大小为min(sizeof(char),2)=min(1,4)=1
+    //编译器会确保TEST_A首地址即a的地首址是4字节对齐的，此时a对齐
+    //对于b，由于b要求首地址1字节对齐，这显然对于任何地址都合适，所以a,b都是对齐的
+    //对于TEST_C数组，第一个TEST_C是对齐的（假设其地址为0），则第二个TEST_C的首地址为(0+5=5)，对于第二个TEST_C的变量a，显然地址5是不对齐于4字节的
+    //因此，需要在TEST_C的变量b后面填充3字节，此时连续相连的TEST_C数组才会对齐
+    //OK,对齐合理。因此整个结构体的大小为5+3=8
+typedef struct TEST_C
+{
+    int a;
+    char b;
+} C;
+#pragma  pack()
+
+
+#pragma pack(8)
+    //此处指定对齐大小为8
+    //对于a，实际对齐大小为min(sizeof(int),8)=min(4,8)=4
+    //对于b，实际对齐大小为min(sizeof(char),8)=min(1,8)=1
+    //编译器会确保TEST_A首地址即a的地首址是4字节对齐的，此时a对齐
+    //对于b，由于b要求首地址1字节对齐，这显然对于任何地址都合适，所以a,b都是对齐的
+    //对于TEST_D数组，第一个TEST_D是对齐的（假设其地址为0），则第二个TEST_D的首地址为(0+5=5)，对于第二个TEST_D的变量a，显然地址5是不对齐于4字节的
+    //因此，需要在TEST_D的变量b后面填充3字节，此时连续相连的TEST_D数组才会对齐
+    //OK,对齐合理。因此整个结构体的大小为5+3=8
+typedef struct TEST_D
+{
+    int a;
+    char b;
+} D;
+#pragma  pack()
+
+
+
+#pragma pack(8)
+    //此处指定对齐大小为8
+    //对于a，实际对齐大小为min(sizeof(int),8)=min(4,8)=4
+    //对于b，实际对齐大小为min(sizeof(char),8)=min(1,8)=1
+    //对于c，这是一个数组，数组的对齐大小与其单元一致，因而align(c)=align(double)=min(sizeof(double),8)=min(8,8)=8
+    //对于d，实际对齐大小为min(sizeof(char),8)=min(1,8)=1
+    //编译器会确保TEST_A首地址即a的地首址是4字节对齐的，此时a对齐
+    //对于b，由于b要求首地址1字节对齐，这显然对于任何地址都合适，所以a,b都是对齐的
+    //对于c，由于c要求首地址8字节对齐，因此前面的a+b=5，还要在c后面补上3个字节才能对齐
+    //对于d，显而易见，任何地址均对齐，此时结构体大小为4+1+3+10*8+1=89
+    //对于TEST_E数组，第一个TEST_E是对齐的（假设其地址为0），则第二个TEST_E的首地址为(0+89=89)，对于第二个TEST_E的变量a，显然地址89是不对齐于4字节的
+    //因此，需要在TEST_E的变量d后面填充7字节，此时连续相连的TEST_E数组才会对齐 
+    //(注意：此处不仅要确保下一个TEST_E的a,b变量对齐，还要确保c也对齐，所以这里不是填充3字节，而是填充7字节）
+    //OK,对齐合理。因此整个结构体的大小为(4)+(1+3)+(10*8)+(1+7)=96
+typedef struct TEST_E
+{
+    int a;
+    char b;
+    double c[10];
+    char d;
+} E;
+#pragma  pack()
+
+int main()
+{
+    A A1;
+    B B1;
+    C C1;
+    D D1;
+    E E1, E2;
+    printf(&quot;A:%zu, %zu\n&quot;, sizeof(A1), sizeof(A1));
+    printf(&quot;B:%zu\n&quot;, sizeof(B1));
+    printf(&quot;C:%zu\n&quot;, sizeof(C1));
+    printf(&quot;D:%zu\n&quot;, sizeof(D1));
+    printf(&quot;E:%zu, %zu\n&quot;, sizeof(E1), sizeof(E2));
+
+    return 0;
+}
+</code></pre>
+
+<pre><code>A:5, 5
+B:6
+C:8
+D:8
+E:96, 96
+</code></pre>
+
+<h2 id="toc_1">内存对齐原因</h2>
+
+<p><img src="media/15164914975645/howProgrammersSeeMemory.jpg" alt=""/></p>
+
+<p>我们普通程序员心中的内存印象，由一个个字节组成，但是CPU却不是这么看待的</p>
+
+<p><img src="media/15164914975645/howProcessorsSeeMemory.jpg" alt=""/></p>
+
+<p>内存读取是按块进行的，块的大小称为<strong>粒度</strong>（granularity)。实际上在存储器层次结构上的较低层向较高层传输数据的时候都是按块进行的。也就是说，数据从内存到寄存器，要经过诸多关卡(在core i7上，有L1、L2和L3高速缓存)，每个关卡都有不同的粒度。所以为了提高速度，不仅仅大的对象要保证对齐，连对象内部的数据，也需要对齐到2的幂。</p>
+
+<p>以内存读取为例，我们仔细看看为什么内存不对齐会影响读取速度？</p>
+
+<p>假设CPU要读取一个4字节大小的数据到寄存器中（假设内存读取粒度是4），分两种情况讨论：</p>
+
+<ul>
+<li>1.数据从0字节开始</li>
+<li>2.数据从1字节开始</li>
+</ul>
+
+<p>当数据从0字节开始的时候，直接将0-3四个字节完全读取到寄存器，结算完成了。</p>
+
+<p><img src="media/15164914975645/quadByteAccess.jpg" alt=""/></p>
+
+<p>当数据从1字节开始的时候，问题很复杂，首先先将前4个字节读到寄存器，并再次读取4-7字节的数据进寄存器，接着把0字节，4、6、7字节的数据剔除，最后合并1、2、3、4字节的数据进寄存器，对一个内存未对齐的寄存器进行了这么多额外操作，大大降低了性能。</p>
+
+<p><img src="media/15164914975645/unalignedAccess.jpg" alt=""/></p>
+
+<h2 id="toc_2">参考</h2>
+
+<ul>
+<li>1. 深入理解计算机体系（第三版）</li>
+<li>2. <a href="https://zh.wikipedia.org/zh-hans/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%AF%B9%E9%BD%90">数据结构对齐 维基百科</a></li>
+<li>3. <a href="https://www.cnblogs.com/xylc/p/3780907.html">https://www.cnblogs.com/xylc/p/3780907.html</a></li>
+<li>4. <a href="https://www.cnblogs.com/jijiji/p/4854581.html">https://www.cnblogs.com/jijiji/p/4854581.html</a></li>
+</ul>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[虚拟内存和动态内存分配]]></title>
@@ -64,11 +279,27 @@
 
 <p><img src="media/15164033620970/page_table.jpg" alt="page_table"/></p>
 
+<p>在虚拟内存的习惯说法中，DRAM缓存命中/不命中，特称为<strong>页命中</strong>/<strong>缺页</strong>(Page Fault)。</p>
+
 <h3 id="toc_3">2.2 作为内存管理的工具</h3>
+
+<p>操作系统为每个进程提供了一个独立的页表，也就是提供了一个独立的虚拟地址空间。多个虚拟页面可以映射到同一个共享物理页面上。虚拟内存简化了链接和加载、代码和数据共享、以及应用程序的内存分配。</p>
 
 <h3 id="toc_4">2.3 作为内存保护的工具</h3>
 
-<h2 id="toc_5">Linux虚拟内存系统</h2>
+<p>一方面，每个进程拥有独立的地址空间使得区分不同进程的私有内存变得容易。另一方面在每个页表条目PTE中，添加了额外的<strong>许可位</strong>(SUP, READ, WRITE, EXEC)来控制对一个虚拟页面内容的访问：</p>
+
+<ul>
+<li>SUP位表示进程是否运行在超级用户模式下才能访问</li>
+<li>READ/WRITE位控制读和写的访问</li>
+<li>EXEC位控制执行的访问</li>
+</ul>
+
+<p><img src="media/15164033620970/vm_protection.png" alt="vm_protection"/></p>
+
+<p>如果违反许可条件，那么就触发段错误(segmentation fault)。</p>
+
+<h2 id="toc_5">3 Linux虚拟内存系统</h2>
 
 <p>虚拟内存(<code>Virtual Memory</code>)是一个抽象概念。它为每个进程提供了假象，即每个进程都在独占地使用内存。每个进程看到的内存都是一致的，称为虚拟地址空间<code>Virtual Address Space</code>.</p>
 
@@ -86,6 +317,52 @@
 <li>共享库(<code>Shared Library</code>): 用来存放像C标准库和数学哭这样的共享库的代码和数据的区域。</li>
 <li>栈（<code>Stack</code>）: 函数中的局部变量以及在函数调用过程中产生的临时变量都保存在此段中，具体见下面一节。</li>
 <li>内核虚拟内存：包含内核中的代码和数据结构。</li>
+</ul>
+
+<h2 id="toc_6">4 动态内存分配</h2>
+
+<p>程序使用动态内存分配的最重要的原因是经常直到程序实际运行时，才知道某些数据结构的大小。</p>
+
+<h3 id="toc_7">4.2 分配器的要求和目标</h3>
+
+<h4 id="toc_8">4.2.1 分配器的要求</h4>
+
+<p>分配器有如下的要求：</p>
+
+<ul>
+<li>处理任意请求序列</li>
+<li>立即相应请求</li>
+<li>只使用堆</li>
+<li>对齐块(对齐要求)</li>
+<li>不修改已分配的块</li>
+</ul>
+
+<h4 id="toc_9">4.2.2 分配器的目标</h4>
+
+<p>分配器试图最大化吞吐率和内存利用率</p>
+
+<ul>
+<li>最大化吞吐率(每个单位时间里完成的请求数)</li>
+<li>最大化内存利用率</li>
+</ul>
+
+<p>造成利用率很低的主要原因是<strong>碎片</strong>(fragmentation)现象。当载荷比块要小时，发生<strong>内部碎片</strong>，引起的原因有：对齐等。</p>
+
+<p><img src="media/15164033620970/internal_fragmentation.png" alt="internal_fragmentation"/></p>
+
+<p>当即使有足够的累积的块内存，但是没有单一块能够满足需求时，发生<strong>外部碎片</strong>：</p>
+
+<p><img src="media/15164033620970/external_fragmentation.png" alt="external_fragmentation"/></p>
+
+<p>外部碎片还取决于将来的请求，例如上图，如果最后的p4请求4个字节呢？也就不会发生碎片。正因为外部碎片难以量化且不可能预测，所以分配器通常采用启发式策略来试图维持少量的大空闲块，而不是维持大量的小空闲块。</p>
+
+<h4 id="toc_10">实现方法</h4>
+
+<ul>
+<li>隐式空闲列表 Implicit List</li>
+<li>显式空闲列表 Explicit List</li>
+<li>分离的空闲列表 Segregated Free List</li>
+<li>按照大小对块进行排序 Blocks Sorted by Size</li>
 </ul>
 
 ]]></content>
@@ -2018,17 +2295,6 @@ def varianceExplained(data, k=1):
 </ul>
 
 <p><img src="media/15108151409015/Typical%20Supervised%20Learning%20Pipeline.png" alt="Typical Supervised Learning Pipeline"/></p>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[`MLlib`: Machine Learning in Apache Spark]]></title>
-    <link href="http://larryim.cc/15108128842368.html"/>
-    <updated>2017-11-16T14:14:44+08:00</updated>
-    <id>http://larryim.cc/15108128842368.html</id>
-    <content type="html"><![CDATA[
-<p>[<a href="https://arxiv.org/pdf/1505.06807.pdf">https://arxiv.org/pdf/1505.06807.pdf</a>]</p>
 
 ]]></content>
   </entry>

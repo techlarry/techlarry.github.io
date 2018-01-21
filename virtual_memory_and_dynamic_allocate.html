@@ -223,11 +223,27 @@ var _hmt = _hmt || [];
 
 <p><img src="media/15164033620970/page_table.jpg" alt="page_table"/></p>
 
+<p>在虚拟内存的习惯说法中，DRAM缓存命中/不命中，特称为<strong>页命中</strong>/<strong>缺页</strong>(Page Fault)。</p>
+
 <h3 id="toc_3">2.2 作为内存管理的工具</h3>
+
+<p>操作系统为每个进程提供了一个独立的页表，也就是提供了一个独立的虚拟地址空间。多个虚拟页面可以映射到同一个共享物理页面上。虚拟内存简化了链接和加载、代码和数据共享、以及应用程序的内存分配。</p>
 
 <h3 id="toc_4">2.3 作为内存保护的工具</h3>
 
-<h2 id="toc_5">Linux虚拟内存系统</h2>
+<p>一方面，每个进程拥有独立的地址空间使得区分不同进程的私有内存变得容易。另一方面在每个页表条目PTE中，添加了额外的<strong>许可位</strong>(SUP, READ, WRITE, EXEC)来控制对一个虚拟页面内容的访问：</p>
+
+<ul>
+<li>SUP位表示进程是否运行在超级用户模式下才能访问</li>
+<li>READ/WRITE位控制读和写的访问</li>
+<li>EXEC位控制执行的访问</li>
+</ul>
+
+<p><img src="media/15164033620970/vm_protection.png" alt="vm_protection"/></p>
+
+<p>如果违反许可条件，那么就触发段错误(segmentation fault)。</p>
+
+<h2 id="toc_5">3 Linux虚拟内存系统</h2>
 
 <p>虚拟内存(<code>Virtual Memory</code>)是一个抽象概念。它为每个进程提供了假象，即每个进程都在独占地使用内存。每个进程看到的内存都是一致的，称为虚拟地址空间<code>Virtual Address Space</code>.</p>
 
@@ -247,6 +263,52 @@ var _hmt = _hmt || [];
 <li>内核虚拟内存：包含内核中的代码和数据结构。</li>
 </ul>
 
+<h2 id="toc_6">4 动态内存分配</h2>
+
+<p>程序使用动态内存分配的最重要的原因是经常直到程序实际运行时，才知道某些数据结构的大小。</p>
+
+<h3 id="toc_7">4.2 分配器的要求和目标</h3>
+
+<h4 id="toc_8">4.2.1 分配器的要求</h4>
+
+<p>分配器有如下的要求：</p>
+
+<ul>
+<li>处理任意请求序列</li>
+<li>立即相应请求</li>
+<li>只使用堆</li>
+<li>对齐块(对齐要求)</li>
+<li>不修改已分配的块</li>
+</ul>
+
+<h4 id="toc_9">4.2.2 分配器的目标</h4>
+
+<p>分配器试图最大化吞吐率和内存利用率</p>
+
+<ul>
+<li>最大化吞吐率(每个单位时间里完成的请求数)</li>
+<li>最大化内存利用率</li>
+</ul>
+
+<p>造成利用率很低的主要原因是<strong>碎片</strong>(fragmentation)现象。当载荷比块要小时，发生<strong>内部碎片</strong>，引起的原因有：对齐等。</p>
+
+<p><img src="media/15164033620970/internal_fragmentation.png" alt="internal_fragmentation"/></p>
+
+<p>当即使有足够的累积的块内存，但是没有单一块能够满足需求时，发生<strong>外部碎片</strong>：</p>
+
+<p><img src="media/15164033620970/external_fragmentation.png" alt="external_fragmentation"/></p>
+
+<p>外部碎片还取决于将来的请求，例如上图，如果最后的p4请求4个字节呢？也就不会发生碎片。正因为外部碎片难以量化且不可能预测，所以分配器通常采用启发式策略来试图维持少量的大空闲块，而不是维持大量的小空闲块。</p>
+
+<h4 id="toc_10">实现方法</h4>
+
+<ul>
+<li>隐式空闲列表 Implicit List</li>
+<li>显式空闲列表 Explicit List</li>
+<li>分离的空闲列表 Segregated Free List</li>
+<li>按照大小对块进行排序 Blocks Sorted by Size</li>
+</ul>
+
 
     
 
@@ -255,6 +317,9 @@ var _hmt = _hmt || [];
       <div class="row">
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
+      
+          <a href="memory_alignment.html" 
+          title="Previous Post: 内存对齐">&laquo; 内存对齐</a>
       
         </p>
         </div>
@@ -387,6 +452,12 @@ s.setAttribute('data-timestamp', +new Date());
 	      
 		      
 			      <li class="post">
+			        <a href="memory_alignment.html">内存对齐</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="virtual_memory_and_dynamic_allocate.html">虚拟内存和动态内存分配</a>
 			      </li>
 		     
@@ -406,12 +477,6 @@ s.setAttribute('data-timestamp', +new Date());
 		      
 			      <li class="post">
 			        <a href="Linking.html">链接</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="python_assembly_code.html">Python汇编代码</a>
 			      </li>
 		     
 		  

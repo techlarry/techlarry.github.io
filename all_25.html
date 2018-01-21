@@ -157,6 +157,60 @@ var _hmt = _hmt || [];
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="14969711309827.html">
+                
+                  <h1>数据结构介绍</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h2 id="toc_0">概念</h2>
+
+<p>数据是一个抽象的概念，将其进行分类后得到程序设计语言中的基本类型。如：int，float，char等。数据元素之间不是独立的，存在特定的关系，这些关系便是结构。数据结构指数据对象中数据元素之间的关系。</p>
+
+<p>程序= 数据结构+算法<br/>
+总结：算法是为了解决实际问题而设计的，数据结构是算法需要处理的问题载体。</p>
+
+<h2 id="toc_1">抽象数据类型(Abstract Data Type)</h2>
+
+<p>抽象数据类型(ADT)的含义是指一个数学模型以及定义在此数学模型上的一组操作。即把数据类型和数据类型上的运算捆在一起，进行封装。引入抽象数据类型的目的是把数据类型的表示和数据类型上运算的实现与这些数据类型和运算在程序中的引用隔开，使它们相互独立。</p>
+
+<h2 id="toc_2">内存、类型本质、连续存储</h2>
+
+<p>内存是连续的存储空间，内存的基本存储单元是一个字节，1个字节(Byte)是8位(Bit)</p>
+
+<p>顺序表的内存形式：</p>
+
+<ul>
+<li>逻辑地址：0,1,2,3,...,n01</li>
+<li>元素存储: e0,e1,e2,e3,....,en-1</li>
+<li>物理地址:l0,l0+c,l0+2c,l0+3c,l0+(n-1)c</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/6/9</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html'>Python数据结构与算法</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="14969760599335.html">
                 
                   <h1>作用域</h1>
@@ -509,169 +563,6 @@ copy.copy() <br/>
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="14969760668045.html">
-                
-                  <h1>闭包，装饰器</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h3 id="toc_0">函数引用</h3>
-
-<pre><code class="language-python">&gt;&gt;&gt; def test():
-...     print(&#39;lala&#39;)
-...
-&gt;&gt;&gt; test()
-lala
-&gt;&gt;&gt; test
-&lt;function test at 0x109a51950&gt; 
-
-&gt;&gt;&gt; b = test  # b指向函数体test
-
-&gt;&gt;&gt; b
-&lt;function test at 0x109a51950&gt;
-
-&gt;&gt;&gt; b()  # 通过引用调用函数
-lala
-</code></pre>
-
-<h3 id="toc_1">闭包</h3>
-
-<p>在函数内部再定义一个函数，并且这个函数用到了外边函数的变量，那么将这个函数以及用到的一些变量统称为闭包</p>
-
-<pre><code class="language-python">def test(number):
-  def test_in(number_in):
-    print(&quot;in test_in, number_in is %d&quot;%number_in)
-    return number+number_in
-  return test_in
-
-ret = test(100)  # ret 指向函数体
-ret(1)  # 调用函数
-</code></pre>
-
-<p>闭包的实际例子：</p>
-
-<pre><code class="language-python">def line_conf(a,b):
-  def line(x):
-    return a*x + b
-  return line
-
-line1 = line_conf(1,1)
-line2 = line_conf(4,5)
-
-print(line1(5))
-print(line2(5))
-</code></pre>
-
-<ol>
-<li>闭包又花了变量，原来需要类对象完成的工作，闭包也可以完成</li>
-<li>由于必报引用了外部函数的局部变量，则外部函数的局部变量没有及时释放，消耗内存</li>
-</ol>
-
-<h2 id="toc_2">装饰器</h2>
-
-<p>装饰器是程序开发中经常会用到的一个功能，用好了装饰器，开发效率如虎添翼。<br/>
-* 只要python解释器执行到了装饰器代码部分，那么就会自动装饰，而不是等到调用的时候才装饰<br/>
-* 有多个装饰器时，先执行后面的装饰</p>
-
-<pre><code class="language-python">def w1(func):
-  print(&#39;---正在装饰1-----&#39;)
-  def inner():
-    print(&#39;-----装在验证权限1------&#39;)
-    func()
-  return inner
-  
-def w2(func):
-  print(&#39;---正在装饰2-----&#39;)
-  def inner():
-    print(&#39;-----装在验证权限2------&#39;)
-    func()
-  return inner
-
-@w1
-@w2
-def f1():
-  print(&quot;---f1---&quot;)
-
-f1()
-
-&gt;&gt;&gt;
----正在装饰2-----
----正在装饰1-----
------装在验证权限1------
------装在验证权限2------
----f1---
-</code></pre>
-
-<h3 id="toc_3">通用装饰器</h3>
-
-<p>无参数、有参数、不定长参数、有返回值、无返回值 示例</p>
-
-<pre><code class="language-python">def func(functionName):
-
-  def func_in(*args, **kwargs):
-    ret = functionName(*args, **kwargs)
-    return ret
-    
-  return func_in
-</code></pre>
-
-<h3 id="toc_4">带有参数的装饰器</h3>
-
-<p>同一个装饰器，在装饰不同函数时，起到不同的效果</p>
-
-<pre><code class="language-python">def func_arg(arg):
-    def func(functionName):
-        def func_in():
-            print(&quot;---记录日志-arg=%s--&quot;%arg)
-            if arg==&quot;heihei&quot;:
-                functionName()
-                functionName()
-            else:
-                functionName()
-        return func_in
-    return func
-
-#1. 先执行func_arg(&quot;heihei&quot;)函数,这个函数return 的结果是func这个函数的引用
-#2. @func
-#3. 使用@func对test进行装饰
-@func_arg(&quot;heihei&quot;)
-def test():
-    print(&quot;--test--&quot;)
-
-#带有参数的装饰器,能够起到在运行时,有不同的功能
-@func_arg(&quot;haha&quot;)
-def test2():
-    print(&quot;--test2--&quot;)
-
-test()
-test2()
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/4/5</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -775,6 +666,12 @@ test2()
 	      
 		      
 			      <li class="post">
+			        <a href="memory_alignment.html">内存对齐</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="virtual_memory_and_dynamic_allocate.html">虚拟内存和动态内存分配</a>
 			      </li>
 		     
@@ -794,12 +691,6 @@ test2()
 		      
 			      <li class="post">
 			        <a href="Linking.html">链接</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="python_assembly_code.html">Python汇编代码</a>
 			      </li>
 		     
 		  
