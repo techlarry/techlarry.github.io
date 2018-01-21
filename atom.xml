@@ -4,7 +4,7 @@
   <title><![CDATA[techlarry]]></title>
   <link href="http://larryim.cc/atom.xml" rel="self"/>
   <link href="http://larryim.cc/"/>
-  <updated>2018-01-21T08:49:07+08:00</updated>
+  <updated>2018-01-21T08:50:36+08:00</updated>
   <id>http://larryim.cc/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -207,11 +207,11 @@ E:96, 96
 <li>2.数据从1字节开始</li>
 </ul>
 
-<p>当数据从0字节开始的时候，直接将0-3四个字节完全读取到寄存器，结算完成了。</p>
+<p>当数据从0字节开始的时候，直接将0-3四个字节完全读取到寄存器，就算完成了。</p>
 
 <p><img src="media/15164914975645/quadByteAccess.jpg" alt=""/></p>
 
-<p>当数据从1字节开始的时候，问题很复杂，首先先将前4个字节读到寄存器，并再次读取4-7字节的数据进寄存器，接着把0字节，4、6、7字节的数据剔除，最后合并1、2、3、4字节的数据进寄存器，对一个内存未对齐的寄存器进行了这么多额外操作，大大降低了性能。</p>
+<p>当数据从1字节开始的时候，问题很复杂，首先先将前4个字节读到寄存器，并再次读取4-7字节的数据进寄存器，接着把0字节，5、6、7字节的数据剔除，最后合并1、2、3、4字节的数据进寄存器，对一个内存未对齐的寄存器进行了这么多额外操作，大大降低了性能。</p>
 
 <p><img src="media/15164914975645/unalignedAccess.jpg" alt=""/></p>
 
@@ -425,6 +425,35 @@ E:96, 96
     <updated>2018-01-11T01:35:19+08:00</updated>
     <id>http://larryim.cc/Signal.html</id>
     <content type="html"><![CDATA[
+<ul>
+<li>
+<a href="#toc_0">发送/接收信号</a>
+<ul>
+<li>
+<a href="#toc_1">发送信号</a>
+</li>
+<li>
+<a href="#toc_2">接收信号</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_3">阻塞信号和进程回收</a>
+<ul>
+<li>
+<a href="#toc_4">隐式阻塞机制</a>
+</li>
+<li>
+<a href="#toc_5">显式阻塞机制</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_6">信号处理程序</a>
+</li>
+</ul>
+
+
 <p>Linux信号，通知进程系统中发生一个某种类型的事件。每种信号类型都对应于某种系统事件。低层的硬件异常是由内核异常处理程序处理的，正常情况下，对用户进程而言是不可见的。下面是Linux系统上常见的信号：</p>
 
 <p><strong>常见的信号</strong>：</p>
