@@ -122,8 +122,6 @@ var _hmt = _hmt || [];
         
             <li><a href="Deep%20Learning.html">Deep Learning</a></li>
         
-            <li><a href="Latex.html">Latex</a></li>
-        
             <li><a href="Linux%20%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B.html">Linux 系统编程</a></li>
         
             <li><a href="%E6%95%B0%E6%8D%AE%E5%BA%93.html">数据库</a></li>
@@ -156,6 +154,142 @@ var _hmt = _hmt || [];
 	<div class="large-8 medium-8 columns">
 		<div class="markdown-body home-categories">
 		
+			<div class="article">
+                <a class="clearlink" href="PCA.html">
+                
+                  <h1>PCA基础及在Spark中的应用</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>主成分分析(Principal Component Analysis, PCA)主要是用来可视化数据和数据压缩。</p>
+
+<p>PCA的目的是找到一组可以代表原始数据的低维数据。设原始数据为\(X\in \mathbf{R}^{n\times d}\)，有\(d\)个特征。压缩后的数据为\(\mathbf{Z=XP} \in \mathbf{R}^{n\times k}\), 有\(k\)个特征(feature)。</p>
+
+<p>那么找到的这\(k\)个特征，有什么好的约束呢？<br/>
+（Variance/Covariance constraints）</p>
+
+<ul>
+<li>这k个特征无关，也就是说协相关矩阵除对角线以外的元素全部为0</li>
+<li>应该根据特征的方差(variance)选择，越大越好。因为variance越大，越能代表feature。也就是说应该选择协相关矩阵对角元素大的feature。</li>
+</ul>
+
+<p>所以 \(\mathbf{P}\)应该等于X的协方差矩阵的最大\(k\)个特征向量。</p>
+
+<p>协方差矩阵的分布式求解方法见本博客<a href="http://larryim.cc/covariance_spark.html">Covariance Matrix and its solution in Spark</a></p>
+
+<p>下面是特征分解的基础知识，可以在线性代数课本上找到：</p>
+
+<p>特征分解(Eigendecomposition)是将矩阵分解为由特征值和特征向量表示矩阵之积的方法。</p>
+
+<p>令 \(A\)是一个\(N\times N\)的方阵，且有\(N\)个线性无关的特征向量\(q_i(i=1,...,N)\)。这样，A可以被分解为<br/>
+\[\mathbf{A=Q\Lambda Q}^{-1}\]<br/>
+其中\(\mathbf{Q}\)是\(N\times N\)的方阵，且其第\(i\)列为\(A\)的特征向量\(q_i\)。\(\mathbf{\Lambda}\)是对角矩阵，其对角线上的元素为对应的特征值，也即\(\Lambda_{ii}=\lambda_i\).</p>
+
+<p>那么，怎么样选择\(k\)的大小呢？一般认为保留99%或95%的variance. 由于协方差矩阵的对角元素就是对应特征向量的特征值，又是variance，所以我们选择k个对角元素，保留所要求的variance:</p>
+
+<p>\[\text{find} \min k \quad \text{s.t.} \frac{\sum^k_{i=1}\lambda_i}{\sum^k_{i=1}\lambda_i} &gt; 99\%\]</p>
+
+<h2 id="toc_0">PCA in Spark</h2>
+
+<p>在python 中使用 <code>numpy.linalg.eigh</code>计算特征值和特征向量.</p>
+
+<p>基本步骤如下：</p>
+
+<ul>
+<li>计算协方差矩阵 <code>estimateCovariance()</code></li>
+<li>计算主成分和对应方差 <code>pca()</code></li>
+<li>计算保留的成分比例<code>varianceExplained()</code></li>
+</ul>
+
+<pre><code class="language-Python">def estimateCovariance(data):
+    &quot;&quot;&quot;Compute the covariance matrix for a given rdd.
+
+    Args:
+        data (RDD of np.ndarray):  An `RDD` consisting of NumPy arrays.
+
+    Returns:
+        np.ndarray: A multi-dimensional array where the number of rows and columns both equal the
+            length of the arrays in the input `RDD`.
+    &quot;&quot;&quot;
+    mean = data.mean()
+    normalized = data.map(lambda x: x-mean)
+    return normalized.map(lambda x: np.outer(x, x)).sum()/data.count()
+    
+def pca(data, k=2):
+    &quot;&quot;&quot;Computes the top `k` principal components, corresponding scores, and all eigenvalues.
+
+
+    Args:
+        data (RDD of np.ndarray): An `RDD` consisting of NumPy arrays.
+        k (int): The number of principal components to return.
+
+    Returns:
+        tuple of (np.ndarray, RDD of np.ndarray, np.ndarray): A tuple of (eigenvectors, `RDD` of
+            scores, eigenvalues).  Eigenvectors is a multi-dimensional array where the number of
+            rows equals the length of the arrays in the input `RDD` and the number of columns equals
+            `k`.  The `RDD` of scores has the same number of rows as `data` and consists of arrays
+            of length `k`.  Eigenvalues is an array of length d (the number of features).
+    &quot;&quot;&quot;
+    cov = estimateCovariance(data)
+    eigVals, eigVecs = eigh(cov)
+    inds = np.argsort(eigVals)[::-1]
+    topkComponent = eigVecs[:,inds[0:k]]
+    scores = data.map(lambda x: np.dot(x, topkComponent))
+    # Return the `k` principal components, `k` scores, and all eigenvalues
+    return (topkComponent, scores, eigVals[inds])
+    
+    
+def varianceExplained(data, k=1):
+    &quot;&quot;&quot;Calculate the fraction of variance explained by the top `k` eigenvectors.
+
+    Args:
+        data (RDD of np.ndarray): An RDD that contains NumPy arrays which store the
+            features for an observation.
+        k: The number of principal components to consider.
+
+    Returns:
+        float: A number between 0 and 1 representing the percentage of variance explained
+            by the top `k` eigenvectors.
+    &quot;&quot;&quot;
+    components, scores, eigenvalues = pca(data)
+    return sum(eigenvalues[0:k])/sum(eigenvalues)
+</code></pre>
+
+<h2 id="toc_1">应用</h2>
+
+<p>斑马鱼(zebrafish)大脑的响应<a href="http://larryim.cc/ML_lab5_pca_student.html">可视化</a>。</p>
+
+<h2 id="toc_2">Reference</h2>
+
+<ol>
+<li>Machine Learning Course from Coursera. Andrew Ng</li>
+<li>CS190: Scalable Machine Learning</li>
+</ol>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/11/28</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html'>机器学习</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
 			<div class="article">
                 <a class="clearlink" href="covariance_spark.html">
                 
@@ -365,84 +499,6 @@ var _hmt = _hmt || [];
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="scalable%20machine%20learning.html">
-                
-                  <h1>CS190: Scalable Machine Learning</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>see <a href="http://larryim.cc/notebook.html">Labs here</a></p>
-
-<h3 id="toc_0">Distributing Computing</h3>
-
-<p>Need more hardware to store/process modern data</p>
-
-<p>Scale-up(one big machine)</p>
-
-<ul>
-<li>Can be very fast for medium scale problems</li>
-<li>Expensive, specialized hardware</li>
-<li>Eventually hit a wall</li>
-</ul>
-
-<p>Scale-out (many small machine, i.e., distributed)</p>
-
-<ul>
-<li>Commodity hardware, scales to massive problems</li>
-<li>Need to deal with network communication</li>
-<li>Added software complexity</li>
-</ul>
-
-<p>Apache Spark is a general, open-source cluster computing engine.</p>
-
-<p>Well-suited for machine learning</p>
-
-<ul>
-<li>Fast iterative computations</li>
-<li>Efficient communication primitives</li>
-<li>Simple and expressive: APIs in Scala, Java, Python, R</li>
-<li>Integrated higher-level libraries (<code>MLlib</code>, Spark SQL, Spark Streaming, GraphX)</li>
-</ul>
-
-<h3 id="toc_1">Typical Supervised Learning Pipeline</h3>
-
-<ul>
-<li>Obtain Raw Data</li>
-<li>Feature Extraction</li>
-<li>Supervised Learning</li>
-<li>Evaluation</li>
-<li>Predict</li>
-</ul>
-
-<p><img src="media/15108151409015/Typical%20Supervised%20Learning%20Pipeline.png" alt="Typical Supervised Learning Pipeline"/></p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/11/16</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html'>机器学习</a></span>
-          				  
-          					    <span class="posted-in"><a href='Course.html'>Course</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -517,8 +573,6 @@ var _hmt = _hmt || [];
         
             <a href="Deep%20Learning.html"><strong>Deep Learning</strong></a>
         
-            <a href="Latex.html"><strong>Latex</strong></a>
-        
             <a href="Linux%20%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B.html"><strong>Linux 系统编程</strong></a>
         
             <a href="%E6%95%B0%E6%8D%AE%E5%BA%93.html"><strong>数据库</strong></a>
@@ -546,6 +600,12 @@ var _hmt = _hmt || [];
 	      
 		      
 			      <li class="post">
+			        <a href="15165095681582.html">overhead</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="memory_alignment.html">内存对齐</a>
 			      </li>
 		     
@@ -565,12 +625,6 @@ var _hmt = _hmt || [];
 		      
 			      <li class="post">
 			        <a href="Signal.html">信号</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="Linking.html">链接</a>
 			      </li>
 		     
 		  

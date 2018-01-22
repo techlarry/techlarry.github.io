@@ -4,13 +4,55 @@
   <title><![CDATA[techlarry]]></title>
   <link href="http://larryim.cc/atom.xml" rel="self"/>
   <link href="http://larryim.cc/"/>
-  <updated>2018-01-21T08:50:36+08:00</updated>
+  <updated>2018-01-22T11:12:32+08:00</updated>
   <id>http://larryim.cc/</id>
   <author>
     <name><![CDATA[]]></name>
     
   </author>
   <generator uri="http://www.mweb.im/">MWeb</generator>
+  
+  <entry>
+    <title type="html"><![CDATA[overhead]]></title>
+    <link href="http://larryim.cc/15165095681582.html"/>
+    <updated>2018-01-21T12:39:28+08:00</updated>
+    <id>http://larryim.cc/15165095681582.html</id>
+    <content type="html"><![CDATA[
+<p>。。。。。。待续<br/>
+。。。。。。待续<br/>
+。。。。。。待续<br/>
+。。。。。。待续<br/>
+。。。。。。待续<br/>
+。。。。。。待续<br/>
+。。。。。。待续<br/>
+。。。。。。待续<br/>
+。。。。。。待续<br/>
+。。。。。。待续</p>
+
+<p>overhead 到底是什么意思呢？<br/>
+？？？？？？/</p>
+
+<p>视风格可以翻译成「额外开销」、「额外消耗」、「虚耗」。</p>
+
+<p>It&#39;s the resources required to set up an operation. It might seem unrelated, but necessary.</p>
+
+<p>It&#39;s like when you need to go somewhere, you might need a car. But, it would be a lot of overhead to get a car to drive down the street, so you might want to walk. However, the overhead would be worth it if you were going across the country.</p>
+
+<p>In computer science, sometimes we use cars to go down the street because we don&#39;t have a better way, or it&#39;s not worth our time to &quot;learn how to walk&quot;.</p>
+
+<p>The meaning of the word can differ a lot with context. In general, it&#39;s resources (most often memory and CPU time) that are used, which do not contribute directly to the intended result, but are required by the technology or method that is being used. Examples:</p>
+
+<p>Protocol overhead: Ethernet frames, IP packets and TCP segments all have headers, TCP connections require handshake packets. Thus, you cannot use the entire bandwidth the hardware is capable of for your actual data. You can reduce the overhead by using larger packet sizes and UDP has a smaller header and no handshake.<br/>
+Data structure memory overhead: A linked list requires at least one pointer for each element it contains. If the elements are the same size as a pointer, this means a 50% memory overhead, whereas an array can potentially have 0% overhead.<br/>
+Method call overhead: A well-designed program is broken down into lots of short methods. But each method call requires setting up a stack frame, copying parameters and a return address. This represents CPU overhead compared to a program that does everything in a single monolithic function. Of course, the added maintainability makes it very much worth it, but in some cases, excessive method calls can have a significant performance impact.</p>
+
+<ul>
+<li><a href="https://stackoverflow.com/questions/2860234/what-is-overhead">https://stackoverflow.com/questions/2860234/what-is-overhead</a></li>
+<li><a href="https://www.zhihu.com/question/20596199?sort=created">https://www.zhihu.com/question/20596199?sort=created</a></li>
+</ul>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[内存对齐]]></title>
@@ -55,7 +97,7 @@ int main(){
 
 <p>除此之外，程序员可自己指定数据的对齐大小，通过使用<code>pragma pack(x)</code>预处理命令，指定对齐大小为\(\text{pack_align}=x\)。只能指定\(2^n\)作为对齐大小，对于指定对齐大小为6、9、10这样的编译器不会理会。</p>
 
-<pre><code>#pragma pack(x)
+<pre><code class="language-C">#pragma pack(x)
 //...
 #pragma pack()
 </code></pre>
@@ -301,13 +343,9 @@ E:96, 96
 
 <h2 id="toc_5">3 Linux虚拟内存系统</h2>
 
-<p>虚拟内存(<code>Virtual Memory</code>)是一个抽象概念。它为每个进程提供了假象，即每个进程都在独占地使用内存。每个进程看到的内存都是一致的，称为虚拟地址空间<code>Virtual Address Space</code>.</p>
+<p>Linux为每个进程维护了一个单独的虚拟地址空间。Linux将虚拟内存组织成一些<strong>区域</strong>的集合。一个区域就是已分配的虚拟内存的连续片。</p>
 
-<p>虚拟内存在不同操作系统上有区别，以Linux系统为例,下面是<code>Linux  x86-64运行时的内存映像</code>。</p>
-
-<p><img src="media/15089188725996/linux_virtual_memory.png" alt="linux_virtual_memory"/></p>
-
-<p>虚拟地址空间由如下几部分组成：</p>
+<p>Linux虚拟地址空间由如下几个区域组成：</p>
 
 <ul>
 <li>代码（<code>.text</code>）: 这里存放的是CPU要执行的指令。代码段是可共享的，相同的代码在内存中只会有一个拷贝，同时这个段是只读的，防止程序由于错误而修改自身的指令。</li>
@@ -319,13 +357,42 @@ E:96, 96
 <li>内核虚拟内存：包含内核中的代码和数据结构。</li>
 </ul>
 
-<h2 id="toc_6">4 动态内存分配</h2>
+<p><img src="media/15089188725996/linux_virtual_memory.png" alt="linux_virtual_memory"/></p>
+
+<h3 id="toc_6">3.1 Linux是如何组织虚拟内存的</h3>
+
+<p>那么Linux具体是怎么组织虚拟内存的呢？Linux内核为系统中的每个进程维护一个单独的任务结构体(<code>task_struct</code>, 在<code>sched.h</code>头文件中)。<code>task_struct</code>中的元素包含运行该进程所需要的所有信息(PID、指向用户栈的指针、可执行目标文件的名字、以及程序计数器)。</p>
+
+<p><img src="media/15164033620970/vm_linux.png" alt="vm_linux"/></p>
+
+<p><code>task_struct</code>中的一个元素指向<code>mm_struct</code>，它描述了虚拟内存的当前状态。<code>pgd</code>指向第一级页表的基址，而<code>mmap</code>指向一个<code>vm_area_struct</code>(区域结构, 定义在<code>mm_types.h</code>)的链表。每个区域结构链表都描述了虚拟地址空间的一个区域，包含以下字段：</p>
+
+<ul>
+<li><code>vm_start</code>: 指向区域的起始处</li>
+<li><code>vm_end</code>: 指向区域的结束处</li>
+<li><code>vm_prot</code>: 描述着区域内包含的所有页的读写许可权限</li>
+<li><code>vm_flags</code>: 描述进程共享/私有</li>
+<li><code>vm_next</code>: 下一个区域结构</li>
+</ul>
+
+<h3 id="toc_7">3.2 Linux 缺页异常处理</h3>
+
+<p>内存管理单元MMU在试图翻译某个虚拟地址A时，触发了一个缺页异常，引起缺页异常处理程序：</p>
+
+<ul>
+<li>虚拟地址A是合法的吗？-&gt; 段错误</li>
+<li>试图进行的内存访问是合法的吗？ -&gt; 保护异常</li>
+</ul>
+
+<p><img src="media/15164033620970/linux_page_fault.png" alt="linux_page_fault"/></p>
+
+<h2 id="toc_8">4 动态内存分配</h2>
 
 <p>程序使用动态内存分配的最重要的原因是经常直到程序实际运行时，才知道某些数据结构的大小。</p>
 
-<h3 id="toc_7">4.2 分配器的要求和目标</h3>
+<h3 id="toc_9">4.2 分配器的要求和目标</h3>
 
-<h4 id="toc_8">4.2.1 分配器的要求</h4>
+<h4 id="toc_10">4.2.1 分配器的要求</h4>
 
 <p>分配器有如下的要求：</p>
 
@@ -337,7 +404,7 @@ E:96, 96
 <li>不修改已分配的块</li>
 </ul>
 
-<h4 id="toc_9">4.2.2 分配器的目标</h4>
+<h4 id="toc_11">4.2.2 分配器的目标</h4>
 
 <p>分配器试图最大化吞吐率和内存利用率</p>
 
@@ -346,7 +413,7 @@ E:96, 96
 <li>最大化内存利用率</li>
 </ul>
 
-<p>造成利用率很低的主要原因是<strong>碎片</strong>(fragmentation)现象。当载荷比块要小时，发生<strong>内部碎片</strong>，引起的原因有：对齐等。</p>
+<p>造成利用率很低的主要原因是<strong>碎片</strong>(fragmentation)现象。当有效载荷比块要小时，发生<strong>内部碎片</strong>，引起的原因有：对齐等。</p>
 
 <p><img src="media/15164033620970/internal_fragmentation.png" alt="internal_fragmentation"/></p>
 
@@ -356,14 +423,113 @@ E:96, 96
 
 <p>外部碎片还取决于将来的请求，例如上图，如果最后的p4请求4个字节呢？也就不会发生碎片。正因为外部碎片难以量化且不可能预测，所以分配器通常采用启发式策略来试图维持少量的大空闲块，而不是维持大量的小空闲块。</p>
 
-<h4 id="toc_10">实现方法</h4>
+<h3 id="toc_12">4.3 实现方法</h3>
 
 <ul>
-<li>隐式空闲列表 Implicit List</li>
-<li>显式空闲列表 Explicit List</li>
-<li>分离的空闲列表 Segregated Free List</li>
-<li>按照大小对块进行排序 Blocks Sorted by Size</li>
+<li>隐式空闲列表 Implicit Free List</li>
+<li>显式空闲列表 Explicit Free List</li>
+<li>分离式空闲列表 Segregated Free List</li>
 </ul>
+
+<h2 id="toc_13">5 C程序中常见的与内存有关的错误</h2>
+
+<h4 id="toc_14">间接引用坏指针</h4>
+
+<p>这是非常常见的例子，没有引用对应的地址，少了 &amp;</p>
+
+<pre><code class="language-C">int val;
+scanf(&quot;%d&quot;, val); // 正确应该是scanf(&quot;%d, &amp;val);
+</code></pre>
+
+<h4 id="toc_15">读未初始化的内存</h4>
+
+<p><strong>堆内存是没有被初始化为0的</strong>：</p>
+
+<pre><code class="language-C">/* return y = Ax */
+int *matvec(int **A, int *x) {
+    int *y = malloc(N * sizeof(int));
+    int i, j;
+    
+    for (i = 0; i &lt; N; i++)
+        for (j = 0; j &lt; N; j++)
+            y[i] += A[i][j] * x[j];
+    return y;
+}
+</code></pre>
+
+<p>正确的方法是显式地将y[i]设置为0，或者使用<code>calloc</code>。</p>
+
+<h4 id="toc_16">允许栈缓冲区溢出</h4>
+
+<p>没有检查字符串的长度（经典的缓冲区溢出攻击也是利用相同的机制）</p>
+
+<pre><code class="language-C">char s[8];
+int i;
+gets(s); /* stack buffer overflow, reads &quot;123456789&quot; from stdin */
+</code></pre>
+
+<h4 id="toc_17">引用不存在的变量</h4>
+
+<p>尽管指针仍然指向一个合法的内存地址，但是已经不再指向一个合法的变量了。以后在程序中调用其他函数时，内存将重用它们的栈针。</p>
+
+<pre><code class="language-C">int *foo() {
+    int val;
+    
+    return &amp;val;
+}
+</code></pre>
+
+<h4 id="toc_18">多次释放</h4>
+
+<p>这个不用多说，不能重复搞两次</p>
+
+<pre><code class="language-C">x = malloc(N * sizeof(int));
+//  &lt;manipulate x&gt;
+free(x);
+y = malloc(M * sizeof(int));
+//  &lt;manipulate y&gt;
+free(x);
+</code></pre>
+
+<h4 id="toc_19">引用已经被释放的堆块中的数据</h4>
+
+<p>同样是很明显的错误，不要犯</p>
+
+<pre><code class="language-C">x = malloc(N * sizeof(int));
+//  &lt;manipulate x&gt;
+free(x);
+//  ....
+y = malloc(M * sizeof(int));
+for (i = 0; i &lt; M; i++)
+    y[i] = x[i]++;
+</code></pre>
+
+<h4 id="toc_20">内存泄漏</h4>
+
+<p>忘记释放已分配块：</p>
+
+<pre><code class="language-C">foo() {
+    int *x = malloc(N * sizeof(int));
+    // ...
+    return ;
+}
+</code></pre>
+
+<p>或者只释放了数据结构的一部分：</p>
+
+<pre><code class="language-C">struct list {
+    int val;
+    struct list *next;
+};
+foo() {
+    struct list *head = malloc(sizeof(struct list));
+    head-&gt;val = 0;
+    head-&gt;next = NULL;
+    //...
+    free(head);
+    return;
+}
+</code></pre>
 
 ]]></content>
   </entry>
@@ -2270,60 +2436,6 @@ def varianceExplained(data, k=1):
 &gt;&gt;&gt; print reduce(lambda x, y: x + y, foo)
 139
 </code></pre>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[CS190: Scalable Machine Learning]]></title>
-    <link href="http://larryim.cc/scalable%20machine%20learning.html"/>
-    <updated>2017-11-16T14:52:20+08:00</updated>
-    <id>http://larryim.cc/scalable%20machine%20learning.html</id>
-    <content type="html"><![CDATA[
-<p>see <a href="http://larryim.cc/notebook.html">Labs here</a></p>
-
-<h3 id="toc_0">Distributing Computing</h3>
-
-<p>Need more hardware to store/process modern data</p>
-
-<p>Scale-up(one big machine)</p>
-
-<ul>
-<li>Can be very fast for medium scale problems</li>
-<li>Expensive, specialized hardware</li>
-<li>Eventually hit a wall</li>
-</ul>
-
-<p>Scale-out (many small machine, i.e., distributed)</p>
-
-<ul>
-<li>Commodity hardware, scales to massive problems</li>
-<li>Need to deal with network communication</li>
-<li>Added software complexity</li>
-</ul>
-
-<p>Apache Spark is a general, open-source cluster computing engine.</p>
-
-<p>Well-suited for machine learning</p>
-
-<ul>
-<li>Fast iterative computations</li>
-<li>Efficient communication primitives</li>
-<li>Simple and expressive: APIs in Scala, Java, Python, R</li>
-<li>Integrated higher-level libraries (<code>MLlib</code>, Spark SQL, Spark Streaming, GraphX)</li>
-</ul>
-
-<h3 id="toc_1">Typical Supervised Learning Pipeline</h3>
-
-<ul>
-<li>Obtain Raw Data</li>
-<li>Feature Extraction</li>
-<li>Supervised Learning</li>
-<li>Evaluation</li>
-<li>Predict</li>
-</ul>
-
-<p><img src="media/15108151409015/Typical%20Supervised%20Learning%20Pipeline.png" alt="Typical Supervised Learning Pipeline"/></p>
 
 ]]></content>
   </entry>

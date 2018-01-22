@@ -122,8 +122,6 @@ var _hmt = _hmt || [];
         
             <li><a href="Deep%20Learning.html">Deep Learning</a></li>
         
-            <li><a href="Latex.html">Latex</a></li>
-        
             <li><a href="Linux%20%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B.html">Linux 系统编程</a></li>
         
             <li><a href="%E6%95%B0%E6%8D%AE%E5%BA%93.html">数据库</a></li>
@@ -156,6 +154,307 @@ var _hmt = _hmt || [];
 	<div class="large-8 medium-8 columns">
 		<div class="markdown-body home-categories">
 		
+			<div class="article">
+                <a class="clearlink" href="15165095681582.html">
+                
+                  <h1>overhead</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>。。。。。。待续<br/>
+。。。。。。待续<br/>
+。。。。。。待续<br/>
+。。。。。。待续<br/>
+。。。。。。待续<br/>
+。。。。。。待续<br/>
+。。。。。。待续<br/>
+。。。。。。待续<br/>
+。。。。。。待续<br/>
+。。。。。。待续</p>
+
+<p>overhead 到底是什么意思呢？<br/>
+？？？？？？/</p>
+
+<p>视风格可以翻译成「额外开销」、「额外消耗」、「虚耗」。</p>
+
+<p>It&#39;s the resources required to set up an operation. It might seem unrelated, but necessary.</p>
+
+<p>It&#39;s like when you need to go somewhere, you might need a car. But, it would be a lot of overhead to get a car to drive down the street, so you might want to walk. However, the overhead would be worth it if you were going across the country.</p>
+
+<p>In computer science, sometimes we use cars to go down the street because we don&#39;t have a better way, or it&#39;s not worth our time to &quot;learn how to walk&quot;.</p>
+
+<p>The meaning of the word can differ a lot with context. In general, it&#39;s resources (most often memory and CPU time) that are used, which do not contribute directly to the intended result, but are required by the technology or method that is being used. Examples:</p>
+
+<p>Protocol overhead: Ethernet frames, IP packets and TCP segments all have headers, TCP connections require handshake packets. Thus, you cannot use the entire bandwidth the hardware is capable of for your actual data. You can reduce the overhead by using larger packet sizes and UDP has a smaller header and no handshake.<br/>
+Data structure memory overhead: A linked list requires at least one pointer for each element it contains. If the elements are the same size as a pointer, this means a 50% memory overhead, whereas an array can potentially have 0% overhead.<br/>
+Method call overhead: A well-designed program is broken down into lots of short methods. But each method call requires setting up a stack frame, copying parameters and a return address. This represents CPU overhead compared to a program that does everything in a single monolithic function. Of course, the added maintainability makes it very much worth it, but in some cases, excessive method calls can have a significant performance impact.</p>
+
+<ul>
+<li><a href="https://stackoverflow.com/questions/2860234/what-is-overhead">https://stackoverflow.com/questions/2860234/what-is-overhead</a></li>
+<li><a href="https://www.zhihu.com/question/20596199?sort=created">https://www.zhihu.com/question/20596199?sort=created</a></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/1/21</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Computer%20System.html'>Computer System</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="memory_alignment.html">
+                
+                  <h1>内存对齐</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>许多计算机系统对基本数据类型的合法地址做出了一些限制，要求某种类型对象的地址必须时某个值K(通常是2、4或8)的倍数。这种<strong>对齐限制</strong>简化了形成处理器和内存系统之间的硬件设计。例如，假设一个处理器总是从内存中取8个字节，则地址必须为8的倍数。如果我们能保证将所有的double类型的数据对齐成8的倍数，那么就可以用一个内存操作来读或者写值了。否则，我们可能需要执行两次内存访问，因为对象可能被放在两个8字节内存块中(详见内存对齐原因)。</p>
+
+<p>例如：</p>
+
+<pre><code class="language-C">#include&lt;iostream&gt;
+using namespace std;
+struct A{
+    char a;
+    int b;
+    short c;
+};
+
+struct B{
+    short c;
+    char a;
+    int b;
+};
+
+int main(){
+    cout&lt;&lt;sizeof(A)&lt;&lt;endl; //结果是12
+    cout&lt;&lt;sizeof(B)&lt;&lt;endl; //结果是8
+    return 0;
+}
+</code></pre>
+
+<p>以上结构体变量数量和类型完全相同，但是因为对齐限制，却得到了不同的结果。</p>
+
+<h2 id="toc_0">对齐原则</h2>
+
+<ul>
+<li>任何\(K\)字节的基本对象的地址必须是K的倍数: \(\text{align}(x) = \text{sizeof}(x) = K\)</li>
+<li>结构体内存对齐要求结构体内每一个成员变量都是内存对齐的；</li>
+<li>结构体本身也要对齐。</li>
+</ul>
+
+<p>除此之外，程序员可自己指定数据的对齐大小，通过使用<code>pragma pack(x)</code>预处理命令，指定对齐大小为\(\text{pack_align}=x\)。只能指定\(2^n\)作为对齐大小，对于指定对齐大小为6、9、10这样的编译器不会理会。</p>
+
+<pre><code class="language-C">#pragma pack(x)
+//...
+#pragma pack()
+</code></pre>
+
+<p>使用<code>pragma pack(x)</code>预处理命令后，对齐大小为</p>
+
+<p>\[\text{align}(x) = \min(\text{sizeof}(x) , \text{pack_align})\] </p>
+
+<p>即<code>sizeof(x)</code>和指定对齐大小哪个小，对齐大小就为哪个。</p>
+
+<p>通过以下例子可以更好地掌握内存对齐原则：</p>
+
+<pre><code class="language-C">#include &lt;stdio.h&gt;
+#include &lt;assert.h&gt;
+#include &lt;stddef.h&gt;
+
+
+#pragma pack(1)
+    //此处指定对齐大小为1
+    //对于a，实际对齐大小为min(sizeof(int),1)=min(4,1)=1
+    //对于b，实际对齐大小为min(sizeof(char),1)=min(1,1)=1
+    //编译器会确保TEST_A首地址即a的地首址是1字节对齐的，此时a对齐
+    //对于b，由于b要求首地址1字节对齐，这显然对于任何地址都合适，所以a,b都是对齐的
+    //对于TEST_A数组，第一个TEST_A是对齐的（假设其地址为0），则第二个TEST_A的首地址为(0+5=5)，对于第二个TEST_A的两个变量a，b均对齐
+    //OK,对齐合理。因此整个结构体的大小为5   
+typedef struct TEST_A
+{
+    int a;
+    char b;
+} A;
+#pragma  pack()
+
+
+#pragma pack(2)
+    //此处指定对齐大小为2
+    //对于a，实际对齐大小为min(sizeof(int),2)=min(4,2)=2
+    //对于b，实际对齐大小为min(sizeof(char),2)=min(1,2)=1
+    //编译器会确保TEST_A首地址即a的地首址是2字节对齐的，此时a对齐
+    //对于b，由于b要求首地址1字节对齐，这显然对于任何地址都合适，所以a,b都是对齐的
+    //对于TEST_B数组，第一个TEST_B是对齐的（假设其地址为0），则第二个TEST_B的首地址为(0+5=5)，对于第二个TEST_B的变量a，显然地址5是不对齐于2字节的
+    //因此，需要在TEST_B的变量b后面填充1字节，此时连续相连的TEST_B数组才会对齐
+    //OK,对齐合理。因此整个结构体的大小为5+1=6
+typedef struct TEST_B
+{
+    int a;
+    char b;
+} B;
+#pragma  pack()
+
+   
+#pragma pack(4)
+    //此处指定对齐大小为4
+    //对于a，实际对齐大小为min(sizeof(int),2)=min(4,4)=4
+    //对于b，实际对齐大小为min(sizeof(char),2)=min(1,4)=1
+    //编译器会确保TEST_A首地址即a的地首址是4字节对齐的，此时a对齐
+    //对于b，由于b要求首地址1字节对齐，这显然对于任何地址都合适，所以a,b都是对齐的
+    //对于TEST_C数组，第一个TEST_C是对齐的（假设其地址为0），则第二个TEST_C的首地址为(0+5=5)，对于第二个TEST_C的变量a，显然地址5是不对齐于4字节的
+    //因此，需要在TEST_C的变量b后面填充3字节，此时连续相连的TEST_C数组才会对齐
+    //OK,对齐合理。因此整个结构体的大小为5+3=8
+typedef struct TEST_C
+{
+    int a;
+    char b;
+} C;
+#pragma  pack()
+
+
+#pragma pack(8)
+    //此处指定对齐大小为8
+    //对于a，实际对齐大小为min(sizeof(int),8)=min(4,8)=4
+    //对于b，实际对齐大小为min(sizeof(char),8)=min(1,8)=1
+    //编译器会确保TEST_A首地址即a的地首址是4字节对齐的，此时a对齐
+    //对于b，由于b要求首地址1字节对齐，这显然对于任何地址都合适，所以a,b都是对齐的
+    //对于TEST_D数组，第一个TEST_D是对齐的（假设其地址为0），则第二个TEST_D的首地址为(0+5=5)，对于第二个TEST_D的变量a，显然地址5是不对齐于4字节的
+    //因此，需要在TEST_D的变量b后面填充3字节，此时连续相连的TEST_D数组才会对齐
+    //OK,对齐合理。因此整个结构体的大小为5+3=8
+typedef struct TEST_D
+{
+    int a;
+    char b;
+} D;
+#pragma  pack()
+
+
+
+#pragma pack(8)
+    //此处指定对齐大小为8
+    //对于a，实际对齐大小为min(sizeof(int),8)=min(4,8)=4
+    //对于b，实际对齐大小为min(sizeof(char),8)=min(1,8)=1
+    //对于c，这是一个数组，数组的对齐大小与其单元一致，因而align(c)=align(double)=min(sizeof(double),8)=min(8,8)=8
+    //对于d，实际对齐大小为min(sizeof(char),8)=min(1,8)=1
+    //编译器会确保TEST_A首地址即a的地首址是4字节对齐的，此时a对齐
+    //对于b，由于b要求首地址1字节对齐，这显然对于任何地址都合适，所以a,b都是对齐的
+    //对于c，由于c要求首地址8字节对齐，因此前面的a+b=5，还要在c后面补上3个字节才能对齐
+    //对于d，显而易见，任何地址均对齐，此时结构体大小为4+1+3+10*8+1=89
+    //对于TEST_E数组，第一个TEST_E是对齐的（假设其地址为0），则第二个TEST_E的首地址为(0+89=89)，对于第二个TEST_E的变量a，显然地址89是不对齐于4字节的
+    //因此，需要在TEST_E的变量d后面填充7字节，此时连续相连的TEST_E数组才会对齐 
+    //(注意：此处不仅要确保下一个TEST_E的a,b变量对齐，还要确保c也对齐，所以这里不是填充3字节，而是填充7字节）
+    //OK,对齐合理。因此整个结构体的大小为(4)+(1+3)+(10*8)+(1+7)=96
+typedef struct TEST_E
+{
+    int a;
+    char b;
+    double c[10];
+    char d;
+} E;
+#pragma  pack()
+
+int main()
+{
+    A A1;
+    B B1;
+    C C1;
+    D D1;
+    E E1, E2;
+    printf(&quot;A:%zu, %zu\n&quot;, sizeof(A1), sizeof(A1));
+    printf(&quot;B:%zu\n&quot;, sizeof(B1));
+    printf(&quot;C:%zu\n&quot;, sizeof(C1));
+    printf(&quot;D:%zu\n&quot;, sizeof(D1));
+    printf(&quot;E:%zu, %zu\n&quot;, sizeof(E1), sizeof(E2));
+
+    return 0;
+}
+</code></pre>
+
+<pre><code>A:5, 5
+B:6
+C:8
+D:8
+E:96, 96
+</code></pre>
+
+<h2 id="toc_1">内存对齐原因</h2>
+
+<p><img src="media/15164914975645/howProgrammersSeeMemory.jpg" alt=""/></p>
+
+<p>我们普通程序员心中的内存印象，由一个个字节组成，但是CPU却不是这么看待的</p>
+
+<p><img src="media/15164914975645/howProcessorsSeeMemory.jpg" alt=""/></p>
+
+<p>内存读取是按块进行的，块的大小称为<strong>粒度</strong>（granularity)。实际上在存储器层次结构上的较低层向较高层传输数据的时候都是按块进行的。也就是说，数据从内存到寄存器，要经过诸多关卡(在core i7上，有L1、L2和L3高速缓存)，每个关卡都有不同的粒度。所以为了提高速度，不仅仅大的对象要保证对齐，连对象内部的数据，也需要对齐到2的幂。</p>
+
+<p>以内存读取为例，我们仔细看看为什么内存不对齐会影响读取速度？</p>
+
+<p>假设CPU要读取一个4字节大小的数据到寄存器中（假设内存读取粒度是4），分两种情况讨论：</p>
+
+<ul>
+<li>1.数据从0字节开始</li>
+<li>2.数据从1字节开始</li>
+</ul>
+
+<p>当数据从0字节开始的时候，直接将0-3四个字节完全读取到寄存器，就算完成了。</p>
+
+<p><img src="media/15164914975645/quadByteAccess.jpg" alt=""/></p>
+
+<p>当数据从1字节开始的时候，问题很复杂，首先先将前4个字节读到寄存器，并再次读取4-7字节的数据进寄存器，接着把0字节，5、6、7字节的数据剔除，最后合并1、2、3、4字节的数据进寄存器，对一个内存未对齐的寄存器进行了这么多额外操作，大大降低了性能。</p>
+
+<p><img src="media/15164914975645/unalignedAccess.jpg" alt=""/></p>
+
+<h2 id="toc_2">参考</h2>
+
+<ul>
+<li>1. 深入理解计算机体系（第三版）</li>
+<li>2. <a href="https://zh.wikipedia.org/zh-hans/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%AF%B9%E9%BD%90">数据结构对齐 维基百科</a></li>
+<li>3. <a href="https://www.cnblogs.com/xylc/p/3780907.html">https://www.cnblogs.com/xylc/p/3780907.html</a></li>
+<li>4. <a href="https://www.cnblogs.com/jijiji/p/4854581.html">https://www.cnblogs.com/jijiji/p/4854581.html</a></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/1/21</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Computer%20System.html'>Computer System</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
 			<div class="article">
                 <a class="clearlink" href="virtual_memory_and_dynamic_allocate.html">
                 
@@ -232,13 +531,9 @@ var _hmt = _hmt || [];
 
 <h2 id="toc_5">3 Linux虚拟内存系统</h2>
 
-<p>虚拟内存(<code>Virtual Memory</code>)是一个抽象概念。它为每个进程提供了假象，即每个进程都在独占地使用内存。每个进程看到的内存都是一致的，称为虚拟地址空间<code>Virtual Address Space</code>.</p>
+<p>Linux为每个进程维护了一个单独的虚拟地址空间。Linux将虚拟内存组织成一些<strong>区域</strong>的集合。一个区域就是已分配的虚拟内存的连续片。</p>
 
-<p>虚拟内存在不同操作系统上有区别，以Linux系统为例,下面是<code>Linux  x86-64运行时的内存映像</code>。</p>
-
-<p><img src="media/15089188725996/linux_virtual_memory.png" alt="linux_virtual_memory"/></p>
-
-<p>虚拟地址空间由如下几部分组成：</p>
+<p>Linux虚拟地址空间由如下几个区域组成：</p>
 
 <ul>
 <li>代码（<code>.text</code>）: 这里存放的是CPU要执行的指令。代码段是可共享的，相同的代码在内存中只会有一个拷贝，同时这个段是只读的，防止程序由于错误而修改自身的指令。</li>
@@ -250,13 +545,42 @@ var _hmt = _hmt || [];
 <li>内核虚拟内存：包含内核中的代码和数据结构。</li>
 </ul>
 
-<h2 id="toc_6">4 动态内存分配</h2>
+<p><img src="media/15089188725996/linux_virtual_memory.png" alt="linux_virtual_memory"/></p>
+
+<h3 id="toc_6">3.1 Linux是如何组织虚拟内存的</h3>
+
+<p>那么Linux具体是怎么组织虚拟内存的呢？Linux内核为系统中的每个进程维护一个单独的任务结构体(<code>task_struct</code>, 在<code>sched.h</code>头文件中)。<code>task_struct</code>中的元素包含运行该进程所需要的所有信息(PID、指向用户栈的指针、可执行目标文件的名字、以及程序计数器)。</p>
+
+<p><img src="media/15164033620970/vm_linux.png" alt="vm_linux"/></p>
+
+<p><code>task_struct</code>中的一个元素指向<code>mm_struct</code>，它描述了虚拟内存的当前状态。<code>pgd</code>指向第一级页表的基址，而<code>mmap</code>指向一个<code>vm_area_struct</code>(区域结构, 定义在<code>mm_types.h</code>)的链表。每个区域结构链表都描述了虚拟地址空间的一个区域，包含以下字段：</p>
+
+<ul>
+<li><code>vm_start</code>: 指向区域的起始处</li>
+<li><code>vm_end</code>: 指向区域的结束处</li>
+<li><code>vm_prot</code>: 描述着区域内包含的所有页的读写许可权限</li>
+<li><code>vm_flags</code>: 描述进程共享/私有</li>
+<li><code>vm_next</code>: 下一个区域结构</li>
+</ul>
+
+<h3 id="toc_7">3.2 Linux 缺页异常处理</h3>
+
+<p>内存管理单元MMU在试图翻译某个虚拟地址A时，触发了一个缺页异常，引起缺页异常处理程序：</p>
+
+<ul>
+<li>虚拟地址A是合法的吗？-&gt; 段错误</li>
+<li>试图进行的内存访问是合法的吗？ -&gt; 保护异常</li>
+</ul>
+
+<p><img src="media/15164033620970/linux_page_fault.png" alt="linux_page_fault"/></p>
+
+<h2 id="toc_8">4 动态内存分配</h2>
 
 <p>程序使用动态内存分配的最重要的原因是经常直到程序实际运行时，才知道某些数据结构的大小。</p>
 
-<h3 id="toc_7">4.2 分配器的要求和目标</h3>
+<h3 id="toc_9">4.2 分配器的要求和目标</h3>
 
-<h4 id="toc_8">4.2.1 分配器的要求</h4>
+<h4 id="toc_10">4.2.1 分配器的要求</h4>
 
 <p>分配器有如下的要求：</p>
 
@@ -268,7 +592,7 @@ var _hmt = _hmt || [];
 <li>不修改已分配的块</li>
 </ul>
 
-<h4 id="toc_9">4.2.2 分配器的目标</h4>
+<h4 id="toc_11">4.2.2 分配器的目标</h4>
 
 <p>分配器试图最大化吞吐率和内存利用率</p>
 
@@ -277,7 +601,7 @@ var _hmt = _hmt || [];
 <li>最大化内存利用率</li>
 </ul>
 
-<p>造成利用率很低的主要原因是<strong>碎片</strong>(fragmentation)现象。当载荷比块要小时，发生<strong>内部碎片</strong>，引起的原因有：对齐等。</p>
+<p>造成利用率很低的主要原因是<strong>碎片</strong>(fragmentation)现象。当有效载荷比块要小时，发生<strong>内部碎片</strong>，引起的原因有：对齐等。</p>
 
 <p><img src="media/15164033620970/internal_fragmentation.png" alt="internal_fragmentation"/></p>
 
@@ -287,14 +611,113 @@ var _hmt = _hmt || [];
 
 <p>外部碎片还取决于将来的请求，例如上图，如果最后的p4请求4个字节呢？也就不会发生碎片。正因为外部碎片难以量化且不可能预测，所以分配器通常采用启发式策略来试图维持少量的大空闲块，而不是维持大量的小空闲块。</p>
 
-<h4 id="toc_10">实现方法</h4>
+<h3 id="toc_12">4.3 实现方法</h3>
 
 <ul>
-<li>隐式空闲列表 Implicit List</li>
-<li>显式空闲列表 Explicit List</li>
-<li>分离的空闲列表 Segregated Free List</li>
-<li>按照大小对块进行排序 Blocks Sorted by Size</li>
+<li>隐式空闲列表 Implicit Free List</li>
+<li>显式空闲列表 Explicit Free List</li>
+<li>分离式空闲列表 Segregated Free List</li>
 </ul>
+
+<h2 id="toc_13">5 C程序中常见的与内存有关的错误</h2>
+
+<h4 id="toc_14">间接引用坏指针</h4>
+
+<p>这是非常常见的例子，没有引用对应的地址，少了 &amp;</p>
+
+<pre><code class="language-C">int val;
+scanf(&quot;%d&quot;, val); // 正确应该是scanf(&quot;%d, &amp;val);
+</code></pre>
+
+<h4 id="toc_15">读未初始化的内存</h4>
+
+<p><strong>堆内存是没有被初始化为0的</strong>：</p>
+
+<pre><code class="language-C">/* return y = Ax */
+int *matvec(int **A, int *x) {
+    int *y = malloc(N * sizeof(int));
+    int i, j;
+    
+    for (i = 0; i &lt; N; i++)
+        for (j = 0; j &lt; N; j++)
+            y[i] += A[i][j] * x[j];
+    return y;
+}
+</code></pre>
+
+<p>正确的方法是显式地将y[i]设置为0，或者使用<code>calloc</code>。</p>
+
+<h4 id="toc_16">允许栈缓冲区溢出</h4>
+
+<p>没有检查字符串的长度（经典的缓冲区溢出攻击也是利用相同的机制）</p>
+
+<pre><code class="language-C">char s[8];
+int i;
+gets(s); /* stack buffer overflow, reads &quot;123456789&quot; from stdin */
+</code></pre>
+
+<h4 id="toc_17">引用不存在的变量</h4>
+
+<p>尽管指针仍然指向一个合法的内存地址，但是已经不再指向一个合法的变量了。以后在程序中调用其他函数时，内存将重用它们的栈针。</p>
+
+<pre><code class="language-C">int *foo() {
+    int val;
+    
+    return &amp;val;
+}
+</code></pre>
+
+<h4 id="toc_18">多次释放</h4>
+
+<p>这个不用多说，不能重复搞两次</p>
+
+<pre><code class="language-C">x = malloc(N * sizeof(int));
+//  &lt;manipulate x&gt;
+free(x);
+y = malloc(M * sizeof(int));
+//  &lt;manipulate y&gt;
+free(x);
+</code></pre>
+
+<h4 id="toc_19">引用已经被释放的堆块中的数据</h4>
+
+<p>同样是很明显的错误，不要犯</p>
+
+<pre><code class="language-C">x = malloc(N * sizeof(int));
+//  &lt;manipulate x&gt;
+free(x);
+//  ....
+y = malloc(M * sizeof(int));
+for (i = 0; i &lt; M; i++)
+    y[i] = x[i]++;
+</code></pre>
+
+<h4 id="toc_20">内存泄漏</h4>
+
+<p>忘记释放已分配块：</p>
+
+<pre><code class="language-C">foo() {
+    int *x = malloc(N * sizeof(int));
+    // ...
+    return ;
+}
+</code></pre>
+
+<p>或者只释放了数据结构的一部分：</p>
+
+<pre><code class="language-C">struct list {
+    int val;
+    struct list *next;
+};
+foo() {
+    struct list *head = malloc(sizeof(struct list));
+    head-&gt;val = 0;
+    head-&gt;next = NULL;
+    //...
+    free(head);
+    return;
+}
+</code></pre>
 
                         
                       </div>
@@ -768,308 +1191,6 @@ int main(int argc, char **argv)
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="Linking.html">
-                
-                  <h1>链接</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>....待续<br/>
-....待续<br/>
-....待续<br/>
-....待续</p>
-
-<p>链接(Linking)是将各种代码和数据片段收集并组合成为一个单一文件的过程。链接可以在编译、加载、运行时执行。在现代系统中，链接是由连接器(Linker)自动执行的。</p>
-
-<h2 id="toc_0">编译器驱动程序</h2>
-
-<p>编译器驱动程序(<code>compiler driver</code>)，代表用户在需要时调用预处理器(cpp)、编译器(ccl)、汇编器(as)和链接器(ld)。典型的编译器驱动程序，包括GNU GCC, Clang。</p>
-
-<p>例如，一个简单打印hello的<code>hello.c</code>程序，经过下面四个阶段，生成可执行目标文件：</p>
-
-<pre><code class="language-C">//file: hello.c
-#include &lt;stdio.h&gt;
-
-int main()
-{
-    int i;
-    printf(&quot;Hello World&quot;);
-}
-</code></pre>
-
-<pre><code class="language-bash">linux &gt; gcc -o hello hello.c
-</code></pre>
-
-<p><img src="media/15151885614329/compiler_system.jpeg" alt="compiler_syste"/></p>
-
-<h2 id="toc_1">目标文件</h2>
-
-<p>目标文件有三种格式：可重定位目标文件(<code>.o</code>)，可执行目标文件(<code>.out</code>)，共享目标文件(<code>.so</code>)</p>
-
-<ul>
-<li>可重定位目标文件(.o文件)。包含二进制代码和数据，其形式可以在编译时与其他可重定位目标文件合并起来，创建一个可执行目标文件。</li>
-<li>可执行目标文件(a.out文件)。包含二进制代码和数据，其形式可以被直接复制到内存并执行。</li>
-<li>共享目标文件(.so文件)。在加载或者运行时被动态地加载进内存并链接</li>
-</ul>
-
-<p>各个系统的目标文件格式不同，Windows使用<strong>可移植可执行</strong>(Portable Executable, <code>PE</code>)格式。现代x86-64系统使用<strong>可执行可链接格式</strong>(Executable and Linkable Format, <code>ELF</code>)。</p>
-
-<h3 id="toc_2">可重定位目标文件</h3>
-
-<p>以可执行可链接(ELF)格式为例，一个典型的可重定位目标文件包括以下几个节：</p>
-
-<ul>
-<li>ELF头和节头部表</li>
-<li><code>.text</code> 已编译程序的机器代码</li>
-<li><code>.rodata</code> 只读数据</li>
-<li><code>.data</code>  已初始化的全局和静态C变量</li>
-<li><code>.bss</code>  未初始化的全局和静态C变量</li>
-<li><code>.symtab</code> 一个符号表</li>
-<li><code>.rel.text</code> 一个.text节中位置的列表</li>
-<li><code>.rel.data</code> 重定位信息</li>
-<li><code>.debug</code> 调试符号表</li>
-<li><code>.line</code>  原始程序行号和机器指令之间的映射</li>
-<li><code>.strtab</code>  字符串表</li>
-</ul>
-
-<p><img src="media/15151885614329/elf.png" alt="elf"/></p>
-
-<p>利用<code>READELF</code>程序可以显示程序<code>hello.c</code>生成的可执行可链接文件的信息：</p>
-
-<pre><code class="language-bash">gcc hello.c -c
-readelf -a hello.o
-</code></pre>
-
-<pre><code class="language-text">ELF Header:
-  Magic:   7f 45 4c 46 02 01 01 00 00 00 00 00 00 00 00 00
-  Class:                             ELF64
-  Data:                              2&#39;s complement, little endian
-  Version:                           1 (current)
-  OS/ABI:                            UNIX - System V
-  ABI Version:                       0
-  Type:                              REL (Relocatable file)
-  Machine:                           Advanced Micro Devices X86-64
-  Version:                           0x1
-  Entry point address:               0x0
-  Start of program headers:          0 (bytes into file)
-  Start of section headers:          304 (bytes into file)
-  Flags:                             0x0
-  Size of this header:               64 (bytes)
-  Size of program headers:           0 (bytes)
-  Number of program headers:         0
-  Size of section headers:           64 (bytes)
-  Number of section headers:         13
-  Section header string table index: 10
-
-Section Headers:
-  [Nr] Name              Type             Address           Offset
-       Size              EntSize          Flags  Link  Info  Align
-  [ 0]                   NULL             0000000000000000  00000000
-       0000000000000000  0000000000000000           0     0     0
-  [ 1] .text             PROGBITS         0000000000000000  00000040
-       0000000000000015  0000000000000000  AX       0     0     1
-  [ 2] .rela.text        RELA             0000000000000000  00000590
-       0000000000000030  0000000000000018          11     1     8
-  [ 3] .data             PROGBITS         0000000000000000  00000055
-       0000000000000000  0000000000000000  WA       0     0     1
-  [ 4] .bss              NOBITS           0000000000000000  00000055
-       0000000000000000  0000000000000000  WA       0     0     1
-  [ 5] .rodata           PROGBITS         0000000000000000  00000055
-       000000000000000c  0000000000000000   A       0     0     1
-  [ 6] .comment          PROGBITS         0000000000000000  00000061
-       000000000000002c  0000000000000001  MS       0     0     1
-  [ 7] .note.GNU-stack   PROGBITS         0000000000000000  0000008d
-       0000000000000000  0000000000000000           0     0     1
-  [ 8] .eh_frame         PROGBITS         0000000000000000  00000090
-       0000000000000038  0000000000000000   A       0     0     8
-  [ 9] .rela.eh_frame    RELA             0000000000000000  000005c0
-       0000000000000018  0000000000000018          11     8     8
-  [10] .shstrtab         STRTAB           0000000000000000  000000c8
-       0000000000000061  0000000000000000           0     0     1
-  [11] .symtab           SYMTAB           0000000000000000  00000470
-       0000000000000108  0000000000000018          12     9     8
-  [12] .strtab           STRTAB           0000000000000000  00000578
-       0000000000000015  0000000000000000           0     0     1
-Key to Flags:
-  W (write), A (alloc), X (execute), M (merge), S (strings), l (large)
-  I (info), L (link order), G (group), T (TLS), E (exclude), x (unknown)
-  O (extra OS processing required) o (OS specific), p (processor specific)
-
-There are no section groups in this file.
-
-There are no program headers in this file.
-
-Relocation section &#39;.rela.text&#39; at offset 0x590 contains 2 entries:
-  Offset          Info           Type           Sym. Value    Sym. Name + Addend
-000000000005  00050000000a R_X86_64_32       0000000000000000 .rodata + 0
-00000000000f  000a00000002 R_X86_64_PC32     0000000000000000 printf - 4
-
-Relocation section &#39;.rela.eh_frame&#39; at offset 0x5c0 contains 1 entries:
-  Offset          Info           Type           Sym. Value    Sym. Name + Addend
-000000000020  000200000002 R_X86_64_PC32     0000000000000000 .text + 0
-
-The decoding of unwind sections for machine type Advanced Micro Devices X86-64 is not currently supported.
-
-Symbol table &#39;.symtab&#39; contains 11 entries:
-   Num:    Value          Size Type    Bind   Vis      Ndx Name
-     0: 0000000000000000     0 NOTYPE  LOCAL  DEFAULT  UND
-     1: 0000000000000000     0 FILE    LOCAL  DEFAULT  ABS hello.c
-     2: 0000000000000000     0 SECTION LOCAL  DEFAULT    1
-     3: 0000000000000000     0 SECTION LOCAL  DEFAULT    3
-     4: 0000000000000000     0 SECTION LOCAL  DEFAULT    4
-     5: 0000000000000000     0 SECTION LOCAL  DEFAULT    5
-     6: 0000000000000000     0 SECTION LOCAL  DEFAULT    7
-     7: 0000000000000000     0 SECTION LOCAL  DEFAULT    8
-     8: 0000000000000000     0 SECTION LOCAL  DEFAULT    6
-     9: 0000000000000000    21 FUNC    GLOBAL DEFAULT    1 main
-    10: 0000000000000000     0 NOTYPE  GLOBAL DEFAULT  UND printf
-
-No version information found in this file.
-</code></pre>
-
-<h2 id="toc_3">静态链接</h2>
-
-<p>静态链接器有两个主要任务：</p>
-
-<ul>
-<li>符号解析(symbol resolution): 将每个符号 <u>引用</u> 正好和一个符号 <u>定义</u> 关联起来。</li>
-<li>重定位(relocation): 把每个符号定义与一个内存位置关联起来，并修改所有对这些符号的引用，使得它们指向这个内存位置。</li>
-</ul>
-
-<h3 id="toc_4">符号解析</h3>
-
-<p>符号解析是将每个符号引用和可重定位目标文件中的符号定义关联起来。链接器的输入是一组可重定位目标文件(模块)，有些是局部的( <u>局部符号</u> ，只对定义该符号的模块可见)，有些是全局的( <u>全局符号</u>，对其他模块可见)。</p>
-
-<ul>
-<li>局部符号：每个模块中每个局部符号有一个定义</li>
-<li><p>全局符号：可重定位目标文件的符号表里的全局符号是区分<strong>强</strong>和<strong>弱</strong>的，链接器根据以下规则来处理多重定义的符号名：</p>
-
-<ul>
-<li>规则1: 不允许有多个同名的强符号</li>
-<li>规则2: 如果有一个强符号和多个弱符号同名，那么选择强符号</li>
-<li>规则3：如果有多个弱符号同名，那么任选一个 </li>
-</ul></li>
-</ul>
-
-<h3 id="toc_5">重定位</h3>
-
-<h2 id="toc_6">加载可执行目标文件</h2>
-
-<p>当在shell中执行目标文件时，首先通过调用<strong>加载器</strong>(<code>loader</code>)的操作系统代码来运行它，加载器将可执行目标文件的代码和数据复制到主存，跳转到程序的第一条指令(入口点，<code>_start_</code>函数的地址)运行该程序。</p>
-
-<p>在Unix系统中，加载器是系统调用(system call)<code>execve()</code>的回调(call back)，其任务包括：</p>
-
-<ul>
-<li>确认(权限，内存要求等)</li>
-<li>复制程序到主存</li>
-<li>复制命令行参数到栈</li>
-<li>初始化寄存器(例如栈针)</li>
-<li>跳到入口点(<code>_start_</code>)</li>
-</ul>
-
-<h2 id="toc_7">处理目标文件的工具</h2>
-
-<ul>
-<li><code>UNIX</code>系统提供了一系列命令帮助理解和处理目标文件。这些工具包括：</li>
-<li><code>ar</code> ：创建静态库，插入、删除、列出和提取成员；</li>
-<li><code>STRINGS</code> ：列出目标文件中所有可以打印的字符串；</li>
-<li><code>STRIP</code> ：从目标文件中删除符号表信息；</li>
-<li><code>NM</code> ：列出目标文件符号表中定义的符号；</li>
-<li><code>SIZE</code> ：列出目标文件中节的名字和大小；</li>
-<li><code>READELF</code> ：显示一个目标文件的完整结构，包括ELF 头中编码的所有信息。</li>
-<li><code>OBJDUMP</code> ：显示目标文件的所有信息，最有用的功能是反汇编.text节中的二进制指令。</li>
-<li><code>LDD</code> ：列出可执行文件在运行时需要的共享库。</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/1/6</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Computer%20System.html'>Computer System</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="python_assembly_code.html">
-                
-                  <h1>Python汇编代码</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>学完了汇编语言之后，非常好奇Python程序产生的汇编代码。其实Python作为一种解释语言，其源代码是直接被<code>CPython</code>编译器编译成字节码(<code>btyecode</code>)的；然后在虚拟机中依次解释执行字节码所对应的机器码(<code>machine code</code>)。当需要重用时，字节码以<code>.pyc</code>和<code>.pyo</code>文件存在。当再次运行代码时，虚拟机直接运行<code>.pyc</code>和<code>.pyo</code>文件，省去了重新编译的过程。</p>
-
-<p>Python提供了<code>dis</code>模块，在代码运行时加入<code>-m dis</code>就可以得到源代码对应的汇编代码。其实<code>dis</code>在这里反汇编了字节码。</p>
-
-<p>也可以在源代码中直接调用<code>dis</code>模块：</p>
-
-<pre><code class="language-python">import dis
-def f(x):
-    return 1 &lt; x ** 2 &lt; 100
-
-dis.dis(f)
-</code></pre>
-
-<p>得到的字节码指令(<code>byte code instruction</code>)如下所示：</p>
-
-<pre><code>   4           0 LOAD_CONST               1 (1)
-              3 LOAD_FAST                0 (x)
-              6 LOAD_CONST               2 (2)
-              9 BINARY_POWER
-             10 DUP_TOP
-             11 ROT_THREE
-             12 COMPARE_OP               0 (&lt;)
-             15 JUMP_IF_FALSE_OR_POP    25
-             18 LOAD_CONST               3 (100)
-             21 COMPARE_OP               0 (&lt;)
-             24 RETURN_VALUE
-        &gt;&gt;   25 ROT_TWO
-             26 POP_TOP
-             27 RETURN_VALUE
-</code></pre>
-
-<p>字节码指令的含义可以通过<a href="https://docs.python.org/2/library/dis.html#bytecodes">官方文件</a>查找。</p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/1/3</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Computer%20System.html'>Computer System</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1144,8 +1265,6 @@ dis.dis(f)
         
             <a href="Deep%20Learning.html"><strong>Deep Learning</strong></a>
         
-            <a href="Latex.html"><strong>Latex</strong></a>
-        
             <a href="Linux%20%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B.html"><strong>Linux 系统编程</strong></a>
         
             <a href="%E6%95%B0%E6%8D%AE%E5%BA%93.html"><strong>数据库</strong></a>
@@ -1173,6 +1292,12 @@ dis.dis(f)
 	      
 		      
 			      <li class="post">
+			        <a href="15165095681582.html">overhead</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="memory_alignment.html">内存对齐</a>
 			      </li>
 		     
@@ -1192,12 +1317,6 @@ dis.dis(f)
 		      
 			      <li class="post">
 			        <a href="Signal.html">信号</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="Linking.html">链接</a>
 			      </li>
 		     
 		  

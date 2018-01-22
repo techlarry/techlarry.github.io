@@ -122,8 +122,6 @@ var _hmt = _hmt || [];
         
             <li><a href="Deep%20Learning.html">Deep Learning</a></li>
         
-            <li><a href="Latex.html">Latex</a></li>
-        
             <li><a href="Linux%20%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B.html">Linux 系统编程</a></li>
         
             <li><a href="%E6%95%B0%E6%8D%AE%E5%BA%93.html">数据库</a></li>
@@ -156,6 +154,84 @@ var _hmt = _hmt || [];
 	<div class="large-8 medium-8 columns">
 		<div class="markdown-body home-categories">
 		
+			<div class="article">
+                <a class="clearlink" href="scalable%20machine%20learning.html">
+                
+                  <h1>CS190: Scalable Machine Learning</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>see <a href="http://larryim.cc/notebook.html">Labs here</a></p>
+
+<h3 id="toc_0">Distributing Computing</h3>
+
+<p>Need more hardware to store/process modern data</p>
+
+<p>Scale-up(one big machine)</p>
+
+<ul>
+<li>Can be very fast for medium scale problems</li>
+<li>Expensive, specialized hardware</li>
+<li>Eventually hit a wall</li>
+</ul>
+
+<p>Scale-out (many small machine, i.e., distributed)</p>
+
+<ul>
+<li>Commodity hardware, scales to massive problems</li>
+<li>Need to deal with network communication</li>
+<li>Added software complexity</li>
+</ul>
+
+<p>Apache Spark is a general, open-source cluster computing engine.</p>
+
+<p>Well-suited for machine learning</p>
+
+<ul>
+<li>Fast iterative computations</li>
+<li>Efficient communication primitives</li>
+<li>Simple and expressive: APIs in Scala, Java, Python, R</li>
+<li>Integrated higher-level libraries (<code>MLlib</code>, Spark SQL, Spark Streaming, GraphX)</li>
+</ul>
+
+<h3 id="toc_1">Typical Supervised Learning Pipeline</h3>
+
+<ul>
+<li>Obtain Raw Data</li>
+<li>Feature Extraction</li>
+<li>Supervised Learning</li>
+<li>Evaluation</li>
+<li>Predict</li>
+</ul>
+
+<p><img src="media/15108151409015/Typical%20Supervised%20Learning%20Pipeline.png" alt="Typical Supervised Learning Pipeline"/></p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/11/16</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html'>机器学习</a></span>
+          				  
+          					    <span class="posted-in"><a href='Course.html'>Course</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
 			<div class="article">
                 <a class="clearlink" href="15108128842368.html">
                 
@@ -321,162 +397,6 @@ var _hmt = _hmt || [];
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="Computer_memory.html">
-                
-                  <h1>计算机内存概览</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<ul>
-<li>memory hierarchy</li>
-<li>virtual memory</li>
-<li>stack frame</li>
-<li>heap</li>
-</ul>
-
-<p>本文概览了内存有关的概念。</p>
-
-<h2 id="toc_0">存储器层次结构 Memory Hierarchy</h2>
-
-<p>一般而言，从高层往低层走，存储设备变得更慢、更便宜和更大。</p>
-
-<p><img src="media/15128019428341/15128077150126.png" alt="存储器层次结构"/></p>
-
-<h2 id="toc_1">虚拟内存 Virtual Memory</h2>
-
-<p>虚拟内存(<code>Virtual Memory</code>)是一个抽象概念。它为每个进程提供了假象，即每个进程都在独占地使用内存。每个进程看到的内存都是一致的，称为虚拟地址空间<code>Virtual Address Space</code>.</p>
-
-<p>虚拟内存在不同操作系统上有区别，以Linux系统为例,下面是<code>Linux  x86-64运行时的内存映像</code>。</p>
-
-<p><img src="media/15089188725996/linux_virtual_memory.png" alt="linux_virtual_memory"/></p>
-
-<p>虚拟地址空间由如下几部分组成：</p>
-
-<ul>
-<li>代码（<code>.text</code>）: 这里存放的是CPU要执行的指令。代码段是可共享的，相同的代码在内存中只会有一个拷贝，同时这个段是只读的，防止程序由于错误而修改自身的指令。</li>
-<li>初始化数据段（<code>.data</code>）: 这里存放的是程序中需要明确赋初始值的变量，例如位于所有函数之外的全局变量：<code>int val=&quot;100</code>。需要强调的是，以上两段都是位于程序的可执行文件中，内核在调用<code>exec</code>函数启动该程序时从源程序文件中读入。</li>
-<li>未初始化数据段（<code>.bss</code>）: 位于这一段中的数据，内核在执行该程序前，将其初始化为0或者<code>null</code>。例如出现在任何函数之外的全局变量：int sum;</li>
-<li>堆（<code>Heap</code>）: 这个段用于在程序中进行动态内存申请，例如经常用到的<code>malloc</code>，<code>new</code>系列函数就是从这个段中申请内存。</li>
-<li>共享库(<code>Shared Library</code>): 用来存放像C标准库和数学哭这样的共享库的代码和数据的区域。</li>
-<li>栈（<code>Stack</code>）: 函数中的局部变量以及在函数调用过程中产生的临时变量都保存在此段中，具体见下面一节。</li>
-<li>内核虚拟内存：包含内核中的代码和数据结构。</li>
-</ul>
-
-<p>注意：</p>
-
-<ul>
-<li>底部内存地址是最小的，越往上地址越大。</li>
-<li>堆(正向增长)和栈(反向增长)的生长方向(箭头➡️所指方向)是相反的。</li>
-</ul>
-
-<p>下面是程序示意：</p>
-
-<pre><code class="language-C"> #include&lt;stdio.h&gt;    
- #include &lt;malloc.h&gt;    
-     
- void print(char *,int);    
- int main()    
-{    
-      char *s1 = &quot;abcde&quot;;  //&quot;abcde&quot;作为字符串常量存储在常量区 s1、s2、s5拥有相同的地址  
-      char *s2 = &quot;abcde&quot;;    
-      char s3[] = &quot;abcd&quot;;    
-      long int *s4[100];    
-      char *s5 = &quot;abcde&quot;;    
-      int a = 5;    
-      int b =6;//a,b在栈上，&amp;a&gt;&amp;b地址反向增长    
-     
-     printf(&quot;variables address in main function: s1=%p  s2=%p s3=%p s4=%p s5=%p a=%p b=%p \n&quot;,     
-             s1,s2,s3,s4,s5,&amp;a,&amp;b);   
-     printf(&quot;variables address in processcall:n&quot;);    
-        print(&quot;ddddddddd&quot;,5);//参数入栈从右至左进行,p先进栈,str后进 &amp;p&gt;&amp;str    
-     printf(&quot;main=%p print=%p \n&quot;,main,print);    
-     //打印代码段中主函数和子函数的地址，编译时先编译的地址低，后编译的地址高main&lt;print    
- }    
-  
- void print(char *str,int p)    
-{    
-     char *s1 = &quot;abcde&quot;;  //abcde在常量区，s1在栈上    
-     char *s2 = &quot;abcde&quot;;  //abcde在常量区，s2在栈上 s2-s1=6可能等于0，编译器优化了相同的常量，只在内存保存一份    
-     //而&amp;s1&gt;&amp;s2    
-     char s3[] = &quot;abcdeee&quot;;//abcdeee在常量区，s3在栈上，数组保存的内容为abcdeee的一份拷贝    
-     long int *s4[100];    
-     char *s5 = &quot;abcde&quot;;    
-     int a = 5;    
-     int b =6;    
-     int c;    
-     int d;           //a,b,c,d均在栈上，&amp;a&gt;&amp;b&gt;&amp;c&gt;&amp;d地址反向增长    
-     char *q=str;   
-     int m=p;           
-     char *r=(char *)malloc(1);    
-     char *w=(char *)malloc(1) ;  // r&lt;w 堆正向增长    
-    
-     printf(&quot;s1=%p s2=%p s3=%p s4=%p s5=%p a=%p b=%p c=%p d=%p str=%p q=%p p=%p m=%p r=%p w=%p \n&quot;,    
-            s1,s2,s3,s4,s5,&amp;a,&amp;b,&amp;c,&amp;d,&amp;str,q,&amp;p,&amp;m,r,w);   
-     /* 栈和堆是在程序运行时候动态分配的，局部变量均在栈上分配。 
-        栈是反向增长的，地址递减；malloc等分配的内存空间在堆空间。堆是正向增长的，地址递增。   
-        r,w变量在栈上(则&amp;r&gt;&amp;w)，r,w所指内容在堆中(即r&lt;w)。*/   
- }    
-   
-</code></pre>
-
-<h2 id="toc_2">x86-­64/Linux Stack 栈</h2>
-
-<p>在函数调用时，往往使用了栈(<code>Stack</code>)这一数据结构。当x86-64过程需要的存储空间超出寄存器能够存放的大小时(意味着其实很多函数根本不需要帧栈)，就会在栈上分配空间，称为帧栈(stack frame)。</p>
-
-<p>Current Stack Frame (“Top” to Bottom) contains:</p>
-
-<ul>
-<li>Argument build(参数构造区):
-
-<ul>
-<li>Parameters for function about to call</li>
-<li>可以通过寄存器最多传递6个整形参数，超出6个部分就要通过栈来传递</li>
-</ul></li>
-<li>Local variables(局部变量):
-
-<ul>
-<li>寄存器不足够存放所有的本地数据</li>
-<li>使用地址运算符&amp;，必须能够产生一个地址</li>
-</ul></li>
-<li>Saved register context(被保存的寄存器)
-
-<ul>
-<li>保存寄存器的值到栈中</li>
-</ul></li>
-<li>Old frame pointer (optional)</li>
-</ul>
-
-<p><img src="media/15139898460910/procedure.png" alt="procedure"/></p>
-
-<h2 id="toc_3">参考资料</h2>
-
-<p>Randal E B, David O H. 2015. Computer Systems: A programmer&#39;s Perspective, 3rd.</p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/10/25</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Computer%20System.html'>Computer System</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -551,8 +471,6 @@ var _hmt = _hmt || [];
         
             <a href="Deep%20Learning.html"><strong>Deep Learning</strong></a>
         
-            <a href="Latex.html"><strong>Latex</strong></a>
-        
             <a href="Linux%20%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B.html"><strong>Linux 系统编程</strong></a>
         
             <a href="%E6%95%B0%E6%8D%AE%E5%BA%93.html"><strong>数据库</strong></a>
@@ -580,6 +498,12 @@ var _hmt = _hmt || [];
 	      
 		      
 			      <li class="post">
+			        <a href="15165095681582.html">overhead</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="memory_alignment.html">内存对齐</a>
 			      </li>
 		     
@@ -599,12 +523,6 @@ var _hmt = _hmt || [];
 		      
 			      <li class="post">
 			        <a href="Signal.html">信号</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="Linking.html">链接</a>
 			      </li>
 		     
 		  
