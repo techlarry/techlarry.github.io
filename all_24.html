@@ -159,6 +159,275 @@ var _hmt = _hmt || [];
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="14970832553234.html">
+                
+                  <h1>调试</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h2 id="toc_0">pdb</h2>
+
+<p>pdb是基于命令行的调试工具，是Python的调试器，非常类似GNU的GDB（调试c/c++）</p>
+
+<pre><code class="language-python">python -m pdb some.py # -m是模块的意思, pdb模块
+</code></pre>
+
+<h3 id="toc_1">命令</h3>
+
+<ul>
+<li>输入命令<code>l</code> (list) 查看代码</li>
+<li>输入命令<code>n</code> (next) 可以单步执行代码</li>
+<li>输入命令<code>c</code> (continue) 继续执行代码</li>
+<li>输入命令<code>b</code> (break) 添加断点</li>
+<li>输入命令<code>clear</code> 清除断点</li>
+<li>输入命令<code>p</code> (print) 打印一个变量的值</li>
+<li>输入命令<code>s</code> (step) 进入到一个函数</li>
+<li>输入命令<code>a</code> (args) 打印所有的形参数据</li>
+<li>输入命令<code>r</code> (return) 快速执行到函数的最后一行</li>
+<li>输入命令<code>q</code> quit 退出调试</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/6/10</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Linux%20%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B.html'>Linux 系统编程</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="14970829036232.html">
+                
+                  <h1>Python排序</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<ul>
+<li>
+<a href="#toc_0">排序算法的稳定性及意义</a>
+</li>
+<li>
+<a href="#toc_1">冒泡排序</a>
+<ul>
+<li>
+<a href="#toc_2">复杂度与稳定性</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_3">选择排序</a>
+</li>
+<li>
+<a href="#toc_4">插入排序</a>
+</li>
+<li>
+<a href="#toc_5">希尔排序</a>
+</li>
+<li>
+<a href="#toc_6">快速排序</a>
+</li>
+<li>
+<a href="#toc_7">归并排序</a>
+<ul>
+<li>
+<a href="#toc_8">分治法</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_9">常见排序算法效率比较</a>
+</li>
+</ul>
+
+
+<h2 id="toc_0">排序算法的稳定性及意义</h2>
+
+<p>在待排序的序列中，存在具有相同关键字的记录，在排序后这些记录的相对次序保持不变，则排序算法是稳定的。</p>
+
+<p>不稳定排序无法完成多个关键字的排序。例如整数排序，位数越高的数字优先级越高，从高位数到低位数一次排序。那么每一位的排序都需要稳定算法，否则无法得到正确的结果。</p>
+
+<p>即，<strong>当要对多个关键词多次排序时，必须使用稳定算法</strong></p>
+
+<h2 id="toc_1">冒泡排序</h2>
+
+<p><img src="media/14970829036232/Screen%20Shot%202017-06-11%20at%2010.23.12%20AM.png" alt="Screen Shot 2017-06-11 at 10.23.12 A"/></p>
+
+<pre><code class="language-python">def bubble_sort(alist):
+    &quot;&quot;&quot;
+    冒泡排序
+    &quot;&quot;&quot;
+    if len(alist) &lt;= 1:
+        return alist
+
+    for j in range(len(alist)-1,0,-1):
+        for i in range(j):
+            if alist[i] &gt; alist[i+1]:
+                alist[i], alist[i+1] = alist[i+1], alist[i]
+
+    return alist
+</code></pre>
+
+<h3 id="toc_2">复杂度与稳定性</h3>
+
+<ul>
+<li>最优时间复杂度：\(O(n)\) 遍历没有发现任何可以交换的元素，排序结束</li>
+<li>最坏时间复杂度：\(O(n^2)\)</li>
+<li>稳定性：稳定</li>
+</ul>
+
+<h2 id="toc_3">选择排序</h2>
+
+<p>选择排序（Selection sort）是一种简单直观的排序算法。它的工作原理如下。首先在未排序序列中找到最小（大）元素，存放到排序序列的起始位置，然后，再从剩余未排序元素中继续寻找最小（大）元素，然后放到已排序序列的末尾。以此类推，直到所有元素均排序完毕。</p>
+
+<h2 id="toc_4">插入排序</h2>
+
+<p>插入排序通过构建有序序列，对于未排序数据，在已排序序列中从后向前扫描，找到相应位置并插入。插入排序在实现上，在从后向前扫描过程中，需要反复把已排序元素逐步向后挪位，为最新元素提供插入空间。</p>
+
+<p><img src="media/14970829036232/Screen%20Shot%202017-06-12%20at%207.07.03%20PM.png" alt="Screen Shot 2017-06-12 at 7.07.03 P"/></p>
+
+<pre><code class="language-python">def insert_sort(alist):
+    &quot;&quot;&quot;
+    插入排序
+    &quot;&quot;&quot;
+    n = len(alist)
+    if n &lt;= 1:
+        return alist
+
+    # 从第二个位置，即下表为1的元素开始向前插入
+    for i in range(1, n):
+        j = i
+        # 向前向前比较，如果小于前一个元素，交换两个元素
+        while alist[j] &lt; alist[j-1] and j &gt; 0:
+            alist[j], alist[j-1] = alist[j-1], alist[j]
+            j-=1
+    return alist
+</code></pre>
+
+<p>复杂度与稳定性</p>
+
+<ul>
+<li>最优时间复杂度：O(\(n\)) （升序排列，序列已经处于升序状态）</li>
+<li>最坏时间复杂度：O(\(n^2\))</li>
+<li>稳定性：稳定</li>
+</ul>
+
+<h2 id="toc_5">希尔排序</h2>
+
+<p>希尔排序(Shell Sort)是插入排序的改进, 排序非稳定。希尔排序是把记录按下标的一定<em>增量</em>分组，对每组使用直接插入排序算法排序；随着增量逐渐减少，每组包含的关键词越来越多，当增量减至1时，整个文件恰被分成一组，算法便终止。</p>
+
+<pre><code class="language-python">def shell_sort(alist):
+    
+    n = len(alist)
+    gap = n//2
+    
+    # gap 变化到0之前，插入算法之行的次数
+    while gap &gt; 0:
+        
+        # 希尔排序， 与普通的插入算法的区别就是gap步长
+        for i in range(gap,n):
+            j = i
+            while alist[j] &lt; alist[j-gap] and j &gt; 0:
+                alist[j], alist[j-gap] = alist[j-gap], alist[j]
+                j-=gap
+    
+        gap = gap//2
+
+    return alist
+</code></pre>
+
+<p>复杂度与稳定性</p>
+
+<ul>
+<li>最优时间复杂度：\(O(n^{1.3})\) （不要求本身有序）</li>
+<li>最坏时间复杂度：\(O(n^2)\)</li>
+<li>稳定性：不稳定</li>
+</ul>
+
+<h2 id="toc_6">快速排序</h2>
+
+<p>快速排序(Quicksort)，通过一趟排序将要排序的数据分割成独立的两部分，其中一部分的所有数据都比另外一部分的所有数据都要小，然后再按此方法对这两部分数据分别进行快速排序，整个排序过程可以递归进行，以此达到整个数据变成有序序列。</p>
+
+<p>步骤为：</p>
+
+<ol>
+<li>从数列中挑出一个元素，称为&quot;基准&quot;(pivot)</li>
+<li>重新排序数列，所有元素比基准值小的摆放在基准前面，所有元素比基准值大的摆在基准的后面（相同的数可以到任一边）。在这个分区结束之后，该基准就处于数列的中间位置。这个称为分区(partition)操作。</li>
+<li>递归地(recursive)把小于基准值元素的子数列和大于基准值元素的子数列排序。</li>
+</ol>
+
+<p>递归的最底部情形，是数列的大小是零或一，也就是永远都已经被排序好了。虽然一直递归下去，但是这个算法总会结束，因为在每次的迭代(iteration)中，它至少会把一个元素摆到它最后的位置去。</p>
+
+<h2 id="toc_7">归并排序</h2>
+
+<p>归并排序是采用分治法的一个非常典型的应用。归并排序的思想就是先递归分解数组，再合并数组。</p>
+
+<p>将数组分解最小之后，然后合并两个有序数组，基本思路是比较两个数组的最前面的数，谁小就先取谁，取了后相应的指针就往后移一位。然后再比较，直至一个数组为空，最后把另一个数组的剩余部分复制过来即可。</p>
+
+<h3 id="toc_8">分治法</h3>
+
+<p>分治法的思想：将原问题分解为几个规模较小但类似于原问题的子问题，递归地求解这些子问题，然后再合并这些子问题的解来建立原问题的解。</p>
+
+<p>分治模式在每层递归时都有三个步骤：</p>
+
+<ul>
+<li><strong>分解</strong>原问题为若干子问题，这些子问题是原问题的规模较小的实例</li>
+<li><strong>解决</strong>这些子问题，递归地求解各子问题。然而，若子问题的规模足够小，则直接求解</li>
+<li><strong>合并</strong>这些子问题的解成原问题的解</li>
+</ul>
+
+<p>归并排序算法完全遵循分治模式。直观上其操作如下：</p>
+
+<ul>
+<li><strong>分解</strong>：分解待排序的n个元素的序列成各具n/2个元素的两个子序列</li>
+<li><strong>解决</strong>：使用归并排序递归地排序两个子序列</li>
+<li><strong>合并</strong>：合并两个已排序的子序列以产生已排序的答案。</li>
+</ul>
+
+<h2 id="toc_9">常见排序算法效率比较</h2>
+
+<p><img src="media/14970829036232/14972715837154.jpg" alt=""/></p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/6/10</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html'>Python数据结构与算法</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="14969929726510.html">
                 
                   <h1>Python 类属性与实例属性</h1>
@@ -975,294 +1244,6 @@ class SingleCycleLinkList(object):
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="14969800806372.html">
-                
-                  <h1>顺序表</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h3 id="toc_0">顺序表的结构</h3>
-
-<p>一个顺序表的完整信息包括两部分，<br/>
-* 数据区，表中的元素集合<br/>
-* 信息区，是为实现正确操作而需记录的信息，即有关表的整体情况的信息，主要包括元素存储区的容量和当前表中已有的元素个数两项。</p>
-
-<h3 id="toc_1">顺序表的两种基本实现形式</h3>
-
-<ul>
-<li><p><strong>一体式结构</strong>：存储表信息的单元与元素存储区以连续的方式安排在一块存储区里，两部分数据的整体形成一个完整的顺序表对象。</p></li>
-<li><p><strong>分离式结构</strong>：表对象里只保存与整个表有关的信息（即容量和元素个数），实际数据元素存放在另一个独立的元素存储区里，通过链接与基本表对象关联。</p></li>
-</ul>
-
-<p>当申请内存空间不够时，只能向操作系统重新申请内存空间： 对于一体式结构，则意味着表头也需要重新申请<br/>
-------&gt;一体式结构由于顺序表信息区与数据区连续存储在一起，所以若想更换数据区，则只能整体搬迁，即整个顺序表对象改变了；对于分离式结构，只需将表信息区中的数据区链接地址更新即可，该顺序表对象不变。</p>
-
-<h3 id="toc_2">顺序表扩充</h3>
-
-<p>顺序表扩充的两种策略</p>
-
-<ul>
-<li>每次扩充增加固定数目的存储位置，如每次扩充增加10个元素位置，这种策略可称为线性增长
-特点：节省空间，但是扩充操作频繁，操作次数多</li>
-<li>每次扩充容量加倍，如每次扩充增加一倍存储空间，倍增
-特点：减少了扩充次数，但可能会浪费空间资源。以空间换时间，推荐的方式。</li>
-</ul>
-
-<h3 id="toc_3">顺序表增加/删除元素</h3>
-
-<p>增加元素<br/>
-* 尾端加入元素，时间复杂度为O(1)<br/>
-* 非保序的加入元素(不常见)，时间复杂度为O(1)<br/>
-* 保序的元素删除，时间复杂度为O(n) (常用，基本）</p>
-
-<p>删除元素<br/>
-* 删除表尾元素，时间复杂度为O(1)<br/>
-* 非保序的元素删除（不常见），时间复杂度为O(1)<br/>
-* 保序的元素删除，时间复杂度为O(n)</p>
-
-<h2 id="toc_4">python中的顺序表</h2>
-
-<p>Python 中的list和tuple两种类型采用了顺序表的实现技术。tuple是不可变类型，其他方面与list类似。</p>
-
-<h3 id="toc_5">list的基本实现技术</h3>
-
-<p>基于下标（位置）的高效元素访问和更新，时间复杂度是O(1)；</p>
-
-<p>为满足该特征，应该采用顺序表技术，表中元素保存在一块连续的存储区中。</p>
-
-<p>允许任意加入元素，而且在不断加入元素的过程中，表对象的标识（函数id得到的值）不变。</p>
-
-<p>为满足该特征，就必须能更换元素存储区，并且为保证更换存储区时list对象的标识id不变，只能采用分离式实现技术。</p>
-
-<p>在Python的官方实现中，list就是一种采用分离式技术实现的动态顺序表。这就是为什么用list.append(x) （或 list.insert(len(list), x)，即尾部插入）比在指定位置插入元素效率高的原因。</p>
-
-<p>在Python的官方实现中，list实现采用了如下的策略：<br/>
-<strong>在建立空表（或者很小的表）时，系统分配一块能容纳8个元素的存储区；在执行插入操作（insert或append）时，如果元素存储区满就换一块4倍大的存储区。但如果此时的表已经很大（目前的阀值为50000），则改变策略，采用加一倍的方法。引入这种改变策略的方式，是为了避免出现过多空闲的存储位置。</strong></p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/6/9</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html'>Python数据结构与算法</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="14969760398302.html">
-                
-                  <h1>迭代器与生成器</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<ul>
-<li>
-<a href="#toc_0">可迭代对象</a>
-<ul>
-<li>
-<a href="#toc_1">判断是否可以迭代</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_2">迭代器</a>
-<ul>
-<li>
-<a href="#toc_3">手动访问迭代器中的元素</a>
-</li>
-<li>
-<a href="#toc_4">将可迭代对象转换成迭代器</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_5">生成器</a>
-<ul>
-<li>
-<a href="#toc_6">生成器表达式</a>
-</li>
-<li>
-<a href="#toc_7">生成器函数</a>
-</li>
-<li>
-<a href="#toc_8">next()方法运行流程</a>
-</li>
-<li>
-<a href="#toc_9">send()方法</a>
-</li>
-</ul>
-</li>
-</ul>
-
-
-<p>迭代是Python中最强有力的特性之一。</p>
-
-<h2 id="toc_0">可迭代对象</h2>
-
-<p>迭代是访问集合元素的一种方式。迭代器是一个可以记住遍历的位置的对象。迭代器对象从集合的第一个元素开始访问，直到所有的元素被访问完结束。迭代器只能往前不会后退。</p>
-
-<p>以直接作用于for循环的数据类型有以下几种：</p>
-
-<p>一类是集合数据类型，如list, tuple, dict, set, str等；<br/>
-一类是generator,包括生成器和带yield的生成器函数(generator function).</p>
-
-<p>这些可以直接作用于for循环的对象统称为可迭代对象：<code>Iterable</code></p>
-
-<h3 id="toc_1">判断是否可以迭代</h3>
-
-<p>可以使用<code>isinstance()</code>判断一个对象是否是<code>Iterable</code>对象：</p>
-
-<pre><code class="language-python">from collections import Iterable
-
-isinstance([], Iterable)
-</code></pre>
-
-<h2 id="toc_2">迭代器</h2>
-
-<p>可以被<code>next()</code>函数调用并不断返回下一个值的对象称为迭代器：Iterator。</p>
-
-<h3 id="toc_3">手动访问迭代器中的元素</h3>
-
-<p>要手动访问可迭代对象中的元素，可以使用<code>next()</code>函数，然后自己编写代码来捕获<code>StopIteration</code>异常。例如，下面这个例子采用手工方式从文件中读取文本行：</p>
-
-<pre><code class="language-python"># 打印hosts文件
-with open(&#39;/etc/hosts&#39;) as f:
-    try:
-        while True:
-            line = next(f)
-            print(line, end=&#39;&#39;)
-    except: StopIteration:
-        pass
-</code></pre>
-
-<p>可以使用<code>isinstance()</code>判断一个对象是否是<code>Iterator</code>对象：</p>
-
-<pre><code class="language-python">from collections import Iterator
-isinstance((x for x in ragne(10)), Iterator)
-</code></pre>
-
-<h3 id="toc_4">将可迭代对象转换成迭代器</h3>
-
-<p>把list, dict, str等可迭代对象变成迭代器，可以使用<code>iter()</code>函数</p>
-
-<pre><code class="language-python">&gt;&gt;&gt; a = [11,22,33,44]
-&gt;&gt;&gt; type(a)
-&lt;class &#39;list&#39;&gt;
-&gt;&gt;&gt; b=iter(a)
-&gt;&gt;&gt; b
-&lt;list_iterator object at 0x109ba3278&gt;
-</code></pre>
-
-<h2 id="toc_5">生成器</h2>
-
-<p>如果列表元素可以按照某种算法推算出来，从而节省大量空间，即保存计算生成的方式，当需要时才生成。</p>
-
-<p>生成器可以通过next()获得生成器的下一个返回值。</p>
-
-<p>生成器的特点：<br/>
-1. 节约内存<br/>
-2. 迭代到下一次的调用时，所使用的参数都是第一次所保留下的</p>
-
-<h3 id="toc_6">生成器表达式</h3>
-
-<p><code>生成器表达式(generator expression)</code>: An expression that returns an iterator.</p>
-
-<pre><code class="language-python">&gt;&gt;&gt;&gt; a = ( x for x in range(1,100))
-&gt;&gt;&gt;&gt; a
-&gt;&gt;&gt;&gt; &lt;generator object &lt;genexpr&gt; at 0x10ce60f10&gt; # 生成器表达式
-</code></pre>
-
-<h3 id="toc_7">生成器函数</h3>
-
-<p>如果想实现一种新的迭代模式，可使用<code>生成器函数</code>来定义。函数中只要出现了<code>yield</code>语句就会讲其转变成一个生成器。一旦执行到<code>yield</code>语句，生成器函数返回，迭代停止。</p>
-
-<pre><code class="language-python">def fib(times):
-     &quot;&quot;&quot;
-     斐波那契数列
-     &quot;&quot;&quot;
-     
-     n =0
-     a,b = 0,1
-     while n&lt; times:
-        yield b    #与函数的唯一区别是yield语句
-        a,b = b, a+b
-        n+=1
-     return &#39;done&#39;
-
-for n in fib(5):
-    print(n)
-</code></pre>
-
-<h3 id="toc_8">next()方法运行流程</h3>
-
-<p>当第一次调用生成器的<code>next</code>方法时，生成器开始执行生成器函数，从第一行代码开始执行，一直执行到<code>yield</code>语句后，生成器函数返回<code>yield</code>表达式的值。之后每一次调用生成器的<code>next</code>方法时，生成器从<code>yield</code>语句的下一句开始执行，直到再次遇到<code>yield</code>语句返回。</p>
-
-<h3 id="toc_9">send()方法</h3>
-
-<p>生成器对象首先是一个迭代器，但比一般迭代器对象多了一些方法，包括<code>send()</code>,<code>throw()</code>,<code>close()</code>方法；这些方法主要用与生成器对象的交互。</p>
-
-<p>对于生成器，使用<code>send()</code>时，第一次需要<code>send(None)</code>，因为没有<code>yield</code>语句来接受参数。（<code>yield</code>执行完就跳出，对应变量没有赋值，看下面的例子）</p>
-
-<p><code>send()</code>方法和<code>next()</code>方法类似，不同的是<code>send()</code>可以向生成器传参数。当<br/>
-第一次调用生成器的<code>send()</code>方法时，从生成器函数的第一行代码开始执行，一直执行到yield语句后，生成器函数返回。注意这个过程中，变量一直没有赋值。当下一次运行时，变量才赋值，赋值的值来源于这一次的<code>send()</code>方法（不是上一次！而且第一次都是<code>None</code>），但并不执行yield部分，直到再次遇到<code>yield</code>语句返回。</p>
-
-<pre><code class="language-python">&gt;&gt;&gt; def gen():
-...     while True:
-...         s = yield
-...         print(s)
-...
-&gt;&gt;&gt; g = gen()
-&gt;&gt;&gt; g.send()
-Traceback (most recent call last):
-  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
-TypeError: send() takes exactly one argument (0 given)
-&gt;&gt;&gt; g.send(None)  # 第一次需要传入参数None
-&gt;&gt;&gt; g.send(&#39;Kiss&#39;) # 将参数赋值给变量s
-Kiss
-</code></pre>
-
-<p><strong>注意： 不能将一个非None的值传给初始的生成器</strong></p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/6/9</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1364,6 +1345,18 @@ Kiss
 	      
 		      
 			      <li class="post">
+			        <a href="15187866094632.html">技巧：Coursera下载Jupyter notebook相关文件</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15171345711813.html">用于训练的深度学习硬件</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15166008990128.html">网络编程</a>
 			      </li>
 		     
@@ -1377,18 +1370,6 @@ Kiss
 		      
 			      <li class="post">
 			        <a href="memory_alignment.html">内存对齐</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="virtual_memory_and_dynamic_allocate.html">虚拟内存和动态内存分配</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="Sync.html">同步/异步</a>
 			      </li>
 		     
 		  

@@ -159,6 +159,149 @@ var _hmt = _hmt || [];
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="SqueezeNet.html">
+                
+                  <h1>SqueezeNet</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p><code>SqueezeNet</code> achieves <code>AlexNet</code>-level accuracy on ImageNet with 50x fewer parameters, offering at least three advantages:</p>
+
+<ul>
+<li>Less communications across servers</li>
+<li>less bandwidth to export model</li>
+<li>more feasible to deploy</li>
+</ul>
+
+<p>The <code>SqueezeNet</code>architecture is available for download <a href="https://github.com/DeepScale/SqueezeNet">here</a></p>
+
+<h2 id="toc_0">Strategy</h2>
+
+<ul>
+<li>Replace \(3\times3\) filters with \(1\times1\) filters: 9X fewer parameters needed</li>
+<li>Decrease the number of input channels to \(3\times3\) filters</li>
+<li>Downsample late: large activation maps lead to higher accuracy.</li>
+</ul>
+
+<h3 id="toc_1">The Fire module</h3>
+
+<p>A Fire module is comprised of a <code>squeeze layer</code> (which has only 1x1 filters), feeding into an <code>expand layer</code> that has a mix of 1x1 and 3x3 convolution filters.</p>
+
+<p><img src="media/15056262155227/fire%20module.png" alt="fire module"/></p>
+
+<p>The following function defines <code>Fire Module</code> by TensorFlow in Python</p>
+
+<pre><code class="language-python">def fire_module(x,inp,sp,e11p,e33p):
+    with tf.variable_scope(&quot;fire&quot;):
+        with tf.variable_scope(&quot;squeeze&quot;):
+            W = tf.get_variable(&quot;weights&quot;,shape=[1,1,inp,sp])
+            b = tf.get_variable(&quot;bias&quot;,shape=[sp])
+            s = tf.nn.conv2d(x,W,[1,1,1,1],&quot;VALID&quot;)+b
+            s = tf.nn.relu(s)
+        with tf.variable_scope(&quot;e11&quot;):
+            W = tf.get_variable(&quot;weights&quot;,shape=[1,1,sp,e11p])
+            b = tf.get_variable(&quot;bias&quot;,shape=[e11p])
+            e11 = tf.nn.conv2d(s,W,[1,1,1,1],&quot;VALID&quot;)+b
+            e11 = tf.nn.relu(e11)
+        with tf.variable_scope(&quot;e33&quot;):
+            W = tf.get_variable(&quot;weights&quot;,shape=[3,3,sp,e33p])
+            b = tf.get_variable(&quot;bias&quot;,shape=[e33p])
+            e33 = tf.nn.conv2d(s,W,[1,1,1,1],&quot;SAME&quot;)+b
+            e33 = tf.nn.relu(e33)
+        return tf.concat([e11,e33],3)
+</code></pre>
+
+<h3 id="toc_2">The SqueezeNet Architecture</h3>
+
+<p><code>SqueezeNet</code> begins with a standalone convolution layer (conv1), followed by 8 <code>Fire modules</code> (ﬁre2-9), ending with a final conv layer (conv10).</p>
+
+<p><img src="media/15056262155227/Squeezenet_Architecture.png" alt="Squeezenet_Architecture"/></p>
+
+<h2 id="toc_3">Reference</h2>
+
+<ul>
+<li>Iandola F N, Han S, Moskewicz M W, et al. 2016. SqueezeNet- AlexNet-level accuracy with 50x fewer parameters and &lt; 0.5 MB model size</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/9/17</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Deep%20Learning.html'>Deep Learning</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="Visualizing_and_understaning_CNN.html">
+                
+                  <h1>Visualizing and Understanding CNN</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<ol>
+<li><strong>Saliency Maps</strong>: Saliency maps are a quick way to tell which part of the image influenced the classification decision made by the network.</li>
+<li><strong>Fooling Images</strong>: We can perturb an input image so that it appears the same to humans, but will be misclassified by the pretrained network.</li>
+<li><strong>Class Visualization</strong>: We can synthesize an image to maximize the classification score of a particular class; this can give us some sense of what the network is looking for when it classifies images of that class.</li>
+</ol>
+
+<h2 id="toc_0">Saliency Map</h2>
+
+<p>A <strong>saliency map</strong> tells us the degree to which each pixel in the image affects the classification score for that image. To obtain <code>saliency map</code>, first compute the gradient of the unnormalized score corresponding to the correct class (which is a scalar) with respect to the pixels of the image. If the image has shape <code>(H, W, 3)</code> then this gradient will also have shape <code>(H, W, 3)</code>; for each pixel in the image, this gradient tells us the amount by which the classification score will change if the pixel changes by a small amount. Second, In the case of the multi-channel (e.g. RGB) image, take the absolute value of this gradient, then take the maximum value over the 3 input channels; the final saliency map thus has shape <code>(H, W)</code> and all entries are nonnegative.</p>
+
+<h5 id="toc_1">The <code>Saliency Map</code> learnt by <code>SqueezeNet</code>, trained on the data of ImageNet ILSVRC 2012 Classification dataset are as follows:</h5>
+
+<p><img src="media/15056449604256/saliency_map.png" alt="saliency_map"/></p>
+
+<h2 id="toc_2">Fooling images</h2>
+
+<h2 id="toc_3">Reference</h2>
+
+<ul>
+<li>Karen Simonyan, Andrea Vedaldi, and Andrew Zisserman. &quot;Deep Inside Convolutional Networks- Visualising Image Classification Models and Saliency Maps</li>
+<li>Szegedy et al, &quot;Intriguing properties of neural networks&quot;, ICLR 2014</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/9/16</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Deep%20Learning.html'>Deep Learning</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15050418178399.html">
                 
                   <h1>Recurrent Neural Network</h1>
@@ -403,657 +546,6 @@ var _hmt = _hmt || [];
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="anomaly-detection_and_recommender_system.html">
-                
-                  <h1>Machine Learning(9): Anomaly Detection AND Recommender System</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<ul>
-<li>
-<a href="#toc_0">[1] Anomaly Detection</a>
-<ul>
-<li>
-<a href="#toc_1">Problem Motivation</a>
-</li>
-<li>
-<a href="#toc_2">Gaussian Distribution</a>
-</li>
-<li>
-<a href="#toc_3">Algorithm</a>
-</li>
-<li>
-<a href="#toc_4">Developing and Evaluating an Anomaly Detection System</a>
-</li>
-<li>
-<a href="#toc_5">Anomaly Detection vs. Supervised Learning</a>
-</li>
-<li>
-<a href="#toc_6">Choosing What Features to Use</a>
-</li>
-<li>
-<a href="#toc_7">Multivariate Gaussian Distribution</a>
-</li>
-<li>
-<a href="#toc_8">Anomaly Detection using the Multivariate Gaussian Distribution</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_9">[2] Recommender Systems</a>
-<ul>
-<li>
-<a href="#toc_10">Problem Formulation</a>
-</li>
-<li>
-<a href="#toc_11">Content Based Recommendations</a>
-</li>
-<li>
-<a href="#toc_12">Feature Finder</a>
-</li>
-<li>
-<a href="#toc_13">Collaborative Filtering Algorithm</a>
-</li>
-<li>
-<a href="#toc_14">Vectorization: Low Rank Matrix Factorization</a>
-</li>
-<li>
-<a href="#toc_15">Implementation Detail: Mean Normalization</a>
-</li>
-</ul>
-</li>
-</ul>
-
-
-<h2 id="toc_0">[1] Anomaly Detection</h2>
-
-<h3 id="toc_1">Problem Motivation</h3>
-
-<p>Just like in other learning problems, we are given a dataset \({x^{(1)}, x^{(2)},\dots,x^{(m)}}\).</p>
-
-<p>We are then given a new example, \(x_{test}\), and we want to know whether this new example is abnormal/anomalous.</p>
-
-<p>We define a &quot;model&quot; p(x) that tells us the probability the example is not anomalous. We also use a threshold ϵ (epsilon) as a dividing line so we can say which examples are anomalous and which are not.</p>
-
-<p>A very common application of anomaly detection is detecting fraud:</p>
-
-<ul>
-<li><p>\(x^{(i)} =\) features of user i&#39;s activities</p></li>
-<li><p>Model p(x) from the data.</p></li>
-<li><p>Identify unusual users by checking which have p(x)&lt;ϵ.</p></li>
-</ul>
-
-<p>If our anomaly detector is flagging <strong>too many</strong> anomalous examples, then we need to <strong>decrease</strong> our threshold ϵ</p>
-
-<h3 id="toc_2">Gaussian Distribution</h3>
-
-<p>The Gaussian Distribution is a familiar bell-shaped curve that can be described by a function \(\mathcal{N}(\mu,\sigma^2)\)</p>
-
-<p>Let x∈ℝ. If the probability distribution of x is Gaussian with mean μ, variance \(\sigma^2\), then:</p>
-
-<p>\(x \sim \mathcal{N}(\mu, \sigma^2)\)</p>
-
-<p>The little ∼ or &#39;tilde&#39; can be read as &quot;distributed as.&quot;</p>
-
-<p>The Gaussian Distribution is parameterized by a mean and a variance.</p>
-
-<p>Mu, or μ, describes the center of the curve, called the mean. The width of the curve is described by sigma, or σ, called the standard deviation.</p>
-
-<p>The full function is as follows:</p>
-
-<p>\(\large p(x;\mu,\sigma^2) = \dfrac{1}{\sigma\sqrt{(2\pi)}}e^{-\dfrac{1}{2}(\dfrac{x - \mu}{\sigma})^2}\)</p>
-
-<p>We can estimate the parameter μ from a given dataset by simply taking the average of all the examples:</p>
-
-<p>\(\mu = \dfrac{1}{m}\displaystyle \sum_{i=1}^m x^{(i)}\)</p>
-
-<p>We can estimate the other parameter, \(\sigma^2\), with our familiar squared error formula:</p>
-
-<p>\(\sigma^2 = \dfrac{1}{m}\displaystyle \sum_{i=1}^m(x^{(i)} - \mu)^2\)</p>
-
-<p><img src="media/15045011015887/15045018120355.png" alt="Gaussian distribution"/></p>
-
-<h3 id="toc_3">Algorithm</h3>
-
-<p>Given a training set of examples, \(\lbrace x^{(1)},\dots,x^{(m)}\rbrace\) where each example is a vector, \(x \in \mathbb{R}^n\).</p>
-
-<p>\(p(x) = p(x_1;\mu_1,\sigma_1^2)p(x_2;\mu_2,\sigma^2_2)\cdots p(x_n;\mu_n,\sigma^2_n)\)</p>
-
-<p>In statistics, this is called an &quot;independence assumption&quot; on the values of the features inside training example x.</p>
-
-<p>More compactly, the above expression can be written as follows:</p>
-
-<p>\(= \displaystyle \prod^n_{j=1} p(x_j;\mu_j,\sigma_j^2)\)</p>
-
-<p><strong>The algorithm</strong></p>
-
-<p>Choose features \(x_i\) that you think might be indicative of anomalous examples.</p>
-
-<p>Fit parameters \(\mu_1,\dots,\mu_n,\sigma_1^2,\dots,\sigma_n^2\)</p>
-
-<p>Calculate \(\mu_j = \dfrac{1}{m}\displaystyle \sum_{i=1}^m x_j^{(i)}\)</p>
-
-<p>Calculate \(\sigma^2_j = \dfrac{1}{m}\displaystyle \sum_{i=1}^m(x_j^{(i)} - \mu_j)^2\)</p>
-
-<p>Given a new example x, compute p(x):</p>
-
-<p>\(p(x) = \displaystyle \prod^n_{j=1} p(x_j;\mu_j,\sigma_j^2) = \prod\limits^n_{j=1} \dfrac{1}{\sqrt{2\pi}\sigma_j}exp(-\dfrac{(x_j - \mu_j)^2}{2\sigma^2_j})\)</p>
-
-<p>Anomaly if p(x)&lt;ϵ</p>
-
-<p>A vectorized version of the calculation for μ is \(\mu = \dfrac{1}{m}\displaystyle \sum_{i=1}^m x^{(i)}\). You can vectorize \(\sigma^2\) similarly.</p>
-
-<h3 id="toc_4">Developing and Evaluating an Anomaly Detection System</h3>
-
-<p>To evaluate our learning algorithm, we take some labeled data, categorized into anomalous and non-anomalous examples ( y = 0 if normal, y = 1 if anomalous).</p>
-
-<p>Among that data, take a large proportion of <strong>good</strong> , non-anomalous data for the training set on which to train p(x).</p>
-
-<p>Then, take a smaller proportion of mixed anomalous and non-anomalous examples (you will usually have many more non-anomalous examples) for your cross-validation and test sets.</p>
-
-<p>For example, we may have a set where 0.2% of the data is anomalous. We take 60% of those examples, all of which are good (y=0) for the training set. We then take 20% of the examples for the cross-validation set (with 0.1% of the anomalous examples) and another 20% from the test set (with another 0.1% of the anomalous).</p>
-
-<p>In other words, we split the data 60/20/20 training/CV/test and then split the anomalous examples 50/50 between the CV and test sets.</p>
-
-<p><strong>Algorithm evaluation:</strong></p>
-
-<p>Fit model p(x) on training set \(\lbrace x^{(1)},\dots,x^{(m)} \rbrace\)</p>
-
-<p>On a cross validation/test example x, predict:</p>
-
-<p>If p(x) &lt; ϵ ( <strong>anomaly</strong> ), then y=1</p>
-
-<p>If p(x) ≥ ϵ ( <strong>normal</strong> ), then y=0</p>
-
-<p>Possible evaluation metrics (see &quot;Machine Learning System Design&quot; section):</p>
-
-<ul>
-<li><p>True positive, false positive, false negative, true negative.</p></li>
-<li><p>Precision/recall</p></li>
-<li><p>\(F_1\) score</p></li>
-</ul>
-
-<p>Note that we use the cross-validation set to choose parameter ϵ</p>
-
-<h3 id="toc_5">Anomaly Detection vs. Supervised Learning</h3>
-
-<p>When do we use anomaly detection and when do we use supervised learning?</p>
-
-<p>Use anomaly detection when...</p>
-
-<ul>
-<li><p>We have a very small number of positive examples (y=1 ... 0-20 examples is common) and a large number of negative (y=0) examples.</p></li>
-<li><p>We have many different &quot;types&quot; of anomalies and it is hard for any algorithm to learn from positive examples what the anomalies look like; future anomalies may look nothing like any of the anomalous examples we&#39;ve seen so far.</p></li>
-</ul>
-
-<p>Use supervised learning when...</p>
-
-<ul>
-<li><p>We have a large number of both positive and negative examples. In other words, the training set is more evenly divided into classes.</p></li>
-<li><p>We have enough positive examples for the algorithm to get a sense of what new positives examples look like. The future positive examples are likely similar to the ones in the training set.</p></li>
-</ul>
-
-<h3 id="toc_6">Choosing What Features to Use</h3>
-
-<p>The features will greatly affect how well your anomaly detection algorithm works.</p>
-
-<p>We can check that our features are <strong>gaussian</strong> by plotting a histogram of our data and checking for the bell-shaped curve.</p>
-
-<p>Some <strong>transforms</strong> we can try on an example feature x that does not have the bell-shaped curve are:</p>
-
-<ul>
-<li><p>log(x)</p></li>
-<li><p>log(x+1)</p></li>
-<li><p>log(x+c) for some constant</p></li>
-<li><p>\(\sqrt{x}\)</p></li>
-<li><p>\(x^{1/3}\)</p></li>
-</ul>
-
-<p>We can play with each of these to try and achieve the gaussian shape in our data.</p>
-
-<p>There is an <strong>error analysis procedure</strong> for anomaly detection that is very similar to the one in supervised learning.</p>
-
-<p>Our goal is for p(x) to be large for normal examples and small for anomalous examples.</p>
-
-<p>One common problem is when p(x) is similar for both types of examples. In this case, you need to examine the anomalous examples that are giving high probability in detail and try to figure out new features that will better distinguish the data.</p>
-
-<p>In general, choose features that might take on unusually large or small values in the event of an anomaly.</p>
-
-<h3 id="toc_7">Multivariate Gaussian Distribution</h3>
-
-<p>The multivariate gaussian distribution is an extension of anomaly detection and may (or may not) catch more anomalies.</p>
-
-<p>Instead of modeling \(p(x_1),p(x_2),\dots\) separately, we will model p(x) all in one go. Our parameters will be: \(\mu \in \mathbb{R}^n\) and \(\Sigma \in \mathbb{R}^{n \times n}\)</p>
-
-<p>\(p(x;\mu,\Sigma) = \dfrac{1}{(2\pi)^{n/2} |\Sigma|^{1/2}} exp(-1/2(x-\mu)^T\Sigma^{-1}(x-\mu))\)</p>
-
-<p>The important effect is that we can model oblong gaussian contours, allowing us to better fit data that might not fit into the normal circular contours.</p>
-
-<p>Varying Σ changes the shape, width, and orientation of the contours. Changing μ will move the center of the distribution.</p>
-
-<p>Check also:</p>
-
-<ul>
-<li>  <a href="http://cs229.stanford.edu/section/gaussians.pdf">The Multivariate Gaussian Distribution</a> <a href="http://cs229.stanford.edu/section/gaussians.pdf">http://cs229.stanford.edu/section/gaussians.pdf</a> Chuong B. Do, October 10, 2008.</li>
-</ul>
-
-<p>Following examples illustrate the basic meaning of parameters in multivariable gaussian distribution:</p>
-
-<pre><code>mean = [0, 0]
-cov = [[1, 0], [0, 1]]  # diagonal covariance
-# Draw random samples from a multivariate normal distribution
-x, y = np.random.multivariate_normal(mean, cov, 5000).T
-plt.plot(x, y, &#39;x&#39;,color=&#39;y&#39;)
-plt.axis(&#39;equal&#39;)
-plt.hold
-
-# change mean
-mean = [0, 10]
-x, y = np.random.multivariate_normal(mean, cov, 5000).T
-plt.plot(x, y, &#39;.&#39;, color=&#39;b&#39;)
-
-# change variances
-mean = [10, 10]
-cov = [[1, 0], [0, 10]]  # diagonal covariance
-x, y = np.random.multivariate_normal(mean, cov, 5000).T
-plt.plot(x, y, &#39;-&#39;, color=&#39;r&#39;)
-plt.show()
-</code></pre>
-
-<p><img src="media/15045011015887/15045091983941.jpg" alt="demo of multivarible gaussian"/></p>
-
-<h3 id="toc_8">Anomaly Detection using the Multivariate Gaussian Distribution</h3>
-
-<p>When doing anomaly detection with multivariate gaussian distribution, we compute μ and Σ normally. We then compute p(x) using the new formula in the previous section and flag an anomaly if p(x) &lt; ϵ.</p>
-
-<p>The original model for p(x) corresponds to a multivariate Gaussian where the contours of \(p(x;\mu,\Sigma)\) are axis-aligned.</p>
-
-<p>The multivariate Gaussian model can automatically capture correlations between different features of x.</p>
-
-<p>However, the original model maintains some advantages: it is computationally cheaper (no matrix to invert, which is costly for large number of features) and it performs well even with small training set size (in multivariate Gaussian model, it should be greater than the number of features for Σ to be invertible).</p>
-
-<h2 id="toc_9">[2] Recommender Systems</h2>
-
-<h3 id="toc_10">Problem Formulation</h3>
-
-<p>Recommendation is currently a very popular application of machine learning.</p>
-
-<p>Say we are trying to recommend movies to customers. We can use the following definitions</p>
-
-<ul>
-<li><p>\(n_u =\) number of users</p></li>
-<li><p>\(n_m =\) number of movies</p></li>
-<li><p>\(r(i,j) = 1\) if user \(j\) has rated movie \(i\)</p></li>
-<li><p>\(y(i,j) =\) rating given by user \(j\) to movie \(i\) (defined only if \(r(i,j)=1\))</p></li>
-</ul>
-
-<h3 id="toc_11">Content Based Recommendations</h3>
-
-<p>We can introduce two features, \(x_1\) and \(x_2\) which represents how much romance or how much action a movie may have (on a scale of 0−1).</p>
-
-<p>One approach is that we could do linear regression for every single user. For each user \(j\), learn a parameter \(\theta^{(j)} \in \mathbb{R}^3\). <u>Predict user \(j\) as rating movie \(i\) with \((\theta^{(j)})^Tx^{(i)}\) stars</u>.</p>
-
-<ul>
-<li><p>\(\theta^{(j)} =\) parameter vector for user \(j\)</p></li>
-<li><p>\(x^{(i)} =\) feature vector for movie \(i\)</p></li>
-</ul>
-
-<p>For user \(j\), movie \(i\), predicted rating: \((\theta^{(j)})^T(x^{(i)})\)</p>
-
-<ul>
-<li>  \(m^{(j)} =\) number of movies rated by user \(j\)</li>
-</ul>
-
-<p>To learn \(\theta^{(j)}\), we do the following</p>
-
-<p>\(min_{\theta^{(j)}} = \dfrac{1}{2}\displaystyle \sum_{i:r(i,j)=1} ((\theta^{(j)})^T(x^{(i)}) - y^{(i,j)})^2 + \dfrac{\lambda}{2} \sum_{k=1}^n(\theta_k^{(j)})^2\)</p>
-
-<p>This is our familiar linear regression. The base of the first summation is choosing all \(i\) such that \(r(i,j) = 1\).</p>
-
-<p>To get the parameters for all our users, we do the following:</p>
-
-<p>\(min_{\theta^{(1)},\dots,\theta^{(n_u)}} = \dfrac{1}{2}\displaystyle \sum_{j=1}^{n_u} \sum_{i:r(i,j)=1} ((\theta^{(j)})^T(x^{(i)}) - y^{(i,j)})^2 + \dfrac{\lambda}{2} \sum_{j=1}^{n_u} \sum_{k=1}^n(\theta_k^{(j)})^2\)</p>
-
-<p>We can apply our linear regression gradient descent update using the above cost function.</p>
-
-<p>The only real difference is that we <strong>eliminate the constant</strong> \(\dfrac{1}{m}\).</p>
-
-<h3 id="toc_12">Feature Finder</h3>
-
-<p>It can be very difficult to find features such as &quot;amount of romance&quot; or &quot;amount of action&quot; in a movie. To figure this out, we can use <u>feature finders</u> .</p>
-
-<p>We can let the users tell us how much they like the different genres, providing their parameter vector immediately for us.</p>
-
-<p>To infer the features from given parameters, we use the squared error function with regularization over all the users:</p>
-
-<p>\(min_{x^{(1)},\dots,x^{(n_m)}} \dfrac{1}{2} \displaystyle \sum_{i=1}^{n_m} \sum_{j:r(i,j)=1} ((\theta^{(j)})^T x^{(i)} - y^{(i,j)})^2 + \dfrac{\lambda}{2}\sum_{i=1}^{n_m} \sum_{k=1}^{n} (x_k^{(i)})^2\)</p>
-
-<p>You can also <strong>randomly guess</strong> the values for theta to guess the features repeatedly. You will actually converge to a good set of features.</p>
-
-<h3 id="toc_13">Collaborative Filtering Algorithm</h3>
-
-<p>To speed things up, we can simultaneously minimize our features and our parameters:</p>
-
-<p><img src="media/15045011015887/Collaborative%20Filtering.png" alt="Collaborative Filtering"/></p>
-
-<p>\(J(x,\theta) = \dfrac{1}{2} \displaystyle \sum_{(i,j):r(i,j)=1}((\theta^{(j)})^Tx^{(i)} - y^{(i,j)})^2 + \dfrac{\lambda}{2}\sum_{i=1}^{n_m} \sum_{k=1}^{n} (x_k^{(i)})^2 + \dfrac{\lambda}{2}\sum_{j=1}^{n_u} \sum_{k=1}^{n} (\theta_k^{(j)})^2\)</p>
-
-<p>It looks very complicated, but we&#39;ve only combined the cost function for \(\theta\) and the cost function for \(x\).</p>
-
-<p>Because the algorithm can learn them itself, the bias units where \(x_0=1\) have been removed, therefore \(x\in \mathcal{R}^ n\) and \(\theta \in \mathcal{R} ^n\).</p>
-
-<p>These are three steps in the algorithm:</p>
-
-<ol>
-<li><p>Initialize \(x^{(i)},...,x^{(n_m)},\theta^{(1)},...,\theta^{(n_u)}\) to small random values. This serves to break symmetry and ensures that the algorithm learns features \(x^{(i)},...,x^{(n_m)}\) that are different from each other.</p></li>
-<li><p>Minimize \(J(x^{(i)},...,x^{(n_m)},\theta^{(1)},...,\theta^{(n_u)})\) using gradient descent (or an advanced optimization algorithm).  E.g. for every \(j=1,...,n_u,i=1,...n_m\):</p>
-
-<p>\(x_k^{(i)} := x_k^{(i)} - \alpha\left (\displaystyle \sum_{j:r(i,j)=1}{((\theta^{(j)})^T x^{(i)} - y^{(i,j)}) \theta_k^{(j)}} + \lambda x_k^{(i)} \right)\)</p>
-
-<p>\(\theta_k^{(j)} := \theta_k^{(j)} - \alpha\left (\displaystyle \sum_{i:r(i,j)=1}{((\theta^{(j)})^T x^{(i)} - y^{(i,j)}) x_k^{(i)}} + \lambda \theta_k^{(j)} \right)\)</p></li>
-<li><p>For a user with parameters θ and a movie with (learned) features x, predict a star rating of \(\theta^Tx\).</p></li>
-</ol>
-
-<h3 id="toc_14">Vectorization: Low Rank Matrix Factorization</h3>
-
-<p>Given matrices X (each row containing features of a particular movie) and Θ (each row containing the weights for those features for a given user), then the full matrix Y of all predicted ratings of all movies by all users is given simply by: \(Y = X\Theta^T\).</p>
-
-<p>Predicting how similar two movies i and j are can be done using the distance between their respective feature vectors x. Specifically, we are looking for a small value of \(||x^{(i)} - x^{(j)}||\).</p>
-
-<h3 id="toc_15">Implementation Detail: Mean Normalization</h3>
-
-<p>If the ranking system for movies is used from the previous lectures, then new users (who have watched no movies), will be assigned new movies incorrectly. Specifically, they will be assigned θ with all components equal to zero due to the minimization of the regularization term. That is, we assume that the new user will rank all movies 0, which does not seem intuitively correct.</p>
-
-<p>We rectify this problem by normalizing the data relative to the mean. First, we use a matrix Y to store the data from previous ratings, where the ith row of Y is the ratings for the ith movie and the jth column corresponds to the ratings for the jth user.</p>
-
-<p>We can now define a vector</p>
-
-<p>\(\mu = [\mu_1, \mu_2, \dots , \mu_{n_m}]\)</p>
-
-<p>such that</p>
-
-<p>\(\mu_i = \frac{\sum_{j:r(i,j)=1}{Y_{i,j}}}{\sum_{j}{r(i,j)}}\)</p>
-
-<p>Which is effectively the mean of the previous ratings for the ith movie (where only movies that have been watched by users are counted). We now can normalize the data by subtracting u, the mean rating, from the actual ratings for each user (column in matrix Y):</p>
-
-<p>As an example, consider the following matrix Y and mean ratings μ:</p>
-
-<p>\(Y = \begin{bmatrix} 5 &amp; 5 &amp; 0 &amp; 0 \newline 4 &amp; ? &amp; ? &amp; 0 \newline 0 &amp; 0 &amp; 5 &amp; 4 \newline 0 &amp; 0 &amp; 5 &amp; 0 \newline \end{bmatrix}, \quad \mu = \begin{bmatrix} 2.5 \newline 2 \newline 2.25 \newline 1.25 \newline \end{bmatrix}\)</p>
-
-<p>The resulting Y′ vector is:</p>
-
-<p>\(Y&#39; = \begin{bmatrix} 2.5 &amp; 2.5 &amp; -2.5 &amp; -2.5 \newline 2 &amp; ? &amp; ? &amp; -2 \newline -.2.25 &amp; -2.25 &amp; 3.75 &amp; 1.25 \newline -1.25 &amp; -1.25 &amp; 3.75 &amp; -1.25 \end{bmatrix}\)</p>
-
-<p>Now we must slightly modify the linear regression prediction to include the mean normalization term:</p>
-
-<p>\((\theta^{(j)})^T x^{(i)} + \mu_i\)</p>
-
-<p>Now, for a new user, the initial predicted values will be equal to the μ term instead of simply being initialized to zero, which is more accurate.</p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/9/9</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html'>机器学习</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="unsupervised_learning.html">
-                
-                  <h1>Machine Learning(8): Unsupervised Learning</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<ul>
-<li>
-<a href="#toc_0">K-means Clustering</a>
-<ul>
-<li>
-<a href="#toc_1">Explaination</a>
-</li>
-<li>
-<a href="#toc_2">Choosing the Number of Clusters</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_3">Principal Component Analysis</a>
-<ul>
-<li>
-<a href="#toc_4">Choosing the Number of Principal Components</a>
-</li>
-<li>
-<a href="#toc_5">Advice for Applying PCA</a>
-</li>
-</ul>
-</li>
-</ul>
-
-
-<h2 id="toc_0">K-means Clustering</h2>
-
-<p>The K-Means Algorithm is the most popular and widely used algorithm for automatically grouping data into coherent subsets.</p>
-
-<ol>
-<li><p>Randomly initialize two points in the dataset called the <u>cluster centroids</u> .</p></li>
-<li><p><u>Cluster assignment</u>: assign all examples into one of two groups based on which cluster centroid the example is closest to.</p></li>
-<li><p><u>Move centroid</u>: compute the averages for all the points inside each of the two cluster centroid groups, then move the cluster centroid points to those averages.</p></li>
-<li><p>Re-run (2) and (3) until we have found our clusters.</p></li>
-</ol>
-
-<p>Main variables are:</p>
-
-<ul>
-<li><p>K (number of clusters)</p></li>
-<li><p>Training set \({x^{(1)}, x^{(2)}, \dots,x^{(m)}}\)</p></li>
-<li><p>Where \(x^{(i)} \in \mathbb{R}^n\)</p></li>
-</ul>
-
-<p><strong>The algorithm:</strong></p>
-
-<pre><code>Randomly initialize K cluster centroids mu(1), mu(2), ..., mu(K)
-Repeat:
-   for i = 1 to m:
-      c(i):= index (from 1 to K) of cluster centroid closest to x(i)
-   for k = 1 to K:
-      mu(k):= average (mean) of points assigned to cluster k
-</code></pre>
-
-<h3 id="toc_1">Explaination</h3>
-
-<p>The <strong>first for-loop</strong> is the <u>Cluster Assignment</u> step. We make a vector <u>c</u> where <u>c(i)</u> represents the centroid assigned to example <u>x(i)</u> .</p>
-
-<p>We can write the operation of the Cluster Assignment step more mathematically as follows:</p>
-
-<p>\(c^{(i)} = \arg \min_k\ ||x^{(i)} - \mu_k||^2\)</p>
-
-<p>That is, each \(c^{(i)}\) contains the index of the centroid that has minimal distance to \(x^{(i)}\).</p>
-
-<p>By convention, we square the right-hand-side, which makes the function we are trying to minimize more sharply increasing. It is mostly just a convention. But a convention that helps reduce the computation load because the Euclidean distance requires a square root but it is canceled.</p>
-
-<p>Without the square:</p>
-
-<p>\(||x^{(i)} - \mu_k|| = ||\quad\sqrt{(x_1^i - \mu_{1(k)})^2 + (x_2^i - \mu_{2(k)})^2 + (x_3^i - \mu_{3(k)})^2 + ...}\quad||\)</p>
-
-<p>With the square:</p>
-
-<p>\(||x^{(i)} - \mu_k||^2 = ||\quad(x_1^i - \mu_{1(k)})^2 + (x_2^i - \mu_{2(k)})^2 + (x_3^i - \mu_{3(k)})^2 + ...\quad||\)</p>
-
-<p>...so the square convention serves two purposes, minimize more sharply and less computation.</p>
-
-<p>The <strong>second for-loop</strong> is the &#39;Move Centroid&#39; step where we move each centroid to the average of its group.</p>
-
-<p>More formally, the equation for this loop is as follows:</p>
-
-<p>\(\mu_k = \dfrac{1}{n}[x^{(k_1)} + x^{(k_2)} + \dots + x^{(k_n)}] \in \mathbb{R}^n\)</p>
-
-<p>Where each of \(x^{(k_1)}, x^{(k_2)}, \dots, x^{(k_n)}\) are the training examples assigned to group \(mμ_k\).</p>
-
-<p>If you have a cluster centroid with <strong>0 points</strong> assigned to it, you can randomly <strong>re-initialize</strong> that centroid to a new point. You can also simply <strong>eliminate</strong> that cluster group.</p>
-
-<p>After a number of iterations the algorithm will <u><strong>converge</strong></u> , where new iterations do not affect the clusters.</p>
-
-<p>Note on non-separated clusters: some datasets have no real inner separation or natural structure. K-means can still evenly segment your data into K subsets, so can still be useful in this case.</p>
-
-<h3 id="toc_2">Choosing the Number of Clusters</h3>
-
-<p>Choosing K can be quite arbitrary and ambiguous.</p>
-
-<p><strong>The elbow method</strong>: plot the cost J and the number of clusters K. The cost function should reduce as we increase the number of clusters, and then flatten out. Choose K at the point where the cost function starts to flatten out.</p>
-
-<p>However, fairly often, the curve is <strong>very gradual</strong> , so there&#39;s no clear elbow.</p>
-
-<p><strong>Note:</strong> J will <strong>always</strong> decrease as K is increased. The one exception is if k-means gets stuck at a bad local optimum.</p>
-
-<p>Another way to choose K is to observe how well k-means performs on a <strong>downstream purpose</strong> . In other words, you choose K that proves to be most useful for some goal you&#39;re trying to achieve from using these clusters.</p>
-
-<p><img src="media/15101207367271/elbow%20method.png" alt="elbow method"/></p>
-
-<h2 id="toc_3">Principal Component Analysis</h2>
-
-<p>The most popular dimensionality reduction algorithm is <u>Principal Component Analysis</u> (PCA)</p>
-
-<p>Before applying PCA, there is a data pre-processing step we must perform:</p>
-
-<p><strong>Data preprocessing</strong></p>
-
-<ul>
-<li>  Given training set: \(x(1),x(2),…,x(m)\)</li>
-<li><p>Preprocess (feature scaling/mean normalization): \(\mu_j = \dfrac{1}{m}\sum^m_{i=1}x_j^{(i)}\)</p></li>
-<li><p>Replace each \(x_j^{(i)}\) with \(x_j^{(i)} - \mu_j\)</p></li>
-<li><p>If different features on different scales (e.g., \(x_1\) = size of house, \(x_2\) = number of bedrooms), scale features to have comparable range of values.</p></li>
-</ul>
-
-<p>Above, we first subtract the mean of each feature from the original feature. Then we scale all the features \(x_j^{(i)} = \dfrac{x_j^{(i)} - \mu_j}{s_j}\).</p>
-
-<p>We can define specifically what it means to reduce from 2d to 1d data as follows:</p>
-
-<p>\(\Sigma = \dfrac{1}{m}\sum^m_{i=1}(x^{(i)})(x^{(i)})^T\)</p>
-
-<p>The z values are all real numbers and are the projections of our features onto \(u^{(1)}\).</p>
-
-<p>So, PCA has two tasks: figure out \(u^{(1)},\dots,u^{(k)}\) and also to find \(z_1, z_2, \dots, z_m\).</p>
-
-<p>The mathematical proof for the following procedure is complicated and beyond the scope of this course.</p>
-
-<p><strong>1. Compute &quot;covariance matrix&quot;</strong></p>
-
-<p>\(\Sigma = \dfrac{1}{m}\sum^m_{i=1}(x^{(i)})(x^{(i)})^T\)</p>
-
-<p>This can be vectorized in Octave as:</p>
-
-<p>\[Sigma = (1/m) * X&#39; * X;\]</p>
-
-<p>We denote the covariance matrix with a capital sigma (which happens to be the same symbol for summation, confusingly---they represent entirely different things).</p>
-
-<p>Note that \(x^{(i)}\) is an n×1 vector, \((x^{(i)})^T\) is an 1×n vector and X is a m×n matrix (row-wise stored examples). The product of those will be an n×n matrix, which are the dimensions of Σ.</p>
-
-<p><strong>2. Compute &quot;eigenvectors&quot; of covariance matrix Σ</strong></p>
-
-<pre><code class="language-octave">[U,S,V] = svd(Sigma);
-</code></pre>
-
-<p>svd() is the &#39;singular value decomposition&#39;, a built-in Octave function.</p>
-
-<p>What we actually want out of svd() is the &#39;U&#39; matrix of the Sigma covariance matrix: \(U \in \mathbb{R}^{n \times n}\). U contains \(u^{(1)},\dots,u^{(n)}\), which is exactly what we want.</p>
-
-<p><strong>3. Take the first k columns of the U matrix and compute z</strong></p>
-
-<p>We&#39;ll assign the first k columns of U to a variable called <code>Ureduce</code>. This will be an n×k matrix. We compute z with:</p>
-
-<p>\(z^{(i)} = \text{Ureduce}^T \cdot x^{(i)}\)</p>
-
-<p>\(\text{Ureduce}Z^T\) will have dimensions k×n while x(i) will have dimensions n×1. The product \(\text{Ureduce}^T \cdot x^{(i)}\) will have dimensions k×1.</p>
-
-<p>To summarize, the whole algorithm in <code>octave</code> is roughly:</p>
-
-<pre><code class="language-octave">Sigma = (1/m) * X&#39; * X; % compute the covariance matrix
-[U,S,V] = svd(Sigma);   % compute our projected directions
-Ureduce = U(:,1:k);     % take the first k directions
-Z = X * Ureduce;        % compute the projected data points
-</code></pre>
-
-<h3 id="toc_4">Choosing the Number of Principal Components</h3>
-
-<p>How do we choose <u>number of principal components</u> \(k\)? </p>
-
-<p>One way to choose k is by using the following formula:</p>
-
-<ul>
-<li><p>Given the average squared projection error: \(\dfrac{1}{m}\sum^m_{i=1}||x^{(i)} - x_{approx}^{(i)}||^2\)</p></li>
-<li><p>Also given the total variation in the data: \(\dfrac{1}{m}\sum^m_{i=1}||x^{(i)}||^2\)</p></li>
-<li><p>Choose k to be the smallest value such that: \(\dfrac{\dfrac{1}{m}\sum^m_{i=1}||x^{(i)} - x_{approx}^{(i)}||^2}{\dfrac{1}{m}\sum^m_{i=1}||x^{(i)}||^2} \leq 0.01\)</p></li>
-</ul>
-
-<p>In other words, the squared projection error divided by the total variation should be less than one percent, so that <strong>99% of the variance is retained</strong> .</p>
-
-<p><strong>Algorithm for choosing k</strong></p>
-
-<ol>
-<li><p>Try PCA with k=1,2,…</p></li>
-<li><p>Compute \(U_{reduce}, z, x\)</p></li>
-<li><p>Check the formula given above that <u>99% of the variance is retained</u>. If not, go to step one and increase k.</p></li>
-</ol>
-
-<p>This procedure would actually be horribly inefficient. In Octave, we will call svd:</p>
-
-<pre>[U,S,V] = svd(Sigma)
-</pre>
-
-<p>Which gives us a matrix S. We can actually check for 99% of retained variance using the S matrix as follows:</p>
-
-<p>\(\dfrac{\sum_{i=1}^kS_{ii}}{\sum_{i=1}^nS_{ii}} \geq 0.99\)</p>
-
-<h3 id="toc_5">Advice for Applying PCA</h3>
-
-<p>The most common use of PCA is to speed up supervised learning.</p>
-
-<p>Given a training set with a large number of features (e.g. \(x^{(1)},\dots,x^{(m)} \in \mathbb{R}^{10000}\) ) we can use PCA to reduce the number of features in each example of the training set (e.g. \(z^{(1)},\dots,z^{(m)} \in \mathbb{R}^{1000}\)).</p>
-
-<p>Note that we should define the PCA reduction from \(x^{(i)}\) to \(z^{(i)}\) only on the training set and not on the cross-validation or test sets. You can apply the mapping z(i) to your cross-validation and test sets after it is defined on the training set.</p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/9/8</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html'>机器学习</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1155,6 +647,18 @@ Z = X * Ureduce;        % compute the projected data points
 	      
 		      
 			      <li class="post">
+			        <a href="15187866094632.html">技巧：Coursera下载Jupyter notebook相关文件</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15171345711813.html">用于训练的深度学习硬件</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15166008990128.html">网络编程</a>
 			      </li>
 		     
@@ -1168,18 +672,6 @@ Z = X * Ureduce;        % compute the projected data points
 		      
 			      <li class="post">
 			        <a href="memory_alignment.html">内存对齐</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="virtual_memory_and_dynamic_allocate.html">虚拟内存和动态内存分配</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="Sync.html">同步/异步</a>
 			      </li>
 		     
 		  

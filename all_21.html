@@ -159,6 +159,307 @@ var _hmt = _hmt || [];
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="priority_queue.html">
+                
+                  <h1>Priority queue</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p><strong>A priority queue</strong>(优先队列) is an ADP which likes a regular queue or stack , but where additionally each element has a <code>priority</code> associated with it. In a priority queue, an element with high priority is served before an element with low priority. If two elements have the same priority, they are served according to their order in the queue.</p>
+
+<p>A priority queue must at least support the following operations:</p>
+
+<ul>
+<li><code>insert_with_priority</code>: add an element to the queue with an associated priority.</li>
+<li><code>pull_highest_priority_element</code>: remove the element from the queue that has the highest priority, and return it.</li>
+<li><code>peek</code> :return the highest-priority element but does not modify the queue</li>
+</ul>
+
+<h2 id="toc_0">Naive Implementation</h2>
+
+<p>There are a variety of simple, usually inefficient, ways to implement a priority queue. They provide an analogy to help one understand what a priority queue is. For instance, one can keep all the elements in an unsorted list. Whenever the highest-priority element is requested, search through all elements for the one with the highest priority. (In big O notation: \(O(1)\) insertion time, \(O(n)\) pull time due to search.)</p>
+
+<h2 id="toc_1">Heap Implementation</h2>
+
+<pre><code class="language-python">class PriorityQueue:
+    def __init__(self):
+        self.heapArray = [(0, 0)]
+        self.currentSize = 0
+
+    def buildHeap(self, alist):
+        &quot;&quot;&quot;
+        &quot;&quot;&quot;从一个包含元素的列表创建新堆&quot;&quot;&quot;
+        :param alist: a list
+        &quot;&quot;&quot;
+        self.currentSize = len(alist)
+        self.heapArray = [(0, 0)]
+        for i in alist:
+            self.heapArray.append(i)
+        i = len(alist) // 2
+        while (i &gt; 0):
+            self.percDown(i)
+            i = i - 1
+
+    def percDown(self, i):
+        &quot;&quot;&quot;
+        Percolate the ith node down the tree
+        &quot;&quot;&quot;
+        while (i * 2) &lt;= self.currentSize:
+            mc = self.minChild(i)
+            if self.heapArray[i][0] &gt; self.heapArray[mc][0]:
+                tmp = self.heapArray[i]
+                self.heapArray[i] = self.heapArray[mc]
+                self.heapArray[mc] = tmp
+            i = mc
+
+    def minChild(self, i):
+        &quot;&quot;&quot;
+        Find the smallest child
+        &quot;&quot;&quot;
+        if i * 2 &gt; self.currentSize:
+            return -1
+        else:
+            if i * 2 + 1 &gt; self.currentSize:
+                return i * 2
+            else:
+                if self.heapArray[i * 2][0] &lt; self.heapArray[i * 2 + 1][0]:
+                    return i * 2
+                else:
+                    return i * 2 + 1
+
+    def percUp(self, i):
+        &quot;&quot;&quot;
+        Percolate the ith node up the tree
+        &quot;&quot;&quot;
+        while i // 2 &gt; 0:
+            if self.heapArray[i][0] &lt; self.heapArray[i // 2][0]:
+                tmp = self.heapArray[i // 2]
+                self.heapArray[i // 2] = self.heapArray[i]
+                self.heapArray[i] = tmp
+            i = i // 2
+
+    def add(self, k):
+        self.heapArray.append(k)
+        self.currentSize = self.currentSize + 1
+        self.percUp(self.currentSize)
+
+    def delMin(self):
+        &quot;&quot;&quot;
+        delete the min-vertex of heap array, which always in the first position.
+        &quot;&quot;&quot;
+        retval = self.heapArray[1][1]
+        self.heapArray[1] = self.heapArray[self.currentSize]
+        self.currentSize = self.currentSize - 1
+        self.heapArray.pop()
+        self.percDown(1)
+        return retval
+
+    def isEmpty(self):
+        &quot;&quot;&quot;
+        return true if the heapArray is empty
+        &quot;&quot;&quot;
+        if self.currentSize == 0:
+            return True
+        else:
+            return False
+
+    def decreaseKey(self, val, amt):
+        &quot;&quot;&quot;
+        Decrease the key of the specific vertex (here, val)
+
+        First, find its position in the heapArray: myKey
+        Second, set its position to the right
+        &quot;&quot;&quot;
+        done = False
+        i = 1
+        myKey = 0
+        while not done and i &lt;= self.currentSize:
+            if self.heapArray[i][1] == val:
+                done = True
+                myKey = i
+            else:
+                i = i + 1
+        if myKey &gt; 0:
+            self.heapArray[myKey] = (amt, self.heapArray[myKey][1])
+            self.percUp(myKey)
+
+    def __contains__(self, vtx):
+        &quot;&quot;&quot;
+        Built-in Magic method
+        &quot;&quot;&quot;
+        for pair in self.heapArray:
+            if pair[1] == vtx:
+                return True
+        return False
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/7/12</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html'>Python数据结构与算法</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="heap.html">
+                
+                  <h1>Heap (1): Introduction and Implementation</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>A <strong>heap</strong> (堆)is a specialized tree-based data structure。 A <strong>heap</strong> can be classified as either a <strong>max heap</strong> or a <strong>min heap</strong>. </p>
+
+<ul>
+<li>In a <strong>max heap</strong>, the keys of parent nodes are always greater than or equal to those of the children and the highest key is in the root node. </li>
+<li>In a <strong>min heap</strong>, the keys of parent nodes are less than or equal to those of the children and the lowest key is in the root node.</li>
+</ul>
+
+<p><strong>Heap</strong> is one maximally efficient implementation of an abstract data type called a <strong>priority queue</strong> (see <a href="http://larryim.cc/priority_queue.html">here</a>), and in fact priority queues are often referred to as <strong>heaps</strong>, regardless of how they may be implemented. </p>
+
+<h2 id="toc_0">Implementation</h2>
+
+<p>Priority queues typically use a heap as backbone, giving \(O(\log n)\) performance for inserts and removals, and \(O(n \log n)\) to build initially.</p>
+
+<h2 id="toc_1">Binary Heap</h2>
+
+<p>A common implementation of a heap is the <strong>binary heap</strong>(二叉堆), in which the tree is a <strong>complete binary tree</strong>(完全二叉树). </p>
+
+<p>二叉堆的操作与实现</p>
+
+<ul>
+<li><code>BinaryHeap()</code>：创建一个新的、空的二叉堆对象</li>
+<li><code>insert(k)</code>：把新元素加入到堆中</li>
+<li><code>findMin()</code>：返回堆中的最小项，最小项仍保留在堆中</li>
+<li><code>delMin()</code>：返回堆中的最小项，同时从堆中删除</li>
+<li><code>isEmpty()</code>：返回堆是否为空</li>
+<li><code>size()</code>：返回堆中元素的个数</li>
+<li><code>buildHeap(list)</code>：从一个包含元素的列表创建新堆</li>
+</ul>
+
+<p>有两个关键的操作：<br/>
+1. <code>insert</code>方法。首先，为了满足“完全二叉树”的性质，新键值应该添加到列表的末尾。然而新键值简单地添加在列表末尾，显然无法满足堆次序。所以要通过比较父节点和新加入的元素的方法来重新满足堆次序。如果新加入的元素比父节点要小，可以与父节点互换位置；不断交换，直到到达树的顶端。下图所示一系列交换操作来使新加入元素“上浮”到正确的位置。</p>
+
+<p><img src="media/14973171257726/14974156268132.jpg" alt=""/></p>
+
+<p>2.<code>delMin</code>方法 移走根节点的元素后如何保持堆结构和堆次序: 首先，用最后一个节点来代替根节点, 移走最后一个节点保持了堆结构的性质。这么简单的替换，还是会破坏堆次序。第二步，将新节点“下沉”来恢复堆次序。下图所示的是一系列交换操作来使新节点“下沉”到正确的位置。</p>
+
+<p><img src="media/14973171257726/14974156980805.jpg" alt=""/></p>
+
+<pre><code class="language-python">class BinHeap(object):
+    &quot;&quot;&quot;
+    创建一个新的、空的二叉堆对象
+    &quot;&quot;&quot;
+    def __init__(self):
+        self.list = [0]
+        self.size = 0
+
+    def perc_up(self,i):
+        &quot;&quot;&quot;
+        Percolate the new node into proper position
+        &quot;&quot;&quot;
+        while i: 
+            if self.list[i] &lt; self.list[i//2]:
+                self.list[i], self.list[i//2] = self.list[i//2], self.list[i]
+            i = i//2
+    
+    def insert(self, item):
+        &quot;&quot;&quot;把新元素加入到堆中&quot;&quot;&quot;
+        self.list.append(item)
+        self.size += 1
+        self.perc_up(self.size)
+
+    def findMin(self):
+        &quot;&quot;&quot;返回堆中的最小项，最小项仍保留在堆中&quot;&quot;&quot;
+        return self.list[1]
+
+    def delMin(self):
+        &quot;&quot;&quot;返回堆中的最小项，同时从堆中删除&quot;&quot;&quot;
+        retval = self.list[1]
+        self.list[1] = self.list[-1]
+        self.size -=1
+        self.list.pop()
+        self.perc_down(1)
+
+        return retval
+
+
+    def perc_down(self, i):
+        &quot;&quot;&quot;
+        Percolate the root node  down the tree
+        &quot;&quot;&quot;
+        while i*2 &lt;= self.size:
+            if i*2+1 &gt; self.size:
+                self.list[i*2], self.list[i] = self.list[i], self.list[i*2]
+                i = i*2
+            else:
+                if self.list[i*2] &gt; self.list[i*2+1]:
+                    self.list[i*2+1], self.list[i] =  self.list[i], self.list[i*2+1]
+                    i = i*2+1
+                else:
+                    self.list[i*2], self.list[i] = self.list[i], self.list[i*2]
+                    i = i*2
+
+
+    def isEmpty(self):
+        &quot;&quot;&quot;返回堆是否为空&quot;&quot;&quot;
+        return self.size == 0
+
+    def __len__(self):
+        &quot;&quot;&quot;返回堆中元素的个数&quot;&quot;&quot;
+        return self.size
+
+    def buildHeap(self,alist):
+        &quot;&quot;&quot;从一个包含元素的列表创建新堆&quot;&quot;&quot;
+        self.size = len(alist)
+        self.list.extend(alist)
+        i = self.size//2
+        while i &gt;0:
+            self.perc_down(i)
+            i -= 1
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/7/12</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Tree.html'>Tree</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="14992350772045.html">
                 
                   <h1>首先有一个概念：回溯</h1>
@@ -611,156 +912,6 @@ Edge List<br/>
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="overfiting_and_normalization.html">
-                
-                  <h1>Machine Learning (4): Overfitting and normalization</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<ul>
-<li>
-<a href="#toc_0">The problem of Overfitting</a>
-</li>
-<li>
-<a href="#toc_1">Regularized Linear Regression</a>
-<ul>
-<li>
-<a href="#toc_2">Normal Equation</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_3">Regularized Logistic Regression</a>
-</li>
-</ul>
-
-
-<h2 id="toc_0">The problem of Overfitting</h2>
-
-<p><strong>Underfitting</strong>, or <strong>high bias</strong>, is when the form of our hypothesis function \(h\) maps poorly to the trend of the data. It is usually caused by a function that is too simple or uses too few features. </p>
-
-<p><strong>Overfitting</strong>, or <strong>high variance</strong>, is caused by a hypothesis function that fits the available data but does not generalize well to predict new data. It is usually caused by a complicated function that creates a lot of unnecessary curves and angles unrelated to the data.</p>
-
-<p>There are two main options to address the issue of overfitting:</p>
-
-<ol>
-<li><p><strong><em>Reduce the number of features</em></strong>:<br/>
-Manually select which features to keep.<br/>
-(Use a model selection algorithm).</p></li>
-<li><p><strong><em>Regularization</em></strong><br/>
-Keep all the features, but reduce the magnitude of parameters \(\theta_j\). Regularization works well when we have a lot of slightly useful features.</p></li>
-</ol>
-
-<p><img src="media/14985711297859/14987109337751.png" alt="sd"/></p>
-
-<p>The figure above shows the Underfitting, Normal, Overfitting.</p>
-
-<h2 id="toc_1">Regularized Linear Regression</h2>
-
-<p>We regularize all of theta parameters in a single summation as:</p>
-
-<p>\[J(\theta)= \dfrac{1}{2m}[ \sum_{i=1}^m (h_\theta(x^{(i)}) - y^{(i)})^2 + \lambda\ \sum_{j=1}^n \theta_j^2]\]</p>
-
-<p>where the \(\lambda\), or lambda, is the <strong>regularization parameter</strong>. It determines how much the costs of our theta parameters are inflated.  If \(\lambda\) is chosen to be too large, it may smooth out the function too much and cause underfitting. </p>
-
-<p><strong>Note that you should not regularize the parameter \(\theta_0\)</strong>.</p>
-
-<p>The corresponding gradient descent is</p>
-
-<p>\[\begin{align*} &amp; \text{Repeat}\ \lbrace \newline &amp; \ \ \ \ \theta_0 := \theta_0 - \alpha\ \frac{1}{m}\ \sum_{i=1}^m (h_\theta(x^{(i)}) - y^{(i)})x_0^{(i)} \newline &amp; \ \ \ \ \theta_j := \theta_j - \alpha\ \left[ \left( \frac{1}{m}\ \sum_{i=1}^m (h_\theta(x^{(i)}) - y^{(i)})x_j^{(i)} \right) + \frac{\lambda}{m}\theta_j \right] &amp;\ \ \ \ \ \ \ \ \ \ j \in \lbrace 1,2...n\rbrace\newline &amp; \rbrace \end{align*}\]</p>
-
-<p>With some manipulation our update rule can also be represented as:<br/>
-\[\theta_j := \theta_j(1 - \alpha\frac{\lambda}{m}) - \alpha\frac{1}{m}\sum_{i=1}^m(h_\theta(x^{(i)}) - y^{(i)})x_j^{(i)}\]</p>
-
-<h3 id="toc_2">Normal Equation</h3>
-
-<p>To add in regularization, the equation is the same as our original, except that we add another term inside the parentheses:</p>
-
-<p>\[\begin{align*}&amp; \theta = \left( X^TX + \lambda \cdot L \right)^{-1} X^Ty \newline&amp; \text{where}\ \ L = \begin{bmatrix} 0 &amp; &amp; &amp; &amp; \newline &amp; 1 &amp; &amp; &amp; \newline &amp; &amp; 1 &amp; &amp; \newline &amp; &amp; &amp; \ddots &amp; \newline &amp; &amp; &amp; &amp; 1 \newline\end{bmatrix}\end{align*}\]</p>
-
-<p>Recall that if \(m &lt; n\), then \(XTX\) is non-invertible. However, when we add the term \(\lambda L\), then \(XTX + \lambda L\) becomes invertible.</p>
-
-<h2 id="toc_3">Regularized Logistic Regression</h2>
-
-<p>We regularize all of \(\theta\) parameters in a single summation as:</p>
-
-<p>\[ J(\theta) = -\dfrac{1}{m} \sum_{i=1}^m[ y ^{(i)}\log(h_\theta(x^{(i)}))+(1-y^{(i)}) \log(1-h_\theta(x^{(i)}))]+ \frac{\lambda}{2m} \sum_{j=1}^n \theta_j^2\]</p>
-
-<p>The corresponding gradient descent is<br/>
-\[\theta_j:=\theta_j-\frac{\alpha}{m}\Sigma^m_{i=1}(h_\theta(x^{(i)})-y^{(i)})x^{(i)}_j+\frac{\alpha\lambda}{m}\theta_j\]</p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/6/29</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html'>机器学习</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="14987012023353.html">
-                
-                  <h1>口语</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<ol>
-<li>发音 native</li>
-<li>流畅度</li>
-<li>地道的语料</li>
-</ol>
-
-<p>方法</p>
-
-<ol>
-<li>逐句跟读   <strong>不看原文</strong></li>
-<li>影子跟读</li>
-<li>全文复数  用到关键词句</li>
-</ol>
-
-<p>每天2个小时，1个小时跟读，1个小时背诵和跟读</p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/6/29</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='English.html'>English</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -862,6 +1013,18 @@ Keep all the features, but reduce the magnitude of parameters \(\theta_j\). Regu
 	      
 		      
 			      <li class="post">
+			        <a href="15187866094632.html">技巧：Coursera下载Jupyter notebook相关文件</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15171345711813.html">用于训练的深度学习硬件</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15166008990128.html">网络编程</a>
 			      </li>
 		     
@@ -875,18 +1038,6 @@ Keep all the features, but reduce the magnitude of parameters \(\theta_j\). Regu
 		      
 			      <li class="post">
 			        <a href="memory_alignment.html">内存对齐</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="virtual_memory_and_dynamic_allocate.html">虚拟内存和动态内存分配</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="Sync.html">同步/异步</a>
 			      </li>
 		     
 		  
