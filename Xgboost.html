@@ -26,7 +26,7 @@ var _hmt = _hmt || [];
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  Introduction to big data - techlarry
+  XGBoost - techlarry
   
   </title>
   
@@ -163,14 +163,12 @@ var _hmt = _hmt || [];
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>Introduction to big data</h1>
+          <h1>XGBoost</h1>
      
         <div class="read-more clearfix">
-          <span class="date">2017/10/31</span>
+          <span class="date">2017/11/9</span>
 
-          <span>posted in&nbsp;</span> 
           
-              <span class="posted-in"><a href='Big%20Data.html'>Big Data</a></span>
            
          
           <span class="comments">
@@ -183,27 +181,67 @@ var _hmt = _hmt || [];
       </div><!-- article -->
 
       <div class="article-content">
-      <h2 id="toc_0">Characteristics of Big data</h2>
+      <h3 id="toc_0">MAC安装</h3>
 
-<p>3 V: Volume, Variety, Velocity</p>
+<p><a href="https://xgboost.readthedocs.io/en/latest/build.html#building-on-macos">官方安装指南</a></p>
 
-<p>Most now agree with the characterization of big data using the 3 V’s coined by Doug Laney of Gartner:</p>
+<p>推荐使用源码安装，因为我尝试了其他方法，发现不行：</p>
 
-<p>·<code>Volume</code>: This refers to the vast amounts of data that is generated every second/minute/hour/day in our digitized world.</p>
+<pre><code class="language-bash">brew install gcc
+git clone --recursive https://github.com/dmlc/xgboost
+cd xgboost; cp make/config.mk ./config.mk
+</code></pre>
 
-<p>· <code>Velocity</code>: This refers to the speed at which data is being generated and the pace at which data moves from one point to the next.</p>
+<p>打开 <code>config.mk</code>，修改编译选项为</p>
 
-<p>· <code>Variety</code>: This refers to the ever-increasing different forms that data can come in, e.g., text, images, voice, geospatial.</p>
+<pre><code>export CC = gcc-7
+export CXX = g++-7
+</code></pre>
 
-<p>A fourth V is now also sometimes added:</p>
+<p>最后</p>
 
-<p>· <code>Veracity</code>: This refers to the quality of the data, which can vary greatly.</p>
+<pre><code>make -j4
+</code></pre>
 
-<p>There are many other V&#39;s that gets added to these depending on the context. For our specialization, we will add:</p>
+<p>然后安装python包</p>
 
-<p>· <code>Valence</code>: This refers to how big data can bond with each other, forming connections between otherwise disparate datasets.</p>
+<pre><code>cd python-package; sudo python setup.py install
+</code></pre>
 
-<p>The above V’s are the dimensions that characterize big data, and also embody its challenges: We have huge amounts of data, in different formats and varying quality, that must be processed quickly.</p>
+<p>最后设置环境变量<code>PYTHONPATH</code>，这里假设xgboost的文件夹的位置位于<code>~/xgboost</code>:</p>
+
+<pre><code>export PYTHONPATH=~/xgboost/python-package
+</code></pre>
+
+<h3 id="toc_1">跑demo</h3>
+
+<p>安装好了以后，当然要跑跑demo过过隐啦，一方面感受下xgboost的强大威力，另一方面熟悉一下基本流程</p>
+
+<pre><code class="language-python">import xgboost as xgb
+# read in data
+dtrain = xgb.DMatrix(&#39;demo/data/agaricus.txt.train&#39;)
+dtest = xgb.DMatrix(&#39;demo/data/agaricus.txt.test&#39;)
+# specify parameters via map
+param = {&#39;max_depth&#39;:2, &#39;eta&#39;:1, &#39;silent&#39;:1, &#39;objective&#39;:&#39;binary:logistic&#39; }
+num_round = 2
+bst = xgb.train(param, dtrain, num_round)
+# make prediction
+preds = bst.predict(dtest)
+</code></pre>
+
+<p>demo数据都包含在xgboost文件夹下面了，直接在xgboost文件夹里面运行即可。</p>
+
+<h2 id="toc_2">教程</h2>
+
+<p>详细的官方教程在<a href="https://github.com/dmlc/xgboost/tree/master/demo">Awesome XGBoost</a>。</p>
+
+<p>相关博客和链接有</p>
+
+<ul>
+<li><a href="https://www.cnblogs.com/zhouxiaohui888/p/6008368.html">xgboost原理及应用</a></li>
+<li><a href="http://pan.baidu.com/s/1dF2mDbz">陈天奇PPT</a></li>
+<li><a href="http://pan.baidu.com/s/1slP4J1r">xgboost导读和实战</a></li>
+</ul>
 
 
     
@@ -214,16 +252,16 @@ var _hmt = _hmt || [];
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="Xgboost.html" 
-          title="Previous Post: XGBoost">&laquo; XGBoost</a>
+          <a href="15108128842368.html" 
+          title="Previous Post: `MLlib`: Machine Learning in Apache Spark">&laquo; `MLlib`: Machine Learning in Apache Spark</a>
       
         </p>
         </div>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="Spark_introduction.html" 
-          title="Next Post: Spark">Spark &raquo;</a>
+          <a  href="introdution_to_big_data.html" 
+          title="Next Post: Introduction to big data">Introduction to big data &raquo;</a>
       
       </p>
         </div>

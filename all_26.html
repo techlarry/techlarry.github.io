@@ -163,6 +163,185 @@ var _hmt = _hmt || [];
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="14969711309826.html">
+                
+                  <h1>内置LIST，DICT 时间复杂度</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h2 id="toc_0">timeit 模块</h2>
+
+<pre><code class="language-python">class timeit.Timer(stmt=&#39;pass&#39;, setup=&#39;pass&#39;, timer=&lt;timer function&gt;)
+</code></pre>
+
+<ul>
+<li>Timer是测量小段代码执行速度的类。</li>
+<li>stmt参数是要测试的代码语句（statment）；</li>
+<li>setup参数是运行代码时需要的设置；</li>
+<li>timer参数是一个定时器函数，与平台有关。</li>
+</ul>
+
+<p>timeit.Timer.timeit(number=1000000)</p>
+
+<p>Timer类中测试语句执行速度的对象方法。number参数是测试代码时的测试次数，默认为1000000次。方法返回执行代码的平均耗时，一个float类型的秒数。</p>
+
+<pre><code class="language-python">from timeit import Timer
+
+li1 = [1,2]
+li2 = [23,5]
+li = li1+li2
+
+li = [i for i in range(10000)]
+li = list(range(10000))
+
+def t1():
+    li = []
+    for i in range(10000):
+        li.append(i)
+
+def t2():
+    li = []
+    for i in range(10000):
+        li += [i]
+
+def t3():
+    li = [ i for i in range(10000)]
+
+def t4():
+    li = list(range(10000))
+
+timer1 = Timer(&#39;t1()&#39;,&quot;from __main__ import t1&quot;)
+timer2 = Timer(&#39;t2()&#39;,&#39;from __main__ import t2&#39;)
+timer3 = Timer(&#39;t3()&#39;,&#39;from __main__ import t3&#39;)
+timer4 = Timer(&#39;t4()&#39;,&#39;from __main__ import t4&#39;)
+
+
+print(&#39;append&#39;,timer1.timeit(1000))
+print(&#39;+&#39;,timer2.timeit(1000))
+print(&#39;comprehesion&#39;,timer3.timeit(1000))
+print(&#39;list(range)&#39;,timer4.timeit(1000))
+
+
+# pop
+x = range(2000000)
+pop_zero = Timer(&quot;x.pop(0)&quot;, &quot;from __main__ import x&quot;)
+pop_end = Timer(&quot;x.pop()&quot;, &quot;from __main__ import x&quot;)
+print(&#39;pop zero&#39;, pop_zero.timeit(1000))
+print(&#39;pop end&#39;, pop_end.timeit(1000))
+
+</code></pre>
+
+<h2 id="toc_1">list 内置操作的时间复杂度</h2>
+
+<pre><code>* Operatation Big-O Efficiency
+* indexx[]          O(1)
+* index assignment  O(1)
+* append            O(1)
+* pop()             O(1)    #弹出
+* pop(i)            O(n)    #插入
+* insert(i, item)   O(n)
+* del operator      O(n)
+* iteration         O(n)
+* contains(in)      O(n)
+* get slice[x:y]    O(k)    # 取切片
+* del slice         O(n)    #删除切片
+* set slice         O(n+k)  #设置切片
+* reverse           O(n)
+* concatenate       O(k)
+* sort              O(nlogn)
+* multiply          O(nk)
+</code></pre>
+
+<h2 id="toc_2">dict 内置操作的时间复杂度</h2>
+
+<pre><code>* copy                O(n)
+* get item            O(n)   #取
+* set item            O(n)   #设置
+* delete tiem         O(n)   #删除键
+* contains(in)        O(1)    #包含，不用遍历
+* iteration           O(n)    #迭代
+
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/6/9</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html'>Python数据结构与算法</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="14969711309827.html">
+                
+                  <h1>数据结构介绍</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h2 id="toc_0">概念</h2>
+
+<p>数据是一个抽象的概念，将其进行分类后得到程序设计语言中的基本类型。如：int，float，char等。数据元素之间不是独立的，存在特定的关系，这些关系便是结构。数据结构指数据对象中数据元素之间的关系。</p>
+
+<p>程序= 数据结构+算法<br/>
+总结：算法是为了解决实际问题而设计的，数据结构是算法需要处理的问题载体。</p>
+
+<h2 id="toc_1">抽象数据类型(Abstract Data Type)</h2>
+
+<p>抽象数据类型(ADT)的含义是指一个数学模型以及定义在此数学模型上的一组操作。即把数据类型和数据类型上的运算捆在一起，进行封装。引入抽象数据类型的目的是把数据类型的表示和数据类型上运算的实现与这些数据类型和运算在程序中的引用隔开，使它们相互独立。</p>
+
+<h2 id="toc_2">内存、类型本质、连续存储</h2>
+
+<p>内存是连续的存储空间，内存的基本存储单元是一个字节，1个字节(Byte)是8位(Bit)</p>
+
+<p>顺序表的内存形式：</p>
+
+<ul>
+<li>逻辑地址：0,1,2,3,...,n01</li>
+<li>元素存储: e0,e1,e2,e3,....,en-1</li>
+<li>物理地址:l0,l0+c,l0+2c,l0+3c,l0+(n-1)c</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/6/9</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html'>Python数据结构与算法</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="14969760599335.html">
                 
                   <h1>作用域</h1>
@@ -410,259 +589,6 @@ s.salary = -1000
                   <div class="more-left left">
                   
                     <span class="date">2017/5/10</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="14969760733622.html">
-                
-                  <h1>Python 高级</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h2 id="toc_0">模块重新导入</h2>
-
-<p>模块导入： import xxx, from xxx import xxxx<br/>
-增加路径 </p>
-
-<pre><code class="language-python">import sys
-sys.path.append(path)
-</code></pre>
-
-<p>模块重新导入</p>
-
-<pre><code class="language-python">from imp import reload
-reload(module name)
-</code></pre>
-
-<h2 id="toc_1">02 模块循环导入问题</h2>
-
-<p>不可以循环导入，不能在模块之间相互调用</p>
-
-<p>怎样避免循环导入：导入语句放在后面需要导入时再倒入，例如放在函数体内导入</p>
-
-<h2 id="toc_2">03/04 ==与is的区别</h2>
-
-<ul>
-<li>== 判断值是否相等</li>
-<li>Is  id(a), id(b)是否相等，<strong>比较两个引用是否指向了同一个对象（引用比较）</strong></li>
-</ul>
-
-<h2 id="toc_3">05-07 深拷贝与浅拷贝</h2>
-
-<ul>
-<li>浅拷贝是一个对象的顶层拷贝，拷贝了引用，并没有拷贝内容
-= 就是浅拷贝</li>
-<li>深拷贝是对于一个对象所有层次的拷贝（递归）</li>
-</ul>
-
-<pre><code class="language-python">import copy
-c = copy.deepcopy(a)
-</code></pre>
-
-<p>copy.deepcopy深拷贝会把引用都拷贝出来（递归）<br/>
-copy.copy() <br/>
-使用copy模块的copy功能的时候，它会根据当前拷贝的数据类型是可变类型还是不可变类型，有不同的处理方式：如果拷贝可变类型，只能识别第一层拷贝；如果拷贝不可变类型，是浅拷贝</p>
-
-<h2 id="toc_4">12 私有化</h2>
-
-<p>属性的名字前面加上下划线，属于私有属性，不能从外部调用的<br/>
-方法：setNum(), getNum() 设置两个方法，一个设置属性，一个获取数据</p>
-
-<ul>
-<li>xx: 公有变量</li>
-<li>_xx: 单前置下划线，私有化属性或方法，from somemodule import * 禁止导入，类对象和子类可以访问</li>
-<li>__xx__: 双前后下划线，用于名字空间的魔法对象或属性。例如：__init__</li>
-<li>__xx: 双前置下划线，私有，无法在外部直接访问（名子重整所以访问不到）</li>
-<li>xx_: 单后置下划线，用于避免与python关键词的冲突</li>
-</ul>
-
-<p>通过name mangling （名字重整）,目的是防止类意外重写基类的方法或者属性：__classname__privateatribute</p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/4/9</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="14969760668045.html">
-                
-                  <h1>闭包，装饰器</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h3 id="toc_0">函数引用</h3>
-
-<pre><code class="language-python">&gt;&gt;&gt; def test():
-...     print(&#39;lala&#39;)
-...
-&gt;&gt;&gt; test()
-lala
-&gt;&gt;&gt; test
-&lt;function test at 0x109a51950&gt; 
-
-&gt;&gt;&gt; b = test  # b指向函数体test
-
-&gt;&gt;&gt; b
-&lt;function test at 0x109a51950&gt;
-
-&gt;&gt;&gt; b()  # 通过引用调用函数
-lala
-</code></pre>
-
-<h3 id="toc_1">闭包</h3>
-
-<p>在函数内部再定义一个函数，并且这个函数用到了外边函数的变量，那么将这个函数以及用到的一些变量统称为闭包</p>
-
-<pre><code class="language-python">def test(number):
-  def test_in(number_in):
-    print(&quot;in test_in, number_in is %d&quot;%number_in)
-    return number+number_in
-  return test_in
-
-ret = test(100)  # ret 指向函数体
-ret(1)  # 调用函数
-</code></pre>
-
-<p>闭包的实际例子：</p>
-
-<pre><code class="language-python">def line_conf(a,b):
-  def line(x):
-    return a*x + b
-  return line
-
-line1 = line_conf(1,1)
-line2 = line_conf(4,5)
-
-print(line1(5))
-print(line2(5))
-</code></pre>
-
-<ol>
-<li>闭包又花了变量，原来需要类对象完成的工作，闭包也可以完成</li>
-<li>由于必报引用了外部函数的局部变量，则外部函数的局部变量没有及时释放，消耗内存</li>
-</ol>
-
-<h2 id="toc_2">装饰器</h2>
-
-<p>装饰器是程序开发中经常会用到的一个功能，用好了装饰器，开发效率如虎添翼。<br/>
-* 只要python解释器执行到了装饰器代码部分，那么就会自动装饰，而不是等到调用的时候才装饰<br/>
-* 有多个装饰器时，先执行后面的装饰</p>
-
-<pre><code class="language-python">def w1(func):
-  print(&#39;---正在装饰1-----&#39;)
-  def inner():
-    print(&#39;-----装在验证权限1------&#39;)
-    func()
-  return inner
-  
-def w2(func):
-  print(&#39;---正在装饰2-----&#39;)
-  def inner():
-    print(&#39;-----装在验证权限2------&#39;)
-    func()
-  return inner
-
-@w1
-@w2
-def f1():
-  print(&quot;---f1---&quot;)
-
-f1()
-
-&gt;&gt;&gt;
----正在装饰2-----
----正在装饰1-----
------装在验证权限1------
------装在验证权限2------
----f1---
-</code></pre>
-
-<h3 id="toc_3">通用装饰器</h3>
-
-<p>无参数、有参数、不定长参数、有返回值、无返回值 示例</p>
-
-<pre><code class="language-python">def func(functionName):
-
-  def func_in(*args, **kwargs):
-    ret = functionName(*args, **kwargs)
-    return ret
-    
-  return func_in
-</code></pre>
-
-<h3 id="toc_4">带有参数的装饰器</h3>
-
-<p>同一个装饰器，在装饰不同函数时，起到不同的效果</p>
-
-<pre><code class="language-python">def func_arg(arg):
-    def func(functionName):
-        def func_in():
-            print(&quot;---记录日志-arg=%s--&quot;%arg)
-            if arg==&quot;heihei&quot;:
-                functionName()
-                functionName()
-            else:
-                functionName()
-        return func_in
-    return func
-
-#1. 先执行func_arg(&quot;heihei&quot;)函数,这个函数return 的结果是func这个函数的引用
-#2. @func
-#3. 使用@func对test进行装饰
-@func_arg(&quot;heihei&quot;)
-def test():
-    print(&quot;--test--&quot;)
-
-#带有参数的装饰器,能够起到在运行时,有不同的功能
-@func_arg(&quot;haha&quot;)
-def test2():
-    print(&quot;--test2--&quot;)
-
-test()
-test2()
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/4/5</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
