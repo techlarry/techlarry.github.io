@@ -1,26 +1,5 @@
 <!doctype html>
 <html class="no-js" lang="en">
-
-<script>
-var _hmt = _hmt || [];
-(function() {
-  var hm = document.createElement("script");
-  hm.src = "https://hm.baidu.com/hm.js?fdc936c9f5a3b72177541183cdeb8cb3";
-  var s = document.getElementsByTagName("script")[0]; 
-  s.parentNode.insertBefore(hm, s);
-})();
-
-</script>
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-112743284-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-112743284-1');
-</script>
-
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -65,7 +44,7 @@ var _hmt = _hmt || [];
         
         <li id=""><a target="_self" href="archives.html">Archives</a></li>
         
-        <li id=""><a target="_self" href="wiki">WIKI</a></li>
+        <li id=""><a target="_blank" href="wiki">WIKI</a></li>
         
         <li id=""><a target="_self" href="notebook.html">NOTEBOOK</a></li>
         
@@ -100,7 +79,7 @@ var _hmt = _hmt || [];
         
         <li><a target="_self" href="archives.html">Archives</a></li>
         
-        <li><a target="_self" href="wiki">WIKI</a></li>
+        <li><a target="_blank" href="wiki">WIKI</a></li>
         
         <li><a target="_self" href="notebook.html">NOTEBOOK</a></li>
         
@@ -183,7 +162,7 @@ var _hmt = _hmt || [];
 
 <p>例如，一个简单打印hello的<code>hello.c</code>程序，经过下面四个阶段，生成可执行目标文件：</p>
 
-<pre><code class="language-C">//file: hello.c
+<pre><code class="language-c">//file: hello.c
 #include &lt;stdio.h&gt;
 
 int main()
@@ -334,12 +313,11 @@ No version information found in this file.
 
 <h3 id="toc_4">符号解析</h3>
 
-<p>符号解析是将每个符号引用和可重定位目标文件中的符号定义关联起来。链接器的输入是一组可重定位目标文件(模块)，有些是局部的( <u>局部符号</u> ，只对定义该符号的模块可见)，有些是全局的( <u>全局符号</u>，对其他模块可见)。</p>
+<p>符号解析是将每个符号引用和可重定位目标文件中的符号定义关联起来。链接器的输入是一组可重定位目标文件(模块)，有些是局部的( <u>局部符号</u> ，只对定义该符号的模块可见)，有些是全局的( _全局符号_，对其他模块可见)。</p>
 
 <ul>
 <li>局部符号：每个模块中每个局部符号有一个定义</li>
 <li><p>全局符号：可重定位目标文件的符号表里的全局符号是区分<strong>强</strong>和<strong>弱</strong>的，链接器根据以下规则来处理多重定义的符号名：</p>
-
 <ul>
 <li>规则1: 不允许有多个同名的强符号</li>
 <li>规则2: 如果有一个强符号和多个弱符号同名，那么选择强符号</li>
@@ -423,7 +401,7 @@ dis.dis(f)
 
 <p>得到的字节码指令(<code>byte code instruction</code>)如下所示：</p>
 
-<pre><code>   4           0 LOAD_CONST               1 (1)
+<pre><code class="language-text">   4           0 LOAD_CONST               1 (1)
               3 LOAD_FAST                0 (x)
               6 LOAD_CONST               2 (2)
               9 BINARY_POWER
@@ -474,14 +452,14 @@ dis.dis(f)
                         
                         	<p><code>objdump</code>是反汇编器(<code>disassembler</code>),可以将机器语言生成对应的汇编文件。常用的命令是</p>
 
-<pre><code>linux &gt; objdump -d filename.o
+<pre><code class="language-text">linux &gt; objdump -d filename.o
 </code></pre>
 
 <p>下面通过一个简单的例子来说明一下<code>objdump</code>的常见用法，以及它生成的文件的格式。</p>
 
 <p>假设写一个简单的C程序<code>test.c</code>如下：</p>
 
-<pre><code class="language-C">int foo()
+<pre><code class="language-c">int foo()
 {
     int a = 5;
     int b = 0;
@@ -491,7 +469,7 @@ dis.dis(f)
 
 <p>用<code>gcc</code>命令<code>gcc test.c -c</code>生成目标文件<code>test.o</code>后, 利用<code>objdump -d test.o &gt; test.s</code>生成类似汇编文件：</p>
 
-<pre><code>test.o:     file format elf64-x86-64
+<pre><code class="language-text">test.o:     file format elf64-x86-64
 
 
 Disassembly of section .text:
@@ -543,7 +521,7 @@ Disassembly of section .text:
 
 <p>下面是一个具体的文件，为了更简洁的展示，每一部分只保留了一小段内容：</p>
 
-<pre><code>ctarget:     file format elf64-x86-64
+<pre><code class="language-text">ctarget:     file format elf64-x86-64
 
 
 Disassembly of section .init:
@@ -620,7 +598,7 @@ Disassembly of section .fini:
 
 <p><code>ATT</code>汇编格式的注释格式有两种</p>
 
-<pre><code># this is a comment
+<pre><code class="language-text"># this is a comment
 /* this is a comment */
 </code></pre>
 
@@ -698,17 +676,17 @@ Disassembly of section .fini:
 
 <p>首先运行<code>kernel</code></p>
 
-<pre><code>sys161 kernel
+<pre><code class="language-text">sys161 kernel
 </code></pre>
 
 <p>像正常一样运行<code>gdb</code></p>
 
-<pre><code>gdb kernel
+<pre><code class="language-text">gdb kernel
 </code></pre>
 
 <p>在完成加载后，在<code>gdb</code>中输入以下内容使其连接到<code>System/161</code></p>
 
-<pre><code>target remote unix:.sockets/gdb
+<pre><code class="language-text">target remote unix:.sockets/gdb
 </code></pre>
 
                         
@@ -835,12 +813,6 @@ Disassembly of section .fini:
 	      
 		      
 			      <li class="post">
-			        <a href="15275745125531.html">lldb</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
 			        <a href="15272289883847.html">回溯法和深度优先遍历</a>
 			      </li>
 		     
@@ -860,6 +832,12 @@ Disassembly of section .fini:
 		      
 			      <li class="post">
 			        <a href="15166008990128.html">网络编程</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="overhead.html">overhead</a>
 			      </li>
 		     
 		  
@@ -904,7 +882,9 @@ Disassembly of section .fini:
 
  <div class="page-bottom clearfix">
   <div class="row">
-   
+   <p class="copyright">Copyright &copy; 2015
+Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
+Theme used <a target="_blank" href="http://github.com">GitHub CSS</a>.</p>
   </div>
 </div>
 
@@ -932,7 +912,7 @@ Disassembly of section .fini:
      
     </script>
 
-    <script src="asset/chart/all-min.js"></script><script type="text/javascript">$(function(){    var mwebii=0;    var mwebChartEleId = 'mweb-chart-ele-';    $('pre>code').each(function(){        mwebii++;        var eleiid = mwebChartEleId+mwebii;        if($(this).hasClass('language-sequence')){            var ele = $(this).addClass('nohighlight').parent();            $('<div id="'+eleiid+'"></div>').insertAfter(ele);            ele.hide();            var diagram = Diagram.parse($(this).text());            diagram.drawSVG(eleiid,{theme: 'simple'});        }else if($(this).hasClass('language-flow')){            var ele = $(this).addClass('nohighlight').parent();            $('<div id="'+eleiid+'"></div>').insertAfter(ele);            ele.hide();            var diagram = flowchart.parse($(this).text());            diagram.drawSVG(eleiid);        }    });});</script>
+    
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({TeX: { equationNumbers: { autoNumber: "AMS" } }});</script>
 
 

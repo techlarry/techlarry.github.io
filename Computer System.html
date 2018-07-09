@@ -1,26 +1,5 @@
 <!doctype html>
 <html class="no-js" lang="en">
-
-<script>
-var _hmt = _hmt || [];
-(function() {
-  var hm = document.createElement("script");
-  hm.src = "https://hm.baidu.com/hm.js?fdc936c9f5a3b72177541183cdeb8cb3";
-  var s = document.getElementsByTagName("script")[0]; 
-  s.parentNode.insertBefore(hm, s);
-})();
-
-</script>
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-112743284-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-112743284-1');
-</script>
-
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -65,7 +44,7 @@ var _hmt = _hmt || [];
         
         <li id=""><a target="_self" href="archives.html">Archives</a></li>
         
-        <li id=""><a target="_self" href="wiki">WIKI</a></li>
+        <li id=""><a target="_blank" href="wiki">WIKI</a></li>
         
         <li id=""><a target="_self" href="notebook.html">NOTEBOOK</a></li>
         
@@ -100,7 +79,7 @@ var _hmt = _hmt || [];
         
         <li><a target="_self" href="archives.html">Archives</a></li>
         
-        <li><a target="_self" href="wiki">WIKI</a></li>
+        <li><a target="_blank" href="wiki">WIKI</a></li>
         
         <li><a target="_self" href="notebook.html">NOTEBOOK</a></li>
         
@@ -234,11 +213,11 @@ Method call overhead: A well-designed program is broken down into lots of short 
                       
                       <div class="a-content-text">
                         
-                        	<p>许多计算机系统对基本数据类型的合法地址做出了一些限制，要求某种类型对象的地址必须时某个值K(通常是2、4或8)的倍数。这种<strong>对齐限制</strong>简化了形成处理器和内存系统之间的硬件设计。例如，假设一个处理器总是从内存中取8个字节，则地址必须为8的倍数。如果我们能保证将所有的double类型的数据对齐成8的倍数，那么就可以用一个内存操作来读或者写值了。否则，我们可能需要执行两次内存访问，因为对象可能被放在两个8字节内存块中(详见内存对齐原因)。</p>
+                        	<p>许多计算机系统对基本数据类型的合法地址做出了一些限制， <u>要求某种类型对象的地址必须是某个值\(K\)(通常是2、4或8)的倍数</u> 。这种<strong>对齐限制</strong>简化了处理器和内存系统之间的硬件设计。例如，假设一个处理器总是从内存中取8个字节，则地址必须为8的倍数。如果我们能保证将所有的double类型的数据对齐成8的倍数，那么就可以用一个内存操作来读或者写值了。否则，我们可能需要执行两次内存访问，因为对象可能被放在两个8字节内存块中。</p>
 
 <p>例如：</p>
 
-<pre><code class="language-C">#include&lt;iostream&gt;
+<pre><code class="language-c">#include &lt;iostream&gt;
 using namespace std;
 struct A{
     char a;
@@ -259,7 +238,7 @@ int main(){
 }
 </code></pre>
 
-<p>以上结构体变量数量和类型完全相同，但是因为对齐限制，却得到了不同的结果。</p>
+<p>以上结构体变量数量和类型完全相同，但是因为对齐限制，却得到了不同的结果。具体为什么会这样，请参考下面的对齐原则。</p>
 
 <h2 id="toc_0">对齐原则</h2>
 
@@ -271,7 +250,7 @@ int main(){
 
 <p>除此之外，程序员可自己指定数据的对齐大小，通过使用<code>pragma pack(x)</code>预处理命令，指定对齐大小为\(\text{pack_align}=x\)。只能指定\(2^n\)作为对齐大小，对于指定对齐大小为6、9、10这样的编译器不会理会。</p>
 
-<pre><code class="language-C">#pragma pack(x)
+<pre><code class="language-c">#pragma pack(x)
 //...
 #pragma pack()
 </code></pre>
@@ -284,7 +263,7 @@ int main(){
 
 <p>通过以下例子可以更好地掌握内存对齐原则：</p>
 
-<pre><code class="language-C">#include &lt;stdio.h&gt;
+<pre><code class="language-c">#include &lt;stdio.h&gt;
 #include &lt;assert.h&gt;
 #include &lt;stddef.h&gt;
 
@@ -397,7 +376,7 @@ int main()
 }
 </code></pre>
 
-<pre><code>A:5, 5
+<pre><code class="language-text">A:5, 5
 B:6
 C:8
 D:8
@@ -406,9 +385,11 @@ E:96, 96
 
 <h2 id="toc_1">内存对齐原因</h2>
 
+<p>可能你对内存印象是，内存是由一个个字节组成的：</p>
+
 <p><img src="media/15164914975645/howProgrammersSeeMemory.jpg" alt=""/></p>
 
-<p>我们普通程序员心中的内存印象，由一个个字节组成，但是CPU却不是这么看待的</p>
+<p>但是很可惜，CPU却不是这么看待的：</p>
 
 <p><img src="media/15164914975645/howProcessorsSeeMemory.jpg" alt=""/></p>
 
@@ -649,7 +630,7 @@ E:96, 96
 
 <p>这是非常常见的例子，没有引用对应的地址，少了 &amp;</p>
 
-<pre><code class="language-C">int val;
+<pre><code class="language-c">int val;
 scanf(&quot;%d&quot;, val); // 正确应该是scanf(&quot;%d, &amp;val);
 </code></pre>
 
@@ -657,7 +638,7 @@ scanf(&quot;%d&quot;, val); // 正确应该是scanf(&quot;%d, &amp;val);
 
 <p><strong>堆内存是没有被初始化为0的</strong>：</p>
 
-<pre><code class="language-C">/* return y = Ax */
+<pre><code class="language-c">/* return y = Ax */
 int *matvec(int **A, int *x) {
     int *y = malloc(N * sizeof(int));
     int i, j;
@@ -675,7 +656,7 @@ int *matvec(int **A, int *x) {
 
 <p>没有检查字符串的长度（经典的缓冲区溢出攻击也是利用相同的机制）</p>
 
-<pre><code class="language-C">char s[8];
+<pre><code class="language-c">char s[8];
 int i;
 gets(s); /* stack buffer overflow, reads &quot;123456789&quot; from stdin */
 </code></pre>
@@ -684,7 +665,7 @@ gets(s); /* stack buffer overflow, reads &quot;123456789&quot; from stdin */
 
 <p>尽管指针仍然指向一个合法的内存地址，但是已经不再指向一个合法的变量了。以后在程序中调用其他函数时，内存将重用它们的栈针。</p>
 
-<pre><code class="language-C">int *foo() {
+<pre><code class="language-c">int *foo() {
     int val;
     
     return &amp;val;
@@ -695,7 +676,7 @@ gets(s); /* stack buffer overflow, reads &quot;123456789&quot; from stdin */
 
 <p>这个不用多说，不能重复搞两次</p>
 
-<pre><code class="language-C">x = malloc(N * sizeof(int));
+<pre><code class="language-c">x = malloc(N * sizeof(int));
 //  &lt;manipulate x&gt;
 free(x);
 y = malloc(M * sizeof(int));
@@ -707,7 +688,7 @@ free(x);
 
 <p>同样是很明显的错误，不要犯</p>
 
-<pre><code class="language-C">x = malloc(N * sizeof(int));
+<pre><code class="language-c">x = malloc(N * sizeof(int));
 //  &lt;manipulate x&gt;
 free(x);
 //  ....
@@ -720,7 +701,7 @@ for (i = 0; i &lt; M; i++)
 
 <p>忘记释放已分配块：</p>
 
-<pre><code class="language-C">foo() {
+<pre><code class="language-c">foo() {
     int *x = malloc(N * sizeof(int));
     // ...
     return ;
@@ -729,7 +710,7 @@ for (i = 0; i &lt; M; i++)
 
 <p>或者只释放了数据结构的一部分：</p>
 
-<pre><code class="language-C">struct list {
+<pre><code class="language-c">struct list {
     int val;
     struct list *next;
 };
@@ -975,7 +956,7 @@ foo() {
 <li>捕获信号并处理：当接收到信号时，由信号处理程序自动捕获并且处理信号。</li>
 </ul>
 
-<pre><code class="language-C">sighandler_t signal(int signum, sighandler_t handler);
+<pre><code class="language-c">sighandler_t signal(int signum, sighandler_t handler);
 </code></pre>
 
 <p>有两个信号既不能被忽略也不能被捕获，它们是<code>SIGKILL</code>和<code>SIGSTOP</code>。即进程接收到这两个信号后，只能接受系统的默认处理，即终止线程。</p>
@@ -1014,7 +995,7 @@ foo() {
 <li>在回收子进程时，要回收尽可能多的子进程。例如下面这个例子。</li>
 </ul>
 
-<pre><code class="language-C">void handler1(int sig)   
+<pre><code class="language-c">void handler1(int sig)   
 {  
     pid_t pid;  
   
@@ -1088,19 +1069,19 @@ Parent processing input
 
 <p>函数<code>sigprocmask</code>可以更改当前阻塞的信号集合(即blocked位向量):</p>
 
-<pre><code class="language-C">int sigprocmask(int how, const sigset_t *set, sigset_t *oldset);
+<pre><code class="language-c">int sigprocmask(int how, const sigset_t *set, sigset_t *oldset);
 </code></pre>
 
 <p>其具体行为依赖于how值：</p>
 
-<pre><code>SIG_BLOCK, blocked = blocked | set //添加set信号
+<pre><code class="language-text">SIG_BLOCK, blocked = blocked | set //添加set信号
 SIG_UNBLOCK, blocked = blocked &amp; ~set //删除set信号
 SIG_SETMASK, block = set //设置set信号为阻塞的信号
 </code></pre>
 
 <p>阻塞的信号集合其实就是一个无符号整型数组(在x86-64上，数组长度是16)。</p>
 
-<pre><code class="language-C">/* A `sigset_t&#39; has a bit for each signal.  */
+<pre><code class="language-c">/* A `sigset_t&#39; has a bit for each signal.  */
 # define _SIGSET_NWORDS (1024 / (8 * sizeof (unsigned long int)))
 typedef struct
 {
@@ -1110,7 +1091,7 @@ typedef struct
 
 <p>还有其他的一些函数可以对信号集进行操作：</p>
 
-<pre><code class="language-C">int sigfillset(sigset_t *set); // 信号集初始化, 然后把所有的信号加入到此信号集里
+<pre><code class="language-c">int sigfillset(sigset_t *set); // 信号集初始化, 然后把所有的信号加入到此信号集里
 int sigemptyset(sigset_t *set); //信号集初始化为空
 int sigaddset(sigset_t *set, int signo); //将信号signo添加到信号集中  
 </code></pre>
@@ -1126,7 +1107,7 @@ int sigaddset(sigset_t *set, int signo); //将信号signo添加到信号集中
 <li>5. 在处理程序运行结束后，内核运行父进程，父进程从<code>fork()</code>返回，通过调用<code>addjob()</code> 错误地把（不存在的）子进程添加到作业列表中</li>
 </ul>
 
-<pre><code class="language-C">void handler(int sig)
+<pre><code class="language-c">void handler(int sig)
 {
         pid_t pid;
         while ((pid = waitpid(-1, NULL, 0)) &gt; 0) /* Reap a zombie child */
@@ -1158,7 +1139,7 @@ int main(int argc, char **argv)
 
 <p>正确的做法应该如下,  通过在调用 <code>fork()</code> 之前，阻塞 <code>SIGCHLD</code> 信号，然后在我们调用了 <code>addjob()</code> 之后就取消阻塞这些信号，我们保证了在子进程被添加到作业列表之后回收该子进程。注意，子进程继承了它们父进程的被阻塞集合，所以我们必须在调用 <code>execve()</code> 之前，小心地解除子进程中阻塞的 <code>SIGCHLD</code> 信号。这样，父进程保证在相应的 <code>deletejob()</code> 之前执行 <code>addjob()</code>。</p>
 
-<pre><code class="language-C">int main(int argc, char **argv)
+<pre><code class="language-c">int main(int argc, char **argv)
 {
     int pid;
     sigset_t mask_all, mask_one, prev_one;
@@ -1316,12 +1297,6 @@ int main(int argc, char **argv)
 	      
 		      
 			      <li class="post">
-			        <a href="15275745125531.html">lldb</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
 			        <a href="15272289883847.html">回溯法和深度优先遍历</a>
 			      </li>
 		     
@@ -1341,6 +1316,12 @@ int main(int argc, char **argv)
 		      
 			      <li class="post">
 			        <a href="15166008990128.html">网络编程</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="overhead.html">overhead</a>
 			      </li>
 		     
 		  
@@ -1385,7 +1366,9 @@ int main(int argc, char **argv)
 
  <div class="page-bottom clearfix">
   <div class="row">
-   
+   <p class="copyright">Copyright &copy; 2015
+Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
+Theme used <a target="_blank" href="http://github.com">GitHub CSS</a>.</p>
   </div>
 </div>
 
@@ -1413,7 +1396,7 @@ int main(int argc, char **argv)
      
     </script>
 
-    <script src="asset/chart/all-min.js"></script><script type="text/javascript">$(function(){    var mwebii=0;    var mwebChartEleId = 'mweb-chart-ele-';    $('pre>code').each(function(){        mwebii++;        var eleiid = mwebChartEleId+mwebii;        if($(this).hasClass('language-sequence')){            var ele = $(this).addClass('nohighlight').parent();            $('<div id="'+eleiid+'"></div>').insertAfter(ele);            ele.hide();            var diagram = Diagram.parse($(this).text());            diagram.drawSVG(eleiid,{theme: 'simple'});        }else if($(this).hasClass('language-flow')){            var ele = $(this).addClass('nohighlight').parent();            $('<div id="'+eleiid+'"></div>').insertAfter(ele);            ele.hide();            var diagram = flowchart.parse($(this).text());            diagram.drawSVG(eleiid);        }    });});</script>
+    
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({TeX: { equationNumbers: { autoNumber: "AMS" } }});</script>
 
 

@@ -1,26 +1,5 @@
 <!doctype html>
 <html class="no-js" lang="en">
-
-<script>
-var _hmt = _hmt || [];
-(function() {
-  var hm = document.createElement("script");
-  hm.src = "https://hm.baidu.com/hm.js?fdc936c9f5a3b72177541183cdeb8cb3";
-  var s = document.getElementsByTagName("script")[0]; 
-  s.parentNode.insertBefore(hm, s);
-})();
-
-</script>
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-112743284-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-112743284-1');
-</script>
-
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -65,7 +44,7 @@ var _hmt = _hmt || [];
         
         <li id=""><a target="_self" href="archives.html">Archives</a></li>
         
-        <li id=""><a target="_self" href="wiki">WIKI</a></li>
+        <li id=""><a target="_blank" href="wiki">WIKI</a></li>
         
         <li id=""><a target="_self" href="notebook.html">NOTEBOOK</a></li>
         
@@ -100,7 +79,7 @@ var _hmt = _hmt || [];
         
         <li><a target="_self" href="archives.html">Archives</a></li>
         
-        <li><a target="_self" href="wiki">WIKI</a></li>
+        <li><a target="_blank" href="wiki">WIKI</a></li>
         
         <li><a target="_self" href="notebook.html">NOTEBOOK</a></li>
         
@@ -230,7 +209,7 @@ node2 = tf.constant(4.0) # also tf.float32 implicitly
 print(node1, node2)
 </code></pre>
 
-<pre><code>Tensor(&quot;Const:0&quot;, shape=(), dtype=float32)
+<pre><code class="language-text">Tensor(&quot;Const:0&quot;, shape=(), dtype=float32)
 Tensor(&quot;Const_1:0&quot;, shape=(), dtype=float32)
 </code></pre>
 
@@ -242,7 +221,7 @@ Tensor(&quot;Const_1:0&quot;, shape=(), dtype=float32)
 print(sess.run([node1, node2]))
 </code></pre>
 
-<pre><code>[3.0, 4.0]
+<pre><code class="language-text">[3.0, 4.0]
 </code></pre>
 
 <p>We can build more complicated computations by combining <code>Tensor</code> nodes with operations(Operations are also nodes). For example, we can add our two constant nodes and produce a new graph as follows:</p>
@@ -252,7 +231,7 @@ print(&#39;node3:&#39;, node3)
 print(&#39;sess.run(node3):&#39;, sess.run(node3))
 </code></pre>
 
-<pre><code>node3: Tensor(&quot;Add:0&quot;, shape=(), dtype=float32)
+<pre><code class="language-text">node3: Tensor(&quot;Add:0&quot;, shape=(), dtype=float32)
 sess.run(node3): 7.0
 </code></pre>
 
@@ -272,7 +251,7 @@ adder_node = a + b # + provides a shortcut for tf.add(a,b)
 print(sess.run(adder_node, {a:[1,3], b:[2,4]}))
 </code></pre>
 
-<pre><code>7.5
+<pre><code class="language-text">7.5
 [ 3.  7.]
 </code></pre>
 
@@ -286,7 +265,7 @@ print(sess.run(adder_node, {a:[1,3], b:[2,4]}))
 print(sess.run(add_and_triple,{a:3, b:4.5}))
 </code></pre>
 
-<pre><code>22.5
+<pre><code class="language-text">22.5
 </code></pre>
 
 <p>The preceding computational graph would look as follows in <code>TensorBoard</code>:<br/>
@@ -313,7 +292,7 @@ sess.run(init)
 <pre><code class="language-python">print(sess.run(linear_model,{x:[1,2,3,4]}))
 </code></pre>
 
-<pre><code>[ 0.          0.30000001  0.60000002  0.90000004]
+<pre><code class="language-text">[ 0.          0.30000001  0.60000002  0.90000004]
 </code></pre>
 
 <p>We&#39;ve create a model, but we don&#39;t know how good it is yet. To evaluate the model on training data, we need a <code>y</code> placeholder to provide the desired values, and we need to write a loss function.</p>
@@ -326,7 +305,7 @@ loss = tf.reduce_sum(squared_deltas)
 print(sess.run(loss, {x:[1,2,3,4], y:[0,-1,-2,-3]}))
 </code></pre>
 
-<pre><code>23.66
+<pre><code class="language-text">23.66
 </code></pre>
 
 <p>We could improve this manually by reassigning the values of <code>W</code> and <code>b</code> to the perfect values of -1 and 1. A variable is initialized to the value provided to <code>tf.Variable</code> but can be changed using operations like <code>tf.assign</code>. FOr example, <code>W=-1</code> and <code>b=1</code> are the optimal parameters for our model. We can change <code>W</code> and <code>b</code> accordingly:</p>
@@ -337,7 +316,7 @@ sess.run([fixW, fixb])
 print(sess.run(loss, {x:[1,2,3,4], y:[0,-1,-2,-3]}))
 </code></pre>
 
-<pre><code>0.0
+<pre><code class="language-text">0.0
 </code></pre>
 
 <p>We guessed the &quot;perfect&quot; values of <code>W</code> and <code>b</code>, but the whole point of machine learning is to find the correct model parameters automatically. We will show how to accomplish this in the next section.</p>
@@ -355,7 +334,7 @@ for i in range(1000):
 print(sess.run([W,b]))
 </code></pre>
 
-<pre><code>[array([-0.9999969], dtype=float32), array([ 0.99999082], dtype=float32)]
+<pre><code class="language-text">[array([-0.9999969], dtype=float32), array([ 0.99999082], dtype=float32)]
 </code></pre>
 
 <p>Now we have done actual machine learning! Although doing this simple linear regression doesn&#39;t require much TensorFlow core code, more complicated models and methods to feed data into your model necessitate more code. Thus TensorFlow provides higher level abstractions for common patterns, structures, and functionality. We will learn how to use some of these abstractions in the next section.</p>
@@ -393,7 +372,7 @@ curr_W, curr_b, curr_loss = sess.run([W, b, loss], {x: x_train, y: y_train})
 print(&quot;W: %s b: %s loss: %s&quot;%(curr_W, curr_b, curr_loss))
 </code></pre>
 
-<pre><code>W: [-0.9999969] b: [ 0.99999082] loss: 5.69997e-11
+<pre><code class="language-text">W: [-0.9999969] b: [ 0.99999082] loss: 5.69997e-11
 </code></pre>
 
 <p>This more complicated program can still be visualized in TensorBoard:</p>
@@ -454,7 +433,7 @@ print(&quot;train metrics: %r&quot;% train_metrics)
 print(&quot;eval metrics: %r&quot;% eval_metrics)
 </code></pre>
 
-<pre><code>INFO:tensorflow:Using default config.
+<pre><code class="language-text">INFO:tensorflow:Using default config.
 WARNING:tensorflow:Using temporary folder as model directory: /var/folders/66/y1hc77j572v71r0gm2r39rfr0000gn/T/tmp2rnith_a
 INFO:tensorflow:Using config: {&#39;_model_dir&#39;: &#39;/var/folders/66/y1hc77j572v71r0gm2r39rfr0000gn/T/tmp2rnith_a&#39;, &#39;_tf_random_seed&#39;: 1, &#39;_save_summary_steps&#39;: 100, &#39;_save_checkpoints_secs&#39;: 600, &#39;_save_checkpoints_steps&#39;: None, &#39;_session_config&#39;: None, &#39;_keep_checkpoint_max&#39;: 5, &#39;_keep_checkpoint_every_n_hours&#39;: 10000, &#39;_log_step_count_steps&#39;: 100}
 INFO:tensorflow:Create CheckpointSaverHook.
@@ -633,12 +612,6 @@ s.setAttribute('data-timestamp', +new Date());
 	      
 		      
 			      <li class="post">
-			        <a href="15275745125531.html">lldb</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
 			        <a href="15272289883847.html">回溯法和深度优先遍历</a>
 			      </li>
 		     
@@ -658,6 +631,12 @@ s.setAttribute('data-timestamp', +new Date());
 		      
 			      <li class="post">
 			        <a href="15166008990128.html">网络编程</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="overhead.html">overhead</a>
 			      </li>
 		     
 		  
@@ -702,7 +681,9 @@ s.setAttribute('data-timestamp', +new Date());
 
  <div class="page-bottom clearfix">
   <div class="row">
-   
+   <p class="copyright">Copyright &copy; 2015
+Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
+Theme used <a target="_blank" href="http://github.com">GitHub CSS</a>.</p>
   </div>
 </div>
 
@@ -730,7 +711,7 @@ s.setAttribute('data-timestamp', +new Date());
      
     </script>
 
-    <script src="asset/chart/all-min.js"></script><script type="text/javascript">$(function(){    var mwebii=0;    var mwebChartEleId = 'mweb-chart-ele-';    $('pre>code').each(function(){        mwebii++;        var eleiid = mwebChartEleId+mwebii;        if($(this).hasClass('language-sequence')){            var ele = $(this).addClass('nohighlight').parent();            $('<div id="'+eleiid+'"></div>').insertAfter(ele);            ele.hide();            var diagram = Diagram.parse($(this).text());            diagram.drawSVG(eleiid,{theme: 'simple'});        }else if($(this).hasClass('language-flow')){            var ele = $(this).addClass('nohighlight').parent();            $('<div id="'+eleiid+'"></div>').insertAfter(ele);            ele.hide();            var diagram = flowchart.parse($(this).text());            diagram.drawSVG(eleiid);        }    });});</script>
+    
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({TeX: { equationNumbers: { autoNumber: "AMS" } }});</script>
 
 

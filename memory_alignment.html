@@ -1,26 +1,5 @@
 <!doctype html>
 <html class="no-js" lang="en">
-
-<script>
-var _hmt = _hmt || [];
-(function() {
-  var hm = document.createElement("script");
-  hm.src = "https://hm.baidu.com/hm.js?fdc936c9f5a3b72177541183cdeb8cb3";
-  var s = document.getElementsByTagName("script")[0]; 
-  s.parentNode.insertBefore(hm, s);
-})();
-
-</script>
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-112743284-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-112743284-1');
-</script>
-
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -65,7 +44,7 @@ var _hmt = _hmt || [];
         
         <li id=""><a target="_self" href="archives.html">Archives</a></li>
         
-        <li id=""><a target="_self" href="wiki">WIKI</a></li>
+        <li id=""><a target="_blank" href="wiki">WIKI</a></li>
         
         <li id=""><a target="_self" href="notebook.html">NOTEBOOK</a></li>
         
@@ -100,7 +79,7 @@ var _hmt = _hmt || [];
         
         <li><a target="_self" href="archives.html">Archives</a></li>
         
-        <li><a target="_self" href="wiki">WIKI</a></li>
+        <li><a target="_blank" href="wiki">WIKI</a></li>
         
         <li><a target="_self" href="notebook.html">NOTEBOOK</a></li>
         
@@ -183,11 +162,11 @@ var _hmt = _hmt || [];
       </div><!-- article -->
 
       <div class="article-content">
-      <p>许多计算机系统对基本数据类型的合法地址做出了一些限制，要求某种类型对象的地址必须时某个值K(通常是2、4或8)的倍数。这种<strong>对齐限制</strong>简化了形成处理器和内存系统之间的硬件设计。例如，假设一个处理器总是从内存中取8个字节，则地址必须为8的倍数。如果我们能保证将所有的double类型的数据对齐成8的倍数，那么就可以用一个内存操作来读或者写值了。否则，我们可能需要执行两次内存访问，因为对象可能被放在两个8字节内存块中(详见内存对齐原因)。</p>
+      <p>许多计算机系统对基本数据类型的合法地址做出了一些限制， <u>要求某种类型对象的地址必须是某个值\(K\)(通常是2、4或8)的倍数</u> 。这种<strong>对齐限制</strong>简化了处理器和内存系统之间的硬件设计。例如，假设一个处理器总是从内存中取8个字节，则地址必须为8的倍数。如果我们能保证将所有的double类型的数据对齐成8的倍数，那么就可以用一个内存操作来读或者写值了。否则，我们可能需要执行两次内存访问，因为对象可能被放在两个8字节内存块中。</p>
 
 <p>例如：</p>
 
-<pre><code class="language-C">#include&lt;iostream&gt;
+<pre><code class="language-c">#include &lt;iostream&gt;
 using namespace std;
 struct A{
     char a;
@@ -208,7 +187,7 @@ int main(){
 }
 </code></pre>
 
-<p>以上结构体变量数量和类型完全相同，但是因为对齐限制，却得到了不同的结果。</p>
+<p>以上结构体变量数量和类型完全相同，但是因为对齐限制，却得到了不同的结果。具体为什么会这样，请参考下面的对齐原则。</p>
 
 <h2 id="toc_0">对齐原则</h2>
 
@@ -220,7 +199,7 @@ int main(){
 
 <p>除此之外，程序员可自己指定数据的对齐大小，通过使用<code>pragma pack(x)</code>预处理命令，指定对齐大小为\(\text{pack_align}=x\)。只能指定\(2^n\)作为对齐大小，对于指定对齐大小为6、9、10这样的编译器不会理会。</p>
 
-<pre><code class="language-C">#pragma pack(x)
+<pre><code class="language-c">#pragma pack(x)
 //...
 #pragma pack()
 </code></pre>
@@ -233,7 +212,7 @@ int main(){
 
 <p>通过以下例子可以更好地掌握内存对齐原则：</p>
 
-<pre><code class="language-C">#include &lt;stdio.h&gt;
+<pre><code class="language-c">#include &lt;stdio.h&gt;
 #include &lt;assert.h&gt;
 #include &lt;stddef.h&gt;
 
@@ -346,7 +325,7 @@ int main()
 }
 </code></pre>
 
-<pre><code>A:5, 5
+<pre><code class="language-text">A:5, 5
 B:6
 C:8
 D:8
@@ -355,9 +334,11 @@ E:96, 96
 
 <h2 id="toc_1">内存对齐原因</h2>
 
+<p>可能你对内存印象是，内存是由一个个字节组成的：</p>
+
 <p><img src="media/15164914975645/howProgrammersSeeMemory.jpg" alt=""/></p>
 
-<p>我们普通程序员心中的内存印象，由一个个字节组成，但是CPU却不是这么看待的</p>
+<p>但是很可惜，CPU却不是这么看待的：</p>
 
 <p><img src="media/15164914975645/howProcessorsSeeMemory.jpg" alt=""/></p>
 
@@ -530,12 +511,6 @@ s.setAttribute('data-timestamp', +new Date());
 	      
 		      
 			      <li class="post">
-			        <a href="15275745125531.html">lldb</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
 			        <a href="15272289883847.html">回溯法和深度优先遍历</a>
 			      </li>
 		     
@@ -555,6 +530,12 @@ s.setAttribute('data-timestamp', +new Date());
 		      
 			      <li class="post">
 			        <a href="15166008990128.html">网络编程</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="overhead.html">overhead</a>
 			      </li>
 		     
 		  
@@ -599,7 +580,9 @@ s.setAttribute('data-timestamp', +new Date());
 
  <div class="page-bottom clearfix">
   <div class="row">
-   
+   <p class="copyright">Copyright &copy; 2015
+Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
+Theme used <a target="_blank" href="http://github.com">GitHub CSS</a>.</p>
   </div>
 </div>
 
@@ -627,7 +610,7 @@ s.setAttribute('data-timestamp', +new Date());
      
     </script>
 
-    <script src="asset/chart/all-min.js"></script><script type="text/javascript">$(function(){    var mwebii=0;    var mwebChartEleId = 'mweb-chart-ele-';    $('pre>code').each(function(){        mwebii++;        var eleiid = mwebChartEleId+mwebii;        if($(this).hasClass('language-sequence')){            var ele = $(this).addClass('nohighlight').parent();            $('<div id="'+eleiid+'"></div>').insertAfter(ele);            ele.hide();            var diagram = Diagram.parse($(this).text());            diagram.drawSVG(eleiid,{theme: 'simple'});        }else if($(this).hasClass('language-flow')){            var ele = $(this).addClass('nohighlight').parent();            $('<div id="'+eleiid+'"></div>').insertAfter(ele);            ele.hide();            var diagram = flowchart.parse($(this).text());            diagram.drawSVG(eleiid);        }    });});</script>
+    
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({TeX: { equationNumbers: { autoNumber: "AMS" } }});</script>
 
 

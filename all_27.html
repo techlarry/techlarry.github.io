@@ -1,26 +1,5 @@
 <!doctype html>
 <html class="no-js" lang="en">
-
-<script>
-var _hmt = _hmt || [];
-(function() {
-  var hm = document.createElement("script");
-  hm.src = "https://hm.baidu.com/hm.js?fdc936c9f5a3b72177541183cdeb8cb3";
-  var s = document.getElementsByTagName("script")[0]; 
-  s.parentNode.insertBefore(hm, s);
-})();
-
-</script>
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-112743284-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-112743284-1');
-</script>
-
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -65,7 +44,7 @@ var _hmt = _hmt || [];
         
         <li id=""><a target="_self" href="archives.html">Archives</a></li>
         
-        <li id=""><a target="_self" href="wiki">WIKI</a></li>
+        <li id=""><a target="_blank" href="wiki">WIKI</a></li>
         
         <li id=""><a target="_self" href="notebook.html">NOTEBOOK</a></li>
         
@@ -100,7 +79,7 @@ var _hmt = _hmt || [];
         
         <li><a target="_self" href="archives.html">Archives</a></li>
         
-        <li><a target="_self" href="wiki">WIKI</a></li>
+        <li><a target="_blank" href="wiki">WIKI</a></li>
         
         <li><a target="_self" href="notebook.html">NOTEBOOK</a></li>
         
@@ -163,108 +142,6 @@ var _hmt = _hmt || [];
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="14970764330712.html">
-                
-                  <h1>属性@property的使用</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h3 id="toc_0">为什么要使用<code>getter</code>和<code>setter</code>方法</h3>
-
-<p>在绑定属性时，如果可以直接设置属性，虽然写起来很简单，但是没有办法检查参数，并且可以随意更改参数。</p>
-
-<pre><code class="language-python">s = People()
-s.salary = -1000
-</code></pre>
-
-<p>这显然不符合逻辑。为了限制salary的范围，可以通过一个<code>setSalary</code>方法来设置工资，再通过一个<code>getSalary</code>来获得工资，这样在<code>setSalary</code>方法里，就可以检查参数。</p>
-
-<h3 id="toc_1">私有属性添加<code>getter</code>和<code>setter</code>方法</h3>
-
-<pre><code class="language-python">class People(object):
-    def __init__(self):
-        self.__salary = 0
-    def getSalary(self):
-        return self.__salary
-    def setSalary(self, value):
-        if not isinstance(value, int):
-            raise ValueError(&#39;Money must be an integer!&#39;)
-        if value &lt;0 or value &gt; 10000:
-            raise ValueError(&#39;Money must between 0~10000!&#39;)
-        
-        self.__salary = value
-</code></pre>
-
-<h3 id="toc_2">注意点</h3>
-
-<p>t.num到底是调用<code>getter</code>还是<code>setter</code>，要根据实际的场景来判断，</p>
-
-<ol>
-<li>如果是给t.num赋值，那么一定调用<code>setNum()</code></li>
-<li>如果是获取t.num的值，那么久一定调用<code>getNum()</code></li>
-</ol>
-
-<h3 id="toc_3">@property装饰器</h3>
-
-<p>但是直接调用<code>getter()</code>和<code>setter()</code>比较复杂。Python内置的<code>@property</code>装饰器可以把这两种方法转化为属性进行调用。看一下例子：</p>
-
-<pre><code class="language-python">class People(object):
-    def __init__(self):
-        self.__salary = 0
-    
-    @property
-    def salary(self):
-        return self.__salary
-    
-    @salary.setter
-    def salary(self, value):
-        if not isinstance(value, int):
-            raise ValueError(&#39;Salary must be an integer!&#39;)
-        if value &lt;0 or value &gt; 10000:
-            raise ValueError(&#39;Salary must between 0~10000!&#39;)
-        
-        self.__salary = value
-        
-    @property
-    def tax(self):
-        self.__tax = self.__salary*0.1
-        return self.__tax
-</code></pre>
-
-<p>当不定义setter方法时，那么就定义了一个只读属性(例子中<code>tax</code>属性是只读属性)。</p>
-
-<p>@property 成为属性函数，可以对属性赋值时做必要的检查，并保证代码的清晰短小，主要有2个作用：</p>
-
-<ol>
-<li>将方法转换为只读</li>
-<li>重新实现一个属性的设置和读取方法，可做边界判定</li>
-</ol>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/5/10</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
                 <a class="clearlink" href="14969760733622.html">
                 
                   <h1>Python 高级</h1>
@@ -303,7 +180,7 @@ reload(module name)
 <h2 id="toc_3">05-07 深拷贝与浅拷贝</h2>
 
 <ul>
-<li>浅拷贝是一个对象的顶层拷贝，拷贝了引用，并没有拷贝内容
+<li>浅拷贝是一个对象的顶层拷贝，拷贝了引用，并没有拷贝内容<br/>
 = 就是浅拷贝</li>
 <li>深拷贝是对于一个对象所有层次的拷贝（递归）</li>
 </ul>
@@ -416,9 +293,12 @@ print(line2(5))
 
 <h2 id="toc_2">装饰器</h2>
 
-<p>装饰器是程序开发中经常会用到的一个功能，用好了装饰器，开发效率如虎添翼。<br/>
-* 只要python解释器执行到了装饰器代码部分，那么就会自动装饰，而不是等到调用的时候才装饰<br/>
-* 有多个装饰器时，先执行后面的装饰</p>
+<p>装饰器是程序开发中经常会用到的一个功能，用好了装饰器，开发效率如虎添翼。</p>
+
+<ul>
+<li>只要python解释器执行到了装饰器代码部分，那么就会自动装饰，而不是等到调用的时候才装饰</li>
+<li>有多个装饰器时，先执行后面的装饰</li>
+</ul>
 
 <pre><code class="language-python">def w1(func):
   print(&#39;---正在装饰1-----&#39;)
@@ -733,6 +613,39 @@ searchFrom(myMaze, myMaze.startRow, myMaze.startCol)
                 </div>
               </div><!-- article -->
         
+			<div class="article">
+                <a class="clearlink" href="C++STL.html">
+                
+                  <h1>C++ STL</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>Containers come in two major families: <code>sequence</code> and <code>associative</code>. Sequence containers (<code>vector</code>, <code>list</code>, and <code>deque</code>) are ordered by having a sequence of elements. Associative containers (<code>set</code>, <code>multiset</code>, <code>map</code> and <code>multimaps</code>) have keys for looking up elements.</p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2016/10/29</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='C/C++.html'>C/C++</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
               
 
 
@@ -834,12 +747,6 @@ searchFrom(myMaze, myMaze.startRow, myMaze.startCol)
 	      
 		      
 			      <li class="post">
-			        <a href="15275745125531.html">lldb</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
 			        <a href="15272289883847.html">回溯法和深度优先遍历</a>
 			      </li>
 		     
@@ -859,6 +766,12 @@ searchFrom(myMaze, myMaze.startRow, myMaze.startCol)
 		      
 			      <li class="post">
 			        <a href="15166008990128.html">网络编程</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="overhead.html">overhead</a>
 			      </li>
 		     
 		  
@@ -903,7 +816,9 @@ searchFrom(myMaze, myMaze.startRow, myMaze.startCol)
 
  <div class="page-bottom clearfix">
   <div class="row">
-   
+   <p class="copyright">Copyright &copy; 2015
+Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
+Theme used <a target="_blank" href="http://github.com">GitHub CSS</a>.</p>
   </div>
 </div>
 
@@ -931,7 +846,7 @@ searchFrom(myMaze, myMaze.startRow, myMaze.startCol)
      
     </script>
 
-    <script src="asset/chart/all-min.js"></script><script type="text/javascript">$(function(){    var mwebii=0;    var mwebChartEleId = 'mweb-chart-ele-';    $('pre>code').each(function(){        mwebii++;        var eleiid = mwebChartEleId+mwebii;        if($(this).hasClass('language-sequence')){            var ele = $(this).addClass('nohighlight').parent();            $('<div id="'+eleiid+'"></div>').insertAfter(ele);            ele.hide();            var diagram = Diagram.parse($(this).text());            diagram.drawSVG(eleiid,{theme: 'simple'});        }else if($(this).hasClass('language-flow')){            var ele = $(this).addClass('nohighlight').parent();            $('<div id="'+eleiid+'"></div>').insertAfter(ele);            ele.hide();            var diagram = flowchart.parse($(this).text());            diagram.drawSVG(eleiid);        }    });});</script>
+    
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({TeX: { equationNumbers: { autoNumber: "AMS" } }});</script>
 
 
