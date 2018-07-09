@@ -1,0 +1,534 @@
+<!doctype html>
+<html class="no-js" lang="en">
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?fdc936c9f5a3b72177541183cdeb8cb3";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+
+</script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-112743284-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-112743284-1');
+</script>
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+    
+  PCA基础及在Spark中的应用 - techlarry
+  
+  </title>
+  
+  
+  <link href="atom.xml" rel="alternate" title="techlarry" type="application/atom+xml">
+    <link rel="stylesheet" href="asset/css/foundation.min.css" />
+    <link rel="stylesheet" href="asset/css/docs.css" />
+    <script src="asset/js/vendor/modernizr.js"></script>
+    <script src="asset/js/vendor/jquery.js"></script>
+  <script src="asset/highlightjs/highlight.pack.js"></script>
+  <link href="asset/highlightjs/styles/github.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+  function before_search(){
+    var searchVal = 'site:larryim.cc ' + document.getElementById('search_input').value;
+    document.getElementById('search_q').value = searchVal;
+    return true;
+  }
+</script>
+  </head>
+  <body class="antialiased hide-extras">
+    
+    <div class="marketing off-canvas-wrap" data-offcanvas>
+      <div class="inner-wrap">
+
+
+<nav class="top-bar docs-bar hide-for-small" data-topbar>
+
+
+  <section class="top-bar-section">
+  <div class="row">
+      <div style="position: relative;width:100%;"><div style="position: absolute; width:100%;">
+        <ul id="main-menu" class="left">
+        
+        <li id=""><a target="_self" href="index.html">HomePage</a></li>
+        
+        <li id=""><a target="_self" href="archives.html">Archives</a></li>
+        
+        <li id=""><a target="_self" href="wiki">WIKI</a></li>
+        
+        <li id=""><a target="_self" href="notebook.html">NOTEBOOK</a></li>
+        
+        <li id=""><a target="_self" href="about.html">About</a></li>
+        
+        </ul>
+
+        <ul class="right" id="search-wrap">
+          <li>
+<form target="_blank" onsubmit="return before_search();" action="http://google.com/search" method="get">
+    <input type="hidden" id="search_q" name="q" value="" />
+    <input tabindex="1" type="search" id="search_input"  placeholder="Search"/>
+</form>
+</li>
+          </ul>
+      </div></div>
+  </div>
+  </section>
+
+</nav>
+
+        <nav class="tab-bar show-for-small">
+  <a href="javascript:void(0)" class="left-off-canvas-toggle menu-icon">
+    <span> &nbsp; techlarry</span>
+  </a>
+</nav>
+
+<aside class="left-off-canvas-menu">
+      <ul class="off-canvas-list">
+        
+        <li><a target="_self" href="index.html">HomePage</a></li>
+        
+        <li><a target="_self" href="archives.html">Archives</a></li>
+        
+        <li><a target="_self" href="wiki">WIKI</a></li>
+        
+        <li><a target="_self" href="notebook.html">NOTEBOOK</a></li>
+        
+        <li><a target="_self" href="about.html">About</a></li>
+        
+
+    <li><label>Categories</label></li>
+
+        
+            <li><a href="Leetcode.html">Leetcode</a></li>
+        
+            <li><a href="C/C++.html">C/C++</a></li>
+        
+            <li><a href="Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html">Python数据结构与算法</a></li>
+        
+            <li><a href="Course.html">Course</a></li>
+        
+            <li><a href="Python%E7%89%B9%E6%80%A7.html">Python特性</a></li>
+        
+            <li><a href="%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html">机器学习</a></li>
+        
+            <li><a href="Python%E7%A7%91%E5%AD%A6%E8%AE%A1%E7%AE%97%E4%B8%89%E7%BB%B4%E5%8F%AF%E8%A7%86%E5%8C%96.html">Python科学计算三维可视化</a></li>
+        
+            <li><a href="English.html">English</a></li>
+        
+            <li><a href="Computer%20System.html">Computer System</a></li>
+        
+            <li><a href="Deep%20Learning.html">Deep Learning</a></li>
+        
+            <li><a href="Linux%20%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B.html">Linux 系统编程</a></li>
+        
+            <li><a href="%E6%95%B0%E6%8D%AE%E5%BA%93.html">数据库</a></li>
+        
+            <li><a href="Tensorflow.html">Tensorflow</a></li>
+        
+            <li><a href="Big%20Data.html">Big Data</a></li>
+        
+            <li><a href="%E6%96%87%E7%8C%AE%E9%98%85%E8%AF%BB.html">文献阅读</a></li>
+        
+            <li><a href="Tools.html">Tools</a></li>
+         
+
+      </ul>
+    </aside>
+
+<a class="exit-off-canvas" href="#"></a>
+
+
+        <section id="main-content" role="main" class="scroll-container">
+        
+       
+
+ <script type="text/javascript">
+  $(function(){
+    $('#menu_item_index').addClass('is_active');
+  });
+</script>
+<div class="row">
+  <div class="large-8 medium-8 columns">
+      <div class="markdown-body article-wrap">
+       <div class="article">
+          
+          <h1>PCA基础及在Spark中的应用</h1>
+     
+        <div class="read-more clearfix">
+          <span class="date">2017/11/28</span>
+
+          <span>posted in&nbsp;</span> 
+          
+              <span class="posted-in"><a href='%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html'>机器学习</a></span>
+           
+         
+          <span class="comments">
+            
+
+            
+          </span>
+
+        </div>
+      </div><!-- article -->
+
+      <div class="article-content">
+      <p>主成分分析(Principal Component Analysis, PCA)主要是用来可视化数据和数据压缩。</p>
+
+<p>PCA的目的是找到一组可以代表原始数据的低维数据。设原始数据为\(X\in \mathbf{R}^{n\times d}\)，有\(d\)个特征。压缩后的数据为\(\mathbf{Z=XP} \in \mathbf{R}^{n\times k}\), 有\(k\)个特征(feature)。</p>
+
+<p>那么找到的这\(k\)个特征，有什么好的约束呢？<br/>
+（Variance/Covariance constraints）</p>
+
+<ul>
+<li>这k个特征无关，也就是说协相关矩阵除对角线以外的元素全部为0</li>
+<li>应该根据特征的方差(variance)选择，越大越好。因为variance越大，越能代表feature。也就是说应该选择协相关矩阵对角元素大的feature。</li>
+</ul>
+
+<p>所以 \(\mathbf{P}\)应该等于X的协方差矩阵的最大\(k\)个特征向量。</p>
+
+<p>协方差矩阵的分布式求解方法见本博客<a href="http://larryim.cc/covariance_spark.html">Covariance Matrix and its solution in Spark</a></p>
+
+<p>下面是特征分解的基础知识，可以在线性代数课本上找到：</p>
+
+<p>特征分解(Eigendecomposition)是将矩阵分解为由特征值和特征向量表示矩阵之积的方法。</p>
+
+<p>令 \(A\)是一个\(N\times N\)的方阵，且有\(N\)个线性无关的特征向量\(q_i(i=1,...,N)\)。这样，A可以被分解为<br/>
+\[\mathbf{A=Q\Lambda Q}^{-1}\]<br/>
+其中\(\mathbf{Q}\)是\(N\times N\)的方阵，且其第\(i\)列为\(A\)的特征向量\(q_i\)。\(\mathbf{\Lambda}\)是对角矩阵，其对角线上的元素为对应的特征值，也即\(\Lambda_{ii}=\lambda_i\).</p>
+
+<p>那么，怎么样选择\(k\)的大小呢？一般认为保留99%或95%的variance. 由于协方差矩阵的对角元素就是对应特征向量的特征值，又是variance，所以我们选择k个对角元素，保留所要求的variance:</p>
+
+<p>\[\text{find} \min k \quad \text{s.t.} \frac{\sum^k_{i=1}\lambda_i}{\sum^k_{i=1}\lambda_i} &gt; 99\%\]</p>
+
+<h2 id="toc_0">PCA in Spark</h2>
+
+<p>在python 中使用 <code>numpy.linalg.eigh</code>计算特征值和特征向量.</p>
+
+<p>基本步骤如下：</p>
+
+<ul>
+<li>计算协方差矩阵 <code>estimateCovariance()</code></li>
+<li>计算主成分和对应方差 <code>pca()</code></li>
+<li>计算保留的成分比例<code>varianceExplained()</code></li>
+</ul>
+
+<pre><code class="language-Python">def estimateCovariance(data):
+    &quot;&quot;&quot;Compute the covariance matrix for a given rdd.
+
+    Args:
+        data (RDD of np.ndarray):  An `RDD` consisting of NumPy arrays.
+
+    Returns:
+        np.ndarray: A multi-dimensional array where the number of rows and columns both equal the
+            length of the arrays in the input `RDD`.
+    &quot;&quot;&quot;
+    mean = data.mean()
+    normalized = data.map(lambda x: x-mean)
+    return normalized.map(lambda x: np.outer(x, x)).sum()/data.count()
+    
+def pca(data, k=2):
+    &quot;&quot;&quot;Computes the top `k` principal components, corresponding scores, and all eigenvalues.
+
+
+    Args:
+        data (RDD of np.ndarray): An `RDD` consisting of NumPy arrays.
+        k (int): The number of principal components to return.
+
+    Returns:
+        tuple of (np.ndarray, RDD of np.ndarray, np.ndarray): A tuple of (eigenvectors, `RDD` of
+            scores, eigenvalues).  Eigenvectors is a multi-dimensional array where the number of
+            rows equals the length of the arrays in the input `RDD` and the number of columns equals
+            `k`.  The `RDD` of scores has the same number of rows as `data` and consists of arrays
+            of length `k`.  Eigenvalues is an array of length d (the number of features).
+    &quot;&quot;&quot;
+    cov = estimateCovariance(data)
+    eigVals, eigVecs = eigh(cov)
+    inds = np.argsort(eigVals)[::-1]
+    topkComponent = eigVecs[:,inds[0:k]]
+    scores = data.map(lambda x: np.dot(x, topkComponent))
+    # Return the `k` principal components, `k` scores, and all eigenvalues
+    return (topkComponent, scores, eigVals[inds])
+    
+    
+def varianceExplained(data, k=1):
+    &quot;&quot;&quot;Calculate the fraction of variance explained by the top `k` eigenvectors.
+
+    Args:
+        data (RDD of np.ndarray): An RDD that contains NumPy arrays which store the
+            features for an observation.
+        k: The number of principal components to consider.
+
+    Returns:
+        float: A number between 0 and 1 representing the percentage of variance explained
+            by the top `k` eigenvectors.
+    &quot;&quot;&quot;
+    components, scores, eigenvalues = pca(data)
+    return sum(eigenvalues[0:k])/sum(eigenvalues)
+</code></pre>
+
+<h2 id="toc_1">应用</h2>
+
+<p>斑马鱼(zebrafish)大脑的响应<a href="http://larryim.cc/ML_lab5_pca_student.html">可视化</a>。</p>
+
+<h2 id="toc_2">Reference</h2>
+
+<ol>
+<li>Machine Learning Course from Coursera. Andrew Ng</li>
+<li>CS190: Scalable Machine Learning</li>
+</ol>
+
+
+    
+
+      </div>
+
+      <div class="row">
+        <div class="large-6 columns">
+        <p class="text-left" style="padding:15px 0px;">
+      
+          <a href="nand2tetris.html" 
+          title="Previous Post: Nand2Tetris: The elements of computing systems">&laquo; Nand2Tetris: The elements of computing systems</a>
+      
+        </p>
+        </div>
+        <div class="large-6 columns">
+      <p class="text-right" style="padding:15px 0px;">
+      
+          <a  href="covariance_spark.html" 
+          title="Next Post: Covariance Matrix and its solution in Spark">Covariance Matrix and its solution in Spark &raquo;</a>
+      
+      </p>
+        </div>
+      </div>
+      <div class="comments-wrap">
+        <div class="share-comments">
+          <div id="disqus_thread"></div>
+<script>
+
+/**
+*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+/*
+var disqus_config = function () {
+this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+};
+*/
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = 'https://techlarry-1.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+                                
+
+          
+
+          
+        </div>
+      </div>
+    </div><!-- article-wrap -->
+  </div><!-- large 8 -->
+
+
+
+
+ <div class="large-4 medium-4 columns">
+  <div class="hide-for-small">
+    <div id="sidebar" class="sidebar">
+          <div id="site-info" class="site-info">
+            
+                <div class="site-a-logo"><img src="http://or9a8nskt.bkt.clouddn.com/figure.jpeg" /></div>
+            
+                <h1>techlarry</h1>
+                <div class="site-des">他山之石，可以攻玉</div>
+                <div class="social">
+
+
+
+
+
+
+
+
+
+<a target="_blank" class="github" target="_blank" href="https://github.com/techlarry" title="GitHub">GitHub</a>
+<a target="_blank" class="email" href="mailto:wang.zhen.hua.larry@gmail.com" title="Email">Email</a>
+  <a target="_blank" class="rss" href="atom.xml" title="RSS">RSS</a>
+                
+              	 </div>
+          	</div>
+
+             
+
+              <div id="site-categories" class="side-item ">
+                <div class="side-header">
+                  <h2>Categories</h2>
+                </div>
+                <div class="side-content">
+
+      	<p class="cat-list">
+        
+            <a href="Leetcode.html"><strong>Leetcode</strong></a>
+        
+            <a href="C/C++.html"><strong>C/C++</strong></a>
+        
+            <a href="Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html"><strong>Python数据结构与算法</strong></a>
+        
+            <a href="Course.html"><strong>Course</strong></a>
+        
+            <a href="Python%E7%89%B9%E6%80%A7.html"><strong>Python特性</strong></a>
+        
+            <a href="%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html"><strong>机器学习</strong></a>
+        
+            <a href="Python%E7%A7%91%E5%AD%A6%E8%AE%A1%E7%AE%97%E4%B8%89%E7%BB%B4%E5%8F%AF%E8%A7%86%E5%8C%96.html"><strong>Python科学计算三维可视化</strong></a>
+        
+            <a href="English.html"><strong>English</strong></a>
+        
+            <a href="Computer%20System.html"><strong>Computer System</strong></a>
+        
+            <a href="Deep%20Learning.html"><strong>Deep Learning</strong></a>
+        
+            <a href="Linux%20%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B.html"><strong>Linux 系统编程</strong></a>
+        
+            <a href="%E6%95%B0%E6%8D%AE%E5%BA%93.html"><strong>数据库</strong></a>
+        
+            <a href="Tensorflow.html"><strong>Tensorflow</strong></a>
+        
+            <a href="Big%20Data.html"><strong>Big Data</strong></a>
+        
+            <a href="%E6%96%87%E7%8C%AE%E9%98%85%E8%AF%BB.html"><strong>文献阅读</strong></a>
+        
+            <a href="Tools.html"><strong>Tools</strong></a>
+         
+        </p>
+
+
+                </div>
+              </div>
+
+              <div id="site-categories" class="side-item">
+                <div class="side-header">
+                  <h2>Recent Posts</h2>
+                </div>
+                <div class="side-content">
+                <ul class="posts-list">
+	      
+		      
+			      <li class="post">
+			        <a href="15275745125531.html">lldb</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15272289883847.html">回溯法和深度优先遍历</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="Coursera_notebook_jupyter.html">技巧：Coursera下载Jupyter notebook相关文件</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15171345711813.html">用于训练的深度学习硬件</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15166008990128.html">网络编程</a>
+			      </li>
+		     
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		   
+		  		</ul>
+                </div>
+              </div>
+        </div><!-- sidebar -->
+      </div><!-- hide for small -->
+</div><!-- large 4 -->
+
+</div><!-- row -->
+
+ <div class="page-bottom clearfix">
+  <div class="row">
+   
+  </div>
+</div>
+
+        </section>
+      </div>
+    </div>
+
+  
+    
+
+    <script src="asset/js/foundation.min.js"></script>
+    <script>
+      $(document).foundation();
+      function fixSidebarHeight(){
+        var w1 = $('.markdown-body').height();
+          var w2 = $('#sidebar').height();
+          if (w1 > w2) { $('#sidebar').height(w1); };
+      }
+      $(function(){
+        fixSidebarHeight();
+      })
+      $(window).load(function(){
+          fixSidebarHeight();
+      });
+     
+    </script>
+
+    <script src="asset/chart/all-min.js"></script><script type="text/javascript">$(function(){    var mwebii=0;    var mwebChartEleId = 'mweb-chart-ele-';    $('pre>code').each(function(){        mwebii++;        var eleiid = mwebChartEleId+mwebii;        if($(this).hasClass('language-sequence')){            var ele = $(this).addClass('nohighlight').parent();            $('<div id="'+eleiid+'"></div>').insertAfter(ele);            ele.hide();            var diagram = Diagram.parse($(this).text());            diagram.drawSVG(eleiid,{theme: 'simple'});        }else if($(this).hasClass('language-flow')){            var ele = $(this).addClass('nohighlight').parent();            $('<div id="'+eleiid+'"></div>').insertAfter(ele);            ele.hide();            var diagram = flowchart.parse($(this).text());            diagram.drawSVG(eleiid);        }    });});</script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({TeX: { equationNumbers: { autoNumber: "AMS" } }});</script>
+
+
+  </body>
+</html>
