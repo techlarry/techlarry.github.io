@@ -163,6 +163,165 @@ var _hmt = _hmt || [];
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="priority_queue.html">
+                
+                  <h1>Priority queue</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p><strong>A priority queue</strong>(优先队列) is an ADP which likes a regular queue or stack , but where additionally each element has a <code>priority</code> associated with it. In a priority queue, an element with high priority is served before an element with low priority. If two elements have the same priority, they are served according to their order in the queue.</p>
+
+<p>A priority queue must at least support the following operations:</p>
+
+<ul>
+<li><code>insert_with_priority</code>: add an element to the queue with an associated priority.</li>
+<li><code>pull_highest_priority_element</code>: remove the element from the queue that has the highest priority, and return it.</li>
+<li><code>peek</code> :return the highest-priority element but does not modify the queue</li>
+</ul>
+
+<h2 id="toc_0">Naive Implementation</h2>
+
+<p>There are a variety of simple, usually inefficient, ways to implement a priority queue. They provide an analogy to help one understand what a priority queue is. For instance, one can keep all the elements in an unsorted list. Whenever the highest-priority element is requested, search through all elements for the one with the highest priority. (In big O notation: \(O(1)\) insertion time, \(O(n)\) pull time due to search.)</p>
+
+<h2 id="toc_1">Heap Implementation</h2>
+
+<pre><code class="language-python">class PriorityQueue:
+    def __init__(self):
+        self.heapArray = [(0, 0)]
+        self.currentSize = 0
+
+    def buildHeap(self, alist):
+        &quot;&quot;&quot;
+        &quot;&quot;&quot;从一个包含元素的列表创建新堆&quot;&quot;&quot;
+        :param alist: a list
+        &quot;&quot;&quot;
+        self.currentSize = len(alist)
+        self.heapArray = [(0, 0)]
+        for i in alist:
+            self.heapArray.append(i)
+        i = len(alist) // 2
+        while (i &gt; 0):
+            self.percDown(i)
+            i = i - 1
+
+    def percDown(self, i):
+        &quot;&quot;&quot;
+        Percolate the ith node down the tree
+        &quot;&quot;&quot;
+        while (i * 2) &lt;= self.currentSize:
+            mc = self.minChild(i)
+            if self.heapArray[i][0] &gt; self.heapArray[mc][0]:
+                tmp = self.heapArray[i]
+                self.heapArray[i] = self.heapArray[mc]
+                self.heapArray[mc] = tmp
+            i = mc
+
+    def minChild(self, i):
+        &quot;&quot;&quot;
+        Find the smallest child
+        &quot;&quot;&quot;
+        if i * 2 &gt; self.currentSize:
+            return -1
+        else:
+            if i * 2 + 1 &gt; self.currentSize:
+                return i * 2
+            else:
+                if self.heapArray[i * 2][0] &lt; self.heapArray[i * 2 + 1][0]:
+                    return i * 2
+                else:
+                    return i * 2 + 1
+
+    def percUp(self, i):
+        &quot;&quot;&quot;
+        Percolate the ith node up the tree
+        &quot;&quot;&quot;
+        while i // 2 &gt; 0:
+            if self.heapArray[i][0] &lt; self.heapArray[i // 2][0]:
+                tmp = self.heapArray[i // 2]
+                self.heapArray[i // 2] = self.heapArray[i]
+                self.heapArray[i] = tmp
+            i = i // 2
+
+    def add(self, k):
+        self.heapArray.append(k)
+        self.currentSize = self.currentSize + 1
+        self.percUp(self.currentSize)
+
+    def delMin(self):
+        &quot;&quot;&quot;
+        delete the min-vertex of heap array, which always in the first position.
+        &quot;&quot;&quot;
+        retval = self.heapArray[1][1]
+        self.heapArray[1] = self.heapArray[self.currentSize]
+        self.currentSize = self.currentSize - 1
+        self.heapArray.pop()
+        self.percDown(1)
+        return retval
+
+    def isEmpty(self):
+        &quot;&quot;&quot;
+        return true if the heapArray is empty
+        &quot;&quot;&quot;
+        if self.currentSize == 0:
+            return True
+        else:
+            return False
+
+    def decreaseKey(self, val, amt):
+        &quot;&quot;&quot;
+        Decrease the key of the specific vertex (here, val)
+
+        First, find its position in the heapArray: myKey
+        Second, set its position to the right
+        &quot;&quot;&quot;
+        done = False
+        i = 1
+        myKey = 0
+        while not done and i &lt;= self.currentSize:
+            if self.heapArray[i][1] == val:
+                done = True
+                myKey = i
+            else:
+                i = i + 1
+        if myKey &gt; 0:
+            self.heapArray[myKey] = (amt, self.heapArray[myKey][1])
+            self.percUp(myKey)
+
+    def __contains__(self, vtx):
+        &quot;&quot;&quot;
+        Built-in Magic method
+        &quot;&quot;&quot;
+        for pair in self.heapArray:
+            if pair[1] == vtx:
+                return True
+        return False
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/7/12</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html'>Python数据结构与算法</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="heap.html">
                 
                   <h1>Heap (1): Introduction and Implementation</h1>
@@ -173,15 +332,15 @@ var _hmt = _hmt || [];
                         	<p>A <strong>heap</strong> (堆)is a specialized tree-based data structure。 A <strong>heap</strong> can be classified as either a <strong>max heap</strong> or a <strong>min heap</strong>. </p>
 
 <ul>
-<li>In a <strong>max heap</strong>, the keys of parent nodes are always greater than or equal to those of the children and the highest key is in the root node. </li>
-<li>In a <strong>min heap</strong>, the keys of parent nodes are less than or equal to those of the children and the lowest key is in the root node.</li>
+<li>In a <strong>max heap</strong>(最大堆), the keys of parent nodes are always greater than or equal to those of the children and the highest key is in the root node. </li>
+<li>In a <strong>min heap</strong>(最小堆), the keys of parent nodes are less than or equal to those of the children and the lowest key is in the root node.</li>
 </ul>
 
 <p><strong>Heap</strong> is one maximally efficient implementation of an abstract data type called a <strong>priority queue</strong> (see <a href="http://larryim.cc/priority_queue.html">here</a>), and in fact priority queues are often referred to as <strong>heaps</strong>, regardless of how they may be implemented. </p>
 
 <h2 id="toc_0">Implementation</h2>
 
-<p>Priority queues typically use a heap as backbone, giving \(O(\log n)\) performance for inserts and removals, and \(O(n \log n)\) to build initially.</p>
+<p>Priority queues typically use a heap as backbone, giving \(O(\log n)\) performance for pushs and pops, and <strong>\(O(n)\)</strong> to build initially.</p>
 
 <h2 id="toc_1">Binary Heap</h2>
 
@@ -191,12 +350,12 @@ var _hmt = _hmt || [];
 
 <ul>
 <li><code>BinaryHeap()</code>：创建一个新的、空的二叉堆对象</li>
-<li><code>insert(k)</code>：把新元素加入到堆中</li>
+<li><code>push(k)</code>：把新元素加入到堆中</li>
 <li><code>findMin()</code>：返回堆中的最小项，最小项仍保留在堆中</li>
-<li><code>delMin()</code>：返回堆中的最小项，同时从堆中删除</li>
+<li><code>pop()</code>：返回堆中的最小项，同时从堆中删除</li>
 <li><code>isEmpty()</code>：返回堆是否为空</li>
 <li><code>size()</code>：返回堆中元素的个数</li>
-<li><code>buildHeap(list)</code>：从一个包含元素的列表创建新堆</li>
+<li><code>heapify(list)</code>：从一个包含元素的列表创建新堆</li>
 </ul>
 
 <p>有两个关键的操作：<br/>
@@ -204,7 +363,9 @@ var _hmt = _hmt || [];
 
 <p><img src="media/14973171257726/14974156268132.jpg" alt=""/></p>
 
-<p>2.<code>delMin</code>方法 移走根节点的元素后如何保持堆结构和堆次序: 首先，用最后一个节点来代替根节点, 移走最后一个节点保持了堆结构的性质。这么简单的替换，还是会破坏堆次序。第二步，将新节点“下沉”来恢复堆次序。下图所示的是一系列交换操作来使新节点“下沉”到正确的位置。</p>
+<p>2.<code>pop</code>方法 移走根节点的元素后如何保持堆结构和堆次序: 首先，用最后一个节点来代替根节点, 移走最后一个节点保持了堆结构的性质。这么简单的替换，还是会破坏堆次序。第二步，将新节点“下沉”来恢复堆次序。下图所示的是一系列交换操作来使新节点“下沉”到正确的位置。</p>
+
+<p>为了保持堆次序，我们需将新的根节点沿着一条路径“下沉”，直到比两个子节点都小。在选择下沉路径时，如果新根节点比子节点大，那么选择较小的子节点与之交换。</p>
 
 <p><img src="media/14973171257726/14974156980805.jpg" alt=""/></p>
 
@@ -225,7 +386,7 @@ var _hmt = _hmt || [];
                 self.list[i], self.list[i//2] = self.list[i//2], self.list[i]
             i = i//2
     
-    def insert(self, item):
+    def push(self, item):
         &quot;&quot;&quot;把新元素加入到堆中&quot;&quot;&quot;
         self.list.append(item)
         self.size += 1
@@ -235,7 +396,7 @@ var _hmt = _hmt || [];
         &quot;&quot;&quot;返回堆中的最小项，最小项仍保留在堆中&quot;&quot;&quot;
         return self.list[1]
 
-    def delMin(self):
+    def pop(self):
         &quot;&quot;&quot;返回堆中的最小项，同时从堆中删除&quot;&quot;&quot;
         retval = self.list[1]
         self.list[1] = self.list[-1]
@@ -246,22 +407,29 @@ var _hmt = _hmt || [];
         return retval
 
 
-    def perc_down(self, i):
+    def percDown(self,i):
         &quot;&quot;&quot;
-        Percolate the root node  down the tree
+        将新节点“下沉”来恢复堆次序
         &quot;&quot;&quot;
-        while i*2 &lt;= self.size:
-            if i*2+1 &gt; self.size:
-                self.list[i*2], self.list[i] = self.list[i], self.list[i*2]
-                i = i*2
-            else:
-                if self.list[i*2] &gt; self.list[i*2+1]:
-                    self.list[i*2+1], self.list[i] =  self.list[i], self.list[i*2+1]
-                    i = i*2+1
-                else:
-                    self.list[i*2], self.list[i] = self.list[i], self.list[i*2]
-                    i = i*2
+        while (i * 2) &lt;= self.size:
+            mc = self.minChild(i)
+            if self.list[i] &gt; self.list[mc]:
+                tmp = self.list[i]
+                self.list[i] = self.list[mc]
+                self.list[mc] = tmp
+            i = mc
 
+    def minChild(self,i):
+        &quot;&quot;&quot;
+        返回较小的子节点
+        &quot;&quot;&quot;
+        if i * 2 + 1 &gt; size:
+            return i * 2
+        else:
+            if self.list[i*2] &lt; self.list[i*2+1]:
+                return i * 2
+            else:
+                return i * 2 + 1
 
     def isEmpty(self):
         &quot;&quot;&quot;返回堆是否为空&quot;&quot;&quot;
@@ -271,15 +439,28 @@ var _hmt = _hmt || [];
         &quot;&quot;&quot;返回堆中元素的个数&quot;&quot;&quot;
         return self.size
 
-    def buildHeap(self,alist):
+    def heapify(self,alist):
         &quot;&quot;&quot;从一个包含元素的列表创建新堆&quot;&quot;&quot;
         self.size = len(alist)
         self.list.extend(alist)
-        i = self.size//2
-        while i &gt;0:
+        i = self.size //2
+        while i &gt; 0:
             self.perc_down(i)
             i -= 1
 </code></pre>
+
+<h2 id="toc_2">建堆的复杂度</h2>
+
+<p>建堆过程的时间复杂度是堆的一个难点。一般会误认为建堆的时间复杂度是\(O(nlog n)\)，因为每一次堆调整的时间复杂度为\(O(log n)\)，那么\(n\)个节点的时间复杂度为\(O(nlog n)\)，这其实是错的。</p>
+
+<p>首先对于二叉树，它必须保证每一层填满之后才能去填充下一层。而且，如果从根结点开始计数(根结点为第0层)，往下第\(i\)层的元素如果不是最后一层的话，这一层的元素数量为\(2^i\)。这样，对于一棵高为\(h\)的完全二叉树，它的元素个数为\(n=1+2+4+...+2^i, i\in(0,h)\).</p>
+
+<p>然后理解函数<code>heapify</code>中的循环范围是\(i=\text{size}//2\sim 0\)，也就是说这是一个从下往上的建堆。对于第\(h-1\)层的每个节点来说，它需要和它的2个子节点比较一次，共计\(2^{(h-1)}\times 2\)。对于第\(h-2\)层的每个节点来说，最坏情况下，它需要和它的2个子节点比较一次，然后和子节点交换，子节点再和该子节点的子节点比较，所以共计\(2^{(h-2)}\times 4\)。以此类推，对于第\(i\)层的每个节点来说，最坏情况下，共需比较\(2^i\times 2(h-i)\)。</p>
+
+<p>总共需要比较:<br/>
+\[ S= \sum\limits^{i=0}_{i=h-1} 2^{i+1}(h-i) =2^h+2^{h-1}\times 2 + 2^{h-2}\times 3+... \quad .......(a)\]<br/>
+\[ 2*S= \sum\limits^{i=0}_{i=h-1} 2^{i+2}(h-i) = 2^{h+1} + 2^h\times 2 + 2^{h-1}\times 3 + ... \quad .......(b)\]<br/>
+\[ \text{(b-a)}\quad S = 2^h+2^{h-1}+2^{h-2}+... = n = O(n) \]</p>
 
                         
                       </div>
@@ -305,33 +486,93 @@ var _hmt = _hmt || [];
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="14992350772045.html">
+                <a class="clearlink" href="15205897518090.html">
                 
-                  <h1>首先有一个概念：回溯</h1>
+                  <h1>深度优先搜索和广度优先搜索</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<p>　　回溯法(探索与回溯法)是一种选优搜索法，按选优条件向前搜索，以达到目标。但当探索到某一步时，发现原先选择并不优或达不到目标，就退回一步重新选择，这种走不通就退回再走的技术为回溯法，而满足回溯条件的某个状态的点称为“回溯点”。</p>
+                        	<p>深度优先搜索(Depth First Search, DFS)和广度优先搜索(Breath First Search, BFS)是常用的图的搜索算法。</p>
 
-<p>深度优先算法：</p>
+<p>DFS和BFS主要差别是搜索的优先级不同，一个广度优先，一个深度优先。</p>
 
-<p>（1）访问初始顶点v并标记顶点v已访问。<br/>
-（2）查找顶点v的第一个邻接顶点w。<br/>
-（3）若顶点v的邻接顶点w存在，则继续执行；否则回溯到v，再找v的另外一个未访问过的邻接点。<br/>
-（4）若顶点w尚未被访问，则访问顶点w并标记顶点w为已访问。<br/>
-（5）继续查找顶点w的下一个邻接顶点wi，如果v取值wi转到步骤（3）。直到连通图中所有顶点全部访问过为止。</p>
+<p><strong>深度优先算法</strong>：</p>
 
-<p>广度优先算法：</p>
+<ol>
+<li>访问初始顶点v并标记顶点v已访问。</li>
+<li>查找顶点v的第一个邻接顶点w。</li>
+<li>若顶点v的邻接顶点w存在，则继续执行；否则回溯到v，再找v的另外一个未访问过的邻接点。</li>
+<li>若顶点w尚未被访问，则访问顶点w并标记顶点w为已访问。</li>
+<li>继续查找顶点w的下一个邻接顶点wi，如果v取值wi转到步骤（3）。直到连通图中所有顶点全部访问过为止。</li>
+</ol>
 
-<p>（1）顶点v入队列。<br/>
-（2）当队列非空时则继续执行，否则算法结束。<br/>
-（3）出队列取得队头顶点v；访问顶点v并标记顶点v已被访问。<br/>
-（4）查找顶点v的第一个邻接顶点col。<br/>
-（5）若v的邻接顶点col未被访问过的，则col入队列。<br/>
-（6）继续查找顶点v的另一个新的邻接顶点col，转到步骤（5）。直到顶点v的所有未被访问过的邻接点处理完。转到步骤（2）。</p>
+<p><strong>广度优先算法</strong>：</p>
 
-<p>代码：</p>
+<ol>
+<li>顶点v入队列。</li>
+<li>当队列非空时则继续执行，否则算法结束。</li>
+<li>出队列取得队头顶点v；访问顶点v并标记顶点v已被访问。</li>
+<li>查找顶点v的第一个邻接顶点col。</li>
+<li>若v的邻接顶点col未被访问过的，则col入队列。</li>
+<li>继续查找顶点v的另一个新的邻接顶点col，转到步骤（5）。直到顶点v的所有未被访问过的邻接点处理完。转到步骤（2）。</li>
+</ol>
+
+<h2 id="toc_0">DFS</h2>
+
+<p>递归实现(Pseudocode):</p>
+
+<pre><code>1  procedure DFS(G,v):
+2      label v as discovered
+3      for all edges from v to w in G.adjacentEdges(v) do
+4          if vertex w is not labeled as discovered then
+5              recursively call DFS(G,w)
+</code></pre>
+
+<p>非递归实现(Pseudocode):</p>
+
+<pre><code>1  procedure DFS-iterative(G,v):
+2      let S be a stack
+3      S.push(v)
+4      while S is not empty
+5          v = S.pop()
+6          if v is not labeled as discovered:
+7              label v as discovered
+8              for all edges from v to w in G.adjacentEdges(v) do 
+9                  S.push(w)
+</code></pre>
+
+<p>下面给出非递归的实现</p>
+
+<pre><code class="language-python">def dfs(self, order_of_vertex):
+    &quot;&quot;&quot;
+    Depth first search for graph
+    Input: Class graph
+    &quot;&quot;&quot;
+    # initialize
+    for vertex in self.vertexes.keys():
+        self.visited[vertex] = 0
+
+    for vertex in self.vertexes.keys():
+        if self.visited[vertex] == 0:  # unvisted
+            print(&#39;(&#39;, end=&#39;&#39;)
+            stack = [vertex]
+            while stack:
+                node = stack.pop()
+                print(&#39;)&#39;, end=&#39;&#39;)
+                if self.visited[node] != 0:
+                    print(&#39;(&#39;)
+                    self.visited[node] = 1
+
+                    for adjacent in self.vertexes[node]:
+                        if self.visited[adjacent] == 0:
+                            stack.append(adjacent)
+                            print(&#39;(&#39;, end=&#39;&#39;)
+</code></pre>
+
+<h2 id="toc_1">BFS</h2>
+
+<pre><code class="language-python"></code></pre>
 
                         
                       </div>
@@ -340,10 +581,10 @@ var _hmt = _hmt || [];
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2017/7/5</span>
+                    <span class="date">2017/6/30</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html'>Python数据结构与算法</a></span>
+          					    <span class="posted-in"><a href='Graph.html'>Graph</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -672,134 +913,6 @@ Edge List<br/>
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="hash_table_1_introduction.html">
-                
-                  <h1>Hash Table (1): Introduction</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>One of the most useful Python collections is the dictionary, which is an associative data type where you can store key-data pairs. It is implemented using <code>hash tables</code>(哈希表).</p>
-
-<p><code>Hash table</code> (哈希表) is a collection of items which are stored in such a way as to make it easy to find item. Each position of the hash table, often called a <code>slot</code>, can hold an item and is named by an integer value starting at 0. The mapping between an item and the slot where that item belongs in the hash table is called the <code>hash function</code>(哈希函数). A <code>perfect hash function</code> maps every items into a unique slot. When two items hash to the same slot, <code>collision</code> happens. And a systematic method, which called <code>collision resolution</code>, for placing the second item in the hash table must be put forward.</p>
-
-<h2 id="toc_0">Direct-address tables</h2>
-
-<p>If the number of possible keys is small and they are unique, <code>direct-address tables</code> (直接寻址表) can be used. Each slot corresponds to a unique key.</p>
-
-<pre><code class="language-python">
-Insert(T,x)
-    T[key(x)] = x
-    
-Search(T,x)
-    return(T[key(x)])
-    
-Delete(T,x)
-    T[key(x)] = NIL
-</code></pre>
-
-<p><img src="media/14973464173252/14973484465039.gif" alt="nameasdfasfas"/></p>
-
-<p>The range of the key determines the size of the direct address table and may be too large to be practical. For instance, it&#39;s not likely that you&#39;ll be able to use a direct address table to store elements which have arbitary 32-but integers as their keys for a few years yet.</p>
-
-<h2 id="toc_1">Hash function</h2>
-
-<h3 id="toc_2">What is a good hash function</h3>
-
-<p>Hash functions should have the following properties:</p>
-
-<ul>
-<li>Fast computation of the hash value (\(O(1)\)) </li>
-<li>Hash values should be distributed (nearly) uniformly</li>
-</ul>
-
-<p>The goal of a hash function is</p>
-
-<ul>
-<li>disperse the keys in an apparently random way</li>
-</ul>
-
-<p><code>Remainder method</code> simply takes an item and divides it by the table size, returning the remainder as its hash value, i.e. \(h(item)=item\%11\)</p>
-
-<p><code>Folding method</code> begins by dividing the item into equal size pieces (the last piece may not be of equal size), and then added together to give the resulting hash value by extra step of dividing by the table size and keeping the remainder.</p>
-
-<h2 id="toc_3">Collision Resolution</h2>
-
-<p>Various techniques are used to manage collision:</p>
-
-<ul>
-<li>Chaining (链接法)</li>
-<li>Open addressing (开放寻址法)
-
-<ul>
-<li>linear probing (线性探查)</li>
-<li>quadratic probing (二次探查)</li>
-</ul></li>
-</ul>
-
-<h3 id="toc_4">chaining</h3>
-
-<p>Chaining(链接法) allows each slot to hold a reference to a collection of items. It allows many items to exist at the same location in the hash table.</p>
-
-<p><img src="media/14973464173252/Screen%20Shot%202017-06-13%20at%206.16.40%20PM.png" alt="Screen Shot 2017-06-13 at 6.16.40 P"/></p>
-
-<h3 id="toc_5">Open addressing</h3>
-
-<p>In <strong>open addressing</strong>, all elements occupy the hash table itself. That is, each table entry contains either an element of the dynamic set or NIL. When searching for an element, we systematically examine table slots until either we find the desired element or we have ascertained that the element is not in the table. No lists and no elements are stored outside the table, unlike in chaining.</p>
-
-<h4 id="toc_6">Linear probing</h4>
-
-<p>One of the simplest re-hashing functions is +1(or -1) on a collision, i.e. look in the neighbouring slot in the table. It calculates new address extremely quickly.</p>
-
-<p>A disadvantage to linear probing is the tendency for clustering: items become clustered in the table.</p>
-
-<h4 id="toc_7">Quadratic probing</h4>
-
-<p>Instead of using a constant &#39;skip&#39; value, quadratic probing using a rehash function that increments the hash value by 1,3,5,7,9 and so on. This means that if the first hash value is \(h\), the successive values are \(h+1\), \(h+4\),\(h+9\), \(h+16\) and so on.</p>
-
-<h3 id="toc_8">Load factor</h3>
-
-<p>Load factor (装载因子) is commonly denoted by \(\lambda = \frac{number\_of\_items}{table\_size}\).</p>
-
-<p>The most important piece of information we need to analyze the use of a hash table is the load factor, \(\lambda\). Conceptually, if the load factor is small, then there is a lower chance of collisions.</p>
-
-<p>For a successful search, using open addressing with linear probing, the average number of comparisons is approximately \(\frac{1}{2}(1+\frac{1}{1-\lambda})\) and an unsuccessful search gives \(\frac{1}{2}(1+(\frac{1}{1-\lambda})^2)\).</p>
-
-<p>Using chaining, the average number of comparisons is \(1+\lambda/2\) for the successful case, and simply \(\lambda\) comparisons if the search is unsuccessful.</p>
-
-<p>High load factor \(\alpha \ge 0.85\) has negative effect on efficiency:</p>
-
-<ul>
-<li>lots of collisions
-efficiency due to collision overhead</li>
-</ul>
-
-<p>其中出现的魔法方法可以参见<a href="http://larryim.cc/14973620419454.html">Link</a></p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/6/13</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Hash%20Table.html'>Hash Table</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -901,6 +1014,18 @@ efficiency due to collision overhead</li>
 	      
 		      
 			      <li class="post">
+			        <a href="15275745125531.html">lldb</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15272289883847.html">回溯法和深度优先遍历</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="Coursera_notebook_jupyter.html">技巧：Coursera下载Jupyter notebook相关文件</a>
 			      </li>
 		     
@@ -914,18 +1039,6 @@ efficiency due to collision overhead</li>
 		      
 			      <li class="post">
 			        <a href="15166008990128.html">网络编程</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="overhead.html">overhead</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="memory_alignment.html">内存对齐</a>
 			      </li>
 		     
 		  

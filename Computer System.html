@@ -473,9 +473,9 @@ E:96, 96
                         
                         	<h2 id="toc_0">1 物理/虚拟寻址</h2>
 
-<p>主存是由连续的<strong>字节大小</strong>的单元组成的数组，每字节都有一个唯一的<strong>物理地址</strong>(Physical Adress)。CPU访问使用物理地址访问内存的方式称为<strong>物理寻址</strong>(Physical adressing)。</p>
+<p>主存是由连续的<strong>字节大小</strong>的单元组成的数组，每字节都有一个唯一的<strong>物理地址</strong>(Physical Adress)。CPU使用物理地址访问内存的方式称为<strong>物理寻址</strong>(Physical adressing)。</p>
 
-<p>早起的PC以及数字信号处理器等使用物理寻址，物理寻址示意：</p>
+<p>早期的PC以及数字信号处理器等使用物理寻址，下面是物理寻址的示意图：</p>
 
 <p><img src="media/15164033620970/physical_address.png" alt="physical_address"/></p>
 
@@ -483,13 +483,15 @@ E:96, 96
 
 <p><img src="media/15164033620970/virtual_memory%20.png" alt="virtual_memory "/></p>
 
-<p>虚拟内存的三个角色：</p>
+<p>虚拟内存充当着三个角色：</p>
 
 <ul>
 <li>作为缓存的工具，可以更有效率的使用内存：使用DRAM当做部分的虚拟地址空间的缓存</li>
 <li>作为内存管理的工具，简化内存管理：每个进程都有统一的线性地址空间</li>
 <li>作为内存保护的工具，分隔地址空间：进程的内存不会相互影响；用户程序不能访问保密的内核信息和代码</li>
 </ul>
+
+<p>下面一节具体讲解虚拟内存的这三个角色。</p>
 
 <h2 id="toc_1">2 虚拟内存的三个角色</h2>
 
@@ -605,15 +607,17 @@ E:96, 96
 <p>分配器试图最大化吞吐率和内存利用率</p>
 
 <ul>
-<li>最大化吞吐率(每个单位时间里完成的请求数)</li>
+<li>最大化吞吐率(吞吐率：每个单位时间里完成的请求数)</li>
 <li>最大化内存利用率</li>
 </ul>
 
-<p>造成利用率很低的主要原因是<strong>碎片</strong>(fragmentation)现象。当有效载荷比块要小时，发生<strong>内部碎片</strong>，引起的原因有：对齐等。</p>
+<p>最大化吞吐率和最大化利用率之间是相互 <u>牵制</u> 的，分配器设计的目标是在这两者之间找到一个适当的平衡。</p>
+
+<p>造成利用率很低的主要原因是<strong>碎片</strong>(fragmentation)现象。当有效载荷比块要小时，发生<strong>内部碎片</strong>(Internal fragmentation)，引起的原因有：对齐等。</p>
 
 <p><img src="media/15164033620970/internal_fragmentation.png" alt="internal_fragmentation"/></p>
 
-<p>当即使有足够的累积的块内存，但是没有单一块能够满足需求时，发生<strong>外部碎片</strong>：</p>
+<p>当即使有足够的累积的块内存，但是没有单一块能够满足需求时，发生<strong>外部碎片</strong>(external fragmentation)：</p>
 
 <p><img src="media/15164033620970/external_fragmentation.png" alt="external_fragmentation"/></p>
 
@@ -627,9 +631,21 @@ E:96, 96
 <li>分离式空闲列表 Segregated Free List</li>
 </ul>
 
-<h2 id="toc_13">5 C程序中常见的与内存有关的错误</h2>
+<h4 id="toc_13">4.3.1 隐式空闲列表</h4>
 
-<h4 id="toc_14">间接引用坏指针</h4>
+<p><img src="media/15164033620970/implicit_list.png" alt="implicit_list"/></p>
+
+<p>隐式空闲链表优点是简单，缺点是操作开销大。因为无论是分配还是释放块，都需要对隐式空闲列表进行搜索，复杂度是\(O(n)\)，\(n\)是已分配块和空闲块的总数。</p>
+
+<h4 id="toc_14">4.3.1 显式空闲列表</h4>
+
+<p><img src="media/15164033620970/explict_list.png" alt="explict_list"/></p>
+
+<h4 id="toc_15">4.3.1 分离式空闲列表</h4>
+
+<h2 id="toc_16">5 C程序中常见的与内存有关的错误</h2>
+
+<h4 id="toc_17">间接引用坏指针</h4>
 
 <p>这是非常常见的例子，没有引用对应的地址，少了 &amp;</p>
 
@@ -637,7 +653,7 @@ E:96, 96
 scanf(&quot;%d&quot;, val); // 正确应该是scanf(&quot;%d, &amp;val);
 </code></pre>
 
-<h4 id="toc_15">读未初始化的内存</h4>
+<h4 id="toc_18">读未初始化的内存</h4>
 
 <p><strong>堆内存是没有被初始化为0的</strong>：</p>
 
@@ -655,7 +671,7 @@ int *matvec(int **A, int *x) {
 
 <p>正确的方法是显式地将y[i]设置为0，或者使用<code>calloc</code>。</p>
 
-<h4 id="toc_16">允许栈缓冲区溢出</h4>
+<h4 id="toc_19">允许栈缓冲区溢出</h4>
 
 <p>没有检查字符串的长度（经典的缓冲区溢出攻击也是利用相同的机制）</p>
 
@@ -664,7 +680,7 @@ int i;
 gets(s); /* stack buffer overflow, reads &quot;123456789&quot; from stdin */
 </code></pre>
 
-<h4 id="toc_17">引用不存在的变量</h4>
+<h4 id="toc_20">引用不存在的变量</h4>
 
 <p>尽管指针仍然指向一个合法的内存地址，但是已经不再指向一个合法的变量了。以后在程序中调用其他函数时，内存将重用它们的栈针。</p>
 
@@ -675,7 +691,7 @@ gets(s); /* stack buffer overflow, reads &quot;123456789&quot; from stdin */
 }
 </code></pre>
 
-<h4 id="toc_18">多次释放</h4>
+<h4 id="toc_21">多次释放</h4>
 
 <p>这个不用多说，不能重复搞两次</p>
 
@@ -687,7 +703,7 @@ y = malloc(M * sizeof(int));
 free(x);
 </code></pre>
 
-<h4 id="toc_19">引用已经被释放的堆块中的数据</h4>
+<h4 id="toc_22">引用已经被释放的堆块中的数据</h4>
 
 <p>同样是很明显的错误，不要犯</p>
 
@@ -700,7 +716,7 @@ for (i = 0; i &lt; M; i++)
     y[i] = x[i]++;
 </code></pre>
 
-<h4 id="toc_20">内存泄漏</h4>
+<h4 id="toc_23">内存泄漏</h4>
 
 <p>忘记释放已分配块：</p>
 
@@ -1300,6 +1316,18 @@ int main(int argc, char **argv)
 	      
 		      
 			      <li class="post">
+			        <a href="15275745125531.html">lldb</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15272289883847.html">回溯法和深度优先遍历</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="Coursera_notebook_jupyter.html">技巧：Coursera下载Jupyter notebook相关文件</a>
 			      </li>
 		     
@@ -1313,18 +1341,6 @@ int main(int argc, char **argv)
 		      
 			      <li class="post">
 			        <a href="15166008990128.html">网络编程</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="overhead.html">overhead</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="memory_alignment.html">内存对齐</a>
 			      </li>
 		     
 		  

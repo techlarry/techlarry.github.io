@@ -163,6 +163,118 @@ var _hmt = _hmt || [];
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="magic_method_item_access.html">
+                
+                  <h1>Magic Methods: Item Access</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>Useful magic methods allows you to create objects that behave like sequences or mappings.</p>
+
+<h2 id="toc_0">Sequence and Mapping Protocol</h2>
+
+<p><code>protocol</code> in Python usually describe the rules governing some form of behavior. The <code>protocol</code> states which methods you should implement and what those methods should do. So, to be a sequence means,  to follow the sequence protocol.</p>
+
+<ul>
+<li><code>__len__(self)</code>: This method should return the number of items contained in the collection. For a sequence, this would simply be the number of elements. For a mapping, it would be the number of key-value pairs. If <code>__len__</code> returns zero (and you don’t implement <code>__nonzero__</code>, which overrides this behavior), the object is treated as false in a Boolean context (as with empty lists, tuples, strings, and dictionaries).</li>
+<li><code>__getitem__(self, key)</code>: This should return the value corresponding to the given key. For a sequence, the key should be an integer from \(0\) to \(n–1\) (or, it could be negative, as noted later), where \(n\) is the length of the sequence. For a mapping, you could really have any kind of keys.</li>
+<li><code>__setitem__(self, key, value)</code>: This should store value in a manner associated with key, so it can later be retrieved with <code>__getitem__</code>. Of course, you define this method only for mutable objects.</li>
+<li><code>__delitem__(self, key)</code>: This is called when someone uses the <code>del</code> statement on a part of the object, and should delete the element associated with key. Again, only mutable objects (and not all of them—only those for which you want to let items be removed) should define this method.</li>
+</ul>
+
+<h2 id="toc_1">Example</h2>
+
+<pre><code class="language-python">def checkIndex(key):
+    &quot;&quot;&quot;
+    Is the given key an acceptable index?
+    To be acceptable, the key should be a non-negative integer. If it
+    is not an integer, a TypeError is raised; if it is negative, an
+    IndexError is raised (since the sequence is of infinite length).
+    &quot;&quot;&quot;
+    if not isinstance(key, int):
+        raise TypeError
+    if key &lt; 0:
+        raise IndexError
+
+
+class ArithmeticSequence:
+    def __init__(self, start=0, step=1):
+        &quot;&quot;&quot;
+        Initialize the arithmetic sequence.
+        start   - the first value in the sequence
+        step    - the difference between two adjacent values
+        changed - a dictionary of values that have been modified by the user
+        &quot;&quot;&quot;
+        self.start = start
+        self.step = step
+        self.changed = {}
+
+    def __getitem__(self, key):
+        &quot;&quot;&quot;
+        Get an item from the arithmetic sequence.
+        &quot;&quot;&quot;
+        checkIndex(key)
+        try:
+            return self.changed[key]
+        except KeyError:
+            return self.start + key*self.step
+    # Store the start value
+    # Store the step value
+    # No items have been modified
+    # Modified?
+    # otherwise...
+    # ...calculate the value
+
+    def __setitem__(self, key, value):
+        &quot;&quot;&quot;
+        Change an item in the arithmetic sequence.
+        &quot;&quot;&quot;
+        checkIndex(key)
+        self.changed[key] = value                 # Store the changed value
+
+    def __delitem__(self, key):
+        &quot;&quot;&quot;
+        Delete the key provided from sequence
+        &quot;&quot;&quot;
+        checkIndex(key)
+        del self.changed[key]
+
+
+
+if __name__ == &quot;__main__&quot;:
+    s = ArithmeticSequence(1, 2)
+    print(s[4])
+    s[4]=3
+    print(s[4])
+    del s[4]
+    print(s[4])
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/7/18</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15002564768282.html">
                 
                   <h1>Database System Concept (1): Introduction</h1>
@@ -616,180 +728,6 @@ if __name__ == &#39;__main__&#39;:
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="testing.html">
-                
-                  <h1>Testing</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p><a href="https://en.wikipedia.org/wiki/Unit_testing">Unit testing</a> is a software testing method by which individual units of source code, sets of one or more computer program modules together with associated control data, usage procedures, and operating procedures, are tested to determine whether they are fit for use.</p>
-
-<h2 id="toc_0">Test-driven programming</h2>
-
-<p>&quot;<strong>Test first and code later</strong>&quot; practice, known as test-driven programming, instead of test after code.</p>
-
-<h3 id="toc_1">Requirement Specification</h3>
-
-<p>When developing a piece of software, you must first know what problem the software will solve—what objectives it will meet. You can clarify your goals for the program by writing a <strong>requirement specification</strong>, a document (or just some quick notes) describing requirements the program must satisfy. </p>
-
-<h3 id="toc_2">The 1-2-3-4 of Testing</h3>
-
-<p>Here’s a breakdown of the test-driven development process:</p>
-
-<ul>
-<li>Figure out the new feature you want. Possibly document it, and then write a test for it.</li>
-<li>Write some skeleton code for the feature, so that you program runs without any syntax errors. See your test fail.</li>
-<li>Write dummy code for skeleton code, just to appease the test.</li>
-<li>Rewrite the code so that it actually pass the test.</li>
-</ul>
-
-<h2 id="toc_3">Testing Tools</h2>
-
-<p>Two brilliant modules are available to automate the testing process:</p>
-
-<ul>
-<li><code>unittest</code>: A generic testing framework.</li>
-<li><code>doctest</code>: A simpler module, designed for checking documentation, but excellent for writing unit tests as well.</li>
-</ul>
-
-<h3 id="toc_4">doctest</h3>
-
-<p>The <code>testmod</code> function checks both the module docstring and function docstring.</p>
-
-<p>E.g.</p>
-
-<pre><code class="language-python">def square(x):
-    &quot;&quot;&quot;
-    squares a number and returns the result.
-    &gt;&gt;&gt; square(2)
-    4
-    &gt;&gt;&gt; square(3)
-    9
-    &quot;&quot;&quot;
-    return x*x
-
-if __name__ == &quot;__main__&quot;:
-    import doctest, doc_test_example
-    doctest.testmod(doc_test_example, verbose=True)
-</code></pre>
-
-<p>Run the example. To get some more output, just add <code>-v</code>(for verbose)</p>
-
-<pre><code class="language-bash">$ python doc_test_example.py -v
-Trying:
-    square(2)
-Expecting:
-    4
-ok
-Trying:
-    square(3)
-Expecting:
-    9
-ok
-1 items had no tests:
-    doc_test_example
-1 items passed all tests:
-   2 tests in doc_test_example.square
-2 tests in 2 items.
-2 passed and 0 failed.
-Test passed.
-</code></pre>
-
-<h3 id="toc_5">unittest</h3>
-
-<p><code>unittest</code> which is based on the popular test framework <code>JUnit</code>, is more flexible and powerful. It allows to write very large and thorough test sets in a more structured manner.</p>
-
-<p><strong>注意： 测试方法应该以test为前缀命名</strong></p>
-
-<p>E.g.</p>
-
-<pre><code class="language-python">import unittest
-import doc_test_example as my_math
-
-class ProductTestCase(unittest.TestCase):
-
-    def testIntegers(self):
-        for x in xrange(-10,10):
-            p = my_math.square(x)
-            self.failUnless(p == x*x, &#39;Integer multiplication failed&#39;)
-
-    def testFloats(self):
-        for x in xrange(-10,10):
-            x = x/10.0
-            p = my_math.square(x)
-            self.failUnless(p == x*x, &#39;Float multiplication failed&#39;)
-
-
-if __name__ == &quot;__main__&quot;:
-    unittest.main()
-</code></pre>
-
-<p>Another example to test <code>dijkstra&#39;s algorithm</code> see <a href="http://larryim.cc/dijkstra_algorithm.html">here</a></p>
-
-<p>Methods such as <code>failUnless</code> check a condition to determine whether the given test succeeds or fails. </p>
-
-<p>The <code>unittest</code> module distinguishes between <code>errors</code>, where an exception is raised, and <code>failures</code>, which result from calls to <code>failUnless</code> and the like. </p>
-
-<h2 id="toc_6">Source Code Checking</h2>
-
-<p><a href="https://www.pylint.org">Pylint</a> and PyChecker are good tools for checking Python source code, looking for mistakes.</p>
-
-<p><code>Pylint</code> is a tool that checks for errors in Python code, tries to enforce a coding standard and looks for code smells. It can also look for certain type errors, it can recommend suggestions about how particular blocks can be refactored and can offer you details about the code’s complexity.</p>
-
-<p><code>Pylint</code> can be integrated with <code>Pycharm</code>, see <a href="https://pylint.readthedocs.io/en/latest/user_guide/ide-integration.html#pylint-in-pycharm">detail</a>.</p>
-
-<h3 id="toc_7">Resources</h3>
-
-<ul>
-<li><a href="https://www.ibm.com/developerworks/cn/linux/l-cn-pylint/index.html">如何使用 Pylint 来规范 Python 代码风格</a></li>
-<li><a href="https://www.python.org/dev/peps/pep-0008/">Style Guide for Python Code</a></li>
-</ul>
-
-<h2 id="toc_8">Profile</h2>
-
-<p><strong>When in doubt, use brute force</strong></p>
-
-<p>The standard library includes nice profiler modules called <code>profile</code> and <code>cProfile</code>.  </p>
-
-<p>A <code>profile</code> is a set of statistics that describes how often and for how long various parts of the program executed. </p>
-
-<pre><code class="language-python">&gt;&gt;&gt; import profile
-&gt;&gt;&gt; from my_math import square
-&gt;&gt;&gt; profile.run(&#39;square(1, 2)&#39;)
-</code></pre>
-
-<p>Another way to use <code>profile</code> in command-line:</p>
-
-<pre><code class="language-bash">$ python -m profile prof1py
-</code></pre>
-
-<p>The standard library also contains a module called <code>timeit</code>, which is a simple way of timing small snippets of Python code.</p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/7/14</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -891,6 +829,18 @@ if __name__ == &quot;__main__&quot;:
 	      
 		      
 			      <li class="post">
+			        <a href="15275745125531.html">lldb</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15272289883847.html">回溯法和深度优先遍历</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="Coursera_notebook_jupyter.html">技巧：Coursera下载Jupyter notebook相关文件</a>
 			      </li>
 		     
@@ -904,18 +854,6 @@ if __name__ == &quot;__main__&quot;:
 		      
 			      <li class="post">
 			        <a href="15166008990128.html">网络编程</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="overhead.html">overhead</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="memory_alignment.html">内存对齐</a>
 			      </li>
 		     
 		  
