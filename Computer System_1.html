@@ -142,9 +142,80 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="procedure.html">
+                
+                  <h1>CSAPP - 过程</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p><strong>过程</strong>(procedure)是软件中一种很重要的抽象。它提供了一种封装代码的方式，用一组制定的参数和一个可选的返回值实现了某这功能。然后，可以在程序中不同的地方调用这个函数。不同编程语言中，过程的形式多样：函数(function)、方法(method)、子例程(subroutine)、处理函数(handler)等等。</p>
+
+<p>假设过程P调用过程Q，Q执行后返回到P，包含下面一个或多个机制：</p>
+
+<ul>
+<li>传递控制。在进入过程Q的时候，程序计数器必须被设置为Q的代码的起始地址，然后在返回时，要把程序计数器设置为P中调用Q后面那条指令的地址。</li>
+<li>传递数据。P必须能够向Q提供一个或多个参数，Q必须能够向P返回一个值。</li>
+<li>分配和释放内存。在开始时，Q可能需要为局部变量分配空间，而在返回前，又必须释放这些存储空间。</li>
+</ul>
+
+<h2 id="toc_0">1 运行时栈</h2>
+
+<p>在函数调用时，往往使用了栈(<code>Stack</code>)这一数据结构。当x86-64过程需要的存储空间超出寄存器能够存放的大小时(意味着其实很多函数根本不需要帧栈)，就会在栈上分配空间，称为<strong>帧栈</strong>(stack frame)。</p>
+
+<p>Current Stack Frame (“Top” to Bottom) contains:</p>
+
+<ul>
+<li>Argument build(参数构造区):
+<ul>
+<li>Parameters for function about to call</li>
+<li>可以通过寄存器最多传递6个整形参数，超出6个部分就要通过栈来传递</li>
+</ul></li>
+<li>Local variables(局部变量):
+<ul>
+<li>寄存器不足够存放所有的本地数据</li>
+<li>使用地址运算符&amp;，必须能够产生一个地址</li>
+</ul></li>
+<li>Saved register context(被保存的寄存器)
+<ul>
+<li>保存寄存器的值到栈中</li>
+</ul></li>
+<li>Old frame pointer (optional)</li>
+</ul>
+
+<p><img src="media/15312146721582/stack_frame.png" alt="stack_frame"/></p>
+
+<h2 id="toc_1">参考资料</h2>
+
+<p>Randal E B, David O H. 2015. Computer Systems: A programmer&#39;s Perspective, 3rd.</p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/1/10</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Computer%20System.html'>Computer System</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="Linking.html">
                 
-                  <h1>链接</h1>
+                  <h1>CSAPP - 链接</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
@@ -587,14 +658,14 @@ Disassembly of section .fini:
 			<div class="article">
                 <a class="clearlink" href="15146536465849.html">
                 
-                  <h1>x86-64汇编</h1>
+                  <h1>CSAPP - x86-64汇编</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
                         	<h2 id="toc_0">汇编代码格式</h2>
 
-<p>现在主要存在<code>ATT</code>和<code>Intel</code>两种汇编代码格式。<code>ATT</code>格式是<code>GCC</code>, <code>OBJDUMP</code>常用工具的默认格式。其他的诸如Microsoft的工具和来自Intel的文档都是<code>Intel</code>格式的。本文使用<code>ATT</code>格式。</p>
+<p>现在主要存在<code>ATT</code>和<code>Intel</code>两种汇编代码格式。<code>ATT</code>格式是<code>GCC</code>、 <code>OBJDUMP</code>常用工具的默认格式。其他的诸如Microsoft的工具和来自Intel的文档都是<code>Intel</code>格式的。本文使用<code>ATT</code>格式。</p>
 
 <p><code>ATT</code>汇编格式的注释格式有两种</p>
 
@@ -612,11 +683,11 @@ Disassembly of section .fini:
 
 <h3 id="toc_2">rip 寄存器与PC相对寻址</h3>
 
-<p>%rip 的名称来自于(instruction pointer register,指令指针寄存器)。%rip其实就是程序计数器(Program Counter, PC), 存放着下一条指令的地址。不可以直接修改%rip。</p>
+<p>%rip 的名称来自于(instruction pointer register，指令指针寄存器)。%rip其实就是<strong>程序计数器</strong>(Program Counter, PC), <u><em>存放着下一条指令的地址</em></u> 。不可以直接修改%rip。</p>
 
 <p>-&gt; <code>instruction pointer = program counter = %rip</code></p>
 
-<p>%rip的其他很重要的一个用法就是RIP/PC相对寻址(RIP/PC relative addressing)。即<code>%rip + displacement</code>的用法。</p>
+<p>%rip的其他很重要的一个用法就是RIP/<strong>PC相对寻址</strong>(RIP/PC relative addressing)。即<code>%rip + displacement</code>的用法。</p>
 
 <p>例如，</p>
 
@@ -645,58 +716,6 @@ Disassembly of section .fini:
                   <div class="more-left left">
                   
                     <span class="date">2017/12/31</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Computer%20System.html'>Computer System</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15142076431845.html">
-                
-                  <h1>OS161</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p><a href="http://os161.eecs.harvard.edu">OS161</a>是哈佛大学推出的一款用于教学的操作系统。它运行在一个模拟器上，与BSD类似。目前的版本是2.x版本，支持多处理器和其他现代特性。</p>
-
-<p><a href="http://os161.eecs.harvard.edu/resources/layout.html">OS161 layout</a></p>
-
-<h2 id="toc_0">用gdb调试内核</h2>
-
-<p>首先运行<code>kernel</code></p>
-
-<pre><code class="language-text">sys161 kernel
-</code></pre>
-
-<p>像正常一样运行<code>gdb</code></p>
-
-<pre><code class="language-text">gdb kernel
-</code></pre>
-
-<p>在完成加载后，在<code>gdb</code>中输入以下内容使其连接到<code>System/161</code></p>
-
-<pre><code class="language-text">target remote unix:.sockets/gdb
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/12/25</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Computer%20System.html'>Computer System</a></span>
@@ -813,6 +832,12 @@ Disassembly of section .fini:
 	      
 		      
 			      <li class="post">
+			        <a href="15312166852240.html">CSE 421/521 Operating Systems</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15272289883847.html">回溯法和深度优先遍历</a>
 			      </li>
 		     
@@ -832,12 +857,6 @@ Disassembly of section .fini:
 		      
 			      <li class="post">
 			        <a href="15166008990128.html">网络编程</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="overhead.html">overhead</a>
 			      </li>
 		     
 		  

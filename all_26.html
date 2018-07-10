@@ -142,6 +142,260 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="14969760398302.html">
+                
+                  <h1>迭代器与生成器</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<ul>
+<li>
+<a href="#toc_0">可迭代对象</a>
+<ul>
+<li>
+<a href="#toc_1">判断是否可以迭代</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_2">迭代器</a>
+<ul>
+<li>
+<a href="#toc_3">手动访问迭代器中的元素</a>
+</li>
+<li>
+<a href="#toc_4">将可迭代对象转换成迭代器</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_5">生成器</a>
+<ul>
+<li>
+<a href="#toc_6">生成器表达式</a>
+</li>
+<li>
+<a href="#toc_7">生成器函数</a>
+</li>
+<li>
+<a href="#toc_8">next()方法运行流程</a>
+</li>
+<li>
+<a href="#toc_9">send()方法</a>
+</li>
+</ul>
+</li>
+</ul>
+
+
+<p>迭代是Python中最强有力的特性之一。</p>
+
+<h2 id="toc_0">可迭代对象</h2>
+
+<p>迭代是访问集合元素的一种方式。迭代器是一个可以记住遍历的位置的对象。迭代器对象从集合的第一个元素开始访问，直到所有的元素被访问完结束。迭代器只能往前不会后退。</p>
+
+<p>以直接作用于for循环的数据类型有以下几种：</p>
+
+<p>一类是集合数据类型，如list, tuple, dict, set, str等；<br/>
+一类是generator,包括生成器和带yield的生成器函数(generator function).</p>
+
+<p>这些可以直接作用于for循环的对象统称为可迭代对象：<code>Iterable</code></p>
+
+<h3 id="toc_1">判断是否可以迭代</h3>
+
+<p>可以使用<code>isinstance()</code>判断一个对象是否是<code>Iterable</code>对象：</p>
+
+<pre><code class="language-python">from collections import Iterable
+
+isinstance([], Iterable)
+</code></pre>
+
+<h2 id="toc_2">迭代器</h2>
+
+<p>可以被<code>next()</code>函数调用并不断返回下一个值的对象称为迭代器：Iterator。</p>
+
+<h3 id="toc_3">手动访问迭代器中的元素</h3>
+
+<p>要手动访问可迭代对象中的元素，可以使用<code>next()</code>函数，然后自己编写代码来捕获<code>StopIteration</code>异常。例如，下面这个例子采用手工方式从文件中读取文本行：</p>
+
+<pre><code class="language-python"># 打印hosts文件
+with open(&#39;/etc/hosts&#39;) as f:
+    try:
+        while True:
+            line = next(f)
+            print(line, end=&#39;&#39;)
+    except: StopIteration:
+        pass
+</code></pre>
+
+<p>可以使用<code>isinstance()</code>判断一个对象是否是<code>Iterator</code>对象：</p>
+
+<pre><code class="language-python">from collections import Iterator
+isinstance((x for x in ragne(10)), Iterator)
+</code></pre>
+
+<h3 id="toc_4">将可迭代对象转换成迭代器</h3>
+
+<p>把list, dict, str等可迭代对象变成迭代器，可以使用<code>iter()</code>函数</p>
+
+<pre><code class="language-python">&gt;&gt;&gt; a = [11,22,33,44]
+&gt;&gt;&gt; type(a)
+&lt;class &#39;list&#39;&gt;
+&gt;&gt;&gt; b=iter(a)
+&gt;&gt;&gt; b
+&lt;list_iterator object at 0x109ba3278&gt;
+</code></pre>
+
+<h2 id="toc_5">生成器</h2>
+
+<p>如果列表元素可以按照某种算法推算出来，从而节省大量空间，即保存计算生成的方式，当需要时才生成。</p>
+
+<p>生成器可以通过next()获得生成器的下一个返回值。</p>
+
+<p>生成器的特点：</p>
+
+<ol>
+<li>节约内存</li>
+<li>迭代到下一次的调用时，所使用的参数都是第一次所保留下的</li>
+</ol>
+
+<h3 id="toc_6">生成器表达式</h3>
+
+<p><code>生成器表达式(generator expression)</code>: An expression that returns an iterator.</p>
+
+<pre><code class="language-python">&gt;&gt;&gt;&gt; a = ( x for x in range(1,100))
+&gt;&gt;&gt;&gt; a
+&gt;&gt;&gt;&gt; &lt;generator object &lt;genexpr&gt; at 0x10ce60f10&gt; # 生成器表达式
+</code></pre>
+
+<h3 id="toc_7">生成器函数</h3>
+
+<p>如果想实现一种新的迭代模式，可使用<code>生成器函数</code>来定义。函数中只要出现了<code>yield</code>语句就会讲其转变成一个生成器。一旦执行到<code>yield</code>语句，生成器函数返回，迭代停止。</p>
+
+<pre><code class="language-python">def fib(times):
+     &quot;&quot;&quot;
+     斐波那契数列
+     &quot;&quot;&quot;
+     
+     n =0
+     a,b = 0,1
+     while n&lt; times:
+        yield b    #与函数的唯一区别是yield语句
+        a,b = b, a+b
+        n+=1
+     return &#39;done&#39;
+
+for n in fib(5):
+    print(n)
+</code></pre>
+
+<h3 id="toc_8">next()方法运行流程</h3>
+
+<p>当第一次调用生成器的<code>next</code>方法时，生成器开始执行生成器函数，从第一行代码开始执行，一直执行到<code>yield</code>语句后，生成器函数返回<code>yield</code>表达式的值。之后每一次调用生成器的<code>next</code>方法时，生成器从<code>yield</code>语句的下一句开始执行，直到再次遇到<code>yield</code>语句返回。</p>
+
+<h3 id="toc_9">send()方法</h3>
+
+<p>生成器对象首先是一个迭代器，但比一般迭代器对象多了一些方法，包括<code>send()</code>,<code>throw()</code>,<code>close()</code>方法；这些方法主要用与生成器对象的交互。</p>
+
+<p>对于生成器，使用<code>send()</code>时，第一次需要<code>send(None)</code>，因为没有<code>yield</code>语句来接受参数。（<code>yield</code>执行完就跳出，对应变量没有赋值，看下面的例子）</p>
+
+<p><code>send()</code>方法和<code>next()</code>方法类似，不同的是<code>send()</code>可以向生成器传参数。当<br/>
+第一次调用生成器的<code>send()</code>方法时，从生成器函数的第一行代码开始执行，一直执行到yield语句后，生成器函数返回。注意这个过程中，变量一直没有赋值。当下一次运行时，变量才赋值，赋值的值来源于这一次的<code>send()</code>方法（不是上一次！而且第一次都是<code>None</code>），但并不执行yield部分，直到再次遇到<code>yield</code>语句返回。</p>
+
+<pre><code class="language-python">&gt;&gt;&gt; def gen():
+...     while True:
+...         s = yield
+...         print(s)
+...
+&gt;&gt;&gt; g = gen()
+&gt;&gt;&gt; g.send()
+Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+TypeError: send() takes exactly one argument (0 given)
+&gt;&gt;&gt; g.send(None)  # 第一次需要传入参数None
+&gt;&gt;&gt; g.send(&#39;Kiss&#39;) # 将参数赋值给变量s
+Kiss
+</code></pre>
+
+<p><strong>注意： 不能将一个非None的值传给初始的生成器</strong></p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/6/9</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="14969731064895.html">
+                
+                  <h1>列表</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h2 id="toc_0">列表生成式</h2>
+
+<p>列表生成式,即List Comprehensions,Python内置的非常简单却强大的可以用来创建list的生成式。</p>
+
+<p>例子</p>
+
+<pre><code class="language-python">&gt;&gt;&gt;&gt; a = [ i for i in range(1,19)]
+&gt;&gt;&gt;&gt; b = [i for i in ragne(10) if i%2 == 0]
+&gt;&gt;&gt;&gt; c = [i for i in range(3) for j in range(2)]
+&gt;&gt;&gt;&gt; d = [(i,j) for i in range(3) for j in range(2)]
+</code></pre>
+
+<h3 id="toc_1">range的风险</h3>
+
+<pre><code class="language-python">&gt;&gt;&gt; range(1,1000000000)
+</code></pre>
+
+<p>内存空间太大，但在python3中已经解决: 在需要时，才生成</p>
+
+<h2 id="toc_2">列表去重</h2>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/6/9</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="14969711309826.html">
                 
                   <h1>内置LIST，DICT 时间复杂度</h1>
@@ -380,209 +634,6 @@ print(&#39;pop end&#39;, pop_end.timeit(1000))
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="14969760531704.html">
-                
-                  <h1>python是动态语言</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>C语言是静态语言，运行之前需要先编译，不允许在运行过程中修改代码。</p>
-
-<p>动态编程语言，在运行时可以改变其结果的语言：例如新的函数、对象、甚至代码可以被引进，已有的函数可以被删除或是其他结构上的变化。</p>
-
-<h2 id="toc_0">运行的过程中给实例/类添加属性(实例属性/类属性)</h2>
-
-<pre><code class="language-python">class Person(object):
-    def __init__(self, name=None, age=None):
-             self.name = name
-             self.age = age
-P = Person(&#39;X man&#39;,&#39;24&#39;)
-P.sex = &#39;male&#39;  # 给对象添加属性
-Person.sex = &#39;female&#39; #给类添加属性
-</code></pre>
-
-<h2 id="toc_1">运行的过程中给实例/类添加方法</h2>
-
-<p>给实例添加方法时，一般需使用<code>MethodType</code>函数。</p>
-
-<pre><code class="language-python">class Person(object):
-    def __init__(self, name=None, age=None):
-             self.name = name
-             self.age = age
-    def eat(self):
-        print(&#39;---%s is eating&#39;%self.name)
-        
-def run(self):
-    print(&#39;---%s is running&#39;%self.name)
-    
-p1= Person(&#39;P1&#39;, 10)
-p1.eat()
-p1.run = run
-#虽然p1对象中 run属性已经指向了第10行的函数，但是这句代码还不正确
-#因为run属性的函数是后来添加的，即p1.run()的时候，并没有把p1当作第1个参数
-
-import types
-p1.run = types.MethodType(run,p1)
-p1.run()
-</code></pre>
-
-<p>但是静态方法(static method)和类方法(class method)可以直接添加</p>
-
-<pre><code class="language-python">@staticmethod
-def test():
-    print(&quot;---static method-----&quot;)
-p1.test = test
-p1.test()
-
-@classmethod
-def printNum(cls):
-    print(&#39;----class method---&#39;)
-    
-Person.printNum = printNum
-Person.printNum()
-</code></pre>
-
-<h2 id="toc_2">限制属性 __slots__</h2>
-
-<p>定义一个特殊的__slot__变量，限制class实例能添加的属性</p>
-
-<pre><code class="language-python">class Person(object):
-    __slots__=(&quot;name&quot;,&quot;age&quot;)
-
-p = Person()
-p.name = &quot;老王&quot;
-p.age = 10
-p.score = 100
-&gt;&gt;&gt;&gt; AttributeError: &#39;Person&#39; object has no attribute &#39;score&#39;
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/6/6</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="14970764330712.html">
-                
-                  <h1>属性@property的使用</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h3 id="toc_0">为什么要使用<code>getter</code>和<code>setter</code>方法</h3>
-
-<p>在绑定属性时，如果可以直接设置属性，虽然写起来很简单，但是没有办法检查参数，并且可以随意更改参数。</p>
-
-<pre><code class="language-python">s = People()
-s.salary = -1000
-</code></pre>
-
-<p>这显然不符合逻辑。为了限制salary的范围，可以通过一个<code>setSalary</code>方法来设置工资，再通过一个<code>getSalary</code>来获得工资，这样在<code>setSalary</code>方法里，就可以检查参数。</p>
-
-<h3 id="toc_1">私有属性添加<code>getter</code>和<code>setter</code>方法</h3>
-
-<pre><code class="language-python">class People(object):
-    def __init__(self):
-        self.__salary = 0
-    def getSalary(self):
-        return self.__salary
-    def setSalary(self, value):
-        if not isinstance(value, int):
-            raise ValueError(&#39;Money must be an integer!&#39;)
-        if value &lt;0 or value &gt; 10000:
-            raise ValueError(&#39;Money must between 0~10000!&#39;)
-        
-        self.__salary = value
-</code></pre>
-
-<h3 id="toc_2">注意点</h3>
-
-<p>t.num到底是调用<code>getter</code>还是<code>setter</code>，要根据实际的场景来判断，</p>
-
-<ol>
-<li>如果是给t.num赋值，那么一定调用<code>setNum()</code></li>
-<li>如果是获取t.num的值，那么久一定调用<code>getNum()</code></li>
-</ol>
-
-<h3 id="toc_3">@property装饰器</h3>
-
-<p>但是直接调用<code>getter()</code>和<code>setter()</code>比较复杂。Python内置的<code>@property</code>装饰器可以把这两种方法转化为属性进行调用。看一下例子：</p>
-
-<pre><code class="language-python">class People(object):
-    def __init__(self):
-        self.__salary = 0
-    
-    @property
-    def salary(self):
-        return self.__salary
-    
-    @salary.setter
-    def salary(self, value):
-        if not isinstance(value, int):
-            raise ValueError(&#39;Salary must be an integer!&#39;)
-        if value &lt;0 or value &gt; 10000:
-            raise ValueError(&#39;Salary must between 0~10000!&#39;)
-        
-        self.__salary = value
-        
-    @property
-    def tax(self):
-        self.__tax = self.__salary*0.1
-        return self.__tax
-</code></pre>
-
-<p>当不定义setter方法时，那么就定义了一个只读属性(例子中<code>tax</code>属性是只读属性)。</p>
-
-<p>@property 成为属性函数，可以对属性赋值时做必要的检查，并保证代码的清晰短小，主要有2个作用：</p>
-
-<ol>
-<li>将方法转换为只读</li>
-<li>重新实现一个属性的设置和读取方法，可做边界判定</li>
-</ol>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/5/10</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -684,6 +735,12 @@ s.salary = -1000
 	      
 		      
 			      <li class="post">
+			        <a href="15312166852240.html">CSE 421/521 Operating Systems</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15272289883847.html">回溯法和深度优先遍历</a>
 			      </li>
 		     
@@ -703,12 +760,6 @@ s.salary = -1000
 		      
 			      <li class="post">
 			        <a href="15166008990128.html">网络编程</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="overhead.html">overhead</a>
 			      </li>
 		     
 		  

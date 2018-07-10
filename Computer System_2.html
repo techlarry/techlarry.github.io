@@ -142,29 +142,86 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="Computer_memory.html">
+                <a class="clearlink" href="15142076431845.html">
                 
-                  <h1>计算机内存概览</h1>
+                  <h1>OS161</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<ul>
-<li>memory hierarchy</li>
-<li>virtual memory</li>
-<li>stack frame</li>
-<li>heap</li>
-</ul>
+                        	<p><a href="http://os161.eecs.harvard.edu">OS161</a>是哈佛大学推出的一款用于教学的操作系统。它运行在一个模拟器上，与BSD类似。目前的版本是2.x版本，支持多处理器和其他现代特性。</p>
 
-<p>本文概览了内存有关的概念。</p>
+<p><a href="http://os161.eecs.harvard.edu/resources/layout.html">OS161 layout</a></p>
 
-<h2 id="toc_0">存储器层次结构 Memory Hierarchy</h2>
+<h2 id="toc_0">用gdb调试内核</h2>
+
+<p>首先运行<code>kernel</code></p>
+
+<pre><code class="language-text">sys161 kernel
+</code></pre>
+
+<p>像正常一样运行<code>gdb</code></p>
+
+<pre><code class="language-text">gdb kernel
+</code></pre>
+
+<p>在完成加载后，在<code>gdb</code>中输入以下内容使其连接到<code>System/161</code></p>
+
+<pre><code class="language-text">target remote unix:.sockets/gdb
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/12/25</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Computer%20System.html'>Computer System</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="Computer_memory.html">
+                
+                  <h1>CSAPP - 存储器层次结构</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>存储器系统(memory system)是一个具有不同 <u>容量</u> 、 <u>成本</u> 和 <u>访问时间</u> 的存储设备的层次结构。</p>
+
+<p><strong>局部性</strong>(locality)：具有良好局部性的程序倾向于一次又一次地访问相同的数据项集合，或是倾向于访问邻近的数据项集合。</p>
+
+<h2 id="toc_0">1 存储技术</h2>
+
+<p>随机访问存储器(Random-Access Memory, RAM)分为两类：静态(SRAM)和动态(DRAM)的。SRAM比DRAM更快，但也贵得多。</p>
+
+<h2 id="toc_1">2 局部性</h2>
+
+<p>一个编写良好的计算机程序常常具有良好的局部性(locality)。也就是，它们倾向于引用邻近于其他最近引用过的数据项的数据项(空间局部性)，或者最近引用过的数据项本身(时间局部性)。</p>
+
+<p>现代计算机系统的各个层次，从硬件到操作系统、再到应用程序，它们的设计都利用了局部性。</p>
+
+<h2 id="toc_2">3 存储器层次结构 Memory Hierarchy</h2>
 
 <p>一般而言，从高层往低层走，存储设备变得更慢、更便宜和更大。</p>
 
 <p><img src="media/15128019428341/15128077150126.png" alt="存储器层次结构"/></p>
 
-<h2 id="toc_1">虚拟内存 Virtual Memory</h2>
+<h2 id="toc_3">虚拟内存 Virtual Memory</h2>
 
 <p>虚拟内存(<code>Virtual Memory</code>)是一个抽象概念。它为每个进程提供了假象，即每个进程都在独占地使用内存。每个进程看到的内存都是一致的，称为虚拟地址空间<code>Virtual Address Space</code>.</p>
 
@@ -240,36 +297,6 @@
  }    
    
 </code></pre>
-
-<h2 id="toc_2">x86-­64/Linux Stack 栈</h2>
-
-<p>在函数调用时，往往使用了栈(<code>Stack</code>)这一数据结构。当x86-64过程需要的存储空间超出寄存器能够存放的大小时(意味着其实很多函数根本不需要帧栈)，就会在栈上分配空间，称为帧栈(stack frame)。</p>
-
-<p>Current Stack Frame (“Top” to Bottom) contains:</p>
-
-<ul>
-<li>Argument build(参数构造区):
-<ul>
-<li>Parameters for function about to call</li>
-<li>可以通过寄存器最多传递6个整形参数，超出6个部分就要通过栈来传递</li>
-</ul></li>
-<li>Local variables(局部变量):
-<ul>
-<li>寄存器不足够存放所有的本地数据</li>
-<li>使用地址运算符&amp;，必须能够产生一个地址</li>
-</ul></li>
-<li>Saved register context(被保存的寄存器)
-<ul>
-<li>保存寄存器的值到栈中</li>
-</ul></li>
-<li>Old frame pointer (optional)</li>
-</ul>
-
-<p><img src="media/15139898460910/procedure.png" alt="procedure"/></p>
-
-<h2 id="toc_3">参考资料</h2>
-
-<p>Randal E B, David O H. 2015. Computer Systems: A programmer&#39;s Perspective, 3rd.</p>
 
                         
                       </div>
@@ -530,6 +557,12 @@ free(heap_array); ## deleting the statement...
 	      
 		      
 			      <li class="post">
+			        <a href="15312166852240.html">CSE 421/521 Operating Systems</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15272289883847.html">回溯法和深度优先遍历</a>
 			      </li>
 		     
@@ -549,12 +582,6 @@ free(heap_array); ## deleting the statement...
 		      
 			      <li class="post">
 			        <a href="15166008990128.html">网络编程</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="overhead.html">overhead</a>
 			      </li>
 		     
 		  

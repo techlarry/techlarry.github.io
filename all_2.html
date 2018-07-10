@@ -142,6 +142,314 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="procedure.html">
+                
+                  <h1>CSAPP - 过程</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p><strong>过程</strong>(procedure)是软件中一种很重要的抽象。它提供了一种封装代码的方式，用一组制定的参数和一个可选的返回值实现了某这功能。然后，可以在程序中不同的地方调用这个函数。不同编程语言中，过程的形式多样：函数(function)、方法(method)、子例程(subroutine)、处理函数(handler)等等。</p>
+
+<p>假设过程P调用过程Q，Q执行后返回到P，包含下面一个或多个机制：</p>
+
+<ul>
+<li>传递控制。在进入过程Q的时候，程序计数器必须被设置为Q的代码的起始地址，然后在返回时，要把程序计数器设置为P中调用Q后面那条指令的地址。</li>
+<li>传递数据。P必须能够向Q提供一个或多个参数，Q必须能够向P返回一个值。</li>
+<li>分配和释放内存。在开始时，Q可能需要为局部变量分配空间，而在返回前，又必须释放这些存储空间。</li>
+</ul>
+
+<h2 id="toc_0">1 运行时栈</h2>
+
+<p>在函数调用时，往往使用了栈(<code>Stack</code>)这一数据结构。当x86-64过程需要的存储空间超出寄存器能够存放的大小时(意味着其实很多函数根本不需要帧栈)，就会在栈上分配空间，称为<strong>帧栈</strong>(stack frame)。</p>
+
+<p>Current Stack Frame (“Top” to Bottom) contains:</p>
+
+<ul>
+<li>Argument build(参数构造区):
+<ul>
+<li>Parameters for function about to call</li>
+<li>可以通过寄存器最多传递6个整形参数，超出6个部分就要通过栈来传递</li>
+</ul></li>
+<li>Local variables(局部变量):
+<ul>
+<li>寄存器不足够存放所有的本地数据</li>
+<li>使用地址运算符&amp;，必须能够产生一个地址</li>
+</ul></li>
+<li>Saved register context(被保存的寄存器)
+<ul>
+<li>保存寄存器的值到栈中</li>
+</ul></li>
+<li>Old frame pointer (optional)</li>
+</ul>
+
+<p><img src="media/15312146721582/stack_frame.png" alt="stack_frame"/></p>
+
+<h2 id="toc_1">参考资料</h2>
+
+<p>Randal E B, David O H. 2015. Computer Systems: A programmer&#39;s Perspective, 3rd.</p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/1/10</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Computer%20System.html'>Computer System</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="Linking.html">
+                
+                  <h1>CSAPP - 链接</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>....待续<br/>
+....待续<br/>
+....待续<br/>
+....待续</p>
+
+<p>链接(Linking)是将各种代码和数据片段收集并组合成为一个单一文件的过程。链接可以在编译、加载、运行时执行。在现代系统中，链接是由连接器(Linker)自动执行的。</p>
+
+<h2 id="toc_0">编译器驱动程序</h2>
+
+<p>编译器驱动程序(<code>compiler driver</code>)，代表用户在需要时调用预处理器(cpp)、编译器(ccl)、汇编器(as)和链接器(ld)。典型的编译器驱动程序，包括GNU GCC, Clang。</p>
+
+<p>例如，一个简单打印hello的<code>hello.c</code>程序，经过下面四个阶段，生成可执行目标文件：</p>
+
+<pre><code class="language-c">//file: hello.c
+#include &lt;stdio.h&gt;
+
+int main()
+{
+    int i;
+    printf(&quot;Hello World&quot;);
+}
+</code></pre>
+
+<pre><code class="language-bash">linux &gt; gcc -o hello hello.c
+</code></pre>
+
+<p><img src="media/15151885614329/compiler_system.jpeg" alt="compiler_syste"/></p>
+
+<h2 id="toc_1">目标文件</h2>
+
+<p>目标文件有三种格式：可重定位目标文件(<code>.o</code>)，可执行目标文件(<code>.out</code>)，共享目标文件(<code>.so</code>)</p>
+
+<ul>
+<li>可重定位目标文件(.o文件)。包含二进制代码和数据，其形式可以在编译时与其他可重定位目标文件合并起来，创建一个可执行目标文件。</li>
+<li>可执行目标文件(a.out文件)。包含二进制代码和数据，其形式可以被直接复制到内存并执行。</li>
+<li>共享目标文件(.so文件)。在加载或者运行时被动态地加载进内存并链接</li>
+</ul>
+
+<p>各个系统的目标文件格式不同，Windows使用<strong>可移植可执行</strong>(Portable Executable, <code>PE</code>)格式。现代x86-64系统使用<strong>可执行可链接格式</strong>(Executable and Linkable Format, <code>ELF</code>)。</p>
+
+<h3 id="toc_2">可重定位目标文件</h3>
+
+<p>以可执行可链接(ELF)格式为例，一个典型的可重定位目标文件包括以下几个节：</p>
+
+<ul>
+<li>ELF头和节头部表</li>
+<li><code>.text</code> 已编译程序的机器代码</li>
+<li><code>.rodata</code> 只读数据</li>
+<li><code>.data</code>  已初始化的全局和静态C变量</li>
+<li><code>.bss</code>  未初始化的全局和静态C变量</li>
+<li><code>.symtab</code> 一个符号表</li>
+<li><code>.rel.text</code> 一个.text节中位置的列表</li>
+<li><code>.rel.data</code> 重定位信息</li>
+<li><code>.debug</code> 调试符号表</li>
+<li><code>.line</code>  原始程序行号和机器指令之间的映射</li>
+<li><code>.strtab</code>  字符串表</li>
+</ul>
+
+<p><img src="media/15151885614329/elf.png" alt="elf"/></p>
+
+<p>利用<code>READELF</code>程序可以显示程序<code>hello.c</code>生成的可执行可链接文件的信息：</p>
+
+<pre><code class="language-bash">gcc hello.c -c
+readelf -a hello.o
+</code></pre>
+
+<pre><code class="language-text">ELF Header:
+  Magic:   7f 45 4c 46 02 01 01 00 00 00 00 00 00 00 00 00
+  Class:                             ELF64
+  Data:                              2&#39;s complement, little endian
+  Version:                           1 (current)
+  OS/ABI:                            UNIX - System V
+  ABI Version:                       0
+  Type:                              REL (Relocatable file)
+  Machine:                           Advanced Micro Devices X86-64
+  Version:                           0x1
+  Entry point address:               0x0
+  Start of program headers:          0 (bytes into file)
+  Start of section headers:          304 (bytes into file)
+  Flags:                             0x0
+  Size of this header:               64 (bytes)
+  Size of program headers:           0 (bytes)
+  Number of program headers:         0
+  Size of section headers:           64 (bytes)
+  Number of section headers:         13
+  Section header string table index: 10
+
+Section Headers:
+  [Nr] Name              Type             Address           Offset
+       Size              EntSize          Flags  Link  Info  Align
+  [ 0]                   NULL             0000000000000000  00000000
+       0000000000000000  0000000000000000           0     0     0
+  [ 1] .text             PROGBITS         0000000000000000  00000040
+       0000000000000015  0000000000000000  AX       0     0     1
+  [ 2] .rela.text        RELA             0000000000000000  00000590
+       0000000000000030  0000000000000018          11     1     8
+  [ 3] .data             PROGBITS         0000000000000000  00000055
+       0000000000000000  0000000000000000  WA       0     0     1
+  [ 4] .bss              NOBITS           0000000000000000  00000055
+       0000000000000000  0000000000000000  WA       0     0     1
+  [ 5] .rodata           PROGBITS         0000000000000000  00000055
+       000000000000000c  0000000000000000   A       0     0     1
+  [ 6] .comment          PROGBITS         0000000000000000  00000061
+       000000000000002c  0000000000000001  MS       0     0     1
+  [ 7] .note.GNU-stack   PROGBITS         0000000000000000  0000008d
+       0000000000000000  0000000000000000           0     0     1
+  [ 8] .eh_frame         PROGBITS         0000000000000000  00000090
+       0000000000000038  0000000000000000   A       0     0     8
+  [ 9] .rela.eh_frame    RELA             0000000000000000  000005c0
+       0000000000000018  0000000000000018          11     8     8
+  [10] .shstrtab         STRTAB           0000000000000000  000000c8
+       0000000000000061  0000000000000000           0     0     1
+  [11] .symtab           SYMTAB           0000000000000000  00000470
+       0000000000000108  0000000000000018          12     9     8
+  [12] .strtab           STRTAB           0000000000000000  00000578
+       0000000000000015  0000000000000000           0     0     1
+Key to Flags:
+  W (write), A (alloc), X (execute), M (merge), S (strings), l (large)
+  I (info), L (link order), G (group), T (TLS), E (exclude), x (unknown)
+  O (extra OS processing required) o (OS specific), p (processor specific)
+
+There are no section groups in this file.
+
+There are no program headers in this file.
+
+Relocation section &#39;.rela.text&#39; at offset 0x590 contains 2 entries:
+  Offset          Info           Type           Sym. Value    Sym. Name + Addend
+000000000005  00050000000a R_X86_64_32       0000000000000000 .rodata + 0
+00000000000f  000a00000002 R_X86_64_PC32     0000000000000000 printf - 4
+
+Relocation section &#39;.rela.eh_frame&#39; at offset 0x5c0 contains 1 entries:
+  Offset          Info           Type           Sym. Value    Sym. Name + Addend
+000000000020  000200000002 R_X86_64_PC32     0000000000000000 .text + 0
+
+The decoding of unwind sections for machine type Advanced Micro Devices X86-64 is not currently supported.
+
+Symbol table &#39;.symtab&#39; contains 11 entries:
+   Num:    Value          Size Type    Bind   Vis      Ndx Name
+     0: 0000000000000000     0 NOTYPE  LOCAL  DEFAULT  UND
+     1: 0000000000000000     0 FILE    LOCAL  DEFAULT  ABS hello.c
+     2: 0000000000000000     0 SECTION LOCAL  DEFAULT    1
+     3: 0000000000000000     0 SECTION LOCAL  DEFAULT    3
+     4: 0000000000000000     0 SECTION LOCAL  DEFAULT    4
+     5: 0000000000000000     0 SECTION LOCAL  DEFAULT    5
+     6: 0000000000000000     0 SECTION LOCAL  DEFAULT    7
+     7: 0000000000000000     0 SECTION LOCAL  DEFAULT    8
+     8: 0000000000000000     0 SECTION LOCAL  DEFAULT    6
+     9: 0000000000000000    21 FUNC    GLOBAL DEFAULT    1 main
+    10: 0000000000000000     0 NOTYPE  GLOBAL DEFAULT  UND printf
+
+No version information found in this file.
+</code></pre>
+
+<h2 id="toc_3">静态链接</h2>
+
+<p>静态链接器有两个主要任务：</p>
+
+<ul>
+<li>符号解析(symbol resolution): 将每个符号 <u>引用</u> 正好和一个符号 <u>定义</u> 关联起来。</li>
+<li>重定位(relocation): 把每个符号定义与一个内存位置关联起来，并修改所有对这些符号的引用，使得它们指向这个内存位置。</li>
+</ul>
+
+<h3 id="toc_4">符号解析</h3>
+
+<p>符号解析是将每个符号引用和可重定位目标文件中的符号定义关联起来。链接器的输入是一组可重定位目标文件(模块)，有些是局部的( <u>局部符号</u> ，只对定义该符号的模块可见)，有些是全局的( _全局符号_，对其他模块可见)。</p>
+
+<ul>
+<li>局部符号：每个模块中每个局部符号有一个定义</li>
+<li><p>全局符号：可重定位目标文件的符号表里的全局符号是区分<strong>强</strong>和<strong>弱</strong>的，链接器根据以下规则来处理多重定义的符号名：</p>
+<ul>
+<li>规则1: 不允许有多个同名的强符号</li>
+<li>规则2: 如果有一个强符号和多个弱符号同名，那么选择强符号</li>
+<li>规则3：如果有多个弱符号同名，那么任选一个 </li>
+</ul></li>
+</ul>
+
+<h3 id="toc_5">重定位</h3>
+
+<h2 id="toc_6">加载可执行目标文件</h2>
+
+<p>当在shell中执行目标文件时，首先通过调用<strong>加载器</strong>(<code>loader</code>)的操作系统代码来运行它，加载器将可执行目标文件的代码和数据复制到主存，跳转到程序的第一条指令(入口点，<code>_start_</code>函数的地址)运行该程序。</p>
+
+<p>在Unix系统中，加载器是系统调用(system call)<code>execve()</code>的回调(call back)，其任务包括：</p>
+
+<ul>
+<li>确认(权限，内存要求等)</li>
+<li>复制程序到主存</li>
+<li>复制命令行参数到栈</li>
+<li>初始化寄存器(例如栈针)</li>
+<li>跳到入口点(<code>_start_</code>)</li>
+</ul>
+
+<h2 id="toc_7">处理目标文件的工具</h2>
+
+<ul>
+<li><code>UNIX</code>系统提供了一系列命令帮助理解和处理目标文件。这些工具包括：</li>
+<li><code>ar</code> ：创建静态库，插入、删除、列出和提取成员；</li>
+<li><code>STRINGS</code> ：列出目标文件中所有可以打印的字符串；</li>
+<li><code>STRIP</code> ：从目标文件中删除符号表信息；</li>
+<li><code>NM</code> ：列出目标文件符号表中定义的符号；</li>
+<li><code>SIZE</code> ：列出目标文件中节的名字和大小；</li>
+<li><code>READELF</code> ：显示一个目标文件的完整结构，包括ELF 头中编码的所有信息。</li>
+<li><code>OBJDUMP</code> ：显示目标文件的所有信息，最有用的功能是反汇编.text节中的二进制指令。</li>
+<li><code>LDD</code> ：列出可执行文件在运行时需要的共享库。</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/1/6</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Computer%20System.html'>Computer System</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="python_assembly_code.html">
                 
                   <h1>Python汇编代码</h1>
@@ -535,158 +843,6 @@ Disassembly of section .fini:
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15146536465849.html">
-                
-                  <h1>x86-64汇编</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h2 id="toc_0">汇编代码格式</h2>
-
-<p>现在主要存在<code>ATT</code>和<code>Intel</code>两种汇编代码格式。<code>ATT</code>格式是<code>GCC</code>, <code>OBJDUMP</code>常用工具的默认格式。其他的诸如Microsoft的工具和来自Intel的文档都是<code>Intel</code>格式的。本文使用<code>ATT</code>格式。</p>
-
-<p><code>ATT</code>汇编格式的注释格式有两种</p>
-
-<pre><code class="language-text"># this is a comment
-/* this is a comment */
-</code></pre>
-
-<h2 id="toc_1">寄存器</h2>
-
-<p><code>x86-64</code>体系结构广泛存在于个人电脑中。它拥有16个整数寄存器，分别存储64位的值。这些寄存器可以存储地址或整数数据，其分布如下：</p>
-
-<p><img src="media/15146536465849/sfd.png" alt="sfd"/></p>
-
-<p>根据惯例，寄存器%rbx, %rbp和%r12~%r15被划分为<strong>被调用者保存寄存器</strong>。所有其他的寄存器，除了栈指针%rsp都分类为<strong>调用者保存寄存器</strong>。在函数被调用时，不能改变这些<strong>被</strong>调用者寄存器；如果要改变的话，只能把<strong>被</strong>调用者寄存器的值压入栈中，在使用后，从栈中恢复<strong>被</strong>调用者寄存器。</p>
-
-<h3 id="toc_2">rip 寄存器与PC相对寻址</h3>
-
-<p>%rip 的名称来自于(instruction pointer register,指令指针寄存器)。%rip其实就是程序计数器(Program Counter, PC), 存放着下一条指令的地址。不可以直接修改%rip。</p>
-
-<p>-&gt; <code>instruction pointer = program counter = %rip</code></p>
-
-<p>%rip的其他很重要的一个用法就是RIP/PC相对寻址(RIP/PC relative addressing)。即<code>%rip + displacement</code>的用法。</p>
-
-<p>例如，</p>
-
-<pre><code class="language-assembly">mov    0x202a62(%rip),%rdi        # 6044d0 &lt;infile&gt;  rdi = infile
-</code></pre>
-
-<p>表示传输%rip+0x202a62的地址对应的内存上的内容到%rdi。</p>
-
-<p>下面说说它是怎么进行PC相对寻址的。源文件经过预处理器、编译器、汇编器处理，输出<strong>可重定位目标文件</strong>，再经过<strong>符号解析</strong>(Symbol resolution)把代码中的每个符号引用和一个符号定义关联起来之后，要完成<strong>重定位</strong>(Relocation)任务，最终输出<strong>可执行目标文件</strong>。在<strong>重定位</strong>阶段，ELF(可重定位目标文件在LINUX系统上的一种格式)文件中的<code>R_X86_64_PC32</code>重定位类型重定位了一个使用32位PC相对地址的引用。当CPU执行一条使用PC相对寻址的指令时，它就将在指令中编码的32位值加上PC的当前运行时值，得到<strong>有效地址</strong>。</p>
-
-<h2 id="toc_3">指令</h2>
-
-<p>指令主要有<code>mov</code>数据传送指令，<code>push</code>、<code>pop</code>压入和压出栈数据，<code>add</code>,<code>sub</code>等算数操作指令，<code>ret</code>, <code>call</code>等转移控制指令。</p>
-
-<h3 id="toc_4">ret, call指令</h3>
-
-<p>在x86-64上，ret指令，相当于从栈中弹出地址A，然后把PC设置为A。<br/>
-<code>pop %rip</code><br/>
-而call指令，刚好相反，把%rip 压入栈中，然后跳到函数对应的地址。</p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/12/31</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Computer%20System.html'>Computer System</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="tmux_tool_linux.html">
-                
-                  <h1>tmux</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p><code>tmux</code>有两个主要功能：</p>
-
-<ul>
-<li>Split窗口。可以在一个terminal下打开多个会话</li>
-<li>避免网络不稳定。由于网络不稳定导致的SSH断开，在重新连接后，可以直接回到原来的工作环境。</li>
-</ul>
-
-<p><strong>安装</strong>: 在<code>mac</code>上可以通过<code>Homebrew</code>安装。</p>
-
-<p><strong>运行</strong>:在终端下直接敲入<code>tmux</code>，就开启了一个<code>tmux</code>会话。</p>
-
-<h2 id="toc_0">常用按键</h2>
-
-<p>这里需要说明一点的是，<code>tmux</code>的任何指令，都包含一个前缀，也就是说，你按了前缀(一组按键， 默认是<code>Ctrl+b</code>)以后，系统才知道你接下来的指令是发送给<code>tmux</code>的。</p>
-
-<ul>
-<li><code>C-b ?</code> 显示快捷键帮助</li>
-<li><code>C-b C-o</code> 调换窗口位置，类似与vim 里的C-w</li>
-<li><code>C-b space</code> 采用下一个内置布局</li>
-<li><code>C-b !</code> 把当前窗口变为新窗口</li>
-<li><code>C-b “</code> 横向分隔窗口</li>
-<li><code>C-b %</code> 纵向分隔窗口</li>
-<li><code>C-b q</code> 显示分隔窗口的编号</li>
-<li><code>C-b o</code> 跳到下一个分隔窗口</li>
-<li><code>C-b 上下键</code> 上一个及下一个分隔窗口</li>
-<li><code>C-b C-方向键</code> 调整分隔窗口大小</li>
-<li><code>C-b c</code> 创建新窗口</li>
-<li><code>C-b 0~9</code> 选择几号窗口</li>
-<li><code>C-b c</code> 创建新窗口</li>
-<li><code>C-b n</code> 选择下一个窗口</li>
-<li><code>C-b l</code> 切换到最后使用的窗口</li>
-<li><code>C-b p</code> 选择前一个窗口</li>
-<li><code>C-b w</code> 以菜单方式显示及选择窗口</li>
-<li><code>C-b t</code> 显示时钟</li>
-<li><code>C-b ;</code> 切换到最后一个使用的面板</li>
-<li><code>C-b x</code> 关闭面板</li>
-<li><code>C-b &amp;</code> 关闭窗口</li>
-<li><code>C-b s</code> 以菜单方式显示和选择会话</li>
-<li><code>C-b d</code> 退出<code>tumx</code>，并保存当前会话，这时，<code>tmux</code>仍在后台运行，可以通过<code>tmux attach</code>进入 到指定的会话 </li>
-</ul>
-
-<h2 id="toc_1">配置</h2>
-
-<p>与<code>vim</code>等其他工具一样，一旦配置好了<code>tmux</code>，使用起来就将会非常顺手。<code>tmux</code>的默认配置文件是<code>~/.tmux.conf</code></p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/12/25</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Tools.html'>Tools</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -788,6 +944,12 @@ Disassembly of section .fini:
 	      
 		      
 			      <li class="post">
+			        <a href="15312166852240.html">CSE 421/521 Operating Systems</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15272289883847.html">回溯法和深度优先遍历</a>
 			      </li>
 		     
@@ -807,12 +969,6 @@ Disassembly of section .fini:
 		      
 			      <li class="post">
 			        <a href="15166008990128.html">网络编程</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="overhead.html">overhead</a>
 			      </li>
 		     
 		  

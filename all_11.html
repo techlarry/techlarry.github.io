@@ -142,6 +142,285 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="virtualenv.html">
+                
+                  <h1>Python `virtualenv` on mac</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h2 id="toc_0">Install</h2>
+
+<p>Install <code>virtualenv</code> using <code>conda</code> instead of <code>pip</code>, because it might raise error (see on <a href="virtualenv%20--no-site-packages%20venv">StackOverflow</a>)</p>
+
+<pre><code class="language-bash">conda install virtualenv
+</code></pre>
+
+<h2 id="toc_1">create your environment</h2>
+
+<p>Now you can create your python environment for your particular programs. For example, under the folder <code>your project</code>, you create an environment called <code>.venv</code> by:</p>
+
+<pre><code class="language-bash">virtualenv --no-site-packages .venv
+</code></pre>
+
+<p>The command <code>--no-site-packages</code> requires the environment should not access to global site-packages (as default now).</p>
+
+<p>Before running your program in your created environment, you need to activate it:</p>
+
+<pre><code class="language-python">source .venv/bin/activate
+</code></pre>
+
+<p>And remember to deactivate it whenever you are done.:</p>
+
+<pre><code class="language-text">deactivate
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/9/2</span>
+                    
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="support-vector-machine.html">
+                
+                  <h1>Machine Learning(7): Support Vector Machines</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h2 id="toc_0">Training Objective</h2>
+
+<p>The smaller the weight vector <code>w</code>, the larger the margin. So we want to minimize \(\lVert w\rVert\) to get a large margin.</p>
+
+<h3 id="toc_1">Hard Margin</h3>
+
+<p>If we also want to avoid any margin violation (<code>hard margin</code>), then we need the decision function to be greater than 1 for all positive trainig instances, and lower than  -1 for negative training instances. If we define \(t^{(i)} = -1\) for negative instances (if \(y^{(i)}&gt;0\)) and \(t^{(i)}=1\) for positive instances (if \(y^{(i)}=1\)), then we can express this constraint as \(t^{(i)}(w^T\cdot x^{(i)}+b) \le 1\) for all instances. </p>
+
+<ol>
+<li>
+<strong>Hard Margin linear SVM classifier objective</strong></li>
+</ol>
+
+<p>\[<br/>
+\min_{w,b} \frac{1}{2}w^T\cdot w \\<br/>
+\text{subject to } t^{(i)}(w^T\cdot x^{(i)}+b) \le 1  \quad for \quad i =1,2,...,m<br/>
+\]</p>
+
+<h3 id="toc_2">Soft Margin</h3>
+
+<p>To get the soft margin objective, we need to introduce a <code>slack variable</code> \(\zeta^(i)\le0\) for each instance: \(\zeta^{(i)}\) measures how much the \(i^{th}\) instance is allowed to violate the margin. We now have two conflicting objectives: making the slack variables as small as possible to reduce the margin violations, and makeing \(\frac{1}{2}w^T\cdot w \) as small as possible to increase the margin.</p>
+
+<p><strong>Soft Margin linear SVM classifier objective</strong></p>
+
+<p>\[<br/>
+\min_{w,b} \frac{1}{2}w^T\cdot w + C\sum^m_{i=1}\zeta^{(i)}\\<br/>
+\text{subject to } t^{(i)}(w^T\cdot x^{(i)}+b) \le 1 - \zeta^{(i)} \quad for \quad i =1,2,...,m<br/>
+\]</p>
+
+<h2 id="toc_3">Implementation</h2>
+
+<pre><code class="language-python">import numpy as np
+from sklearn import datasets
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.svm import LinearSVC
+from sklearn.svm import SVC
+import matplotlib.pyplot as plt
+</code></pre>
+
+<h2 id="toc_4">Soft Margin Classification</h2>
+
+<pre><code class="language-python">
+# load data sets
+iris = datasets.load_iris()
+x = iris[&#39;data&#39;][:,(2,3)] # petal length, petal width
+y = (iris[&#39;target&#39;] == 2).astype(np.float64) # Iris-Virginica
+</code></pre>
+
+<pre><code class="language-python">%matplotlib inline
+plt.scatter(x[:,0], x[:,1], c=y)
+</code></pre>
+
+<pre><code class="language-text">&lt;matplotlib.collections.PathCollection at 0x110ecf0f0&gt;
+</code></pre>
+
+<p><img src="media/15036619229303/output_4_1.png" alt="png"/></p>
+
+<pre><code class="language-python"># plot decision boundary
+def make_meshgrid(x, y, h=.02):
+    &quot;&quot;&quot;Create a mesh of points to plot in
+
+    Parameters
+    ----------
+    x: data to base x-axis meshgrid on
+    y: data to base y-axis meshgrid on
+    h: stepsize for meshgrid, optional
+
+    Returns
+    -------
+    xx, yy : ndarray
+    &quot;&quot;&quot;
+    x_min, x_max = x.min() - 1, x.max() + 1
+    y_min, y_max = y.min() - 1, y.max() + 1
+    xx, yy = np.meshgrid(np.arange(x_min, x_max, h),
+                         np.arange(y_min, y_max, h))
+    return xx, yy
+
+def plot_contours(model, xx, yy, **params):
+    &quot;&quot;&quot;Plot the decision boundaries for a classifier.
+
+    Parameters
+    ----------
+    ax: matplotlib axes object
+    clf: a classifier
+    xx: meshgrid ndarray
+    yy: meshgrid ndarray
+    params: dictionary of params to pass to contourf, optional
+    &quot;&quot;&quot;
+    Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
+    Z = Z.reshape(xx.shape)
+    out = plt.contourf(xx, yy, Z, **params)
+    return out
+</code></pre>
+
+<pre><code class="language-python"># svm
+svm_clf = Pipeline([
+    (&#39;scalar&#39;, StandardScaler()),
+    (&#39;linear_svc&#39;, LinearSVC(C=1, loss=&#39;hinge&#39;))])
+svm_clf.fit(x, y)
+</code></pre>
+
+<pre><code class="language-text">Pipeline(steps=[(&#39;scalar&#39;, StandardScaler(copy=True, with_mean=True, with_std=True)), (&#39;linear_svc&#39;, LinearSVC(C=1, class_weight=None, dual=True, fit_intercept=True,
+     intercept_scaling=1, loss=&#39;hinge&#39;, max_iter=1000, multi_class=&#39;ovr&#39;,
+     penalty=&#39;l2&#39;, random_state=None, tol=0.0001, verbose=0))])
+</code></pre>
+
+<pre><code class="language-python">plot_contours(svm_clf, xx, yy,
+              cmap=plt.cm.coolwarm, alpha=0.8)
+plt.hold
+plt.scatter(x[:,0], x[:,1], c=y)
+</code></pre>
+
+<pre><code class="language-text">&lt;matplotlib.collections.PathCollection at 0x111e5c128&gt;
+</code></pre>
+
+<p><img src="media/15036619229303/output_7_1.png" alt="png"/></p>
+
+<h2 id="toc_5">Nonelinear SVM Classification</h2>
+
+<p>One approach to handling nonlinear datasets is to add more features, such as polynomial features. In some cases result in a linearly separable dataset.</p>
+
+<pre><code class="language-python">from sklearn.preprocessing import PolynomialFeatures
+
+polynomial_svm_clf = Pipeline([
+    (&#39;poly_features&#39;, PolynomialFeatures(degree=3)),
+    (&#39;scaler&#39;, StandardScaler()),
+    (&#39;svm, clf&#39;, LinearSVC(C=10, loss=&#39;hinge&#39;))
+])
+
+polynomial_svm_clf.fit(x, y)
+</code></pre>
+
+<pre><code class="language-text">Pipeline(steps=[(&#39;poly_features&#39;, PolynomialFeatures(degree=3, include_bias=True, interaction_only=False)), (&#39;scaler&#39;, StandardScaler(copy=True, with_mean=True, with_std=True)), (&#39;svm, clf&#39;, LinearSVC(C=10, class_weight=None, dual=True, fit_intercept=True,
+     intercept_scaling=1, loss=&#39;hinge&#39;, max_iter=1000, multi_class=&#39;ovr&#39;,
+     penalty=&#39;l2&#39;, random_state=None, tol=0.0001, verbose=0))])
+</code></pre>
+
+<pre><code class="language-python">xx, yy = make_meshgrid(x[:,0], x[:,1])
+plot_contours(polynomial_svm_clf, xx, yy,
+              cmap=plt.cm.coolwarm, alpha=0.8)
+plt.hold
+plt.scatter(x[:,0], x[:,1], c=y)
+</code></pre>
+
+<pre><code class="language-text">&lt;matplotlib.collections.PathCollection at 0x112f0a470&gt;
+</code></pre>
+
+<p><img src="media/15036619229303/output_10_1.png" alt="png"/></p>
+
+<h2 id="toc_6">Gaussian RBF Kernal</h2>
+
+<p>Define the similarity function to be the Gaussian Radial Basis Function (RBF):</p>
+
+<p>\[\phi(x, \gamma) = exp(-\gamma \lVert x-l\rVert ^2)\]</p>
+
+<p>Let&#39;s try the Gaussian RBF kernel using the <code>SVC</code> class:</p>
+
+<pre><code class="language-python">rbf_kernel_svm_clf = Pipeline([
+    (&#39;svm_clf&#39;, SVC(kernel=&#39;rbf&#39;, gamma=0.1, C=0.1))
+])
+rbf_kernel_svm_clf.fit(x,y)
+</code></pre>
+
+<pre><code class="language-text">Pipeline(steps=[(&#39;svm_clf&#39;, SVC(C=0.1, cache_size=200, class_weight=None, coef0=0.0,
+  decision_function_shape=None, degree=3, gamma=0.1, kernel=&#39;rbf&#39;,
+  max_iter=-1, probability=False, random_state=None, shrinking=True,
+  tol=0.001, verbose=False))])
+</code></pre>
+
+<pre><code class="language-python">plot_contours(rbf_kernel_svm_clf, xx, yy,
+              cmap=plt.cm.coolwarm, alpha=0.8)
+plt.hold
+plt.scatter(x[:,0], x[:,1], c=y)
+</code></pre>
+
+<pre><code class="language-text">&lt;matplotlib.collections.PathCollection at 0x114174518&gt;
+</code></pre>
+
+<p><img src="media/15036619229303/output_13_1.png" alt="png"/></p>
+
+<p>Other kernals such as <code>sigmoid</code>, <code>precomputed</code> are also used. With so many kernels to choose from, as a rule of thumb, you should always try the linear kernel first, especailly if the training set is very large or if it has plenty of features. If the training set is not too large, you should try the Gaussian RBF kernel as well; it works well in most cases.</p>
+
+<h2 id="toc_7">Complexity</h2>
+
+<p>Time complexity of algorithms above:</p>
+
+<ul>
+<li><code>LinearSVC</code>: \(O(m\times n)\)</li>
+<li><code>SGDClassifier</code>: \(O(m\times n)\)</li>
+<li><code>SVC</code>: \(O(m^2\times n) \text{ to } O(m^3\times n)\)</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/9/2</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html'>机器学习</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="machine_learning_system_design.html">
                 
                   <h1>Machine Learning (6): Advice for applying machine learning and Machine Learning System Design</h1>
@@ -818,123 +1097,6 @@
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15041905263785.html">
-                
-                  <h1>cross-entropy</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>\[<br/>
-L_i = -\log\left(\frac{e^{f_{y_i}}}{ \sum_j e^{f_j} }\right) \hspace{0.5in} \text{or equivalently} \hspace{0.5in} L_i = -f_{y_i} + \log\sum_j e^{f_j}<br/>
-\]</p>
-
-<p>where we are using the notation \(f_j\) to mean the j-th element of the vector of class scores \(f\). As before, the full loss for the dataset is the mean of \(L_i\) over all training examples together with a regularization term \(R(W)\). The function \(f_j(z) = \frac{e^{z_j}}{\sum_k e^{z_k}} \) is called the <strong>softmax function</strong>: It takes a vector of arbitrary real-valued scores (in \(z\)) and squashes it to a vector of values between zero and one that sum to one. The full cross-entropy loss that involves the softmax function might look scary if you&#39;re seeing it for the first time but it is relatively easy to motivate.</p>
-
-<p><strong>Information theory view</strong>. The <em>cross-entropy</em> between a &quot;true&quot; distribution \(p\) and an estimated distribution \(q\) is defined as:</p>
-
-<p>\[<br/>
-H(p,q) = - \sum_x p(x) \log q(x)<br/>
-\]</p>
-
-<p>The Softmax classifier is hence minimizing the cross-entropy between the estimated class probabilities ( \(q = e^{f_{y_i}}  / \sum_j e^{f_j} \) as seen above) and the &quot;true&quot; distribution, which in this interpretation is the distribution where all probability mass is on the correct class (i.e. \(p = [0, \ldots 1, \ldots, 0]\) contains a single 1 at the \(y_i\) -th position.). Moreover, since the cross-entropy can be written in terms of entropy and the Kullback-Leibler divergence as \(H(p,q) = H(p) + D_{KL}(p\|\|q)\), and the entropy of the delta function \(p\) is zero, this is also equivalent to minimizing the KL divergence between the two distributions (a measure of distance). In other words, the cross-entropy objective <em>wants</em> the predicted distribution to have all of its mass on the correct answer.</p>
-
-<p><strong>Probabilistic interpretation</strong>. Looking at the expression, we see that</p>
-
-<p>\[<br/>
-P(y_i \mid x_i; W) = \frac{e^{f_{y_i}}}{\sum_j e^{f_j} }<br/>
-\]</p>
-
-<p>can be interpreted as the (normalized) probability assigned to the correct label \(y_i\) given the image \(x_i\) and parameterized by \(W\). To see this, remember that the Softmax classifier interprets the scores inside the output vector \(f\) as the unnormalized log probabilities. Exponentiating these quantities therefore gives the (unnormalized) probabilities, and the division performs the normalization so that the probabilities sum to one. In the probabilistic interpretation, we are therefore minimizing the negative log likelihood of the correct class, which can be interpreted as performing <em>Maximum Likelihood Estimation</em> (MLE). A nice feature of this view is that we can now also interpret the regularization term \(R(W)\) in the full loss function as coming from a Gaussian prior over the weight matrix \(W\), where instead of MLE we are performing the <em>Maximum a posteriori</em> (MAP) estimation. We mention these interpretations to help your intuitions, but the full details of this derivation are beyond the scope of this class.</p>
-
-<p><strong>Practical issues: Numeric stability</strong>. When you&#39;re writing code for computing the Softmax function in practice, the intermediate terms \(e^{f_{y_i}}\) and \(\sum_j e^{f_j}\) may be very large due to the exponentials. Dividing large numbers can be numerically unstable, so it is important to use a normalization trick. Notice that if we multiply the top and bottom of the fraction by a constant \(C\) and push it into the sum, we get the following (mathematically equivalent) expression:</p>
-
-<p>\[<br/>
-\frac{e^{f_{y_i}}}{\sum_j e^{f_j}}<br/>
-= \frac{Ce^{f_{y_i}}}{C\sum_j e^{f_j}}<br/>
-= \frac{e^{f_{y_i} + \log C}}{\sum_j e^{f_j + \log C}}<br/>
-\]</p>
-
-<p>We are free to choose the value of \(C\). This will not change any of the results, but we can use this value to improve the numerical stability of the computation. A common choice for \(C\) is to set \(\log C = -\max_j f_j \). This simply states that we should shift the values inside the vector \(f\) so that the highest value is zero. In code:</p>
-
-<pre><code class="language-python">f = np.array([123, 456, 789]) # example with 3 classes and each having large scores
-p = np.exp(f) / np.sum(np.exp(f)) # Bad: Numeric problem, potential blowup
-
-# instead: first shift the values of f so that the highest number is 0:
-f -= np.max(f) # f becomes [-666, -333, 0]
-p = np.exp(f) / np.sum(np.exp(f)) # safe to do, gives the correct answer
-
-</code></pre>
-
-<p><strong>Possibly confusing naming conventions</strong>. To be precise, the <em>SVM classifier</em> uses the <em>hinge loss</em>, or also sometimes called the <em>max-margin loss</em>. The <em>Softmax classifier</em> uses the <em>cross-entropy loss</em>. The Softmax classifier gets its name from the <em>softmax function</em>, which is used to squash the raw class scores into normalized positive values that sum to one, so that the cross-entropy loss can be applied. In particular, note that technically it doesn&#39;t make sense to talk about the &quot;softmax loss&quot;, since softmax is just the squashing function, but it is a relatively commonly used shorthand.</p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/8/31</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Deep%20Learning.html'>Deep Learning</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="cross-validation.html">
-                
-                  <h1>Cross-Validation</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p><code>cross-validation</code> splits the training set into complementary subsets, and each model is trained against a different combination of these subsets and validates against the remaining parts. Once the model type and hyperparameters on the full training set, and the generalized error is measured on the test set.</p>
-
-<p><img src="media/15038841395536/15042349862270.jpg" alt="demo of cross-validation"/></p>
-
-<p>A great convenient is to use Scikit-Learn&#39;s <code>cross-validation</code> feature. The following code performs <code>K-fold cross-validation</code>: it randomly splits the training set into 10 distinct subsets called <code>folds</code>, then it trains and evaluates the Decision Tree model 10 times, picking a different fold for evaluation every time and training on the other 9 folds.</p>
-
-<pre><code class="language-python">from sklearn.model_selection import cross_val_score
-scores = cross_val_score(tree_reg, housing_prepared, housing_labels,
-                             scoring=&quot;neg_mean_squared_error&quot;, cv=10)
-    rmse_scores = np.sqrt(-scores)
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/8/28</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html'>机器学习</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1036,6 +1198,12 @@ scores = cross_val_score(tree_reg, housing_prepared, housing_labels,
 	      
 		      
 			      <li class="post">
+			        <a href="15312166852240.html">CSE 421/521 Operating Systems</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15272289883847.html">回溯法和深度优先遍历</a>
 			      </li>
 		     
@@ -1055,12 +1223,6 @@ scores = cross_val_score(tree_reg, housing_prepared, housing_labels,
 		      
 			      <li class="post">
 			        <a href="15166008990128.html">网络编程</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="overhead.html">overhead</a>
 			      </li>
 		     
 		  

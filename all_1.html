@@ -142,6 +142,70 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="overhead.html">
+                
+                  <h1>overhead</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>。。。。。。待续<br/>
+。。。。。。待续<br/>
+。。。。。。待续<br/>
+。。。。。。待续<br/>
+。。。。。。待续<br/>
+。。。。。。待续<br/>
+。。。。。。待续<br/>
+。。。。。。待续<br/>
+。。。。。。待续<br/>
+。。。。。。待续</p>
+
+<p>overhead 到底是什么意思呢？<br/>
+？？？？？？/</p>
+
+<p>视风格可以翻译成「额外开销」、「额外消耗」、「虚耗」。</p>
+
+<p>It&#39;s the resources required to set up an operation. It might seem unrelated, but necessary.</p>
+
+<p>It&#39;s like when you need to go somewhere, you might need a car. But, it would be a lot of overhead to get a car to drive down the street, so you might want to walk. However, the overhead would be worth it if you were going across the country.</p>
+
+<p>In computer science, sometimes we use cars to go down the street because we don&#39;t have a better way, or it&#39;s not worth our time to &quot;learn how to walk&quot;.</p>
+
+<p>The meaning of the word can differ a lot with context. In general, it&#39;s resources (most often memory and CPU time) that are used, which do not contribute directly to the intended result, but are required by the technology or method that is being used. Examples:</p>
+
+<p>Protocol overhead: Ethernet frames, IP packets and TCP segments all have headers, TCP connections require handshake packets. Thus, you cannot use the entire bandwidth the hardware is capable of for your actual data. You can reduce the overhead by using larger packet sizes and UDP has a smaller header and no handshake.<br/>
+Data structure memory overhead: A linked list requires at least one pointer for each element it contains. If the elements are the same size as a pointer, this means a 50% memory overhead, whereas an array can potentially have 0% overhead.<br/>
+Method call overhead: A well-designed program is broken down into lots of short methods. But each method call requires setting up a stack frame, copying parameters and a return address. This represents CPU overhead compared to a program that does everything in a single monolithic function. Of course, the added maintainability makes it very much worth it, but in some cases, excessive method calls can have a significant performance impact.</p>
+
+<ul>
+<li><a href="https://stackoverflow.com/questions/2860234/what-is-overhead">https://stackoverflow.com/questions/2860234/what-is-overhead</a></li>
+<li><a href="https://www.zhihu.com/question/20596199?sort=created">https://www.zhihu.com/question/20596199?sort=created</a></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/1/21</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Computer%20System.html'>Computer System</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="memory_alignment.html">
                 
                   <h1>内存对齐</h1>
@@ -381,9 +445,9 @@ E:96, 96
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="virtual_memory_and_dynamic_allocate.html">
+                <a class="clearlink" href="virtual_memory_and_dynamic_memory_allocate.html">
                 
-                  <h1>虚拟内存和动态内存分配</h1>
+                  <h1>CSAPP - 虚拟内存</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
@@ -495,17 +559,24 @@ E:96, 96
 <p>内存管理单元MMU在试图翻译某个虚拟地址A时，触发了一个缺页异常，引起缺页异常处理程序：</p>
 
 <ul>
-<li>虚拟地址A是合法的吗？-&gt; 段错误</li>
-<li>试图进行的内存访问是合法的吗？ -&gt; 保护异常</li>
+<li>虚拟地址A是合法的吗？-&gt; 段错误(segment fault)</li>
+<li>试图进行的内存访问是合法的吗？ -&gt; 保护异常(也引发段错误)</li>
 </ul>
 
 <p><img src="media/15164033620970/linux_page_fault.png" alt="linux_page_fault"/></p>
 
 <h2 id="toc_8">4 动态内存分配</h2>
 
-<p>程序使用动态内存分配的最重要的原因是经常直到程序实际运行时，才知道某些数据结构的大小。</p>
+<p>程序使用动态内存分配的最重要的原因是经常直到程序实际运行时，才知道某些数据结构的大小。一般使用动态内存分配器(dynamic memeory allocator)来分配动态内存。</p>
 
-<h3 id="toc_9">4.2 分配器的要求和目标</h3>
+<p>分配器根据哪个实体来负责释放已分配的块，分为两种：</p>
+
+<ul>
+<li>显示分配器(explicit allocator)：要求程序显示地释放任何已分配的块。例如C中的malloc/free，C++中的new/delete。</li>
+<li>隐式分配器(implicit allocator): 除此之外，自动释放未使用的已分配块(垃圾收集，garbage collection)。</li>
+</ul>
+
+<h3 id="toc_9">4.2 显式分配器的要求和目标</h3>
 
 <h4 id="toc_10">4.2.1 分配器的要求</h4>
 
@@ -562,7 +633,7 @@ E:96, 96
 
 <h2 id="toc_16">5 C程序中常见的与内存有关的错误</h2>
 
-<h4 id="toc_17">间接引用坏指针</h4>
+<h4 id="toc_17">5.1 间接引用坏指针</h4>
 
 <p>这是非常常见的例子，没有引用对应的地址，少了 &amp;</p>
 
@@ -570,7 +641,7 @@ E:96, 96
 scanf(&quot;%d&quot;, val); // 正确应该是scanf(&quot;%d, &amp;val);
 </code></pre>
 
-<h4 id="toc_18">读未初始化的内存</h4>
+<h4 id="toc_18">5.2 读未初始化的内存</h4>
 
 <p><strong>堆内存是没有被初始化为0的</strong>：</p>
 
@@ -588,7 +659,7 @@ int *matvec(int **A, int *x) {
 
 <p>正确的方法是显式地将y[i]设置为0，或者使用<code>calloc</code>。</p>
 
-<h4 id="toc_19">允许栈缓冲区溢出</h4>
+<h4 id="toc_19">5.3 允许栈缓冲区溢出</h4>
 
 <p>没有检查字符串的长度（经典的缓冲区溢出攻击也是利用相同的机制）</p>
 
@@ -597,7 +668,7 @@ int i;
 gets(s); /* stack buffer overflow, reads &quot;123456789&quot; from stdin */
 </code></pre>
 
-<h4 id="toc_20">引用不存在的变量</h4>
+<h4 id="toc_20">5.4 引用不存在的变量</h4>
 
 <p>尽管指针仍然指向一个合法的内存地址，但是已经不再指向一个合法的变量了。以后在程序中调用其他函数时，内存将重用它们的栈针。</p>
 
@@ -608,7 +679,7 @@ gets(s); /* stack buffer overflow, reads &quot;123456789&quot; from stdin */
 }
 </code></pre>
 
-<h4 id="toc_21">多次释放</h4>
+<h4 id="toc_21">5.5 多次释放</h4>
 
 <p>这个不用多说，不能重复搞两次</p>
 
@@ -620,7 +691,7 @@ y = malloc(M * sizeof(int));
 free(x);
 </code></pre>
 
-<h4 id="toc_22">引用已经被释放的堆块中的数据</h4>
+<h4 id="toc_22">5.6 引用已经被释放的堆块中的数据</h4>
 
 <p>同样是很明显的错误，不要犯</p>
 
@@ -635,7 +706,7 @@ for (i = 0; i &lt; M; i++)
 
 <h4 id="toc_23">内存泄漏</h4>
 
-<p>忘记释放已分配块：</p>
+<p>5.7忘记释放已分配块：</p>
 
 <pre><code class="language-c">foo() {
     int *x = malloc(N * sizeof(int));
@@ -759,7 +830,7 @@ foo() {
 			<div class="article">
                 <a class="clearlink" href="Signal.html">
                 
-                  <h1>信号</h1>
+                  <h1>CSAPP - 信号</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
@@ -1132,243 +1203,6 @@ int main(int argc, char **argv)
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="Linking.html">
-                
-                  <h1>链接</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>....待续<br/>
-....待续<br/>
-....待续<br/>
-....待续</p>
-
-<p>链接(Linking)是将各种代码和数据片段收集并组合成为一个单一文件的过程。链接可以在编译、加载、运行时执行。在现代系统中，链接是由连接器(Linker)自动执行的。</p>
-
-<h2 id="toc_0">编译器驱动程序</h2>
-
-<p>编译器驱动程序(<code>compiler driver</code>)，代表用户在需要时调用预处理器(cpp)、编译器(ccl)、汇编器(as)和链接器(ld)。典型的编译器驱动程序，包括GNU GCC, Clang。</p>
-
-<p>例如，一个简单打印hello的<code>hello.c</code>程序，经过下面四个阶段，生成可执行目标文件：</p>
-
-<pre><code class="language-c">//file: hello.c
-#include &lt;stdio.h&gt;
-
-int main()
-{
-    int i;
-    printf(&quot;Hello World&quot;);
-}
-</code></pre>
-
-<pre><code class="language-bash">linux &gt; gcc -o hello hello.c
-</code></pre>
-
-<p><img src="media/15151885614329/compiler_system.jpeg" alt="compiler_syste"/></p>
-
-<h2 id="toc_1">目标文件</h2>
-
-<p>目标文件有三种格式：可重定位目标文件(<code>.o</code>)，可执行目标文件(<code>.out</code>)，共享目标文件(<code>.so</code>)</p>
-
-<ul>
-<li>可重定位目标文件(.o文件)。包含二进制代码和数据，其形式可以在编译时与其他可重定位目标文件合并起来，创建一个可执行目标文件。</li>
-<li>可执行目标文件(a.out文件)。包含二进制代码和数据，其形式可以被直接复制到内存并执行。</li>
-<li>共享目标文件(.so文件)。在加载或者运行时被动态地加载进内存并链接</li>
-</ul>
-
-<p>各个系统的目标文件格式不同，Windows使用<strong>可移植可执行</strong>(Portable Executable, <code>PE</code>)格式。现代x86-64系统使用<strong>可执行可链接格式</strong>(Executable and Linkable Format, <code>ELF</code>)。</p>
-
-<h3 id="toc_2">可重定位目标文件</h3>
-
-<p>以可执行可链接(ELF)格式为例，一个典型的可重定位目标文件包括以下几个节：</p>
-
-<ul>
-<li>ELF头和节头部表</li>
-<li><code>.text</code> 已编译程序的机器代码</li>
-<li><code>.rodata</code> 只读数据</li>
-<li><code>.data</code>  已初始化的全局和静态C变量</li>
-<li><code>.bss</code>  未初始化的全局和静态C变量</li>
-<li><code>.symtab</code> 一个符号表</li>
-<li><code>.rel.text</code> 一个.text节中位置的列表</li>
-<li><code>.rel.data</code> 重定位信息</li>
-<li><code>.debug</code> 调试符号表</li>
-<li><code>.line</code>  原始程序行号和机器指令之间的映射</li>
-<li><code>.strtab</code>  字符串表</li>
-</ul>
-
-<p><img src="media/15151885614329/elf.png" alt="elf"/></p>
-
-<p>利用<code>READELF</code>程序可以显示程序<code>hello.c</code>生成的可执行可链接文件的信息：</p>
-
-<pre><code class="language-bash">gcc hello.c -c
-readelf -a hello.o
-</code></pre>
-
-<pre><code class="language-text">ELF Header:
-  Magic:   7f 45 4c 46 02 01 01 00 00 00 00 00 00 00 00 00
-  Class:                             ELF64
-  Data:                              2&#39;s complement, little endian
-  Version:                           1 (current)
-  OS/ABI:                            UNIX - System V
-  ABI Version:                       0
-  Type:                              REL (Relocatable file)
-  Machine:                           Advanced Micro Devices X86-64
-  Version:                           0x1
-  Entry point address:               0x0
-  Start of program headers:          0 (bytes into file)
-  Start of section headers:          304 (bytes into file)
-  Flags:                             0x0
-  Size of this header:               64 (bytes)
-  Size of program headers:           0 (bytes)
-  Number of program headers:         0
-  Size of section headers:           64 (bytes)
-  Number of section headers:         13
-  Section header string table index: 10
-
-Section Headers:
-  [Nr] Name              Type             Address           Offset
-       Size              EntSize          Flags  Link  Info  Align
-  [ 0]                   NULL             0000000000000000  00000000
-       0000000000000000  0000000000000000           0     0     0
-  [ 1] .text             PROGBITS         0000000000000000  00000040
-       0000000000000015  0000000000000000  AX       0     0     1
-  [ 2] .rela.text        RELA             0000000000000000  00000590
-       0000000000000030  0000000000000018          11     1     8
-  [ 3] .data             PROGBITS         0000000000000000  00000055
-       0000000000000000  0000000000000000  WA       0     0     1
-  [ 4] .bss              NOBITS           0000000000000000  00000055
-       0000000000000000  0000000000000000  WA       0     0     1
-  [ 5] .rodata           PROGBITS         0000000000000000  00000055
-       000000000000000c  0000000000000000   A       0     0     1
-  [ 6] .comment          PROGBITS         0000000000000000  00000061
-       000000000000002c  0000000000000001  MS       0     0     1
-  [ 7] .note.GNU-stack   PROGBITS         0000000000000000  0000008d
-       0000000000000000  0000000000000000           0     0     1
-  [ 8] .eh_frame         PROGBITS         0000000000000000  00000090
-       0000000000000038  0000000000000000   A       0     0     8
-  [ 9] .rela.eh_frame    RELA             0000000000000000  000005c0
-       0000000000000018  0000000000000018          11     8     8
-  [10] .shstrtab         STRTAB           0000000000000000  000000c8
-       0000000000000061  0000000000000000           0     0     1
-  [11] .symtab           SYMTAB           0000000000000000  00000470
-       0000000000000108  0000000000000018          12     9     8
-  [12] .strtab           STRTAB           0000000000000000  00000578
-       0000000000000015  0000000000000000           0     0     1
-Key to Flags:
-  W (write), A (alloc), X (execute), M (merge), S (strings), l (large)
-  I (info), L (link order), G (group), T (TLS), E (exclude), x (unknown)
-  O (extra OS processing required) o (OS specific), p (processor specific)
-
-There are no section groups in this file.
-
-There are no program headers in this file.
-
-Relocation section &#39;.rela.text&#39; at offset 0x590 contains 2 entries:
-  Offset          Info           Type           Sym. Value    Sym. Name + Addend
-000000000005  00050000000a R_X86_64_32       0000000000000000 .rodata + 0
-00000000000f  000a00000002 R_X86_64_PC32     0000000000000000 printf - 4
-
-Relocation section &#39;.rela.eh_frame&#39; at offset 0x5c0 contains 1 entries:
-  Offset          Info           Type           Sym. Value    Sym. Name + Addend
-000000000020  000200000002 R_X86_64_PC32     0000000000000000 .text + 0
-
-The decoding of unwind sections for machine type Advanced Micro Devices X86-64 is not currently supported.
-
-Symbol table &#39;.symtab&#39; contains 11 entries:
-   Num:    Value          Size Type    Bind   Vis      Ndx Name
-     0: 0000000000000000     0 NOTYPE  LOCAL  DEFAULT  UND
-     1: 0000000000000000     0 FILE    LOCAL  DEFAULT  ABS hello.c
-     2: 0000000000000000     0 SECTION LOCAL  DEFAULT    1
-     3: 0000000000000000     0 SECTION LOCAL  DEFAULT    3
-     4: 0000000000000000     0 SECTION LOCAL  DEFAULT    4
-     5: 0000000000000000     0 SECTION LOCAL  DEFAULT    5
-     6: 0000000000000000     0 SECTION LOCAL  DEFAULT    7
-     7: 0000000000000000     0 SECTION LOCAL  DEFAULT    8
-     8: 0000000000000000     0 SECTION LOCAL  DEFAULT    6
-     9: 0000000000000000    21 FUNC    GLOBAL DEFAULT    1 main
-    10: 0000000000000000     0 NOTYPE  GLOBAL DEFAULT  UND printf
-
-No version information found in this file.
-</code></pre>
-
-<h2 id="toc_3">静态链接</h2>
-
-<p>静态链接器有两个主要任务：</p>
-
-<ul>
-<li>符号解析(symbol resolution): 将每个符号 <u>引用</u> 正好和一个符号 <u>定义</u> 关联起来。</li>
-<li>重定位(relocation): 把每个符号定义与一个内存位置关联起来，并修改所有对这些符号的引用，使得它们指向这个内存位置。</li>
-</ul>
-
-<h3 id="toc_4">符号解析</h3>
-
-<p>符号解析是将每个符号引用和可重定位目标文件中的符号定义关联起来。链接器的输入是一组可重定位目标文件(模块)，有些是局部的( <u>局部符号</u> ，只对定义该符号的模块可见)，有些是全局的( _全局符号_，对其他模块可见)。</p>
-
-<ul>
-<li>局部符号：每个模块中每个局部符号有一个定义</li>
-<li><p>全局符号：可重定位目标文件的符号表里的全局符号是区分<strong>强</strong>和<strong>弱</strong>的，链接器根据以下规则来处理多重定义的符号名：</p>
-<ul>
-<li>规则1: 不允许有多个同名的强符号</li>
-<li>规则2: 如果有一个强符号和多个弱符号同名，那么选择强符号</li>
-<li>规则3：如果有多个弱符号同名，那么任选一个 </li>
-</ul></li>
-</ul>
-
-<h3 id="toc_5">重定位</h3>
-
-<h2 id="toc_6">加载可执行目标文件</h2>
-
-<p>当在shell中执行目标文件时，首先通过调用<strong>加载器</strong>(<code>loader</code>)的操作系统代码来运行它，加载器将可执行目标文件的代码和数据复制到主存，跳转到程序的第一条指令(入口点，<code>_start_</code>函数的地址)运行该程序。</p>
-
-<p>在Unix系统中，加载器是系统调用(system call)<code>execve()</code>的回调(call back)，其任务包括：</p>
-
-<ul>
-<li>确认(权限，内存要求等)</li>
-<li>复制程序到主存</li>
-<li>复制命令行参数到栈</li>
-<li>初始化寄存器(例如栈针)</li>
-<li>跳到入口点(<code>_start_</code>)</li>
-</ul>
-
-<h2 id="toc_7">处理目标文件的工具</h2>
-
-<ul>
-<li><code>UNIX</code>系统提供了一系列命令帮助理解和处理目标文件。这些工具包括：</li>
-<li><code>ar</code> ：创建静态库，插入、删除、列出和提取成员；</li>
-<li><code>STRINGS</code> ：列出目标文件中所有可以打印的字符串；</li>
-<li><code>STRIP</code> ：从目标文件中删除符号表信息；</li>
-<li><code>NM</code> ：列出目标文件符号表中定义的符号；</li>
-<li><code>SIZE</code> ：列出目标文件中节的名字和大小；</li>
-<li><code>READELF</code> ：显示一个目标文件的完整结构，包括ELF 头中编码的所有信息。</li>
-<li><code>OBJDUMP</code> ：显示目标文件的所有信息，最有用的功能是反汇编.text节中的二进制指令。</li>
-<li><code>LDD</code> ：列出可执行文件在运行时需要的共享库。</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/1/6</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Computer%20System.html'>Computer System</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1470,6 +1304,12 @@ No version information found in this file.
 	      
 		      
 			      <li class="post">
+			        <a href="15312166852240.html">CSE 421/521 Operating Systems</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15272289883847.html">回溯法和深度优先遍历</a>
 			      </li>
 		     
@@ -1489,12 +1329,6 @@ No version information found in this file.
 		      
 			      <li class="post">
 			        <a href="15166008990128.html">网络编程</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="overhead.html">overhead</a>
 			      </li>
 		     
 		  
