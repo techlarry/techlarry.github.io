@@ -201,7 +201,92 @@
 
 <p>指令主要有<code>mov</code>数据传送指令，<code>push</code>、<code>pop</code>压入和压出栈数据，<code>add</code>,<code>sub</code>等算数操作指令，<code>ret</code>, <code>call</code>等转移控制指令。</p>
 
-<h3 id="toc_4">ret, call指令</h3>
+<h3 id="toc_4">数据传送指令</h3>
+
+<table>
+<thead>
+<tr>
+<th>指令</th>
+<th>效果</th>
+<th>描述</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>MOV S, D</td>
+<td>将S中数据传送到D中</td>
+<td>传送</td>
+</tr>
+<tr>
+<td>movb</td>
+<td>传送字节</td>
+<td></td>
+</tr>
+<tr>
+<td>movw</td>
+<td>传送字(双字节)</td>
+<td></td>
+</tr>
+<tr>
+<td>movl</td>
+<td>传送双字(四字节)</td>
+<td></td>
+</tr>
+<tr>
+<td>MOVS S, D</td>
+<td>将S中数据传送到D，过程中做了符号扩展处理 传送需要符号扩展的字节</td>
+<td></td>
+</tr>
+<tr>
+<td>movsbw</td>
+<td>将做了符号扩展的字节传送到字</td>
+<td></td>
+</tr>
+<tr>
+<td>movsbl</td>
+<td>将做了符号扩展的字节传送到双字</td>
+<td></td>
+</tr>
+<tr>
+<td>movswl</td>
+<td>将做了符号扩展的字传送到双字</td>
+<td></td>
+</tr>
+<tr>
+<td>MOVZ S, D</td>
+<td>将S中数据传送到D，过程中做了零扩展处理</td>
+<td>传送需要零扩展的字节</td>
+</tr>
+<tr>
+<td>movzbw</td>
+<td>将做了零扩展的字节传送到</td>
+<td></td>
+</tr>
+<tr>
+<td>movzbl</td>
+<td>将做了零扩展的字节传送到双字</td>
+<td></td>
+</tr>
+<tr>
+<td>movzwl</td>
+<td>将做了零扩展的字传送到双字</td>
+<td></td>
+</tr>
+<tr>
+<td>pushl S</td>
+<td>R[%esp] &lt;- R[%esp] - 4; M[R[%esp]] &lt;- S;</td>
+<td>将双字压栈</td>
+</tr>
+<tr>
+<td>popl D</td>
+<td>D &lt;- M[R[%esp]]; R[%esp] &lt;- R[%esp] + 4;</td>
+<td>将双字出栈</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="toc_5">ret, call指令</h3>
 
 <p>在x86-64上，ret指令，相当于从栈中弹出地址A，然后把PC设置为A。<br/>
 <code>pop %rip</code><br/>
