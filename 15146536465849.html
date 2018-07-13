@@ -178,7 +178,12 @@
 
 <p><img src="media/15146536465849/sfd.png" alt="sfd"/></p>
 
-<p>根据惯例，寄存器%rbx, %rbp和%r12~%r15被划分为<strong>被调用者保存寄存器</strong>。所有其他的寄存器，除了栈指针%rsp都分类为<strong>调用者保存寄存器</strong>。在函数被调用时，不能改变这些<strong>被</strong>调用者寄存器；如果要改变的话，只能把<strong>被</strong>调用者寄存器的值压入栈中，在使用后，从栈中恢复<strong>被</strong>调用者寄存器。</p>
+<p>根据惯例，寄存器%rbx, %rbp和%r12~%r15被划分为<strong>被调用者保存寄存器</strong>。所有其他的寄存器，除了栈指针%rsp都分类为<strong>调用者保存寄存器</strong>。</p>
+
+<ul>
+<li>在函数被调用时，不能改变<strong>被</strong>调用者寄存器；</li>
+<li>如果要改变的话，只能把<strong>被</strong>调用者寄存器的值压入栈中，在使用后，从栈中恢复<strong>被</strong>调用者寄存器。</li>
+</ul>
 
 <h3 id="toc_2">rip 寄存器与PC相对寻址</h3>
 
@@ -195,7 +200,16 @@
 
 <p>表示传输%rip+0x202a62的地址对应的内存上的内容到%rdi。</p>
 
-<p>下面说说它是怎么进行PC相对寻址的。源文件经过预处理器、编译器、汇编器处理，输出<strong>可重定位目标文件</strong>，再经过<strong>符号解析</strong>(Symbol resolution)把代码中的每个符号引用和一个符号定义关联起来之后，要完成<strong>重定位</strong>(Relocation)任务，最终输出<strong>可执行目标文件</strong>。在<strong>重定位</strong>阶段，ELF(可重定位目标文件在LINUX系统上的一种格式)文件中的<code>R_X86_64_PC32</code>重定位类型重定位了一个使用32位PC相对地址的引用。当CPU执行一条使用PC相对寻址的指令时，它就将在指令中编码的32位值加上PC的当前运行时值，得到<strong>有效地址</strong>。</p>
+<p>下面说说它是怎么进行PC相对寻址的。</p>
+
+<ul>
+<li>源文件经过预处理器、编译器、汇编器处理，输出<strong>可重定位目标文件</strong></li>
+<li>再经过<strong>符号解析</strong>(Symbol resolution)把代码中的每个符号引用和一个符号定义关联起来之后，要完成<strong>重定位</strong>(Relocation)任务，最终输出<strong>可执行目标文件</strong>。
+<ul>
+<li>在<strong>重定位</strong>阶段，ELF(可重定位目标文件在LINUX系统上的一种格式)文件中的<code>R_X86_64_PC32</code>重定位类型重定位了一个使用32位PC相对地址的引用。</li>
+<li>当CPU执行一条使用PC相对寻址的指令时，它就将在指令中编码的32位值加上PC的当前运行时值，得到<strong>有效地址</strong>。</li>
+</ul></li>
+</ul>
 
 <h2 id="toc_3">指令</h2>
 
@@ -288,9 +302,9 @@
 
 <h3 id="toc_5">ret, call指令</h3>
 
-<p>在x86-64上，ret指令，相当于从栈中弹出地址A，然后把PC设置为A。<br/>
+<p>在x86-64上，<code>ret</code>指令，相当于从栈中弹出地址A，然后把PC设置为A。<br/>
 <code>pop %rip</code><br/>
-而call指令，刚好相反，把%rip 压入栈中，然后跳到函数对应的地址。</p>
+而<code>call</code>指令，刚好相反，把%rip 压入栈中，然后跳到函数对应的地址。</p>
 
 
     
