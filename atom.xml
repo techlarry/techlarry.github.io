@@ -4,7 +4,7 @@
   <title><![CDATA[techlarry]]></title>
   <link href="http://larryim.cc/atom.xml" rel="self"/>
   <link href="http://larryim.cc/"/>
-  <updated>2018-07-10T18:07:07+08:00</updated>
+  <updated>2018-07-12T10:53:27+08:00</updated>
   <id>http://larryim.cc/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -18,9 +18,8 @@
     <updated>2018-07-10T17:58:05+08:00</updated>
     <id>http://larryim.cc/15312166852240.html</id>
     <content type="html"><![CDATA[
-<p>主页：<a href="https://www.ops-class.org">https://www.ops-class.org</a></p>
-
-<p>........jsladfj</p>
+<p>主页：<a href="https://www.ops-class.org">https://www.ops-class.org</a><br/>
+Notes: </p>
 
 ]]></content>
   </entry>
@@ -768,77 +767,103 @@ foo() {
 <a href="#toc_0">1 异常</a>
 <ul>
 <li>
-<a href="#toc_1">1.1 异常的类别</a>
+<a href="#toc_1">1.1 异常的处理</a>
+</li>
+<li>
+<a href="#toc_2">1.2 异常的类别</a>
 </li>
 </ul>
 </li>
 <li>
-<a href="#toc_2">2 进程</a>
+<a href="#toc_3">2 进程</a>
 <ul>
 <li>
-<a href="#toc_3">2.1 逻辑控制流</a>
+<a href="#toc_4">2.1 逻辑控制流</a>
 </li>
 <li>
-<a href="#toc_4">2.2 并发流</a>
+<a href="#toc_5">2.2 并发流</a>
+</li>
+<li>
+<a href="#toc_6">2.3 私有地址空间</a>
+</li>
+<li>
+<a href="#toc_7">2.4 用户模式和内核模式</a>
 </li>
 </ul>
 </li>
 <li>
-<a href="#toc_5">2.3 私有地址空间</a>
+<a href="#toc_8">3 系统调用错误处理</a>
+</li>
+<li>
+<a href="#toc_9">4 进程控制</a>
 <ul>
 <li>
-<a href="#toc_6">2.4 用户模式和内核模式</a>
+<a href="#toc_10">4.1 获取进程ID</a>
+</li>
+<li>
+<a href="#toc_11">4.2 创建和终止进程</a>
+</li>
+<li>
+<a href="#toc_12">4.3 回收子进程</a>
+</li>
+<li>
+<a href="#toc_13">4.4 进程休眠</a>
+</li>
+<li>
+<a href="#toc_14">4.5  加载并运行程序</a>
 </li>
 </ul>
 </li>
 <li>
-<a href="#toc_7">3 系统调用错误处理</a>
-</li>
-<li>
-<a href="#toc_8">4 进程控制</a>
-</li>
-<li>
-<a href="#toc_9">5 信号</a>
+<a href="#toc_15">5 信号</a>
 <ul>
 <li>
-<a href="#toc_10">5.1 发送/接收信号</a>
+<a href="#toc_16">5.1 发送/接收信号</a>
 </li>
 <li>
-<a href="#toc_11">5.2 发送信号</a>
+<a href="#toc_17">5.2 发送信号</a>
 </li>
 <li>
-<a href="#toc_12">5.3 接收信号</a>
+<a href="#toc_18">5.3 接收信号</a>
 </li>
 <li>
-<a href="#toc_13">5.4 阻塞信号和进程回收</a>
+<a href="#toc_19">5.4 阻塞信号和进程回收</a>
 <ul>
 <li>
-<a href="#toc_14">5.4.1 隐式阻塞机制</a>
+<a href="#toc_20">5.4.1 隐式阻塞机制</a>
 </li>
 <li>
-<a href="#toc_15">5.4.2 显式阻塞机制</a>
+<a href="#toc_21">5.4.2 显式阻塞机制</a>
 </li>
 </ul>
 </li>
 <li>
-<a href="#toc_16">5.5 信号处理程序</a>
+<a href="#toc_22">5.5 信号处理程序</a>
 </li>
 </ul>
 </li>
 </ul>
 
 
-<p>从给处理器加电开始，直到你断电为止，程序计数器假设一个值的序列</p>
+<p>从给处理器加电开始，直到你断电为止，程序计数器假设成一个值的序列</p>
 
 <p>\[a_0, a_1, ..., a_{n-1}\]</p>
 
-<p>其中，每个\(a_k\)是某个相应的指令\(I_k\)的地址。每次从\(a_k\)到\(a_{k+1}\)的过度称为<strong>控制转移</strong>(control transfer)。这样的控制转移序列叫做处理器的<strong>控制流</strong>(control flow)。</p>
+<p>其中，每个\(a_k\)是某个相应的指令\(I_k\)的 <u>地址</u> 。每次从\(a_k\)到\(a_{k+1}\)的过渡称为<strong>控制转移</strong>(control transfer)。这样的控制转移序列叫做处理器的<strong>控制流</strong>(control flow)。</p>
 
 <p>现在系统通过使控制流发生突变来应对系统状态的变化(eg.缺页异常，网络等待)，把这些突变称为<strong>异常控制流</strong>(Exceptional Control Flow, ECF)。</p>
 
 <h2 id="toc_0">1 异常</h2>
 
-<h3 id="toc_1">1.1 异常的类别</h3>
+<h3 id="toc_1">1.1 异常的处理</h3>
+
+<p>系统为每<strong>类</strong>可能的异常都分配了一个唯一的非负整数的<strong>异常号</strong>(exception number)。在系统启动时，操作系统分配和初始化一张称为<strong>异常表</strong>的跳转表，使得表目\(k\)包含异常\(k\)的处理程序的地址。</p>
+
+<p><img src="media/15312146721582/%E5%BC%82%E5%B8%B8%E8%A1%A8.png" alt="异常表"/></p>
+
+<p>当检测到发生了一个事件，并且确定了相应的异常号\(k\)，处理器触发异常，执行间接过程调用，通过异常表的表目\(k\)，转到相应的处理程序。</p>
+
+<h3 id="toc_2">1.2 异常的类别</h3>
 
 <p>异常(exceptions)可以分为四类：中断(interrupt)、陷阱(trap)、故障(fault)和终止(abort)。<br/>
 <img src="media/15312146721582/Exceptions.png" alt="Exceptions"/></p>
@@ -856,7 +881,7 @@ foo() {
 <li><strong>终止</strong>是不可恢复的致命错误造成的结果，通常是一些硬件错误。<br/></li>
 </ul>
 
-<h2 id="toc_2">2 进程</h2>
+<h2 id="toc_3">2 进程</h2>
 
 <p>进程(Process)的经典定义就是 <u>一个执行中程序的实例</u> 。系统中的每个程序都运行在某个进程的上下文(context)中。上下文是由程序正确运行所需的状态组成的。这个状态包括存放在内存中的程序的代码和数据，它的栈、通用目的寄存器的内容、程序计数器、环境变量以及打开文件描述符的集合。</p>
 
@@ -867,29 +892,87 @@ foo() {
 <li>一个<strong>私有</strong>的地址空间，它提供一个假象，好像我们的程序独占地使用内存系统。</li>
 </ul>
 
-<h3 id="toc_3">2.1 逻辑控制流</h3>
+<h3 id="toc_4">2.1 逻辑控制流</h3>
 
-<p>异常控制流Logical Control Flow</p>
+<p><strong>逻辑控制流</strong>(Logical Control Flow，简称逻辑流)是PC值的序列。</p>
 
-<h3 id="toc_4">2.2 并发流</h3>
+<h3 id="toc_5">2.2 并发流</h3>
 
-<p>并发流concurrent flow</p>
+<p>一个逻辑流的执行在时间上与另一个流重叠，称为<strong>并发流</strong>(concurrent flow)，这两个流被称为<strong>并发地运行</strong>。</p>
 
-<h2 id="toc_5">2.3 私有地址空间</h2>
+<h3 id="toc_6">2.3 私有地址空间</h3>
 
 <p>进程为每个程序提供它自己的<strong>私有地址空间</strong>。一般而言，和这个空间中某个地址相关联的那个内存字节是不能被其他进程读或者写的，从这个意义上说，这个地址空间是私有的。</p>
 
-<h3 id="toc_6">2.4 用户模式和内核模式</h3>
+<h3 id="toc_7">2.4 用户模式和内核模式</h3>
 
 <p>处理器通常是用某个控制寄存器中的一个<strong>模式位</strong>(mode bit)来控制用户/内核模式。当设置了模式位时，进程就运行在<strong>内核模式</strong>中，否则运行在<strong>用户模式</strong>中。</p>
 
 <p>运行在内核模式的进程可以执行指令集中的任何指令，可以访问任何内存位置。用户模式中的进程不允许执行特权指令，也不允许直接引用地址空间中内核区的代码和数据。</p>
 
-<h2 id="toc_7">3 系统调用错误处理</h2>
+<h2 id="toc_8">3 系统调用错误处理</h2>
 
-<h2 id="toc_8">4 进程控制</h2>
+<h2 id="toc_9">4 进程控制</h2>
 
-<h2 id="toc_9">5 信号</h2>
+<p>进程控制包括获取进程ID、创建和终止进程、回收子进程、让进程休眠、加载并运行程序等。这一节将描述Unix提供了控制进程的系统调用。</p>
+
+<h3 id="toc_10">4.1 获取进程ID</h3>
+
+<p>每一个进程都有一个唯一的整数(非零)进程ID(PID)。<code>getpid</code>函数返回调用进程的PID。<code>getppid</code>函数返回它的父进程的PID。</p>
+
+<pre><code class="language-c">#include &lt;sys/types.h&gt;
+#include &lt;unistd.h&gt;
+
+pid_t getpid(void);
+pit_t getppid(void);
+</code></pre>
+
+<h3 id="toc_11">4.2 创建和终止进程</h3>
+
+<p><strong>父进程</strong>通过调用fork函数创建一个新的运行的<strong>子进程</strong>。</p>
+
+<pre><code class="language-c">#include &lt;sys/types.h&gt;
+#include &lt;unistd.h&gt;
+
+pid_t fork(void);
+</code></pre>
+
+<p>新创建的子进程几乎但不完全与父进程相同：</p>
+
+<ul>
+<li><strong>相同但是独立的地址空间</strong>：子进程获得父进程虚拟地址空间的一份副本</li>
+<li><strong>共享文件</strong>：子进程获得父进程打开文件描述符相同的副本</li>
+<li>子进程与父进程pid不同</li>
+</ul>
+
+<h3 id="toc_12">4.3 回收子进程</h3>
+
+<p>进程在终止后，并不会被内核从系统中清除，而是保持这种状态，直到被它的父进程<strong>回收</strong>(reaped)。</p>
+
+<ul>
+<li>一个终止了但还未被回收的进程称为<strong>僵死进程</strong>(zombie)。</li>
+<li>即使僵死进程没有运行，它仍然消耗系统的内存资源。</li>
+</ul>
+
+<p>通过调用<code>waitpid</code>函数来等待子进程终止或者停止。</p>
+
+<h3 id="toc_13">4.4 进程休眠</h3>
+
+<p><code>sleep</code>函数将一个进程挂起一段制定的时间。</p>
+
+<pre><code class="language-c">#include &lt;unistd.n&gt;
+unsigned int sleep(unsigned int secs);
+</code></pre>
+
+<h3 id="toc_14">4.5  加载并运行程序</h3>
+
+<p><code>execve</code>函数在当前进程的上下文中加载并运行一个新程序。</p>
+
+<ul>
+<li><code>execve</code>调用一次并从不返回。</li>
+</ul>
+
+<h2 id="toc_15">5 信号</h2>
 
 <p>Linux<strong>信号</strong>，通知进程系统中发生一个某种类型的事件。每种信号类型都对应于某种系统事件。低层的硬件异常是由内核异常处理程序处理的，正常情况下，对用户进程而言是不可见的。下面是Linux系统上常见的信号：</p>
 
@@ -959,7 +1042,7 @@ foo() {
 
 <p>详细信息可以通过<code>man 7 signal</code>查询。</p>
 
-<h3 id="toc_10">5.1 发送/接收信号</h3>
+<h3 id="toc_16">5.1 发送/接收信号</h3>
 
 <p>传送一个信号到目的进程由发送、接收信号两个步骤组成：</p>
 
@@ -968,7 +1051,7 @@ foo() {
 <li>接收信号。当目的进程被内核强迫已某种方式对信号的发送做出反应时，它就接收了信号。进程可以忽略这个信号，终止或者通过执行一个称为<strong>信号处理程序</strong>的用户层函数捕获这个信号。</li>
 </ul>
 
-<h3 id="toc_11">5.2 发送信号</h3>
+<h3 id="toc_17">5.2 发送信号</h3>
 
 <p>发送信号可以由以下原因引起：</p>
 
@@ -978,7 +1061,7 @@ foo() {
 <li>进程：一个进程可以通过系统调用kill给另一个进程或自己发送信号。</li>
 </ul>
 
-<h3 id="toc_12">5.3 接收信号</h3>
+<h3 id="toc_18">5.3 接收信号</h3>
 
 <p>当内核把进程\(p\)从内核模式切换到用户模式时，它会检查进程\(p\)的未被阻塞的待处理信号的集合(<code>pending&amp;~blocked</code>,见下文)，如果集合非空，那么内核强制\(p\)接收信号，触发进程采取某种行为。</p>
 
@@ -995,7 +1078,7 @@ foo() {
 
 <p>有两个信号既不能被忽略也不能被捕获，它们是<code>SIGKILL</code>和<code>SIGSTOP</code>。即进程接收到这两个信号后，只能接受系统的默认处理，即终止线程。</p>
 
-<h3 id="toc_13">5.4 阻塞信号和进程回收</h3>
+<h3 id="toc_19">5.4 阻塞信号和进程回收</h3>
 
 <p>一个发出而没有被接受的信号叫做<strong>未处理信号</strong>（Pending Signal）。进程可以选择阻塞（Block）某个信号。被阻塞的信号产生时将保持在未处理状态，直到进程解除对此信号的阻塞，才执行接收的动作。阻塞和忽略是不同的，<strong>只要信号被阻塞就不会接收</strong>，而忽略是在接收之后可选的一种处理动作。</p>
 
@@ -1018,7 +1101,7 @@ foo() {
 <li>SIGQUIT信号未产生过，一旦产生SIGQUIT信号将被阻塞，它调用信号处理程序<code>sighandler</code>。</li>
 </ul>
 
-<h4 id="toc_14">5.4.1 隐式阻塞机制</h4>
+<h4 id="toc_20">5.4.1 隐式阻塞机制</h4>
 
 <p>当多个未处理信号(<code>pending signal</code>)到达时，由于信号并不会产生排队等待这样的情况，所以产生的效果仅相当于一个未处理信号(也就是对应的<code>pending</code>位标记为1，例如上图中的<code>SIGINT</code>信号)。</p>
 
@@ -1097,7 +1180,7 @@ Handler reaped child
 Parent processing input
 </code></pre>
 
-<h4 id="toc_15">5.4.2 显式阻塞机制</h4>
+<h4 id="toc_21">5.4.2 显式阻塞机制</h4>
 
 <p>有时候不希望在发送信号后就立即去接收、处理信号，同时也不希望忽略该信号，那么可以通过<code>sigprocmask</code>显式地阻塞信号从而实现延迟接收信号。</p>
 
@@ -1198,7 +1281,7 @@ int main(int argc, char **argv)
 }
 </code></pre>
 
-<h3 id="toc_16">5.5 信号处理程序</h3>
+<h3 id="toc_22">5.5 信号处理程序</h3>
 
 <p>信号处理程序(signal handler)是重要且棘手的一个问题。其难点在：</p>
 
@@ -1635,13 +1718,134 @@ $1 = {size = 0, full_size = 2, head = 0x0, tail = 0x0}
   
   <entry>
     <title type="html"><![CDATA[Objdump 反汇编]]></title>
-    <link href="http://larryim.cc/15147500497525.html"/>
+    <link href="http://larryim.cc/objdump_disassembler.html"/>
     <updated>2018-01-01T03:54:09+08:00</updated>
-    <id>http://larryim.cc/15147500497525.html</id>
+    <id>http://larryim.cc/objdump_disassembler.html</id>
     <content type="html"><![CDATA[
-<p><code>objdump</code>是反汇编器(<code>disassembler</code>),可以将机器语言生成对应的汇编文件。常用的命令是</p>
+<p><code>objdump</code>是一个反汇编器(<code>disassembler</code>)，可以将机器语言生成对应的汇编文件。常用的命令是</p>
 
-<pre><code class="language-text">linux &gt; objdump -d filename.o
+<pre><code class="language-text">objdump -d filename.o
+</code></pre>
+
+<p>其选项有：</p>
+
+<pre><code class="language-text">--archive-headers 
+-a 
+显示档案库的成员信息,类似ls -l将lib*.a的信息列出。 
+
+-b bfdname 
+--target=bfdname 
+指定目标码格式。这不是必须的，objdump能自动识别许多格式，比如： 
+
+objdump -b oasys -m vax -h fu.o 
+显示fu.o的头部摘要信息，明确指出该文件是Vax系统下用Oasys编译器生成的目标文件。objdump -i将给出这里可以指定的目标码格式列表。 
+
+-C 
+--demangle 
+将底层的符号名解码成用户级名字，除了去掉所开头的下划线之外，还使得C++函数名以可理解的方式显示出来。 
+
+--debugging 
+-g 
+显示调试信息。企图解析保存在文件中的调试信息并以C语言的语法显示出来。仅仅支持某些类型的调试信息。有些其他的格式被readelf -w支持。 
+
+-e 
+--debugging-tags 
+类似-g选项，但是生成的信息是和ctags工具相兼容的格式。 
+
+--disassemble 
+-d 
+从objfile中反汇编那些特定指令机器码的section。 
+
+-D 
+--disassemble-all 
+与 -d 类似，但反汇编所有section. 
+
+--prefix-addresses 
+反汇编的时候，显示每一行的完整地址。这是一种比较老的反汇编格式。 
+
+-EB 
+-EL 
+--endian={big|little} 
+指定目标文件的小端。这个项将影响反汇编出来的指令。在反汇编的文件没描述小端信息的时候用。例如S-records. 
+
+-f 
+--file-headers 
+显示objfile中每个文件的整体头部摘要信息。 
+
+-h 
+--section-headers 
+--headers 
+显示目标文件各个section的头部摘要信息。 
+
+-H 
+--help 
+简短的帮助信息。 
+
+-i 
+--info 
+显示对于 -b 或者 -m 选项可用的架构和目标格式列表。 
+
+-j name
+--section=name 
+仅仅显示指定名称为name的section的信息 
+
+-l
+--line-numbers 
+用文件名和行号标注相应的目标代码，仅仅和-d、-D或者-r一起使用使用-ld和使用-d的区别不是很大，在源码级调试的时候有用，要求编译时使用了-g之类的调试编译选项。 
+
+-m machine 
+--architecture=machine 
+指定反汇编目标文件时使用的架构，当待反汇编文件本身没描述架构信息的时候(比如S-records)，这个选项很有用。可以用-i选项列出这里能够指定的架构. 
+
+--reloc 
+-r 
+显示文件的重定位入口。如果和-d或者-D一起使用，重定位部分以反汇编后的格式显示出来。 
+
+--dynamic-reloc 
+-R 
+显示文件的动态重定位入口，仅仅对于动态目标文件意义，比如某些共享库。 
+
+-s 
+--full-contents 
+显示指定section的完整内容。默认所有的非空section都会被显示。 
+
+-S 
+--source 
+尽可能反汇编出源代码，尤其当编译的时候指定了-g这种调试参数时，效果比较明显。隐含了-d参数。 
+
+--show-raw-insn 
+反汇编的时候，显示每条汇编指令对应的机器码，如不指定--prefix-addresses，这将是缺省选项。 
+
+--no-show-raw-insn 
+反汇编时，不显示汇编指令的机器码，如不指定--prefix-addresses，这将是缺省选项。 
+
+--start-address=address 
+从指定地址开始显示数据，该选项影响-d、-r和-s选项的输出。 
+
+--stop-address=address 
+显示数据直到指定地址为止，该项影响-d、-r和-s选项的输出。 
+
+-t 
+--syms 
+显示文件的符号表入口。类似于nm -s提供的信息 
+
+-T 
+--dynamic-syms 
+显示文件的动态符号表入口，仅仅对动态目标文件意义，比如某些共享库。它显示的信息类似于 nm -D|--dynamic 显示的信息。 
+
+-V 
+--version 
+版本信息 
+
+--all-headers 
+-x 
+显示所可用的头信息，包括符号表、重定位入口。-x 等价于-a -f -h -r -t 同时指定。 
+
+-z 
+--disassemble-zeroes 
+一般反汇编输出将省略大块的零，该选项使得这些零块也被反汇编。 
+
+@file 可以将选项集中到一个文件中，然后使用这个@file选项载入。
 </code></pre>
 
 <p>下面通过一个简单的例子来说明一下<code>objdump</code>的常见用法，以及它生成的文件的格式。</p>
