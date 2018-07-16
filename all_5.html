@@ -89,39 +89,39 @@
     <li><label>Categories</label></li>
 
         
-            <li><a href=".html">Leetcode</a></li>
+            <li><a href="Leetcode.html">Leetcode</a></li>
         
-            <li><a href=".html">C/C++</a></li>
+            <li><a href="C/C++.html">C/C++</a></li>
         
-            <li><a href=".html">Python数据结构与算法</a></li>
+            <li><a href="Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html">Python数据结构与算法</a></li>
         
-            <li><a href=".html">Course</a></li>
+            <li><a href="Course.html">Course</a></li>
         
-            <li><a href=".html">Python特性</a></li>
+            <li><a href="Python%E7%89%B9%E6%80%A7.html">Python特性</a></li>
         
-            <li><a href=".html">机器学习</a></li>
+            <li><a href="%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html">机器学习</a></li>
         
-            <li><a href=".html">Python科学计算三维可视化</a></li>
+            <li><a href="Python%E7%A7%91%E5%AD%A6%E8%AE%A1%E7%AE%97%E4%B8%89%E7%BB%B4%E5%8F%AF%E8%A7%86%E5%8C%96.html">Python科学计算三维可视化</a></li>
         
-            <li><a href=".html">English</a></li>
+            <li><a href="English.html">English</a></li>
         
-            <li><a href=".html">Computer System</a></li>
+            <li><a href="Computer%20System.html">Computer System</a></li>
         
-            <li><a href=".html">Deep Learning</a></li>
+            <li><a href="Deep%20Learning.html">Deep Learning</a></li>
         
-            <li><a href=".html">Linux 系统编程</a></li>
+            <li><a href="Linux%20%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B.html">Linux 系统编程</a></li>
         
-            <li><a href=".html">数据库</a></li>
+            <li><a href="%E6%95%B0%E6%8D%AE%E5%BA%93.html">数据库</a></li>
         
-            <li><a href=".html">Tensorflow</a></li>
+            <li><a href="Tensorflow.html">Tensorflow</a></li>
         
-            <li><a href=".html">Big Data</a></li>
+            <li><a href="Big%20Data.html">Big Data</a></li>
         
-            <li><a href=".html">文献阅读</a></li>
+            <li><a href="%E6%96%87%E7%8C%AE%E9%98%85%E8%AF%BB.html">文献阅读</a></li>
         
-            <li><a href=".html">Tools</a></li>
+            <li><a href="Tools.html">Tools</a></li>
         
-            <li><a href=".html">大数据</a></li>
+            <li><a href="%E5%A4%A7%E6%95%B0%E6%8D%AE.html">大数据</a></li>
          
 
       </ul>
@@ -143,6 +143,194 @@
 	<div class="large-8 medium-8 columns">
 		<div class="markdown-body home-categories">
 		
+			<div class="article">
+                <a class="clearlink" href="gdb_tool_gnu.html">
+                
+                  <h1>gdb</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p><code>gdb</code>（GNU Debugger）作为一个调试工具，其功能强大。它可以调试断点、查看反汇编代码、指令级单步执行、查看寄存器、检查内存/栈，是程序员的得力助手。</p>
+
+<h3 id="toc_0">调试信息</h3>
+
+<p>要调试C/C++的程序，首先在编译时，我们必须要把调试信息(debugging symbols, 调试符号表)加到可执行文件中。使用编译器（cc/gcc/g++）的 <code>-g</code> 参数(Generate source-level debug information)可以做到这一点。</p>
+
+<pre><code class="language-text">g++ -g HelloWorld.cpp -o HelloWorld
+</code></pre>
+
+<h3 id="toc_1">常用命令</h3>
+
+<ul>
+<li><code>break &lt;location&gt;</code>
+<ul>
+<li>Stop execution at function name or address </li>
+<li>Reset breakpoints when restarting gdb </li>
+</ul></li>
+<li><code>run &lt;args&gt;</code> 
+<ul>
+<li>Run program with args <args> </li>
+<li>Convenient for specifying text file with answers</li>
+</ul></li>
+<li><code>disas &lt;fun&gt;</code>, but not dis </li>
+<li><p><code>stepi</code> / <code>nexti</code> </p>
+<ul>
+<li>Steps / does not step through function calls</li>
+</ul></li>
+<li><p><code>info registers</code> </p>
+<ul>
+<li>Print hex values in every register </li>
+</ul></li>
+<li><p><code>print (/x or /d) $eax</code> - Yes, use $ </p>
+<ul>
+<li>Print hex or decimal contents of %eax </li>
+</ul></li>
+<li><p><code>x $register</code>, <code>x 0xaddress</code> </p>
+<ul>
+<li>Prints what’s in the register / at the given address</li>
+<li>By default, prints one word (4 bytes) </li>
+<li>Specify format: /s, /[num][size][format] *
+<ul>
+<li> x/8a 0x15213 *</li>
+<li> x/4wd 0xdeadbeef</li>
+</ul></li>
+</ul></li>
+<li><p><code>list</code>: view source code</p></li>
+</ul>
+
+<h3 id="toc_2">远程调试</h3>
+
+<p>有时候需要调试的程序并不在本机上，<code>gdb</code>是支持远程调试的，具体命令如下：</p>
+
+<pre><code class="language-text">(gdb) target remote IP:PORT
+</code></pre>
+
+<p>这时<code>gdb</code>可以远程连接到被调试机器上，对程序进行调试。前提是在远端的机器上，必须要启动好<code>gdb</code>服务端程序。</p>
+
+<h2 id="toc_3">TUI</h2>
+
+<p>gdb tui（TextUser Interface）为dgb调试的文本用户界面，可以方便地显示源代码、汇编和寄存器文本窗口，tui使用效果如下图所示。</p>
+
+<p><img src="media/15147536807060/gdb-tui.png" alt="gdb-tui"/></p>
+
+<p>gdb tui可以直接运行<code>gdbtui</code>或者在gdb中用<code>ctrl-c, ctrl-a</code>打开。</p>
+
+<p>上图中是打开了汇编窗口的，可通过命令<code>layout split</code>显示源代码和汇编窗口。其他常见的窗口显示命令为：</p>
+
+<ul>
+<li><code>layout src/asm/regs</code>：显示源代码/汇编/寄存器窗口</li>
+<li><code>layout split</code>：显示源代码和汇编窗口</li>
+<li><code>focus cmd/src/asm/regs</code>: 聚焦命令/源代码/汇编/寄存器窗口</li>
+</ul>
+
+<h2 id="toc_4">命令行参数</h2>
+
+<p>很多程序在运行时都需要参数。例如下面C程序：</p>
+
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+int main(int argc,char *argv[])
+{
+    int i = argc;
+    printf(&quot;argc=%d\n&quot;,i);
+        for(i = 0;i &lt; argc;i++)
+        printf(&quot;argv[%d]=%s\n&quot;,i,argv[i]);
+        return 1;
+}
+</code></pre>
+
+<pre><code class="language-text"> ./demo_get_opt a b c
+argc = 4
+argv[0] = ./demo_get_opt
+argv[1] = a
+argv[2] = b
+argv[3] = c
+</code></pre>
+
+<p>运行gbb时一共有三种方法可以指定参数。</p>
+
+<p>第一种是在用<code>set args</code>指定参数</p>
+
+<ul>
+<li><code>set args</code> 可指定运行时参数。（如：<code>set args a b c</code>或者<code>set args -f 20 -t 40</code>）</li>
+<li><code>show args</code> 命令可以查看设置好的运行参数。</li>
+</ul>
+
+<pre><code class="language-text">(gdb) set args a b c
+(gdb) r
+Starting program: /home/vagrant/demo_get_opt a b c
+argc = 4
+argv[0] = /home/vagrant/demo_get_opt
+argv[1] = a
+argv[2] = b
+argv[3] = c
+</code></pre>
+
+<p>第二种是在运行时设定参数</p>
+
+<ul>
+<li><code>r/run args</code> (如 <code>r a b c</code>)</li>
+</ul>
+
+<pre><code class="language-text">(gdb) r a b c
+argc = 4
+argv[0] = /home/vagrant/demo_get_opt
+argv[1] = a
+argv[2] = b
+argv[3] = c
+</code></pre>
+
+<p>第三种是在gdb启动时加上<code>--args</code>参数</p>
+
+<pre><code class="language-text">gdb --args  ./demo_get_opt a b c
+</code></pre>
+
+<h3 id="toc_5">查看struct及指针</h3>
+
+<p>假设有结构体队列<code>queue</code>的指针数组<code>q</code>，指针<code>qi</code>指向<code>q</code>。</p>
+
+<pre><code class="language-c">/* define a queue */
+typedef struct {
+    int size;
+    int full_size;
+    node *head;
+    node *tail;
+} queue;
+
+queue *q, *qi; 
+q = (queue *) malloc(sizeof(queue) * S);
+qi = q;
+</code></pre>
+
+<p>可以通过<code>p *q</code>的 方式获得指针所指向结构体的值:</p>
+
+<pre><code class="language-gdb">(gdb) p *q
+$1 = {size = 0, full_size = 2, head = 0x0, tail = 0x0}
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/1/1</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Tools.html'>Tools</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
 			<div class="article">
                 <a class="clearlink" href="Dynamic_Programming_Maximum_weight_independent_set.html">
                 
@@ -422,68 +610,6 @@ __</p>
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="python_assembly_code.html">
-                
-                  <h1>Python汇编代码</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>学完了汇编语言之后，非常好奇Python程序产生的汇编代码。其实Python作为一种解释语言，其源代码是直接被<code>CPython</code>编译器编译成字节码(<code>btyecode</code>)的；然后在虚拟机中依次解释执行字节码所对应的机器码(<code>machine code</code>)。当需要重用时，字节码以<code>.pyc</code>和<code>.pyo</code>文件存在。当再次运行代码时，虚拟机直接运行<code>.pyc</code>和<code>.pyo</code>文件，省去了重新编译的过程。</p>
-
-<p>Python提供了<code>dis</code>模块，在代码运行时加入<code>-m dis</code>就可以得到源代码对应的汇编代码。其实<code>dis</code>在这里反汇编了字节码。</p>
-
-<p>也可以在源代码中直接调用<code>dis</code>模块：</p>
-
-<pre><code class="language-python">import dis
-def f(x):
-    return 1 &lt; x ** 2 &lt; 100
-
-dis.dis(f)
-</code></pre>
-
-<p>得到的字节码指令(<code>byte code instruction</code>)如下所示：</p>
-
-<pre><code class="language-text">   4           0 LOAD_CONST               1 (1)
-              3 LOAD_FAST                0 (x)
-              6 LOAD_CONST               2 (2)
-              9 BINARY_POWER
-             10 DUP_TOP
-             11 ROT_THREE
-             12 COMPARE_OP               0 (&lt;)
-             15 JUMP_IF_FALSE_OR_POP    25
-             18 LOAD_CONST               3 (100)
-             21 COMPARE_OP               0 (&lt;)
-             24 RETURN_VALUE
-        &gt;&gt;   25 ROT_TWO
-             26 POP_TOP
-             27 RETURN_VALUE
-</code></pre>
-
-<p>字节码指令的含义可以通过<a href="https://docs.python.org/2/library/dis.html#bytecodes">官方文件</a>查找。</p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/1/3</span>
-                    
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -538,39 +664,39 @@ dis.dis(f)
 
       	<p class="cat-list">
         
-            <a href=".html"><strong>Leetcode</strong></a>
+            <a href="Leetcode.html"><strong>Leetcode</strong></a>
         
-            <a href=".html"><strong>C/C++</strong></a>
+            <a href="C/C++.html"><strong>C/C++</strong></a>
         
-            <a href=".html"><strong>Python数据结构与算法</strong></a>
+            <a href="Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html"><strong>Python数据结构与算法</strong></a>
         
-            <a href=".html"><strong>Course</strong></a>
+            <a href="Course.html"><strong>Course</strong></a>
         
-            <a href=".html"><strong>Python特性</strong></a>
+            <a href="Python%E7%89%B9%E6%80%A7.html"><strong>Python特性</strong></a>
         
-            <a href=".html"><strong>机器学习</strong></a>
+            <a href="%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html"><strong>机器学习</strong></a>
         
-            <a href=".html"><strong>Python科学计算三维可视化</strong></a>
+            <a href="Python%E7%A7%91%E5%AD%A6%E8%AE%A1%E7%AE%97%E4%B8%89%E7%BB%B4%E5%8F%AF%E8%A7%86%E5%8C%96.html"><strong>Python科学计算三维可视化</strong></a>
         
-            <a href=".html"><strong>English</strong></a>
+            <a href="English.html"><strong>English</strong></a>
         
-            <a href=".html"><strong>Computer System</strong></a>
+            <a href="Computer%20System.html"><strong>Computer System</strong></a>
         
-            <a href=".html"><strong>Deep Learning</strong></a>
+            <a href="Deep%20Learning.html"><strong>Deep Learning</strong></a>
         
-            <a href=".html"><strong>Linux 系统编程</strong></a>
+            <a href="Linux%20%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B.html"><strong>Linux 系统编程</strong></a>
         
-            <a href=".html"><strong>数据库</strong></a>
+            <a href="%E6%95%B0%E6%8D%AE%E5%BA%93.html"><strong>数据库</strong></a>
         
-            <a href=".html"><strong>Tensorflow</strong></a>
+            <a href="Tensorflow.html"><strong>Tensorflow</strong></a>
         
-            <a href=".html"><strong>Big Data</strong></a>
+            <a href="Big%20Data.html"><strong>Big Data</strong></a>
         
-            <a href=".html"><strong>文献阅读</strong></a>
+            <a href="%E6%96%87%E7%8C%AE%E9%98%85%E8%AF%BB.html"><strong>文献阅读</strong></a>
         
-            <a href=".html"><strong>Tools</strong></a>
+            <a href="Tools.html"><strong>Tools</strong></a>
         
-            <a href=".html"><strong>大数据</strong></a>
+            <a href="%E5%A4%A7%E6%95%B0%E6%8D%AE.html"><strong>大数据</strong></a>
          
         </p>
 
@@ -587,7 +713,13 @@ dis.dis(f)
 	      
 		      
 			      <li class="post">
-			        <a href="15317356378033.html">Operating System Concepts - Introduction</a>
+			        <a href="os-concepts-introduction.html">Operating System Concepts 1 - Introduction</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="os-concepts-os-structures.html">Operating System Concepts 2 - Operating System structures</a>
 			      </li>
 		     
 		  
@@ -606,12 +738,6 @@ dis.dis(f)
 		      
 			      <li class="post">
 			        <a href="exceptional_control_flow.html">CSAPP - 异常控制流</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="overhead.html">Overhead</a>
 			      </li>
 		     
 		  

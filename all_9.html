@@ -89,39 +89,39 @@
     <li><label>Categories</label></li>
 
         
-            <li><a href=".html">Leetcode</a></li>
+            <li><a href="Leetcode.html">Leetcode</a></li>
         
-            <li><a href=".html">C/C++</a></li>
+            <li><a href="C/C++.html">C/C++</a></li>
         
-            <li><a href=".html">Python数据结构与算法</a></li>
+            <li><a href="Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html">Python数据结构与算法</a></li>
         
-            <li><a href=".html">Course</a></li>
+            <li><a href="Course.html">Course</a></li>
         
-            <li><a href=".html">Python特性</a></li>
+            <li><a href="Python%E7%89%B9%E6%80%A7.html">Python特性</a></li>
         
-            <li><a href=".html">机器学习</a></li>
+            <li><a href="%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html">机器学习</a></li>
         
-            <li><a href=".html">Python科学计算三维可视化</a></li>
+            <li><a href="Python%E7%A7%91%E5%AD%A6%E8%AE%A1%E7%AE%97%E4%B8%89%E7%BB%B4%E5%8F%AF%E8%A7%86%E5%8C%96.html">Python科学计算三维可视化</a></li>
         
-            <li><a href=".html">English</a></li>
+            <li><a href="English.html">English</a></li>
         
-            <li><a href=".html">Computer System</a></li>
+            <li><a href="Computer%20System.html">Computer System</a></li>
         
-            <li><a href=".html">Deep Learning</a></li>
+            <li><a href="Deep%20Learning.html">Deep Learning</a></li>
         
-            <li><a href=".html">Linux 系统编程</a></li>
+            <li><a href="Linux%20%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B.html">Linux 系统编程</a></li>
         
-            <li><a href=".html">数据库</a></li>
+            <li><a href="%E6%95%B0%E6%8D%AE%E5%BA%93.html">数据库</a></li>
         
-            <li><a href=".html">Tensorflow</a></li>
+            <li><a href="Tensorflow.html">Tensorflow</a></li>
         
-            <li><a href=".html">Big Data</a></li>
+            <li><a href="Big%20Data.html">Big Data</a></li>
         
-            <li><a href=".html">文献阅读</a></li>
+            <li><a href="%E6%96%87%E7%8C%AE%E9%98%85%E8%AF%BB.html">文献阅读</a></li>
         
-            <li><a href=".html">Tools</a></li>
+            <li><a href="Tools.html">Tools</a></li>
         
-            <li><a href=".html">大数据</a></li>
+            <li><a href="%E5%A4%A7%E6%95%B0%E6%8D%AE.html">大数据</a></li>
          
 
       </ul>
@@ -143,6 +143,416 @@
 	<div class="large-8 medium-8 columns">
 		<div class="markdown-body home-categories">
 		
+			<div class="article">
+                <a class="clearlink" href="anomaly-detection_and_recommender_system.html">
+                
+                  <h1>Machine Learning(9): Anomaly Detection AND Recommender System</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<ul>
+<li>
+<a href="#toc_0">[1] Anomaly Detection</a>
+<ul>
+<li>
+<a href="#toc_1">Problem Motivation</a>
+</li>
+<li>
+<a href="#toc_2">Gaussian Distribution</a>
+</li>
+<li>
+<a href="#toc_3">Algorithm</a>
+</li>
+<li>
+<a href="#toc_4">Developing and Evaluating an Anomaly Detection System</a>
+</li>
+<li>
+<a href="#toc_5">Anomaly Detection vs. Supervised Learning</a>
+</li>
+<li>
+<a href="#toc_6">Choosing What Features to Use</a>
+</li>
+<li>
+<a href="#toc_7">Multivariate Gaussian Distribution</a>
+</li>
+<li>
+<a href="#toc_8">Anomaly Detection using the Multivariate Gaussian Distribution</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_9">[2] Recommender Systems</a>
+<ul>
+<li>
+<a href="#toc_10">Problem Formulation</a>
+</li>
+<li>
+<a href="#toc_11">Content Based Recommendations</a>
+</li>
+<li>
+<a href="#toc_12">Feature Finder</a>
+</li>
+<li>
+<a href="#toc_13">Collaborative Filtering Algorithm</a>
+</li>
+<li>
+<a href="#toc_14">Vectorization: Low Rank Matrix Factorization</a>
+</li>
+<li>
+<a href="#toc_15">Implementation Detail: Mean Normalization</a>
+</li>
+</ul>
+</li>
+</ul>
+
+
+<h2 id="toc_0">[1] Anomaly Detection</h2>
+
+<h3 id="toc_1">Problem Motivation</h3>
+
+<p>Just like in other learning problems, we are given a dataset \({x^{(1)}, x^{(2)},\dots,x^{(m)}}\).</p>
+
+<p>We are then given a new example, \(x_{test}\), and we want to know whether this new example is abnormal/anomalous.</p>
+
+<p>We define a &quot;model&quot; p(x) that tells us the probability the example is not anomalous. We also use a threshold ϵ (epsilon) as a dividing line so we can say which examples are anomalous and which are not.</p>
+
+<p>A very common application of anomaly detection is detecting fraud:</p>
+
+<ul>
+<li><p>\(x^{(i)} =\) features of user i&#39;s activities</p></li>
+<li><p>Model p(x) from the data.</p></li>
+<li><p>Identify unusual users by checking which have p(x)&lt;ϵ.</p></li>
+</ul>
+
+<p>If our anomaly detector is flagging <strong>too many</strong> anomalous examples, then we need to <strong>decrease</strong> our threshold ϵ</p>
+
+<h3 id="toc_2">Gaussian Distribution</h3>
+
+<p>The Gaussian Distribution is a familiar bell-shaped curve that can be described by a function \(\mathcal{N}(\mu,\sigma^2)\)</p>
+
+<p>Let x∈ℝ. If the probability distribution of x is Gaussian with mean μ, variance \(\sigma^2\), then:</p>
+
+<p>\(x \sim \mathcal{N}(\mu, \sigma^2)\)</p>
+
+<p>The little ∼ or &#39;tilde&#39; can be read as &quot;distributed as.&quot;</p>
+
+<p>The Gaussian Distribution is parameterized by a mean and a variance.</p>
+
+<p>Mu, or μ, describes the center of the curve, called the mean. The width of the curve is described by sigma, or σ, called the standard deviation.</p>
+
+<p>The full function is as follows:</p>
+
+<p>\(\large p(x;\mu,\sigma^2) = \dfrac{1}{\sigma\sqrt{(2\pi)}}e^{-\dfrac{1}{2}(\dfrac{x - \mu}{\sigma})^2}\)</p>
+
+<p>We can estimate the parameter μ from a given dataset by simply taking the average of all the examples:</p>
+
+<p>\(\mu = \dfrac{1}{m}\displaystyle \sum_{i=1}^m x^{(i)}\)</p>
+
+<p>We can estimate the other parameter, \(\sigma^2\), with our familiar squared error formula:</p>
+
+<p>\(\sigma^2 = \dfrac{1}{m}\displaystyle \sum_{i=1}^m(x^{(i)} - \mu)^2\)</p>
+
+<p><img src="media/15045011015887/15045018120355.png" alt="Gaussian distribution"/></p>
+
+<h3 id="toc_3">Algorithm</h3>
+
+<p>Given a training set of examples, \(\lbrace x^{(1)},\dots,x^{(m)}\rbrace\) where each example is a vector, \(x \in \mathbb{R}^n\).</p>
+
+<p>\(p(x) = p(x_1;\mu_1,\sigma_1^2)p(x_2;\mu_2,\sigma^2_2)\cdots p(x_n;\mu_n,\sigma^2_n)\)</p>
+
+<p>In statistics, this is called an &quot;independence assumption&quot; on the values of the features inside training example x.</p>
+
+<p>More compactly, the above expression can be written as follows:</p>
+
+<p>\(= \displaystyle \prod^n_{j=1} p(x_j;\mu_j,\sigma_j^2)\)</p>
+
+<p><strong>The algorithm</strong></p>
+
+<p>Choose features \(x_i\) that you think might be indicative of anomalous examples.</p>
+
+<p>Fit parameters \(\mu_1,\dots,\mu_n,\sigma_1^2,\dots,\sigma_n^2\)</p>
+
+<p>Calculate \(\mu_j = \dfrac{1}{m}\displaystyle \sum_{i=1}^m x_j^{(i)}\)</p>
+
+<p>Calculate \(\sigma^2_j = \dfrac{1}{m}\displaystyle \sum_{i=1}^m(x_j^{(i)} - \mu_j)^2\)</p>
+
+<p>Given a new example x, compute p(x):</p>
+
+<p>\(p(x) = \displaystyle \prod^n_{j=1} p(x_j;\mu_j,\sigma_j^2) = \prod\limits^n_{j=1} \dfrac{1}{\sqrt{2\pi}\sigma_j}exp(-\dfrac{(x_j - \mu_j)^2}{2\sigma^2_j})\)</p>
+
+<p>Anomaly if p(x)&lt;ϵ</p>
+
+<p>A vectorized version of the calculation for μ is \(\mu = \dfrac{1}{m}\displaystyle \sum_{i=1}^m x^{(i)}\). You can vectorize \(\sigma^2\) similarly.</p>
+
+<h3 id="toc_4">Developing and Evaluating an Anomaly Detection System</h3>
+
+<p>To evaluate our learning algorithm, we take some labeled data, categorized into anomalous and non-anomalous examples ( y = 0 if normal, y = 1 if anomalous).</p>
+
+<p>Among that data, take a large proportion of <strong>good</strong> , non-anomalous data for the training set on which to train p(x).</p>
+
+<p>Then, take a smaller proportion of mixed anomalous and non-anomalous examples (you will usually have many more non-anomalous examples) for your cross-validation and test sets.</p>
+
+<p>For example, we may have a set where 0.2% of the data is anomalous. We take 60% of those examples, all of which are good (y=0) for the training set. We then take 20% of the examples for the cross-validation set (with 0.1% of the anomalous examples) and another 20% from the test set (with another 0.1% of the anomalous).</p>
+
+<p>In other words, we split the data 60/20/20 training/CV/test and then split the anomalous examples 50/50 between the CV and test sets.</p>
+
+<p><strong>Algorithm evaluation:</strong></p>
+
+<p>Fit model p(x) on training set \(\lbrace x^{(1)},\dots,x^{(m)} \rbrace\)</p>
+
+<p>On a cross validation/test example x, predict:</p>
+
+<p>If p(x) &lt; ϵ ( <strong>anomaly</strong> ), then y=1</p>
+
+<p>If p(x) ≥ ϵ ( <strong>normal</strong> ), then y=0</p>
+
+<p>Possible evaluation metrics (see &quot;Machine Learning System Design&quot; section):</p>
+
+<ul>
+<li><p>True positive, false positive, false negative, true negative.</p></li>
+<li><p>Precision/recall</p></li>
+<li><p>\(F_1\) score</p></li>
+</ul>
+
+<p>Note that we use the cross-validation set to choose parameter ϵ</p>
+
+<h3 id="toc_5">Anomaly Detection vs. Supervised Learning</h3>
+
+<p>When do we use anomaly detection and when do we use supervised learning?</p>
+
+<p>Use anomaly detection when...</p>
+
+<ul>
+<li><p>We have a very small number of positive examples (y=1 ... 0-20 examples is common) and a large number of negative (y=0) examples.</p></li>
+<li><p>We have many different &quot;types&quot; of anomalies and it is hard for any algorithm to learn from positive examples what the anomalies look like; future anomalies may look nothing like any of the anomalous examples we&#39;ve seen so far.</p></li>
+</ul>
+
+<p>Use supervised learning when...</p>
+
+<ul>
+<li><p>We have a large number of both positive and negative examples. In other words, the training set is more evenly divided into classes.</p></li>
+<li><p>We have enough positive examples for the algorithm to get a sense of what new positives examples look like. The future positive examples are likely similar to the ones in the training set.</p></li>
+</ul>
+
+<h3 id="toc_6">Choosing What Features to Use</h3>
+
+<p>The features will greatly affect how well your anomaly detection algorithm works.</p>
+
+<p>We can check that our features are <strong>gaussian</strong> by plotting a histogram of our data and checking for the bell-shaped curve.</p>
+
+<p>Some <strong>transforms</strong> we can try on an example feature x that does not have the bell-shaped curve are:</p>
+
+<ul>
+<li><p>log(x)</p></li>
+<li><p>log(x+1)</p></li>
+<li><p>log(x+c) for some constant</p></li>
+<li><p>\(\sqrt{x}\)</p></li>
+<li><p>\(x^{1/3}\)</p></li>
+</ul>
+
+<p>We can play with each of these to try and achieve the gaussian shape in our data.</p>
+
+<p>There is an <strong>error analysis procedure</strong> for anomaly detection that is very similar to the one in supervised learning.</p>
+
+<p>Our goal is for p(x) to be large for normal examples and small for anomalous examples.</p>
+
+<p>One common problem is when p(x) is similar for both types of examples. In this case, you need to examine the anomalous examples that are giving high probability in detail and try to figure out new features that will better distinguish the data.</p>
+
+<p>In general, choose features that might take on unusually large or small values in the event of an anomaly.</p>
+
+<h3 id="toc_7">Multivariate Gaussian Distribution</h3>
+
+<p>The multivariate gaussian distribution is an extension of anomaly detection and may (or may not) catch more anomalies.</p>
+
+<p>Instead of modeling \(p(x_1),p(x_2),\dots\) separately, we will model p(x) all in one go. Our parameters will be: \(\mu \in \mathbb{R}^n\) and \(\Sigma \in \mathbb{R}^{n \times n}\)</p>
+
+<p>\(p(x;\mu,\Sigma) = \dfrac{1}{(2\pi)^{n/2} |\Sigma|^{1/2}} exp(-1/2(x-\mu)^T\Sigma^{-1}(x-\mu))\)</p>
+
+<p>The important effect is that we can model oblong gaussian contours, allowing us to better fit data that might not fit into the normal circular contours.</p>
+
+<p>Varying Σ changes the shape, width, and orientation of the contours. Changing μ will move the center of the distribution.</p>
+
+<p>Check also:</p>
+
+<ul>
+<li>  <a href="http://cs229.stanford.edu/section/gaussians.pdf">The Multivariate Gaussian Distribution</a> <a href="http://cs229.stanford.edu/section/gaussians.pdf">http://cs229.stanford.edu/section/gaussians.pdf</a> Chuong B. Do, October 10, 2008.</li>
+</ul>
+
+<p>Following examples illustrate the basic meaning of parameters in multivariable gaussian distribution:</p>
+
+<pre><code class="language-text">mean = [0, 0]
+cov = [[1, 0], [0, 1]]  # diagonal covariance
+# Draw random samples from a multivariate normal distribution
+x, y = np.random.multivariate_normal(mean, cov, 5000).T
+plt.plot(x, y, &#39;x&#39;,color=&#39;y&#39;)
+plt.axis(&#39;equal&#39;)
+plt.hold
+
+# change mean
+mean = [0, 10]
+x, y = np.random.multivariate_normal(mean, cov, 5000).T
+plt.plot(x, y, &#39;.&#39;, color=&#39;b&#39;)
+
+# change variances
+mean = [10, 10]
+cov = [[1, 0], [0, 10]]  # diagonal covariance
+x, y = np.random.multivariate_normal(mean, cov, 5000).T
+plt.plot(x, y, &#39;-&#39;, color=&#39;r&#39;)
+plt.show()
+</code></pre>
+
+<p><img src="media/15045011015887/15045091983941.jpg" alt="demo of multivarible gaussian"/></p>
+
+<h3 id="toc_8">Anomaly Detection using the Multivariate Gaussian Distribution</h3>
+
+<p>When doing anomaly detection with multivariate gaussian distribution, we compute μ and Σ normally. We then compute p(x) using the new formula in the previous section and flag an anomaly if p(x) &lt; ϵ.</p>
+
+<p>The original model for p(x) corresponds to a multivariate Gaussian where the contours of \(p(x;\mu,\Sigma)\) are axis-aligned.</p>
+
+<p>The multivariate Gaussian model can automatically capture correlations between different features of x.</p>
+
+<p>However, the original model maintains some advantages: it is computationally cheaper (no matrix to invert, which is costly for large number of features) and it performs well even with small training set size (in multivariate Gaussian model, it should be greater than the number of features for Σ to be invertible).</p>
+
+<h2 id="toc_9">[2] Recommender Systems</h2>
+
+<h3 id="toc_10">Problem Formulation</h3>
+
+<p>Recommendation is currently a very popular application of machine learning.</p>
+
+<p>Say we are trying to recommend movies to customers. We can use the following definitions</p>
+
+<ul>
+<li><p>\(n_u =\) number of users</p></li>
+<li><p>\(n_m =\) number of movies</p></li>
+<li><p>\(r(i,j) = 1\) if user \(j\) has rated movie \(i\)</p></li>
+<li><p>\(y(i,j) =\) rating given by user \(j\) to movie \(i\) (defined only if \(r(i,j)=1\))</p></li>
+</ul>
+
+<h3 id="toc_11">Content Based Recommendations</h3>
+
+<p>We can introduce two features, \(x_1\) and \(x_2\) which represents how much romance or how much action a movie may have (on a scale of 0−1).</p>
+
+<p>One approach is that we could do linear regression for every single user. For each user \(j\), learn a parameter \(\theta^{(j)} \in \mathbb{R}^3\). _Predict user \(j\) as rating movie \(i\) with \((\theta^{(j)})^Tx^{(i)}\) stars_.</p>
+
+<ul>
+<li><p>\(\theta^{(j)} =\) parameter vector for user \(j\)</p></li>
+<li><p>\(x^{(i)} =\) feature vector for movie \(i\)</p></li>
+</ul>
+
+<p>For user \(j\), movie \(i\), predicted rating: \((\theta^{(j)})^T(x^{(i)})\)</p>
+
+<ul>
+<li>  \(m^{(j)} =\) number of movies rated by user \(j\)</li>
+</ul>
+
+<p>To learn \(\theta^{(j)}\), we do the following</p>
+
+<p>\(min_{\theta^{(j)}} = \dfrac{1}{2}\displaystyle \sum_{i:r(i,j)=1} ((\theta^{(j)})^T(x^{(i)}) - y^{(i,j)})^2 + \dfrac{\lambda}{2} \sum_{k=1}^n(\theta_k^{(j)})^2\)</p>
+
+<p>This is our familiar linear regression. The base of the first summation is choosing all \(i\) such that \(r(i,j) = 1\).</p>
+
+<p>To get the parameters for all our users, we do the following:</p>
+
+<p>\(min_{\theta^{(1)},\dots,\theta^{(n_u)}} = \dfrac{1}{2}\displaystyle \sum_{j=1}^{n_u} \sum_{i:r(i,j)=1} ((\theta^{(j)})^T(x^{(i)}) - y^{(i,j)})^2 + \dfrac{\lambda}{2} \sum_{j=1}^{n_u} \sum_{k=1}^n(\theta_k^{(j)})^2\)</p>
+
+<p>We can apply our linear regression gradient descent update using the above cost function.</p>
+
+<p>The only real difference is that we <strong>eliminate the constant</strong> \(\dfrac{1}{m}\).</p>
+
+<h3 id="toc_12">Feature Finder</h3>
+
+<p>It can be very difficult to find features such as &quot;amount of romance&quot; or &quot;amount of action&quot; in a movie. To figure this out, we can use <u>feature finders</u> .</p>
+
+<p>We can let the users tell us how much they like the different genres, providing their parameter vector immediately for us.</p>
+
+<p>To infer the features from given parameters, we use the squared error function with regularization over all the users:</p>
+
+<p>\(min_{x^{(1)},\dots,x^{(n_m)}} \dfrac{1}{2} \displaystyle \sum_{i=1}^{n_m} \sum_{j:r(i,j)=1} ((\theta^{(j)})^T x^{(i)} - y^{(i,j)})^2 + \dfrac{\lambda}{2}\sum_{i=1}^{n_m} \sum_{k=1}^{n} (x_k^{(i)})^2\)</p>
+
+<p>You can also <strong>randomly guess</strong> the values for theta to guess the features repeatedly. You will actually converge to a good set of features.</p>
+
+<h3 id="toc_13">Collaborative Filtering Algorithm</h3>
+
+<p>To speed things up, we can simultaneously minimize our features and our parameters:</p>
+
+<p><img src="media/15045011015887/Collaborative%20Filtering.png" alt="Collaborative Filtering"/></p>
+
+<p>\(J(x,\theta) = \dfrac{1}{2} \displaystyle \sum_{(i,j):r(i,j)=1}((\theta^{(j)})^Tx^{(i)} - y^{(i,j)})^2 + \dfrac{\lambda}{2}\sum_{i=1}^{n_m} \sum_{k=1}^{n} (x_k^{(i)})^2 + \dfrac{\lambda}{2}\sum_{j=1}^{n_u} \sum_{k=1}^{n} (\theta_k^{(j)})^2\)</p>
+
+<p>It looks very complicated, but we&#39;ve only combined the cost function for \(\theta\) and the cost function for \(x\).</p>
+
+<p>Because the algorithm can learn them itself, the bias units where \(x_0=1\) have been removed, therefore \(x\in \mathcal{R}^ n\) and \(\theta \in \mathcal{R} ^n\).</p>
+
+<p>These are three steps in the algorithm:</p>
+
+<ol>
+<li><p>Initialize \(x^{(i)},...,x^{(n_m)},\theta^{(1)},...,\theta^{(n_u)}\) to small random values. This serves to break symmetry and ensures that the algorithm learns features \(x^{(i)},...,x^{(n_m)}\) that are different from each other.</p></li>
+<li><p>Minimize \(J(x^{(i)},...,x^{(n_m)},\theta^{(1)},...,\theta^{(n_u)})\) using gradient descent (or an advanced optimization algorithm).  E.g. for every \(j=1,...,n_u,i=1,...n_m\):</p>
+<p>\(x_k^{(i)} := x_k^{(i)} - \alpha\left (\displaystyle \sum_{j:r(i,j)=1}{((\theta^{(j)})^T x^{(i)} - y^{(i,j)}) \theta_k^{(j)}} + \lambda x_k^{(i)} \right)\)</p>
+<p>\(\theta_k^{(j)} := \theta_k^{(j)} - \alpha\left (\displaystyle \sum_{i:r(i,j)=1}{((\theta^{(j)})^T x^{(i)} - y^{(i,j)}) x_k^{(i)}} + \lambda \theta_k^{(j)} \right)\)</p></li>
+<li><p>For a user with parameters θ and a movie with (learned) features x, predict a star rating of \(\theta^Tx\).</p></li>
+</ol>
+
+<h3 id="toc_14">Vectorization: Low Rank Matrix Factorization</h3>
+
+<p>Given matrices X (each row containing features of a particular movie) and Θ (each row containing the weights for those features for a given user), then the full matrix Y of all predicted ratings of all movies by all users is given simply by: \(Y = X\Theta^T\).</p>
+
+<p>Predicting how similar two movies i and j are can be done using the distance between their respective feature vectors x. Specifically, we are looking for a small value of \(||x^{(i)} - x^{(j)}||\).</p>
+
+<h3 id="toc_15">Implementation Detail: Mean Normalization</h3>
+
+<p>If the ranking system for movies is used from the previous lectures, then new users (who have watched no movies), will be assigned new movies incorrectly. Specifically, they will be assigned θ with all components equal to zero due to the minimization of the regularization term. That is, we assume that the new user will rank all movies 0, which does not seem intuitively correct.</p>
+
+<p>We rectify this problem by normalizing the data relative to the mean. First, we use a matrix Y to store the data from previous ratings, where the ith row of Y is the ratings for the ith movie and the jth column corresponds to the ratings for the jth user.</p>
+
+<p>We can now define a vector</p>
+
+<p>\(\mu = [\mu_1, \mu_2, \dots , \mu_{n_m}]\)</p>
+
+<p>such that</p>
+
+<p>\(\mu_i = \frac{\sum_{j:r(i,j)=1}{Y_{i,j}}}{\sum_{j}{r(i,j)}}\)</p>
+
+<p>Which is effectively the mean of the previous ratings for the ith movie (where only movies that have been watched by users are counted). We now can normalize the data by subtracting u, the mean rating, from the actual ratings for each user (column in matrix Y):</p>
+
+<p>As an example, consider the following matrix Y and mean ratings μ:</p>
+
+<p>\(Y = \begin{bmatrix} 5 &amp; 5 &amp; 0 &amp; 0 \newline 4 &amp; ? &amp; ? &amp; 0 \newline 0 &amp; 0 &amp; 5 &amp; 4 \newline 0 &amp; 0 &amp; 5 &amp; 0 \newline \end{bmatrix}, \quad \mu = \begin{bmatrix} 2.5 \newline 2 \newline 2.25 \newline 1.25 \newline \end{bmatrix}\)</p>
+
+<p>The resulting Y′ vector is:</p>
+
+<p>\(Y&#39; = \begin{bmatrix} 2.5 &amp; 2.5 &amp; -2.5 &amp; -2.5 \newline 2 &amp; ? &amp; ? &amp; -2 \newline -.2.25 &amp; -2.25 &amp; 3.75 &amp; 1.25 \newline -1.25 &amp; -1.25 &amp; 3.75 &amp; -1.25 \end{bmatrix}\)</p>
+
+<p>Now we must slightly modify the linear regression prediction to include the mean normalization term:</p>
+
+<p>\((\theta^{(j)})^T x^{(i)} + \mu_i\)</p>
+
+<p>Now, for a new user, the initial predicted values will be equal to the μ term instead of simply being initialized to zero, which is more accurate.</p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/9/9</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html'>机器学习</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
 			<div class="article">
                 <a class="clearlink" href="neural_networks.html">
                 
@@ -1357,184 +1767,6 @@ plt.scatter(x[:,0], x[:,1], c=y)
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="logistic_regression_classification.html">
-                
-                  <h1>Machine Learning (3): Logistic Regression - Classification</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<ul>
-<li>
-<a href="#toc_0">Binary Classification</a>
-<ul>
-<li>
-<a href="#toc_1">Examples</a>
-</li>
-<li>
-<a href="#toc_2">Hypothesis Representation</a>
-</li>
-<li>
-<a href="#toc_3">Decision boundary</a>
-</li>
-<li>
-<a href="#toc_4">Cost Function</a>
-</li>
-<li>
-<a href="#toc_5">Gradient Descent</a>
-</li>
-<li>
-<a href="#toc_6">Advanced Optimization</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_7">Multiclass classification</a>
-<ul>
-<li>
-<a href="#toc_8">Example</a>
-</li>
-<li>
-<a href="#toc_9">Method</a>
-</li>
-</ul>
-</li>
-</ul>
-
-
-<p>The classification problem is just like the regression problem, except that the values \(y\) we now want to predict take on only a small number of discrete values.</p>
-
-<h2 id="toc_0">Binary Classification</h2>
-
-<p><strong>Binary classification problem</strong> : \(y\) can take on only two values, 0 and 1.</p>
-
-<h3 id="toc_1">Examples</h3>
-
-<ul>
-<li>Email: Spam/Not Spam?</li>
-<li>Online Transaction: Fraudulent(Yes/NO)?</li>
-<li>Tumor: Malignant/ Benign?</li>
-</ul>
-
-<p>Given \(x(i)\), the corresponding \(y(i)\) is also called the <strong>label</strong> for the training example.</p>
-
-<h3 id="toc_2">Hypothesis Representation</h3>
-
-<p>It doesn&#39;t make sense for \(h_\theta(x)\) to take values larger than 1 or smaller than0, when we know that \( y\in \{0,1\}\). To fix this, let&#39;s change the form for our hypotheses \(h_\theta(x)\) to satisfy \(0\leq_\theta(x)\leq 1\). This is accomplished by plugging \(\theta^Tx\) into the Logistic Function.</p>
-
-<p><strong>Logistic Function</strong>:<br/>
-also called <code>sigmoid</code> (/&#39;sɪgmɔɪd/) function<br/>
-   \[\begin{align*}&amp; h_\theta (x) = g ( \theta^T x ) \newline \newline&amp; z = \theta^T x \newline&amp; g(z) = \dfrac{1}{1 + e^{-z}}\end{align*}\]</p>
-
-<ol>
-<li><p>The sigmoid function g(z), maps any real number to the (0, 1) interval, making it useful for transforming an arbitrary-valued function into a function better suited for classification.</p></li>
-<li><p>\(h_\theta(x)\) gives us the probability that our output is 1. Probability that prediction is 0 is just the complement of probability that it is 1:</p></li>
-</ol>
-
-<p>\[\begin{align*}&amp; h_\theta(x) = P(y=1 | x ; \theta) = 1 - P(y=0 | x ; \theta) \newline&amp; P(y = 0 | x;\theta) + P(y = 1 | x ; \theta) = 1\end{align*}\]</p>
-
-<h3 id="toc_3">Decision boundary</h3>
-
-<p>The <strong>decision boundary</strong> is the line that separates the area where \(y\) = 0 and where \(y = 1\). It is defined by hypothesis function.</p>
-
-<h3 id="toc_4">Cost Function</h3>
-
-<p>We cannot use the same cost function that we use for linear regression because the Logistic Function will cause the output to be wary, causing many local optima.</p>
-
-<p>Instead, our cost function for logistic regression looks like:</p>
-
-<p>\[\begin{align*}&amp; J(\theta) = \dfrac{1}{m} \sum_{i=1}^m \mathrm{Cost}(h_\theta(x^{(i)}),y^{(i)}) \newline &amp; \mathrm{Cost}(h_\theta(x),y) = -\log(h_\theta(x)) \; &amp; \text{if y = 1} \newline &amp; \mathrm{Cost}(h_\theta(x),y) = -\log(1-h_\theta(x)) \; &amp; \text{if y = 0}\end{align*}\]</p>
-
-<p>Cost function&#39;s two conditional cases can be compressed into one case:<br/>
-\[Cost(h_\theta(x),y)= -y \log(h_\theta(x))-(1-y) \log(1-h_\theta(x))\]</p>
-
-<p>The entire cost function can be written as follows:</p>
-
-<p>\[ J(\theta) = -\dfrac{1}{m} \sum_{i=1}^m[ y ^{(i)}\log(h_\theta(x^{(i)}))+(1-y^{(i)}) \log(1-h_\theta(x^{(i)}))]\]</p>
-
-<p>A vectorized implementation is:<br/>
-\[h=g(X\theta)\]<br/>
-\[J(\theta)=\frac{1}{m}(-y^T\log(h)-(1-y)^T\log(1-h))\]</p>
-
-<p>And the gradient of the cost is a vector of the same length as \(\theta\) where the \(j^{th}\) element is defined as follows:</p>
-
-<p>\[\frac{\partial J(\theta)}{\partial \theta_j}=\frac{1}{m}\Sigma_{i=1}^m(h_\theta(x^{(i)})-y^{(i)})x^{(i)}_j\]</p>
-
-<p>A vectorized implementation is:<br/>
-\[\frac{\partial J(\theta)}{\partial \theta_j}=\frac{1}{m}(h-y)^TX\]</p>
-
-<h3 id="toc_5">Gradient Descent</h3>
-
-<p>Repeat until {</p>
-
-<p>\[\theta_j:=\theta_j-\frac{\alpha}{m}\Sigma^m_{i=1}(h_\theta(x^{(i)})-y^{(i)})x^{(i)}_j\]<br/>
-}</p>
-
-<p>A vectorized implementation is:</p>
-
-<p>\[\theta:=\theta-\frac{\alpha}{m}X^T(g(X\theta)-y)\]</p>
-
-<h3 id="toc_6">Advanced Optimization</h3>
-
-<p>There are more sophisticated, faster ways to optimize \(\theta\) that can be used instead of gradient descent:</p>
-
-<ul>
-<li>Conjugate gradient</li>
-<li>BFGS</li>
-<li>L-BFGS</li>
-</ul>
-
-<p>You should not write these algorithms yourself, but use the libraries provided by Octave and Matlab instead.</p>
-
-<h2 id="toc_7">Multiclass classification</h2>
-
-<h3 id="toc_8">Example</h3>
-
-<ul>
-<li>Email foldering/tagging: Work, friends, family, hobby</li>
-<li>Medical diagrams: Not ill, Cold, Flu</li>
-<li>Weather: Sunny, Cloudy, Rain, Snow</li>
-</ul>
-
-<h3 id="toc_9">Method</h3>
-
-<p>Since \(y = \{0,1...n\}\), we divide our problem into \(n+1\) (+1 because the index starts at 0) binary classification problems; in each one, we predict the probability that &#39;y&#39; is a member of one of our classes.</p>
-
-<p>We are basically choosing one class and then lumping all the others into a single second class. We do this repeatedly, applying binary logistic regression to each case, and then use the hypothesis that returned the highest value as our prediction.</p>
-
-<p>\[\begin{align*}&amp; y \in \lbrace0, 1 ... n\rbrace \newline&amp; h_\theta^{(0)}(x) = P(y = 0 | x ; \theta) \newline&amp; h_\theta^{(1)}(x) = P(y = 1 | x ; \theta) \newline&amp; \cdots \newline&amp; h_\theta^{(n)}(x) = P(y = n | x ; \theta) \newline&amp; \mathrm{prediction} = \max_i( h_\theta ^{(i)}(x) )\newline\end{align*}\]</p>
-
-<p><strong>To summarize</strong>:</p>
-
-<ul>
-<li>Train a logistic regression classifier hθ(x) for each class to predict the probability that  \(y = i\).</li>
-<li>To make a prediction on a new x, pick the class that maximizes \(h_\theta(x)\).</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/6/27</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html'>机器学习</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1589,39 +1821,39 @@ also called <code>sigmoid</code> (/&#39;sɪgmɔɪd/) function<br/>
 
       	<p class="cat-list">
         
-            <a href=".html"><strong>Leetcode</strong></a>
+            <a href="Leetcode.html"><strong>Leetcode</strong></a>
         
-            <a href=".html"><strong>C/C++</strong></a>
+            <a href="C/C++.html"><strong>C/C++</strong></a>
         
-            <a href=".html"><strong>Python数据结构与算法</strong></a>
+            <a href="Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html"><strong>Python数据结构与算法</strong></a>
         
-            <a href=".html"><strong>Course</strong></a>
+            <a href="Course.html"><strong>Course</strong></a>
         
-            <a href=".html"><strong>Python特性</strong></a>
+            <a href="Python%E7%89%B9%E6%80%A7.html"><strong>Python特性</strong></a>
         
-            <a href=".html"><strong>机器学习</strong></a>
+            <a href="%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html"><strong>机器学习</strong></a>
         
-            <a href=".html"><strong>Python科学计算三维可视化</strong></a>
+            <a href="Python%E7%A7%91%E5%AD%A6%E8%AE%A1%E7%AE%97%E4%B8%89%E7%BB%B4%E5%8F%AF%E8%A7%86%E5%8C%96.html"><strong>Python科学计算三维可视化</strong></a>
         
-            <a href=".html"><strong>English</strong></a>
+            <a href="English.html"><strong>English</strong></a>
         
-            <a href=".html"><strong>Computer System</strong></a>
+            <a href="Computer%20System.html"><strong>Computer System</strong></a>
         
-            <a href=".html"><strong>Deep Learning</strong></a>
+            <a href="Deep%20Learning.html"><strong>Deep Learning</strong></a>
         
-            <a href=".html"><strong>Linux 系统编程</strong></a>
+            <a href="Linux%20%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B.html"><strong>Linux 系统编程</strong></a>
         
-            <a href=".html"><strong>数据库</strong></a>
+            <a href="%E6%95%B0%E6%8D%AE%E5%BA%93.html"><strong>数据库</strong></a>
         
-            <a href=".html"><strong>Tensorflow</strong></a>
+            <a href="Tensorflow.html"><strong>Tensorflow</strong></a>
         
-            <a href=".html"><strong>Big Data</strong></a>
+            <a href="Big%20Data.html"><strong>Big Data</strong></a>
         
-            <a href=".html"><strong>文献阅读</strong></a>
+            <a href="%E6%96%87%E7%8C%AE%E9%98%85%E8%AF%BB.html"><strong>文献阅读</strong></a>
         
-            <a href=".html"><strong>Tools</strong></a>
+            <a href="Tools.html"><strong>Tools</strong></a>
         
-            <a href=".html"><strong>大数据</strong></a>
+            <a href="%E5%A4%A7%E6%95%B0%E6%8D%AE.html"><strong>大数据</strong></a>
          
         </p>
 
@@ -1638,7 +1870,13 @@ also called <code>sigmoid</code> (/&#39;sɪgmɔɪd/) function<br/>
 	      
 		      
 			      <li class="post">
-			        <a href="15317356378033.html">Operating System Concepts - Introduction</a>
+			        <a href="os-concepts-introduction.html">Operating System Concepts 1 - Introduction</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="os-concepts-os-structures.html">Operating System Concepts 2 - Operating System structures</a>
 			      </li>
 		     
 		  
@@ -1657,12 +1895,6 @@ also called <code>sigmoid</code> (/&#39;sɪgmɔɪd/) function<br/>
 		      
 			      <li class="post">
 			        <a href="exceptional_control_flow.html">CSAPP - 异常控制流</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="overhead.html">Overhead</a>
 			      </li>
 		     
 		  

@@ -89,39 +89,39 @@
     <li><label>Categories</label></li>
 
         
-            <li><a href=".html">Leetcode</a></li>
+            <li><a href="Leetcode.html">Leetcode</a></li>
         
-            <li><a href=".html">C/C++</a></li>
+            <li><a href="C/C++.html">C/C++</a></li>
         
-            <li><a href=".html">Python数据结构与算法</a></li>
+            <li><a href="Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html">Python数据结构与算法</a></li>
         
-            <li><a href=".html">Course</a></li>
+            <li><a href="Course.html">Course</a></li>
         
-            <li><a href=".html">Python特性</a></li>
+            <li><a href="Python%E7%89%B9%E6%80%A7.html">Python特性</a></li>
         
-            <li><a href=".html">机器学习</a></li>
+            <li><a href="%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html">机器学习</a></li>
         
-            <li><a href=".html">Python科学计算三维可视化</a></li>
+            <li><a href="Python%E7%A7%91%E5%AD%A6%E8%AE%A1%E7%AE%97%E4%B8%89%E7%BB%B4%E5%8F%AF%E8%A7%86%E5%8C%96.html">Python科学计算三维可视化</a></li>
         
-            <li><a href=".html">English</a></li>
+            <li><a href="English.html">English</a></li>
         
-            <li><a href=".html">Computer System</a></li>
+            <li><a href="Computer%20System.html">Computer System</a></li>
         
-            <li><a href=".html">Deep Learning</a></li>
+            <li><a href="Deep%20Learning.html">Deep Learning</a></li>
         
-            <li><a href=".html">Linux 系统编程</a></li>
+            <li><a href="Linux%20%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B.html">Linux 系统编程</a></li>
         
-            <li><a href=".html">数据库</a></li>
+            <li><a href="%E6%95%B0%E6%8D%AE%E5%BA%93.html">数据库</a></li>
         
-            <li><a href=".html">Tensorflow</a></li>
+            <li><a href="Tensorflow.html">Tensorflow</a></li>
         
-            <li><a href=".html">Big Data</a></li>
+            <li><a href="Big%20Data.html">Big Data</a></li>
         
-            <li><a href=".html">文献阅读</a></li>
+            <li><a href="%E6%96%87%E7%8C%AE%E9%98%85%E8%AF%BB.html">文献阅读</a></li>
         
-            <li><a href=".html">Tools</a></li>
+            <li><a href="Tools.html">Tools</a></li>
         
-            <li><a href=".html">大数据</a></li>
+            <li><a href="%E5%A4%A7%E6%95%B0%E6%8D%AE.html">大数据</a></li>
          
 
       </ul>
@@ -143,6 +143,326 @@
 	<div class="large-8 medium-8 columns">
 		<div class="markdown-body home-categories">
 		
+			<div class="article">
+                <a class="clearlink" href="virtual_memory_and_dynamic_memory_allocate.html">
+                
+                  <h1>CSAPP - 虚拟内存</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h2 id="toc_0">1 物理/虚拟寻址</h2>
+
+<p>主存是由连续的<strong>字节大小</strong>的单元组成的数组，每字节都有一个唯一的<strong>物理地址</strong>(Physical Adress)。CPU使用物理地址访问内存的方式称为<strong>物理寻址</strong>(Physical adressing)。</p>
+
+<p>早期的PC以及数字信号处理器等使用物理寻址，下面是物理寻址的示意图：</p>
+
+<p><img src="media/15164033620970/physical_address.png" alt="physical_address"/></p>
+
+<p>现代处理器通过生成一个<strong>虚拟地址</strong>(Virtual Address)来访问主存，虚拟地址经过<strong>地址翻译</strong>转换为物理地址。地址翻译由CPU内的<strong>内存管理单元</strong>(Memory Management Unit, <code>MMU</code>)负责.</p>
+
+<p><img src="media/15164033620970/virtual_memory%20.png" alt="virtual_memory "/></p>
+
+<p>虚拟内存充当着三个角色：</p>
+
+<ul>
+<li>作为缓存的工具，可以更有效率的使用内存：使用DRAM当做部分的虚拟地址空间的缓存</li>
+<li>作为内存管理的工具，简化内存管理：每个进程都有统一的线性地址空间</li>
+<li>作为内存保护的工具，分隔地址空间：进程的内存不会相互影响；用户程序不能访问保密的内核信息和代码</li>
+</ul>
+
+<p>下面一节具体讲解虚拟内存的这三个角色。</p>
+
+<h2 id="toc_1">2 虚拟内存的三个角色</h2>
+
+<h3 id="toc_2">2.1 作为缓存的工具</h3>
+
+<p>可以把主存DRAM看作是虚拟内存的缓存，类似于L1、L2、L3高速缓存是DRAM内存的缓存。也就是说可以把虚拟内存看成是存储器层次结构的一部分。</p>
+
+<p><img src="media/15164033620970/vm_as_cache.png" alt="vm_as_cache"/></p>
+
+<p>和其他存储器层次结构中的缓存一样，较低层上的数据被分割成块，作为与较高层之间的传输单元。这里较低层是虚拟内存，分割成<strong>虚拟页</strong>(Virtual Page, VP)，虚拟页大小为\(P=2^p\)字节。类似的，这里的较高层，物理内存DRAM，被分割为<strong>物理页</strong>(Physical Page, PP)，大小也为\(P\)，也叫做页桢。</p>
+
+<p>虚拟页的状态分为三种：</p>
+
+<ul>
+<li>未分配(Unallocated): 系统还未分配(创建)的页，不占用磁盘空间。</li>
+<li>缓存的(Cached): 当前已缓存在物理内存中的已分配页。</li>
+<li>未缓存的(Uncached): 未缓存在物理内存中的已分配页。</li>
+</ul>
+
+<p>那么具体是怎么判断一个虚拟页的状态呢？怎么知道虚拟页放在哪个物理页中呢？</p>
+
+<p>物理内存中存在一个叫<strong>页表</strong>(page table)的数据结构，由操作系统负责。页表将虚拟页映射到物理页，每次内存管理单元中的<strong>地址翻译硬件</strong>将虚拟地址转换为物理地址时都会读取页表。</p>
+
+<p>页表其实是一个页表条目(Page Table Entry, PTE)的数组。页表条目包含一个有效位(valid bit)和一个n位地址字段。</p>
+
+<p><img src="media/15164033620970/page_table.jpg" alt="page_table"/></p>
+
+<p>在虚拟内存的习惯说法中，DRAM缓存命中/不命中，特称为<strong>页命中</strong>/<strong>缺页</strong>(Page Fault)。</p>
+
+<h3 id="toc_3">2.2 作为内存管理的工具</h3>
+
+<p>操作系统为每个进程提供了一个独立的页表，也就是提供了一个独立的虚拟地址空间。多个虚拟页面可以映射到同一个共享物理页面上。虚拟内存简化了链接和加载、代码和数据共享、以及应用程序的内存分配。</p>
+
+<h3 id="toc_4">2.3 作为内存保护的工具</h3>
+
+<p>一方面，每个进程拥有独立的地址空间使得区分不同进程的私有内存变得容易。另一方面在每个页表条目PTE中，添加了额外的<strong>许可位</strong>(SUP, READ, WRITE, EXEC)来控制对一个虚拟页面内容的访问：</p>
+
+<ul>
+<li>SUP位表示进程是否运行在超级用户模式下才能访问</li>
+<li>READ/WRITE位控制读和写的访问</li>
+<li>EXEC位控制执行的访问</li>
+</ul>
+
+<p><img src="media/15164033620970/vm_protection.png" alt="vm_protection"/></p>
+
+<p>如果违反许可条件，那么就触发段错误(segmentation fault)。</p>
+
+<h2 id="toc_5">3 Linux虚拟内存系统</h2>
+
+<p>Linux为每个进程维护了一个单独的虚拟地址空间。Linux将虚拟内存组织成一些<strong>区域</strong>的集合。一个区域就是已分配的虚拟内存的连续片。</p>
+
+<p>Linux虚拟地址空间由如下几个区域组成：</p>
+
+<ul>
+<li>代码（<code>.text</code>）: 这里存放的是CPU要执行的指令。代码段是可共享的，相同的代码在内存中只会有一个拷贝，同时这个段是只读的，防止程序由于错误而修改自身的指令。</li>
+<li>初始化数据段（<code>.data</code>）: 这里存放的是程序中需要明确赋初始值的变量，例如位于所有函数之外的全局变量：<code>int val=&quot;100</code>。需要强调的是，以上两段都是位于程序的可执行文件中，内核在调用<code>exec</code>函数启动该程序时从源程序文件中读入。</li>
+<li>未初始化数据段（<code>.bss</code>）: 位于这一段中的数据，内核在执行该程序前，将其初始化为0或者<code>null</code>。例如出现在任何函数之外的全局变量：int sum;</li>
+<li>堆（<code>Heap</code>）: 这个段用于在程序中进行动态内存申请，例如经常用到的<code>malloc</code>，<code>new</code>系列函数就是从这个段中申请内存。</li>
+<li>共享库(<code>Shared Library</code>): 用来存放像C标准库和数学哭这样的共享库的代码和数据的区域。</li>
+<li>栈（<code>Stack</code>）: 函数中的局部变量以及在函数调用过程中产生的临时变量都保存在此段中，具体见下面一节。</li>
+<li>内核虚拟内存：包含内核中的代码和数据结构。</li>
+</ul>
+
+<p><img src="media/15089188725996/linux_virtual_memory.png" alt="linux_virtual_memory"/></p>
+
+<h3 id="toc_6">3.1 Linux是如何组织虚拟内存的</h3>
+
+<p>那么Linux具体是怎么组织虚拟内存的呢？Linux内核为系统中的每个进程维护一个单独的任务结构体(<code>task_struct</code>, 在<code>sched.h</code>头文件中)。<code>task_struct</code>中的元素包含运行该进程所需要的所有信息(PID、指向用户栈的指针、可执行目标文件的名字、以及程序计数器)。</p>
+
+<p><img src="media/15164033620970/vm_linux.png" alt="vm_linux"/></p>
+
+<p><code>task_struct</code>中的一个元素指向<code>mm_struct</code>，它描述了虚拟内存的当前状态。<code>pgd</code>指向第一级页表的基址，而<code>mmap</code>指向一个<code>vm_area_struct</code>(区域结构, 定义在<code>mm_types.h</code>)的链表。每个区域结构链表都描述了虚拟地址空间的一个区域，包含以下字段：</p>
+
+<ul>
+<li><code>vm_start</code>: 指向区域的起始处</li>
+<li><code>vm_end</code>: 指向区域的结束处</li>
+<li><code>vm_prot</code>: 描述着区域内包含的所有页的读写许可权限</li>
+<li><code>vm_flags</code>: 描述进程共享/私有</li>
+<li><code>vm_next</code>: 下一个区域结构</li>
+</ul>
+
+<h3 id="toc_7">3.2 Linux 缺页异常处理</h3>
+
+<p>内存管理单元MMU在试图翻译某个虚拟地址A时，触发了一个缺页异常，引起缺页异常处理程序：</p>
+
+<ul>
+<li>虚拟地址A是合法的吗？-&gt; 段错误(segment fault)</li>
+<li>试图进行的内存访问是合法的吗？ -&gt; 保护异常(也引发段错误)</li>
+</ul>
+
+<p><img src="media/15164033620970/linux_page_fault.png" alt="linux_page_fault"/></p>
+
+<h2 id="toc_8">4 动态内存分配</h2>
+
+<p>程序使用动态内存分配的最重要的原因是经常直到程序实际运行时，才知道某些数据结构的大小。一般使用动态内存分配器(dynamic memeory allocator)来分配动态内存。</p>
+
+<p>分配器根据哪个实体来负责释放已分配的块，分为两种：</p>
+
+<ul>
+<li>显示分配器(explicit allocator)：要求程序显示地释放任何已分配的块。例如C中的malloc/free，C++中的new/delete。</li>
+<li>隐式分配器(implicit allocator): 除此之外，自动释放未使用的已分配块(垃圾收集，garbage collection)。</li>
+</ul>
+
+<h3 id="toc_9">4.2 显式分配器的要求和目标</h3>
+
+<h4 id="toc_10">4.2.1 分配器的要求</h4>
+
+<p>分配器有如下的要求：</p>
+
+<ul>
+<li>处理任意请求序列</li>
+<li>立即相应请求</li>
+<li>只使用堆</li>
+<li>对齐块(对齐要求)</li>
+<li>不修改已分配的块</li>
+</ul>
+
+<h4 id="toc_11">4.2.2 分配器的目标</h4>
+
+<p>分配器试图最大化吞吐率和内存利用率</p>
+
+<ul>
+<li>最大化吞吐率(吞吐率：每个单位时间里完成的请求数)</li>
+<li>最大化内存利用率</li>
+</ul>
+
+<p>最大化吞吐率和最大化利用率之间是相互 <u>牵制</u> 的，分配器设计的目标是在这两者之间找到一个适当的平衡。</p>
+
+<p>造成利用率很低的主要原因是<strong>碎片</strong>(fragmentation)现象。当有效载荷比块要小时，发生<strong>内部碎片</strong>(Internal fragmentation)，引起的原因有：对齐等。</p>
+
+<p><img src="media/15164033620970/internal_fragmentation.png" alt="internal_fragmentation"/></p>
+
+<p>当即使有足够的累积的块内存，但是没有单一块能够满足需求时，发生<strong>外部碎片</strong>(external fragmentation)：</p>
+
+<p><img src="media/15164033620970/external_fragmentation.png" alt="external_fragmentation"/></p>
+
+<p>外部碎片还取决于将来的请求，例如上图，如果最后的p4请求4个字节呢？也就不会发生碎片。正因为外部碎片难以量化且不可能预测，所以分配器通常采用启发式策略来试图维持少量的大空闲块，而不是维持大量的小空闲块。</p>
+
+<h3 id="toc_12">4.3 实现方法</h3>
+
+<ul>
+<li>隐式空闲列表 Implicit Free List</li>
+<li>显式空闲列表 Explicit Free List</li>
+<li>分离式空闲列表 Segregated Free List</li>
+</ul>
+
+<h4 id="toc_13">4.3.1 隐式空闲列表</h4>
+
+<p><img src="media/15164033620970/implicit_list.png" alt="implicit_list"/></p>
+
+<p>隐式空闲链表优点是简单，缺点是操作开销大。因为无论是分配还是释放块，都需要对隐式空闲列表进行搜索，复杂度是\(O(n)\)，\(n\)是已分配块和空闲块的总数。</p>
+
+<h4 id="toc_14">4.3.1 显式空闲列表</h4>
+
+<p><img src="media/15164033620970/explict_list.png" alt="explict_list"/></p>
+
+<h4 id="toc_15">4.3.1 分离式空闲列表</h4>
+
+<h2 id="toc_16">5 C程序中常见的与内存有关的错误</h2>
+
+<h4 id="toc_17">5.1 间接引用坏指针</h4>
+
+<p>这是非常常见的例子，没有引用对应的地址，少了 &amp;</p>
+
+<pre><code class="language-c">int val;
+scanf(&quot;%d&quot;, val); // 正确应该是scanf(&quot;%d, &amp;val);
+</code></pre>
+
+<h4 id="toc_18">5.2 读未初始化的内存</h4>
+
+<p><strong>堆内存是没有被初始化为0的</strong>：</p>
+
+<pre><code class="language-c">/* return y = Ax */
+int *matvec(int **A, int *x) {
+    int *y = malloc(N * sizeof(int));
+    int i, j;
+    
+    for (i = 0; i &lt; N; i++)
+        for (j = 0; j &lt; N; j++)
+            y[i] += A[i][j] * x[j];
+    return y;
+}
+</code></pre>
+
+<p>正确的方法是显式地将y[i]设置为0，或者使用<code>calloc</code>。</p>
+
+<h4 id="toc_19">5.3 允许栈缓冲区溢出</h4>
+
+<p>没有检查字符串的长度（经典的缓冲区溢出攻击也是利用相同的机制）</p>
+
+<pre><code class="language-c">char s[8];
+int i;
+gets(s); /* stack buffer overflow, reads &quot;123456789&quot; from stdin */
+</code></pre>
+
+<h4 id="toc_20">5.4 引用不存在的变量</h4>
+
+<p>尽管指针仍然指向一个合法的内存地址，但是已经不再指向一个合法的变量了。以后在程序中调用其他函数时，内存将重用它们的栈针。</p>
+
+<pre><code class="language-c">int *foo() {
+    int val;
+    
+    return &amp;val;
+}
+</code></pre>
+
+<h4 id="toc_21">5.5 多次释放</h4>
+
+<p>这个不用多说，不能重复搞两次</p>
+
+<pre><code class="language-c">x = malloc(N * sizeof(int));
+//  &lt;manipulate x&gt;
+free(x);
+y = malloc(M * sizeof(int));
+//  &lt;manipulate y&gt;
+free(x);
+</code></pre>
+
+<h4 id="toc_22">5.6 引用已经被释放的堆块中的数据</h4>
+
+<p>同样是很明显的错误，不要犯</p>
+
+<pre><code class="language-c">x = malloc(N * sizeof(int));
+//  &lt;manipulate x&gt;
+free(x);
+//  ....
+y = malloc(M * sizeof(int));
+for (i = 0; i &lt; M; i++)
+    y[i] = x[i]++;
+</code></pre>
+
+<h4 id="toc_23">内存泄漏</h4>
+
+<p>5.7忘记释放已分配块：</p>
+
+<pre><code class="language-c">foo() {
+    int *x = malloc(N * sizeof(int));
+    // ...
+    return ;
+}
+</code></pre>
+
+<p>或者只释放了数据结构的一部分：</p>
+
+<pre><code class="language-c">struct list {
+    int val;
+    struct list *next;
+};
+foo() {
+    struct list *head = malloc(sizeof(struct list));
+    head-&gt;val = 0;
+    head-&gt;next = NULL;
+    //...
+    free(head);
+    return;
+}
+</code></pre>
+
+<h2 id="toc_24">6 core i7内存系统</h2>
+
+<p>Core i7在2008年冬季发布，基于全新Nehalem架构，它的芯片结构如下所示：</p>
+
+<p><img src="media/15164033620970/15312857062358.png" alt=""/></p>
+
+<p>抽象的内存系统：</p>
+
+<p><img src="media/15164033620970/corei7.png" alt="corei7"/></p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/1/20</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Computer%20System.html'>Computer System</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
 			<div class="article">
                 <a class="clearlink" href="Computer_memory.html">
                 
@@ -505,7 +825,9 @@ E:96, 96
                   <div class="more-left left">
                   
                     <span class="date">2018/1/21</span>
-                    
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Computer%20System.html'>Computer System</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -588,7 +910,9 @@ E:96, 96
                   <div class="more-left left">
                   
                     <span class="date">2018/5/25</span>
-                    
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html'>Python数据结构与算法</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -753,159 +1077,9 @@ searchFrom(myMaze, myMaze.startRow, myMaze.startCol)
                   <div class="more-left left">
                   
                     <span class="date">2017/3/25</span>
-                    
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="Dynamic_Programming_Knapsack_Problem.html">
-                
-                  <h1>Dynamic Programming (3): 0-1 Knapsack Problem</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>The most common problem being solved is the <code>0-1 knapsack problem</code>(0-1背包问题), which restricts the number \(w_i\) of copies of each kind of item to zero or one. Given a set of \(n\) items numbered from 1 up to \(n\), each with a weight \(w_i\) and a value \(v_i\), along with a maximum weight capacity \(W\),</p>
-
-<p>\[\begin{equation}<br/>
-\begin{split}<br/>
-&amp;\text{maximize} \sum_{i=1}^nv_ix_i\\<br/>
-&amp;\text{subject to} \sum_{i=1}^n w_ix_i \le W \quad \text{and} \quad x_i \in \{0,1\}\\<br/>
-\end{split}<br/>
-\end{equation}\]</p>
-
-<p>Informally, the problem is to maximize the sum of the values of the items in the knapsack so that the sum of the weights is less than or equal to the knapsack&#39;s capacity.</p>
-
-<p><img src="media/15022680636956/15207485328974.png" alt=""/></p>
-
-<h2 id="toc_0">Bottom-up method</h2>
-
-<h3 id="toc_1">Solving</h3>
-
-<p>Assume \(w_i, w_2,..., w_n, W\) are strictly positive integers. Define \(m[i,w]\) to be the maximum value that can be attained with weight less than or equal to \(w\) using items up to \(i\) (first \(i\) items).</p>
-
-<p>We can define \(m[i,w]\) recursively as follows:</p>
-
-<ul>
-<li>\(m[0, w]=0 \)</li>
-<li>\(m[i,w]=m[i-1, w]\) \(if w_i &gt; w\) ( the new item is more than the current weight limit)</li>
-<li>\(m[i,w]= max(m[i-1,w],m[i-1,w-w_i]+v_i\)) if \(w_i \le w\)</li>
-</ul>
-
-<p>The following is pseudo code for the dynamic program:</p>
-
-<pre><code class="language-python">// Input:
-// Values (stored in array v)
-// Weights (stored in array w)
-// Number of distinct items (n)
-// Knapsack capacity (W)
-  
-for j from 0 to W do:
-     m[0, j] := 0
-  
-for i from 1 to n do:
-    for j from 0 to W do:
-        if w[i] &gt; j then:
-            m[i, j] := m[i-1, j]
-        else:
-            m[i, j] := max(m[i-1, j], m[i-1, j-w[i]] + v[i])
-</code></pre>
-
-<h3 id="toc_2">Implementation</h3>
-
-<pre><code class="language-python">def knapsack01(value, weight, w_size):
-    &quot;&quot;&quot;
-    kanapsack01 solves a 0-1 knapsack problem,
-    input: values(value) and weights(W) of items to put into knapsack ( size of which is w_size)
-    output: the index of items that maximize the value of items putted in the knapsack
-    the index of items counts from 0, and corresponding value
-    &quot;&quot;&quot;
-    n = len(value)  # the number of items
-    # maximum value that can be attained with weight &lt;= weight using first i items
-    m = np.zeros(shape=(n+1, w_size+1), dtype=int)
-    for i in range(w_size+1):
-        m[0, i] = 0
-
-    if not isinstance(w_size, int):
-        raise ValueError(&#39;knapsack_size should be an integer&#39;)
-
-    for i in range(1, n+1):  # items
-        for j in range(1, w_size+1):  # sizes
-            if weight[i-1] &gt; j:
-                m[i, j] = m[i - 1, j]
-            else:
-                m[i, j] = max(m[i - 1, j], m[i - 1, j - weight[i-1]] + value[i-1])
-
-    max_val = m[-1, -1]
-    items = set()
-
-    while max_val &gt; 0 and i &gt; 0:
-        if max_val - value[i-1] in m[i - 1, :]:
-            max_val = max_val - value[i-1]
-            items.add(i-1)
-            i -= 1
-        else:
-            i -= 1
-    return items, m[-1, -1]
-</code></pre>
-
-<h2 id="toc_3">top-down with memoization</h2>
-
-<pre><code class="language-python">def knapsack01_recursive(hash_table, value, weight, i, j):
-    # base case: when 1 items here
-    if i == 1:
-        if weight[i - 1] &lt; j:
-            hash_table[(i, j)] = value[i - 1]
-            return value[i - 1]
-        else:
-            hash_table[(i, j)] = 0
-        return 0
-
-    # sub-problem computed
-    if (i, j) in hash_table:
-        return hash_table[(i, j)]
-    else:
-        if weight[i - 1] &gt; j:
-            # only case 1
-            hash_table[(i, j)] = knapsack01_recursive(hash_table, value, weight, i - 1, j)
-        else:
-            #  case 1, item i-1 excluded
-            case1 = knapsack01_recursive(hash_table, value, weight, i - 1, j)
-            # case 2, item i-1 included
-            case2 = knapsack01_recursive(hash_table, value, weight, i - 1, j - weight[i - 1]) + value[i - 1]
-            hash_table[(i, j)] = max(case1, case2)
-
-    return hash_table[(i, j)]
-</code></pre>
-
-<h2 id="toc_4">Reference</h2>
-
-<ul>
-<li><a href="https://en.wikipedia.org/wiki/Knapsack_problem#cite_ref-plateau85_15-0">Knapsack Problem WIKIPEDIA</a></li>
-<li><a href="https://stackoverflow.com/questions/5683066/knapsack-problem-classic">Knapsack problem Stack Overflow</a></li>
-<li><a href="http://www.es.ele.tue.nl/education/5MC10/Solutions/knapsack.pdf">The knapsack Problem PPT</a></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/8/9</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92.html'>动态规划</a></span>
+          					    <span class="posted-in"><a href='Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html'>Python数据结构与算法</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -972,39 +1146,39 @@ for i from 1 to n do:
 
       	<p class="cat-list">
         
-            <a href=".html"><strong>Leetcode</strong></a>
+            <a href="Leetcode.html"><strong>Leetcode</strong></a>
         
-            <a href=".html"><strong>C/C++</strong></a>
+            <a href="C/C++.html"><strong>C/C++</strong></a>
         
-            <a href=".html"><strong>Python数据结构与算法</strong></a>
+            <a href="Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html"><strong>Python数据结构与算法</strong></a>
         
-            <a href=".html"><strong>Course</strong></a>
+            <a href="Course.html"><strong>Course</strong></a>
         
-            <a href=".html"><strong>Python特性</strong></a>
+            <a href="Python%E7%89%B9%E6%80%A7.html"><strong>Python特性</strong></a>
         
-            <a href=".html"><strong>机器学习</strong></a>
+            <a href="%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html"><strong>机器学习</strong></a>
         
-            <a href=".html"><strong>Python科学计算三维可视化</strong></a>
+            <a href="Python%E7%A7%91%E5%AD%A6%E8%AE%A1%E7%AE%97%E4%B8%89%E7%BB%B4%E5%8F%AF%E8%A7%86%E5%8C%96.html"><strong>Python科学计算三维可视化</strong></a>
         
-            <a href=".html"><strong>English</strong></a>
+            <a href="English.html"><strong>English</strong></a>
         
-            <a href=".html"><strong>Computer System</strong></a>
+            <a href="Computer%20System.html"><strong>Computer System</strong></a>
         
-            <a href=".html"><strong>Deep Learning</strong></a>
+            <a href="Deep%20Learning.html"><strong>Deep Learning</strong></a>
         
-            <a href=".html"><strong>Linux 系统编程</strong></a>
+            <a href="Linux%20%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B.html"><strong>Linux 系统编程</strong></a>
         
-            <a href=".html"><strong>数据库</strong></a>
+            <a href="%E6%95%B0%E6%8D%AE%E5%BA%93.html"><strong>数据库</strong></a>
         
-            <a href=".html"><strong>Tensorflow</strong></a>
+            <a href="Tensorflow.html"><strong>Tensorflow</strong></a>
         
-            <a href=".html"><strong>Big Data</strong></a>
+            <a href="Big%20Data.html"><strong>Big Data</strong></a>
         
-            <a href=".html"><strong>文献阅读</strong></a>
+            <a href="%E6%96%87%E7%8C%AE%E9%98%85%E8%AF%BB.html"><strong>文献阅读</strong></a>
         
-            <a href=".html"><strong>Tools</strong></a>
+            <a href="Tools.html"><strong>Tools</strong></a>
         
-            <a href=".html"><strong>大数据</strong></a>
+            <a href="%E5%A4%A7%E6%95%B0%E6%8D%AE.html"><strong>大数据</strong></a>
          
         </p>
 
@@ -1021,7 +1195,13 @@ for i from 1 to n do:
 	      
 		      
 			      <li class="post">
-			        <a href="15317356378033.html">Operating System Concepts - Introduction</a>
+			        <a href="os-concepts-introduction.html">Operating System Concepts 1 - Introduction</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="os-concepts-os-structures.html">Operating System Concepts 2 - Operating System structures</a>
 			      </li>
 		     
 		  
@@ -1040,12 +1220,6 @@ for i from 1 to n do:
 		      
 			      <li class="post">
 			        <a href="exceptional_control_flow.html">CSAPP - 异常控制流</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="overhead.html">Overhead</a>
 			      </li>
 		     
 		  
