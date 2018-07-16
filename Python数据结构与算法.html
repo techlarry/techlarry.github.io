@@ -89,37 +89,39 @@
     <li><label>Categories</label></li>
 
         
-            <li><a href="Leetcode.html">Leetcode</a></li>
+            <li><a href=".html">Leetcode</a></li>
         
-            <li><a href="C/C++.html">C/C++</a></li>
+            <li><a href=".html">C/C++</a></li>
         
-            <li><a href="Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html">Python数据结构与算法</a></li>
+            <li><a href=".html">Python数据结构与算法</a></li>
         
-            <li><a href="Course.html">Course</a></li>
+            <li><a href=".html">Course</a></li>
         
-            <li><a href="Python%E7%89%B9%E6%80%A7.html">Python特性</a></li>
+            <li><a href=".html">Python特性</a></li>
         
-            <li><a href="%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html">机器学习</a></li>
+            <li><a href=".html">机器学习</a></li>
         
-            <li><a href="Python%E7%A7%91%E5%AD%A6%E8%AE%A1%E7%AE%97%E4%B8%89%E7%BB%B4%E5%8F%AF%E8%A7%86%E5%8C%96.html">Python科学计算三维可视化</a></li>
+            <li><a href=".html">Python科学计算三维可视化</a></li>
         
-            <li><a href="English.html">English</a></li>
+            <li><a href=".html">English</a></li>
         
-            <li><a href="Computer%20System.html">Computer System</a></li>
+            <li><a href=".html">Computer System</a></li>
         
-            <li><a href="Deep%20Learning.html">Deep Learning</a></li>
+            <li><a href=".html">Deep Learning</a></li>
         
-            <li><a href="Linux%20%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B.html">Linux 系统编程</a></li>
+            <li><a href=".html">Linux 系统编程</a></li>
         
-            <li><a href="%E6%95%B0%E6%8D%AE%E5%BA%93.html">数据库</a></li>
+            <li><a href=".html">数据库</a></li>
         
-            <li><a href="Tensorflow.html">Tensorflow</a></li>
+            <li><a href=".html">Tensorflow</a></li>
         
-            <li><a href="Big%20Data.html">Big Data</a></li>
+            <li><a href=".html">Big Data</a></li>
         
-            <li><a href="%E6%96%87%E7%8C%AE%E9%98%85%E8%AF%BB.html">文献阅读</a></li>
+            <li><a href=".html">文献阅读</a></li>
         
-            <li><a href="Tools.html">Tools</a></li>
+            <li><a href=".html">Tools</a></li>
+        
+            <li><a href=".html">大数据</a></li>
          
 
       </ul>
@@ -211,9 +213,7 @@
                   <div class="more-left left">
                   
                     <span class="date">2018/5/25</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html'>Python数据结构与算法</a></span>
+                    
           				   
                   </div>
                   <div class="more-right right">
@@ -227,62 +227,148 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="Dynamic_Programming_Optimal_Binary_Search_Tree.html">
+                <a class="clearlink" href="maze_recursion.html">
                 
-                  <h1>Dynamic Programming (4): Optimal Binary Search Tree</h1>
+                  <h1></h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<p>An <code>Optimal Binary Search Tree (Optimal BST)</code> is a binary search tree which provides the smallest possible search time for a given sequence of access probabilities. The cost of a BST node is the level of that node plus one multiplied by its frequency.</p>
+                        	<p><img src="media/15272350628209/15272351029187.jpg" alt=""/></p>
 
-<p><strong>Problem Statement</strong>: Given a sorted array \(keys[0.. n-1]\) of search keys and an array \(freq[0.. n-1]\) of frequency counts, where \(freq[i]\) is the number of searches to \(keys[i]\). Construct a binary search tree of all keys such that the total cost of all the searches is as small as possible.</p>
+<pre><code class="language-python">import turtle
 
-<h2 id="toc_0">Optimal Substructure</h2>
+PART_OF_PATH = &#39;O&#39;
+TRIED = &#39;.&#39;
+OBSTACLE = &#39;+&#39;
+DEAD_END = &#39;-&#39;
 
-<p>The optimal cost of node \(i,...,j\) can be recursively calculated using the following formula.</p>
+class Maze:
+    def __init__(self,mazeFileName):
+        rowsInMaze = 0
+        columnsInMaze = 0
+        self.mazelist = []
+        mazeFile = open(mazeFileName,&#39;r&#39;)
+        rowsInMaze = 0
+        for line in mazeFile:
+            rowList = []
+            col = 0
+            for ch in line[:-1]:
+                rowList.append(ch)
+                if ch == &#39;S&#39;:
+                    self.startRow = rowsInMaze
+                    self.startCol = col
+                col = col + 1
+            rowsInMaze = rowsInMaze + 1
+            self.mazelist.append(rowList)
+            columnsInMaze = len(rowList)
 
-<p>\(Cost(i,j) = \sum \limits^{j}_{k=i}freq[k] + \min \limits_{r=i}^j[Cost(i,r-1)+Cost(r+1,j)]\)</p>
+        self.rowsInMaze = rowsInMaze
+        self.columnsInMaze = columnsInMaze
+        self.xTranslate = -columnsInMaze/2
+        self.yTranslate = rowsInMaze/2
+        self.t = turtle.Turtle()
+        self.t.shape(&#39;turtle&#39;)
+        self.wn = turtle.Screen()
+        self.wn.setworldcoordinates(-(columnsInMaze-1)/2-.5,-(rowsInMaze-1)/2-.5,(columnsInMaze-1)/2+.5,(rowsInMaze-1)/2+.5)
 
-<p>We try all nodes one by one as root (\(r\) varies from \(i\) to \(j\)). When we make \(r\)th node as root, we recursively calculate optimal cost from \(i\) to \(r-1\) and \(r+1\) to \(j\). </p>
+    def drawMaze(self):
+        self.t.speed(10)
+        self.wn.tracer(0)
+        for y in range(self.rowsInMaze):
+            for x in range(self.columnsInMaze):
+                if self.mazelist[y][x] == OBSTACLE:
+                    self.drawCenteredBox(x+self.xTranslate,-y+self.yTranslate,&#39;orange&#39;)
+        self.t.color(&#39;black&#39;)
+        self.t.fillcolor(&#39;blue&#39;)
+        self.wn.update()
+        self.wn.tracer(1)
 
-<h3 id="toc_1">Implementation: top-down with memoization</h3>
+    def drawCenteredBox(self,x,y,color):
+        self.t.up()
+        self.t.goto(x-.5,y-.5)
+        self.t.color(color)
+        self.t.fillcolor(color)
+        self.t.setheading(90)
+        self.t.down()
+        self.t.begin_fill()
+        for i in range(4):
+            self.t.forward(1)
+            self.t.right(90)
+        self.t.end_fill()
 
-<pre><code class="language-python">def optimal_bst(freq):
-    def opt_cost(hash_table, freq, i, j):
-        &quot;&quot;&quot;
-        Optimal Binary Search Tree
-        Recursive Method used here
-        &quot;&quot;&quot;
+    def moveTurtle(self,x,y):
+        self.t.up()
+        self.t.setheading(self.t.towards(x+self.xTranslate,-y+self.yTranslate))
+        self.t.goto(x+self.xTranslate,-y+self.yTranslate)
 
-        # base case: only 0~1 element
-        if j &lt; i:
-            return 0
-        if j == i:
-            return freq[i]
+    def dropBreadcrumb(self,color):
+        self.t.dot(10,color)
 
-        # if already exists
-        if (i, j) in hash_table:
-            return hash_table[(i, j)]
+    def updatePosition(self,row,col,val=None):
+        if val:
+            self.mazelist[row][col] = val
+        self.moveTurtle(col,row)
 
-        min_cost = sys.maxsize
-        for r in range(i, j + 1):
-            cost = opt_cost(hash_table, freq, i, r - 1) + opt_cost(hash_table, freq, r + 1, j)
-            if cost &lt; min_cost:
-                min_cost = cost
+        if val == PART_OF_PATH:
+            color = &#39;green&#39;
+        elif val == OBSTACLE:
+            color = &#39;red&#39;
+        elif val == TRIED:
+            color = &#39;black&#39;
+        elif val == DEAD_END:
+            color = &#39;red&#39;
+        else:
+            color = None
 
-        hash_table[(i, j)] = sum(freq[i:j + 1]) + min_cost
-        return hash_table[(i, j)]
+        if color:
+            self.dropBreadcrumb(color)
 
-    return opt_cost({}, freq, 0, len(freq) - 1)
+    def isExit(self,row,col):
+        return (row == 0 or
+                row == self.rowsInMaze-1 or
+                col == 0 or
+                col == self.columnsInMaze-1 )
+
+    def __getitem__(self,idx):
+        return self.mazelist[idx]
+
+
+def searchFrom(maze, startRow, startColumn):
+    # try each of four directions from this point until we find a way out.
+    # base Case return values:
+    #  1. We have run into an obstacle, return false
+    maze.updatePosition(startRow, startColumn)
+    if maze[startRow][startColumn] == OBSTACLE :
+        return False
+    #  2. We have found a square that has already been explored
+    if maze[startRow][startColumn] == TRIED or maze[startRow][startColumn] == DEAD_END:
+        return False
+    # 3. We have found an outside edge not occupied by an obstacle
+    if maze.isExit(startRow,startColumn):
+        maze.updatePosition(startRow, startColumn, PART_OF_PATH)
+        return True
+    maze.updatePosition(startRow, startColumn, TRIED)
+    # Otherwise, use logical short circuiting to try each direction
+    # in turn (if needed)
+    found = searchFrom(maze, startRow-1, startColumn) or \
+            searchFrom(maze, startRow+1, startColumn) or \
+            searchFrom(maze, startRow, startColumn-1) or \
+            searchFrom(maze, startRow, startColumn+1)
+    if found:
+        maze.updatePosition(startRow, startColumn, PART_OF_PATH)
+    else:
+        maze.updatePosition(startRow, startColumn, DEAD_END)
+    return found
+
+
+myMaze = Maze(&#39;maze2.txt&#39;)
+myMaze.drawMaze()
+myMaze.updatePosition(myMaze.startRow,myMaze.startCol)
+
+searchFrom(myMaze, myMaze.startRow, myMaze.startCol)
+
 </code></pre>
-
-<h2 id="toc_2">Reference</h2>
-
-<ul>
-<li><a href="http://ac.els-cdn.com/S0304397596003209/1-s2.0-S0304397596003209-main.pdf?_tid=1505980e-7cd4-11e7-83de-00000aacb361&amp;acdnat=1502263778_53b76d131a06906e9fe3adfadc778677">Optimal Binary Search Tree</a></li>
-<li><a href="http://www.geeksforgeeks.org/dynamic-programming-set-24-optimal-binary-search-tree/">Optimal Binary Search Tree GeeksforGeeks</a></li>
-</ul>
 
                         
                       </div>
@@ -291,10 +377,8 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2017/8/9</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92.html'>动态规划</a></span>
+                    <span class="date">2017/3/25</span>
+                    
           				   
                   </div>
                   <div class="more-right right">
@@ -460,92 +544,6 @@ for i from 1 to n do:
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="Dynamic_Programming_Maximum_weight_independent_set.html">
-                
-                  <h1>Dynamic Programming (2): Maximum weight independent set</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p><strong>Input</strong>: A path graph \(G=(V,E)\) with nonnegative weights on vertices.<br/>
-<strong>Output</strong>: an <code>independent set</code>(独立集) of maximum total weight.</p>
-
-<p><strong>Background</strong>:<br/>
-A <code>path graph</code> is a tree with two nodes of vertex degree 1, and the other \(n-2\) nodes of vertex degree 2. A path graph is therefore a graph that can be drawn so that all of its vertices and edges lie on a single straight line.</p>
-
-<p>A <code>Independent set</code> is a set of vertices in a graph, no two of which are adjacent.</p>
-
-<p><img src="media/15022903354046/15154354379203.jpg" alt=""/></p>
-
-<h2 id="toc_0">Basis</h2>
-
-<p>An optimal solution can have one of two properties:</p>
-
-<ul>
-<li>Either the last element in the path is not part of the maximum weighted independent set (in which case we know that the solution is equally valid for the subgraph V’ formed by popping the last vertex off the path)</li>
-<li>Or the last element is part of the set (in which case we know that the predecessor cannot be part of the set, and the solution minus the last vertex is equally valid for the subgraph V’&#39; formed by popping off the last two vertices of the path)</li>
-</ul>
-
-<h2 id="toc_1">Proposed algorithm</h2>
-
-<p>A dynamic programming approach can solve the problem in linear time:</p>
-
-<ul>
-<li>Recursively compute \(S_1=\) max-weight independent set of \(G&#39;\) (formed by popping the last vertex off the path)</li>
-<li>Recursively compute \(S_2=\) max-weight independent set of \(G&quot;\) (formed by popping off the last two vertices of the path)</li>
-<li>Return \(S_1\) or \(S_2 \cup{v_n}\), whichever is better.</li>
-</ul>
-
-<h3 id="toc_2">Implementation</h3>
-
-<pre><code class="language-python">def maximum_weight_independent_set(weights):
-    &quot;&quot;&quot;
-    Compute Maximum weight independent set for a path graph.
-    Weights of vertexes in the path graph are given.
-    Return maximum weight independent set.
-    &quot;&quot;&quot;
-    num = len(weights)
-    a = [0] * (num + 1)
-    in_set = []  # independent set
-    a[0], a[1] = 0, weights[0]
-
-    for i in range(2, num + 1):
-        a[i] = max(a[i - 1], a[i - 2] + weights[i - 1])
-
-    while i &gt;= 1: # start i: # last element
-        if a[i - 1] &gt;= a[i - 2] + weights[i - 1]: # last vertex not in set
-            i -= 1
-        else: # last vertex is in set
-            in_set.append(i - 1)
-            i -= 2
-    in_set.reverse()
-    return in_set
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/8/8</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92.html'>动态规划</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
                 <a class="clearlink" href="Dynamic_Programming_Introduction.html">
                 
                   <h1>Dynamic Programming (1): Introduction</h1>
@@ -625,6 +623,173 @@ We sort the subproblems by size and solve them in size order, smallest first. Wh
                 </div>
               </div><!-- article -->
         
+			<div class="article">
+                <a class="clearlink" href="heap.html">
+                
+                  <h1>Heap (1): Introduction and Implementation</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>A <strong>heap</strong> (堆)is a specialized tree-based data structure。 A <strong>heap</strong> can be classified as either a <strong>max heap</strong> or a <strong>min heap</strong>. </p>
+
+<ul>
+<li>In a <strong>max heap</strong>(最大堆), the keys of parent nodes are always greater than or equal to those of the children and the highest key is in the root node. </li>
+<li>In a <strong>min heap</strong>(最小堆), the keys of parent nodes are less than or equal to those of the children and the lowest key is in the root node.</li>
+</ul>
+
+<p><strong>Heap</strong> is one maximally efficient implementation of an abstract data type called a <strong>priority queue</strong> (see <a href="http://larryim.cc/priority_queue.html">here</a>), and in fact priority queues are often referred to as <strong>heaps</strong>, regardless of how they may be implemented. </p>
+
+<h2 id="toc_0">Implementation</h2>
+
+<p>Priority queues typically use a heap as backbone, giving \(O(\log n)\) performance for pushs and pops, and <strong>\(O(n)\)</strong> to build initially.</p>
+
+<h2 id="toc_1">Binary Heap</h2>
+
+<p>A common implementation of a heap is the <strong>binary heap</strong>(二叉堆), in which the tree is a <strong>complete binary tree</strong>(完全二叉树). </p>
+
+<p>二叉堆的操作与实现</p>
+
+<ul>
+<li><code>BinaryHeap()</code>：创建一个新的、空的二叉堆对象</li>
+<li><code>push(k)</code>：把新元素加入到堆中</li>
+<li><code>findMin()</code>：返回堆中的最小项，最小项仍保留在堆中</li>
+<li><code>pop()</code>：返回堆中的最小项，同时从堆中删除</li>
+<li><code>isEmpty()</code>：返回堆是否为空</li>
+<li><code>size()</code>：返回堆中元素的个数</li>
+<li><code>heapify(list)</code>：从一个包含元素的列表创建新堆</li>
+</ul>
+
+<p>有两个关键的操作：</p>
+
+<ol>
+<li><code>insert</code>方法。首先，为了满足“完全二叉树”的性质，新键值应该添加到列表的末尾。然而新键值简单地添加在列表末尾，显然无法满足堆次序。所以要通过比较父节点和新加入的元素的方法来重新满足堆次序。如果新加入的元素比父节点要小，可以与父节点互换位置；不断交换，直到到达树的顶端。下图所示一系列交换操作来使新加入元素“上浮”到正确的位置。</li>
+</ol>
+
+<p><img src="media/14973171257726/14974156268132.jpg" alt=""/></p>
+
+<p>2.<code>pop</code>方法 移走根节点的元素后如何保持堆结构和堆次序: 首先，用最后一个节点来代替根节点, 移走最后一个节点保持了堆结构的性质。这么简单的替换，还是会破坏堆次序。第二步，将新节点“下沉”来恢复堆次序。下图所示的是一系列交换操作来使新节点“下沉”到正确的位置。</p>
+
+<p>为了保持堆次序，我们需将新的根节点沿着一条路径“下沉”，直到比两个子节点都小。在选择下沉路径时，如果新根节点比子节点大，那么选择较小的子节点与之交换。</p>
+
+<p><img src="media/14973171257726/14974156980805.jpg" alt=""/></p>
+
+<pre><code class="language-python">class BinHeap(object):
+    &quot;&quot;&quot;
+    创建一个新的、空的二叉堆对象
+    &quot;&quot;&quot;
+    def __init__(self):
+        self.list = [0]
+        self.size = 0
+
+    def perc_up(self,i):
+        &quot;&quot;&quot;
+        Percolate the new node into proper position
+        &quot;&quot;&quot;
+        while i: 
+            if self.list[i] &lt; self.list[i//2]:
+                self.list[i], self.list[i//2] = self.list[i//2], self.list[i]
+            i = i//2
+    
+    def push(self, item):
+        &quot;&quot;&quot;把新元素加入到堆中&quot;&quot;&quot;
+        self.list.append(item)
+        self.size += 1
+        self.perc_up(self.size)
+
+    def findMin(self):
+        &quot;&quot;&quot;返回堆中的最小项，最小项仍保留在堆中&quot;&quot;&quot;
+        return self.list[1]
+
+    def pop(self):
+        &quot;&quot;&quot;返回堆中的最小项，同时从堆中删除&quot;&quot;&quot;
+        retval = self.list[1]
+        self.list[1] = self.list[-1]
+        self.size -=1
+        self.list.pop()
+        self.perc_down(1)
+
+        return retval
+
+
+    def percDown(self,i):
+        &quot;&quot;&quot;
+        将新节点“下沉”来恢复堆次序
+        &quot;&quot;&quot;
+        while (i * 2) &lt;= self.size:
+            mc = self.minChild(i)
+            if self.list[i] &gt; self.list[mc]:
+                tmp = self.list[i]
+                self.list[i] = self.list[mc]
+                self.list[mc] = tmp
+            i = mc
+
+    def minChild(self,i):
+        &quot;&quot;&quot;
+        返回较小的子节点
+        &quot;&quot;&quot;
+        if i * 2 + 1 &gt; size:
+            return i * 2
+        else:
+            if self.list[i*2] &lt; self.list[i*2+1]:
+                return i * 2
+            else:
+                return i * 2 + 1
+
+    def isEmpty(self):
+        &quot;&quot;&quot;返回堆是否为空&quot;&quot;&quot;
+        return self.size == 0
+
+    def __len__(self):
+        &quot;&quot;&quot;返回堆中元素的个数&quot;&quot;&quot;
+        return self.size
+
+    def heapify(self,alist):
+        &quot;&quot;&quot;从一个包含元素的列表创建新堆&quot;&quot;&quot;
+        self.size = len(alist)
+        self.list.extend(alist)
+        i = self.size //2
+        while i &gt; 0:
+            self.perc_down(i)
+            i -= 1
+</code></pre>
+
+<h2 id="toc_2">建堆的复杂度</h2>
+
+<p>建堆过程的时间复杂度是堆的一个难点。一般会误认为建堆的时间复杂度是\(O(nlog n)\)，因为每一次堆调整的时间复杂度为\(O(log n)\)，那么\(n\)个节点的时间复杂度为\(O(nlog n)\)，这其实是错的。</p>
+
+<p>首先对于二叉树，它必须保证每一层填满之后才能去填充下一层。而且，如果从根结点开始计数(根结点为第0层)，往下第\(i\)层的元素如果不是最后一层的话，这一层的元素数量为\(2^i\)。这样，对于一棵高为\(h\)的完全二叉树，它的元素个数为\(n=1+2+4+...+2^i, i\in(0,h)\).</p>
+
+<p>然后理解函数<code>heapify</code>中的循环范围是\(i=\text{size}//2\sim 0\)，也就是说这是一个从下往上的建堆。对于第\(h-1\)层的每个节点来说，它需要和它的2个子节点比较一次，共计\(2^{(h-1)}\times 2\)。对于第\(h-2\)层的每个节点来说，最坏情况下，它需要和它的2个子节点比较一次，然后和子节点交换，子节点再和该子节点的子节点比较，所以共计\(2^{(h-2)}\times 4\)。以此类推，对于第\(i\)层的每个节点来说，最坏情况下，共需比较\(2^i\times 2(h-i)\)。</p>
+
+<p>总共需要比较:<br/>
+\[ S= \sum\limits^{i=0}_{i=h-1} 2^{i+1}(h-i) =2^h+2^{h-1}\times 2 + 2^{h-2}\times 3+... \quad .......(a)\]<br/>
+\[ 2*S= \sum\limits^{i=0}_{i=h-1} 2^{i+2}(h-i) = 2^{h+1} + 2^h\times 2 + 2^{h-1}\times 3 + ... \quad .......(b)\]<br/>
+\[ \text{(b-a)}\quad S = 2^h+2^{h-1}+2^{h-2}+... = n = O(n) \]</p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/7/12</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Tree.html'>Tree</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
               
 
 
@@ -679,37 +844,39 @@ We sort the subproblems by size and solve them in size order, smallest first. Wh
 
       	<p class="cat-list">
         
-            <a href="Leetcode.html"><strong>Leetcode</strong></a>
+            <a href=".html"><strong>Leetcode</strong></a>
         
-            <a href="C/C++.html"><strong>C/C++</strong></a>
+            <a href=".html"><strong>C/C++</strong></a>
         
-            <a href="Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html"><strong>Python数据结构与算法</strong></a>
+            <a href=".html"><strong>Python数据结构与算法</strong></a>
         
-            <a href="Course.html"><strong>Course</strong></a>
+            <a href=".html"><strong>Course</strong></a>
         
-            <a href="Python%E7%89%B9%E6%80%A7.html"><strong>Python特性</strong></a>
+            <a href=".html"><strong>Python特性</strong></a>
         
-            <a href="%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html"><strong>机器学习</strong></a>
+            <a href=".html"><strong>机器学习</strong></a>
         
-            <a href="Python%E7%A7%91%E5%AD%A6%E8%AE%A1%E7%AE%97%E4%B8%89%E7%BB%B4%E5%8F%AF%E8%A7%86%E5%8C%96.html"><strong>Python科学计算三维可视化</strong></a>
+            <a href=".html"><strong>Python科学计算三维可视化</strong></a>
         
-            <a href="English.html"><strong>English</strong></a>
+            <a href=".html"><strong>English</strong></a>
         
-            <a href="Computer%20System.html"><strong>Computer System</strong></a>
+            <a href=".html"><strong>Computer System</strong></a>
         
-            <a href="Deep%20Learning.html"><strong>Deep Learning</strong></a>
+            <a href=".html"><strong>Deep Learning</strong></a>
         
-            <a href="Linux%20%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B.html"><strong>Linux 系统编程</strong></a>
+            <a href=".html"><strong>Linux 系统编程</strong></a>
         
-            <a href="%E6%95%B0%E6%8D%AE%E5%BA%93.html"><strong>数据库</strong></a>
+            <a href=".html"><strong>数据库</strong></a>
         
-            <a href="Tensorflow.html"><strong>Tensorflow</strong></a>
+            <a href=".html"><strong>Tensorflow</strong></a>
         
-            <a href="Big%20Data.html"><strong>Big Data</strong></a>
+            <a href=".html"><strong>Big Data</strong></a>
         
-            <a href="%E6%96%87%E7%8C%AE%E9%98%85%E8%AF%BB.html"><strong>文献阅读</strong></a>
+            <a href=".html"><strong>文献阅读</strong></a>
         
-            <a href="Tools.html"><strong>Tools</strong></a>
+            <a href=".html"><strong>Tools</strong></a>
+        
+            <a href=".html"><strong>大数据</strong></a>
          
         </p>
 
@@ -726,31 +893,31 @@ We sort the subproblems by size and solve them in size order, smallest first. Wh
 	      
 		      
 			      <li class="post">
-			        <a href="15312166852240.html">CSE 421/521 Operating Systems</a>
+			        <a href="15317356378033.html">Operating System Concepts - Introduction</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="15272289883847.html">回溯法和深度优先遍历</a>
+			        <a href="Linking.html">CSAPP - 链接</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="Coursera_notebook_jupyter.html">技巧：Coursera下载Jupyter notebook相关文件</a>
+			        <a href="15315844145426.html">Intro to Hadoop and MapReduce</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="15171345711813.html">用于训练的深度学习硬件</a>
+			        <a href="exceptional_control_flow.html">CSAPP - 异常控制流</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="15166008990128.html">网络编程</a>
+			        <a href="overhead.html">Overhead</a>
 			      </li>
 		     
 		  

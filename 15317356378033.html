@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  Bit manipulation - techlarry
+  Operating System Concepts - Introduction - techlarry
   
   </title>
   
@@ -144,14 +144,12 @@
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>Bit manipulation</h1>
+          <h1>Operating System Concepts - Introduction</h1>
      
         <div class="read-more clearfix">
-          <span class="date">2017/8/16</span>
+          <span class="date">2017/12/16</span>
 
-          <span>posted in&nbsp;</span> 
           
-              <span class="posted-in"><a href='Leetcode.html'>Leetcode</a></span>
            
          
           <span class="comments">
@@ -164,42 +162,143 @@
       </div><!-- article -->
 
       <div class="article-content">
-      <h2 id="toc_0">136. Single Number</h2>
+      <ul>
+<li>
+<a href="#toc_0">what operating system do</a>
+</li>
+<li>
+<a href="#toc_1">Computer-system organisation</a>
+</li>
+<li>
+<a href="#toc_2">Interrupt</a>
+</li>
+<li>
+<a href="#toc_3">dual-mode</a>
+</li>
+<li>
+<a href="#toc_4">timer</a>
+</li>
+<li>
+<a href="#toc_5">virtualization</a>
+</li>
+<li>
+<a href="#toc_6">Free and Open-Source OS</a>
+</li>
+</ul>
 
-<p><a href="https://leetcode.com/problems/single-number/description/">LeetCode Single Number</a></p>
 
-<p>Given an array of integers, every element appears <em>twice</em> except for one. Find that single one.</p>
+<h2 id="toc_0">what operating system do</h2>
 
-<p><strong>Note</strong>:<br/><br/>
-Your algorithm should have a linear runtime complexity. Could you implement it without using extra memory?</p>
+<p>There is no completely adequate definition of operating system. A simple viewpoint is that it includes everything a vendor ships. A more common definition is that the <u>operating system is the one program running at all times on computer - usually  called <strong>kernel</strong></u> . </p>
 
-<p><code>^</code>(<code>xor</code>, <code>Exclusive or</code>):  outputs true whenever the inputs differ:</p>
+<p>Three main <strong>purposes</strong> of an operating system,</p>
 
-<pre><code class="language-python">0 ^ 0 = 0 
-n ^ 0 = n 
-n ^ n = 0
-</code></pre>
+<ul>
+<li>manages a computer&#39;s hardware</li>
+<li>provides a basis for application programs</li>
+<li>acts as an intermediary between the user and hardware</li>
+</ul>
 
-<p><strong>Solution</strong>:</p>
+<p>The operating system includes the always running <strong>kernel</strong>, <strong>middleware</strong> frameworks that ease application development and provide features, and <strong>system programs</strong> that aid in managing the system while it is running.</p>
 
-<pre><code class="language-python">class Solution(object):
-    def singleNumber(self, nums):
-        &quot;&quot;&quot;
-        :type nums: List[int]
-        :rtype: int
-        &quot;&quot;&quot;
-        n = 0
-        for num in nums:
-            n = n^num
-        return n     
-</code></pre>
+<p>Anything between the kernel and user applications is considered <strong>middleware</strong> [<a href="https://en.wikipedia.org/wiki/Middleware">1</a>].</p>
 
-<h2 id="toc_1">137 Single Number II</h2>
+<h2 id="toc_1">Computer-system organisation</h2>
 
-<p>Given an array of integers, every element appears <em>three</em> times except for one, which appears exactly once. Find that single one.</p>
+<p>A computer system can be divided roughly into four components: the <strong>hardware</strong>, the <strong>operating system</strong>, the <strong>application programs</strong>, and a <strong>user</strong>.</p>
 
-<p><strong>Note</strong>:<br/>
-Your algorithm should have a linear runtime complexity. Could you implement it without using extra memory?</p>
+<p><img src="http://or9a8nskt.bkt.clouddn.com/abstractviewofcomputersytem.png" alt="Abstract view of the components of a computer system"/></p>
+
+<p>A <strong>computer system</strong>(计算机系统) consists of one or more <strong>CPUs</strong> and a number of <strong>device controllers</strong>(设备控制器) connected through a common <strong>bus</strong>(总线) that provides access between components and shared <strong>memory</strong>.</p>
+
+<p>A <strong>device controller</strong> maintains some <strong>local buffer storage</strong>(局部缓冲存储) and a set of special-purpose <strong>registers</strong>.</p>
+
+<p>Typically, operating systems have a <strong>device driver</strong>(设备驱动) for each device controller. This device driver understands the device controller and provides the rest of the operating system with a uniform interface to the device</p>
+
+<p><img src="http://or9a8nskt.bkt.clouddn.com/AtypicalPCcomputerSystem.png" alt="一个典型的PC计算机系统"/></p>
+
+<h2 id="toc_2">Interrupt</h2>
+
+<p>When the CPU is <strong>interrupted</strong>, it stops what it is doing and immediately transfers execution to a fixed location. The fixed location usually contains the starting address where the service routine for the interrupt is located.<br/>
+当CPU被中断，它停止正在做的事，立即将执行权到一个固定位置。固定位置一般包含开始地址。</p>
+
+<p>The interrupt routine(中断程序) is called indirectly through the interrupt vector table（中断向量表).</p>
+
+<ul>
+<li>Generally, the table of pointers is stored in low memory (the first hundred or so locations).</li>
+<li>These locations hold the addresses of the interrupt service routines for the various devices.</li>
+<li>Interrupt vector is then indexed by a unique number(interrupt vector number, 中断向量号)</li>
+<li>interrupt priority levels(中断优先级)</li>
+</ul>
+
+<p><img src="http://or9a8nskt.bkt.clouddn.com/interruptvectortable.png" alt="中断向量号"/></p>
+
+<p>Some <strong>services</strong> are provided outside of the kernel by system programs that are loaded into memory at boot time to become system <strong>daemons</strong>, which run the entire time the kernel is running.</p>
+
+<p><img src="http://or9a8nskt.bkt.clouddn.com/interrupt-driven%20I:O%20cycle.png" alt="interrupt-driven I:O cycle"/></p>
+
+<h2 id="toc_3">dual-mode</h2>
+
+<p>In order to ensure the proper execution of the system, we must be able to distinguish between the execution of operating-system code（<strong>kernel mode</strong>）and user-defined code (<strong>user mode</strong>).</p>
+
+<p><img src="http://or9a8nskt.bkt.clouddn.com/transitionfromusermodetokernelmode.png" alt="Transition from user mode to kernel mode"/></p>
+
+<p><strong>Mode bit</strong>(模式位), is added to the hardware of the computer to indicate the current mode: kernel (0) or user (1).</p>
+
+<p>The concept of modes can be <strong>extended</strong> beyond two modes. </p>
+
+<ul>
+<li><p><strong>protection rings</strong>（保护环) are mechanisms to protect data and functionality from faults (by improving fault tolerance) and malicious behaviour (by providing computer security). </p></li>
+<li><p>For intel processors, ring 0 is kernel mode and ring 3 is user mode</p></li>
+</ul>
+
+<p><img src="http://or9a8nskt.bkt.clouddn.com/15317318589869.jpg" alt=""/></p>
+
+<h2 id="toc_4">timer</h2>
+
+<p>A timer (定时器) can  be set to interrupt the computer after a specified period( usually, 100s hz)</p>
+
+<ul>
+<li>A variable timer is generally implemented by a fixed-rate clock and a counter. </li>
+<li>The operating system sets the counter. Every time the clock ticks, the counter is decremented. </li>
+<li>When the counter reaches 0, an interrupt occurs.</li>
+</ul>
+
+<h2 id="toc_5">virtualization</h2>
+
+<p><strong>virtualization</strong>(虚拟化) is a technology that allows us to abstract the hardware of a single computer into several different execution environments, thereby creating the illusion that <u><em>each separate environment is running on its own private computer</em></u> .</p>
+
+<ul>
+<li>v.s. [different] Emulation involves simulating computer handware in software.</li>
+</ul>
+
+<p><img src="http://or9a8nskt.bkt.clouddn.com/virtualmachines.png" alt="A computer running (a) a single operating system and (b) three virtual machines"/></p>
+
+<h2 id="toc_6">Free and Open-Source OS</h2>
+
+<p>Open-source OS</p>
+
+<ul>
+<li>source code available</li>
+<li>opposite: closed-source OS</li>
+</ul>
+
+<p>Free OS</p>
+
+<ul>
+<li>source code available</li>
+<li>allow no-cost use, redistribution, and modification</li>
+</ul>
+
+<p>Arguably, open-source code is <strong>more secure</strong> than closed-source code because many more eyes are viewing the code.</p>
+
+<p>e.g. OS</p>
+
+<ul>
+<li> GNU/Linux</li>
+<li> FreeBSD</li>
+<li> Solaris</li>
+</ul>
 
 
     
@@ -210,16 +309,13 @@ Your algorithm should have a linear runtime complexity. Could you implement it w
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="bit_manipulation_2.html" 
-          title="Previous Post: Bit manipulation (2)">&laquo; Bit manipulation (2)</a>
-      
         </p>
         </div>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="python_and_mysql.html" 
-          title="Next Post: Python and MySQL">Python and MySQL &raquo;</a>
+          <a  href="Linking.html" 
+          title="Next Post: CSAPP - 链接">CSAPP - 链接 &raquo;</a>
       
       </p>
         </div>

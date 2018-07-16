@@ -89,37 +89,39 @@
     <li><label>Categories</label></li>
 
         
-            <li><a href="Leetcode.html">Leetcode</a></li>
+            <li><a href=".html">Leetcode</a></li>
         
-            <li><a href="C/C++.html">C/C++</a></li>
+            <li><a href=".html">C/C++</a></li>
         
-            <li><a href="Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html">Python数据结构与算法</a></li>
+            <li><a href=".html">Python数据结构与算法</a></li>
         
-            <li><a href="Course.html">Course</a></li>
+            <li><a href=".html">Course</a></li>
         
-            <li><a href="Python%E7%89%B9%E6%80%A7.html">Python特性</a></li>
+            <li><a href=".html">Python特性</a></li>
         
-            <li><a href="%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html">机器学习</a></li>
+            <li><a href=".html">机器学习</a></li>
         
-            <li><a href="Python%E7%A7%91%E5%AD%A6%E8%AE%A1%E7%AE%97%E4%B8%89%E7%BB%B4%E5%8F%AF%E8%A7%86%E5%8C%96.html">Python科学计算三维可视化</a></li>
+            <li><a href=".html">Python科学计算三维可视化</a></li>
         
-            <li><a href="English.html">English</a></li>
+            <li><a href=".html">English</a></li>
         
-            <li><a href="Computer%20System.html">Computer System</a></li>
+            <li><a href=".html">Computer System</a></li>
         
-            <li><a href="Deep%20Learning.html">Deep Learning</a></li>
+            <li><a href=".html">Deep Learning</a></li>
         
-            <li><a href="Linux%20%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B.html">Linux 系统编程</a></li>
+            <li><a href=".html">Linux 系统编程</a></li>
         
-            <li><a href="%E6%95%B0%E6%8D%AE%E5%BA%93.html">数据库</a></li>
+            <li><a href=".html">数据库</a></li>
         
-            <li><a href="Tensorflow.html">Tensorflow</a></li>
+            <li><a href=".html">Tensorflow</a></li>
         
-            <li><a href="Big%20Data.html">Big Data</a></li>
+            <li><a href=".html">Big Data</a></li>
         
-            <li><a href="%E6%96%87%E7%8C%AE%E9%98%85%E8%AF%BB.html">文献阅读</a></li>
+            <li><a href=".html">文献阅读</a></li>
         
-            <li><a href="Tools.html">Tools</a></li>
+            <li><a href=".html">Tools</a></li>
+        
+            <li><a href=".html">大数据</a></li>
          
 
       </ul>
@@ -141,6 +143,367 @@
 	<div class="large-8 medium-8 columns">
 		<div class="markdown-body home-categories">
 		
+			<div class="article">
+                <a class="clearlink" href="15205897518090.html">
+                
+                  <h1>深度优先搜索和广度优先搜索</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>深度优先搜索(Depth First Search, DFS)和广度优先搜索(Breath First Search, BFS)是常用的图的搜索算法。</p>
+
+<p>DFS和BFS主要差别是搜索的优先级不同，一个广度优先，一个深度优先。</p>
+
+<p><strong>深度优先算法</strong>：</p>
+
+<ol>
+<li>访问初始顶点v并标记顶点v已访问。</li>
+<li>查找顶点v的第一个邻接顶点w。</li>
+<li>若顶点v的邻接顶点w存在，则继续执行；否则回溯到v，再找v的另外一个未访问过的邻接点。</li>
+<li>若顶点w尚未被访问，则访问顶点w并标记顶点w为已访问。</li>
+<li>继续查找顶点w的下一个邻接顶点wi，如果v取值wi转到步骤（3）。直到连通图中所有顶点全部访问过为止。</li>
+</ol>
+
+<p><strong>广度优先算法</strong>：</p>
+
+<ol>
+<li>顶点v入队列。</li>
+<li>当队列非空时则继续执行，否则算法结束。</li>
+<li>出队列取得队头顶点v；访问顶点v并标记顶点v已被访问。</li>
+<li>查找顶点v的第一个邻接顶点col。</li>
+<li>若v的邻接顶点col未被访问过的，则col入队列。</li>
+<li>继续查找顶点v的另一个新的邻接顶点col，转到步骤（5）。直到顶点v的所有未被访问过的邻接点处理完。转到步骤（2）。</li>
+</ol>
+
+<h2 id="toc_0">DFS</h2>
+
+<p>递归实现(Pseudocode):</p>
+
+<pre><code class="language-text">1  procedure DFS(G,v):
+2      label v as discovered
+3      for all edges from v to w in G.adjacentEdges(v) do
+4          if vertex w is not labeled as discovered then
+5              recursively call DFS(G,w)
+</code></pre>
+
+<p>非递归实现(Pseudocode):</p>
+
+<pre><code class="language-text">1  procedure DFS-iterative(G,v):
+2      let S be a stack
+3      S.push(v)
+4      while S is not empty
+5          v = S.pop()
+6          if v is not labeled as discovered:
+7              label v as discovered
+8              for all edges from v to w in G.adjacentEdges(v) do 
+9                  S.push(w)
+</code></pre>
+
+<p>下面给出非递归的实现</p>
+
+<pre><code class="language-python">def dfs(self, order_of_vertex):
+    &quot;&quot;&quot;
+    Depth first search for graph
+    Input: Class graph
+    &quot;&quot;&quot;
+    # initialize
+    for vertex in self.vertexes.keys():
+        self.visited[vertex] = 0
+
+    for vertex in self.vertexes.keys():
+        if self.visited[vertex] == 0:  # unvisted
+            print(&#39;(&#39;, end=&#39;&#39;)
+            stack = [vertex]
+            while stack:
+                node = stack.pop()
+                print(&#39;)&#39;, end=&#39;&#39;)
+                if self.visited[node] != 0:
+                    print(&#39;(&#39;)
+                    self.visited[node] = 1
+
+                    for adjacent in self.vertexes[node]:
+                        if self.visited[adjacent] == 0:
+                            stack.append(adjacent)
+                            print(&#39;(&#39;, end=&#39;&#39;)
+</code></pre>
+
+<h2 id="toc_1">BFS</h2>
+
+<pre><code class="language-python"></code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/6/30</span>
+                    
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="graph_basic.html">
+                
+                  <h1>Graph</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<ul>
+<li>
+<a href="#toc_0">Vocabulary and Definitions</a>
+</li>
+<li>
+<a href="#toc_1">Representation</a>
+</li>
+<li>
+<a href="#toc_2">The graph ADT</a>
+</li>
+<li>
+<a href="#toc_3">Implementation</a>
+</li>
+</ul>
+
+
+<p>Definition: A graph can be represented by \(G\) where \(G=(V,E)\). For the graph \(G\), \(V\) is a set of vertices and \(E\) is a set of edges. Each edge is a tuple \((v,w)\) where \(w, v \in V\). </p>
+
+<h2 id="toc_0">Vocabulary and Definitions</h2>
+
+<ul>
+<li><p>Vertex<br/>
+A <code>vertex</code> ( also a <code>node</code>) is a fundamental part of a graph. It can have a name <code>key</code>. A vertex may also have additional information called <code>payload</code>.</p></li>
+<li><p>Edge<br/>
+An <code>Edge</code> (also an <code>arc</code>) connects two vertices, and may be one-way(<code>directed graph</code>) or two-way(<code>undirected graph</code>).</p></li>
+<li><p>Weight<br/>
+Edges may be weighted to show that there is a cost (<code>weight</code>)to go from one vertex to another. E.g. the distance between the two cities.</p></li>
+<li><p>Path<br/>
+A <code>path</code> in a graph is a sequence of vertices that are connected by edges. Formally we could define a path as \(w_1, w_2,...,w_n\) such that \((w_i,w_{i+1}) \in E\) for all \(1 \le i \le  n-1\). The weighted path length is the sum of the weights of the edges in the path. </p></li>
+<li><p>Cycle<br/>
+A <code>cycle</code> in a directed graph is a graph that starts and ends at the same vertex.  A graph with no cycles is called an <code>acyclic graph</code>. A directed graph with no cycles is called a <code>directed acyclic graph</code> or a <code>DAG</code>.</p></li>
+</ul>
+
+<h2 id="toc_1">Representation</h2>
+
+<p>Adjacency Matrix<br/>
+Adjacency List<br/>
+Edge List<br/>
+<img src="media/14988021902558/Screen%20Shot%202017-06-30%20at%202.06.25%20PM.png" alt="Screen Shot 2017-06-30 at 2.06.25 P"/></p>
+
+<p>A <code>path</code> in a graph \(G\) is a sequence of vertices \(v_0,v_1,...,v_n\) so that for all \(i, (v_i,v_{i+1})\) is an edge of \(G\).</p>
+
+<h2 id="toc_2">The graph ADT</h2>
+
+<p>The graph abstract data type (ADT) is defined as follows:</p>
+
+<ul>
+<li><code>Graph()</code> creates a new, empty graph.</li>
+<li><code>addVertex(vert)</code> adds an instance of <code>Vertex</code> to the graph.</li>
+<li><code>addEdge(fromVert, toVert)</code>Adds a new, directed edge to the graph that connects two vertices.</li>
+<li><code>addEdge(fromVert, toVert, weight)</code> Adds a new, weighted, directed edge to the graph that connects two vertices.</li>
+<li><code>getVertex(vertKey)</code> finds the vertex in the graph named vertKey.</li>
+<li><code>getVertices()</code> returns the list of all vertices in the graph.</li>
+<li><code>in</code> returns <code>True</code> for a statement of the form vertex in graph, if the given vertex is in the graph,<code>False</code> otherwise.</li>
+</ul>
+
+<h2 id="toc_3">Implementation</h2>
+
+<p>We will create two classes, <code>Graph</code>, which holds the master list of vertices, and <code>Vertex</code>, which will represent each vertex in the graph.</p>
+
+<p>Each <code>Vertex</code> uses a dictionary to keep track of the vertices to which it is connected, and the weight of each edge. This dictionary is called <code>connectedTo</code>. The listing below shows the code for the <code>Vertex</code> class. The constructor simply initializes the <code>id</code>, which will typically be a string, and the <code>connectedTo</code> dictionary. The <code>addNeighbor</code> method is used add a connection from this vertex to another. The g<code>etConnections</code> method returns all of the vertices in the adjacency list, as represented by the <code>connectedTo</code>instance variable. The <code>getWeight</code> method returns the weight of the edge from this vertex to the vertex passed as a parameter.</p>
+
+<pre><code class="language-python">class Vertex:
+    def __init__(self,key):
+        self.id = key
+        self.connectedTo = {}
+
+    def addNeighbor(self,nbr,weight=0):
+        self.connectedTo[nbr] = weight
+
+    def __str__(self):
+        return str(self.id) + &#39; connectedTo: &#39; + str([x.id for x in self.connectedTo])
+
+    def getConnections(self):
+        return self.connectedTo.keys()
+
+    def getId(self):
+        return self.id
+
+    def getWeight(self,nbr):
+        return self.connectedTo[nbr]
+</code></pre>
+
+<p>The <code>Graph</code> class, shown in the next listing, contains a dictionary that maps vertex names to vertex objects. <code>Graph</code> also provides methods for adding vertices to a graph and connecting one vertex to another. The <code>getVertices</code> method returns the names of all of the vertices in the graph. In addition, we have implemented the <code>__iter__</code> method to make it easy to iterate over all the vertex objects in a particular graph. Together, the two methods allow you to iterate over the vertices in a graph by name, or by the objects themselves.</p>
+
+<pre><code class="language-python">class Graph:
+    def __init__(self):
+        self.vertList = {}
+        self.numVertices = 0
+
+    def addVertex(self,key):
+        self.numVertices = self.numVertices + 1
+        newVertex = Vertex(key)
+        self.vertList[key] = newVertex
+        return newVertex
+
+    def getVertex(self,n):
+        if n in self.vertList:
+            return self.vertList[n]
+        else:
+            return None
+
+    def __contains__(self,n):
+        return n in self.vertList
+
+    def addEdge(self,f,t,cost=0):
+        if f not in self.vertList:
+            nv = self.addVertex(f)
+        if t not in self.vertList:
+            nv = self.addVertex(t)
+        self.vertList[f].addNeighbor(self.vertList[t], cost)
+
+    def getVertices(self):
+        return self.vertList.keys()
+
+    def __iter__(self):
+        return iter(self.vertList.values())
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/6/30</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Graph.html'>Graph</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="dijkstra_algorithm.html">
+                
+                  <h1>Dijkstra's algorithm</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p><code>Dijkstra&#39;s algorithm</code> is an iterative algorithm that provides us with the shortest path from one particular starting node to all other nodes in the graph.</p>
+
+<p>The algorithm iterates once for every vertex in the graph. The order that iterates over the vertices is controlled by a <code>priority queue</code>. When a vertex is first created <code>dist</code> is set to a very large number(<code>sys.maxsize</code>)</p>
+
+<pre><code class="language-text">Dijkstra(G, w, s)
+INITIALIZE-SINGLE-SOURCE(G, s)
+Q=G.V
+while Q:
+    u = EXTRACT-MIN(Q)
+    for each vertex in adjacent
+        RELAX(u,v,w)
+</code></pre>
+
+<pre><code class="language-python">from priorityqueue import PriorityQueue
+from graph import Graph, Vertex
+import sys
+import unittest
+
+def dijkstra(aGraph, start):
+    &quot;&quot;&quot;
+    Find Single-Source shortest-paths on a weighted, directed graph
+    Return shortest path
+    aGraph: class Graph
+    start: class Vertex
+    &quot;&quot;&quot;
+    pq = PriorityQueue()
+    start.setDistance(0)
+    pq.buildHeap([(v.getDistance(), v) for v in aGraph])
+    while not pq.isEmpty():
+        u = pq.delMin()
+        for adjacent in u.getConnections():
+            newDist = u.dist + u.getWeight(adjacent)
+            if adjacent.dist &gt; newDist:
+                adjacent.setDistance(newDist)
+                adjacent.setPred(u)
+                pq.decreaseKey(adjacent, newDist)
+
+
+class TestDijkstra(unittest.TestCase):
+
+
+    def testShortest(self):
+
+        aGraph = Graph()
+        with open(&#39;dijkstraData.txt&#39;) as infile:
+            for line in infile:
+                numbers = [number for number in line.split()]
+                from_v = int(numbers[0])
+
+                for to_v_cost in numbers[1:]:
+                    to_v, cost = to_v_cost.split(&#39;,&#39;)
+                    aGraph.addEdge(from_v, int(to_v), int(cost))
+
+        dijkstra(aGraph, aGraph.getVertex(1))
+
+        dists = []
+        for vertex_id in [7, 37, 59, 82, 99, 115, 133, 165, 188, 197]:
+            dist = aGraph.getVertex(vertex_id).getDistance()
+            if dist == sys.maxsize:
+                dist = 100000
+            dists.append(dist)
+        assert dists == [2599, 2610, 2947, 2052, 2367, 2399, 2029, 2442, 2505, 3068]
+
+
+if __name__ == &#39;__main__&#39;:
+    unittest.main()
+</code></pre>
+
+<p>It is important to note that <code>Dijkstra&#39;s algorithm</code> works only when the weights are all positive. If you introduced a negative weight on one of the edges to the graph that the algorithm would never exit.</p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/7/14</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Graph.html'>Graph</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
 			<div class="article">
                 <a class="clearlink" href="minimum_spanning_tree_prim_kruskal.html">
                 
@@ -366,369 +729,6 @@ return mst
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="dijkstra_algorithm.html">
-                
-                  <h1>Dijkstra's algorithm</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p><code>Dijkstra&#39;s algorithm</code> is an iterative algorithm that provides us with the shortest path from one particular starting node to all other nodes in the graph.</p>
-
-<p>The algorithm iterates once for every vertex in the graph. The order that iterates over the vertices is controlled by a <code>priority queue</code>. When a vertex is first created <code>dist</code> is set to a very large number(<code>sys.maxsize</code>)</p>
-
-<pre><code class="language-text">Dijkstra(G, w, s)
-INITIALIZE-SINGLE-SOURCE(G, s)
-Q=G.V
-while Q:
-    u = EXTRACT-MIN(Q)
-    for each vertex in adjacent
-        RELAX(u,v,w)
-</code></pre>
-
-<pre><code class="language-python">from priorityqueue import PriorityQueue
-from graph import Graph, Vertex
-import sys
-import unittest
-
-def dijkstra(aGraph, start):
-    &quot;&quot;&quot;
-    Find Single-Source shortest-paths on a weighted, directed graph
-    Return shortest path
-    aGraph: class Graph
-    start: class Vertex
-    &quot;&quot;&quot;
-    pq = PriorityQueue()
-    start.setDistance(0)
-    pq.buildHeap([(v.getDistance(), v) for v in aGraph])
-    while not pq.isEmpty():
-        u = pq.delMin()
-        for adjacent in u.getConnections():
-            newDist = u.dist + u.getWeight(adjacent)
-            if adjacent.dist &gt; newDist:
-                adjacent.setDistance(newDist)
-                adjacent.setPred(u)
-                pq.decreaseKey(adjacent, newDist)
-
-
-class TestDijkstra(unittest.TestCase):
-
-
-    def testShortest(self):
-
-        aGraph = Graph()
-        with open(&#39;dijkstraData.txt&#39;) as infile:
-            for line in infile:
-                numbers = [number for number in line.split()]
-                from_v = int(numbers[0])
-
-                for to_v_cost in numbers[1:]:
-                    to_v, cost = to_v_cost.split(&#39;,&#39;)
-                    aGraph.addEdge(from_v, int(to_v), int(cost))
-
-        dijkstra(aGraph, aGraph.getVertex(1))
-
-        dists = []
-        for vertex_id in [7, 37, 59, 82, 99, 115, 133, 165, 188, 197]:
-            dist = aGraph.getVertex(vertex_id).getDistance()
-            if dist == sys.maxsize:
-                dist = 100000
-            dists.append(dist)
-        assert dists == [2599, 2610, 2947, 2052, 2367, 2399, 2029, 2442, 2505, 3068]
-
-
-if __name__ == &#39;__main__&#39;:
-    unittest.main()
-</code></pre>
-
-<p>It is important to note that <code>Dijkstra&#39;s algorithm</code> works only when the weights are all positive. If you introduced a negative weight on one of the edges to the graph that the algorithm would never exit.</p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/7/14</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Graph.html'>Graph</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15205897518090.html">
-                
-                  <h1>深度优先搜索和广度优先搜索</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>深度优先搜索(Depth First Search, DFS)和广度优先搜索(Breath First Search, BFS)是常用的图的搜索算法。</p>
-
-<p>DFS和BFS主要差别是搜索的优先级不同，一个广度优先，一个深度优先。</p>
-
-<p><strong>深度优先算法</strong>：</p>
-
-<ol>
-<li>访问初始顶点v并标记顶点v已访问。</li>
-<li>查找顶点v的第一个邻接顶点w。</li>
-<li>若顶点v的邻接顶点w存在，则继续执行；否则回溯到v，再找v的另外一个未访问过的邻接点。</li>
-<li>若顶点w尚未被访问，则访问顶点w并标记顶点w为已访问。</li>
-<li>继续查找顶点w的下一个邻接顶点wi，如果v取值wi转到步骤（3）。直到连通图中所有顶点全部访问过为止。</li>
-</ol>
-
-<p><strong>广度优先算法</strong>：</p>
-
-<ol>
-<li>顶点v入队列。</li>
-<li>当队列非空时则继续执行，否则算法结束。</li>
-<li>出队列取得队头顶点v；访问顶点v并标记顶点v已被访问。</li>
-<li>查找顶点v的第一个邻接顶点col。</li>
-<li>若v的邻接顶点col未被访问过的，则col入队列。</li>
-<li>继续查找顶点v的另一个新的邻接顶点col，转到步骤（5）。直到顶点v的所有未被访问过的邻接点处理完。转到步骤（2）。</li>
-</ol>
-
-<h2 id="toc_0">DFS</h2>
-
-<p>递归实现(Pseudocode):</p>
-
-<pre><code class="language-text">1  procedure DFS(G,v):
-2      label v as discovered
-3      for all edges from v to w in G.adjacentEdges(v) do
-4          if vertex w is not labeled as discovered then
-5              recursively call DFS(G,w)
-</code></pre>
-
-<p>非递归实现(Pseudocode):</p>
-
-<pre><code class="language-text">1  procedure DFS-iterative(G,v):
-2      let S be a stack
-3      S.push(v)
-4      while S is not empty
-5          v = S.pop()
-6          if v is not labeled as discovered:
-7              label v as discovered
-8              for all edges from v to w in G.adjacentEdges(v) do 
-9                  S.push(w)
-</code></pre>
-
-<p>下面给出非递归的实现</p>
-
-<pre><code class="language-python">def dfs(self, order_of_vertex):
-    &quot;&quot;&quot;
-    Depth first search for graph
-    Input: Class graph
-    &quot;&quot;&quot;
-    # initialize
-    for vertex in self.vertexes.keys():
-        self.visited[vertex] = 0
-
-    for vertex in self.vertexes.keys():
-        if self.visited[vertex] == 0:  # unvisted
-            print(&#39;(&#39;, end=&#39;&#39;)
-            stack = [vertex]
-            while stack:
-                node = stack.pop()
-                print(&#39;)&#39;, end=&#39;&#39;)
-                if self.visited[node] != 0:
-                    print(&#39;(&#39;)
-                    self.visited[node] = 1
-
-                    for adjacent in self.vertexes[node]:
-                        if self.visited[adjacent] == 0:
-                            stack.append(adjacent)
-                            print(&#39;(&#39;, end=&#39;&#39;)
-</code></pre>
-
-<h2 id="toc_1">BFS</h2>
-
-<pre><code class="language-python"></code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/6/30</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Graph.html'>Graph</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="graph_basic.html">
-                
-                  <h1>Graph</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<ul>
-<li>
-<a href="#toc_0">Vocabulary and Definitions</a>
-</li>
-<li>
-<a href="#toc_1">Representation</a>
-</li>
-<li>
-<a href="#toc_2">The graph ADT</a>
-</li>
-<li>
-<a href="#toc_3">Implementation</a>
-</li>
-</ul>
-
-
-<p>Definition: A graph can be represented by \(G\) where \(G=(V,E)\). For the graph \(G\), \(V\) is a set of vertices and \(E\) is a set of edges. Each edge is a tuple \((v,w)\) where \(w, v \in V\). </p>
-
-<h2 id="toc_0">Vocabulary and Definitions</h2>
-
-<ul>
-<li><p>Vertex<br/>
-A <code>vertex</code> ( also a <code>node</code>) is a fundamental part of a graph. It can have a name <code>key</code>. A vertex may also have additional information called <code>payload</code>.</p></li>
-<li><p>Edge<br/>
-An <code>Edge</code> (also an <code>arc</code>) connects two vertices, and may be one-way(<code>directed graph</code>) or two-way(<code>undirected graph</code>).</p></li>
-<li><p>Weight<br/>
-Edges may be weighted to show that there is a cost (<code>weight</code>)to go from one vertex to another. E.g. the distance between the two cities.</p></li>
-<li><p>Path<br/>
-A <code>path</code> in a graph is a sequence of vertices that are connected by edges. Formally we could define a path as \(w_1, w_2,...,w_n\) such that \((w_i,w_{i+1}) \in E\) for all \(1 \le i \le  n-1\). The weighted path length is the sum of the weights of the edges in the path. </p></li>
-<li><p>Cycle<br/>
-A <code>cycle</code> in a directed graph is a graph that starts and ends at the same vertex.  A graph with no cycles is called an <code>acyclic graph</code>. A directed graph with no cycles is called a <code>directed acyclic graph</code> or a <code>DAG</code>.</p></li>
-</ul>
-
-<h2 id="toc_1">Representation</h2>
-
-<p>Adjacency Matrix<br/>
-Adjacency List<br/>
-Edge List<br/>
-<img src="media/14988021902558/Screen%20Shot%202017-06-30%20at%202.06.25%20PM.png" alt="Screen Shot 2017-06-30 at 2.06.25 P"/></p>
-
-<p>A <code>path</code> in a graph \(G\) is a sequence of vertices \(v_0,v_1,...,v_n\) so that for all \(i, (v_i,v_{i+1})\) is an edge of \(G\).</p>
-
-<h2 id="toc_2">The graph ADT</h2>
-
-<p>The graph abstract data type (ADT) is defined as follows:</p>
-
-<ul>
-<li><code>Graph()</code> creates a new, empty graph.</li>
-<li><code>addVertex(vert)</code> adds an instance of <code>Vertex</code> to the graph.</li>
-<li><code>addEdge(fromVert, toVert)</code>Adds a new, directed edge to the graph that connects two vertices.</li>
-<li><code>addEdge(fromVert, toVert, weight)</code> Adds a new, weighted, directed edge to the graph that connects two vertices.</li>
-<li><code>getVertex(vertKey)</code> finds the vertex in the graph named vertKey.</li>
-<li><code>getVertices()</code> returns the list of all vertices in the graph.</li>
-<li><code>in</code> returns <code>True</code> for a statement of the form vertex in graph, if the given vertex is in the graph,<code>False</code> otherwise.</li>
-</ul>
-
-<h2 id="toc_3">Implementation</h2>
-
-<p>We will create two classes, <code>Graph</code>, which holds the master list of vertices, and <code>Vertex</code>, which will represent each vertex in the graph.</p>
-
-<p>Each <code>Vertex</code> uses a dictionary to keep track of the vertices to which it is connected, and the weight of each edge. This dictionary is called <code>connectedTo</code>. The listing below shows the code for the <code>Vertex</code> class. The constructor simply initializes the <code>id</code>, which will typically be a string, and the <code>connectedTo</code> dictionary. The <code>addNeighbor</code> method is used add a connection from this vertex to another. The g<code>etConnections</code> method returns all of the vertices in the adjacency list, as represented by the <code>connectedTo</code>instance variable. The <code>getWeight</code> method returns the weight of the edge from this vertex to the vertex passed as a parameter.</p>
-
-<pre><code class="language-python">class Vertex:
-    def __init__(self,key):
-        self.id = key
-        self.connectedTo = {}
-
-    def addNeighbor(self,nbr,weight=0):
-        self.connectedTo[nbr] = weight
-
-    def __str__(self):
-        return str(self.id) + &#39; connectedTo: &#39; + str([x.id for x in self.connectedTo])
-
-    def getConnections(self):
-        return self.connectedTo.keys()
-
-    def getId(self):
-        return self.id
-
-    def getWeight(self,nbr):
-        return self.connectedTo[nbr]
-</code></pre>
-
-<p>The <code>Graph</code> class, shown in the next listing, contains a dictionary that maps vertex names to vertex objects. <code>Graph</code> also provides methods for adding vertices to a graph and connecting one vertex to another. The <code>getVertices</code> method returns the names of all of the vertices in the graph. In addition, we have implemented the <code>__iter__</code> method to make it easy to iterate over all the vertex objects in a particular graph. Together, the two methods allow you to iterate over the vertices in a graph by name, or by the objects themselves.</p>
-
-<pre><code class="language-python">class Graph:
-    def __init__(self):
-        self.vertList = {}
-        self.numVertices = 0
-
-    def addVertex(self,key):
-        self.numVertices = self.numVertices + 1
-        newVertex = Vertex(key)
-        self.vertList[key] = newVertex
-        return newVertex
-
-    def getVertex(self,n):
-        if n in self.vertList:
-            return self.vertList[n]
-        else:
-            return None
-
-    def __contains__(self,n):
-        return n in self.vertList
-
-    def addEdge(self,f,t,cost=0):
-        if f not in self.vertList:
-            nv = self.addVertex(f)
-        if t not in self.vertList:
-            nv = self.addVertex(t)
-        self.vertList[f].addNeighbor(self.vertList[t], cost)
-
-    def getVertices(self):
-        return self.vertList.keys()
-
-    def __iter__(self):
-        return iter(self.vertList.values())
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/6/30</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Graph.html'>Graph</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -783,37 +783,39 @@ Edge List<br/>
 
       	<p class="cat-list">
         
-            <a href="Leetcode.html"><strong>Leetcode</strong></a>
+            <a href=".html"><strong>Leetcode</strong></a>
         
-            <a href="C/C++.html"><strong>C/C++</strong></a>
+            <a href=".html"><strong>C/C++</strong></a>
         
-            <a href="Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html"><strong>Python数据结构与算法</strong></a>
+            <a href=".html"><strong>Python数据结构与算法</strong></a>
         
-            <a href="Course.html"><strong>Course</strong></a>
+            <a href=".html"><strong>Course</strong></a>
         
-            <a href="Python%E7%89%B9%E6%80%A7.html"><strong>Python特性</strong></a>
+            <a href=".html"><strong>Python特性</strong></a>
         
-            <a href="%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html"><strong>机器学习</strong></a>
+            <a href=".html"><strong>机器学习</strong></a>
         
-            <a href="Python%E7%A7%91%E5%AD%A6%E8%AE%A1%E7%AE%97%E4%B8%89%E7%BB%B4%E5%8F%AF%E8%A7%86%E5%8C%96.html"><strong>Python科学计算三维可视化</strong></a>
+            <a href=".html"><strong>Python科学计算三维可视化</strong></a>
         
-            <a href="English.html"><strong>English</strong></a>
+            <a href=".html"><strong>English</strong></a>
         
-            <a href="Computer%20System.html"><strong>Computer System</strong></a>
+            <a href=".html"><strong>Computer System</strong></a>
         
-            <a href="Deep%20Learning.html"><strong>Deep Learning</strong></a>
+            <a href=".html"><strong>Deep Learning</strong></a>
         
-            <a href="Linux%20%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B.html"><strong>Linux 系统编程</strong></a>
+            <a href=".html"><strong>Linux 系统编程</strong></a>
         
-            <a href="%E6%95%B0%E6%8D%AE%E5%BA%93.html"><strong>数据库</strong></a>
+            <a href=".html"><strong>数据库</strong></a>
         
-            <a href="Tensorflow.html"><strong>Tensorflow</strong></a>
+            <a href=".html"><strong>Tensorflow</strong></a>
         
-            <a href="Big%20Data.html"><strong>Big Data</strong></a>
+            <a href=".html"><strong>Big Data</strong></a>
         
-            <a href="%E6%96%87%E7%8C%AE%E9%98%85%E8%AF%BB.html"><strong>文献阅读</strong></a>
+            <a href=".html"><strong>文献阅读</strong></a>
         
-            <a href="Tools.html"><strong>Tools</strong></a>
+            <a href=".html"><strong>Tools</strong></a>
+        
+            <a href=".html"><strong>大数据</strong></a>
          
         </p>
 
@@ -830,31 +832,31 @@ Edge List<br/>
 	      
 		      
 			      <li class="post">
-			        <a href="15312166852240.html">CSE 421/521 Operating Systems</a>
+			        <a href="15317356378033.html">Operating System Concepts - Introduction</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="15272289883847.html">回溯法和深度优先遍历</a>
+			        <a href="Linking.html">CSAPP - 链接</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="Coursera_notebook_jupyter.html">技巧：Coursera下载Jupyter notebook相关文件</a>
+			        <a href="15315844145426.html">Intro to Hadoop and MapReduce</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="15171345711813.html">用于训练的深度学习硬件</a>
+			        <a href="exceptional_control_flow.html">CSAPP - 异常控制流</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="15166008990128.html">网络编程</a>
+			        <a href="overhead.html">Overhead</a>
 			      </li>
 		     
 		  

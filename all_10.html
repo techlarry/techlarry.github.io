@@ -89,37 +89,39 @@
     <li><label>Categories</label></li>
 
         
-            <li><a href="Leetcode.html">Leetcode</a></li>
+            <li><a href=".html">Leetcode</a></li>
         
-            <li><a href="C/C++.html">C/C++</a></li>
+            <li><a href=".html">C/C++</a></li>
         
-            <li><a href="Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html">Python数据结构与算法</a></li>
+            <li><a href=".html">Python数据结构与算法</a></li>
         
-            <li><a href="Course.html">Course</a></li>
+            <li><a href=".html">Course</a></li>
         
-            <li><a href="Python%E7%89%B9%E6%80%A7.html">Python特性</a></li>
+            <li><a href=".html">Python特性</a></li>
         
-            <li><a href="%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html">机器学习</a></li>
+            <li><a href=".html">机器学习</a></li>
         
-            <li><a href="Python%E7%A7%91%E5%AD%A6%E8%AE%A1%E7%AE%97%E4%B8%89%E7%BB%B4%E5%8F%AF%E8%A7%86%E5%8C%96.html">Python科学计算三维可视化</a></li>
+            <li><a href=".html">Python科学计算三维可视化</a></li>
         
-            <li><a href="English.html">English</a></li>
+            <li><a href=".html">English</a></li>
         
-            <li><a href="Computer%20System.html">Computer System</a></li>
+            <li><a href=".html">Computer System</a></li>
         
-            <li><a href="Deep%20Learning.html">Deep Learning</a></li>
+            <li><a href=".html">Deep Learning</a></li>
         
-            <li><a href="Linux%20%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B.html">Linux 系统编程</a></li>
+            <li><a href=".html">Linux 系统编程</a></li>
         
-            <li><a href="%E6%95%B0%E6%8D%AE%E5%BA%93.html">数据库</a></li>
+            <li><a href=".html">数据库</a></li>
         
-            <li><a href="Tensorflow.html">Tensorflow</a></li>
+            <li><a href=".html">Tensorflow</a></li>
         
-            <li><a href="Big%20Data.html">Big Data</a></li>
+            <li><a href=".html">Big Data</a></li>
         
-            <li><a href="%E6%96%87%E7%8C%AE%E9%98%85%E8%AF%BB.html">文献阅读</a></li>
+            <li><a href=".html">文献阅读</a></li>
         
-            <li><a href="Tools.html">Tools</a></li>
+            <li><a href=".html">Tools</a></li>
+        
+            <li><a href=".html">大数据</a></li>
          
 
       </ul>
@@ -142,56 +144,48 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="batch_normalization.html">
+                <a class="clearlink" href="15025903235887.html">
                 
-                  <h1>Batch Normalization</h1>
+                  <h1>Latex 技巧</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<p>The idea is relatively straightforward. Machine learning methods tend to work better when their input data consists of uncorrelated features with <strong>zero mean</strong> and <strong>unit variance</strong>. When training a neural network, we can preprocess the data before feeding it to the network to explicitly decorrelate its features; this will ensure that the first layer of the network sees data that follows a nice distribution. However even if we preprocess the input data, the activations at deeper layers of the network will likely no longer be decorrelated and will no longer have zero mean or unit variance since they are output from earlier layers in the network. Even worse, during the training process the distribution of features at each layer of the network will shift as the weights of each layer are updated.</p>
+                        	<h2 id="toc_0">Latex 查询</h2>
 
-<h2 id="toc_0">Covariate Shift</h2>
+<p>可以在<code>Dash</code>中下载Latex Cheat Sheet以便随时查询。</p>
 
-<p>While stochastic gradient is simple and effective, it requires careful tuning of the model hyper-parameters, specifically the learning rate used in optimization, as well as the initial values for the model parameters. The train- ing is complicated by the fact that the inputs to each layer are affected by the parameters of all preceding layers – so that small changes to the network parameters amplify as the network becomes deeper.</p>
+<h2 id="toc_1">Latex 如何将下标放在正上方／正下方</h2>
 
-<p>The change in the distribution of layers&#39; inputs presents a problem because the layers need to continuously adapt to the new distribution. When the input distribution to a learning system changes, it is said to experience <code>covariate shift</code>. This is typically handled via domain adaption.</p>
+<p>在 <code>\sum</code>，<code>\max</code>等之后添加<code>\limits^{upper}_{lower}</code>：\(\sum\limits^{upper}_{lower}\)</p>
 
-<p><code>Internal Covariate Shift</code> refers to the change in the distribution of internal nodes of a deep network due to change in network parameters, in the course of training. <code>Batch Normalization</code>, that takes a step towards reducing internal covariance shift, and in doing so dramatically accelerates the training of deep neural nets. It accomplishes this via a normalization step that fixes the means and variances of layer inputs. It also has a beneficial effect on the dependence of gradients on the scale of the parameters or of their initial values. This allows us to use much higher learning rates without the risk of divergence. </p>
+<p>例如：</p>
 
-<h2 id="toc_1">Algorithm</h2>
-
-<h3 id="toc_2">Forward</h3>
-
-<p>Given some input values \(\mathcal{B} = x^{(1)},...,x^{(m)}\) over a mini-batch in the layer \(l\) of neural network; </p>
-
-<p>\[\mu_{\mathcal{B}} = \frac{1}{m}\sum_i^m x_i  \text{     (mini-batch mean)}\\<br/>
-\sigma^2=\frac{1}{m}\sum_i(x_i-\mu_{\mathcal{B}})^2  \text{     (mini-batch variance)}\\<br/>
-\hat{x}_i=\frac{x_i-\mu_{\mathcal{B}}}{\sqrt{\sigma_{\mathcal{\mathcal{B}}}^2+\varepsilon}} \text{     (normalize)}\\<br/>
-y_i=\gamma \hat{x}_i+\beta \text{     (scale and shift)}<br/>
-\]</p>
-
-<p>At each iteration, we update the running averages for mean and variance using an exponential decay based on the momentum parameter:</p>
-
-<pre><code class="language-text">running_mean = momentum * running_mean + (1 - momentum) * sample_mean
-running_var = momentum * running_var + (1 - momentum) * sample_var
+<pre><code class="language-latex">c(i,j) = \sum\limits^{j}_{k=i}f[k] + \min\limits_{r=i}^j \prod\limits^{m}_np(x^i)
 </code></pre>
 
-<h2 id="toc_3">Backward</h2>
+<p>\(c(i,j) = \sum \limits^{j}_{k=i}f[k] + \min \limits_{r=i}^j \prod \limits^{m}_np(x^i)\)</p>
 
-<p><img src="media/15048405877529/Screen%20Shot%202017-09-08%20at%203.11.45%20PM.png" alt="batch-normalization-backward"/></p>
+<h2 id="toc_2">字体</h2>
 
-<h3 id="toc_4">Test time</h3>
+<p>花式字体<code>math calligraphy</code>，常用于随机变量，例如: \(\mathcal{X, Y}\)</p>
 
-<p>Using trained <code>runing_mean</code> and <code>running_var</code> to take forward step.</p>
+<pre><code class="language-latex">\mathcal{X, Y}
+</code></pre>
 
-<h2 id="toc_5">TensorFlow</h2>
+<p>空心加粗字体<code>blackboard bold</code>，常用于实数集R: \(\mathbb{R}\)</p>
 
-<p>Applying <code>Batch Normalization</code> in TensorFlow Model is very convenient. Just add one line of code in TensorFlow: <code>tf.nn.batch-normalization</code>.</p>
+<pre><code class="language-text">\mathbb{R}
+</code></pre>
 
-<h2 id="toc_6">Reference</h2>
+<h2 id="toc_3">上下</h2>
 
-<p>Sergey Ioffe, Christian Szegedy. 2015. Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift. arXiv:<a href="https://arxiv.org/abs/1502.03167v3">1501.02167v3</a></p>
+<p>使用<code>\stackrel{}{}</code>，效果如下：</p>
+
+<p>\(x \stackrel{i.i.d}{\backsim} P(x), y \stackrel{p}{apple} P(y|x)\)</p>
+
+<pre><code class="language-latex">x \stackrel{i.i.d}{\backsim} P(x), y \stackrel{p}{apple} P(y|x)
+</code></pre>
 
                         
                       </div>
@@ -200,10 +194,10 @@ running_var = momentum * running_var + (1 - momentum) * sample_var
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2017/9/8</span>
+                    <span class="date">2017/8/13</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Deep%20Learning.html'>Deep Learning</a></span>
+          					    <span class="posted-in"><a href='Tools.html'>Tools</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -217,63 +211,34 @@ running_var = momentum * running_var + (1 - momentum) * sample_var
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15046658203135.html">
+                <a class="clearlink" href="introdution_to_big_data.html">
                 
-                  <h1>TensorFlow Q</h1>
+                  <h1>Introduction to big data</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h3 id="toc_0">Q1: what&#39;s the difference between <code>tf.placeholder</code> and <code>tf.Variable</code></h3>
+                        	<h2 id="toc_0">Characteristics of Big data</h2>
 
-<p>In general, we use <code>tf.placeholder</code> to feed actual training examples, while using <code>tf.Variable</code> for parameters such as weights (\(W\)) and biases (\(b\)) for models.</p>
+<p>3 V: Volume, Variety, Velocity</p>
 
-<p>With <code>tf.Variable</code>, we have to provide an initial value when declaring it. And we don&#39;t have to provide an initial value until running time with a <code>feed_dict</code>.</p>
+<p>Most now agree with the characterization of big data using the 3 V’s coined by Doug Laney of Gartner:</p>
 
-<h3 id="toc_1">Q2: what&#39;s the difference between <code>tf.random_normal</code> and <code>tf.trucated_normal</code></h3>
+<p>·<code>Volume</code>: This refers to the vast amounts of data that is generated every second/minute/hour/day in our digitized world.</p>
 
-<p><code>tf.trucated_normal</code> generates values following a normal distribution with specified mean and standard deviation, except that values whose magnitude is more than 2 standard deviations from the mean are dropped and re-picked.</p>
+<p>· <code>Velocity</code>: This refers to the speed at which data is being generated and the pace at which data moves from one point to the next.</p>
 
-<pre><code class="language-text">import tensorflow as tf
-import matplotlib.pyplot as plt
-%matplotlib inline
-Session = tf.InteractiveSession()
-</code></pre>
+<p>· <code>Variety</code>: This refers to the ever-increasing different forms that data can come in, e.g., text, images, voice, geospatial.</p>
 
-<pre><code class="language-text">mean = 0.0
-std = 1.0
-shape = (10000,)
-hist_range = (-5, 5)
+<p>A fourth V is now also sometimes added:</p>
 
-A = tf.truncated_normal(shape, mean, std)
-B = tf.random_normal(shape, mean, std)
-a, b = Session.run([A, B])
-</code></pre>
+<p>· <code>Veracity</code>: This refers to the quality of the data, which can vary greatly.</p>
 
-<pre><code class="language-text">f, (ax1, ax2) = plt.subplots(2,1)
-f1 = ax1.hist(a, bins= 100, range=hist_range)
-f2 = ax2.hist(b, bins= 100, range=hist_range)
-</code></pre>
+<p>There are many other V&#39;s that gets added to these depending on the context. For our specialization, we will add:</p>
 
-<p><img src="media/15046658203135/output_2_0.png" alt="output_2_0"/></p>
+<p>· <code>Valence</code>: This refers to how big data can bond with each other, forming connections between otherwise disparate datasets.</p>
 
-<h3 id="toc_2">Q3: What&#39;s the difference between <code>tf.Variable</code> and <code>tf.get_variable</code></h3>
-
-<p><code>tf.get_variable</code> will make it way easier to refactor code if you need to share variables at any time.</p>
-
-<pre><code class="language-python">import tensorflow as tf
-
-with tf.variable_scope(&quot;scope1&quot;):
-    w1 = tf.get_variable(&quot;w1&quot;, shape=[2,3])
-    w2 = tf.Variable(1.0, name=&quot;w2&quot;)
-with tf.variable_scope(&quot;scope1&quot;, reuse=True):
-    w1_p = tf.get_variable(&quot;w1&quot;, shape=[2,3])
-    w2_p = tf.Variable(1.0, name=&quot;w2&quot;)
-
-print(w1 is w1_p, w2 is w2_p)
-
-#Output: True  False
-</code></pre>
+<p>The above V’s are the dimensions that characterize big data, and also embody its challenges: We have huge amounts of data, in different formats and varying quality, that must be processed quickly.</p>
 
                         
                       </div>
@@ -282,10 +247,10 @@ print(w1 is w1_p, w2 is w2_p)
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2017/9/6</span>
+                    <span class="date">2017/10/31</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Tensorflow.html'>Tensorflow</a></span>
+          					    <span class="posted-in"><a href='Big%20Data.html'>Big Data</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -299,80 +264,653 @@ print(w1 is w1_p, w2 is w2_p)
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15046649572570.html">
+                <a class="clearlink" href="C++baics.html">
                 
-                  <h1>Pandas</h1>
+                  <h1>C++ Basics</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<p>To convert a pandas <code>dataframe</code> (df) to a numpy <code>ndarray</code>, use this code:</p>
-
-<pre><code class="language-text">df=df.values
-</code></pre>
-
-<p>df now becomes a numpy <code>ndarray</code>.</p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/9/6</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="google-cloud-platform.html">
-                
-                  <h1>Google Cloud Platform</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>Google Cloud Platform enables developers to <strong>build</strong>, <strong>test</strong> and <strong>deploy</strong> applications on Google&#39;s <em>highly-scalable</em>, <em>secure</em>, and <em>reliable</em> infrastructure.</p>
-
-<p>All Google Cloud Platform services are associated with a project that is used to:</p>
+                        	<p>The article summarizes the key points, concepts of C++, with detailed examples, from a C Programmer standpoint.</p>
 
 <ul>
-<li>Track resource and quota usage</li>
-<li>Enable billing</li>
-<li>Manage permissions and credentials</li>
-<li>Enable services and APIs</li>
+<li>
+<a href="#toc_0">C++ Advantage</a>
+</li>
+<li>
+<a href="#toc_1">C++ is better than C</a>
+</li>
+<li>
+<a href="#toc_2">Overloading</a>
+</li>
+<li>
+<a href="#toc_3">Generics</a>
+<ul>
+<li>
+<a href="#toc_4">Multiple template arguments</a>
+</li>
+<li>
+<a href="#toc_5">Overloading Operator</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_6">Natural way to build widgets: <code>class</code></a>
+</li>
+<li>
+<a href="#toc_7">Constructor and destructor</a>
+<ul>
+<li>
+<a href="#toc_8">Copy Constructor</a>
+</li>
+<li>
+<a href="#toc_9">Destructor</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_10">Scope and storage class</a>
+</li>
+<li>
+<a href="#toc_11">Memory Management</a>
+</li>
+<li>
+<a href="#toc_12">Reference</a>
+</li>
 </ul>
 
-<h2 id="toc_0">VM Instances</h2>
 
-<p>Run the following code to start or stop an compute instance called <code>instance-name</code>.</p>
+<h2 id="toc_0">C++ Advantage</h2>
 
-<pre><code class="language-bash">gcloud compute instances start/stop instance-name
+<ul>
+<li>safe cast
+<ul>
+<li><code>static cast &lt;type&gt;</code></li>
+</ul></li>
+<li><code>for</code> statement can include declaration initializer</li>
+<li><code>endl</code> io-manipulator can be placed in an iostream.</li>
+</ul>
+
+<h2 id="toc_1">C++ is better than C</h2>
+
+<ul>
+<li>More <code>type safety</code>(the extent to which a programming language discourages or prevents type errors)
+<ul>
+<li>The new operator returns a pointer of a specific type based on the operand, versus the void pointer from C&#39;s <code>malloc</code>.</li>
+<li>Certain code written in C that uses void pointers can be rewritten using C++ templates to give a type to an argument whose type is variable.</li>
+<li>Using <code>static_cast</code> and <code>dynamic_cast</code></li>
+</ul></li>
+<li>More Libraries
+<ul>
+<li>STL(Standard Template Library)</li>
+</ul></li>
+<li>Less reliance on preprocessor
+<ul>
+<li><code># define</code>  goes away, easy to use <code>const &lt;type&gt;</code> and <code>inline</code> (substitute macros in C)instead.</li>
+</ul></li>
+<li>OO vs imperative
+<ul>
+<li>OO is better</li>
+</ul></li>
+<li><code>namespace</code></li>
+<li>safe cast 
+<ul>
+<li>using <code>static_cast &lt;type&gt;</code></li>
+</ul></li>
+<li><code>iostream</code></li>
+<li>Declarations anywhere including
+<ul>
+<li>for-statement initialization</li>
+</ul></li>
+</ul>
+
+<h2 id="toc_2">Overloading</h2>
+
+<p><code>Overloaded functions</code> are an important polymorphic mechanism in C++. <code>signature matching algorithm</code> decides the way to pick the appropriate functions.</p>
+
+<p><strong><code>Basic Signature Matching Algorithm</code></strong>:</p>
+
+<ul>
+<li>Use an exact match if found.</li>
+<li>Try standard type promotions.</li>
+<li>Try standard type conversions.</li>
+<li>Try user-defined conversions.</li>
+<li>...</li>
+</ul>
+
+<p><strong>Example: Swap in C</strong> </p>
+
+<pre><code class="language-c"> //first swap function
+ //Call by reference simulated with pointers
+ void swap(int* i, int* j){
+    int temp=*i;
+    *i=*j;
+    *j=temp;
+ }
+
+//second swap function
+//Call by reference simulated with pointers
+void swap_double(double* i, double* j){ 
+    double temp=*i;
+    *i=*j;
+    *j=temp;
+ }
+ 
+ int main()
+ {
+    int m=5, n=10;
+    double x=5.3, y=10.6;
+    printf(&quot;inputs:%d, %d\n&quot;, m,n);
+    swap_double(&amp;m, &amp;n);
+    printf(&quot;outputs:%d, %d\n&quot;, m,n);
+    printf(&quot;double inputs:%lf, %lf\n&quot;, x,y);
+    swap_double(&amp;x, &amp;y);
+    printf(&quot;double outputs: %lf, %lf\n&quot;, x, y);
+}
 </code></pre>
 
-<p>After starting your compute instance, you might need to access the instance in the zone which is <code>zone-name</code> here, via the terminal by <code>ssh</code> </p>
+<p>In C each function in a given scope most have a unique name(no function overloading).</p>
 
-<pre><code class="language-bash">gcloud compute ssh instance-name --zone zone-name
+<ul>
+<li>C: Call by reference simulated with pointers (the previous example)</li>
+<li>C++: Call by reference argument passing (see the example below)</li>
+</ul>
+
+<p><strong>Example: Swap in C++</strong>:</p>
+
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+using namespace std;
+
+// iostream type safe and intuitive convinient.
+
+inline void swap(int &amp;i, int &amp;j){ // call by reference, reference to int
+        int temp = i;
+        i = j;
+        j = temp;
+}
+
+inline void swap(double &amp;i, double &amp;j){
+        double temp = i;
+        i = j;
+        j = temp;
+}
+
+int main()
+{
+        int m=5, n=10;
+        double x = 5.3, y=10.6;
+        cout &lt;&lt; &quot;inputs: &quot; &lt;&lt; m &lt;&lt; &quot;,&quot; &lt;&lt; n &lt;&lt; endl;
+        swap(m,n);
+        cout &lt;&lt; &quot;outputs: &quot; &lt;&lt; m &lt;&lt; &quot;,&quot; &lt;&lt; n &lt;&lt; endl;
+
+        cout &lt;&lt; &quot;double inputs: &quot; &lt;&lt; x &lt;&lt; &quot;,&quot; &lt;&lt; y &lt;&lt; endl;
+        swap(x,y);
+        cout &lt;&lt; &quot;outputs: &quot; &lt;&lt; x &lt;&lt; &quot;,&quot; &lt;&lt; y &lt;&lt; endl;
+}
 </code></pre>
 
-<h2 id="toc_1">Setup Environment</h2>
+<ul>
+<li>Having the same name for conceptually the same activity promotes readable code.</li>
+<li>Overloading based on signature and the use of generics(<code>template</code>) is a powerful reuse mechanism.</li>
+</ul>
 
-<p>Following the guide of <a href="http://cs231n.github.io/gce-tutorial/">CS231n</a>, using an off-the-shelf script <code>setup_googlecloud.sh</code>, and activate the environment created by the script</p>
+<h2 id="toc_3">Generics</h2>
 
-<pre><code class="language-bash">source .env/bin/activate
+<p>Generics in C++: programing using templates.</p>
+
+<ul>
+<li>The compiler uses <code>template</code> to write code appropriate to each set of parameters.</li>
+<li>The \(m\), \(n\) parameters are ints - so the compiled code is <code>swap(int&amp;, int&amp;)</code> signature.</li>
+<li>Similarly, for the other two signatures. So the compiler is compiling code appropriate to each distinct signature.</li>
+</ul>
+
+<p><strong>Example: Swap Using templates</strong>:</p>
+
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;complex&gt;
+
+using namespace std;
+
+template &lt;class T&gt;
+inline void swaps(T&amp; d, T&amp; s)
+{
+        T temp=d;
+        d = s;
+        s = temp;
+}
+
+int main()
+{
+        int m=5, n=10;
+        double x=5.3, y=10.6;
+        complex&lt;double&gt; r(2.4, 3.5), s(3.4, 6.7);
+        cout &lt;&lt; &quot;inputs: &quot; &lt;&lt; m &lt;&lt; &quot;,&quot; &lt;&lt; n &lt;&lt; endl;
+        swaps(m,n);
+        cout &lt;&lt; &quot;outputs:&quot; &lt;&lt; m &lt;&lt; &quot;,&quot; &lt;&lt; n &lt;&lt; endl;
+
+        cout &lt;&lt; &quot;complex double inputs: &quot; &lt;&lt; r &lt;&lt; &quot;,&quot; &lt;&lt; s &lt;&lt; endl;
+        swaps(r,s);
+        cout &lt;&lt; &quot;complex double outputs:&quot; &lt;&lt; r &lt;&lt; &quot;,&quot; &lt;&lt; s &lt;&lt; endl;
+}
 </code></pre>
+
+<p>Another example, how in C do you write a function to sum a array in doubles?</p>
+
+<p><strong>Example: Sum a array in C</strong>:</p>
+
+<pre><code class="language-c">double sum(double data[], int size)
+{
+    double s =0.0;
+    int i;
+    for (i=0; i&lt;size; i++)
+        s += data[i];
+    return s;        
+</code></pre>
+
+<p>Generic programming:</p>
+
+<ul>
+<li>writing code that can use an arbitrary type or types; in C++ this is done with template.</li>
+</ul>
+
+<p><strong>Example: Sum a array in C++ Using template</strong>:</p>
+
+<pre><code class="language-cpp">template &lt;class T&gt; //T is generic type
+T sum(const T data[], int size, T s=0)
+{
+    for (int i=0; i&lt;size; ++i)
+        s += data[i]; // += must work for T
+    return s;
+}
+
+int main()
+{
+    cout &lt;&lt; &quot;template for sum()&quot; &lt;&lt; endl;
+    int a[] = {1,2,3};
+    double b[] = {2.1, 2.2, 2.3};
+    cout &lt;&lt; sum(a,3) &lt;&lt; endl;
+    cout &lt;&lt; sum(b,3) &lt;&lt; endl;
+}
+</code></pre>
+
+<h3 id="toc_4">Multiple template arguments</h3>
+
+<ul>
+<li>We have used templates with one template parameter, but it is useful to have more that one distinct type in a template.</li>
+<li>More genericity - but be careful!</li>
+</ul>
+
+<p><strong>Type safety</strong>:</p>
+
+<ul>
+<li>More types means worrying about conversions and more signatures</li>
+<li>There <code>static_cast</code> operators are considered safe.</li>
+<li>The old cast operator (type) is deprecated as a reminder the other casting operators are:
+<ul>
+<li><code>reinterpret_cast&lt;type&gt;</code> highly unsafe</li>
+<li><code>dynamic_cast&lt;type&gt;</code> used with classes</li>
+<li><code>const_cast&lt;type&gt;</code> cast away const-ness</li>
+</ul></li>
+</ul>
+
+<h3 id="toc_5">Overloading Operator</h3>
+
+<p>Unary and binary operators can be overloaded as nonstatic member functions. Implicitly, they are acting on a class value.</p>
+
+<pre><code class="language-cpp">#include&lt;iostream&gt; 
+#include&lt;cstdint&gt; 
+
+using namespace std;
+
+enum class days:std::int8_t 
+{SUN,MON,TUE,WED,THU,FRI,SAT};
+
+//unlike plain enums C++11 enum class is typesafe and does not silently 
+//convert to int
+
+ostream&amp; operator&lt;&lt;(ostream&amp; out, const days&amp; d)  // call by reference 
+{
+    switch (d){
+        case days::SUN: out&lt;&lt; &quot;SUN&quot;; break;
+        case days::MON: out&lt;&lt; &quot;MON&quot;; break;
+        case days::TUE: out&lt;&lt; &quot;TUE&quot;; break;
+        case days::WED: out&lt;&lt; &quot;WED&quot;; break;
+        case days::THU: out&lt;&lt; &quot;THU&quot;; break;
+        case days::FRI: out&lt;&lt; &quot;FRI&quot;; break;
+        case days::SAT: out&lt;&lt; &quot;SAT&quot;; break;
+    }
+    return out;
+}
+
+days operator++(days&amp; d) //PREFIX OPERATOR 
+{ 
+    d = static_cast&lt;days&gt;((static_cast&lt;int&gt;(d) + 1) % 7); 
+    return d;
+}
+
+days operator++(days&amp; d, int) //POSTFIX OPERATOR 
+{
+    days temp = d;
+    d = static_cast&lt;days&gt;((static_cast&lt;int&gt;(d) + 1) % 7);
+    return temp; 
+}
+
+int main(){
+    days today{days::MON};
+    std::cout &lt;&lt; &quot;Demonstrate class enum&quot; &lt;&lt; std::endl; 
+    std::cout &lt;&lt; &quot;MONDAY VALUE IS &quot; &lt;&lt; today &lt;&lt; std::endl;
+    std::cout &lt;&lt; &quot;INCREMENT VALUE IS &quot; &lt;&lt; ++today &lt;&lt; std::endl; 
+    std::cout &lt;&lt; &quot;INCREMENT VALUE IS &quot; &lt;&lt; today++ &lt;&lt; std::endl; 
+    std::cout &lt;&lt; &quot;INCREMENT VALUE IS &quot; &lt;&lt; today &lt;&lt; std::endl; 
+    return 0;
+}
+
+</code></pre>
+
+<p>OO Principle:</p>
+
+<ul>
+<li>User defined types should be indistinguishable from native types
+<ul>
+<li>Operator overloading and conversion allows us to implement this principle</li>
+</ul></li>
+</ul>
+
+<h2 id="toc_6">Natural way to build widgets: <code>class</code></h2>
+
+<p><strong>C type extension</strong>:</p>
+
+<ul>
+<li>In C you can &#39;add&#39; a type using <code>struct</code></li>
+<li>In C++ <code>struct</code> is different - <code>struct</code> is a named scope that can include functions (methods) and have different layers of opacity (data hiding). While C++ retains <code>struct</code> it has the new keyword <code>class</code>.</li>
+<li><code>class</code> is almost equivalent to <code>struct</code> - but with different data hiding defaults.</li>
+</ul>
+
+<pre><code class="language-cpp">typedef struct point {double x,y;} point;
+void add_points(point* p1, point* p2, point* sum)
+{
+    sum -&gt; x = p1 -&gt; x + p2 -&gt; x;
+    sum -&gt; y = p1 -&gt; y + p2 -&gt; y;
+}
+</code></pre>
+
+<ul>
+<li>C struct has fields - data members;</li>
+<li>File scope functions manipulate the struct using pointer operations</li>
+</ul>
+
+<p><strong>Naive C++ point</strong></p>
+
+<pre><code class="language-cpp">class point{
+    public:
+        double x,y;
+};
+</code></pre>
+
+<ul>
+<li><code>public</code>, <code>private</code>, <code>protected</code> are access keywords.</li>
+</ul>
+
+<p><strong>Better C++ Point</strong>:</p>
+
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+using namespace std;
+
+class point{
+    public:
+        double getx(){return x;} // access methods
+        void setx(double v){x = v;} // mutate methods 
+        double x,y; 
+};
+
+point operator+(point&amp; p1, point&amp; p2){
+    point sum={p1.x + p2.x, p1.y+p2.y};
+    return sum;
+}
+
+ostream&amp; operator&lt;&lt;(ostream&amp; out, const point&amp;p){
+    out &lt;&lt; &quot;(&quot; &lt;&lt; p.x &lt;&lt; &quot;,&quot; &lt;&lt; p.y &lt;&lt;&quot;)&quot;;
+    return out;
+}
+
+int main()
+{
+    point a = {3.5, 2.5}, b={2.5, 4.5}, c;
+    cout &lt;&lt; &quot;a=&quot; &lt;&lt; a &lt;&lt; &quot; b= &quot; &lt;&lt; b &lt;&lt; endl;
+    cout &lt;&lt; &quot;sum= &quot; &lt;&lt; a+b &lt;&lt; endl;
+}
+
+// reuslt is 
+//a=(3.5,2.5) b= (2.5,4.5)
+//sum= (6,7)
+</code></pre>
+
+<p><strong>class - User defined types</strong>:</p>
+
+<ul>
+<li>Using point in <code>main()</code> looks very much like using a native type.</li>
+<li>Indeed this is one of our key goal in Object Oriented Programming.</li>
+<li>We accomplished this by having point be a class -- a user defined type. We overload the standard operators like + and &lt;&lt; to give them appropriate &quot;point&quot; semantics.</li>
+</ul>
+
+<p><strong>Methods</strong>:</p>
+
+<ul>
+<li>Class member functions have automatic access to private members.</li>
+<li><code>p1.getx()</code>, <code>p1.setx(3.5)</code></li>
+</ul>
+
+<h2 id="toc_7">Constructor and destructor</h2>
+
+<p>A <code>constructor</code>(构造函数) is a member function whose name is the same as the class name; it creates objects of the class type. This process involves initializing data members and, frequently, allocating storage from the heap by using <code>new</code>.</p>
+
+<p><code>default constructor</code> does not requires a initializing value(no arguments),</p>
+
+<pre><code class="language-cpp">class point{
+    public:
+        //constructor, initializer list
+        point(double x=0.0, double y=0.0): x(x), y(y){} 
+        double getx(){return x;}
+        void setx(double v){x=v;}
+    private:
+        double x,y;
+};
+</code></pre>
+
+<p><strong>A special method constructor</strong>:</p>
+
+<ul>
+<li><code>point(){x=y=0.0;}</code>: ordinary assignment</li>
+<li><code>point(){this-&gt;x=0.0; this-&gt;y=0.0}</code> :initialized list</li>
+<li><code>point():x(0.0), y(0.0){}</code> : best way</li>
+<li>Default constructor - the constructor whose signature is void.</li>
+</ul>
+
+<p><strong>Constructor overloading</strong>:</p>
+
+<ul>
+<li>It is useful to have multiple ways to initialize an object like point.</li>
+<li><code>point(double x, double y)</code></li>
+<li><code>{this -&gt; x=x; this-&gt;y=y};</code></li>
+</ul>
+
+<p>It is also the case that usually there are several constructors per class. Each constructor signature represents a useful way to declare and initialize an object of that type.</p>
+
+<p><strong>Example: Improved Points Using constructor</strong></p>
+
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+
+using namespace std;
+
+class point{
+    public:
+        point(): x(0), y(0) {} //default
+        point(double u): x(u), y(0) {} //double to point
+        point(double u, double v): x(u), y(v) {}
+        void print() const { cout &lt;&lt; &quot;(&quot; &lt;&lt; x &lt;&lt; &quot;,&quot; &lt;&lt; y &lt;&lt; &quot;)&quot;; }
+        void set(double u, double v) {x =u; y=v;}
+        void plus(point c) {x += c.x; y+=c.y;}
+    private:
+        double x, y;
+};
+
+
+double parabola(double x, double p)
+{
+    return (x*x)/p;
+}
+
+void graph(double a, double b, double incr, 
+    double f(double, double), double p, point gr[])
+{
+    double x = a;
+    for (int i=0; x &lt;=b; ++i, x += incr)
+        gr[i].set(x, f(x, p));
+}
+
+
+const int no_of_pts = 20;
+
+
+int main()
+{
+    point g[no_of_pts]; // use default ctor
+
+    graph(0, 2, 0.1, parabola, 5, g);
+    cout &lt;&lt; &quot;First 20 samples:&quot; &lt;&lt; endl;
+    for (int i=0; i&lt; no_of_pts; ++i)
+    {
+        g[i].print();
+        if (i%5==4)
+            cout &lt;&lt; endl;
+        else
+            cout &lt;&lt; &quot;  &quot;;
+    }
+}
+</code></pre>
+
+<h3 id="toc_8">Copy Constructor</h3>
+
+<p>For class types, call-by-value requires a <code>copy constructor</code>. The compiler provides a copy constructor whose signature is <code>class_name:: class_name(const class_name &amp;)</code></p>
+
+<h3 id="toc_9">Destructor</h3>
+
+<p>A <code>destructor</code>(析构函数) is a member function whose name is the class preceded by the tilde character, <code>~</code>. The destructor is implicitly invoked on block and function exit to clean up storage no longer accessible.</p>
+
+<p><strong>Example:List</strong>:</p>
+
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+
+using namespace std;
+
+struct list_element {
+    list_element(int n=0, list_element* ptr=0): d(n), next(ptr){}
+    int d;
+    list_element* next;
+};
+
+
+class list{
+    public:
+        list(): head(0), cursor(0){}  // default constructor
+        list(const int* arr, int n); // transfer data
+        list(const list&amp; lst); //copy constructor
+        void prepend(int n); //insert at front value n
+        int get_element(){ return cursor -&gt; d;}
+        void advance(){ cursor = cursor -&gt; next;}
+        void print();
+        ~list(){delete head; delete cursor;}; // destructor
+    private:
+        list_element* head;
+        list_element* cursor;
+};
+
+
+void list::prepend(int n)
+{
+    if (head==0) // empty list case
+        cursor = head = new list_element(n, head);
+    else // add to front-chain
+        head = new list_element(n, head);
+}
+
+
+void list::print(){
+    list_element* h = head;
+    while(h!=0){//idiom for chaining
+        cout &lt;&lt; h-&gt;d &lt;&lt; &quot;,&quot;;
+        h = h-&gt;next;
+    }
+    cout &lt;&lt; &quot;###&quot; &lt;&lt; endl;
+}
+
+int main()
+{
+    list a, b;
+    a.prepend(9);
+    a.prepend(8);
+    cout &lt;&lt; &quot; list a&quot; &lt;&lt; endl;
+    a.print();
+    for (int i=0; i&lt;40; ++i)
+        b.prepend(i*i);
+    cout &lt;&lt; &quot; list b&quot; &lt;&lt; endl;
+    b.print();
+    return 0;
+}
+</code></pre>
+
+<h2 id="toc_10">Scope and storage class</h2>
+
+<p>The C++ has two principle forms of scope: <code>local scope</code> and <code>file scope</code>. <code>Local scope</code> is scoped to a block(e.g. compound statements, function bodies). <code>File scope</code> has names that are external(global).  </p>
+
+<p>The four storage classes are <code>auto</code>, <code>extern</code>, <code>register</code>, and <code>static</code>.</p>
+
+<p><strong><code>auto</code></strong>:</p>
+
+<ul>
+<li>allocated within a block, and its lifetime is limited to the execution of that block.</li>
+</ul>
+
+<p><strong><code>register</code></strong>:</p>
+
+<ul>
+<li>tells the compiler that the associated variables should be stored in high-speed memory registers</li>
+</ul>
+
+<p><strong><code>static</code></strong>:</p>
+
+<ul>
+<li><code>static</code> variables retain its previous value when the block is reentered.</li>
+<li><code>static</code> functions are visible only within the file in which they are defined.</li>
+</ul>
+
+<h2 id="toc_11">Memory Management</h2>
+
+<p>In C++:</p>
+
+<ul>
+<li><code>new</code> (allocator) instead of <code>malloc()</code> in C </li>
+<li><code>delete</code> (deallocator) instead of <code>free()</code> in C</li>
+<li>Both work with a heap -- heap is dynamically allocated memory - unlike Java not automatically garbage collected.</li>
+</ul>
+
+<p><strong>Simple use of <code>new</code> and <code>delete</code></strong>:</p>
+
+<pre><code class="language-cpp">char* s = new char[size]; //get of heap
+int* p = new int(9); //single int initialized
+delete [] s; //delete an array
+delete p; //delete single element
+
+// These will get used with dynamic data structures 
+// in constructors and destructors
+</code></pre>
+
+<h2 id="toc_12">Reference</h2>
+
+<ul>
+<li>Ira Pohl. C++ for C Programmers,University of California, Santa Cruz</li>
+<li>Ira Pohl. <a href="https://users.soe.ucsc.edu/%7Epohl/">C++ by Dissection</a>.</li>
+</ul>
 
                         
                       </div>
@@ -381,8 +919,10 @@ print(w1 is w1_p, w2 is w2_p)
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2017/9/4</span>
-                    
+                    <span class="date">2016/10/28</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='C/C++.html'>C/C++</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -396,38 +936,14 @@ print(w1 is w1_p, w2 is w2_p)
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="virtualenv.html">
+                <a class="clearlink" href="C++STL.html">
                 
-                  <h1>Python `virtualenv` on mac</h1>
+                  <h1>C++ STL</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h2 id="toc_0">Install</h2>
-
-<p>Install <code>virtualenv</code> using <code>conda</code> instead of <code>pip</code>, because it might raise error (see on <a href="virtualenv%20--no-site-packages%20venv">StackOverflow</a>)</p>
-
-<pre><code class="language-bash">conda install virtualenv
-</code></pre>
-
-<h2 id="toc_1">create your environment</h2>
-
-<p>Now you can create your python environment for your particular programs. For example, under the folder <code>your project</code>, you create an environment called <code>.venv</code> by:</p>
-
-<pre><code class="language-bash">virtualenv --no-site-packages .venv
-</code></pre>
-
-<p>The command <code>--no-site-packages</code> requires the environment should not access to global site-packages (as default now).</p>
-
-<p>Before running your program in your created environment, you need to activate it:</p>
-
-<pre><code class="language-python">source .venv/bin/activate
-</code></pre>
-
-<p>And remember to deactivate it whenever you are done.:</p>
-
-<pre><code class="language-text">deactivate
-</code></pre>
+                        	<p>Containers come in two major families: <code>sequence</code> and <code>associative</code>. Sequence containers (<code>vector</code>, <code>list</code>, and <code>deque</code>) are ordered by having a sequence of elements. Associative containers (<code>set</code>, <code>multiset</code>, <code>map</code> and <code>multimaps</code>) have keys for looking up elements.</p>
 
                         
                       </div>
@@ -436,8 +952,50 @@ print(w1 is w1_p, w2 is w2_p)
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2017/9/2</span>
-                    
+                    <span class="date">2016/10/29</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='C/C++.html'>C/C++</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="Spark_introduction.html">
+                
+                  <h1>Spark</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p><code>Spark</code>是一个用来实现快速而通用的集群计算的平台。<code>Spark</code>扩展了广泛使用的<code>MapReduce</code>计算模型，而且高效地支持更多计算模式，包括交互式查询和流处理。</p>
+
+<h2 id="toc_0">Reference</h2>
+
+<ul>
+<li>Holden Karau, Andy Konwinski, Patrick Wendell, et al. 2015. Learning Spark: Lightning-Fast Big Data Analysis. O&#39;Reilly Media</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/10/29</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Big%20Data.html'>Big Data</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -504,37 +1062,39 @@ print(w1 is w1_p, w2 is w2_p)
 
       	<p class="cat-list">
         
-            <a href="Leetcode.html"><strong>Leetcode</strong></a>
+            <a href=".html"><strong>Leetcode</strong></a>
         
-            <a href="C/C++.html"><strong>C/C++</strong></a>
+            <a href=".html"><strong>C/C++</strong></a>
         
-            <a href="Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html"><strong>Python数据结构与算法</strong></a>
+            <a href=".html"><strong>Python数据结构与算法</strong></a>
         
-            <a href="Course.html"><strong>Course</strong></a>
+            <a href=".html"><strong>Course</strong></a>
         
-            <a href="Python%E7%89%B9%E6%80%A7.html"><strong>Python特性</strong></a>
+            <a href=".html"><strong>Python特性</strong></a>
         
-            <a href="%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html"><strong>机器学习</strong></a>
+            <a href=".html"><strong>机器学习</strong></a>
         
-            <a href="Python%E7%A7%91%E5%AD%A6%E8%AE%A1%E7%AE%97%E4%B8%89%E7%BB%B4%E5%8F%AF%E8%A7%86%E5%8C%96.html"><strong>Python科学计算三维可视化</strong></a>
+            <a href=".html"><strong>Python科学计算三维可视化</strong></a>
         
-            <a href="English.html"><strong>English</strong></a>
+            <a href=".html"><strong>English</strong></a>
         
-            <a href="Computer%20System.html"><strong>Computer System</strong></a>
+            <a href=".html"><strong>Computer System</strong></a>
         
-            <a href="Deep%20Learning.html"><strong>Deep Learning</strong></a>
+            <a href=".html"><strong>Deep Learning</strong></a>
         
-            <a href="Linux%20%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B.html"><strong>Linux 系统编程</strong></a>
+            <a href=".html"><strong>Linux 系统编程</strong></a>
         
-            <a href="%E6%95%B0%E6%8D%AE%E5%BA%93.html"><strong>数据库</strong></a>
+            <a href=".html"><strong>数据库</strong></a>
         
-            <a href="Tensorflow.html"><strong>Tensorflow</strong></a>
+            <a href=".html"><strong>Tensorflow</strong></a>
         
-            <a href="Big%20Data.html"><strong>Big Data</strong></a>
+            <a href=".html"><strong>Big Data</strong></a>
         
-            <a href="%E6%96%87%E7%8C%AE%E9%98%85%E8%AF%BB.html"><strong>文献阅读</strong></a>
+            <a href=".html"><strong>文献阅读</strong></a>
         
-            <a href="Tools.html"><strong>Tools</strong></a>
+            <a href=".html"><strong>Tools</strong></a>
+        
+            <a href=".html"><strong>大数据</strong></a>
          
         </p>
 
@@ -551,31 +1111,31 @@ print(w1 is w1_p, w2 is w2_p)
 	      
 		      
 			      <li class="post">
-			        <a href="15312166852240.html">CSE 421/521 Operating Systems</a>
+			        <a href="15317356378033.html">Operating System Concepts - Introduction</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="15272289883847.html">回溯法和深度优先遍历</a>
+			        <a href="Linking.html">CSAPP - 链接</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="Coursera_notebook_jupyter.html">技巧：Coursera下载Jupyter notebook相关文件</a>
+			        <a href="15315844145426.html">Intro to Hadoop and MapReduce</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="15171345711813.html">用于训练的深度学习硬件</a>
+			        <a href="exceptional_control_flow.html">CSAPP - 异常控制流</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="15166008990128.html">网络编程</a>
+			        <a href="overhead.html">Overhead</a>
 			      </li>
 		     
 		  

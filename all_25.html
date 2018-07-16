@@ -89,37 +89,39 @@
     <li><label>Categories</label></li>
 
         
-            <li><a href="Leetcode.html">Leetcode</a></li>
+            <li><a href=".html">Leetcode</a></li>
         
-            <li><a href="C/C++.html">C/C++</a></li>
+            <li><a href=".html">C/C++</a></li>
         
-            <li><a href="Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html">Python数据结构与算法</a></li>
+            <li><a href=".html">Python数据结构与算法</a></li>
         
-            <li><a href="Course.html">Course</a></li>
+            <li><a href=".html">Course</a></li>
         
-            <li><a href="Python%E7%89%B9%E6%80%A7.html">Python特性</a></li>
+            <li><a href=".html">Python特性</a></li>
         
-            <li><a href="%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html">机器学习</a></li>
+            <li><a href=".html">机器学习</a></li>
         
-            <li><a href="Python%E7%A7%91%E5%AD%A6%E8%AE%A1%E7%AE%97%E4%B8%89%E7%BB%B4%E5%8F%AF%E8%A7%86%E5%8C%96.html">Python科学计算三维可视化</a></li>
+            <li><a href=".html">Python科学计算三维可视化</a></li>
         
-            <li><a href="English.html">English</a></li>
+            <li><a href=".html">English</a></li>
         
-            <li><a href="Computer%20System.html">Computer System</a></li>
+            <li><a href=".html">Computer System</a></li>
         
-            <li><a href="Deep%20Learning.html">Deep Learning</a></li>
+            <li><a href=".html">Deep Learning</a></li>
         
-            <li><a href="Linux%20%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B.html">Linux 系统编程</a></li>
+            <li><a href=".html">Linux 系统编程</a></li>
         
-            <li><a href="%E6%95%B0%E6%8D%AE%E5%BA%93.html">数据库</a></li>
+            <li><a href=".html">数据库</a></li>
         
-            <li><a href="Tensorflow.html">Tensorflow</a></li>
+            <li><a href=".html">Tensorflow</a></li>
         
-            <li><a href="Big%20Data.html">Big Data</a></li>
+            <li><a href=".html">Big Data</a></li>
         
-            <li><a href="%E6%96%87%E7%8C%AE%E9%98%85%E8%AF%BB.html">文献阅读</a></li>
+            <li><a href=".html">文献阅读</a></li>
         
-            <li><a href="Tools.html">Tools</a></li>
+            <li><a href=".html">Tools</a></li>
+        
+            <li><a href=".html">大数据</a></li>
          
 
       </ul>
@@ -142,197 +144,140 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="14970829036232.html">
+                <a class="clearlink" href="priority_queue.html">
                 
-                  <h1>Python排序</h1>
+                  <h1>Priority queue</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<ul>
-<li>
-<a href="#toc_0">排序算法的稳定性及意义</a>
-</li>
-<li>
-<a href="#toc_1">冒泡排序</a>
+                        	<p><strong>A priority queue</strong>(优先队列) is an ADP which likes a regular queue or stack , but where additionally each element has a <code>priority</code> associated with it. In a priority queue, an element with high priority is served before an element with low priority. If two elements have the same priority, they are served according to their order in the queue.</p>
+
+<p>A priority queue must at least support the following operations:</p>
+
 <ul>
-<li>
-<a href="#toc_2">复杂度与稳定性</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_3">选择排序</a>
-</li>
-<li>
-<a href="#toc_4">插入排序</a>
-</li>
-<li>
-<a href="#toc_5">希尔排序</a>
-</li>
-<li>
-<a href="#toc_6">快速排序</a>
-</li>
-<li>
-<a href="#toc_7">归并排序</a>
-<ul>
-<li>
-<a href="#toc_8">分治法</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_9">常见排序算法效率比较</a>
-</li>
+<li><code>insert_with_priority</code>: add an element to the queue with an associated priority.</li>
+<li><code>pull_highest_priority_element</code>: remove the element from the queue that has the highest priority, and return it.</li>
+<li><code>peek</code> :return the highest-priority element but does not modify the queue</li>
 </ul>
 
+<h2 id="toc_0">Naive Implementation</h2>
 
-<h2 id="toc_0">排序算法的稳定性及意义</h2>
+<p>There are a variety of simple, usually inefficient, ways to implement a priority queue. They provide an analogy to help one understand what a priority queue is. For instance, one can keep all the elements in an unsorted list. Whenever the highest-priority element is requested, search through all elements for the one with the highest priority. (In big O notation: \(O(1)\) insertion time, \(O(n)\) pull time due to search.)</p>
 
-<p>在待排序的序列中，存在具有相同关键字的记录，在排序后这些记录的相对次序保持不变，则排序算法是稳定的。</p>
+<h2 id="toc_1">Heap Implementation</h2>
 
-<p>不稳定排序无法完成多个关键字的排序。例如整数排序，位数越高的数字优先级越高，从高位数到低位数一次排序。那么每一位的排序都需要稳定算法，否则无法得到正确的结果。</p>
+<pre><code class="language-python">class PriorityQueue:
+    def __init__(self):
+        self.heapArray = [(0, 0)]
+        self.currentSize = 0
 
-<p>即，<strong>当要对多个关键词多次排序时，必须使用稳定算法</strong></p>
+    def buildHeap(self, alist):
+        &quot;&quot;&quot;
+        &quot;&quot;&quot;从一个包含元素的列表创建新堆&quot;&quot;&quot;
+        :param alist: a list
+        &quot;&quot;&quot;
+        self.currentSize = len(alist)
+        self.heapArray = [(0, 0)]
+        for i in alist:
+            self.heapArray.append(i)
+        i = len(alist) // 2
+        while (i &gt; 0):
+            self.percDown(i)
+            i = i - 1
 
-<h2 id="toc_1">冒泡排序</h2>
+    def percDown(self, i):
+        &quot;&quot;&quot;
+        Percolate the ith node down the tree
+        &quot;&quot;&quot;
+        while (i * 2) &lt;= self.currentSize:
+            mc = self.minChild(i)
+            if self.heapArray[i][0] &gt; self.heapArray[mc][0]:
+                tmp = self.heapArray[i]
+                self.heapArray[i] = self.heapArray[mc]
+                self.heapArray[mc] = tmp
+            i = mc
 
-<p><img src="media/14970829036232/Screen%20Shot%202017-06-11%20at%2010.23.12%20AM.png" alt="Screen Shot 2017-06-11 at 10.23.12 A"/></p>
+    def minChild(self, i):
+        &quot;&quot;&quot;
+        Find the smallest child
+        &quot;&quot;&quot;
+        if i * 2 &gt; self.currentSize:
+            return -1
+        else:
+            if i * 2 + 1 &gt; self.currentSize:
+                return i * 2
+            else:
+                if self.heapArray[i * 2][0] &lt; self.heapArray[i * 2 + 1][0]:
+                    return i * 2
+                else:
+                    return i * 2 + 1
 
-<pre><code class="language-python">def bubble_sort(alist):
-    &quot;&quot;&quot;
-    冒泡排序
-    &quot;&quot;&quot;
-    if len(alist) &lt;= 1:
-        return alist
+    def percUp(self, i):
+        &quot;&quot;&quot;
+        Percolate the ith node up the tree
+        &quot;&quot;&quot;
+        while i // 2 &gt; 0:
+            if self.heapArray[i][0] &lt; self.heapArray[i // 2][0]:
+                tmp = self.heapArray[i // 2]
+                self.heapArray[i // 2] = self.heapArray[i]
+                self.heapArray[i] = tmp
+            i = i // 2
 
-    for j in range(len(alist)-1,0,-1):
-        for i in range(j):
-            if alist[i] &gt; alist[i+1]:
-                alist[i], alist[i+1] = alist[i+1], alist[i]
+    def add(self, k):
+        self.heapArray.append(k)
+        self.currentSize = self.currentSize + 1
+        self.percUp(self.currentSize)
 
-    return alist
+    def delMin(self):
+        &quot;&quot;&quot;
+        delete the min-vertex of heap array, which always in the first position.
+        &quot;&quot;&quot;
+        retval = self.heapArray[1][1]
+        self.heapArray[1] = self.heapArray[self.currentSize]
+        self.currentSize = self.currentSize - 1
+        self.heapArray.pop()
+        self.percDown(1)
+        return retval
+
+    def isEmpty(self):
+        &quot;&quot;&quot;
+        return true if the heapArray is empty
+        &quot;&quot;&quot;
+        if self.currentSize == 0:
+            return True
+        else:
+            return False
+
+    def decreaseKey(self, val, amt):
+        &quot;&quot;&quot;
+        Decrease the key of the specific vertex (here, val)
+
+        First, find its position in the heapArray: myKey
+        Second, set its position to the right
+        &quot;&quot;&quot;
+        done = False
+        i = 1
+        myKey = 0
+        while not done and i &lt;= self.currentSize:
+            if self.heapArray[i][1] == val:
+                done = True
+                myKey = i
+            else:
+                i = i + 1
+        if myKey &gt; 0:
+            self.heapArray[myKey] = (amt, self.heapArray[myKey][1])
+            self.percUp(myKey)
+
+    def __contains__(self, vtx):
+        &quot;&quot;&quot;
+        Built-in Magic method
+        &quot;&quot;&quot;
+        for pair in self.heapArray:
+            if pair[1] == vtx:
+                return True
+        return False
 </code></pre>
-
-<h3 id="toc_2">复杂度与稳定性</h3>
-
-<ul>
-<li>最优时间复杂度：\(O(n)\) 遍历没有发现任何可以交换的元素，排序结束</li>
-<li>最坏时间复杂度：\(O(n^2)\)</li>
-<li>稳定性：稳定</li>
-</ul>
-
-<h2 id="toc_3">选择排序</h2>
-
-<p>选择排序（Selection sort）是一种简单直观的排序算法。它的工作原理如下。首先在未排序序列中找到最小（大）元素，存放到排序序列的起始位置，然后，再从剩余未排序元素中继续寻找最小（大）元素，然后放到已排序序列的末尾。以此类推，直到所有元素均排序完毕。</p>
-
-<h2 id="toc_4">插入排序</h2>
-
-<p>插入排序通过构建有序序列，对于未排序数据，在已排序序列中从后向前扫描，找到相应位置并插入。插入排序在实现上，在从后向前扫描过程中，需要反复把已排序元素逐步向后挪位，为最新元素提供插入空间。</p>
-
-<p><img src="media/14970829036232/Screen%20Shot%202017-06-12%20at%207.07.03%20PM.png" alt="Screen Shot 2017-06-12 at 7.07.03 P"/></p>
-
-<pre><code class="language-python">def insert_sort(alist):
-    &quot;&quot;&quot;
-    插入排序
-    &quot;&quot;&quot;
-    n = len(alist)
-    if n &lt;= 1:
-        return alist
-
-    # 从第二个位置，即下表为1的元素开始向前插入
-    for i in range(1, n):
-        j = i
-        # 向前向前比较，如果小于前一个元素，交换两个元素
-        while alist[j] &lt; alist[j-1] and j &gt; 0:
-            alist[j], alist[j-1] = alist[j-1], alist[j]
-            j-=1
-    return alist
-</code></pre>
-
-<p>复杂度与稳定性</p>
-
-<ul>
-<li>最优时间复杂度：O(\(n\)) （升序排列，序列已经处于升序状态）</li>
-<li>最坏时间复杂度：O(\(n^2\))</li>
-<li>稳定性：稳定</li>
-</ul>
-
-<h2 id="toc_5">希尔排序</h2>
-
-<p>希尔排序(Shell Sort)是插入排序的改进, 排序非稳定。希尔排序是把记录按下标的一定<em>增量</em>分组，对每组使用直接插入排序算法排序；随着增量逐渐减少，每组包含的关键词越来越多，当增量减至1时，整个文件恰被分成一组，算法便终止。</p>
-
-<pre><code class="language-python">def shell_sort(alist):
-    
-    n = len(alist)
-    gap = n//2
-    
-    # gap 变化到0之前，插入算法之行的次数
-    while gap &gt; 0:
-        
-        # 希尔排序， 与普通的插入算法的区别就是gap步长
-        for i in range(gap,n):
-            j = i
-            while alist[j] &lt; alist[j-gap] and j &gt; 0:
-                alist[j], alist[j-gap] = alist[j-gap], alist[j]
-                j-=gap
-    
-        gap = gap//2
-
-    return alist
-</code></pre>
-
-<p>复杂度与稳定性</p>
-
-<ul>
-<li>最优时间复杂度：\(O(n^{1.3})\) （不要求本身有序）</li>
-<li>最坏时间复杂度：\(O(n^2)\)</li>
-<li>稳定性：不稳定</li>
-</ul>
-
-<h2 id="toc_6">快速排序</h2>
-
-<p>快速排序(Quicksort)，通过一趟排序将要排序的数据分割成独立的两部分，其中一部分的所有数据都比另外一部分的所有数据都要小，然后再按此方法对这两部分数据分别进行快速排序，整个排序过程可以递归进行，以此达到整个数据变成有序序列。</p>
-
-<p>步骤为：</p>
-
-<ol>
-<li>从数列中挑出一个元素，称为&quot;基准&quot;(pivot)</li>
-<li>重新排序数列，所有元素比基准值小的摆放在基准前面，所有元素比基准值大的摆在基准的后面（相同的数可以到任一边）。在这个分区结束之后，该基准就处于数列的中间位置。这个称为分区(partition)操作。</li>
-<li>递归地(recursive)把小于基准值元素的子数列和大于基准值元素的子数列排序。</li>
-</ol>
-
-<p>递归的最底部情形，是数列的大小是零或一，也就是永远都已经被排序好了。虽然一直递归下去，但是这个算法总会结束，因为在每次的迭代(iteration)中，它至少会把一个元素摆到它最后的位置去。</p>
-
-<h2 id="toc_7">归并排序</h2>
-
-<p>归并排序是采用分治法的一个非常典型的应用。归并排序的思想就是先递归分解数组，再合并数组。</p>
-
-<p>将数组分解最小之后，然后合并两个有序数组，基本思路是比较两个数组的最前面的数，谁小就先取谁，取了后相应的指针就往后移一位。然后再比较，直至一个数组为空，最后把另一个数组的剩余部分复制过来即可。</p>
-
-<h3 id="toc_8">分治法</h3>
-
-<p>分治法的思想：将原问题分解为几个规模较小但类似于原问题的子问题，递归地求解这些子问题，然后再合并这些子问题的解来建立原问题的解。</p>
-
-<p>分治模式在每层递归时都有三个步骤：</p>
-
-<ul>
-<li><strong>分解</strong>原问题为若干子问题，这些子问题是原问题的规模较小的实例</li>
-<li><strong>解决</strong>这些子问题，递归地求解各子问题。然而，若子问题的规模足够小，则直接求解</li>
-<li><strong>合并</strong>这些子问题的解成原问题的解</li>
-</ul>
-
-<p>归并排序算法完全遵循分治模式。直观上其操作如下：</p>
-
-<ul>
-<li><strong>分解</strong>：分解待排序的n个元素的序列成各具n/2个元素的两个子序列</li>
-<li><strong>解决</strong>：使用归并排序递归地排序两个子序列</li>
-<li><strong>合并</strong>：合并两个已排序的子序列以产生已排序的答案。</li>
-</ul>
-
-<h2 id="toc_9">常见排序算法效率比较</h2>
-
-<p><img src="media/14970829036232/14972715837154.jpg" alt=""/></p>
 
                         
                       </div>
@@ -341,7 +286,7 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2017/6/10</span>
+                    <span class="date">2017/7/12</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html'>Python数据结构与算法</a></span>
@@ -358,44 +303,61 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="14969929726510.html">
+                <a class="clearlink" href="recursion_iteration.html">
                 
-                  <h1>Python 类属性与实例属性</h1>
+                  <h1>Recursion Iteration Performace</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<p>Python属于动态语言，类属性很好体现了python动态语言这一特性。<br/>
-对于属性，通常可以通过类属性和实例属性的形式调用。<br/>
-看一个例子：</p>
+                        	<p>The performance of <code>Recursion</code> v.s. <code>Iteration</code> depends on the language being used.</p>
 
-<pre><code class="language-python">class AAA():
-    aaa = 10
+<p>In Java, C, and Python, <code>recursion</code> is fairly expensive compared to <code>iteration</code> (in general) because it requires the allocation of a new <code>stack frame</code>. In some C compilers, one can use a compiler flag to eliminate this overhead, which transforms certain types of recursion (actually, certain types of tail calls) into jumps instead of function calls.</p>
+
+<h2 id="toc_0">Stack Frame</h2>
+
+<p>When a function is called in Python, a <code>stack frame</code> is allocated to handle the local variables of the function. When the function returns, the return value is left on the top of the stack for the calling function to access.</p>
+
+<p>The stack frame provide a <code>scope</code> for the variables used by the function. Even though we are calling the same function over and over, each call creates a new scope for the variables that are local to the function.</p>
+
+<h3 id="toc_1">Get Stack Frame</h3>
+
+<p>The <code>inspect</code> module in <code>python</code> provides several useful functions to help get information about live objects such as modules, classes, methods, functions, tracebacks, <code>frame objects</code>, and code objects.</p>
+
+<pre><code class="language-python">import inspect
+
+def f1():
+    names = []
+    # inpect.currentframe
+    # Return the frame object for the caller’s stack frame.
+    frame = inspect.currentframe()
+  
+    ## Keep moving to next outer frame
+    while True:
+        try:
+            frame = frame.f_back # next outer frame object (this frame’s caller)
+            name = frame.f_code.co_name # name with which this code object was defined
+            names.append(name)
+        except:
+            break
+    return names
     
-obj1 = AAA()
-obj2 = AAA()
-print(obj1.aaa, obj2.aaa, AAA.aaa) # result: 10 10 10
+def f2():
+   return f1()
 
-obj1.aaa += 2
-print(obj1.aaa, obj2.aaa, AAA.aaa) # result: 12 10 10
+def f3():
+   return f2()
 
-AAA.aaa += 4
-print(obj1.aaa,obj2.aaa,AAA.aaa)  # result: 12 14 14
+def f4():
+   return f3()
+
+print(f4())
 </code></pre>
 
-<p>上例中，<code>AAA.aaa</code>就属于<strong>类属性</strong>形式，<code>obj1.aaa</code>属于<strong>实例属性</strong>的形式</p>
+<p>The results shows:</p>
 
-<h2 id="toc_0">属性查找机制</h2>
-
-<p>Python中属性查找是一个向上查找的机制，具体可参考下图所示：<br/>
-       <img src="media/14969929726510/Screen%20Shot%202017-06-09%20at%203.39.06%20PM.png" alt="Screen Shot 2017-06-09 at 3.39.06 P"/></p>
-
-<p>所以</p>
-
-<ul>
-<li>当调用类属性<code>AAA.aaa</code>时，直接从<code>AAA</code>获取其属性<code>aaa</code></li>
-<li>当调用实例属性<code>obj1.aaa</code>时，python按照由下到上的顺序查找属性，当<code>job1</code>和<code>job2</code>没有时，到类<code>AAA</code>中去查找</li>
-</ul>
+<pre><code class="language-python">[&#39;f2&#39;, &#39;f3&#39;, &#39;f4&#39;, &#39;&lt;module&gt;&#39;]
+</code></pre>
 
                         
                       </div>
@@ -404,7 +366,7 @@ print(obj1.aaa,obj2.aaa,AAA.aaa)  # result: 12 14 14
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2017/6/9</span>
+                    <span class="date">2017/7/17</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
@@ -421,738 +383,84 @@ print(obj1.aaa,obj2.aaa,AAA.aaa)  # result: 12 14 14
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="14969804243106.html">
+                <a class="clearlink" href="overfiting_and_normalization.html">
                 
-                  <h1>栈与队列</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h2 id="toc_0">栈</h2>
-
-<p>栈(<code>stack</code>)，是一种容器，可存入数据元素、访问元素、删除元素，它的特点是只能在容器的一端加入数据（<code>push</code>）和输出数据(<code>pop</code>)的运算。没有了位置概念，保证任何时候可以访问，删除的元素都是此前最后存入的那个元素，确定了一种默认的访问顺序。</p>
-
-<p>栈数据结构只允许在一端进行操作，按照后进先出(<code>LIFO, Last In First Out</code>)的原理运作。</p>
-
-<p>栈可以用顺序表实现，也可以用链表实现。</p>
-
-<p><img src="media/14969804243106/Screen%20Shot%202017-06-10%20at%203.14.14%20PM.png" alt="Screen Shot 2017-06-10 at 3.14.14 P"/></p>
-
-<h3 id="toc_1">栈的操作</h3>
-
-<ul>
-<li><code>Stack()</code> 创建一个新的空栈</li>
-<li><code>push(item)</code> 添加一个新的元素item到栈顶</li>
-<li><code>pop()</code> 弹出栈顶元素</li>
-<li><code>peek()</code> 返回栈顶元素</li>
-<li><code>is_empty()</code> 判断栈是否为空</li>
-<li><code>size()</code> 返回栈的元素个数</li>
-</ul>
-
-<pre><code class="language-python">class Stack(object):
-    &quot;&quot;&quot;
-    创建一个新的空栈
-    &quot;&quot;&quot;
-    def __init__(self):
-        self.__list = []
-
-    def push(self, item):
-        &quot;&quot;&quot;
-        添加一个新的元素item到栈顶
-        &quot;&quot;&quot;
-        self.__list.append(item)
-
-    def pop(self):
-        &quot;&quot;&quot;
-        弹出栈顶元素
-        &quot;&quot;&quot;
-        return self.__list.pop()
-
-    def peek(self):
-        &quot;&quot;&quot;
-        返回栈顶元素
-        &quot;&quot;&quot;
-        if self.is_empty():
-            return None
-        else:
-            return self.__list[-1]
-
-    def is_empty(self):
-        &quot;&quot;&quot;
-        判断栈是否为空
-        &quot;&quot;&quot;
-        return not self.__list  ## 空链表、空字典等是假
-
-    def size(self):
-        &quot;&quot;&quot;
-        返回栈的元素个数
-        &quot;&quot;&quot;
-        return self.__list.__len__()
-</code></pre>
-
-<h2 id="toc_2">队列</h2>
-
-<p>队列(<code>queue</code>,美音/kju/)只是允许在一端进行插入操作，而在另一段进行删除操作的线性表。队列是一种先进先出（<code>First In First Out, FIFO</code>）的线性表。允许插入的一端为队尾，允许删除的一端为队头。队列不允许在中间部位进行操作。</p>
-
-<p><img src="media/14969804243106/Screen%20Shot%202017-06-10%20at%203.21.23%20PM.png" alt="Screen Shot 2017-06-10 at 3.21.23 P"/></p>
-
-<h3 id="toc_3">队列的操作</h3>
-
-<ul>
-<li><code>Queue()</code> 创建一个空的队列</li>
-<li><code>enqueue(item)</code> 往队列中添加一个item元素</li>
-<li><code>dequeue()</code> 从队列头部删除一个元素</li>
-<li><code>is_empty()</code> 判断一个队列是否为空</li>
-<li><code>size()</code> 返回队列的大小</li>
-</ul>
-
-<pre><code class="language-python">class Queue(object):
-    &quot;&quot;&quot;队列&quot;&quot;&quot;
-    def __init__(self):
-        self.__list = []
-
-    def enqueue(self, item):
-        &quot;&quot;&quot;往队列中添加一个item元素&quot;&quot;&quot;
-        self.__list.append(item)
-
-    def dequeue(self):
-        &quot;&quot;&quot;从队列头部删除一个元素&quot;&quot;&quot;
-        return self.__list.pop(0)
-
-    def is_empty(self):
-        &quot;&quot;&quot;判断一个队列是否为空&quot;&quot;&quot;
-        return not self.__list
-
-    def size(self):
-        &quot;&quot;&quot;返回队列的大小&quot;&quot;&quot;
-        return len(self.__list)
-</code></pre>
-
-<h2 id="toc_4">双端队列</h2>
-
-<p>双端队列(deque，全名double-ended queue, (pronounced “deck”))，是一种具有队列和栈的性质的数据结构。</p>
-
-<p>双端队列中的元素可以从两端弹出，其限定插入和删除操作在表的两端进行。双端队列可以在队列任意一端入队和出队。</p>
-
-<p><img src="media/14969804243106/14970822950255.png" alt=""/></p>
-
-<h3 id="toc_5">双端队列的操作</h3>
-
-<ul>
-<li><code>Deque()</code> 创建一个空的双端队列</li>
-<li><code>add_front(item)</code> 从队头加入一个item元素</li>
-<li><code>add_rear(item)</code> 从队尾加入一个item元素</li>
-<li><code>remove_front()</code> 从队头删除一个item元素</li>
-<li><code>remove_rear()</code> 从队尾删除一个item元素</li>
-<li><code>is_empty()</code> 判断双端队列是否为空</li>
-<li><code>size()</code> 返回队列的大小</li>
-</ul>
-
-<pre><code class="language-python">class Deque():
-    &quot;&quot;&quot;
-    创建一个空的双端队列
-    &quot;&quot;&quot;
-    def __init__(self):
-        self.__list = []
-
-    def add_front(self, item):
-        &quot;&quot;&quot;从队头加入一个item元素&quot;&quot;&quot;
-        self.__list.insert(0, item)
-
-    def add_rear(self, item):
-        &quot;&quot;&quot;从队尾加入一个item元素&quot;&quot;&quot;
-        self.__list.append(item)
-    
-    def remove_front(self):
-        &quot;&quot;&quot;从队头删除一个item元素&quot;&quot;&quot;
-        return self.__list.pop(0)
-
-    def remove_rear(self):
-        &quot;&quot;&quot;从队尾删除一个item元素&quot;&quot;&quot;
-        return self.__list.pop()
-    
-    def is_empty(self):
-        &quot;&quot;&quot;判断双端队列是否为空&quot;&quot;&quot;
-        return not self.__list
-
-    def size(self):
-        &quot;&quot;&quot;返回队列的大小&quot;&quot;&quot;
-        return self.__list.__len__()
-    ```
-
-
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/6/9</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html'>Python数据结构与算法</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="%E9%93%BE%E8%A1%A8.html">
-                
-                  <h1>链表</h1>
+                  <h1>Machine Learning (4): Overfitting and normalization</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
                         	<ul>
 <li>
-<a href="#toc_0">线性表</a>
+<a href="#toc_0">The problem of Overfitting</a>
 </li>
 <li>
-<a href="#toc_1">单向链表</a>
+<a href="#toc_1">Regularized Linear Regression</a>
 <ul>
 <li>
-<a href="#toc_2">补充：python中变量标识的本质</a>
-</li>
-<li>
-<a href="#toc_3">示意</a>
+<a href="#toc_2">Normal Equation</a>
 </li>
 </ul>
 </li>
 <li>
-<a href="#toc_4">![Screen Shot 2017-06-09 at 12.52.23 P](media/14969803634863/Screen%20Shot%202017-06-09%20at%2012.52.</a>
-<ul>
-<li>
-<a href="#toc_5">代码</a>
-</li>
-<li>
-<a href="#toc_6">单项链表与顺序表的对比</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_7">双向链表</a>
-</li>
-<li>
-<a href="#toc_8">单向循环列表</a>
+<a href="#toc_3">Regularized Logistic Regression</a>
 </li>
 </ul>
 
 
-<p>链表(Linked list)，是一种<strong>线性表</strong>，不像顺序表一样连续存储数据，而是在每一个节点（数据存储单元）里存放下一个节点的位置信息（即地址）。</p>
-
-<h2 id="toc_0">线性表</h2>
-
-<p>一组序列元素的组织形式，可以将其抽象为线性表。一个线性表是某类元素的一个集合，还记录着元素之间的一种顺序关系。线性表是最基本的数据结果一直，在实际程序中应用非常广泛，它还将常被用来做更复杂的数据结构的实现基础。</p>
-
-<p>根据<strong>线性表</strong>的存储方式，分为两种模型：</p>
-
-<ul>
-<li><strong>顺序表</strong>，将元素顺序地放在一块连续的存储区里，元素间的顺序关系由它们的存储顺序自然表示。</li>
-<li><strong>链表</strong>，将元素存放在通过链接构造起来的一系列存储块中,包括单项列表，双向列表，单向循环列表</li>
-</ul>
-
-<h2 id="toc_1">单向链表</h2>
-
-<p>节点：包括表元素域，和下一个节点连接域。<br/>
-尾节点的连接域指向一个空值。</p>
-
-<h3 id="toc_2">补充：python中变量标识的本质</h3>
-
-<p>变量标识保存变量的地址。因此不用指定变量的类型，在程序运行过程中也可以改变变量类型。<br/>
-与C语言不同：C语言需要申明变量类型。</p>
-
-<h3 id="toc_3">示意</h3>
-
-<h2 id="toc_4">![Screen Shot 2017-06-09 at 12.52.23 P](media/14969803634863/Screen%20Shot%202017-06-09%20at%2012.52.</h2>
-
-<p>23%20PM.png)</p>
-
-<h3 id="toc_5">代码</h3>
-
-<pre><code class="language-python">class Node(object):
-    &quot;&quot;&quot;节点&quot;&quot;&quot;
-    def __init__(self, elem):
-        self.elem = elem
-        self.next = None
-
-
-class SingleLinkList(object):
-    &quot;&quot;&quot;单链表&quot;&quot;&quot;
-    def __init__(self, node=None):
-        self.__head = node
-
-    def is_empty(self):
-        &quot;&quot;&quot;链表是否为空&quot;&quot;&quot;
-        return self.__head == None
-
-    def length(self):
-        &quot;&quot;&quot;链表长度&quot;&quot;&quot;
-        # cur游标，用来移动遍历节点
-        cur = self.__head
-        # count记录数量
-        count = 0
-        while cur != None:
-            count += 1
-            cur = cur.next
-        return count
-
-    def travel(self):
-        &quot;&quot;&quot;遍历整个链表&quot;&quot;&quot;
-        cur = self.__head
-        while cur != None:
-            print(cur.elem, end=&quot; &quot;)
-            cur = cur.next
-        print(&quot;&quot;)
-
-    def add(self, item):
-        &quot;&quot;&quot;链表头部添加元素，头插法&quot;&quot;&quot;
-        node = Node(item)
-        node.next = self.__head
-        self.__head = node
-
-    def append(self, item):
-        &quot;&quot;&quot;链表尾部添加元素, 尾插法&quot;&quot;&quot;
-        node = Node(item)
-        if self.is_empty():
-            self.__head = node
-        else:
-            cur = self.__head
-            while cur.next != None:
-                cur = cur.next
-            cur.next = node
-
-    def insert(self, pos, item):
-        &quot;&quot;&quot;指定位置添加元素
-        :param  pos 从0开始
-        &quot;&quot;&quot;
-        if pos &lt;= 0:
-            self.add(item)
-        elif pos &gt; (self.length()-1):
-            self.append(item)
-        else:
-            pre = self.__head
-            count = 0
-            while count &lt; (pos-1):
-                count += 1
-                pre = pre.next
-            # 当循环退出后，pre指向pos-1位置
-            node = Node(item)
-            node.next = pre.next
-            pre.next = node
-
-    def remove(self, item):
-        &quot;&quot;&quot;删除节点&quot;&quot;&quot;
-        cur = self.__head
-        pre = None
-        while cur != None:
-            if cur.elem == item:
-                # 先判断此结点是否是头节点
-                # 头节点
-                if cur == self.__head:
-                    self.__head = cur.next
-                else:
-                    pre.next = cur.next
-                break
-            else:
-                pre = cur
-                cur = cur.next
-
-    def search(self, item):
-        &quot;&quot;&quot;查找节点是否存在&quot;&quot;&quot;
-        cur = self.__head
-        while cur != None:
-            if cur.elem == item:
-                return True
-            else:
-                cur = cur.next
-        return False
-</code></pre>
-
-<h3 id="toc_6">单项链表与顺序表的对比</h3>
-
-<ul>
-<li>顺序表随机读取，空间开销小的优点，但存储空间必须连续</li>
-<li>链表由于增加了结点的指针域，空间开销比较大</li>
-<li>链表对存储空间的使用要相对灵活，充分利用离散的存储空间</li>
-</ul>
-
-<table>
-<thead>
-<tr>
-<th>操作</th>
-<th>链表</th>
-<th>顺序表</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td>访问元素</td>
-<td>O(n)</td>
-<td>O(1)</td>
-</tr>
-<tr>
-<td>在头部插入/删除</td>
-<td>O(1)</td>
-<td>O(n)</td>
-</tr>
-<tr>
-<td>在尾部插入/删除</td>
-<td>O(n)</td>
-<td>O(1)</td>
-</tr>
-<tr>
-<td>在中间插入/删除</td>
-<td>O(n)</td>
-<td>O(n)</td>
-</tr>
-</tbody>
-</table>
-
-<h2 id="toc_7">双向链表</h2>
-
-<p>节点：前驱区、数据区、后继区</p>
-
-<p><img src="media/14969803634863/14970689776814.png" alt=""/></p>
-
-<pre><code class="language-python">class Node(object):
-    def __init__(self, elem):
-        self.prev = None
-        self.elem = elem
-        self.next = None
-
-class DobuleLinkList(object):
-    &quot;&quot;&quot;
-    双链表
-    &quot;&quot;&quot;
-    def __init__(self, node = None):
-        self.__head =  node  # 私有属性
-
-
-    def is_empty(self):
-        &quot;&quot;&quot;
-        链表是否为空
-        &quot;&quot;&quot;
-        return self.__head is None
-
-    def length(self):
-        &quot;&quot;&quot;
-        链表长度
-        &quot;&quot;&quot;
-        current = self.__head # current 游标，用来移动遍历节点
-        count  = 0 # count 记录数量
-        while current != None:
-            count += 1
-            current = current.next
-
-        return count
-
-    def travel(self):
-        &quot;&quot;&quot;
-        遍历整个链表
-        &quot;&quot;&quot;
-        current = self.__head # current 游标，用来移动遍历节点
-        lists = []
-        while current != None:
-            lists.append(current.elem)
-            current = current.next
-
-        print(lists)
-
-
-    def add(self, item):
-        &quot;&quot;&quot;
-        链表头部添加元素
-        &quot;&quot;&quot;
-        second_elem = self.__head
-        self.__head = Node(item)
-        self.__head.next = second_elem
-        second_elem.prev = self.__head
-
-
-    def append(self, item):
-        &quot;&quot;&quot;
-        链表尾部添加元素
-        item: 具体的数据，不是class Node
-        &quot;&quot;&quot;
-        node = Node(item)
-
-        # 判断链表是否为空
-        if self.is_empty():
-            self.__head = node
-        else:
-            current = self.__head
-            while current.next != None: # 遍历，找到节点尾部
-                current = current.next
-            current.next = node
-            node.prev = current
-
-
-
-    def insert(self, pos, item):
-        &quot;&quot;&quot;
-        指定位置添加元素
-        pos: 从0开始索引
-        &quot;&quot;&quot;
-        if pos &lt;= 0:
-            self.add(item)
-        elif pos &gt;= self.length()-1:
-            self.append(item)
-        else:
-            count = 0
-            current = self.__head
-            while count &lt; pos:
-                current = current.next
-                count += 1
-
-            previous = current.prev
-            nodes = Node(item)
-            previous.next = nodes
-            nodes.prev = previous
-            nodes.next = current
-            current.prev = nodes
-
-
-
-    def remove(self,item):
-        &quot;&quot;&quot;
-        删除节点
-        &quot;&quot;&quot;
-        current = self.__head
-        if current.elem == item:
-            self.__head = current.next
-            if current.next:
-                current.next.prev = None
-            print(&#39;Remove the element %d&#39;%item)
-            return None
-        else:
-            while current != None:
-                if current.elem == item:
-                    current.prev.next = current.next
-                    current.next.prev = current.prev
-                    print(&#39;Remove the element %d&#39;%item)
-                    return None
-                else:
-                    current = current.next
-        print(&quot;Can&#39;t find it&quot;)
-
-
-    def search(self,item):
-        &quot;&quot;&quot;
-        查找节点是否存在
-        &quot;&quot;&quot;
-        current = self.__head
-
-        while current != None:         
-            if current.elem == item:
-                print(&#39;Find element %d !&#39;% item)
-                return True
-            else:
-                current = current.next
-
-        return False
-</code></pre>
-
-<h2 id="toc_8">单向循环列表</h2>
-
-<p><img src="media/14969803634863/Screen%20Shot%202017-06-10%20at%2012.41.20%20PM.png" alt="Screen Shot 2017-06-10 at 12.41.20 P"/></p>
-
-<pre><code class="language-python">class Node(object):
-    &quot;&quot;&quot;
-    节点
-    &quot;&quot;&quot;
-    def __init__(self, elem):
-        self.elem = elem
-        self.next = None
-
-class SingleCycleLinkList(object):
-    &quot;&quot;&quot;
-    单链表
-    &quot;&quot;&quot;
-    def __init__(self, node = None):
-        self.__head =  node  # 私有属性
-        if node:
-            node.next = node  #设置回环
-
-
-    def is_empty(self):
-        &quot;&quot;&quot;
-        链表是否为空
-        &quot;&quot;&quot;
-        return self.__head is None
-
-    def length(self):
-        &quot;&quot;&quot;
-        链表长度
-        &quot;&quot;&quot;
-        if self.is_empty():
-            return 0
-        else:
-            current = self.__head # current 游标，用来移动遍历节点
-            count  = 1 # count 记录数量
-        
-            while current.next != self.__head:
-                count += 1
-                current = current.next
-
-            return count
-
-    def travel(self):
-        &quot;&quot;&quot;
-        遍历整个链表
-        &quot;&quot;&quot;
-        current = self.__head # current 游标，用来移动遍历节点
-        lists = []
-        if current: # 如果链表有元素
-            lists.append(current.elem)
-            current = current.next
-        while current is not self.__head:
-            lists.append(current.elem)
-            current = current.next
-        print(lists)
-
-
-    def add(self, item):
-        &quot;&quot;&quot;
-        链表头部添加元素
-        &quot;&quot;&quot;
-        if self.is_empty():
-            self.__init__(Node(item))
-        else:
-            former_head = self.__head
-            current = self.__head
-            while current.next is not self.__head:
-                current = current.next
-            current.next= Node(item)
-            current.next.next = former_head
-            self.__head = current.next
-
-    def append(self, item):
-        &quot;&quot;&quot;
-        链表尾部添加元素
-        item: 具体的数据，不是class Node
-        &quot;&quot;&quot;
-        node = Node(item)
-
-        # 判断链表是否为空
-        if self.is_empty():
-            self.__init__(node)
-        else:
-            current = self.__head
-            while current.next != self.__head: # 遍历，找到节点尾部
-                current = current.next
-            current.next = node
-            node.next = self.__head
-
-
-
-    def insert(self, pos, item):
-        &quot;&quot;&quot;
-        指定位置添加元素
-        pos: 从0开始索引
-        &quot;&quot;&quot;
-        if pos &lt;= 0:
-            self.add(item)
-        elif pos &gt;= self.length()-1:
-            self.append(item)
-        else:
-            count = 0
-            current = self.__head
-            while count &lt; pos:
-                previous = current
-                current = current.next
-                count += 1
-
-            nodes = Node(item)
-            previous.next = nodes
-            nodes.next = current
-
-
-
-    def remove(self,item):
-        &quot;&quot;&quot;
-        删除节点
-        &quot;&quot;&quot;
-        # 如果是空单向链表
-        if self.is_empty():
-            print(&quot;Can&#39;t find item %d&quot; % item)
-            return False
-        
-        # 如果单向链表只有一个元素
-        if self.length() == 1:
-            if self.__head.elem == item:
-                self.__head = None
-                print(&#39;Remove the element %d&#39;%item)
-                return True
-            else:
-                print(&quot;Can&#39;t find item %d&quot; % item)
-                return False                
-              
-        # 通用
-        current = self.__head
-        # 删除第一个元素（头节点）
-        if current.elem == item:
-
-            former_head = current
-            self.__head = current.next
-            print(&#39;Remove the element %d&#39;%item)
-            while current.next is not former_head:
-                current = current.next
-            current.next = self.__head
-            return None
-            
-        else:
-
-            while current.next != self.__head:
-                if current.elem == item:
-                    previous.next = current.next
-                    print(&#39;Remove the element %d&#39;%item)
-                    return None
-                else:
-                    previous = current
-                    current = current.next
-            
-            # 处理尾部元素
-            if current.elem == item:
-                previous.next = self.__head
-                print(&#39;Remove the element %d&#39;%item)
-                return None
-
-        print(&quot;Can&#39;t find item %d&quot; % item)
-
-
-    def search(self,item):
-        &quot;&quot;&quot;
-        查找节点是否存在
-        &quot;&quot;&quot;
-        if self.is_empty():
-            return False
-
-        current = self.__head
-
-        while current.next is not self.__head:         
-            if current.elem == item:
-                print(&#39;Find element %d&#39;% item)
-                return True
-            else:
-                current = current.next
-        if current.elem == item:
-            return True
-            print(&#39;Find element %d&#39;% item)
-           
-        return False
-</code></pre>
+<h2 id="toc_0">The problem of Overfitting</h2>
+
+<p><strong>Underfitting</strong>, or <strong>high bias</strong>, is when the form of our hypothesis function \(h\) maps poorly to the trend of the data. It is usually caused by a function that is too simple or uses too few features. </p>
+
+<p><strong>Overfitting</strong>, or <strong>high variance</strong>, is caused by a hypothesis function that fits the available data but does not generalize well to predict new data. It is usually caused by a complicated function that creates a lot of unnecessary curves and angles unrelated to the data.</p>
+
+<p>There are two main options to address the issue of overfitting:</p>
+
+<ol>
+<li><p><strong><em>Reduce the number of features</em></strong>:<br/>
+Manually select which features to keep.<br/>
+(Use a model selection algorithm).</p></li>
+<li><p><strong><em>Regularization</em></strong><br/>
+Keep all the features, but reduce the magnitude of parameters \(\theta_j\). Regularization works well when we have a lot of slightly useful features.</p></li>
+</ol>
+
+<p><img src="media/14985711297859/14987109337751.png" alt="sd"/></p>
+
+<p>The figure above shows the Underfitting, Normal, Overfitting.</p>
+
+<h2 id="toc_1">Regularized Linear Regression</h2>
+
+<p>We regularize all of theta parameters in a single summation as:</p>
+
+<p>\[J(\theta)= \dfrac{1}{2m}[ \sum_{i=1}^m (h_\theta(x^{(i)}) - y^{(i)})^2 + \lambda\ \sum_{j=1}^n \theta_j^2]\]</p>
+
+<p>where the \(\lambda\), or lambda, is the <strong>regularization parameter</strong>. It determines how much the costs of our theta parameters are inflated.  If \(\lambda\) is chosen to be too large, it may smooth out the function too much and cause underfitting. </p>
+
+<p><strong>Note that you should not regularize the parameter \(\theta_0\)</strong>.</p>
+
+<p>The corresponding gradient descent is</p>
+
+<p>\[\begin{align*} &amp; \text{Repeat}\ \lbrace \newline &amp; \ \ \ \ \theta_0 := \theta_0 - \alpha\ \frac{1}{m}\ \sum_{i=1}^m (h_\theta(x^{(i)}) - y^{(i)})x_0^{(i)} \newline &amp; \ \ \ \ \theta_j := \theta_j - \alpha\ \left[ \left( \frac{1}{m}\ \sum_{i=1}^m (h_\theta(x^{(i)}) - y^{(i)})x_j^{(i)} \right) + \frac{\lambda}{m}\theta_j \right] &amp;\ \ \ \ \ \ \ \ \ \ j \in \lbrace 1,2...n\rbrace\newline &amp; \rbrace \end{align*}\]</p>
+
+<p>With some manipulation our update rule can also be represented as:<br/>
+\[\theta_j := \theta_j(1 - \alpha\frac{\lambda}{m}) - \alpha\frac{1}{m}\sum_{i=1}^m(h_\theta(x^{(i)}) - y^{(i)})x_j^{(i)}\]</p>
+
+<h3 id="toc_2">Normal Equation</h3>
+
+<p>To add in regularization, the equation is the same as our original, except that we add another term inside the parentheses:</p>
+
+<p>\[\begin{align*}&amp; \theta = \left( X^TX + \lambda \cdot L \right)^{-1} X^Ty \newline&amp; \text{where}\ \ L = \begin{bmatrix} 0 &amp; &amp; &amp; &amp; \newline &amp; 1 &amp; &amp; &amp; \newline &amp; &amp; 1 &amp; &amp; \newline &amp; &amp; &amp; \ddots &amp; \newline &amp; &amp; &amp; &amp; 1 \newline\end{bmatrix}\end{align*}\]</p>
+
+<p>Recall that if \(m &lt; n\), then \(XTX\) is non-invertible. However, when we add the term \(\lambda L\), then \(XTX + \lambda L\) becomes invertible.</p>
+
+<h2 id="toc_3">Regularized Logistic Regression</h2>
+
+<p>We regularize all of \(\theta\) parameters in a single summation as:</p>
+
+<p>\[ J(\theta) = -\dfrac{1}{m} \sum_{i=1}^m[ y ^{(i)}\log(h_\theta(x^{(i)}))+(1-y^{(i)}) \log(1-h_\theta(x^{(i)}))]+ \frac{\lambda}{2m} \sum_{j=1}^n \theta_j^2\]</p>
+
+<p>The corresponding gradient descent is<br/>
+\[\theta_j:=\theta_j-\frac{\alpha}{m}\Sigma^m_{i=1}(h_\theta(x^{(i)})-y^{(i)})x^{(i)}_j+\frac{\alpha\lambda}{m}\theta_j\]</p>
 
                         
                       </div>
@@ -1161,10 +469,10 @@ class SingleCycleLinkList(object):
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2017/6/9</span>
+                    <span class="date">2017/6/29</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html'>Python数据结构与算法</a></span>
+          					    <span class="posted-in"><a href='%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html'>机器学习</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -1178,78 +486,28 @@ class SingleCycleLinkList(object):
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="14969800806372.html">
+                <a class="clearlink" href="14987012023353.html">
                 
-                  <h1>顺序表</h1>
+                  <h1>口语</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h3 id="toc_0">顺序表的结构</h3>
+                        	<ol>
+<li>发音 native</li>
+<li>流畅度</li>
+<li>地道的语料</li>
+</ol>
 
-<p>一个顺序表的完整信息包括两部分，</p>
+<p>方法</p>
 
-<ul>
-<li>数据区，表中的元素集合</li>
-<li>信息区，是为实现正确操作而需记录的信息，即有关表的整体情况的信息，主要包括元素存储区的容量和当前表中已有的元素个数两项。</li>
-</ul>
+<ol>
+<li>逐句跟读   <strong>不看原文</strong></li>
+<li>影子跟读</li>
+<li>全文复数  用到关键词句</li>
+</ol>
 
-<h3 id="toc_1">顺序表的两种基本实现形式</h3>
-
-<ul>
-<li><p><strong>一体式结构</strong>：存储表信息的单元与元素存储区以连续的方式安排在一块存储区里，两部分数据的整体形成一个完整的顺序表对象。</p></li>
-<li><p><strong>分离式结构</strong>：表对象里只保存与整个表有关的信息（即容量和元素个数），实际数据元素存放在另一个独立的元素存储区里，通过链接与基本表对象关联。</p></li>
-</ul>
-
-<p>当申请内存空间不够时，只能向操作系统重新申请内存空间： 对于一体式结构，则意味着表头也需要重新申请<br/>
-------&gt;一体式结构由于顺序表信息区与数据区连续存储在一起，所以若想更换数据区，则只能整体搬迁，即整个顺序表对象改变了；对于分离式结构，只需将表信息区中的数据区链接地址更新即可，该顺序表对象不变。</p>
-
-<h3 id="toc_2">顺序表扩充</h3>
-
-<p>顺序表扩充的两种策略</p>
-
-<ul>
-<li>每次扩充增加固定数目的存储位置，如每次扩充增加10个元素位置，这种策略可称为线性增长<br/>
-特点：节省空间，但是扩充操作频繁，操作次数多</li>
-<li>每次扩充容量加倍，如每次扩充增加一倍存储空间，倍增<br/>
-特点：减少了扩充次数，但可能会浪费空间资源。以空间换时间，推荐的方式。</li>
-</ul>
-
-<h3 id="toc_3">顺序表增加/删除元素</h3>
-
-<p>增加元素</p>
-
-<ul>
-<li>尾端加入元素，时间复杂度为O(1)</li>
-<li>非保序的加入元素(不常见)，时间复杂度为O(1)</li>
-<li>保序的元素删除，时间复杂度为O(n) (常用，基本）</li>
-</ul>
-
-<p>删除元素</p>
-
-<ul>
-<li>删除表尾元素，时间复杂度为O(1)</li>
-<li>非保序的元素删除（不常见），时间复杂度为O(1)</li>
-<li>保序的元素删除，时间复杂度为O(n)<br/>
-## python中的顺序表</li>
-</ul>
-
-<p>Python 中的list和tuple两种类型采用了顺序表的实现技术。tuple是不可变类型，其他方面与list类似。</p>
-
-<h3 id="toc_4">list的基本实现技术</h3>
-
-<p>基于下标（位置）的高效元素访问和更新，时间复杂度是O(1)；</p>
-
-<p>为满足该特征，应该采用顺序表技术，表中元素保存在一块连续的存储区中。</p>
-
-<p>允许任意加入元素，而且在不断加入元素的过程中，表对象的标识（函数id得到的值）不变。</p>
-
-<p>为满足该特征，就必须能更换元素存储区，并且为保证更换存储区时list对象的标识id不变，只能采用分离式实现技术。</p>
-
-<p>在Python的官方实现中，list就是一种采用分离式技术实现的动态顺序表。这就是为什么用list.append(x) （或 list.insert(len(list), x)，即尾部插入）比在指定位置插入元素效率高的原因。</p>
-
-<p>在Python的官方实现中，list实现采用了如下的策略：<br/>
-<strong>在建立空表（或者很小的表）时，系统分配一块能容纳8个元素的存储区；在执行插入操作（insert或append）时，如果元素存储区满就换一块4倍大的存储区。但如果此时的表已经很大（目前的阀值为50000），则改变策略，采用加一倍的方法。引入这种改变策略的方式，是为了避免出现过多空闲的存储位置。</strong></p>
+<p>每天2个小时，1个小时跟读，1个小时背诵和跟读</p>
 
                         
                       </div>
@@ -1258,10 +516,178 @@ class SingleCycleLinkList(object):
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2017/6/9</span>
+                    <span class="date">2017/6/29</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html'>Python数据结构与算法</a></span>
+          					    <span class="posted-in"><a href='English.html'>English</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="linear_regression_with_multiple_variables.html">
+                
+                  <h1>Machine Learning (2): Linear Regression with Multiple Variables</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<ul>
+<li>
+<a href="#toc_0">Multiple Features (variables)</a>
+</li>
+<li>
+<a href="#toc_1">Gradient descent</a>
+<ul>
+<li>
+<a href="#toc_2">Feature Scaling</a>
+</li>
+<li>
+<a href="#toc_3">Learning rate</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_4">Computing Parameters Analytically</a>
+<ul>
+<li>
+<a href="#toc_5">Normal equation:</a>
+</li>
+<li>
+<a href="#toc_6">Gradient descent v.s. Normal equation</a>
+</li>
+<li>
+<a href="#toc_7">Normal Equation Non-invertible</a>
+</li>
+</ul>
+</li>
+</ul>
+
+
+<h2 id="toc_0">Multiple Features (variables)</h2>
+
+<p>Notation:<br/>
+\(m\) = the number of training examples<br/>
+\(n\) = the number of features<br/>
+\(x^{(i)}\)  = the input (feature) of \(i^{th}\) training example<br/>
+\(x^{(i)}_j\) =  value of feature \(j\) of \(i^{th}\) training example</p>
+
+<p>The multivariable form of the hypothesis function accommodating these multiple features is as follows:</p>
+
+<p>\[h_θ(x)=θ_0+θ_1x_1+θ_2x_2+θ_3x_3+⋯+θ_nx_n=\theta^Tx\] (\(n+1\)- dimensional vector)</p>
+
+<p>For convenience of notation, define \(x_0=1\)</p>
+
+<h2 id="toc_1">Gradient descent</h2>
+
+<p><strong>Hypothesis</strong>: <br/>
+\[h_\theta(x) = \theta^Tx\]</p>
+
+<p><strong>Parameters</strong>:<br/>
+\[\theta\]</p>
+
+<p><strong>Cost Function</strong>:<br/>
+\[J(\theta)=\frac{1}{2m}\Sigma^m_{i=1}(h_\theta(x^{(i)})-y^{(i)})^2\]</p>
+
+<p><strong>Gradient descent</strong>:<br/>
+Repeat until converge{</p>
+
+<p>\(\theta_j := \theta_j -\alpha\frac{\partial}{\partial \theta_j}J(\theta)=\theta_j -\alpha\frac{1}{m}(h_\theta(x^{(i)})-y^{(i)})x_j^{(i)}\)  (simultaneously update for every j= 0,1,...,n)</p>
+
+<h3 id="toc_2">Feature Scaling</h3>
+
+<p>We can speed up gradient descent by having each of our input values in roughly the same range. This is because \(\theta\) will descend quickly on small ranges and slowly on large ranges, and so will oscillate inefficiently down to the optimum when the variables are very uneven.</p>
+
+<p><strong>Idea: Make sure features are on a similar scale.</strong></p>
+
+<p>Two techniques to help with this are <strong>feature scaling</strong> and <strong>mean normalization</strong>.</p>
+
+<ul>
+<li><p><strong>Feature scaling</strong> involves dividing the input values by the range (i.e. the maximum value minus the minimum value) of the input variable, resulting in a new range of just 1. </p></li>
+<li><p><strong>Mean normalization</strong> involves subtracting the average value for an input variable from the values for that input variable resulting in a new average value for the input variable of just zero. </p></li>
+</ul>
+
+<p>Replace \(x_i\) with \( x_i -\mu_i\) to make features have approximately zero mean (Do not apply to \(x_0=1\))</p>
+
+<p>\[x_i =\frac{ x_i - \mu_i}{S_i}\]</p>
+
+<p>where  \(\mu_i\) is average value of \(x_i\) in training set, \(S_i\) is the range (max-min) or standard deviation of \(x_i\).</p>
+
+<p>E.g. \[x_1=\frac{size-1000}{2000}\]<br/>
+\[x_2=\frac{\#bedrooms-2}{5}\]</p>
+
+<h3 id="toc_3">Learning rate</h3>
+
+<p><strong>Debugging</strong>: How to make sure gradient descent is working correctly.</p>
+
+<p>-- How to choose learning rate \(\alpha\).</p>
+
+<p>Gradient descent is working correctly if \(J(\theta)\) decreases after every iteration.</p>
+
+<p>Use smaller \(\alpha\). For sufficiently small \(\alpha\), \(J(\theta)\) should decrease on every iteration.</p>
+
+<p><strong>Automatic convergence test</strong>. Declare convergence if \(J(\theta)\) decreases by less than \(E\) in one iteration, where \(E\) is some small value such as \(10^{−3}\). However in practice it&#39;s difficult to choose this threshold value.</p>
+
+<p><strong>Summary</strong>:</p>
+
+<ul>
+<li>If  \(\alpha\)  is too small: slow convergence.</li>
+<li>If \(\alpha\) is too large: may not decrease on every iteration; may not converge.</li>
+</ul>
+
+<h2 id="toc_4">Computing Parameters Analytically</h2>
+
+<h3 id="toc_5">Normal equation:</h3>
+
+<p>Gradient descent gives one way of minimizing \(J\). The &quot;Normal Equation&quot; method minimizes \(J\) by explicitly taking its derivatives with respect to the \(θj\) ’s, and setting them to zero. This allows us to find the optimum theta without iteration. The normal equation formula is given below:</p>
+
+<p>\[\theta = (X^TX)^{-1}X^Ty\]</p>
+
+<p>Matlab command: </p>
+
+<pre><code class="language-matlab">pinv(X&#39;*X)*X&#39;*y
+</code></pre>
+
+<p>where <code>pinv</code> is <code>peudoinversion</code> of matrix. It is different to <code>inv</code>.</p>
+
+<h3 id="toc_6">Gradient descent v.s. Normal equation</h3>
+
+<p><img src="media/14972614146835/Screen%20Shot%202017-06-27%20at%202.38.45%20PM.png" alt="Screen Shot 2017-06-27 at 2.38.45 P"/></p>
+
+<h3 id="toc_7">Normal Equation Non-invertible</h3>
+
+<p>The common reason causes non-invertible:</p>
+
+<ul>
+<li>Redundant features(linearly dependent)<br/>
+E.g. \(x_1\) = size in feet\(^2\), \(x_2\) = size in m\(^2\)</li>
+<li>Too many features(e.g. \(m&lt;=n\)).<br/>
+-- Delete some features, or use regularization.</li>
+</ul>
+
+<p>where \(m\) is the number of training examples, \(n\) is the number of features.</p>
+
+<p>Solutions to the above problems include deleting a feature that is linearly dependent with another or deleting one or more features when there are too many features.</p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/6/12</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html'>机器学习</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -1328,37 +754,39 @@ class SingleCycleLinkList(object):
 
       	<p class="cat-list">
         
-            <a href="Leetcode.html"><strong>Leetcode</strong></a>
+            <a href=".html"><strong>Leetcode</strong></a>
         
-            <a href="C/C++.html"><strong>C/C++</strong></a>
+            <a href=".html"><strong>C/C++</strong></a>
         
-            <a href="Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html"><strong>Python数据结构与算法</strong></a>
+            <a href=".html"><strong>Python数据结构与算法</strong></a>
         
-            <a href="Course.html"><strong>Course</strong></a>
+            <a href=".html"><strong>Course</strong></a>
         
-            <a href="Python%E7%89%B9%E6%80%A7.html"><strong>Python特性</strong></a>
+            <a href=".html"><strong>Python特性</strong></a>
         
-            <a href="%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html"><strong>机器学习</strong></a>
+            <a href=".html"><strong>机器学习</strong></a>
         
-            <a href="Python%E7%A7%91%E5%AD%A6%E8%AE%A1%E7%AE%97%E4%B8%89%E7%BB%B4%E5%8F%AF%E8%A7%86%E5%8C%96.html"><strong>Python科学计算三维可视化</strong></a>
+            <a href=".html"><strong>Python科学计算三维可视化</strong></a>
         
-            <a href="English.html"><strong>English</strong></a>
+            <a href=".html"><strong>English</strong></a>
         
-            <a href="Computer%20System.html"><strong>Computer System</strong></a>
+            <a href=".html"><strong>Computer System</strong></a>
         
-            <a href="Deep%20Learning.html"><strong>Deep Learning</strong></a>
+            <a href=".html"><strong>Deep Learning</strong></a>
         
-            <a href="Linux%20%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B.html"><strong>Linux 系统编程</strong></a>
+            <a href=".html"><strong>Linux 系统编程</strong></a>
         
-            <a href="%E6%95%B0%E6%8D%AE%E5%BA%93.html"><strong>数据库</strong></a>
+            <a href=".html"><strong>数据库</strong></a>
         
-            <a href="Tensorflow.html"><strong>Tensorflow</strong></a>
+            <a href=".html"><strong>Tensorflow</strong></a>
         
-            <a href="Big%20Data.html"><strong>Big Data</strong></a>
+            <a href=".html"><strong>Big Data</strong></a>
         
-            <a href="%E6%96%87%E7%8C%AE%E9%98%85%E8%AF%BB.html"><strong>文献阅读</strong></a>
+            <a href=".html"><strong>文献阅读</strong></a>
         
-            <a href="Tools.html"><strong>Tools</strong></a>
+            <a href=".html"><strong>Tools</strong></a>
+        
+            <a href=".html"><strong>大数据</strong></a>
          
         </p>
 
@@ -1375,31 +803,31 @@ class SingleCycleLinkList(object):
 	      
 		      
 			      <li class="post">
-			        <a href="15312166852240.html">CSE 421/521 Operating Systems</a>
+			        <a href="15317356378033.html">Operating System Concepts - Introduction</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="15272289883847.html">回溯法和深度优先遍历</a>
+			        <a href="Linking.html">CSAPP - 链接</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="Coursera_notebook_jupyter.html">技巧：Coursera下载Jupyter notebook相关文件</a>
+			        <a href="15315844145426.html">Intro to Hadoop and MapReduce</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="15171345711813.html">用于训练的深度学习硬件</a>
+			        <a href="exceptional_control_flow.html">CSAPP - 异常控制流</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="15166008990128.html">网络编程</a>
+			        <a href="overhead.html">Overhead</a>
 			      </li>
 		     
 		  
