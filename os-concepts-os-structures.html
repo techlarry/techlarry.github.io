@@ -183,24 +183,33 @@
 </ul>
 </li>
 <li>
-<a href="#toc_5">Operating system structure</a>
+<a href="#toc_5">System Service</a>
+</li>
+<li>
+<a href="#toc_6">OS Design and Implementation</a>
+</li>
+<li>
+<a href="#toc_7">Operating system structure</a>
 <ul>
 <li>
-<a href="#toc_6">Monolithic structure</a>
+<a href="#toc_8">Monolithic structure</a>
 </li>
 <li>
-<a href="#toc_7">Layered</a>
+<a href="#toc_9">Layered</a>
 </li>
 <li>
-<a href="#toc_8">Microkernel</a>
+<a href="#toc_10">Microkernel</a>
 </li>
 <li>
-<a href="#toc_9">Hybrid systems</a>
+<a href="#toc_11">Modules</a>
+</li>
+<li>
+<a href="#toc_12">Hybrid systems</a>
 </li>
 </ul>
 </li>
 <li>
-<a href="#toc_10">System boot</a>
+<a href="#toc_13">System boot</a>
 </li>
 </ul>
 
@@ -223,7 +232,7 @@
 
 <h2 id="toc_2">System call</h2>
 
-<p>System calls provide an <strong>interface to the services</strong> made available by an operating system.</p>
+<p>Purpose of System Call: System calls provide an <strong>interface to the services</strong> made available by an operating system.</p>
 
 <h3 id="toc_3">API</h3>
 
@@ -251,11 +260,32 @@
 
 <p><img src="media/15317361625058/examplesofunixandlinuxsystemcalls.png" alt="Examples of Windows and Unix systemcalls"/></p>
 
-<h2 id="toc_5">Operating system structure</h2>
+<p>Three ways to pass parameters to the operating system:</p>
 
-<h3 id="toc_6">Monolithic structure</h3>
+<ul>
+<li>when less than five parameters, passing the parameters in registers</li>
+<li>when more than five parameters, parameters are stored in a block, passing the address of the block in a register</li>
+<li>using stack</li>
+</ul>
 
-<p>Operating systems with monolithic structure (单体结构) place all of the functionality of kernel into a <strong>single</strong>, <strong>static</strong> binary file that runs in a <strong>single</strong> address space.</p>
+<h2 id="toc_5">System Service</h2>
+
+<p><strong>System services</strong>, also known as <strong>system utilities</strong>, provide a convenient environment for program development and execution.</p>
+
+<h2 id="toc_6">OS Design and Implementation</h2>
+
+<p>One important principle of OS design is <u>the separation of <strong>policy</strong> from <strong>mechanism</strong></u> . Mechanisms determine <strong>how</strong> to do something; policies determine <strong>what</strong> will be done.<br/>
+操作系统设计的一个重要原则是策略（policy）和机制（mechanism）的分离。机制决定如何做，策略决定做什么。</p>
+
+<ul>
+<li>The separation of policy and mechanism is important for <strong>flexibility</strong>.</li>
+</ul>
+
+<h2 id="toc_7">Operating system structure</h2>
+
+<h3 id="toc_8">Monolithic structure</h3>
+
+<p>Operating systems with <strong>monolithic structure</strong> (单体结构) place all of the functionality of kernel into a <strong>single</strong>, <strong>static</strong> binary file that runs in a <strong>single</strong> address space.</p>
 
 <ul>
 <li>a common technique for designing operating system</li>
@@ -285,9 +315,9 @@
 <li>difficult to implement and extend</li>
 </ul>
 
-<h3 id="toc_7">Layered</h3>
+<h3 id="toc_9">Layered</h3>
 
-<p>A <strong>loosely coupled</strong> system is divided into separate, smaller components that have specific and limited functionality (<strong>modular</strong> approach). All these components together comprise the kernel .</p>
+<p>A <strong>loosely coupled</strong> (松耦合) system is divided into separate, smaller components that have specific and limited functionality (<strong>modular</strong> approach). All these components together comprise the kernel .</p>
 
 <ul>
 <li>changes in one component affect only that component</li>
@@ -312,9 +342,13 @@
 <li>simplicity of construction and debugging
 <ul>
 <li>each layer is implemented only with operations provided by lower-level layers. </li>
-<li>higher-level layers can be debugged without any concern for the lower-level layers<br/>
-cons</li>
+<li>higher-level layers can be debugged without any concern for the lower-level layers</li>
 </ul></li>
+</ul>
+
+<p>cons</p>
+
+<ul>
 <li>difficulty of defining the functionality of each layer</li>
 <li>poor performance
 <ul>
@@ -326,7 +360,7 @@ cons</li>
 
 <p><img src="media/15317361625058/alayeredoperatingsystem.png" alt="A layered operating system"/></p>
 
-<h3 id="toc_8">Microkernel</h3>
+<h3 id="toc_10">Microkernel</h3>
 
 <p>Another way to modularized the kernel is using microkernel approach (微内核)。</p>
 
@@ -346,7 +380,7 @@ cons</li>
 <li>all new services added to user space do not require modification of the kernel.</li>
 <li>when modification of kernel needed, changes tend to be fewer because of small kernel</li>
 </ul></li>
-<li>more security and reliablity
+<li>more security and reliability
 <ul>
 <li>since most services are running as user</li>
 </ul></li>
@@ -361,9 +395,17 @@ cons</li>
 </ul></li>
 </ul>
 
-<p>Best-known microkernel os is <strong>Darvin</strong>, the kernel component of the macOS and iOS.  </p>
+<p>Best-known microkernel os is <strong>Darwin</strong>, the kernel component of the macOS and iOS.  </p>
 
-<h3 id="toc_9">Hybrid systems</h3>
+<h3 id="toc_11">Modules</h3>
+
+<p>Perhaps the best current methodology for operating system design involves using <strong>loadable kernel modules</strong>(LVMs, 可装载内核模块). Here, the kernel has a set of core components and can link in additional services via modules, either at boot time or during run time.</p>
+
+<ul>
+<li>design purpose: for the kernel to provide core services, while other services are implemented <strong>dynamically</strong>, as the kernel is running</li>
+</ul>
+
+<h3 id="toc_12">Hybrid systems</h3>
 
 <p>In practice, <strong>very few</strong> operating system adopt a single, strictly defined structure. Instead, they <strong>combine different structures</strong><br/>
 , resulting in <strong>hybrid systems</strong> that address performance, security, and usability issues.</p>
@@ -378,7 +420,9 @@ cons</li>
 
 <p>To address such performance problems, Darwin combines Mach, BSD, the I/O kit, and any kernel extensions into a <strong>single</strong> address space.</p>
 
-<h2 id="toc_10">System boot</h2>
+<p><a href="https://developer.apple.com/library/archive/documentation/Darwin/Conceptual/KernelProgramming/Architecture/Architecture.html#//apple_ref/doc/uid/TP30000905-CH1g-CACDAEDC">detailed documents for Darwin kernel</a></p>
+
+<h2 id="toc_13">System boot</h2>
 
 <p>The process of starting a computer by loading the kernel is known as <strong>booting</strong> the system.</p>
 
@@ -392,7 +436,7 @@ cons</li>
 <p>bootstrap program:</p>
 
 <ul>
-<li>usually, bootstrap program located in BIOS( nonvolatile firmware on motherboard, <a href="https://en.wikipedia.org/wiki/BIOS">wiki</a>)</li>
+<li>usually, bootstrap program located in BIOS( nonvolatile firmware(固件) on motherboard, <a href="https://en.wikipedia.org/wiki/BIOS">wiki</a>)</li>
 <li><strong>GRUB</strong> is an open-source bootstrap program for Linux and Unix systems <a href="https://en.wikipedia.org/wiki/GNU_GRUB">wiki</a>.</li>
 </ul>
 
@@ -410,8 +454,8 @@ cons</li>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="os-concepts-introduction.html" 
-          title="Next Post: Operating System Concepts 1 - Introduction">Operating System Concepts 1 - Introduction &raquo;</a>
+          <a  href="15317613286610.html" 
+          title="Next Post: Operating System - History">Operating System - History &raquo;</a>
       
       </p>
         </div>
@@ -542,25 +586,25 @@ s.setAttribute('data-timestamp', +new Date());
 		  
 		      
 			      <li class="post">
+			        <a href="15317613286610.html">Operating System - History</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15317601804432.html">Hadoop the definitive guide 1 - Hadoop fundamentals</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="os-concepts-introduction.html">Operating System Concepts 1 - Introduction</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="Linking.html">CSAPP - 链接</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15315844145426.html">Intro to Hadoop and MapReduce</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="exceptional_control_flow.html">CSAPP - 异常控制流</a>
+			        <a href="os-concets-processes.html">Operating System Concepts 3 - Processes</a>
 			      </li>
 		     
 		  

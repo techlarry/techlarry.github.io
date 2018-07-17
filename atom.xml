@@ -4,7 +4,7 @@
   <title><![CDATA[techlarry]]></title>
   <link href="http://larryim.cc/atom.xml" rel="self"/>
   <link href="http://larryim.cc/"/>
-  <updated>2018-07-16T23:24:58+08:00</updated>
+  <updated>2018-07-17T00:23:30+08:00</updated>
   <id>http://larryim.cc/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -37,24 +37,33 @@
 </ul>
 </li>
 <li>
-<a href="#toc_5">Operating system structure</a>
+<a href="#toc_5">System Service</a>
+</li>
+<li>
+<a href="#toc_6">OS Design and Implementation</a>
+</li>
+<li>
+<a href="#toc_7">Operating system structure</a>
 <ul>
 <li>
-<a href="#toc_6">Monolithic structure</a>
+<a href="#toc_8">Monolithic structure</a>
 </li>
 <li>
-<a href="#toc_7">Layered</a>
+<a href="#toc_9">Layered</a>
 </li>
 <li>
-<a href="#toc_8">Microkernel</a>
+<a href="#toc_10">Microkernel</a>
 </li>
 <li>
-<a href="#toc_9">Hybrid systems</a>
+<a href="#toc_11">Modules</a>
+</li>
+<li>
+<a href="#toc_12">Hybrid systems</a>
 </li>
 </ul>
 </li>
 <li>
-<a href="#toc_10">System boot</a>
+<a href="#toc_13">System boot</a>
 </li>
 </ul>
 
@@ -77,7 +86,7 @@
 
 <h2 id="toc_2">System call</h2>
 
-<p>System calls provide an <strong>interface to the services</strong> made available by an operating system.</p>
+<p>Purpose of System Call: System calls provide an <strong>interface to the services</strong> made available by an operating system.</p>
 
 <h3 id="toc_3">API</h3>
 
@@ -105,11 +114,32 @@
 
 <p><img src="media/15317361625058/examplesofunixandlinuxsystemcalls.png" alt="Examples of Windows and Unix systemcalls"/></p>
 
-<h2 id="toc_5">Operating system structure</h2>
+<p>Three ways to pass parameters to the operating system:</p>
 
-<h3 id="toc_6">Monolithic structure</h3>
+<ul>
+<li>when less than five parameters, passing the parameters in registers</li>
+<li>when more than five parameters, parameters are stored in a block, passing the address of the block in a register</li>
+<li>using stack</li>
+</ul>
 
-<p>Operating systems with monolithic structure (单体结构) place all of the functionality of kernel into a <strong>single</strong>, <strong>static</strong> binary file that runs in a <strong>single</strong> address space.</p>
+<h2 id="toc_5">System Service</h2>
+
+<p><strong>System services</strong>, also known as <strong>system utilities</strong>, provide a convenient environment for program development and execution.</p>
+
+<h2 id="toc_6">OS Design and Implementation</h2>
+
+<p>One important principle of OS design is <u>the separation of <strong>policy</strong> from <strong>mechanism</strong></u> . Mechanisms determine <strong>how</strong> to do something; policies determine <strong>what</strong> will be done.<br/>
+操作系统设计的一个重要原则是策略（policy）和机制（mechanism）的分离。机制决定如何做，策略决定做什么。</p>
+
+<ul>
+<li>The separation of policy and mechanism is important for <strong>flexibility</strong>.</li>
+</ul>
+
+<h2 id="toc_7">Operating system structure</h2>
+
+<h3 id="toc_8">Monolithic structure</h3>
+
+<p>Operating systems with <strong>monolithic structure</strong> (单体结构) place all of the functionality of kernel into a <strong>single</strong>, <strong>static</strong> binary file that runs in a <strong>single</strong> address space.</p>
 
 <ul>
 <li>a common technique for designing operating system</li>
@@ -139,9 +169,9 @@
 <li>difficult to implement and extend</li>
 </ul>
 
-<h3 id="toc_7">Layered</h3>
+<h3 id="toc_9">Layered</h3>
 
-<p>A <strong>loosely coupled</strong> system is divided into separate, smaller components that have specific and limited functionality (<strong>modular</strong> approach). All these components together comprise the kernel .</p>
+<p>A <strong>loosely coupled</strong> (松耦合) system is divided into separate, smaller components that have specific and limited functionality (<strong>modular</strong> approach). All these components together comprise the kernel .</p>
 
 <ul>
 <li>changes in one component affect only that component</li>
@@ -166,9 +196,13 @@
 <li>simplicity of construction and debugging
 <ul>
 <li>each layer is implemented only with operations provided by lower-level layers. </li>
-<li>higher-level layers can be debugged without any concern for the lower-level layers<br/>
-cons</li>
+<li>higher-level layers can be debugged without any concern for the lower-level layers</li>
 </ul></li>
+</ul>
+
+<p>cons</p>
+
+<ul>
 <li>difficulty of defining the functionality of each layer</li>
 <li>poor performance
 <ul>
@@ -180,7 +214,7 @@ cons</li>
 
 <p><img src="media/15317361625058/alayeredoperatingsystem.png" alt="A layered operating system"/></p>
 
-<h3 id="toc_8">Microkernel</h3>
+<h3 id="toc_10">Microkernel</h3>
 
 <p>Another way to modularized the kernel is using microkernel approach (微内核)。</p>
 
@@ -200,7 +234,7 @@ cons</li>
 <li>all new services added to user space do not require modification of the kernel.</li>
 <li>when modification of kernel needed, changes tend to be fewer because of small kernel</li>
 </ul></li>
-<li>more security and reliablity
+<li>more security and reliability
 <ul>
 <li>since most services are running as user</li>
 </ul></li>
@@ -215,9 +249,17 @@ cons</li>
 </ul></li>
 </ul>
 
-<p>Best-known microkernel os is <strong>Darvin</strong>, the kernel component of the macOS and iOS.  </p>
+<p>Best-known microkernel os is <strong>Darwin</strong>, the kernel component of the macOS and iOS.  </p>
 
-<h3 id="toc_9">Hybrid systems</h3>
+<h3 id="toc_11">Modules</h3>
+
+<p>Perhaps the best current methodology for operating system design involves using <strong>loadable kernel modules</strong>(LVMs, 可装载内核模块). Here, the kernel has a set of core components and can link in additional services via modules, either at boot time or during run time.</p>
+
+<ul>
+<li>design purpose: for the kernel to provide core services, while other services are implemented <strong>dynamically</strong>, as the kernel is running</li>
+</ul>
+
+<h3 id="toc_12">Hybrid systems</h3>
 
 <p>In practice, <strong>very few</strong> operating system adopt a single, strictly defined structure. Instead, they <strong>combine different structures</strong><br/>
 , resulting in <strong>hybrid systems</strong> that address performance, security, and usability issues.</p>
@@ -232,7 +274,9 @@ cons</li>
 
 <p>To address such performance problems, Darwin combines Mach, BSD, the I/O kit, and any kernel extensions into a <strong>single</strong> address space.</p>
 
-<h2 id="toc_10">System boot</h2>
+<p><a href="https://developer.apple.com/library/archive/documentation/Darwin/Conceptual/KernelProgramming/Architecture/Architecture.html#//apple_ref/doc/uid/TP30000905-CH1g-CACDAEDC">detailed documents for Darwin kernel</a></p>
+
+<h2 id="toc_13">System boot</h2>
 
 <p>The process of starting a computer by loading the kernel is known as <strong>booting</strong> the system.</p>
 
@@ -246,9 +290,36 @@ cons</li>
 <p>bootstrap program:</p>
 
 <ul>
-<li>usually, bootstrap program located in BIOS( nonvolatile firmware on motherboard, <a href="https://en.wikipedia.org/wiki/BIOS">wiki</a>)</li>
+<li>usually, bootstrap program located in BIOS( nonvolatile firmware(固件) on motherboard, <a href="https://en.wikipedia.org/wiki/BIOS">wiki</a>)</li>
 <li><strong>GRUB</strong> is an open-source bootstrap program for Linux and Unix systems <a href="https://en.wikipedia.org/wiki/GNU_GRUB">wiki</a>.</li>
 </ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Operating System - History]]></title>
+    <link href="http://larryim.cc/15317613286610.html"/>
+    <updated>2018-07-17T01:15:28+08:00</updated>
+    <id>http://larryim.cc/15317613286610.html</id>
+    <content type="html"><![CDATA[
+<h2 id="toc_0">reference</h2>
+
+<ul>
+<li>modern operating system 4th</li>
+<li>operating system concepts 10th</li>
+<li>图解TCP/IP协议</li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Hadoop the definitive guide 1 - Hadoop fundamentals]]></title>
+    <link href="http://larryim.cc/15317601804432.html"/>
+    <updated>2018-07-17T00:56:20+08:00</updated>
+    <id>http://larryim.cc/15317601804432.html</id>
+    <content type="html"><![CDATA[
 
 ]]></content>
   </entry>
@@ -275,16 +346,19 @@ cons</li>
 </ul>
 </li>
 <li>
-<a href="#toc_4">dual-mode</a>
+<a href="#toc_4">multiprogramming and multitasking</a>
 </li>
 <li>
-<a href="#toc_5">timer</a>
+<a href="#toc_5">dual-mode</a>
 </li>
 <li>
-<a href="#toc_6">virtualization</a>
+<a href="#toc_6">timer</a>
 </li>
 <li>
-<a href="#toc_7">Free and Open-Source OS</a>
+<a href="#toc_7">virtualization</a>
+</li>
+<li>
+<a href="#toc_8">Free and Open-Source OS</a>
 </li>
 </ul>
 
@@ -323,7 +397,7 @@ cons</li>
 
 <p>When the CPU is <strong>interrupted</strong>, it stops what it is doing and immediately transfers execution to a fixed location. The fixed location usually contains the starting address where the service routine for the interrupt is located.</p>
 
-<p>The interrupt routine(中断程序) is called indirectly through the interrupt vector table（中断向量表).</p>
+<p>The <strong>interrupt routine</strong>(中断程序) is called indirectly through the interrupt vector table（中断向量表).</p>
 
 <ul>
 <li>Generally, the table of pointers is stored in low memory (the first hundred or so locations).</li>
@@ -350,7 +424,21 @@ cons</li>
 
 <p><strong>interrupt</strong>(中断):  generated by the hardware (devices like the hard disk, graphics card, I/O ports, etc).</p>
 
-<h2 id="toc_4">dual-mode</h2>
+<h2 id="toc_4">multiprogramming and multitasking</h2>
+
+<p><strong>Multiprogramming</strong>(多道程序) explained:</p>
+
+<ul>
+<li>The operating system <strong>keeps several processes in memory</strong> simultaneously. </li>
+<li>The operating system picks and begins to execute one of these processes.</li>
+<li>Eventually, the process may have to wait for some task, such as an I/O operation, to complete.</li>
+<li>When that process needs to wait, the CPU <strong>switches</strong> to another process, and so on.</li>
+<li> Eventually, the first process finishes waiting and gets the CPU back. As long as at least one process needs to execute, the <strong>CPU is never idle</strong>.</li>
+</ul>
+
+<p><strong>Multitasking</strong>(多任务) is a logical <strong>extension</strong> of multiprogramming. In multitasking systems, the CPU executes multiple processes by switching among them, but the switches occur <strong>frequently</strong>, providing the user with a <strong>fast</strong> response time.</p>
+
+<h2 id="toc_5">dual-mode</h2>
 
 <p>In order to ensure the proper execution of the system, we must be able to distinguish between the execution of operating-system code（<strong>kernel mode</strong>）and user-defined code (<strong>user mode</strong>).</p>
 
@@ -367,7 +455,7 @@ cons</li>
 
 <p><img src="http://or9a8nskt.bkt.clouddn.com/15317318589869.jpg" alt=""/></p>
 
-<h2 id="toc_5">timer</h2>
+<h2 id="toc_6">timer</h2>
 
 <p>A timer (定时器) can  be set to interrupt the computer after a specified period( usually, 100s hz)</p>
 
@@ -377,7 +465,7 @@ cons</li>
 <li>When the counter reaches 0, an interrupt occurs.</li>
 </ul>
 
-<h2 id="toc_6">virtualization</h2>
+<h2 id="toc_7">virtualization</h2>
 
 <p><strong>virtualization</strong>(虚拟化) is a technology that allows us to abstract the hardware of a single computer into several different execution environments, thereby creating the illusion that <u><em>each separate environment is running on its own private computer</em></u> .</p>
 
@@ -387,7 +475,7 @@ cons</li>
 
 <p><img src="http://or9a8nskt.bkt.clouddn.com/virtualmachines.png" alt="A computer running (a) a single operating system and (b) three virtual machines"/></p>
 
-<h2 id="toc_7">Free and Open-Source OS</h2>
+<h2 id="toc_8">Free and Open-Source OS</h2>
 
 <p>Open-source OS</p>
 
@@ -412,6 +500,16 @@ cons</li>
 <li> FreeBSD</li>
 <li> Solaris</li>
 </ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Operating System Concepts 3 - Processes]]></title>
+    <link href="http://larryim.cc/os-concets-processes.html"/>
+    <updated>2018-07-17T00:28:20+08:00</updated>
+    <id>http://larryim.cc/os-concets-processes.html</id>
+    <content type="html"><![CDATA[
 
 ]]></content>
   </entry>
@@ -2821,299 +2919,6 @@ for i from 1 to n do:
 <p><img src="media/15187866094632/notebook.png" alt="notebook"/></p>
 
 <p>然后选择New-Python3，新建一个Jupyter Notebook，然后填入命令<code>!tar cvfz allfiles.tar.gz *</code>压缩所有文件到<code>allfiles.tar.gz</code>。最后回到Notebook界面，选择下载即可。</p>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Dynamic Programming (1): Introduction]]></title>
-    <link href="http://larryim.cc/Dynamic_Programming_Introduction.html"/>
-    <updated>2017-08-08T15:48:13+08:00</updated>
-    <id>http://larryim.cc/Dynamic_Programming_Introduction.html</id>
-    <content type="html"><![CDATA[
-<ul>
-<li>
-<a href="#toc_0">Dynamic programming v.s. Divide-and-conquer algorithm</a>
-</li>
-<li>
-<a href="#toc_1">Approach</a>
-<ul>
-<li>
-<a href="#toc_2">Top-down with memoization</a>
-</li>
-<li>
-<a href="#toc_3">Bottom-up method</a>
-</li>
-<li>
-<a href="#toc_4">Which Method?</a>
-</li>
-</ul>
-</li>
-</ul>
-
-
-<p><code>Dynamic programming</code> is a method for solving a complex problem by breaking it down into a collection of simpler subproblems, solving each of those subproblems just once, and storing their solutions. It stores solutions to subproblems instead of recomputing them(called <code>memoization</code> technique).</p>
-
-<h2 id="toc_0">Dynamic programming v.s. Divide-and-conquer algorithm</h2>
-
-<p><code>Divide-and-conquer</code> algorithms partition the problem into disjoint subproblems, solve the subproblems recursively, and then combine their solutions to solve the original problem. In contrast, <code>dynamic programming</code> partition the problem into subproblems that overlaps, that is, subproblems share subproblems.</p>
-
-<h2 id="toc_1">Approach</h2>
-
-<p>There are usually two equivalent ways to implement a dynamic-programming approach.</p>
-
-<h3 id="toc_2">Top-down with memoization</h3>
-
-<p>自上而下</p>
-
-<p>We write the procedure recursively in a natural manner, but modified to save the result of each subproblem in the hash table. The procedure first checks to see whether it has previously solved this subproblem. If so, it returns the saved value, saving further computation at this level; if not, the procedure computes the value in the usual manner. </p>
-
-<h3 id="toc_3">Bottom-up method</h3>
-
-<p>自下而上<br/>
-We sort the subproblems by size and solve them in size order, smallest first. When solving a particular subproblem, we have already solved all of the smaller subproblems its solution depends upon, and we have saved their solutions. We solve each subproblem only once, and when we first see it, we have already solved all of its prerequisite subproblems.</p>
-
-<h3 id="toc_4">Which Method?</h3>
-
-<ul>
-<li>Top-down approach often results in slightly simpler and clearer code</li>
-<li>Top-down approach only computes the partial results that are needed for the particular problem instance, whereas the bottom-up approach computes all partial results even if some of them go unused.</li>
-</ul>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Heap (1): Introduction and Implementation]]></title>
-    <link href="http://larryim.cc/heap.html"/>
-    <updated>2017-07-12T10:09:03+08:00</updated>
-    <id>http://larryim.cc/heap.html</id>
-    <content type="html"><![CDATA[
-<p>A <strong>heap</strong> (堆)is a specialized tree-based data structure。 A <strong>heap</strong> can be classified as either a <strong>max heap</strong> or a <strong>min heap</strong>. </p>
-
-<ul>
-<li>In a <strong>max heap</strong>(最大堆), the keys of parent nodes are always greater than or equal to those of the children and the highest key is in the root node. </li>
-<li>In a <strong>min heap</strong>(最小堆), the keys of parent nodes are less than or equal to those of the children and the lowest key is in the root node.</li>
-</ul>
-
-<p><strong>Heap</strong> is one maximally efficient implementation of an abstract data type called a <strong>priority queue</strong> (see <a href="http://larryim.cc/priority_queue.html">here</a>), and in fact priority queues are often referred to as <strong>heaps</strong>, regardless of how they may be implemented. </p>
-
-<h2 id="toc_0">Implementation</h2>
-
-<p>Priority queues typically use a heap as backbone, giving \(O(\log n)\) performance for pushs and pops, and <strong>\(O(n)\)</strong> to build initially.</p>
-
-<h2 id="toc_1">Binary Heap</h2>
-
-<p>A common implementation of a heap is the <strong>binary heap</strong>(二叉堆), in which the tree is a <strong>complete binary tree</strong>(完全二叉树). </p>
-
-<p>二叉堆的操作与实现</p>
-
-<ul>
-<li><code>BinaryHeap()</code>：创建一个新的、空的二叉堆对象</li>
-<li><code>push(k)</code>：把新元素加入到堆中</li>
-<li><code>findMin()</code>：返回堆中的最小项，最小项仍保留在堆中</li>
-<li><code>pop()</code>：返回堆中的最小项，同时从堆中删除</li>
-<li><code>isEmpty()</code>：返回堆是否为空</li>
-<li><code>size()</code>：返回堆中元素的个数</li>
-<li><code>heapify(list)</code>：从一个包含元素的列表创建新堆</li>
-</ul>
-
-<p>有两个关键的操作：</p>
-
-<ol>
-<li><code>insert</code>方法。首先，为了满足“完全二叉树”的性质，新键值应该添加到列表的末尾。然而新键值简单地添加在列表末尾，显然无法满足堆次序。所以要通过比较父节点和新加入的元素的方法来重新满足堆次序。如果新加入的元素比父节点要小，可以与父节点互换位置；不断交换，直到到达树的顶端。下图所示一系列交换操作来使新加入元素“上浮”到正确的位置。</li>
-</ol>
-
-<p><img src="media/14973171257726/14974156268132.jpg" alt=""/></p>
-
-<p>2.<code>pop</code>方法 移走根节点的元素后如何保持堆结构和堆次序: 首先，用最后一个节点来代替根节点, 移走最后一个节点保持了堆结构的性质。这么简单的替换，还是会破坏堆次序。第二步，将新节点“下沉”来恢复堆次序。下图所示的是一系列交换操作来使新节点“下沉”到正确的位置。</p>
-
-<p>为了保持堆次序，我们需将新的根节点沿着一条路径“下沉”，直到比两个子节点都小。在选择下沉路径时，如果新根节点比子节点大，那么选择较小的子节点与之交换。</p>
-
-<p><img src="media/14973171257726/14974156980805.jpg" alt=""/></p>
-
-<pre><code class="language-python">class BinHeap(object):
-    &quot;&quot;&quot;
-    创建一个新的、空的二叉堆对象
-    &quot;&quot;&quot;
-    def __init__(self):
-        self.list = [0]
-        self.size = 0
-
-    def perc_up(self,i):
-        &quot;&quot;&quot;
-        Percolate the new node into proper position
-        &quot;&quot;&quot;
-        while i: 
-            if self.list[i] &lt; self.list[i//2]:
-                self.list[i], self.list[i//2] = self.list[i//2], self.list[i]
-            i = i//2
-    
-    def push(self, item):
-        &quot;&quot;&quot;把新元素加入到堆中&quot;&quot;&quot;
-        self.list.append(item)
-        self.size += 1
-        self.perc_up(self.size)
-
-    def findMin(self):
-        &quot;&quot;&quot;返回堆中的最小项，最小项仍保留在堆中&quot;&quot;&quot;
-        return self.list[1]
-
-    def pop(self):
-        &quot;&quot;&quot;返回堆中的最小项，同时从堆中删除&quot;&quot;&quot;
-        retval = self.list[1]
-        self.list[1] = self.list[-1]
-        self.size -=1
-        self.list.pop()
-        self.perc_down(1)
-
-        return retval
-
-
-    def percDown(self,i):
-        &quot;&quot;&quot;
-        将新节点“下沉”来恢复堆次序
-        &quot;&quot;&quot;
-        while (i * 2) &lt;= self.size:
-            mc = self.minChild(i)
-            if self.list[i] &gt; self.list[mc]:
-                tmp = self.list[i]
-                self.list[i] = self.list[mc]
-                self.list[mc] = tmp
-            i = mc
-
-    def minChild(self,i):
-        &quot;&quot;&quot;
-        返回较小的子节点
-        &quot;&quot;&quot;
-        if i * 2 + 1 &gt; size:
-            return i * 2
-        else:
-            if self.list[i*2] &lt; self.list[i*2+1]:
-                return i * 2
-            else:
-                return i * 2 + 1
-
-    def isEmpty(self):
-        &quot;&quot;&quot;返回堆是否为空&quot;&quot;&quot;
-        return self.size == 0
-
-    def __len__(self):
-        &quot;&quot;&quot;返回堆中元素的个数&quot;&quot;&quot;
-        return self.size
-
-    def heapify(self,alist):
-        &quot;&quot;&quot;从一个包含元素的列表创建新堆&quot;&quot;&quot;
-        self.size = len(alist)
-        self.list.extend(alist)
-        i = self.size //2
-        while i &gt; 0:
-            self.perc_down(i)
-            i -= 1
-</code></pre>
-
-<h2 id="toc_2">建堆的复杂度</h2>
-
-<p>建堆过程的时间复杂度是堆的一个难点。一般会误认为建堆的时间复杂度是\(O(nlog n)\)，因为每一次堆调整的时间复杂度为\(O(log n)\)，那么\(n\)个节点的时间复杂度为\(O(nlog n)\)，这其实是错的。</p>
-
-<p>首先对于二叉树，它必须保证每一层填满之后才能去填充下一层。而且，如果从根结点开始计数(根结点为第0层)，往下第\(i\)层的元素如果不是最后一层的话，这一层的元素数量为\(2^i\)。这样，对于一棵高为\(h\)的完全二叉树，它的元素个数为\(n=1+2+4+...+2^i, i\in(0,h)\).</p>
-
-<p>然后理解函数<code>heapify</code>中的循环范围是\(i=\text{size}//2\sim 0\)，也就是说这是一个从下往上的建堆。对于第\(h-1\)层的每个节点来说，它需要和它的2个子节点比较一次，共计\(2^{(h-1)}\times 2\)。对于第\(h-2\)层的每个节点来说，最坏情况下，它需要和它的2个子节点比较一次，然后和子节点交换，子节点再和该子节点的子节点比较，所以共计\(2^{(h-2)}\times 4\)。以此类推，对于第\(i\)层的每个节点来说，最坏情况下，共需比较\(2^i\times 2(h-i)\)。</p>
-
-<p>总共需要比较:<br/>
-\[ S= \sum\limits^{i=0}_{i=h-1} 2^{i+1}(h-i) =2^h+2^{h-1}\times 2 + 2^{h-2}\times 3+... \quad .......(a)\]<br/>
-\[ 2*S= \sum\limits^{i=0}_{i=h-1} 2^{i+2}(h-i) = 2^{h+1} + 2^h\times 2 + 2^{h-1}\times 3 + ... \quad .......(b)\]<br/>
-\[ \text{(b-a)}\quad S = 2^h+2^{h-1}+2^{h-2}+... = n = O(n) \]</p>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[深度优先搜索和广度优先搜索]]></title>
-    <link href="http://larryim.cc/15205897518090.html"/>
-    <updated>2018-03-09T18:02:31+08:00</updated>
-    <id>http://larryim.cc/15205897518090.html</id>
-    <content type="html"><![CDATA[
-<p>深度优先搜索(Depth First Search, DFS)和广度优先搜索(Breath First Search, BFS)是常用的图的搜索算法。</p>
-
-<p>DFS和BFS主要差别是搜索的优先级不同，一个广度优先，一个深度优先。</p>
-
-<p><strong>深度优先算法</strong>：</p>
-
-<ol>
-<li>访问初始顶点v并标记顶点v已访问。</li>
-<li>查找顶点v的第一个邻接顶点w。</li>
-<li>若顶点v的邻接顶点w存在，则继续执行；否则回溯到v，再找v的另外一个未访问过的邻接点。</li>
-<li>若顶点w尚未被访问，则访问顶点w并标记顶点w为已访问。</li>
-<li>继续查找顶点w的下一个邻接顶点wi，如果v取值wi转到步骤（3）。直到连通图中所有顶点全部访问过为止。</li>
-</ol>
-
-<p><strong>广度优先算法</strong>：</p>
-
-<ol>
-<li>顶点v入队列。</li>
-<li>当队列非空时则继续执行，否则算法结束。</li>
-<li>出队列取得队头顶点v；访问顶点v并标记顶点v已被访问。</li>
-<li>查找顶点v的第一个邻接顶点col。</li>
-<li>若v的邻接顶点col未被访问过的，则col入队列。</li>
-<li>继续查找顶点v的另一个新的邻接顶点col，转到步骤（5）。直到顶点v的所有未被访问过的邻接点处理完。转到步骤（2）。</li>
-</ol>
-
-<h2 id="toc_0">DFS</h2>
-
-<p>递归实现(Pseudocode):</p>
-
-<pre><code class="language-text">1  procedure DFS(G,v):
-2      label v as discovered
-3      for all edges from v to w in G.adjacentEdges(v) do
-4          if vertex w is not labeled as discovered then
-5              recursively call DFS(G,w)
-</code></pre>
-
-<p>非递归实现(Pseudocode):</p>
-
-<pre><code class="language-text">1  procedure DFS-iterative(G,v):
-2      let S be a stack
-3      S.push(v)
-4      while S is not empty
-5          v = S.pop()
-6          if v is not labeled as discovered:
-7              label v as discovered
-8              for all edges from v to w in G.adjacentEdges(v) do 
-9                  S.push(w)
-</code></pre>
-
-<p>下面给出非递归的实现</p>
-
-<pre><code class="language-python">def dfs(self, order_of_vertex):
-    &quot;&quot;&quot;
-    Depth first search for graph
-    Input: Class graph
-    &quot;&quot;&quot;
-    # initialize
-    for vertex in self.vertexes.keys():
-        self.visited[vertex] = 0
-
-    for vertex in self.vertexes.keys():
-        if self.visited[vertex] == 0:  # unvisted
-            print(&#39;(&#39;, end=&#39;&#39;)
-            stack = [vertex]
-            while stack:
-                node = stack.pop()
-                print(&#39;)&#39;, end=&#39;&#39;)
-                if self.visited[node] != 0:
-                    print(&#39;(&#39;)
-                    self.visited[node] = 1
-
-                    for adjacent in self.vertexes[node]:
-                        if self.visited[adjacent] == 0:
-                            stack.append(adjacent)
-                            print(&#39;(&#39;, end=&#39;&#39;)
-</code></pre>
-
-<h2 id="toc_1">BFS</h2>
-
-<pre><code class="language-python"></code></pre>
 
 ]]></content>
   </entry>
