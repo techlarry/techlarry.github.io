@@ -4,7 +4,7 @@
   <title><![CDATA[techlarry]]></title>
   <link href="http://larryim.cc/atom.xml" rel="self"/>
   <link href="http://larryim.cc/"/>
-  <updated>2018-07-18T08:23:30+08:00</updated>
+  <updated>2018-07-18T13:41:15+08:00</updated>
   <id>http://larryim.cc/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -46,6 +46,70 @@
 </li>
 <li>
 <a href="#toc_7">3 Operating on Processes</a>
+<ul>
+<li>
+<a href="#toc_8">3.1 Process creation</a>
+</li>
+<li>
+<a href="#toc_9">3.2 Process termintation</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_10">4 Interprocess communication</a>
+</li>
+<li>
+<a href="#toc_11">5 IPC in shared-memory system</a>
+</li>
+<li>
+<a href="#toc_12">6 IPC in message-passing system</a>
+<ul>
+<li>
+<a href="#toc_13">6.1 Direct/Indirect communication</a>
+<ul>
+<li>
+<a href="#toc_14"><strong>Direct Communication</strong></a>
+</li>
+<li>
+<a href="#toc_15"><strong>Indirect Communication</strong></a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_16">6.2 Synchronization</a>
+</li>
+<li>
+<a href="#toc_17">6.3 Buffering</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_18">7 Examples of IPC</a>
+<ul>
+<li>
+<a href="#toc_19">7.1 Mach Message Passing</a>
+</li>
+<li>
+<a href="#toc_20">7.2 Pipes</a>
+<ul>
+<li>
+<a href="#toc_21">(1) Ordinary pipes</a>
+</li>
+<li>
+<a href="#toc_22">(2) Named pipes</a>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_23">8 Communication in Client-server system</a>
+</li>
+<li>
+<a href="#toc_24">8.1 sockets</a>
+</li>
+<li>
+<a href="#toc_25">8.2 Remote procedure calls</a>
 </li>
 </ul>
 
@@ -74,11 +138,11 @@
 <p>A process may be in one of the following states:</p>
 
 <ul>
-<li><strong>New</strong>(新的). The process is being created.</li>
-<li><strong>Running</strong>(运行). Instructions are being executed.</li>
-<li><strong>Waiting</strong>(等待). The process is waiting for some event to occur(such as an I/O completion or reception of a signal).</li>
-<li><strong>Ready</strong>(就绪). The process is waiting to be assigned to a processor.</li>
-<li><strong>Terminated</strong>(终止). The process has finished execution.</li>
+<li><strong>New</strong>(新建). The process is being created. 进程正在被创建</li>
+<li><strong>Running</strong>(运行). Instructions are being executed.指令正在被执行</li>
+<li><strong>Waiting</strong>(等待). The process is waiting for some event to occur(such as an I/O completion or reception of a signal). 进程等待某些事件发生</li>
+<li><strong>Ready</strong>(就绪). The process is waiting to be assigned to a processor.进程等待分配处理器</li>
+<li><strong>Terminated</strong>(终止). The process has finished execution.进程执行完毕</li>
 </ul>
 
 <p>Diagram of process state:<br/>
@@ -140,6 +204,11 @@
 
 <ul>
 <li>The kernel <strong>saves</strong> the context of the old process into its PCB and <strong>restore</strong> the saved context of the new process scheduled to run.</li>
+<li>Context-switch time is overhead; the system does no useful work while switching. 
+<ul>
+<li>A typical speed is a several microseconds. </li>
+</ul></li>
+<li>Context-switch times are <strong>highly</strong> dependent on hardware support.</li>
 </ul>
 
 <p>Context switch from an old process to a new process:<br/>
@@ -147,12 +216,338 @@
 
 <h2 id="toc_7">3 Operating on Processes</h2>
 
-<p>process creation</p>
+<h3 id="toc_8">3.1 Process creation</h3>
+
+<p>A process may <strong>create</strong> several new processes.</p>
 
 <ul>
-<li>the child process is a duplicate for the parent process</li>
-<li>the child process has a new program loaded into it</li>
+<li>the creating process is called a <strong>parent process</strong>.</li>
+<li>the new process is called a <strong>child process</strong> .</li>
 </ul>
+
+<p><img src="media/15317585001692/process%20creating%20using%20the%20fork--%20system%20call.png" alt="process creating using the fork-- system cal"/></p>
+
+<h3 id="toc_9">3.2 Process termintation</h3>
+
+<p>A process <strong>terminates</strong> when it finishes executing its final statement and asks the operating system to delete it by using the <code>exit()</code> system call.</p>
+
+<ul>
+<li><strong>cascading termination</strong>(级联终止):  if a process terminates (either normally or abnormally), then all its children must also be terminated. </li>
+<li>A process that has terminated, but whose parent has not yet called <code>wait()</code>, is known as a <strong>zombie process</strong>(僵尸进程).</li>
+<li>if a parent did not invoke <code>wait()</code> and instead terminated, then leaving its child processes as <strong>orphan processes</strong>(孤儿进程).
+<ul>
+<li>Unix system may assign the <code>init</code> process as the new parent to orphan processes, and the <code>init</code> process periodically invokes <code>wait()</code>.</li>
+</ul></li>
+</ul>
+
+<h2 id="toc_10">4 Interprocess communication</h2>
+
+<p>Processes may be either <strong>independent processes</strong>(独立进程) or <strong>cooperating processes</strong>(协同进程).</p>
+
+<ul>
+<li>A process is <strong><em>independent</em></strong> if it does not share data with any other processes executing in the system.</li>
+<li>A process is <strong><em>cooperating</em></strong> if it can affect or be affected by the other processes executing in the system.</li>
+</ul>
+
+<p>Advantages of  process cooperation:</p>
+
+<ul>
+<li>Information sharing 信息共享</li>
+<li>Computation speedup 加速运算</li>
+<li>Modularity 模块化</li>
+</ul>
+
+<p>Cooperating process require an <strong>interprocess communication</strong> (IPC，进程间通信) mechanism that will allow them to <strong>exchange</strong> data. There are two fundamental models of IPC:</p>
+
+<ul>
+<li><strong>shared memory</strong>（共享内存）: a region of memory is shared by cooperating process. Process can exchange information by reading and writing data to the shared region.
+<ul>
+<li>Shared memory can be <strong>faster</strong> than message passing.</li>
+</ul></li>
+<li><strong>message passing</strong>(消息传递)： communication takes place by means of messages exchanged between the cooperating processes.
+<ul>
+<li>Message passing is useful for exchanging <strong>smaller</strong> amounts of data, because no conflicts need be avoided.</li>
+<li>Message passing is easier to implement in a distributed system than shared memory.</li>
+</ul></li>
+</ul>
+
+<p><img src="media/15317585001692/sharedmemory%20and%20message%20passing.png" alt="sharedmemory and message passing"/></p>
+
+<h2 id="toc_11">5 IPC in shared-memory system</h2>
+
+<p>Here, we explore the POSIX API for shared memory. POSIX shared memory is organized using <strong>memory-mapped files</strong> (内存映射文件), which associate the region of shared memory with a file. A process must first create a shared-memory object using the <code>shm_open()</code> system call, as follows:</p>
+
+<pre><code class="language-c">fd = shm_open(name, O_CREAT | O_RDWR, 0666);
+ftruncate(fd, 4096);
+mmap(0, SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+</code></pre>
+
+<ul>
+<li>A successful call to <code>shm_open()</code> returns an integer file descriptor for the shared-memory object.</li>
+<li>Once the object is established, the <code>ftruncate</code> function is used to configure the size of the object in bytes.</li>
+<li>Finally, the <code>mmap()</code> function establishes a memory-mapped file containing the shared-memory object. It returns a pointer to the shared</li>
+</ul>
+
+<h2 id="toc_12">6 IPC in message-passing system</h2>
+
+<p>A message-passing facility provides at least two operations:</p>
+
+<ul>
+<li>send(message)</li>
+<li>receive(message)</li>
+</ul>
+
+<p>If P and Q wish to communicate, they need to</p>
+
+<ul>
+<li>establish a <strong>communication link</strong>(通信连接) between them</li>
+<li>exchange messages via send/receive </li>
+</ul>
+
+<p>Here are several methods for logically implementing a <em>communication link</em> between processes:</p>
+
+<ul>
+<li>Direct or indirect communication 直接/间接通信</li>
+<li>Synchronous or asynchronous communication 同步/异步同步</li>
+<li>Automatic or explicit buffering 自动/显式缓冲</li>
+</ul>
+
+<h3 id="toc_13">6.1 Direct/Indirect communication</h3>
+
+<h4 id="toc_14"><strong>Direct Communication</strong></h4>
+
+<p>Under <strong>direct communication</strong>, each process that wants to communicate must explicitly name the recipient or sender of the communication.</p>
+
+<ul>
+<li>send(P, message) - send a message to process P.</li>
+<li>receive(Q, message) - receive a message from process Q</li>
+</ul>
+
+<p>A communication link in this scheme has the following properties:</p>
+
+<ul>
+<li>A link is established <strong>automatically</strong> between every pair of processes that want to communicate.</li>
+<li>A link is associated with <strong>exactly two</strong> processes.</li>
+<li>Between each pair of processes, there exists exactly one link.</li>
+</ul>
+
+<p>Cons:</p>
+
+<ul>
+<li>limited modularity of the resulting process definitions. Changing the identifier of a process may necessiate examining all other process definitions.</li>
+<li>any such hard-coding techniques, are less desirable.</li>
+</ul>
+
+<h4 id="toc_15"><strong>Indirect Communication</strong></h4>
+
+<p>With <strong>indirect communication</strong>, the message are sent to and receive from <strong>mailboxes</strong>, or <strong>ports</strong>.</p>
+
+<ul>
+<li>send(A, message) - send a message to mailbox A</li>
+<li>receive(A, message) - receive a message from mailbox A</li>
+</ul>
+
+<p>A mailbox can be viewed abstractly as an object into which messages can be placed by processes and from which messages can be removed.</p>
+
+<ul>
+<li>Each mailbox has an <strong>unique</strong> identification.</li>
+<li>Two processes can communicate only if they have a shared mailbox.</li>
+</ul>
+
+<p>In this scheme, a communication link has the following properties:</p>
+
+<ul>
+<li>A link is established between a pair of processes only if both members of the pair have a shared mailbox.</li>
+<li>A link may be associated with more than two processes.</li>
+<li>Between each pair of communicating processes, a number of different links may exist, with each link corresponding to one mailbox.</li>
+</ul>
+
+<p>A mailbox may be owned either by a process or by the operating system.</p>
+
+<p>If the mailbox is owned by a process</p>
+
+<ul>
+<li>We distinguish between the <strong>owner</strong> (which can only receive messages through his mailbox) and the <strong>user</strong> (which can only send messages to the mailbox)</li>
+<li>Each mailbox has a unique owner.</li>
+<li>When a process that owns a mailbox terminates, the mailbox disappears.</li>
+<li>The process that creates a new mailbox is that mailbox&#39;s owner by default.</li>
+</ul>
+
+<h3 id="toc_16">6.2 Synchronization</h3>
+
+<p>Message passing may be either <strong>blocking</strong> or <strong>nonblocking</strong> - also known as <strong>synchronous</strong> and <strong>asynchronous</strong>.</p>
+
+<h3 id="toc_17">6.3 Buffering</h3>
+
+<p>Messages exchanged by communicating processes reside in a temporary queue, whether communication is direct or indirect. Basically, it can be implemented in three ways:</p>
+
+<ul>
+<li>Zero capacity（零容量）-- no buffering
+<ul>
+<li>The link cannot have any messages waiting in it.</li>
+<li>The sender must block until the recipient receives the message. </li>
+</ul></li>
+<li>Bounded capacity（有界容量）-- automatic buffering
+<ul>
+<li>The queue has finite length n, at most n message can reside in it.<br/></li>
+<li>The sender must block until space is available in the queue if the link is full.<br/></li>
+</ul></li>
+<li>Unbounded capacity （无界容量） -- automatic buffering
+<ul>
+<li>Any number of messages can wait in it.</li>
+<li>The sender never blocks. </li>
+</ul></li>
+</ul>
+
+<h2 id="toc_18">7 Examples of IPC</h2>
+
+<h3 id="toc_19">7.1 Mach Message Passing</h3>
+
+<p>Mach was especially designed for distributed systems. Its kernel supports the creation and destruction of multiple <strong>tasks</strong>, which are similar to processes but have multiple threads of control and fewer associated resources.  </p>
+
+<p>Messages are sent to, and received from, mailboxes, which are called <strong>ports</strong> in Mach. </p>
+
+<ul>
+<li>Ports are finite in size and unidirectional.</li>
+<li>for two-way communication, a message is sent to one port, and a response is sent to a separate <strong>reply</strong> port.</li>
+<li>Associated with each port is a collection of <strong>port rights</strong>, which  identify the capabilities necessary for a task to interact with the port.</li>
+</ul>
+
+<p>Functions:</p>
+
+<ul>
+<li><code>mach_port_allocate()</code> creates a new port and allocates space for its queue of messages.</li>
+<li><code>mach_msg()</code> is the standard API for both sending and receiving messages.</li>
+</ul>
+
+<pre><code class="language-c">#include &lt;mach/mach.h&gt;
+
+struct message {
+    mach_msg_header_t header;
+    int data;
+};
+
+mach_port_t client;
+mach_port_t server;
+
+/* Client Code */
+
+struct message message;
+
+// construct the header
+message.header.msgh_size = sizeof(message);
+message.header.msgh_remote_port = server;
+message.header.msgh_local_port = client;
+
+// send the message
+mach msg(&amp;message.header, // message header
+         MACH_SEND_MSG, // sending a message
+         sizeof(message), // size of message sent
+         0, // maximum size of received message - unnecessary
+         MACH_PORT_NULL, // name of receive port - unnecessary
+         MACH_MSG_TIMEOUT_NONE, // no time outs MACH PORT NULL // no notify port
+);
+
+/* Server Code */
+
+struct message message;
+
+// receive the message
+mach_msg(&amp;message.header, // message header
+  MACH_RCV_MSG, // sending a message  0, // size of message sent
+  sizeof(message), // maximum size of received message
+  server, // name of receive port
+  MACH_MSG_TIMEOUT_NONE, // no time outs
+  MACH_PORT_NULL // no notify port
+);
+</code></pre>
+
+<h3 id="toc_20">7.2 Pipes</h3>
+
+<p>A <strong>pipe</strong> acts as a conduit allowing two processes to communicate. There are two common types of pipes used on both UNIX and Windows systems: <strong>ordinary pipes</strong> and <strong>named pipes</strong>.</p>
+
+<h4 id="toc_21">(1) Ordinary pipes</h4>
+
+<p><strong>Ordinary pipes</strong> allow two processes to communicate in standard producer-consumer fashion: the producer writes to one end of the pipe (the <strong>write end</strong>) and the consumer reads from the other end (the <strong>read end</strong>).</p>
+
+<ul>
+<li>Ordinary pipes are <strong>unidirectional</strong>, allowing only one-way communication.</li>
+<li>Function <code>pipe(int fd[])</code> constructs an ordinary pipe, where <code>fd</code> is a file descriptor.</li>
+<li>UNIX treats a pipe as <em>a special type of file</em>. Pipes can be accessed using ordinary <code>read()</code> and <code>write()</code> system calls.</li>
+<li>Ordinary pipes <strong>exit only</strong> while the processes are communicating with each other.</li>
+</ul>
+
+<p><img src="media/15317585001692/file%20descriptors%20for%20an%20ordinary%20pipes.png" alt="file descriptors for an ordinary pipes"/></p>
+
+<pre><code class="language-c">#include &lt;sys/types.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;unistd.h&gt;
+
+#define BUFFER_SIZE 25
+#define READ_END 0
+#define WRITE_END 1
+
+int main(void)
+{
+        char write_msg[BUFFER_SIZE] = &quot;Greetings&quot;;
+        char read_msg[BUFFER_SIZE];
+        int fd[2];
+        pid_t pid;
+
+        /* create the pipe */
+        if (pipe(fd) == -1){
+                fprintf(stderr, &quot;Pipe failed&quot;);
+                return 1;
+        }
+
+        /* fork a child process */
+        pid = fork();
+
+        if (pid&gt;0){ /* parent process */
+                close(fd[READ_END]);/* close the unused end of the pipe */
+                write(fd[WRITE_END], write_msg, strlen(write_msg)+1); /* write to the pipe */
+                close(fd[WRITE_END]);  /* close the write end of the pipe */
+        }
+        else if (pid==0){ /* child process */
+                close(fd[WRITE_END]); /* close the unused end of the pipe */
+                read(fd[READ_END], read_msg, BUFFER_SIZE); /* read from the pipe */
+                printf(&quot;read: %s\n&quot;, read_msg);
+                close(fd[READ_END]); /* close the read end of the pipe */
+        }
+        return 0;
+
+}
+</code></pre>
+
+<h4 id="toc_22">(2) Named pipes</h4>
+
+<p>Named pipes can be bidirectional, and no parent-child relationship is required.</p>
+
+<ul>
+<li>Named pipes are referred to as FIFOs in UNIX system.</li>
+<li>The communicating processes for named pipes must reside on the same machine.</li>
+</ul>
+
+<h2 id="toc_23">8 Communication in Client-server system</h2>
+
+<p>In this section, we explore two other strategies for communication in client-server system: <strong>sockets</strong> and <strong>remote procedure calls</strong>(RPCs)</p>
+
+<h2 id="toc_24">8.1 sockets</h2>
+
+<p>A socket（套接字）is defined as an endpoint for communication. A socket is identified by an IP address concatenated with a port number.</p>
+
+<p>Communication using sockets<br/>
+<img src="media/15317585001692/communication%20using%20sockets.png" alt="communication using sockets"/></p>
+
+<h2 id="toc_25">8.2 Remote procedure calls</h2>
+
+<p>Remote Procedure Call（远程过程调用）allows programs on different machines to interact using simple procedure call/return semantics, just as if the two programs were in the same computer。</p>
+
+<p>RPC between a client and a serve：<br/>
+<img src="media/15317585001692/RPC%20between%20a%20client%20and%20a%20server.png" alt="RPC between a client and a serve"/></p>
+
+<p>RPC hides all the network code into the stub procedures. This prevents the application programs, the client and the server, from having to worry about details such as sockets, network byte order, and the like.</p>
 
 ]]></content>
   </entry>
