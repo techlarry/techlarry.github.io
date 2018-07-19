@@ -120,8 +120,6 @@
             <li><a href="%E6%96%87%E7%8C%AE%E9%98%85%E8%AF%BB.html">文献阅读</a></li>
         
             <li><a href="Tools.html">Tools</a></li>
-        
-            <li><a href="%E5%A4%A7%E6%95%B0%E6%8D%AE.html">大数据</a></li>
          
 
       </ul>
@@ -143,6 +141,397 @@
 	<div class="large-8 medium-8 columns">
 		<div class="markdown-body home-categories">
 		
+			<div class="article">
+                <a class="clearlink" href="os_concepts_threads_and_concurrency.html">
+                
+                  <h1>Operating System Concepts 4 - Threads & Concurrency</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<ul>
+<li>
+<a href="#toc_0">1 Overview</a>
+<ul>
+<li>
+<a href="#toc_1">1.1 Motivation</a>
+</li>
+<li>
+<a href="#toc_2">1.2 Benefits</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_3">2 Multicore Programming</a>
+<ul>
+<li>
+<a href="#toc_4">2.1 Programming Challenges</a>
+</li>
+<li>
+<a href="#toc_5">2.2 Types of Parallelism</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_6">3 Multithreading Models</a>
+<ul>
+<li>
+<a href="#toc_7">3.1 Many-to-One Model</a>
+</li>
+<li>
+<a href="#toc_8">3.2 One-to-One Model</a>
+</li>
+<li>
+<a href="#toc_9">3.3 Many-to-Many Model</a>
+</li>
+<li>
+<a href="#toc_10">3.4 User/Kernel-Level threads</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_11">4 Thread Libraries</a>
+</li>
+<li>
+<a href="#toc_12">5 Implicit threading</a>
+<ul>
+<li>
+<a href="#toc_13">5.1 Thread Pools</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_14">6 Threading Issues</a>
+<ul>
+<li>
+<a href="#toc_15">6.1 Scheduler Activation</a>
+</li>
+</ul>
+</li>
+</ul>
+
+
+<h2 id="toc_0">1 Overview</h2>
+
+<p>A <strong>thread</strong> is a basic unit of CPU utilization; it comprises a thread ID, a program counter, a register set, and a stack.</p>
+
+<p>线程是一个CPU利用的基本单元，它由线程ID，程序计数器、寄存器集合和栈组成。</p>
+
+<p>A traditional process has a single thread of control. If a process has <strong>multiple threads of control</strong>, it can perform more than one task at a time. <br/>
+一个传统的进程只有单个控制线程，如果进程有多个控制线程，那么它能一次处理多个任务。</p>
+
+<p>The figure below illustrates the difference between a traditional <strong>single-threaded</strong> process and a <strong>multithreaded</strong> process.</p>
+
+<p><img src="media/15319932561412/single%20threaded%20and%20multithreaded%20processes.png" alt="single threaded and multithreaded processes"/></p>
+
+<h3 id="toc_1">1.1 Motivation</h3>
+
+<p>Process creation is <strong>time consuming</strong> and <strong>resource intensive</strong>. It is generally more efficient to use one process that contains multiple threads.</p>
+
+<h3 id="toc_2">1.2 Benefits</h3>
+
+<p>The benefits of  multithreaded programming can be broken down into four major categories:</p>
+
+<ol>
+<li><p><strong>Responsiveness</strong></p>
+<ul>
+<li>It allows a program to continue running even if part of it is blocked or is performing a lengthy operation, thereby increasing responsiveness to the user.</li>
+<li>响应度高：即使程序部分阻塞或执行较冗长操作，该程序仍能继续执行，从而增加了对用户的相应程度。</li>
+</ul></li>
+<li><p><strong>Resource sharing</strong></p>
+<ul>
+<li>Processes can share resources only through techniques such as shared memory and message. Such techniques must be explicitly arranged by the programmer.</li>
+<li>Threads share the memory and the resources of the process to which they belong by default.</li>
+<li>资源共享：线程默认共享它们所属进程的内存和资源。代码和数据共享的优点是它允许一个应用程序在同一地址空间有多个不同的活动线程。</li>
+</ul></li>
+<li><p><strong>Economy</strong></p>
+<ul>
+<li>Allocating memory and resources for process creation is costly. Because threads share the resources of the process to which they belong, it is more economical to create and context-switch threads.</li>
+<li>经济：进程创建所需要的内存和资源的分配比较昂贵。由于线程能共享它们所属进程的资源，所以创建和切换线程会更为经济。</li>
+</ul></li>
+<li><p><strong>Scalability</strong></p>
+<ul>
+<li>The benefits of multithreading can be even greater in a multiprocessor architecture, where threads may be running in parallel on different processing cores.</li>
+<li>可扩展性: 多线程的优点之一是能充分使用多处理器体系结构。以便每个进程能并行运行在不同的处理器上。</li>
+</ul></li>
+</ol>
+
+<h2 id="toc_3">2 Multicore Programming</h2>
+
+<p>On a system with a <strong>single</strong> computing core, concurrency merely means that the execution of the threads will be <strong>interleaved</strong> over time, because the processing core is capable of executing only one thread at a time.</p>
+
+<p>On a system with <strong>multiple</strong> cores, however, concurrency means that some threads can run in <strong>parallel</strong>, because the system can assign a separate thread to each core.</p>
+
+<p><img src="media/15319932561412/concurrency%20of%20single%20and%20multiple%20core.png" alt="concurrency of single and multiple core"/></p>
+
+<p>Note: <strong><em>Concurrency</em></strong> v.s. <strong><em>Parallelism</em></strong></p>
+
+<ul>
+<li>Concurrency: supports more than one task by allowing all the tasks to make progress.</li>
+<li>Parallelism: perform more than one task simultaneously.</li>
+</ul>
+
+<h3 id="toc_4">2.1 Programming Challenges</h3>
+
+<ol>
+<li><strong>Identifying tasks</strong>. This involves examining applications to find areas that can be divided into separate, concurrent tasks.</li>
+<li><strong>Balance</strong>. Programmer must ensure that the tasks perform equal work of equal value.</li>
+<li><strong>Data splitting</strong>. The data accessed and manipulated by the tasks must be divided to run on separate cores.</li>
+<li><strong>Data dependency</strong>. The data accessed by the tasks must be examined for dependencies between two or more tasks.</li>
+<li><strong>Testing and debugging</strong>. Testing and debugging such concurrent programs is inherently more difficult than testing and debugging single-threaded applications.</li>
+</ol>
+
+<h3 id="toc_5">2.2 Types of Parallelism</h3>
+
+<p>In general, there are two types of parallelism: data parallelism and task parallelism.</p>
+
+<ul>
+<li><strong>Data parallelism</strong> focuses on distributing subsets of the same data across multiple computing cores and performing the same operation on each core. </li>
+<li><strong>Task parallelism</strong> involves distributing not data but tasks (threads) across multiple computing cores.</li>
+<li>However, data and task parallelism are not mutually exclusive, and an application may in fact use a hybrid of these two strategies.</li>
+</ul>
+
+<p>Data and task parallelism<br/>
+<img src="media/15319932561412/data%20and%20task%20parallellism.png" alt="data and task parallelism"/></p>
+
+<h2 id="toc_6">3 Multithreading Models</h2>
+
+<p>Support for threads may be provided either at the user level, for <strong><em>user threads</em></strong>, or by the kernel, for <strong><em>kernel threads</em></strong>. </p>
+
+<ul>
+<li>User threads are supported above the kernel and are managed without kernel support.</li>
+<li>Kernel threads are supported and managed directly by the operating system.</li>
+</ul>
+
+<p>有两种不同的方法来提供线程支持：用户层的用户线程和内核层的内核线程。用户线程受内核支持，而无需内核管理；而内核线程由操作系统支持和管理。事实上所有当代操作系统都支持内核线程。在用户线程和内核线程之间必然存在一种关系。</p>
+
+<p>Ultimately, a relationship must exist between user threads and kernel threads. There are three common ways of establishing such a relationship: the many-to-one model, the one-to-one model, and the many-to-many model.<br/>
+在用户线程和内核线程之间必然存在一种关系。有三种普遍建立这种关系的方法：多对一模型、一对一模型、多对多模型。</p>
+
+<h3 id="toc_7">3.1 Many-to-One Model</h3>
+
+<p>The <strong><u>many-to-one model</u></strong> maps many user-level threads to one kernel thread. 多对一模型将许多用户级线程映射到一个内核线程。</p>
+
+<ul>
+<li>Thread management is done by the thread library in user space, so it is efficient. 线程管理由线程库在用户空间进行的，因而效率比较高。</li>
+<li>Also, because only one thread can access the kernel at a time, multiple threads are unable to run in parallel on multicore systems. 因为任意时刻只能有一个线程能够访问内核，多个线程不能并行运行在多处理器上。</li>
+</ul>
+
+<p><img src="media/15319932561412/many_to_one_model.png" alt="many_to_one_mode"/></p>
+
+<h3 id="toc_8">3.2 One-to-One Model</h3>
+
+<p>The <strong>one-to-one model</strong> maps each user thread to a kernel thread. 一对一模型每个用户线程映射到一个内核线程。</p>
+
+<ul>
+<li>It provides more concurrency by allowing another thread to run when a thread makes a blocking system call. 该模型在一个线程执行阻塞系统调用时，能允许另一个线程继续执行，提供了更高的并发性。</li>
+<li>It also allows multiple threads to run in parallel on multiprocessors. 它也允许多个线程能并行运行在多处理器系统上。</li>
+<li>The only drawback to this model is that creating a user thread requires creating the corresponding kernel thread, and a large number of kernel threads may burden the performance of a system. 这种模型的唯一缺点是每创建一个用户线程就会创建一个相应的内核线程, 大量内核线程会影响系统性能。</li>
+</ul>
+
+<p><img src="media/15319932561412/one_to_one_model.png" alt="one_to_one_mode"/></p>
+
+<h3 id="toc_9">3.3 Many-to-Many Model</h3>
+
+<p>The <strong>many-to-many model</strong> multiplexes many user-level threads to a smaller or equal number of kernel threads. 多对多模型多路复用了许多用户线程到同样数量或更小数量的内核线程上。</p>
+
+<ul>
+<li>The many-to-many model suffers from neither of these shortcomings: developers can create as many user threads as necessary, and the corresponding kernel threads can run in parallel on a multiprocessor.多对多模型没有这两者的缺点：开发人员可创建任意多的用户线程，并且相应内核线程能在多处理器系统上并发执行。</li>
+<li>Also, when a thread performs a blocking system call, the kernel can schedule another thread for execution. 而且当一个线程执行阻塞系统调用时，内核能调度另一个线程来执行。</li>
+<li>In practice it is difficult to implement.</li>
+</ul>
+
+<p><img src="media/15319932561412/many_to_many_model.png" alt="many_to_many_mode"/></p>
+
+<p><u><strong><em>Most operating systems now use the one-to-one model.</em></strong></u></p>
+
+<h3 id="toc_10">3.4 User/Kernel-Level threads</h3>
+
+<p><a href="https://cs.nyu.edu/rgrimm/teaching/sp07-os/activations.pdf">ref: Scheduler Activations</a></p>
+
+<p>(1) <strong>User-Level Threads</strong>(用户级线程)</p>
+
+<p>Advantages</p>
+
+<ul>
+<li>Common operations can be implemented <strong>efficiently</strong> </li>
+<li>Interface can be tailored to application needs</li>
+</ul>
+
+<p>Issues</p>
+
+<ul>
+<li>A blocking system call blocks all user-level threads</li>
+<li>Asynchronous system calls can provide partial work-around</li>
+<li>A page fault blocks all user-level threads</li>
+<li>Matching threads to CPUs in a multiprocessor is hard
+<ul>
+<li>No knowledge about # of CPUs available to address space </li>
+<li>No knowledge when a thread blocks</li>
+</ul></li>
+</ul>
+
+<p>(2) <strong>Kernel-Level Threads</strong> (内核级线程)</p>
+
+<p>Primary advantage</p>
+
+<ul>
+<li>Blocking system calls and page faults handled correctly</li>
+</ul>
+
+<p>Issues</p>
+
+<ul>
+<li>Cost of performing thread operations</li>
+<li>Create, exit, lock, signal, wait all require user/kernel crossings</li>
+</ul>
+
+<p><strong>NOTE</strong>: The term <strong><u>virtual processor</u></strong> is often used instead of kernel thread.</p>
+
+<h2 id="toc_11">4 Thread Libraries</h2>
+
+<p>A thread library provides the programmer with an API for creating and managing threads. 线程库为程序员提供了创建和管理线程的API。</p>
+
+<p><strong>Pthreads</strong>, the threads extension of the POSIX standard, may be provided as either a user-level or a kernel-level library. Pthread作为POSIX标准扩展，可以提供用户级或内核级的库。</p>
+
+<ul>
+<li><code>pthread_t tid</code>: declares the identifier for the thread</li>
+<li><code>pthread attr_t attr</code>: declares the attributes for the thread</li>
+<li><code>pthread_attr_init(&amp;attr)</code>: initialize thread attributes object</li>
+<li><code>pthread_create()</code>: create a new thread</li>
+<li><code>pthread_join()</code>:  join with a terminated thread<br/></li>
+<li><code>pthread_exit()</code>:  terminate calling thread<br/></li>
+</ul>
+
+<p>Note: Compile and link with <code>-pthread</code>.</p>
+
+<h2 id="toc_12">5 Implicit threading</h2>
+
+<p>One way to address difficulties and better support the design of concurrent and parallel applications is to transfer the creation and management of threading from application developers to compilers and run-time libraries. This strategy, termed <strong>implicit threading</strong>, is an increasingly popular trend.</p>
+
+<ul>
+<li>The advantage of this approach is that developers <strong><em><u>only need to identify parallel tasks</u></em></strong>, and the libraries determine the specific details of thread creation and management.</li>
+</ul>
+
+<p>In this section, we explore four alternative approaches to designing applications that can take advantage of multicore processors through implicit threading.</p>
+
+<ul>
+<li>Thread Pools</li>
+<li>Fork Join</li>
+<li>OpemMP</li>
+<li>Grand Central Dispatch</li>
+</ul>
+
+<h3 id="toc_13">5.1 Thread Pools</h3>
+
+<p>Two main issues:</p>
+
+<ul>
+<li>The thread will be discarded once it has completed its work. 线程在完成工作之后就要被丢弃</li>
+<li>Unlimited threads could exhaust system resources. 无限制的线程会耗尽系统资源</li>
+</ul>
+
+<p>Solution -&gt; <strong>thread pool</strong>(线程池)</p>
+
+<ul>
+<li>To create a number of threads at start-up, and place them into a pool, where they sit and wait for work.</li>
+<li>When a server receives a request, it submits the request to the thread pool and resumes waiting for additional requests.</li>
+<li>If there is an available thread in the pool, it is awakened, and the request is serviced immediately. </li>
+<li>If the pool contains no available thread, the task is queued until one becomes free. </li>
+</ul>
+
+<p>线程池的思想是在进程开始时创建一定数量的线程，并放入到池中以等待工作。当服务器收到请求时，它会唤醒线程池中的一个线程，并将要处理的请求传递给它，一旦线程完成了服务，它会返回到池中在等待工作。如果池中没有可用的线程，那么服务器会一直等待直到有空线程为止。</p>
+
+<p>Thread pools offer these benefits:</p>
+
+<ol>
+<li>Servicing a request with an existing thread is often <strong>faster</strong> than waiting to create a thread. 通常用现有线程处理请求要比等待创建新的线程要快.</li>
+<li>A thread pool <strong>limits</strong> the number of threads that exist at any one point.  线程池限制了在任何时候可用线程的数量.</li>
+<li>Separating the task to be performed from the mechanics of creating the task allows us to use different strategies for running the task.</li>
+</ol>
+
+<p>Java线程库的一个例子：</p>
+
+<pre><code class="language-java">import java.util.concurrent.*; 
+public class ThreadPoolExample 
+{ 
+    public static void main(String[] args) {
+        int numTasks = Integer.parseInt(args[0].trim()); 
+        
+        /* Create the thread pool */ 
+        ExecutorService pool = Executors.newCachedThreadPool(); 
+        /* Run each task using a thread in the pool */ 
+        for (int i = 0; i &lt; numTasks; i++) 
+            pool.execute(new Task()); 
+        
+         /* Shut down the pool once all threads have completed */            
+        pool.shutdown();
+}
+</code></pre>
+
+<h2 id="toc_14">6 Threading Issues</h2>
+
+<h3 id="toc_15">6.1 Scheduler Activation</h3>
+
+<p>Many systems implementing either the many-to-many or the two-level model place an <em>intermediate</em> data structure between the user and kernel threads. This data structure—typically known as a <strong><u><em>lightweight process</em></u></strong>（轻量级线程）, or <strong>LWP</strong>.</p>
+
+<ul>
+<li>To the user-thread library, the LWP appears to be a <strong>virtual</strong> processor on which the application can schedule a user thread to run.</li>
+<li>Each LWP is attached to a kernel thread.</li>
+<li>If a kernel thread blocks, the LWP blocks as well. Up the chain, the user-level thread attached to the LWP also blocks.</li>
+</ul>
+
+<p><img src="media/15319932561412/light-weight%20process.png" alt="light-weight process"/></p>
+
+<p><strong>Problems</strong>:<br/>
+内核线程在各方面都比较灵活，但是性能不高，经常会出现请求在用户空间和内核空间的传递。那么如何在拥有内核空间线程的灵活性的同时又提高性能呢?</p>
+
+<p><strong>Solution</strong>:</p>
+
+<p><strong>scheduler activation</strong>（调度器激活） are a threading mechanism that, when implemented in an operating system&#39;s process scheduler, provide <em><u>kernel-level</u></em> thread functionality with <u><em>user-level</em></u> thread flexibility and performance [<a href="https://en.wikipedia.org/wiki/Scheduler_activations">ref</a>]. </p>
+
+<p>It works as follows: </p>
+
+<ul>
+<li>The kernel provides an application with a set of virtual processors (LWPs), and the application can <strong>schedule</strong> user threads onto an available virtual processor. </li>
+<li>Furthermore, the kernel must inform an application about certain events. This procedure is known as an <strong>upcall</strong>(向上调用). </li>
+<li>Upcalls are handled by the thread library with an upcall handler, and upcall handlers must run on a virtual processor.</li>
+<li>While the user threading library will schedule user threads, the kernel will schedule the underlying LWPs.</li>
+</ul>
+
+<p><strong>Example</strong> [<a href="http://www.it.uu.se/education/course/homepage/os/vt18/module-4/implementing-threads/">ref</a>]: </p>
+
+<p>Let’s study an example of how scheduler activations can be used. The kernel has allocated one kernel thread (1) to a process with three user-level threads (2). The three user level threads take turn executing on the single kernel-level thread.</p>
+
+<p><img src="media/15319932561412/scheduler-activations-1-2.png" alt="scheduler-activations-1-2"/></p>
+
+<p>The executing thread makes a <strong>blocking system call</strong> (3) and the the kernel blocks the calling user-level thread and the kernel-level thread used to execute the user-level thread (4). Scheduler activation: the kernel decides to allocate a new kernel-level thread to the process (5). Upcall: the kernel notifies the user-level thread manager which user-level thread that is now blocked and that a new kernel-level thread is available (6). The user-level thread manager move the other threads to the new kernel thread and resumes one of the ready threads (7).</p>
+
+<p><img src="media/15319932561412/scheduler-activations-3-7.png" alt="scheduler-activations-3-7"/></p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/7/19</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Computer%20System.html'>Computer System</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
 			<div class="article">
                 <a class="clearlink" href="os-concets-processes.html">
                 
@@ -204,7 +593,7 @@
 <a href="#toc_14">(1) Direct Communication</a>
 </li>
 <li>
-<a href="#toc_15">(2) Indirect Communication**</a>
+<a href="#toc_15">(2) Indirect Communication</a>
 </li>
 </ul>
 </li>
@@ -239,7 +628,7 @@
 <a href="#toc_23">8 Communication in Client-server system</a>
 <ul>
 <li>
-<a href="#toc_24">8.1 sockets</a>
+<a href="#toc_24">8.1 Sockets</a>
 </li>
 <li>
 <a href="#toc_25">8.2 Remote procedure calls</a>
@@ -249,15 +638,15 @@
 </ul>
 
 
+<h2 id="toc_0">1 Process concept</h2>
+
+<h3 id="toc_1">1.1 The process</h3>
+
 <p><strong>Process</strong> (进程) is a program in execution.</p>
 
 <ul>
 <li>the unit of work in a modern computing system</li>
 </ul>
-
-<h2 id="toc_0">1 Process concept</h2>
-
-<h3 id="toc_1">1.1 The process</h3>
 
 <p>The status of the <strong>current</strong> activity of a process is represented by the value of the <strong>program counter</strong> and the contents of the processor&#39;s <strong>registers</strong>.</p>
 
@@ -473,7 +862,7 @@ mmap(0, SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
 <li>any such hard-coding techniques, are less desirable.</li>
 </ul>
 
-<h4 id="toc_15">(2) Indirect Communication**</h4>
+<h4 id="toc_15">(2) Indirect Communication</h4>
 
 <p>With <strong>indirect communication</strong>, the message are sent to and receive from <strong>mailboxes</strong>, or <strong>ports</strong>.</p>
 
@@ -543,8 +932,8 @@ mmap(0, SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
 <p>Messages are sent to, and received from, mailboxes, which are called <strong>ports</strong> in Mach. </p>
 
 <ul>
-<li>Ports are finite in size and unidirectional.</li>
-<li>for two-way communication, a message is sent to one port, and a response is sent to a separate <strong>reply</strong> port.</li>
+<li>Ports are <strong>finite in size</strong> and <strong>unidirectional</strong>.</li>
+<li>For two-way communication, a message is sent to one port, and a response is sent to a separate <strong>reply</strong> port.</li>
 <li>Associated with each port is a collection of <strong>port rights</strong>, which  identify the capabilities necessary for a task to interact with the port.</li>
 </ul>
 
@@ -657,10 +1046,10 @@ int main(void)
 
 <h4 id="toc_22">(2) Named pipes</h4>
 
-<p><strong>Named pipes</strong>（命名管道） can be bidirectional, and no parent-child relationship is required.</p>
+<p><strong>Named pipes</strong>（命名管道） can be <strong>bidirectional</strong>, and no parent-child relationship is required.</p>
 
 <ul>
-<li>Named pipes are referred to as FIFOs in UNIX system.</li>
+<li>Named pipes are referred to as <strong>FIFOs</strong> in UNIX system.</li>
 <li>The communicating processes for named pipes must reside on the same machine.</li>
 </ul>
 
@@ -673,12 +1062,14 @@ int main(void)
 
 <p>In this section, we explore two other strategies for communication in client-server system: <strong>sockets</strong> and <strong>remote procedure calls</strong>(RPCs)</p>
 
-<h3 id="toc_24">8.1 sockets</h3>
+<h3 id="toc_24">8.1 Sockets</h3>
 
-<p>A socket（套接字）is defined as an endpoint for communication. A socket is identified by an IP address concatenated with a port number.</p>
+<p>A <strong>socket</strong>（套接字）is defined as an endpoint for communication. A socket is identified by an IP address concatenated with a port number.</p>
 
-<p>Communication using sockets<br/>
+<p>Communication using sockets：<br/>
 <img src="media/15317585001692/communication%20using%20sockets.png" alt="communication using sockets"/></p>
+
+<p>Servers implementing specific services (such as SSH, FTP, and HTTP) listen to well-known ports. Once a request is received, the server accepts a connection from the client socket to complete the connection.</p>
 
 <h3 id="toc_25">8.2 Remote procedure calls</h3>
 
@@ -697,6 +1088,339 @@ int main(void)
                   <div class="more-left left">
                   
                     <span class="date">2018/2/25</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Computer%20System.html'>Computer System</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="Linking.html">
+                
+                  <h1>CSAPP - 链接</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<ul>
+<li>
+<a href="#toc_0">1 编译器驱动程序</a>
+</li>
+<li>
+<a href="#toc_1">2 静态链接</a>
+</li>
+<li>
+<a href="#toc_2">3 目标文件</a>
+</li>
+<li>
+<a href="#toc_3">4 可重定位目标文件</a>
+</li>
+<li>
+<a href="#toc_4">5 符号和符号表</a>
+</li>
+<li>
+<a href="#toc_5">6 符号解析</a>
+</li>
+<li>
+<a href="#toc_6">7 重定位</a>
+</li>
+<li>
+<a href="#toc_7">8 可执行目标文件</a>
+</li>
+<li>
+<a href="#toc_8">9 加载可执行目标文件</a>
+</li>
+<li>
+<a href="#toc_9">10 动态链接共享库</a>
+</li>
+<li>
+<a href="#toc_10">14 处理目标文件的工具</a>
+</li>
+</ul>
+
+
+<p><strong>链接</strong>(Linking)是将各种<strong>代码</strong>和<strong>数据片段</strong>收集并组合成为一个单一文件的过程。链接可以在编译、加载、运行时执行。在现代系统中，链接由<strong>链接器</strong>(Linker)自动执行。</p>
+
+<p>链接器使得<strong>分离编译</strong>(separate compilation)成为可能：</p>
+
+<ul>
+<li>可以将源文件分解为更小、更好管理的模块，可以独立地修改和编译这些模块</li>
+<li>修改一个模块后，只需重新编译它，并重新链接，不必编译其他文件</li>
+</ul>
+
+<h2 id="toc_0">1 编译器驱动程序</h2>
+
+<p><strong>编译器驱动程序</strong>(<code>compiler driver</code>)，代表用户在需要时调用预处理器(cpp)、编译器(ccl)、汇编器(as)和链接器(ld)。典型的编译器驱动程序，包括GNU GCC, Clang。</p>
+
+<p>例如，一个简单打印hello的<code>hello.c</code>程序，经过下面四个阶段，生成可执行目标文件：</p>
+
+<pre><code class="language-c">//file: hello.c
+#include &lt;stdio.h&gt;
+
+int main()
+{
+    int i;
+    printf(&quot;Hello World&quot;);
+}
+</code></pre>
+
+<pre><code class="language-bash">linux &gt; gcc -o hello hello.c
+</code></pre>
+
+<p><img src="media/15151885614329/compiler_system.jpeg" alt="compiler_syste"/></p>
+
+<h2 id="toc_1">2 静态链接</h2>
+
+<p>静态链接器有两个主要任务：</p>
+
+<ul>
+<li><strong>符号解析</strong>(symbol resolution): 将每个符号 <u>引用</u> 正好和一个符号 <u>定义</u> 关联起来。</li>
+<li><strong>重定位</strong>(relocation): 把每个符号定义与一个内存位置关联起来，并修改所有对这些符号的引用，使得它们指向这个内存位置。</li>
+</ul>
+
+<h2 id="toc_2">3 目标文件</h2>
+
+<p>目标文件有三种格式：<strong>可重定位目标文件</strong>(<code>.o</code>)，<strong>可执行目标文件</strong>(<code>.out</code>)，<strong>共享目标文件</strong>(<code>.so</code>)</p>
+
+<ul>
+<li><strong>可重定位目标文件</strong>(.o文件)。包含二进制代码和数据，其形式可以在编译时与其他可重定位目标文件合并起来，创建一个可执行目标文件。</li>
+<li><strong>可执行目标文件</strong>(a.out文件)。包含二进制代码和数据，其形式可以被直接复制到内存并执行。</li>
+<li><strong>共享目标文件</strong>(.so文件)。在加载或者运行时被动态地加载进内存并链接</li>
+</ul>
+
+<p>各个系统的目标文件格式不同，Windows使用<strong>可移植可执行</strong>(Portable Executable, <code>PE</code>)格式。现代x86-64系统使用<strong>可执行可链接格式</strong>(Executable and Linkable Format, <code>ELF</code>)。</p>
+
+<h2 id="toc_3">4 可重定位目标文件</h2>
+
+<p>以可执行可链接(ELF)格式为例，一个典型的可重定位目标文件包括以下几个节：</p>
+
+<ul>
+<li>ELF头和节头部表</li>
+<li><code>.text</code> 已编译程序的机器代码</li>
+<li><code>.rodata</code> 只读数据</li>
+<li><code>.data</code>  已初始化的全局和静态C变量</li>
+<li><code>.bss</code>  未初始化的全局和静态C变量</li>
+<li><code>.symtab</code> 一个符号表</li>
+<li><code>.rel.text</code> 一个.text节中位置的列表</li>
+<li><code>.rel.data</code> 重定位信息</li>
+<li><code>.debug</code> 调试符号表</li>
+<li><code>.line</code>  原始程序行号和机器指令之间的映射</li>
+<li><code>.strtab</code>  字符串表</li>
+</ul>
+
+<p><img src="media/15151885614329/elf.png" alt="elf"/></p>
+
+<p>利用<code>READELF</code>程序可以显示程序<code>hello.c</code>生成的可执行可链接文件的信息：</p>
+
+<pre><code class="language-bash">gcc hello.c -c
+readelf -a hello.o ## UNIX/LINUX
+greadelf -a hello.o ## MAC, after brew install binutils
+</code></pre>
+
+<pre><code class="language-text">ELF Header:
+  Magic:   7f 45 4c 46 02 01 01 00 00 00 00 00 00 00 00 00
+  Class:                             ELF64
+  Data:                              2&#39;s complement, little endian
+  Version:                           1 (current)
+  OS/ABI:                            UNIX - System V
+  ABI Version:                       0
+  Type:                              REL (Relocatable file)
+  Machine:                           Advanced Micro Devices X86-64
+  Version:                           0x1
+  Entry point address:               0x0
+  Start of program headers:          0 (bytes into file)
+  Start of section headers:          304 (bytes into file)
+  Flags:                             0x0
+  Size of this header:               64 (bytes)
+  Size of program headers:           0 (bytes)
+  Number of program headers:         0
+  Size of section headers:           64 (bytes)
+  Number of section headers:         13
+  Section header string table index: 10
+
+Section Headers:
+  [Nr] Name              Type             Address           Offset
+       Size              EntSize          Flags  Link  Info  Align
+  [ 0]                   NULL             0000000000000000  00000000
+       0000000000000000  0000000000000000           0     0     0
+  [ 1] .text             PROGBITS         0000000000000000  00000040
+       0000000000000015  0000000000000000  AX       0     0     1
+  [ 2] .rela.text        RELA             0000000000000000  00000590
+       0000000000000030  0000000000000018          11     1     8
+  [ 3] .data             PROGBITS         0000000000000000  00000055
+       0000000000000000  0000000000000000  WA       0     0     1
+  [ 4] .bss              NOBITS           0000000000000000  00000055
+       0000000000000000  0000000000000000  WA       0     0     1
+  [ 5] .rodata           PROGBITS         0000000000000000  00000055
+       000000000000000c  0000000000000000   A       0     0     1
+  [ 6] .comment          PROGBITS         0000000000000000  00000061
+       000000000000002c  0000000000000001  MS       0     0     1
+  [ 7] .note.GNU-stack   PROGBITS         0000000000000000  0000008d
+       0000000000000000  0000000000000000           0     0     1
+  [ 8] .eh_frame         PROGBITS         0000000000000000  00000090
+       0000000000000038  0000000000000000   A       0     0     8
+  [ 9] .rela.eh_frame    RELA             0000000000000000  000005c0
+       0000000000000018  0000000000000018          11     8     8
+  [10] .shstrtab         STRTAB           0000000000000000  000000c8
+       0000000000000061  0000000000000000           0     0     1
+  [11] .symtab           SYMTAB           0000000000000000  00000470
+       0000000000000108  0000000000000018          12     9     8
+  [12] .strtab           STRTAB           0000000000000000  00000578
+       0000000000000015  0000000000000000           0     0     1
+Key to Flags:
+  W (write), A (alloc), X (execute), M (merge), S (strings), l (large)
+  I (info), L (link order), G (group), T (TLS), E (exclude), x (unknown)
+  O (extra OS processing required) o (OS specific), p (processor specific)
+
+There are no section groups in this file.
+
+There are no program headers in this file.
+
+Relocation section &#39;.rela.text&#39; at offset 0x590 contains 2 entries:
+  Offset          Info           Type           Sym. Value    Sym. Name + Addend
+000000000005  00050000000a R_X86_64_32       0000000000000000 .rodata + 0
+00000000000f  000a00000002 R_X86_64_PC32     0000000000000000 printf - 4
+
+Relocation section &#39;.rela.eh_frame&#39; at offset 0x5c0 contains 1 entries:
+  Offset          Info           Type           Sym. Value    Sym. Name + Addend
+000000000020  000200000002 R_X86_64_PC32     0000000000000000 .text + 0
+
+The decoding of unwind sections for machine type Advanced Micro Devices X86-64 is not currently supported.
+
+Symbol table &#39;.symtab&#39; contains 11 entries:
+   Num:    Value          Size Type    Bind   Vis      Ndx Name
+     0: 0000000000000000     0 NOTYPE  LOCAL  DEFAULT  UND
+     1: 0000000000000000     0 FILE    LOCAL  DEFAULT  ABS hello.c
+     2: 0000000000000000     0 SECTION LOCAL  DEFAULT    1
+     3: 0000000000000000     0 SECTION LOCAL  DEFAULT    3
+     4: 0000000000000000     0 SECTION LOCAL  DEFAULT    4
+     5: 0000000000000000     0 SECTION LOCAL  DEFAULT    5
+     6: 0000000000000000     0 SECTION LOCAL  DEFAULT    7
+     7: 0000000000000000     0 SECTION LOCAL  DEFAULT    8
+     8: 0000000000000000     0 SECTION LOCAL  DEFAULT    6
+     9: 0000000000000000    21 FUNC    GLOBAL DEFAULT    1 main
+    10: 0000000000000000     0 NOTYPE  GLOBAL DEFAULT  UND printf
+
+No version information found in this file.
+</code></pre>
+
+<h2 id="toc_4">5 符号和符号表</h2>
+
+<p><code>.symtab</code>中的<strong>符号表</strong>，有三种不同的符号(不包括本地非静态变量)：</p>
+
+<ul>
+<li>由模块\(m\)定义并能被其他模块引用的<strong>全局符号</strong>。
+<ul>
+<li>非静态C函数和全局变量</li>
+</ul></li>
+<li>由其他模块定义并被模块\(m\)引用的全局符号。
+<ul>
+<li>对应于其他模块中定义的非静态C函数和全局变量</li>
+</ul></li>
+<li>只被模块\(m\)定义和引用的局部符号。
+<ul>
+<li>静态C函数和全局变量 </li>
+</ul></li>
+</ul>
+
+<h2 id="toc_5">6 符号解析</h2>
+
+<p><strong>符号解析</strong>是将每个<strong>符号引用</strong>和可重定位目标文件中的<strong>符号定义</strong>关联起来。链接器的输入是一组可重定位目标文件(模块)，有些是局部的( <u>局部符号</u> ，只对定义该符号的模块可见)，有些是全局的( <u>全局符号</u> ，对其他模块可见)。</p>
+
+<ul>
+<li><strong>局部符号</strong>：每个模块中每个局部符号有一个定义</li>
+<li><p><strong>全局符号</strong>：可重定位目标文件的符号表里的全局符号是区分<strong>强</strong>和<strong>弱</strong>的，链接器根据以下规则来处理多重定义的符号名：</p>
+<ul>
+<li>规则1: 不允许有多个同名的强符号</li>
+<li>规则2: 如果有一个强符号和多个弱符号同名，那么选择强符号</li>
+<li>规则3：如果有多个弱符号同名，那么任选一个 </li>
+</ul></li>
+</ul>
+
+<h2 id="toc_6">7 重定位</h2>
+
+<p>重定位合并输入模块，并为每个符号分配运行时地址：</p>
+
+<ul>
+<li>重定位节和符号定义：将所有相同类型的节合并为同一类型的新的聚合节，并将运行时内存地址赋给新的聚合节和每个符号定义。
+<ul>
+<li>例如，来自所有输入模块的<code>.data</code>节被全部合并成输出的可执行目标文件的<code>.data</code>节<br/></li>
+</ul></li>
+<li>重定位节中的符号引用：将运行时地址付给每个符号引用</li>
+</ul>
+
+<h2 id="toc_7">8 可执行目标文件</h2>
+
+<p>下图概括了一个典型的ELF可执行文件的给类信息。</p>
+
+<p><img src="media/15151885614329/%E5%8F%AF%E6%89%A7%E8%A1%8C%E7%9B%AE%E6%A0%87%E6%96%87%E4%BB%B6.png" alt="可执行目标文件"/></p>
+
+<h2 id="toc_8">9 加载可执行目标文件</h2>
+
+<p>当在shell中执行目标文件时，首先通过调用<strong>加载器</strong>(<code>loader</code>)的操作系统代码来运行它，加载器将可执行目标文件的代码和数据复制到主存，跳转到程序的第一条指令(入口点，<code>_start_</code>函数的地址)运行该程序。</p>
+
+<p>在Unix系统中，加载器是系统调用(system call)<code>execve()</code>的回调(call back)，其任务包括：</p>
+
+<ul>
+<li>确认(权限，内存要求等)</li>
+<li>复制程序到主存</li>
+<li>复制命令行参数到栈</li>
+<li>初始化寄存器(例如栈针)</li>
+<li>跳到入口点(<code>_start_</code>)</li>
+</ul>
+
+<h2 id="toc_9">10 动态链接共享库</h2>
+
+<p>静态库有2大缺陷：</p>
+
+<ul>
+<li>静态库更新时，需要显示地将程序与更新了的库重新链接</li>
+<li>浪费内存资源：几乎每个C程序都使用标准I/O函数，这些函数代码会被复制到每个运行进程的文本段中</li>
+</ul>
+
+<p>共享库(shared library)是致力于解决静态库缺陷的产物。</p>
+
+<p><strong>动态链接</strong>(dynamic linking)：共享库在运行或加载时，可以加载到任意的内存地址，并和一个在内存中的程序链接起来。</p>
+
+<ul>
+<li>由动态链接器(dynamic linke)执行；</li>
+<li>在linux系统中常用<code>.so</code>后缀表示。</li>
+</ul>
+
+<p><img src="media/15151885614329/dynamic_linking.png" alt="dynamic_linking"/></p>
+
+<h2 id="toc_10">14 处理目标文件的工具</h2>
+
+<p>Unix系统提供了一系列命令帮助理解和处理目标文件。这些工具包括：</p>
+
+<ul>
+<li><code>ar</code> ：创建静态库，插入、删除、列出和提取成员；</li>
+<li><code>STRINGS</code> ：列出目标文件中所有可以打印的字符串；</li>
+<li><code>STRIP</code> ：从目标文件中删除符号表信息；</li>
+<li><code>NM</code> ：列出目标文件符号表中定义的符号；</li>
+<li><code>SIZE</code> ：列出目标文件中节的名字和大小；</li>
+<li><code>READELF</code> ：显示一个目标文件的完整结构，包括ELF 头中编码的所有信息。</li>
+<li><code>OBJDUMP</code> ：显示目标文件的所有信息，最有用的功能是反汇编.text节中的二进制指令。</li>
+<li><code>LDD</code> ：列出可执行文件在运行时需要的共享库。</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/1/6</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Computer%20System.html'>Computer System</a></span>
@@ -1223,77 +1947,6 @@ int main(void)
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15317613286610.html">
-                
-                  <h1>Operating System - History</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h2 id="toc_0">reference</h2>
-
-<ul>
-<li>modern operating system 4th</li>
-<li>operating system concepts 10th</li>
-<li>图解TCP/IP协议</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/7/17</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Computer%20System.html'>Computer System</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="Hadoop%20_the_definitive_guide_1-Hadoop_fundamentals.html">
-                
-                  <h1>Hadoop the definitive guide 1 - Hadoop fundamentals</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/7/17</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Computer%20System.html'>Computer System</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1379,8 +2032,6 @@ int main(void)
             <a href="%E6%96%87%E7%8C%AE%E9%98%85%E8%AF%BB.html"><strong>文献阅读</strong></a>
         
             <a href="Tools.html"><strong>Tools</strong></a>
-        
-            <a href="%E5%A4%A7%E6%95%B0%E6%8D%AE.html"><strong>大数据</strong></a>
          
         </p>
 
@@ -1397,31 +2048,31 @@ int main(void)
 	      
 		      
 			      <li class="post">
+			        <a href="os_concepts_threads_and_concurrency.html">Operating System Concepts 4 - Threads & Concurrency</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="os-concets-processes.html">Operating System Concepts 3 - Processes</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="os-concepts-introduction.html">Operating System Concepts 1 - Introduction</a>
+			        <a href="hadoop_mapreduce.html">Hadoop和MapReduce入门</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="os-concepts-os-structures.html">Operating System Concepts 2 - Operating System structures</a>
+			        <a href="15318973137171.html">深度学习人物篇</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="15317613286610.html">Operating System - History</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="Hadoop%20_the_definitive_guide_1-Hadoop_fundamentals.html">Hadoop the definitive guide 1 - Hadoop fundamentals</a>
+			        <a href="os-concets-thread_and_concurrency.html">Operating System Concepts 4 Threads & Concurrency</a>
 			      </li>
 		     
 		  

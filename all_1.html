@@ -120,8 +120,6 @@
             <li><a href="%E6%96%87%E7%8C%AE%E9%98%85%E8%AF%BB.html">文献阅读</a></li>
         
             <li><a href="Tools.html">Tools</a></li>
-        
-            <li><a href="%E5%A4%A7%E6%95%B0%E6%8D%AE.html">大数据</a></li>
          
 
       </ul>
@@ -262,7 +260,8 @@ int main()
 <p>利用<code>READELF</code>程序可以显示程序<code>hello.c</code>生成的可执行可链接文件的信息：</p>
 
 <pre><code class="language-bash">gcc hello.c -c
-readelf -a hello.o
+readelf -a hello.o ## UNIX/LINUX
+greadelf -a hello.o ## MAC, after brew install binutils
 </code></pre>
 
 <pre><code class="language-text">ELF Header:
@@ -476,648 +475,184 @@ No version information found in this file.
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="hadoop_mapreduce.html">
+                <a class="clearlink" href="os-concepts-introduction.html">
                 
-                  <h1>Intro to Hadoop and MapReduce</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>The content of the note from the course, Intro to Hadoop and MapReduce, on <a href="https://cn.udacity.com/course/intro-to-hadoop-and-mapreduce--ud617">Udacity</a>.</p>
-
-<h3 id="toc_0">2 data source</h3>
-
-<p>data increases</p>
-
-<ul>
-<li>phone data</li>
-<li>online store</li>
-</ul>
-
-<p>how to store and process large amounts of data?</p>
-
-<h3 id="toc_1">3. big data</h3>
-
-<p>what is big data?</p>
-
-<ul>
-<li>order details for a store</li>
-<li>all orders across 100s of stores</li>
-<li>a person&#39;s stock portfoio</li>
-<li>all stock transaction for the new york</li>
-</ul>
-
-<h3 id="toc_2">4. big data solution</h3>
-
-<p>big data:</p>
-
-<ul>
-<li>all orders across 100s of stores</li>
-<li>all stock transaction for the new york</li>
-</ul>
-
-<h3 id="toc_3">5. Definition of Big Data</h3>
-
-<p>big data is data that is too big to process on a single machine</p>
-
-<h3 id="toc_4">6 challenges</h3>
-
-<ul>
-<li>most data is worthless. false</li>
-<li>data is created fast. true</li>
-<li>data from different sources in various formats. true</li>
-</ul>
-
-<h3 id="toc_5">8 the 3vs</h3>
-
-<ul>
-<li>volumes: size of data 
-<ul>
-<li>reliable storage: find a cheaper way </li>
-</ul></li>
-<li>variety: data coming from  different source and format</li>
-<li>velocity: speed of data generation</li>
-</ul>
-
-<h3 id="toc_6">9 data worth storing?</h3>
-
-<ul>
-<li>transactions</li>
-<li>logs</li>
-<li>business</li>
-<li>user</li>
-<li>sensor</li>
-<li>medical</li>
-<li>social</li>
-</ul>
-
-<p>all </p>
-
-<h3 id="toc_7">11 variety</h3>
-
-<p>data variety. for a long time, people use sql, mysql, oracle to store their data. the problem is that data needs to be fit in pre-defined tables. and a lot of data we deal these days tend to be unstructured or semi-structured data</p>
-
-<h2 id="toc_8">15 velocity</h2>
-
-<p>TB/day</p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/7/15</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E5%A4%A7%E6%95%B0%E6%8D%AE.html'>大数据</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="exceptional_control_flow.html">
-                
-                  <h1>CSAPP - 异常控制流</h1>
+                  <h1>Operating System Concepts 1 - Introduction</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
                         	<ul>
 <li>
-<a href="#toc_0">1 异常</a>
-<ul>
-<li>
-<a href="#toc_1">1.1 异常的处理</a>
+<a href="#toc_0">what operating system do</a>
 </li>
 <li>
-<a href="#toc_2">1.2 异常的类别</a>
+<a href="#toc_1">Computer-system organisation</a>
+</li>
+<li>
+<a href="#toc_2">Interrupt</a>
+<ul>
+<li>
+<a href="#toc_3">interrupt, exception, trap</a>
 </li>
 </ul>
 </li>
 <li>
-<a href="#toc_3">2 进程</a>
-<ul>
-<li>
-<a href="#toc_4">2.1 逻辑控制流</a>
+<a href="#toc_4">multiprogramming and multitasking</a>
 </li>
 <li>
-<a href="#toc_5">2.2 并发流</a>
+<a href="#toc_5">dual-mode</a>
 </li>
 <li>
-<a href="#toc_6">2.3 私有地址空间</a>
+<a href="#toc_6">timer</a>
 </li>
 <li>
-<a href="#toc_7">2.4 用户模式和内核模式</a>
-</li>
-</ul>
+<a href="#toc_7">virtualization</a>
 </li>
 <li>
-<a href="#toc_8">3 系统调用错误处理</a>
-</li>
-<li>
-<a href="#toc_9">4 进程控制</a>
-<ul>
-<li>
-<a href="#toc_10">4.1 获取进程ID</a>
-</li>
-<li>
-<a href="#toc_11">4.2 创建和终止进程</a>
-</li>
-<li>
-<a href="#toc_12">4.3 回收子进程</a>
-</li>
-<li>
-<a href="#toc_13">4.4 进程休眠</a>
-</li>
-<li>
-<a href="#toc_14">4.5  加载并运行程序</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_15">5 信号</a>
-<ul>
-<li>
-<a href="#toc_16">5.1 发送/接收信号</a>
-</li>
-<li>
-<a href="#toc_17">5.2 发送信号</a>
-</li>
-<li>
-<a href="#toc_18">5.3 接收信号</a>
-</li>
-<li>
-<a href="#toc_19">5.4 阻塞信号和进程回收</a>
-<ul>
-<li>
-<a href="#toc_20">5.4.1 隐式阻塞机制</a>
-</li>
-<li>
-<a href="#toc_21">5.4.2 显式阻塞机制</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_22">5.5 信号处理程序</a>
-</li>
-</ul>
+<a href="#toc_8">Free and Open-Source OS</a>
 </li>
 </ul>
 
 
-<p>从给处理器加电开始，直到你断电为止，程序计数器假设成一个值的序列</p>
+<h2 id="toc_0">what operating system do</h2>
 
-<p>\[a_0, a_1, ..., a_{n-1}\]</p>
+<p>There is no completely adequate definition of operating system. A simple viewpoint is that it includes everything a vendor ships. A more common definition is that the <u>operating system is the one program running at all times on computer - usually  called <strong>kernel</strong></u> . </p>
 
-<p>其中，每个\(a_k\)是某个相应的指令\(I_k\)的 <u>地址</u> 。每次从\(a_k\)到\(a_{k+1}\)的过渡称为<strong>控制转移</strong>(control transfer)。这样的控制转移序列叫做处理器的<strong>控制流</strong>(control flow)。</p>
-
-<p>现在系统通过使控制流发生突变来应对系统状态的变化(eg.缺页异常，网络等待)，把这些突变称为<strong>异常控制流</strong>(Exceptional Control Flow, ECF)。</p>
-
-<h2 id="toc_0">1 异常</h2>
-
-<h3 id="toc_1">1.1 异常的处理</h3>
-
-<p>系统为每<strong>类</strong>可能的异常都分配了一个唯一的非负整数的<strong>异常号</strong>(exception number)。在系统启动时，操作系统分配和初始化一张称为<strong>异常表</strong>的跳转表，使得表目\(k\)包含异常\(k\)的处理程序的地址。</p>
-
-<p><img src="media/15312146721582/%E5%BC%82%E5%B8%B8%E8%A1%A8.png" alt="异常表"/></p>
-
-<p>当检测到发生了一个事件，并且确定了相应的异常号\(k\)，处理器触发异常，执行间接过程调用，通过异常表的表目\(k\)，转到相应的处理程序。</p>
-
-<h3 id="toc_2">1.2 异常的类别</h3>
-
-<p>异常(exceptions)可以分为四类：中断(interrupt)、陷阱(trap)、故障(fault)和终止(abort)。<br/>
-<img src="media/15312146721582/Exceptions.png" alt="Exceptions"/></p>
+<p>Three main <strong>purposes</strong> of an operating system are,</p>
 
 <ul>
-<li><strong>中断</strong>是异步发生的，是来自处理器外部的I/O设备的信号的结果。</li>
-<li><strong>陷阱</strong>是有意的异常，是执行一条指令的结果。
-<ul>
-<li>其用途是在用户程序和内核之间提供一个像过程一样的接口(系统调用)</li>
-</ul></li>
-<li><strong>故障</strong>是由错误情况引起的，可能能够被故障处理程序修正。
-<ul>
-<li>例如缺页异常</li>
-</ul></li>
-<li><strong>终止</strong>是不可恢复的致命错误造成的结果，通常是一些硬件错误。<br/></li>
+<li>manages a computer&#39;s hardware</li>
+<li>provides a basis for application programs</li>
+<li>acts as an intermediary between the user and hardware</li>
 </ul>
 
-<h2 id="toc_3">2 进程</h2>
+<p>The operating system includes the always running <strong>kernel</strong>, <strong>middleware</strong> frameworks that ease application development and provide features, and <strong>system programs</strong> that aid in managing the system while it is running.</p>
 
-<p>进程(Process)的经典定义就是 <u>一个执行中程序的实例</u> (A process is a program in execuation) 。系统中的每个程序都运行在某个进程的上下文(context)中。上下文是由程序正确运行所需的状态组成的。这个状态包括存放在内存中的程序的代码和数据，它的栈、通用目的寄存器的内容、程序计数器、环境变量以及打开文件描述符的集合。</p>
+<p>Anything between the kernel and user applications is considered <strong>middleware</strong>(中间件) [<a href="https://en.wikipedia.org/wiki/Middleware">1</a>].</p>
 
-<p>进程提供了应用程序两个关键抽象：</p>
+<h2 id="toc_1">Computer-system organisation</h2>
+
+<p>A computer system can be divided roughly into four components: the <strong>hardware</strong>, the <strong>operating system</strong>, the <strong>application programs</strong>, and a <strong>user</strong>.</p>
+
+<p><img src="http://or9a8nskt.bkt.clouddn.com/abstractviewofcomputersytem.png" alt="Abstract view of the components of a computer system"/></p>
+
+<p>A <strong>computer system</strong>(计算机系统) consists of one or more <strong>CPUs</strong> and a number of <strong>device controllers</strong>(设备控制器) connected through a common <strong>bus</strong>(总线) that provides access between components and shared <strong>memory</strong>.</p>
+
+<p>A <strong>device controller</strong> maintains some <strong>local buffer storage</strong>(局部缓冲存储) and a set of special-purpose <strong>registers</strong>.</p>
+
+<hr/>
+
+<p>Typically, operating systems have a <strong>device driver</strong>(设备驱动) for each device controller. This device driver understands the device controller and provides the rest of the operating system with a uniform interface to the device</p>
+
+<p><img src="http://or9a8nskt.bkt.clouddn.com/AtypicalPCcomputerSystem.png" alt="一个典型的PC计算机系统"/></p>
+
+<h2 id="toc_2">Interrupt</h2>
+
+<p>When the CPU is <strong>interrupted</strong>, it stops what it is doing and immediately transfers execution to a fixed location. The fixed location usually contains the starting address where the service routine for the interrupt is located.</p>
+
+<p>The <strong>interrupt routine</strong>(中断程序) is called indirectly through the interrupt vector table（中断向量表).</p>
 
 <ul>
-<li>一个<strong>独立</strong>的逻辑控制流，它提供一个假象，好像我们的程序独占地使用处理器。</li>
-<li>一个<strong>私有</strong>的地址空间，它提供一个假象，好像我们的程序独占地使用内存系统。</li>
+<li>Generally, the table of pointers is stored in low memory (the first hundred or so locations).</li>
+<li>These locations hold the addresses of the interrupt service routines for the various devices.</li>
+<li>Interrupt vector is then indexed by a unique number(interrupt vector number, 中断向量号)</li>
+<li>interrupt priority levels(中断优先级)</li>
 </ul>
 
-<h3 id="toc_4">2.1 逻辑控制流</h3>
+<p><img src="http://or9a8nskt.bkt.clouddn.com/interruptvectortable.png" alt="中断向量号"/></p>
 
-<p><strong>逻辑控制流</strong>(Logical Control Flow，简称逻辑流)是PC值的序列。</p>
+<p>Some <strong>services</strong> are provided outside of the kernel by system programs that are loaded into memory at boot time to become system <strong>daemons</strong>, which run the entire time the kernel is running.</p>
 
-<h3 id="toc_5">2.2 并发流</h3>
+<p><img src="http://or9a8nskt.bkt.clouddn.com/interrupt-driven%20I:O%20cycle.png" alt="interrupt-driven I:O cycle"/></p>
 
-<p>一个逻辑流的执行在时间上与另一个流重叠，称为<strong>并发流</strong>(concurrent flow)，这两个流被称为<strong>并发地运行</strong>。</p>
+<h3 id="toc_3">interrupt, exception, trap</h3>
 
-<h3 id="toc_6">2.3 私有地址空间</h3>
+<p>Unfortunately, there is no clear consensus as to the exact meaning of these terms(exceptions, faults, aborts, traps, and interrupts). Different authors adopt different terms to their own use [<a href="http://www.plantation-productions.com/Webster/www.artofasm.com/DOS/pdf/ch17.pdf">ref</a>].</p>
 
-<p>进程为每个程序提供它自己的<strong>私有地址空间</strong>。一般而言，和这个空间中某个地址相关联的那个内存字节是不能被其他进程读或者写的，从这个意义上说，这个地址空间是私有的。</p>
-
-<h3 id="toc_7">2.4 用户模式和内核模式</h3>
-
-<p>处理器通常是用某个控制寄存器中的一个<strong>模式位</strong>(mode bit)来控制用户/内核模式。当设置了模式位时，进程就运行在<strong>内核模式</strong>中，否则运行在<strong>用户模式</strong>中。</p>
-
-<p>运行在内核模式的进程可以执行指令集中的任何指令，可以访问任何内存位置。用户模式中的进程不允许执行特权指令，也不允许直接引用地址空间中内核区的代码和数据。</p>
-
-<h2 id="toc_8">3 系统调用错误处理</h2>
-
-<h2 id="toc_9">4 进程控制</h2>
-
-<p>进程控制包括获取进程ID、创建和终止进程、回收子进程、让进程休眠、加载并运行程序等。这一节将描述Unix提供了控制进程的系统调用。</p>
-
-<h3 id="toc_10">4.1 获取进程ID</h3>
-
-<p>每一个进程都有一个唯一的整数(非零)进程ID(PID)。<code>getpid</code>函数返回调用进程的PID。<code>getppid</code>函数返回它的父进程的PID。</p>
-
-<pre><code class="language-c">#include &lt;sys/types.h&gt;
-#include &lt;unistd.h&gt;
-
-pid_t getpid(void);
-pit_t getppid(void);
-</code></pre>
-
-<h3 id="toc_11">4.2 创建和终止进程</h3>
-
-<p><strong>父进程</strong>通过调用fork函数创建一个新的运行的<strong>子进程</strong>。</p>
-
-<pre><code class="language-c">#include &lt;sys/types.h&gt;
-#include &lt;unistd.h&gt;
-
-pid_t fork(void);
-</code></pre>
-
-<p>新创建的子进程几乎但不完全与父进程相同：</p>
+<p><strong>trap</strong>(陷阱) or <strong>exception</strong>(异常): a software-generated interrupt either by an error（e.g. division by zero, or invalid memory access or by a system call.</p>
 
 <ul>
-<li><strong>相同但是独立的地址空间</strong>：子进程获得父进程虚拟地址空间的一份副本</li>
-<li><strong>共享文件</strong>：子进程获得父进程打开文件描述符相同的副本</li>
-<li>子进程与父进程pid不同</li>
+<li>usual way to invoke a kernel routine (a system call) </li>
 </ul>
 
-<h3 id="toc_12">4.3 回收子进程</h3>
+<p><strong>interrupt</strong>(中断):  generated by the hardware (devices like the hard disk, graphics card, I/O ports, etc).</p>
 
-<p>进程在终止后，并不会被内核从系统中清除，而是保持这种状态，直到被它的父进程<strong>回收</strong>(reaped)。</p>
+<h2 id="toc_4">multiprogramming and multitasking</h2>
+
+<p><strong>Multiprogramming</strong>(多道程序) explained:</p>
 
 <ul>
-<li>一个终止了但还未被回收的进程称为<strong>僵死进程</strong>(zombie)。</li>
-<li>即使僵死进程没有运行，它仍然消耗系统的内存资源。</li>
+<li>The operating system <strong>keeps several processes in memory</strong> simultaneously. </li>
+<li>The operating system picks and begins to execute one of these processes.</li>
+<li>Eventually, the process may have to wait for some task, such as an I/O operation, to complete.</li>
+<li>When that process needs to wait, the CPU <strong>switches</strong> to another process, and so on.</li>
+<li> Eventually, the first process finishes waiting and gets the CPU back. As long as at least one process needs to execute, the <strong>CPU is never idle</strong>.</li>
 </ul>
 
-<p>通过调用<code>waitpid</code>函数来等待子进程终止或者停止。</p>
+<p><strong>Multitasking</strong>(多任务) is a logical <strong>extension</strong> of multiprogramming. In multitasking systems, the CPU executes multiple processes by switching among them, but the switches occur <strong>frequently</strong>, providing the user with a <strong>fast</strong> response time.</p>
 
-<h3 id="toc_13">4.4 进程休眠</h3>
+<h2 id="toc_5">dual-mode</h2>
 
-<p><code>sleep</code>函数将一个进程挂起一段制定的时间。</p>
+<p>In order to ensure the proper execution of the system, we must be able to distinguish between the execution of operating-system code（<strong>kernel mode</strong>）and user-defined code (<strong>user mode</strong>).</p>
 
-<pre><code class="language-c">#include &lt;unistd.n&gt;
-unsigned int sleep(unsigned int secs);
-</code></pre>
+<p><img src="http://or9a8nskt.bkt.clouddn.com/transitionfromusermodetokernelmode.png" alt="Transition from user mode to kernel mode"/></p>
 
-<h3 id="toc_14">4.5  加载并运行程序</h3>
+<p><strong>Mode bit</strong>(模式位), is added to the hardware of the computer to indicate the current mode: kernel (0) or user (1).</p>
 
-<p><code>execve</code>函数在当前进程的上下文中加载并运行一个新程序。</p>
+<p>The concept of modes can be <strong>extended</strong> beyond two modes. </p>
 
 <ul>
-<li><code>execve</code>调用一次并从不返回。</li>
+<li><p><strong>protection rings</strong>（保护环) are mechanisms to protect data and functionality from faults (by improving fault tolerance) and malicious behavior (by providing computer security). </p></li>
+<li><p>For intel processors, ring 0 is kernel mode and ring 3 is user mode</p></li>
 </ul>
 
-<h2 id="toc_15">5 信号</h2>
+<p><img src="http://or9a8nskt.bkt.clouddn.com/15317318589869.jpg" alt=""/></p>
 
-<p>Linux<strong>信号</strong>，通知进程系统中发生一个某种类型的事件。每种信号类型都对应于某种系统事件。低层的硬件异常是由内核异常处理程序处理的，正常情况下，对用户进程而言是不可见的。下面是Linux系统上常见的信号：</p>
+<h2 id="toc_6">timer</h2>
 
-<p><strong>常见的信号</strong>：</p>
-
-<table>
-<thead>
-<tr>
-<th>编号</th>
-<th>名称</th>
-<th>默认动作</th>
-<th>对应事件</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td>2</td>
-<td>SIGINT</td>
-<td>终止</td>
-<td>来自键盘的中断CTRL+C</td>
-</tr>
-<tr>
-<td>3</td>
-<td>SIGQUIT</td>
-<td>终止</td>
-<td>来自键盘的退出CTRL+\</td>
-</tr>
-<tr>
-<td>9</td>
-<td>SIGKILL</td>
-<td>终止</td>
-<td>杀死程序 <code>\bin\kill -9</code></td>
-</tr>
-<tr>
-<td>11</td>
-<td>SIGSEGV</td>
-<td>终止并转储内存</td>
-<td>段故障(无效的内存引用)</td>
-</tr>
-<tr>
-<td>15</td>
-<td>SIGTERM</td>
-<td>终止</td>
-<td>软件终止信号<code>\bin\kill</code></td>
-</tr>
-<tr>
-<td>17</td>
-<td>SIGCHLD</td>
-<td>忽略</td>
-<td>子进程停止或终止</td>
-</tr>
-<tr>
-<td>18</td>
-<td>SIGCONT</td>
-<td>忽略</td>
-<td>继续进程如果该进程停止</td>
-</tr>
-<tr>
-<td>20</td>
-<td>SIGTSTP</td>
-<td>停止直到下一个SIGCONT</td>
-<td>用户输入CTRL+Z</td>
-</tr>
-</tbody>
-</table>
-
-<p>详细信息可以通过<code>man 7 signal</code>查询。</p>
-
-<h3 id="toc_16">5.1 发送/接收信号</h3>
-
-<p>传送一个信号到目的进程由发送、接收信号两个步骤组成：</p>
+<p>A timer (定时器) can  be set to interrupt the computer after a specified period( usually, 100s hz)</p>
 
 <ul>
-<li>发送信号。内核通过更新目的进程上下文中的某个状态，发送(递送)一个信号给目的进程。</li>
-<li>接收信号。当目的进程被内核强迫已某种方式对信号的发送做出反应时，它就接收了信号。进程可以忽略这个信号，终止或者通过执行一个称为<strong>信号处理程序</strong>的用户层函数捕获这个信号。</li>
+<li>A variable timer is generally implemented by a fixed-rate clock and a counter. </li>
+<li>The operating system sets the counter. Every time the clock ticks, the counter is decremented. </li>
+<li>When the counter reaches 0, an interrupt occurs.</li>
 </ul>
 
-<h3 id="toc_17">5.2 发送信号</h3>
+<h2 id="toc_7">virtualization</h2>
 
-<p>发送信号可以由以下原因引起：</p>
+<p><strong>virtualization</strong>(虚拟化) is a technology that allows us to abstract the hardware of a single computer into several different execution environments, thereby creating the illusion that <u><em>each separate environment is running on its own private computer</em></u> .</p>
 
 <ul>
-<li>用户：用户能够通过输入<code>CTRL+c</code>(<code>SIGINT</code>)、<code>Ctrl+z</code>(<code>SIGTSTP</code>)，或者是终端驱动程序分配给信号控制字符的其他任何键来请求内核产生信号；</li>
-<li>内核：当进程执行出错时，内核会给进程发送一个信号，例如非法段存取(内存访问违规)、浮点数溢出等；</li>
-<li>进程：一个进程可以通过系统调用kill给另一个进程或自己发送信号。</li>
+<li>v.s. [different] Emulation involves simulating computer handware in software.</li>
 </ul>
 
-<h3 id="toc_18">5.3 接收信号</h3>
+<p><img src="http://or9a8nskt.bkt.clouddn.com/virtualmachines.png" alt="A computer running (a) a single operating system and (b) three virtual machines"/></p>
 
-<p>当内核把进程\(p\)从内核模式切换到用户模式时，它会检查进程\(p\)的未被阻塞的待处理信号的集合(<code>pending&amp;~blocked</code>,见下文)，如果集合非空，那么内核强制\(p\)接收信号，触发进程采取某种行为。</p>
+<h2 id="toc_8">Free and Open-Source OS</h2>
 
-<p>进程接收到信号以后，可以有如下3种选择进行处理：</p>
+<p>Open-source OS</p>
 
 <ul>
-<li>接收默认处理：接收默认处理的进程通常会导致进程本身消亡。例如连接到终端的进程，用户按下CTRL+c，将导致内核向进程发送一个SIGINT的信号，进程如果不对该信号做特殊的处理，系统将采用默认的方式处理该信号，即终止进程的执行；</li>
-<li>忽略信号：进程可以通过代码，显示地忽略某个信号的处理，例如：<code>signal(SIGINT,SIGDEF)</code>；但是某些信号是不能被忽略的，</li>
-<li>捕获信号并处理：当接收到信号时，由信号处理程序自动捕获并且处理信号。</li>
+<li>source code available</li>
+<li>opposite: closed-source OS</li>
 </ul>
 
-<pre><code class="language-c">sighandler_t signal(int signum, sighandler_t handler);
-</code></pre>
-
-<p>有两个信号既不能被忽略也不能被捕获，它们是<code>SIGKILL</code>和<code>SIGSTOP</code>。即进程接收到这两个信号后，只能接受系统的默认处理，即终止线程。</p>
-
-<h3 id="toc_19">5.4 阻塞信号和进程回收</h3>
-
-<p>一个发出而没有被接受的信号叫做<strong>未处理信号</strong>（Pending Signal）。进程可以选择阻塞（Block）某个信号。被阻塞的信号产生时将保持在未处理状态，直到进程解除对此信号的阻塞，才执行接收的动作。阻塞和忽略是不同的，<strong>只要信号被阻塞就不会接收</strong>，而忽略是在接收之后可选的一种处理动作。</p>
-
-<p>Linux提供阻塞信号的隐式和显式机制:</p>
+<p>Free OS</p>
 
 <ul>
-<li><strong>隐式阻塞机制</strong>：内核默认阻塞任何当前处理程序正在处理信号类型的待处理的信号。如果在进程解除对某信号的阻塞之前这种信号产生过多次，只计一次。因为每个信号只有一个bit的未处理标志(如下图)，非0即1，不记录该信号产生了多少次，阻塞标志也是这样表示的。</li>
-<li><strong>显式阻塞机制</strong>：应用<code>sigprocmask</code>函数，明确地阻塞和解除阻塞选定的信号。</li>
+<li>source code available</li>
+<li>allow no-cost use, redistribution, and modification</li>
 </ul>
 
-<p>内核为每个进程在<strong>pending位向量</strong>中维护着待处理信号的集合，而在<strong>blocked位向量</strong>中维护着被阻塞的信号集合。信号在内核中的表示可以看作是这样的：</p>
+<p>Arguably, open-source code is <strong>more secure</strong> than closed-source code because many more eyes are viewing the code.</p>
 
-<p><img src="media/15156057194882/15156070945641.png" alt=""/></p>
-
-<p>每个信号都有两个标志位分别表示阻塞和未处理，还有一个函数指针表示处理动作。信号产生时，内核在进程控制块中设置该信号的未处理标志，直到信号接收才清除该标志。在上图的例子中，</p>
+<p>e.g. OS</p>
 
 <ul>
-<li>SIGHUP信号未阻塞也未产生过，当它接收时执行默认处理动作。</li>
-<li>SIGINT信号产生过，但正在被阻塞，所以暂时不能接收。虽然它的处理动作是忽略，但在没有解除阻塞之前不能忽略这个信号，因为进程仍有机会改变处理动作之后再解除阻塞。</li>
-<li>SIGQUIT信号未产生过，一旦产生SIGQUIT信号将被阻塞，它调用信号处理程序<code>sighandler</code>。</li>
-</ul>
-
-<h4 id="toc_20">5.4.1 隐式阻塞机制</h4>
-
-<p>当多个未处理信号(<code>pending signal</code>)到达时，由于信号并不会产生排队等待这样的情况，所以产生的效果仅相当于一个未处理信号(也就是对应的<code>pending</code>位标记为1，例如上图中的<code>SIGINT</code>信号)。</p>
-
-<p>这样带来几个问题：</p>
-
-<ul>
-<li>不能用信号来对其他进程中发生的事件计数，这是显而易见的</li>
-<li>在回收子进程时，要回收尽可能多的子进程。例如下面这个例子。</li>
-</ul>
-
-<pre><code class="language-c">void handler1(int sig)   
-{  
-    pid_t pid;  
-  
-    if ((pid = waitpid(-1, NULL, 0)) &lt; 0)  
-        unix_error(&quot;waitpid error&quot;);  
-    printf(&quot;Handler reaped child %d\n&quot;, (int)pid);  
-    Sleep(2);  
-    return;  
-}  
-
-/* $begin signal2 */
-void handler2(int sig) 
-{
-    int olderrno = errno;
-
-    while (waitpid(-1, NULL, 0) &gt; 0) {
-        Sio_puts(&quot;Handler reaped child\n&quot;);
-    }
-    // waitpid()函数有可能因为找不到子进程而报ECHILD错误
-    if (errno != ECHILD)
-        Sio_error(&quot;waitpid error&quot;);
-    Sleep(1);
-    errno = olderrno;
-}
-/* $end signal2 */
-
-int main() 
-{
-    int i, n;
-    char buf[MAXBUF];
-
-    if (signal(SIGCHLD, handler2) == SIG_ERR) //handler2 或者 handler1
-        unix_error(&quot;signal error&quot;);
-
-    /* Parent creates children */
-    for (i = 0; i &lt; 3; i++) {
-        if (Fork() == 0) {
-            printf(&quot;Hello from child %d\n&quot;, (int)getpid());
-            exit(0);
-        }
-    }
-
-    /* Parent waits for terminal input and then processes it */
-    if ((n = read(STDIN_FILENO, buf, sizeof(buf))) &lt; 0)
-        unix_error(&quot;read&quot;);
-
-    printf(&quot;Parent processing input\n&quot;);
-    while (1)
-        ;
-
-    exit(0);
-}
-</code></pre>
-
-<p>在上面这个例子中，父进程创建一些子进程，这些子进程各自独立运行一段时间，然后终止。用<code>SIGCHLD</code>处理程序来回收子进程，其中<code>handler1</code>是错误的，会产生僵死子进程。<code>handler2</code>是安全的。原因是在<code>handler1</code>中，可能存在子进程先被执行，产生<code>SIGCHLD</code>信号；但是在子进程还未被回收之前，又有多个子进程被执行，产生多个<code>SIGCHLD</code>信号。于是多余的未处理<code>SIGCHLD</code>信号就被抛弃，只相当于一个<code>SIGCHLD</code>信号。最终会造成有的子进程未被回收，产生僵死子进程。</p>
-
-<p>执行的可能结果如下，可以看到父进程只回收了两个子进程。</p>
-
-<pre><code class="language-text">Hello from child 5617
-Hello from child 5616
-Hello from child 5618
-Handler reaped child
-Handler reaped child
-
-Parent processing input
-</code></pre>
-
-<h4 id="toc_21">5.4.2 显式阻塞机制</h4>
-
-<p>有时候不希望在发送信号后就立即去接收、处理信号，同时也不希望忽略该信号，那么可以通过<code>sigprocmask</code>显式地阻塞信号从而实现延迟接收信号。</p>
-
-<p>函数<code>sigprocmask</code>可以更改当前阻塞的信号集合(即blocked位向量):</p>
-
-<pre><code class="language-c">int sigprocmask(int how, const sigset_t *set, sigset_t *oldset);
-</code></pre>
-
-<p>其具体行为依赖于how值：</p>
-
-<pre><code class="language-text">SIG_BLOCK, blocked = blocked | set //添加set信号
-SIG_UNBLOCK, blocked = blocked &amp; ~set //删除set信号
-SIG_SETMASK, block = set //设置set信号为阻塞的信号
-</code></pre>
-
-<p>阻塞的信号集合其实就是一个无符号整型数组(在x86-64上，数组长度是16)。</p>
-
-<pre><code class="language-c">/* A `sigset_t&#39; has a bit for each signal.  */
-# define _SIGSET_NWORDS (1024 / (8 * sizeof (unsigned long int)))
-typedef struct
-{
-    unsigned long int __val[_SIGSET_NWORDS];
-} sigset_t;
-</code></pre>
-
-<p>还有其他的一些函数可以对信号集进行操作：</p>
-
-<pre><code class="language-c">int sigfillset(sigset_t *set); // 信号集初始化, 然后把所有的信号加入到此信号集里
-int sigemptyset(sigset_t *set); //信号集初始化为空
-int sigaddset(sigset_t *set, int signo); //将信号signo添加到信号集中  
-</code></pre>
-
-<p>下面看个例子, 是一个具有细微同步错误的SHELL程序。如果子进程在父进程能够开始运行前就结束了，那么<br/>
-<code>addjob()</code> 和 <code>deletejob()</code> 会以错误的方式被调用。这个程序希望父进程在一个作业列表中记录着它的当前子进程，每个作业条目。 <code>addjob()</code> 和 <code>deletejob()</code> 分别想这个作业列表添加和从中删除作业。当父进程创建一个新的子进程时，它就把这个子进程添加到作业列表中。当父进程在<code>SIGCHLD</code> 处理程序中回收一个终止的（僵死）子进程时，它就从作业列表中删除这个子进程。乍一看，这段代码是对的。不幸的是，可能发生下面的情况：</p>
-
-<ul>
-<li>1. 父进程执行<code>fork()</code>，内核调度新创建的子进程运行，而不是父进程</li>
-<li>2. 在父进程能够再次运行之前，子进程就终止，并且变成一个僵死进程，使得内核传递一个<code>SIGCHLD</code>信号给父进程</li>
-<li>3. 后来，当父进程再次变成可运行但又在它执行之前，内核注意到待处理的<code>SIGCHLD</code>信号，并通过在父进程中运行处理程序接收这个信号</li>
-<li>4. 处理程序回收终止的子进程，并调用<code>deletejob()</code>，这个函数什么都不做，因为父进程还没有把该子进程添加到列表中</li>
-<li>5. 在处理程序运行结束后，内核运行父进程，父进程从<code>fork()</code>返回，通过调用<code>addjob()</code> 错误地把（不存在的）子进程添加到作业列表中</li>
-</ul>
-
-<pre><code class="language-c">void handler(int sig)
-{
-        pid_t pid;
-        while ((pid = waitpid(-1, NULL, 0)) &gt; 0) /* Reap a zombie child */
-                deletejob(pid); /* Delete the child from the job list */
-        if (errno != ECHILD)
-                unix_error(&quot;waitpid error&quot;);
-}
-
-int main(int argc, char **argv)
-{
-        int pid;
-
-        Signal(SIGCHLD, handler);
-        initjobs();             /* Initialize the job list */
-
-        while (1) {
-                /* Child process */
-                if ((pid = Fork()) == 0) {
-                        Execve(&quot;/bin/date&quot;, argv, NULL);
-                }
-
-                /* Parent process */
-                addjob(pid);    /* Add the child to the job list */
-        }
-
-        exit(0);
-}
-</code></pre>
-
-<p>正确的做法应该如下,  通过在调用 <code>fork()</code> 之前，阻塞 <code>SIGCHLD</code> 信号，然后在我们调用了 <code>addjob()</code> 之后就取消阻塞这些信号，我们保证了在子进程被添加到作业列表之后回收该子进程。注意，子进程继承了它们父进程的被阻塞集合，所以我们必须在调用 <code>execve()</code> 之前，小心地解除子进程中阻塞的 <code>SIGCHLD</code> 信号。这样，父进程保证在相应的 <code>deletejob()</code> 之前执行 <code>addjob()</code>。</p>
-
-<pre><code class="language-c">int main(int argc, char **argv)
-{
-    int pid;
-    sigset_t mask_all, mask_one, prev_one;
-
-    Sigfillset(&amp;mask_all);
-    Sigemptyset(&amp;mask_one);
-    Sigaddset(&amp;mask_one, SIGCHLD);
-    Signal(SIGCHLD, handler);
-    initjobs(); /* Initialize the job list */
-
-    while (1) {
-        Sigprocmask(SIG_BLOCK, &amp;mask_one, &amp;prev_one); /* Block SIGCHLD */
-        if ((pid = Fork()) == 0) { /* Child process */
-            Sigprocmask(SIG_SETMASK, &amp;prev_one, NULL); /* Unblock SIGCHLD */
-            Execve(&quot;/bin/date&quot;, argv, NULL);
-        }
-        Sigprocmask(SIG_BLOCK, &amp;mask_all, NULL); /* Parent process */  
-        addjob(pid);  /* Add the child to the job list */
-        Sigprocmask(SIG_SETMASK, &amp;prev_one, NULL);  /* Unblock SIGCHLD */
-    }
-    exit(0);
-}
-</code></pre>
-
-<h3 id="toc_22">5.5 信号处理程序</h3>
-
-<p>信号处理程序(signal handler)是重要且棘手的一个问题。其难点在：</p>
-
-<ul>
-<li>处理程序与主程序并发运行，共享同样的全局变量，因此可能与主程序和其他处理程序相互干扰；</li>
-<li>如何以及何时接收信号的规则常常违背人的直觉。</li>
+<li> GNU/Linux</li>
+<li> FreeBSD</li>
+<li> Solaris</li>
 </ul>
 
                         
@@ -1127,7 +662,7 @@ int main(int argc, char **argv)
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/1/10</span>
+                    <span class="date">2018/2/16</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Computer%20System.html'>Computer System</a></span>
@@ -1144,32 +679,287 @@ int main(int argc, char **argv)
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="overhead.html">
+                <a class="clearlink" href="os-concepts-os-structures.html">
                 
-                  <h1>Overhead</h1>
+                  <h1>Operating System Concepts 2 - Operating System structures</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<p><strong>overhead</strong>这个词在计算机中经常出现，那么它到底是什么意思呢？</p>
-
-<p>overhead视风格可以翻译成「额外开销」、「额外消耗」、「虚耗」。</p>
-
-<p>额外开销是建立一个操作所需的资源，它可能看起来不相关，但是却是必须的。就好像当你需要去某个地方的时候，你可能需要一辆车。但是如果你开车上街这件事是大量的额外开销，你可能会想要走路；但是如果你要开车穿越一个国家，额外开销是值得的。</p>
-
-<p>The meaning of the word can differ a lot with context. In general, it&#39;s resources (most often memory and CPU time) that are used, which do not contribute directly to the intended result, but are required by the technology or method that is being used. Examples:</p>
-
+                        	<ul>
+<li>
+<a href="#toc_0">Operating system service</a>
+</li>
+<li>
+<a href="#toc_1">User Interface</a>
+</li>
+<li>
+<a href="#toc_2">System call</a>
 <ul>
-<li><p>Protocol overhead: Ethernet frames, IP packets and TCP segments all have headers, TCP connections require handshake packets. Thus, you cannot use the entire bandwidth the hardware is capable of for your actual data. You can reduce the overhead by using larger packet sizes and UDP has a smaller header and no handshake.</p></li>
-<li><p>Data structure memory overhead: A linked list requires at least one pointer for each element it contains. If the elements are the same size as a pointer, this means a 50% memory overhead, whereas an array can potentially have 0% overhead.</p></li>
-<li><p>Method call overhead: A well-designed program is broken down into lots of short methods. But each method call requires setting up a stack frame, copying parameters and a return address. This represents CPU overhead compared to a program that does everything in a single monolithic function. Of course, the added maintainability makes it very much worth it, but in some cases, excessive method calls can have a significant performance impact.</p></li>
+<li>
+<a href="#toc_3">API</a>
+</li>
+<li>
+<a href="#toc_4">Types of system calls</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_5">System Service</a>
+</li>
+<li>
+<a href="#toc_6">OS Design and Implementation</a>
+</li>
+<li>
+<a href="#toc_7">Operating system structure</a>
+<ul>
+<li>
+<a href="#toc_8">Monolithic structure</a>
+</li>
+<li>
+<a href="#toc_9">Layered</a>
+</li>
+<li>
+<a href="#toc_10">Microkernel</a>
+</li>
+<li>
+<a href="#toc_11">Modules</a>
+</li>
+<li>
+<a href="#toc_12">Hybrid systems</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_13">System boot</a>
+</li>
 </ul>
 
-<h2 id="toc_0">参考</h2>
+
+<h2 id="toc_0">Operating system service</h2>
+
+<p>The figure below is a view of the various operating-system services and how they interrelate.</p>
+
+<p><img src="media/15317361625058/A%20view%20of%20operating%20system%20services.png" alt="A view of operating system services"/></p>
+
+<h2 id="toc_1">User Interface</h2>
+
+<p>There&#39;re mainly three ways for users to interface with the operating system:</p>
 
 <ul>
-<li><a href="https://stackoverflow.com/questions/2860234/what-is-overhead">https://stackoverflow.com/questions/2860234/what-is-overhead</a></li>
-<li><a href="https://www.zhihu.com/question/20596199?sort=created">https://www.zhihu.com/question/20596199?sort=created</a></li>
+<li>command interpreter</li>
+<li>graphical user interface</li>
+<li>touch-screen interface</li>
+</ul>
+
+<h2 id="toc_2">System call</h2>
+
+<p>Purpose of System Call: System calls provide an <strong>interface to the services</strong> made available by an operating system.</p>
+
+<h3 id="toc_3">API</h3>
+
+<p>Typically, application developers design programs according to an application programming interface(<strong>API</strong>, 应用程序编程接口) rather than invoking <strong>actual system call</strong>.</p>
+
+<ul>
+<li>because even simple program may make heavy use of system call.</li>
+<li><strong>program portabilit</strong>y: expect programs to compile and run other system that supports the same API</li>
+<li><strong>run-time environment</strong>(RTE, 运行时环境) - the full suit of software needed to execute applications, including its compilers, interpreters, libraries, loaders.</li>
+</ul>
+
+<h3 id="toc_4">Types of system calls</h3>
+
+<p>System calls can be grouped roughly into six major categories:<br/>
+系统调用可分成六大类：进程控制，文件管理，设备管理，信息维护，通信和保护。</p>
+
+<ul>
+<li>process control</li>
+<li>file management</li>
+<li>device management</li>
+<li>information maintenance</li>
+<li>communications</li>
+<li>protection</li>
+</ul>
+
+<p><img src="media/15317361625058/examplesofunixandlinuxsystemcalls.png" alt="Examples of Windows and Unix systemcalls"/></p>
+
+<p>Three ways to pass parameters to the operating system:</p>
+
+<ul>
+<li>when less than five parameters, passing the parameters in registers</li>
+<li>when more than five parameters, parameters are stored in a block, passing the address of the block in a register</li>
+<li>using stack</li>
+</ul>
+
+<h2 id="toc_5">System Service</h2>
+
+<p><strong>System services</strong>, also known as <strong>system utilities</strong>, provide a convenient environment for program development and execution.</p>
+
+<h2 id="toc_6">OS Design and Implementation</h2>
+
+<p>One important principle of OS design is <u>the separation of <strong>policy</strong> from <strong>mechanism</strong></u> . Mechanisms determine <strong>how</strong> to do something; policies determine <strong>what</strong> will be done.<br/>
+操作系统设计的一个重要原则是策略（policy）和机制（mechanism）的分离。机制决定如何做，策略决定做什么。</p>
+
+<ul>
+<li>The separation of policy and mechanism is important for <strong>flexibility</strong>.</li>
+</ul>
+
+<h2 id="toc_7">Operating system structure</h2>
+
+<h3 id="toc_8">Monolithic structure</h3>
+
+<p>Operating systems with <strong>monolithic structure</strong> (单体结构) place all of the functionality of kernel into a <strong>single</strong>, <strong>static</strong> binary file that runs in a <strong>single</strong> address space.</p>
+
+<ul>
+<li>a common technique for designing operating system</li>
+<li>e.g. original Unix operating system ( figure below)</li>
+</ul>
+
+<p><img src="media/15317361625058/traditional%20unix%20system%20structure.png" alt="Traditional Unix system structure"/></p>
+
+<ul>
+<li>e.g. Linux is based on Unix and is structured similarly, as shown in figure below.</li>
+</ul>
+
+<p><img src="media/15317361625058/linux%20system%20structure.png" alt="linux system structure"/></p>
+
+<p>pros</p>
+
+<ul>
+<li>simplicity of kernels</li>
+<li>a distinct performance advantage</li>
+<li>very little overhead in the system-call interface</li>
+<li>fast communication within the kernel</li>
+</ul>
+
+<p>cons</p>
+
+<ul>
+<li>difficult to implement and extend</li>
+</ul>
+
+<h3 id="toc_9">Layered</h3>
+
+<p>A <strong>loosely coupled</strong> (松耦合) system is divided into separate, smaller components that have specific and limited functionality (<strong>modular</strong> approach). All these components together comprise the kernel .</p>
+
+<ul>
+<li>changes in one component affect only that component</li>
+</ul>
+
+<p>A system can be made modular in many ways.</p>
+
+<ul>
+<li>one way is the layered approach.</li>
+</ul>
+
+<p>For the <strong>layered operating system</strong> (层次式操作系统), it is broken into a number of layers.</p>
+
+<ul>
+<li>The bottom layer is the hardware; the highest is the user interface.</li>
+<li>low-level layers can be invoked by higher-level layers</li>
+</ul>
+
+<p>pros</p>
+
+<ul>
+<li>simplicity of construction and debugging
+<ul>
+<li>each layer is implemented only with operations provided by lower-level layers. </li>
+<li>higher-level layers can be debugged without any concern for the lower-level layers</li>
+</ul></li>
+</ul>
+
+<p>cons</p>
+
+<ul>
+<li>difficulty of defining the functionality of each layer</li>
+<li>poor performance
+<ul>
+<li>overhead of requiring a user program to traverse through multiple layers to obtain an operating-system service </li>
+</ul></li>
+</ul>
+
+<p>Used in computer networks and web applications</p>
+
+<p><img src="media/15317361625058/alayeredoperatingsystem.png" alt="A layered operating system"/></p>
+
+<h3 id="toc_10">Microkernel</h3>
+
+<p>Another way to modularized the kernel is using microkernel approach (微内核)。</p>
+
+<ul>
+<li><strong>removing all nonessential</strong> components from the kernel and implementing them as <strong>user-level</strong> programs the reside in <strong>separate</strong> address spaces.</li>
+<li>smaller kernel</li>
+</ul>
+
+<p>A typical microkernel shown below.<br/>
+<img src="media/15317361625058/a%20typical%20microkernel.png" alt="A typical microkernel"/></p>
+
+<p>pros</p>
+
+<ul>
+<li>easy to extend the os
+<ul>
+<li>all new services added to user space do not require modification of the kernel.</li>
+<li>when modification of kernel needed, changes tend to be fewer because of small kernel</li>
+</ul></li>
+<li>more security and reliability
+<ul>
+<li>since most services are running as user</li>
+</ul></li>
+</ul>
+
+<p>cons</p>
+
+<ul>
+<li>performance may suffer due to increased system function overhead.
+<ul>
+<li>messages of user-level services to communicate must be copied between the services. </li>
+</ul></li>
+</ul>
+
+<p>Best-known microkernel os is <strong>Darwin</strong>, the kernel component of the macOS and iOS.  </p>
+
+<h3 id="toc_11">Modules</h3>
+
+<p>Perhaps the best current methodology for operating system design involves using <strong>loadable kernel modules</strong>(LVMs, 可装载内核模块). Here, the kernel has a set of core components and can link in additional services via modules, either at boot time or during run time.</p>
+
+<ul>
+<li>design purpose: for the kernel to provide core services, while other services are implemented <strong>dynamically</strong>, as the kernel is running</li>
+</ul>
+
+<h3 id="toc_12">Hybrid systems</h3>
+
+<p>In practice, <strong>very few</strong> operating system adopt a single, strictly defined structure. Instead, they <strong>combine different structures</strong><br/>
+, resulting in <strong>hybrid systems</strong> that address performance, security, and usability issues.</p>
+
+<p>Architecture of Apple’s macOS and iOS operating systems:<br/>
+<img src="media/15317361625058/Architecture%20of%20Apple%E2%80%99s%20macOS%20and%20iOS%20operating%20systems.png" alt="Architecture of Apple’s macOS and iOS operating systems"/></p>
+
+<p>Darwin provides two system-call interfaces: Mach system calls and BSD system calls.</p>
+
+<p>The structure of Darwin:<br/>
+<img src="media/15317361625058/The%20structure%20of%20Darwin..png" alt="The structure of Darwin."/></p>
+
+<p>To address such performance problems, Darwin combines Mach, BSD, the I/O kit, and any kernel extensions into a <strong>single</strong> address space.</p>
+
+<p><a href="https://developer.apple.com/library/archive/documentation/Darwin/Conceptual/KernelProgramming/Architecture/Architecture.html#//apple_ref/doc/uid/TP30000905-CH1g-CACDAEDC">detailed documents for Darwin kernel</a></p>
+
+<h2 id="toc_13">System boot</h2>
+
+<p>The process of starting a computer by loading the kernel is known as <strong>booting</strong> the system.</p>
+
+<ol>
+<li>A small piece of code known as the <strong>bootstrap program</strong>（引导程序） or boot loader locates the kernel.</li>
+<li>The kernel is loaded into memory and started.</li>
+<li>The kernel initializes hardware.</li>
+<li>The root file system is mounted.</li>
+</ol>
+
+<p>bootstrap program:</p>
+
+<ul>
+<li>usually, bootstrap program located in BIOS( nonvolatile firmware(固件) on motherboard, <a href="https://en.wikipedia.org/wiki/BIOS">wiki</a>)</li>
+<li><strong>GRUB</strong> is an open-source bootstrap program for Linux and Unix systems <a href="https://en.wikipedia.org/wiki/GNU_GRUB">wiki</a>.</li>
 </ul>
 
                         
@@ -1179,7 +969,7 @@ int main(int argc, char **argv)
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/1/21</span>
+                    <span class="date">2018/2/18</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Computer%20System.html'>Computer System</a></span>
@@ -1196,156 +986,20 @@ int main(int argc, char **argv)
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15146536465849.html">
+                <a class="clearlink" href="15317613286610.html">
                 
-                  <h1>CSAPP - x86-64汇编</h1>
+                  <h1>Operating System - History</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h2 id="toc_0">汇编代码格式</h2>
-
-<p>现在主要存在<code>ATT</code>和<code>Intel</code>两种汇编代码格式。<code>ATT</code>格式是<code>GCC</code>、 <code>OBJDUMP</code>常用工具的默认格式。其他的诸如Microsoft的工具和来自Intel的文档都是<code>Intel</code>格式的。本文使用<code>ATT</code>格式。</p>
-
-<p><code>ATT</code>汇编格式的注释格式有两种</p>
-
-<pre><code class="language-text"># this is a comment
-/* this is a comment */
-</code></pre>
-
-<h2 id="toc_1">寄存器</h2>
-
-<p><code>x86-64</code>体系结构广泛存在于个人电脑中。它拥有16个整数寄存器，分别存储64位的值。这些寄存器可以存储地址或整数数据，其分布如下：</p>
-
-<p><img src="media/15146536465849/sfd.png" alt="sfd"/></p>
-
-<p>根据惯例，寄存器%rbx, %rbp和%r12~%r15被划分为<strong>被调用者保存寄存器</strong>。所有其他的寄存器，除了栈指针%rsp都分类为<strong>调用者保存寄存器</strong>。</p>
+                        	<h2 id="toc_0">reference</h2>
 
 <ul>
-<li>在函数被调用时，不能改变<strong>被</strong>调用者寄存器；</li>
-<li>如果要改变的话，只能把<strong>被</strong>调用者寄存器的值压入栈中，在使用后，从栈中恢复<strong>被</strong>调用者寄存器。</li>
+<li>modern operating system 4th</li>
+<li>operating system concepts 10th</li>
+<li>图解TCP/IP协议</li>
 </ul>
-
-<h3 id="toc_2">rip 寄存器与PC相对寻址</h3>
-
-<p>%rip 的名称来自于(instruction pointer register，指令指针寄存器)。%rip其实就是<strong>程序计数器</strong>(Program Counter, PC), <u><em>存放着下一条指令的地址</em></u> 。不可以直接修改%rip。</p>
-
-<p>-&gt; <code>instruction pointer = program counter = %rip</code></p>
-
-<p>%rip的其他很重要的一个用法就是RIP/<strong>PC相对寻址</strong>(RIP/PC relative addressing)。即<code>%rip + displacement</code>的用法。</p>
-
-<p>例如，</p>
-
-<pre><code class="language-assembly">mov    0x202a62(%rip),%rdi        # 6044d0 &lt;infile&gt;  rdi = infile
-</code></pre>
-
-<p>表示传输%rip+0x202a62的地址对应的内存上的内容到%rdi。</p>
-
-<p>下面说说它是怎么进行PC相对寻址的。</p>
-
-<ul>
-<li>源文件经过预处理器、编译器、汇编器处理，输出<strong>可重定位目标文件</strong></li>
-<li>再经过<strong>符号解析</strong>(Symbol resolution)把代码中的每个符号引用和一个符号定义关联起来之后，要完成<strong>重定位</strong>(Relocation)任务，最终输出<strong>可执行目标文件</strong>。
-<ul>
-<li>在<strong>重定位</strong>阶段，ELF(可重定位目标文件在LINUX系统上的一种格式)文件中的<code>R_X86_64_PC32</code>重定位类型重定位了一个使用32位PC相对地址的引用。</li>
-<li>当CPU执行一条使用PC相对寻址的指令时，它就将在指令中编码的32位值加上PC的当前运行时值，得到<strong>有效地址</strong>。</li>
-</ul></li>
-</ul>
-
-<h2 id="toc_3">指令</h2>
-
-<p>指令主要有<code>mov</code>数据传送指令，<code>push</code>、<code>pop</code>压入和压出栈数据，<code>add</code>,<code>sub</code>等算数操作指令，<code>ret</code>, <code>call</code>等转移控制指令。</p>
-
-<h3 id="toc_4">数据传送指令</h3>
-
-<table>
-<thead>
-<tr>
-<th>指令</th>
-<th>效果</th>
-<th>描述</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td>MOV S, D</td>
-<td>将S中数据传送到D中</td>
-<td>传送</td>
-</tr>
-<tr>
-<td>movb</td>
-<td>传送字节</td>
-<td></td>
-</tr>
-<tr>
-<td>movw</td>
-<td>传送字(双字节)</td>
-<td></td>
-</tr>
-<tr>
-<td>movl</td>
-<td>传送双字(四字节)</td>
-<td></td>
-</tr>
-<tr>
-<td>MOVS S, D</td>
-<td>将S中数据传送到D，过程中做了符号扩展处理 传送需要符号扩展的字节</td>
-<td></td>
-</tr>
-<tr>
-<td>movsbw</td>
-<td>将做了符号扩展的字节传送到字</td>
-<td></td>
-</tr>
-<tr>
-<td>movsbl</td>
-<td>将做了符号扩展的字节传送到双字</td>
-<td></td>
-</tr>
-<tr>
-<td>movswl</td>
-<td>将做了符号扩展的字传送到双字</td>
-<td></td>
-</tr>
-<tr>
-<td>MOVZ S, D</td>
-<td>将S中数据传送到D，过程中做了零扩展处理</td>
-<td>传送需要零扩展的字节</td>
-</tr>
-<tr>
-<td>movzbw</td>
-<td>将做了零扩展的字节传送到</td>
-<td></td>
-</tr>
-<tr>
-<td>movzbl</td>
-<td>将做了零扩展的字节传送到双字</td>
-<td></td>
-</tr>
-<tr>
-<td>movzwl</td>
-<td>将做了零扩展的字传送到双字</td>
-<td></td>
-</tr>
-<tr>
-<td>pushl S</td>
-<td>R[%esp] &lt;- R[%esp] - 4; M[R[%esp]] &lt;- S;</td>
-<td>将双字压栈</td>
-</tr>
-<tr>
-<td>popl D</td>
-<td>D &lt;- M[R[%esp]]; R[%esp] &lt;- R[%esp] + 4;</td>
-<td>将双字出栈</td>
-</tr>
-</tbody>
-</table>
-
-<h3 id="toc_5">ret, call指令</h3>
-
-<p>在x86-64上，<code>ret</code>指令，相当于从栈中弹出地址A，然后把PC设置为A。<br/>
-<code>pop %rip</code><br/>
-而<code>call</code>指令，刚好相反，把%rip 压入栈中，然后跳到函数对应的地址。</p>
 
                         
                       </div>
@@ -1354,7 +1008,39 @@ int main(int argc, char **argv)
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2017/12/31</span>
+                    <span class="date">2018/7/17</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Computer%20System.html'>Computer System</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="Hadoop%20_the_definitive_guide_1-Hadoop_fundamentals.html">
+                
+                  <h1>Hadoop the definitive guide 1 - Hadoop fundamentals</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/7/17</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Computer%20System.html'>Computer System</a></span>
@@ -1455,8 +1141,6 @@ int main(int argc, char **argv)
             <a href="%E6%96%87%E7%8C%AE%E9%98%85%E8%AF%BB.html"><strong>文献阅读</strong></a>
         
             <a href="Tools.html"><strong>Tools</strong></a>
-        
-            <a href="%E5%A4%A7%E6%95%B0%E6%8D%AE.html"><strong>大数据</strong></a>
          
         </p>
 
@@ -1473,31 +1157,31 @@ int main(int argc, char **argv)
 	      
 		      
 			      <li class="post">
+			        <a href="os_concepts_threads_and_concurrency.html">Operating System Concepts 4 - Threads & Concurrency</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="os-concets-processes.html">Operating System Concepts 3 - Processes</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="os-concepts-introduction.html">Operating System Concepts 1 - Introduction</a>
+			        <a href="hadoop_mapreduce.html">Hadoop和MapReduce入门</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="os-concepts-os-structures.html">Operating System Concepts 2 - Operating System structures</a>
+			        <a href="15318973137171.html">深度学习人物篇</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="15317613286610.html">Operating System - History</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="Hadoop%20_the_definitive_guide_1-Hadoop_fundamentals.html">Hadoop the definitive guide 1 - Hadoop fundamentals</a>
+			        <a href="os-concets-thread_and_concurrency.html">Operating System Concepts 4 Threads & Concurrency</a>
 			      </li>
 		     
 		  
