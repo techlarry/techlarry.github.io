@@ -4,7 +4,7 @@
   <title><![CDATA[techlarry]]></title>
   <link href="http://larryim.cc/atom.xml" rel="self"/>
   <link href="http://larryim.cc/"/>
-  <updated>2018-07-19T23:35:55+08:00</updated>
+  <updated>2018-07-20T06:58:28+08:00</updated>
   <id>http://larryim.cc/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -172,7 +172,7 @@
 <li>Kernel threads are supported and managed directly by the operating system.</li>
 </ul>
 
-<p>有两种不同的方法来提供线程支持：用户层的用户线程和内核层的内核线程。用户线程受内核支持，而无需内核管理；而内核线程由操作系统支持和管理。事实上所有当代操作系统都支持内核线程。在用户线程和内核线程之间必然存在一种关系。</p>
+<p>有两种不同的方法来提供线程支持：用户层的用户线程和内核层的内核线程。用户线程受内核支持，而无需内核管理；而内核线程由操作系统支持和管理。事实上所有当代操作系统都支持内核线程。</p>
 
 <p>Ultimately, a relationship must exist between user threads and kernel threads. There are three common ways of establishing such a relationship: the many-to-one model, the one-to-one model, and the many-to-many model.<br/>
 在用户线程和内核线程之间必然存在一种关系。有三种普遍建立这种关系的方法：多对一模型、一对一模型、多对多模型。</p>
@@ -357,7 +357,7 @@ public class ThreadPoolExample
 
 <p><strong>Solution</strong>:</p>
 
-<p><strong>scheduler activation</strong>（调度器激活） are a threading mechanism that, when implemented in an operating system&#39;s process scheduler, provide <em><u>kernel-level</u></em> thread functionality with <u><em>user-level</em></u> thread flexibility and performance [<a href="https://en.wikipedia.org/wiki/Scheduler_activations">ref</a>]. </p>
+<p><strong>Scheduler activation</strong>（调度器激活）are a threading mechanism that, when implemented in an operating system&#39;s process scheduler, provide <em><u>kernel-level</u></em> thread functionality with <u><em>user-level</em></u> thread flexibility and performance [<a href="https://en.wikipedia.org/wiki/Scheduler_activations">ref</a>]. </p>
 
 <p>It works as follows: </p>
 
@@ -374,9 +374,58 @@ public class ThreadPoolExample
 
 <p><img src="media/15319932561412/scheduler-activations-1-2.png" alt="scheduler-activations-1-2"/></p>
 
-<p>The executing thread makes a <strong>blocking system call</strong> (3) and the the kernel blocks the calling user-level thread and the kernel-level thread used to execute the user-level thread (4). Scheduler activation: the kernel decides to allocate a new kernel-level thread to the process (5). Upcall: the kernel notifies the user-level thread manager which user-level thread that is now blocked and that a new kernel-level thread is available (6). The user-level thread manager move the other threads to the new kernel thread and resumes one of the ready threads (7).</p>
+<ul>
+<li>(3) The executing thread makes a <strong>blocking system call</strong>.</li>
+<li>(4) And the the kernel blocks the calling user-level thread and the kernel-level thread used to execute the user-level thread .</li>
+<li>(5) Scheduler activation: the kernel decides to allocate a new kernel-level thread to the process . </li>
+<li>(6) Upcall: the kernel notifies the user-level thread manager which user-level thread that is now blocked and that a new kernel-level thread is available. </li>
+<li>(7) The user-level thread manager move the other threads to the new kernel thread and resumes one of the ready threads.</li>
+</ul>
 
 <p><img src="media/15319932561412/scheduler-activations-3-7.png" alt="scheduler-activations-3-7"/></p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[CSAPP - 网络编程]]></title>
+    <link href="http://larryim.cc/csapp-internet-programming.html"/>
+    <updated>2018-07-20T01:02:55+08:00</updated>
+    <id>http://larryim.cc/csapp-internet-programming.html</id>
+    <content type="html"><![CDATA[
+<ul>
+<li>
+<a href="#toc_0">1 客户端-服务器编程模型</a>
+</li>
+<li>
+<a href="#toc_1">2 网络</a>
+</li>
+</ul>
+
+
+<h2 id="toc_0">1 客户端-服务器编程模型</h2>
+
+<p>每个网络应用都是基于<strong>客户端-服务器</strong>模型的。</p>
+
+<p>客户端-服务器模型中的基本操作是<strong>事务</strong>(transaction)。一个客户端-服务器事务由以下四步组成：</p>
+
+<ul>
+<li>当一个客户端需要服务时，它向服务器发送一个请求，发起一个事务。</li>
+<li>服务器收到请求后，解释它，并以适当的方式操作它的资源。</li>
+<li>服务器给客户端发送一个响应，并等待下一个请求。</li>
+<li>客户端收到响应并处理它。</li>
+</ul>
+
+<p>客户端和服务器是进程，而不是常提到的机器或者主机。</p>
+
+<ul>
+<li>一台主机可以同时运行许多不同的客户端和服务器</li>
+<li>一个客户端和服务器的事务可以在同一台或是不同的主机上。</li>
+</ul>
+
+<h2 id="toc_1">2 网络</h2>
+
+<p>对主机而言，网络只是有一种I/O设备，是数据源和数据接收方。</p>
 
 ]]></content>
   </entry>
@@ -3570,69 +3619,6 @@ E:96, 96
 <li>2. <a href="https://zh.wikipedia.org/zh-hans/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%AF%B9%E9%BD%90">数据结构对齐 维基百科</a></li>
 <li>3. <a href="https://www.cnblogs.com/xylc/p/3780907.html">https://www.cnblogs.com/xylc/p/3780907.html</a></li>
 <li>4. <a href="https://www.cnblogs.com/jijiji/p/4854581.html">https://www.cnblogs.com/jijiji/p/4854581.html</a></li>
-</ul>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[回溯法和深度优先遍历]]></title>
-    <link href="http://larryim.cc/15272289883847.html"/>
-    <updated>2018-05-25T14:16:28+08:00</updated>
-    <id>http://larryim.cc/15272289883847.html</id>
-    <content type="html"><![CDATA[
-<p>算法中常见的回溯法backtracking和深度优先搜索DFS比较相似，很多人也把它们当作相同的算法。那么它们真的相同吗？</p>
-
-<p>其实回溯法是一种更广泛目的的算法，而DFS只是限于树，而且用了回溯法的思想[1]。</p>
-
-<p>下面具体看看DFS和backtracking的概念和应用</p>
-
-<h2 id="toc_0">DFS</h2>
-
-<p>DFS定义(from wikipedia)：One starts at the root (selecting some node as the root in the graph case) and explores as far as possible along each branch before backtracking.</p>
-
-<p>DFS定义(from Intro to algorithm, 3rd, page603): The strategy followed by depth-first search is, to search “deeper” in the graph whenever possible. Depth-first search explores edges out of the most recently discovered vertex \(v\) that still has unexplored edges leaving it. Once all of \(v\prime\)s edges have been explored, the search “backtracks” to explore edges leaving the vertex from which \(v\)  was discovered. This process continues until we have discovered all the vertices that are reachable from the original source vertex. </p>
-
-<p>两个DFS的定义其实都提到了<code>backtrack</code>这个词，说明了DFS中已经用了backtracking的思想。</p>
-
-<h2 id="toc_1">backtracking</h2>
-
-<p>backtracking定义(from wikipedia): Backtracking is a general algorithm for finding all (or some) solutions to some computational problems, notably constraint satisfaction problems, that incrementally builds candidates to the solutions, and abandons a candidate (&quot;backtracks&quot;) as soon as it determines that the candidate cannot possibly be completed to a valid solution.</p>
-
-<p>Pseudocode</p>
-
-<pre><code class="language-text">procedure bt(c)
-  if reject(P,c) then return
-  if accept(P,c) then output(P,c)
-  s ← first(P,c)
-  while s ≠ Λ do
-    bt(s)
-    s ← next(P,s)
-</code></pre>
-
-<p>Leetcode：</p>
-
-<ul>
-<li><LeetCode > 78 / 90 Subsets （I / II）</li>
-<li><LeetCode > 46. / 47. Permutations (I / II)</li>
-<li><LeetCode > 17. Letter Combinations of a Phone Number</li>
-<li><LeetCode > 22. Generate Parentheses</li>
-</ul>
-
-<p>回溯法采用试错的思想，它尝试分步的去解决一个问题。在分步解决问题的过程中，当它通过尝试发现现有的分步答案不能得到有效的正确的解答的时候，它将取消上一步甚至是上几步的计算，再通过其它的可能的分步解答再次尝试寻找问题的答案。回溯法通常用最简单的递归方法来实现，在反复重复上述的步骤后可能出现两种情况：</p>
-
-<ul>
-<li>找到一个可能存在的正确的答案</li>
-<li>在尝试了所有可能的分步方法后宣告该问题没有答案</li>
-</ul>
-
-<p>在最坏的情况下，回溯法会导致一次复杂度为指数时间的计算。</p>
-
-<h2 id="toc_2">Reference</h2>
-
-<ul>
-<li><a href="https://stackoverflow.com/questions/1294720/whats-the-difference-between-backtracking-and-depth-first-search">1. What&#39;s the difference between backtracking and depth first search?</a></li>
-<li><a href="https://www.slideshare.net/johnnatan20/homework-5-44119081">2. AI - Backtracking vs Depth-First Search (DFS)</a></li>
 </ul>
 
 ]]></content>

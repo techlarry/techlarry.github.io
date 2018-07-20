@@ -142,6 +142,147 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="bit_manipulation_2.html">
+                
+                  <h1>Bit manipulation (2)</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h2 id="toc_0">下面列举了一些常见的二进制位的变换操作。</h2>
+
+<table>
+<thead>
+<tr>
+<th>功能</th>
+<th>示例</th>
+<th>位运算</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>去掉最后一位</td>
+<td>(101101-&gt;10110)</td>
+<td>x &gt;&gt; 1</td>
+</tr>
+<tr>
+<td>在最后加一个0</td>
+<td>(101101-&gt;1011010)</td>
+<td>x &gt;&gt; 1</td>
+</tr>
+<tr>
+<td>在最后加一个1</td>
+<td>(101101-&gt;1011011)</td>
+<td>x &lt;&lt; 1+1</td>
+</tr>
+<tr>
+<td>把最后一位变成1</td>
+<td>(101100-&gt;101101)</td>
+<td>x or 1</td>
+</tr>
+<tr>
+<td>把最后一位变成0</td>
+<td>(101101-&gt;101100)</td>
+<td>x or 1-1</td>
+</tr>
+<tr>
+<td>最后一位取反</td>
+<td>(101101-&gt;101100)</td>
+<td>x xor 1</td>
+</tr>
+<tr>
+<td>把右数第k位变成1</td>
+<td>(101001-&gt;101101,k=3)</td>
+<td>x or (1 &lt;&lt; (k-1))</td>
+</tr>
+<tr>
+<td>把右数第k位变成0</td>
+<td>(101101-&gt;101001,k=3)</td>
+<td>x and not (1 &lt;&lt; (k-1))</td>
+</tr>
+<tr>
+<td>右数第k位取反</td>
+<td>(101001-&gt;101101,k=3)</td>
+<td>x xor (1 &lt;&lt; (k-1))</td>
+</tr>
+<tr>
+<td>取末三位</td>
+<td>(1101101-&gt;101)</td>
+<td>x and 7</td>
+</tr>
+<tr>
+<td>取末k位</td>
+<td>(1101101-&gt;1101,k=5)</td>
+<td>x and (1 &lt;&lt; k-1)</td>
+</tr>
+<tr>
+<td>取右数第k位</td>
+<td>(1101101-&gt;1,k=4)</td>
+<td>x &gt;&gt; (k-1) and 1</td>
+</tr>
+<tr>
+<td>把末k位变成1</td>
+<td>(101001-&gt;101111,k=4)</td>
+<td>x or (1 &lt;&lt; k-1)</td>
+</tr>
+<tr>
+<td>末k位取反</td>
+<td>(101001-&gt;100110,k=4)</td>
+<td>x xor (1 &lt;&lt; k-1)</td>
+</tr>
+<tr>
+<td>把右边连续的1变成0</td>
+<td>(100101111-&gt;100100000)</td>
+<td>x and (x+1)</td>
+</tr>
+<tr>
+<td>把右起第一个0变成1</td>
+<td>(100101111-&gt;100111111)</td>
+<td>x or (x+1)</td>
+</tr>
+<tr>
+<td>把右边连续的0变成1</td>
+<td>(11011000-&gt;11011111)</td>
+<td>x or (x-1)</td>
+</tr>
+<tr>
+<td>取右边连续的1</td>
+<td>(100101111-&gt;1111)</td>
+<td>(x xor (x+1)) &gt;&gt; 1</td>
+</tr>
+<tr>
+<td>去掉右起第一个1的左边</td>
+<td>(100101000-&gt;1000)</td>
+<td>x and (x xor (x-1))</td>
+</tr>
+</tbody>
+</table>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/8/17</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Leetcode.html'>Leetcode</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="bit_manipulation.html">
                 
                   <h1>Bit manipulation</h1>
@@ -1018,53 +1159,6 @@ Just like <code>LEFT JOIN</code></li>
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15026939409542.html">
-                
-                  <h1>逻辑删除</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p><strong>逻辑删除</strong>：当数据非常重要时，在实际执行删除操作时，只是将数据标记为删除。在数据查询操作时，加上是否删除语句。</p>
-
-<pre><code class="language-sql">mysql&gt; alter table birds add column isDelete bit default b&#39;0&#39;;
-mysql&gt; update birds
-    -&gt; set isDelete = b&#39;1&#39;
-    -&gt; where bird_id = 101;
-mysql&gt; select count(*)
-    -&gt; from birds
-    -&gt; where `isDelete` = 0;
-+----------+
-| count(*) |
-+----------+
-| 28890    |
-+----------+
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/8/14</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E5%BA%93.html'>数据库</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1172,6 +1266,12 @@ mysql&gt; select count(*)
 		  
 		      
 			      <li class="post">
+			        <a href="csapp-internet-programming.html">CSAPP - 网络编程</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="os-concets-processes.html">Operating System Concepts 3 - Processes</a>
 			      </li>
 		     
@@ -1185,12 +1285,6 @@ mysql&gt; select count(*)
 		      
 			      <li class="post">
 			        <a href="15318973137171.html">深度学习人物篇</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="os-concets-thread_and_concurrency.html">Operating System Concepts 4 Threads & Concurrency</a>
 			      </li>
 		     
 		  
