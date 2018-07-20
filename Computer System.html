@@ -207,7 +207,10 @@
 <a href="#toc_15">6 Threading Issues</a>
 <ul>
 <li>
-<a href="#toc_16">6.1 Scheduler Activation</a>
+<a href="#toc_16">6.1 Light Weight Process</a>
+</li>
+<li>
+<a href="#toc_17">6.2 Scheduler activation</a>
 </li>
 </ul>
 </li>
@@ -486,9 +489,9 @@ public class ThreadPoolExample
 
 <h2 id="toc_15">6 Threading Issues</h2>
 
-<h3 id="toc_16">6.1 Scheduler Activation</h3>
+<h3 id="toc_16">6.1 Light Weight Process</h3>
 
-<p>Many systems implementing either the many-to-many or the two-level model place an <em>intermediate</em> data structure between the user and kernel threads. This data structure—typically known as a <strong><u><em>lightweight process</em></u></strong>（轻量级线程）, or <strong>LWP</strong>.</p>
+<p>Many systems implementing either the many-to-many or the two-level model place an <em>intermediate</em> data structure between the user and kernel threads. This data structure—typically known as a <strong><u><em>lightweight process</em></u></strong>（轻量级进程）, or <strong>LWP</strong>.</p>
 
 <ul>
 <li>To the user-thread library, the LWP appears to be a <strong>virtual</strong> processor on which the application can schedule a user thread to run.</li>
@@ -497,6 +500,54 @@ public class ThreadPoolExample
 </ul>
 
 <p><img src="media/15319932561412/light-weight%20process.png" alt="light-weight process"/></p>
+
+<p><img src="media/15319932561412/15320591793590.jpg" alt=""/></p>
+
+<p>where K: kernel threads, P: Process</p>
+
+<p>下面是一个测试LINUX中LWP的C程序</p>
+
+<pre><code class="language-c">/* filename: test_LWP.c */
+#include &lt;stdlib.h&gt;
+#include &lt;pthread.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;unistd.h&gt;
+
+int* thread(void* arg)
+{
+    pthread_t tid;
+    tid = pthread_self();//get the current thread&#39;s id
+ 
+    printf(&quot;The ID of new thread is =%lu\n&quot;, tid);
+    sleep(500);
+    return NULL;
+}
+  
+int main()
+{
+    pthread_t tid;
+    printf(&quot;The ID of main thread is %lu\n&quot;, pthread_self()); //get the main thread&#39;s id
+    if (pthread_create(&amp;tid, NULL, (void *) thread, NULL) !=0) 
+    {
+        printf(&quot;Thread creation failed\n&quot;);
+        exit(1);
+    }
+      
+    printf(&quot;my Id is %lu, new thread ID is %lu\n&quot;, pthread_self(), tid);
+    sleep(1000);
+    return 0;
+}
+</code></pre>
+
+<p>运行<code>ps -efL</code> 可以看到, <code>test_LWP</code>进程(PID=1953)有两个LWP，即NLWP(number of light weight process)=2。</p>
+
+<pre><code class="language-text">UID        PID  PPID   LWP  C NLWP STIME TTY          TIME CMD
+vagrant   1953  1644  1953  0    2 04:16 pts/0    00:00:00 ./test_LWP
+vagrant   1953  1644  1954  0    2 04:16 pts/0    00:00:00 ./test_LWP
+vagrant   2028  1839  2028  0    1 04:18 pts/1    00:00:00 ps -efL
+</code></pre>
+
+<h3 id="toc_17">6.2 Scheduler activation</h3>
 
 <p><strong>Problems</strong>:<br/>
 内核线程在各方面都比较灵活，但是性能不高，经常会出现请求在用户空间和内核空间的传递。那么如何在拥有内核空间线程的灵活性的同时又提高性能呢?</p>
