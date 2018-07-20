@@ -142,314 +142,6 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="C_language.html">
-                
-                  <h1>C Basics</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h2 id="toc_0">C 语言的各种版本</h2>
-
-<p><img src="media/15091487975421/15091488073990.png" alt=""/></p>
-
-<p>广泛应用的仍然是<code>ANSI C</code>(C89).</p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2016/10/28</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='C/C++.html'>C/C++</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="dijkstra_algorithm.html">
-                
-                  <h1>Dijkstra's algorithm</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p><code>Dijkstra&#39;s algorithm</code> is an iterative algorithm that provides us with the shortest path from one particular starting node to all other nodes in the graph.</p>
-
-<p>The algorithm iterates once for every vertex in the graph. The order that iterates over the vertices is controlled by a <code>priority queue</code>. When a vertex is first created <code>dist</code> is set to a very large number(<code>sys.maxsize</code>)</p>
-
-<pre><code class="language-text">Dijkstra(G, w, s)
-INITIALIZE-SINGLE-SOURCE(G, s)
-Q=G.V
-while Q:
-    u = EXTRACT-MIN(Q)
-    for each vertex in adjacent
-        RELAX(u,v,w)
-</code></pre>
-
-<pre><code class="language-python">from priorityqueue import PriorityQueue
-from graph import Graph, Vertex
-import sys
-import unittest
-
-def dijkstra(aGraph, start):
-    &quot;&quot;&quot;
-    Find Single-Source shortest-paths on a weighted, directed graph
-    Return shortest path
-    aGraph: class Graph
-    start: class Vertex
-    &quot;&quot;&quot;
-    pq = PriorityQueue()
-    start.setDistance(0)
-    pq.buildHeap([(v.getDistance(), v) for v in aGraph])
-    while not pq.isEmpty():
-        u = pq.delMin()
-        for adjacent in u.getConnections():
-            newDist = u.dist + u.getWeight(adjacent)
-            if adjacent.dist &gt; newDist:
-                adjacent.setDistance(newDist)
-                adjacent.setPred(u)
-                pq.decreaseKey(adjacent, newDist)
-
-
-class TestDijkstra(unittest.TestCase):
-
-
-    def testShortest(self):
-
-        aGraph = Graph()
-        with open(&#39;dijkstraData.txt&#39;) as infile:
-            for line in infile:
-                numbers = [number for number in line.split()]
-                from_v = int(numbers[0])
-
-                for to_v_cost in numbers[1:]:
-                    to_v, cost = to_v_cost.split(&#39;,&#39;)
-                    aGraph.addEdge(from_v, int(to_v), int(cost))
-
-        dijkstra(aGraph, aGraph.getVertex(1))
-
-        dists = []
-        for vertex_id in [7, 37, 59, 82, 99, 115, 133, 165, 188, 197]:
-            dist = aGraph.getVertex(vertex_id).getDistance()
-            if dist == sys.maxsize:
-                dist = 100000
-            dists.append(dist)
-        assert dists == [2599, 2610, 2947, 2052, 2367, 2399, 2029, 2442, 2505, 3068]
-
-
-if __name__ == &#39;__main__&#39;:
-    unittest.main()
-</code></pre>
-
-<p>It is important to note that <code>Dijkstra&#39;s algorithm</code> works only when the weights are all positive. If you introduced a negative weight on one of the edges to the graph that the algorithm would never exit.</p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/7/14</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Graph.html'>Graph</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="bitwise%20operator%20in%20python.html">
-                
-                  <h1>Bitwise Operation</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<ul>
-<li>
-<a href="#toc_0">The method of complements</a>
-<ul>
-<li>
-<a href="#toc_1">One&#39;s complement (反码)</a>
-</li>
-<li>
-<a href="#toc_2">Two&#39;s complement (补码)</a>
-<ul>
-<li>
-<a href="#toc_3">Implementation</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_4">One or Two</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_5">Reference</a>
-</li>
-</ul>
-
-
-<p>There are 6 <code>Bitwise Operators</code>(位操作符) in Python:</p>
-
-<ul>
-<li><code>x&lt;&lt;y</code>: Returns \(x\) with the bits shifted to the left by y places (and new bits on the right-hand-side are zeros). This is the same as multiplying x by \(2^y\).</li>
-<li><code>x&gt;&gt;y</code>: Returns \(x\) with the bits shifted to the right by y places. This is the same as //&#39;ing \(x\) by \(2^y\).</li>
-<li><code>x&amp;y</code>(bitwise AND): Each bit of the output is 1 if the corresponding bit of \(x\) AND of \(y\) is 1, otherwise it&#39;s 0.</li>
-<li><code>x|y</code> (bitwise OR): Each bit of the output is 0 if the corresponding bit of \(x\) AND of \(y\) is 0, otherwise it&#39;s 1.</li>
-<li><code>~ x</code> ( bitwise NOT, or complement): Returns the complement of \(x\) - the number you get by switching each 1 for a 0 and each 0 for a 1. This is the same as \(-x-1\).</li>
-<li><code>^</code> (bitwise Exclusive OR): outputs true only when inputs differ (one is 1, the other is 0).</li>
-</ul>
-
-<p><code>Bitwise Operators</code> operate on numbers, but instead of treating that number as if it were a single value, they treat it as if it were a string of bits, written  in <code>two&#39;s-complement</code> binary.</p>
-
-<h2 id="toc_0">The method of complements</h2>
-
-<p>The <code>method of complements</code> is a technique used to subtract one number from another using only addition of positive numbers.</p>
-
-<p>Many early computers, use <code>one&#39;s complement</code> notation. The IBM 700/7000 series used to use <code>sign/magnitude</code> notation. Almost all subsequent minicomputers and microcomputers use <code>two&#39;s complement</code>  in the computer industry.</p>
-
-<h3 id="toc_1">One&#39;s complement (反码)</h3>
-
-<p>The one&#39;s complement of a <code>binary number</code> is defined as the value obtained by inverting all the bits in the binary representation of the number (swapping 0s for 1s and vice versa). </p>
-
-<p>Positive numbers are the same simple, binary system used by <code>two&#39;s complement</code> and <code>sign-magnitude</code>. Negative values are the bit complement of the corresponding positive value. </p>
-
-<p>The table below shows all possible values in a 4-bit system, from −7 to +7.</p>
-
-<pre><code class="language-text">      +      −
- 0   0000   1111   — Note that both +0 and −0 return TRUE when tested for zero
- 1   0001   1110   — and FALSE when tested for non-zero. 
- 2   0010   1101
- 3   0011   1100
- 4   0100   1011
- 5   0101   1010
- 6   0110   1001
- 7   0111   1000
-</code></pre>
-
-<p><strong>Negative zero</strong> is the condition where all bits in a signed word are 1. </p>
-
-<pre><code class="language-text">1111 1111
-</code></pre>
-
-<h3 id="toc_2">Two&#39;s complement (补码)</h3>
-
-<p>A <code>two&#39;s complement</code> number system encodes positive and negative numbers in a binary number representation. The weight of each bit is a power of two, except for the <code>most significant bit</code>(最高有效位), whose weight is the negative of corresponding power of two.</p>
-
-<p>The method to convert a negative integer into a two&#39;s complement is implemented as follows:</p>
-
-<pre><code class="language-text">eg. -3
-Start with positive 0000 0011
-flip bits 1111 1100
-add one 1111 1101
-</code></pre>
-
-<h4 id="toc_3">Implementation</h4>
-
-<p>The naive implementation of <code>Two&#39;s complement</code> in Python is as follows:</p>
-
-<pre><code class="language-python">def int_to_two_complement(val, num_bits):
-
-    if val &lt; 0:
-        # major procedure as follows:
-        # 1. take the absolute
-        # 2. flip
-        # 3. add one
-
-        # absolute of val: use int to transform str to int
-        val = bin(val)[3:].rjust(num_bits, &#39;0&#39;)
-
-        # flip it: bitwise complement
-        flip_val = &#39;&#39;
-        flip_bit = {&#39;0&#39;: &#39;1&#39;, &#39;1&#39;: &#39;0&#39;}
-        for bit in val:
-            flip_val += flip_bit[bit]
-        val = flip_val
-
-        # add one
-        val = list(val)
-        if val[-1] == &#39;0&#39;:
-            val[-1] = &#39;1&#39;
-        else:
-            index = -1
-            while val[index] == &#39;1&#39;:
-                index -= 1
-            val[-1] = &#39;0&#39;
-            val[index - 1] = &#39;1&#39;
-        val = &#39;&#39;.join(val)
-        val = int(val)
-
-    else:
-
-        # fill zeros before the binary number converted by bin, the result = bin(val)
-        val = bin(val)[2:].rjust(num_bits, &#39;0&#39;)
-    return val
-</code></pre>
-
-<h3 id="toc_4">One or Two</h3>
-
-<p>A <code>two&#39;s complement</code> integer equals its <code>one&#39;s complement</code> integer plus one.</p>
-
-<p>\[X_{two} = 2^n-x = x_{one}+1\]</p>
-
-<h2 id="toc_5">Reference</h2>
-
-<p>1.<a href="https://en.wikipedia.org/wiki/Most_significant_bit">Most Significant Bit</a><br/>
-2.<a href="https://wiki.python.org/moin/BitwiseOperators">wiki-python</a><br/>
-3.<a href="https://stackoverflow.com/questions/1604464/twos-complement-in-python">two&#39;s complement in python -Stackoverflow</a></p>
-
-<ol>
-<li><a href="https://en.wikipedia.org/wiki/Two&#x27;s_complement#Subtraction_from_2N">Two&#39;s complement WIKIPEDIA</a></li>
-</ol>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/8/5</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html'>Python数据结构与算法</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
                 <a class="clearlink" href="hardware_software_interface.html">
                 
                   <h1>Hardware/Software Interface</h1>
@@ -593,6 +285,214 @@ add one 1111 1101
                 </div>
               </div><!-- article -->
         
+			<div class="article">
+                <a class="clearlink" href="active_learning_intro.html">
+                
+                  <h1>主动学习</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>主动学习算法通过迭代抽样，主动寻找有利于提升效果的样本，从而减少了训练集的大小。</p>
+
+<p>获取训练样本不仅费时、费力，而且训练集包含大量的冗余样本。</p>
+
+<p>主动学习算法主要分为两阶段：第一阶段为<strong>初始化阶段</strong>，随机从未标注样本中选取小部分，由督导者\(\mathcal{S}\)标注，作为训练集建立初始分类器模型；第二阶段为<strong>循环查询阶段</strong>，督导者\(\mathcal{S}\)从未标注样本集\(U\)中，按照某种查询标准\(Q\)，选取一定的未标注样本进行标注，并加到训练样本集\(L\)中，重新训练分类器，直至达到训练停止标准为止。</p>
+
+<h1 id="toc_0">Reference</h1>
+
+<ul>
+<li>LIU Kang, QIAN Xu, WANG Ziqiang. Survey on active learning algorithms. Computer Engineering and Applications, 2012, 48（34）：1-4.</li>
+<li>Zongwei Zhou1, Jae Shin1, Lei Zhang, et al. 2017. Fine-tuning Convolutional Neural Networks for Biomedical Image Analysis: Actively and Incrementally. CVPR. <a href="http://openaccess.thecvf.com/content_cvpr_2017/papers/Zhou_Fine-Tuning_Convolutional_Neural_CVPR_2017_paper.pdf">pdf</a> </li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/10/23</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html'>机器学习</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="anaconda.html">
+                
+                  <h1>Anaconda</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p><a href="https://www.continuum.io/why-anaconda">Anaconda </a>(/ˌænə&#39;kɑndə/)是一个用于科学计算的python发行版，支持各种系统，提供了包管理和环境管理的功能。Anaconda 利用<code>conda</code>来进行package和environment的管理。</p>
+
+<h2 id="toc_0">Conda的包管理</h2>
+
+<p><code>Conda</code>既是一个工具，也是一个可执行命令，其核心功能是包管理和环境管理。包管理与<code>pip</code>使用类似。</p>
+
+<pre><code class="language-python"># 安装package
+conda install package
+
+# 查看已经安装的packages
+conda list
+
+# 查找package信息
+conda search package
+
+# 更新package
+conda update -n python27 package
+
+# 删除package
+conda remove -n python27 package
+</code></pre>
+
+<h2 id="toc_1">Conda的环境管理</h2>
+
+<pre><code class="language-bash"># 创建一个名为python27的环境，指定Python版本是2.7
+conda create --name python27 python=2.7
+
+# 安装好后，使用activate激活某个环境
+source activate python27 # 激活后，会发现terminal输入的地方多了python27的字样，实际上，此时系统做的事情就是把默认环境从PATH中去除，再把2.7对应的命令加入PATH
+
+# 如果想返回python 2.7环境，运行
+source deactivate python27 # for Linux &amp; Mac
+
+# 删除一个已有的环境
+conda remove --name python27 --all
+</code></pre>
+
+<h2 id="toc_2">使用Requirement.txt 安装</h2>
+
+<pre><code class="language-text">while read requirement; do conda install --yes $requirement; done &lt; requirements.txt
+</code></pre>
+
+<h2 id="toc_3">使用Pycharm</h2>
+
+<p>在<code>Pycharm</code>配置里选用<code>Anaconda</code>的<code>python</code>编译器所在位置即可。</p>
+
+<h2 id="toc_4">Jupyter NoteBook</h2>
+
+<p><code>Anaconda</code>默认自带<code>Jupyter Notebook</code>，可以很方便的运行Python代码、记录笔记。</p>
+
+<h3 id="toc_5">主题</h3>
+
+<p><code>Jupyter Notebook</code>的<a href="%5Bhttps://github.com/dunovank/jupyter-themes">主题</a>可以调整，首先安装主题:</p>
+
+<pre><code class="language-text">pip install --upgrade jupyterthemes
+</code></pre>
+
+<p>选择好主题后，切换主题:</p>
+
+<pre><code class="language-text">jt -t theme_name -T -N
+</code></pre>
+
+<h2 id="toc_6">Bash Kernel</h2>
+
+<p><code>Bash kernel</code>(<a href="https://github.com/takluyver/bash_kernel">Project Link</a>)可以通过pip安装</p>
+
+<pre><code class="language-text">pip install bash_kernel
+python -m bash_kernel.install
+</code></pre>
+
+<h2 id="toc_7">Install Python2/3 Kernel</h2>
+
+<p>Install install with</p>
+
+<pre><code class="language-text">python3 -m pip install ipykernel
+python3 -m ipykernel install --user
+</code></pre>
+
+<h2 id="toc_8">Resources</h2>
+
+<p><a href="https://conda.io/docs/_downloads/conda-cheatsheet.pdf">Conda Cheat Sheet</a></p>
+
+<h2 id="toc_9">Reference</h2>
+
+<ul>
+<li><a href="https://ipython.readthedocs.io/en/latest/install/kernel_install.html">Installing the IPython kernel</a></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/7/13</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="cdiscount_challenge.html">
+                
+                  <h1>Cdiscount’s Image Classification Challenge</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p><a href="https://www.kaggle.com/c/cdiscount-image-classification-challenge">Link</a></p>
+
+<p><code>Cdiscount.com</code> generated nearly 3 billion euros last year, making it France’s largest non-food e-commerce company. While the company already sells everything from TVs to trampolines, the list of products is still rapidly growing. By the end of this year, Cdiscount.com will have over 30 million products up for sale. This is up from 10 million products only 2 years ago. Ensuring that so many products are well classified is a challenging task.</p>
+
+<p>Currently, <code>Cdiscount.com</code> applies machine learning algorithms to the text description of the products in order to automatically predict their category. As these methods now seem close to their maximum potential, Cdiscount.com believes that the next quantitative improvement will be driven by the application of data science techniques to images.</p>
+
+<p><strong>In this challenge you will be building a model that automatically classifies the products based on their images</strong>. As a quick tour of Cdiscount.com&#39;s website can confirm, one product can have one or several images. The data set Cdiscount.com is making available is unique and characterized by superlative numbers in several ways:</p>
+
+<ul>
+<li>Almost 9 million products: half of the current catalogue</li>
+<li>More than 15 million images at 180x180 resolution</li>
+<li>More than 5000 categories: yes this is quite an extreme multi-class classification!</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/10/22</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html'>机器学习</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
               
 
 
@@ -718,7 +618,7 @@ add one 1111 1101
 		  
 		      
 			      <li class="post">
-			        <a href="15318973137171.html">深度学习人物篇</a>
+			        <a href="Linking.html">CSAPP - 链接</a>
 			      </li>
 		     
 		  

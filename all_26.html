@@ -142,414 +142,6 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="testing.html">
-                
-                  <h1>Testing</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p><a href="https://en.wikipedia.org/wiki/Unit_testing">Unit testing</a> is a software testing method by which individual units of source code, sets of one or more computer program modules together with associated control data, usage procedures, and operating procedures, are tested to determine whether they are fit for use.</p>
-
-<h2 id="toc_0">Test-driven programming</h2>
-
-<p>&quot;<strong>Test first and code later</strong>&quot; practice, known as test-driven programming, instead of test after code.</p>
-
-<h3 id="toc_1">Requirement Specification</h3>
-
-<p>When developing a piece of software, you must first know what problem the software will solve—what objectives it will meet. You can clarify your goals for the program by writing a <strong>requirement specification</strong>, a document (or just some quick notes) describing requirements the program must satisfy. </p>
-
-<h3 id="toc_2">The 1-2-3-4 of Testing</h3>
-
-<p>Here’s a breakdown of the test-driven development process:</p>
-
-<ul>
-<li>Figure out the new feature you want. Possibly document it, and then write a test for it.</li>
-<li>Write some skeleton code for the feature, so that you program runs without any syntax errors. See your test fail.</li>
-<li>Write dummy code for skeleton code, just to appease the test.</li>
-<li>Rewrite the code so that it actually pass the test.</li>
-</ul>
-
-<h2 id="toc_3">Testing Tools</h2>
-
-<p>Two brilliant modules are available to automate the testing process:</p>
-
-<ul>
-<li><code>unittest</code>: A generic testing framework.</li>
-<li><code>doctest</code>: A simpler module, designed for checking documentation, but excellent for writing unit tests as well.</li>
-</ul>
-
-<h3 id="toc_4">doctest</h3>
-
-<p>The <code>testmod</code> function checks both the module docstring and function docstring.</p>
-
-<p>E.g.</p>
-
-<pre><code class="language-python">def square(x):
-    &quot;&quot;&quot;
-    squares a number and returns the result.
-    &gt;&gt;&gt; square(2)
-    4
-    &gt;&gt;&gt; square(3)
-    9
-    &quot;&quot;&quot;
-    return x*x
-
-if __name__ == &quot;__main__&quot;:
-    import doctest, doc_test_example
-    doctest.testmod(doc_test_example, verbose=True)
-</code></pre>
-
-<p>Run the example. To get some more output, just add <code>-v</code>(for verbose)</p>
-
-<pre><code class="language-bash">$ python doc_test_example.py -v
-Trying:
-    square(2)
-Expecting:
-    4
-ok
-Trying:
-    square(3)
-Expecting:
-    9
-ok
-1 items had no tests:
-    doc_test_example
-1 items passed all tests:
-   2 tests in doc_test_example.square
-2 tests in 2 items.
-2 passed and 0 failed.
-Test passed.
-</code></pre>
-
-<h3 id="toc_5">unittest</h3>
-
-<p><code>unittest</code> which is based on the popular test framework <code>JUnit</code>, is more flexible and powerful. It allows to write very large and thorough test sets in a more structured manner.</p>
-
-<p><strong>注意： 测试方法应该以test为前缀命名</strong></p>
-
-<p>E.g.</p>
-
-<pre><code class="language-python">import unittest
-import doc_test_example as my_math
-
-class ProductTestCase(unittest.TestCase):
-
-    def testIntegers(self):
-        for x in xrange(-10,10):
-            p = my_math.square(x)
-            self.failUnless(p == x*x, &#39;Integer multiplication failed&#39;)
-
-    def testFloats(self):
-        for x in xrange(-10,10):
-            x = x/10.0
-            p = my_math.square(x)
-            self.failUnless(p == x*x, &#39;Float multiplication failed&#39;)
-
-
-if __name__ == &quot;__main__&quot;:
-    unittest.main()
-</code></pre>
-
-<p>Another example to test <code>dijkstra&#39;s algorithm</code> see <a href="http://larryim.cc/dijkstra_algorithm.html">here</a></p>
-
-<p>Methods such as <code>failUnless</code> check a condition to determine whether the given test succeeds or fails. </p>
-
-<p>The <code>unittest</code> module distinguishes between <code>errors</code>, where an exception is raised, and <code>failures</code>, which result from calls to <code>failUnless</code> and the like. </p>
-
-<h2 id="toc_6">Source Code Checking</h2>
-
-<p><a href="https://www.pylint.org">Pylint</a> and PyChecker are good tools for checking Python source code, looking for mistakes.</p>
-
-<p><code>Pylint</code> is a tool that checks for errors in Python code, tries to enforce a coding standard and looks for code smells. It can also look for certain type errors, it can recommend suggestions about how particular blocks can be refactored and can offer you details about the code’s complexity.</p>
-
-<p><code>Pylint</code> can be integrated with <code>Pycharm</code>, see <a href="https://pylint.readthedocs.io/en/latest/user_guide/ide-integration.html#pylint-in-pycharm">detail</a>.</p>
-
-<h3 id="toc_7">Resources</h3>
-
-<ul>
-<li><a href="https://www.ibm.com/developerworks/cn/linux/l-cn-pylint/index.html">如何使用 Pylint 来规范 Python 代码风格</a></li>
-<li><a href="https://www.python.org/dev/peps/pep-0008/">Style Guide for Python Code</a></li>
-</ul>
-
-<h2 id="toc_8">Profile</h2>
-
-<p><strong>When in doubt, use brute force</strong></p>
-
-<p>The standard library includes nice profiler modules called <code>profile</code> and <code>cProfile</code>.  </p>
-
-<p>A <code>profile</code> is a set of statistics that describes how often and for how long various parts of the program executed. </p>
-
-<pre><code class="language-python">&gt;&gt;&gt; import profile
-&gt;&gt;&gt; from my_math import square
-&gt;&gt;&gt; profile.run(&#39;square(1, 2)&#39;)
-</code></pre>
-
-<p>Another way to use <code>profile</code> in command-line:</p>
-
-<pre><code class="language-bash">$ python -m profile prof1py
-</code></pre>
-
-<p>The standard library also contains a module called <code>timeit</code>, which is a simple way of timing small snippets of Python code.</p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/7/14</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="magic_method_item_access.html">
-                
-                  <h1>Magic Methods: Item Access</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>Useful magic methods allows you to create objects that behave like sequences or mappings.</p>
-
-<h2 id="toc_0">Sequence and Mapping Protocol</h2>
-
-<p><code>protocol</code> in Python usually describe the rules governing some form of behavior. The <code>protocol</code> states which methods you should implement and what those methods should do. So, to be a sequence means,  to follow the sequence protocol.</p>
-
-<ul>
-<li><code>__len__(self)</code>: This method should return the number of items contained in the collection. For a sequence, this would simply be the number of elements. For a mapping, it would be the number of key-value pairs. If <code>__len__</code> returns zero (and you don’t implement <code>__nonzero__</code>, which overrides this behavior), the object is treated as false in a Boolean context (as with empty lists, tuples, strings, and dictionaries).</li>
-<li><code>__getitem__(self, key)</code>: This should return the value corresponding to the given key. For a sequence, the key should be an integer from \(0\) to \(n–1\) (or, it could be negative, as noted later), where \(n\) is the length of the sequence. For a mapping, you could really have any kind of keys.</li>
-<li><code>__setitem__(self, key, value)</code>: This should store value in a manner associated with key, so it can later be retrieved with <code>__getitem__</code>. Of course, you define this method only for mutable objects.</li>
-<li><code>__delitem__(self, key)</code>: This is called when someone uses the <code>del</code> statement on a part of the object, and should delete the element associated with key. Again, only mutable objects (and not all of them—only those for which you want to let items be removed) should define this method.</li>
-</ul>
-
-<h2 id="toc_1">Example</h2>
-
-<pre><code class="language-python">def checkIndex(key):
-    &quot;&quot;&quot;
-    Is the given key an acceptable index?
-    To be acceptable, the key should be a non-negative integer. If it
-    is not an integer, a TypeError is raised; if it is negative, an
-    IndexError is raised (since the sequence is of infinite length).
-    &quot;&quot;&quot;
-    if not isinstance(key, int):
-        raise TypeError
-    if key &lt; 0:
-        raise IndexError
-
-
-class ArithmeticSequence:
-    def __init__(self, start=0, step=1):
-        &quot;&quot;&quot;
-        Initialize the arithmetic sequence.
-        start   - the first value in the sequence
-        step    - the difference between two adjacent values
-        changed - a dictionary of values that have been modified by the user
-        &quot;&quot;&quot;
-        self.start = start
-        self.step = step
-        self.changed = {}
-
-    def __getitem__(self, key):
-        &quot;&quot;&quot;
-        Get an item from the arithmetic sequence.
-        &quot;&quot;&quot;
-        checkIndex(key)
-        try:
-            return self.changed[key]
-        except KeyError:
-            return self.start + key*self.step
-    # Store the start value
-    # Store the step value
-    # No items have been modified
-    # Modified?
-    # otherwise...
-    # ...calculate the value
-
-    def __setitem__(self, key, value):
-        &quot;&quot;&quot;
-        Change an item in the arithmetic sequence.
-        &quot;&quot;&quot;
-        checkIndex(key)
-        self.changed[key] = value                 # Store the changed value
-
-    def __delitem__(self, key):
-        &quot;&quot;&quot;
-        Delete the key provided from sequence
-        &quot;&quot;&quot;
-        checkIndex(key)
-        del self.changed[key]
-
-
-
-if __name__ == &quot;__main__&quot;:
-    s = ArithmeticSequence(1, 2)
-    print(s[4])
-    s[4]=3
-    print(s[4])
-    del s[4]
-    print(s[4])
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/7/18</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15002564768282.html">
-                
-                  <h1>Database System Concept (1): Introduction</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>A <code>database-management system</code> (DBMS，数据库管理系统) is a collection of interrelated data and a set of programs to access those data.  The collection of data, usually referred to as the <code>database</code>. The primary goal of a DBMS is to provide a way to store and retrieve database information that is both <code>convenient</code> and <code>efficient</code>.</p>
-
-<h2 id="toc_0">Purpose of Database System</h2>
-
-<p>Keeping organizational information in a file-processing system has a number of major disadvantages:</p>
-
-<ul>
-<li>Data redundancy and inconsistency
-<ul>
-<li>Users of one program may be unaware of potentially useful data held by other programs.</li>
-</ul></li>
-<li>Difficulty in accessing data
-<ul>
-<li>Programs are written to satisfy particular functions.<br/></li>
-<li>Any new requirement needs a new program.</li>
-</ul></li>
-<li>Data isolation
-<ul>
-<li>Same data is held by different programs </li>
-<li>Each program maintains its own set of data</li>
-</ul></li>
-<li>Integrity problems</li>
-<li>Atomicity problems</li>
-<li>Concurrent-access anomalies</li>
-<li>Security problems</li>
-</ul>
-
-<h2 id="toc_1">View of data</h2>
-
-<h3 id="toc_2">Data Abstraction</h3>
-
-<p>The need for efficiency has led designers to use complex data structures to represent data in the database.</p>
-
-<ul>
-<li><code>Physical level</code>. The lowest level of abstraction <em>how</em> the data are actually stored</li>
-<li><code>Logical level</code>. The next-higher level of abstraction describes <em>what</em> data are stored in the database, and what relationships exist among those data. Each record is described by a type definition, and the interrelationship of these record types is defined as well.</li>
-<li><code>View level</code>. The highest level of abstraction describes only part of the entire data. The system may provide many views for the same database. Computer users see a set of application programs that hide details of the data types.</li>
-</ul>
-
-<p><img src="media/15002564768282/Screen%20Shot%202017-07-17%20at%2010.08.36%20AM.png" alt="The three views of data abstraction"/></p>
-
-<h3 id="toc_3">Instances and Schemas</h3>
-
-<ul>
-<li><code>Instance</code>: the collection of information stored in the database at a particular moment</li>
-<li><code>schema</code>: the overall design of the database.</li>
-</ul>
-
-<p>Database systems have several schemas, partitioned according to the levels of abstraction. The <code>Physical schema</code> describes the database design at the physical level, while the <code>logical schema</code> describes the database design at the logical level.</p>
-
-<p>Applications programs are said to exhibit <code>physical data independence</code> if they do not depend on the <code>physical schema</code>, and thus need not be rewritten if the physical schema changes.</p>
-
-<h3 id="toc_4">Data Models</h3>
-
-<p><code>Data Model</code>(数据库): a collection of conceptual tools for describing data, data relationships, data semantics, and consistency constraints.</p>
-
-<ul>
-<li><code>Relational Model</code>(关系数据库)</li>
-<li><code>Entity-Relationship Model</code> (实体对象模型)</li>
-<li><code>Object-Based Data Model</code> (基于对象的数据模型)</li>
-<li><code>Semistructed Data Model</code></li>
-</ul>
-
-<h2 id="toc_5">Database Language</h2>
-
-<p>A database system provides a <code>data-definition language</code>(DDL) to specify the database schema and a <code>data-manipulation language</code>(DML) to express database queries and updates.</p>
-
-<h2 id="toc_6">Data Storage and Querying</h2>
-
-<p>A database system is partitioned into modules that deal with each of the responsibilities of the overall system. The functional components of a database system can be broadly divided into the <code>storage manager</code> and the <code>query processor</code></p>
-
-<p>The <code>storage manager</code> is the component of a database system that provides the interface between the low-level data stored in the database and the application programs and queries submitted to the system. it is responsible for storing, retrieving, and updating data in the database. The storage manager translates the various DML statement into low-level file-system commands.</p>
-
-<p>The <code>query processor</code> includes:</p>
-
-<ul>
-<li><code>DDL interpreter</code>, which interprets DDL statements and records the definitions in the data dictionary.</li>
-<li><code>DML compiler</code>, which translates DML statements in a query language into an evaluation plan consisting of low-level instructions that the query evaluation engine understands.</li>
-<li><code>Query evaluation engine</code>, which executes low-level instructions generated by the DML compiler.</li>
-</ul>
-
-<h2 id="toc_7">Transaction management</h2>
-
-<p><code>Transaction management</code> ensures that the database remains in a consistent (correct) state despite system failures. The transaction manager ensures that concurrent transaction executions proceed without conflicting.</p>
-
-<h2 id="toc_8">Database Architecture</h2>
-
-<p>The architecture of a database system is greatly influenced by the underlying computer system on which the database system runs. Database system can be centralized, or client-server, where one server machine executes work on behalf of multiple client machines.</p>
-
-<p><img src="media/15002564768282/Screen%20Shot%202017-07-17%20at%2010.55.20%20AM.png" alt="System Structure"/></p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/7/17</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E5%BA%93.html'>数据库</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
                 <a class="clearlink" href="priority_queue.html">
                 
                   <h1>Priority queue</h1>
@@ -788,6 +380,324 @@ print(f4())
                 </div>
               </div><!-- article -->
         
+			<div class="article">
+                <a class="clearlink" href="overfiting_and_normalization.html">
+                
+                  <h1>Machine Learning (4): Overfitting and normalization</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<ul>
+<li>
+<a href="#toc_0">The problem of Overfitting</a>
+</li>
+<li>
+<a href="#toc_1">Regularized Linear Regression</a>
+<ul>
+<li>
+<a href="#toc_2">Normal Equation</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_3">Regularized Logistic Regression</a>
+</li>
+</ul>
+
+
+<h2 id="toc_0">The problem of Overfitting</h2>
+
+<p><strong>Underfitting</strong>, or <strong>high bias</strong>, is when the form of our hypothesis function \(h\) maps poorly to the trend of the data. It is usually caused by a function that is too simple or uses too few features. </p>
+
+<p><strong>Overfitting</strong>, or <strong>high variance</strong>, is caused by a hypothesis function that fits the available data but does not generalize well to predict new data. It is usually caused by a complicated function that creates a lot of unnecessary curves and angles unrelated to the data.</p>
+
+<p>There are two main options to address the issue of overfitting:</p>
+
+<ol>
+<li><p><strong><em>Reduce the number of features</em></strong>:<br/>
+Manually select which features to keep.<br/>
+(Use a model selection algorithm).</p></li>
+<li><p><strong><em>Regularization</em></strong><br/>
+Keep all the features, but reduce the magnitude of parameters \(\theta_j\). Regularization works well when we have a lot of slightly useful features.</p></li>
+</ol>
+
+<p><img src="media/14985711297859/14987109337751.png" alt="sd"/></p>
+
+<p>The figure above shows the Underfitting, Normal, Overfitting.</p>
+
+<h2 id="toc_1">Regularized Linear Regression</h2>
+
+<p>We regularize all of theta parameters in a single summation as:</p>
+
+<p>\[J(\theta)= \dfrac{1}{2m}[ \sum_{i=1}^m (h_\theta(x^{(i)}) - y^{(i)})^2 + \lambda\ \sum_{j=1}^n \theta_j^2]\]</p>
+
+<p>where the \(\lambda\), or lambda, is the <strong>regularization parameter</strong>. It determines how much the costs of our theta parameters are inflated.  If \(\lambda\) is chosen to be too large, it may smooth out the function too much and cause underfitting. </p>
+
+<p><strong>Note that you should not regularize the parameter \(\theta_0\)</strong>.</p>
+
+<p>The corresponding gradient descent is</p>
+
+<p>\[\begin{align*} &amp; \text{Repeat}\ \lbrace \newline &amp; \ \ \ \ \theta_0 := \theta_0 - \alpha\ \frac{1}{m}\ \sum_{i=1}^m (h_\theta(x^{(i)}) - y^{(i)})x_0^{(i)} \newline &amp; \ \ \ \ \theta_j := \theta_j - \alpha\ \left[ \left( \frac{1}{m}\ \sum_{i=1}^m (h_\theta(x^{(i)}) - y^{(i)})x_j^{(i)} \right) + \frac{\lambda}{m}\theta_j \right] &amp;\ \ \ \ \ \ \ \ \ \ j \in \lbrace 1,2...n\rbrace\newline &amp; \rbrace \end{align*}\]</p>
+
+<p>With some manipulation our update rule can also be represented as:<br/>
+\[\theta_j := \theta_j(1 - \alpha\frac{\lambda}{m}) - \alpha\frac{1}{m}\sum_{i=1}^m(h_\theta(x^{(i)}) - y^{(i)})x_j^{(i)}\]</p>
+
+<h3 id="toc_2">Normal Equation</h3>
+
+<p>To add in regularization, the equation is the same as our original, except that we add another term inside the parentheses:</p>
+
+<p>\[\begin{align*}&amp; \theta = \left( X^TX + \lambda \cdot L \right)^{-1} X^Ty \newline&amp; \text{where}\ \ L = \begin{bmatrix} 0 &amp; &amp; &amp; &amp; \newline &amp; 1 &amp; &amp; &amp; \newline &amp; &amp; 1 &amp; &amp; \newline &amp; &amp; &amp; \ddots &amp; \newline &amp; &amp; &amp; &amp; 1 \newline\end{bmatrix}\end{align*}\]</p>
+
+<p>Recall that if \(m &lt; n\), then \(XTX\) is non-invertible. However, when we add the term \(\lambda L\), then \(XTX + \lambda L\) becomes invertible.</p>
+
+<h2 id="toc_3">Regularized Logistic Regression</h2>
+
+<p>We regularize all of \(\theta\) parameters in a single summation as:</p>
+
+<p>\[ J(\theta) = -\dfrac{1}{m} \sum_{i=1}^m[ y ^{(i)}\log(h_\theta(x^{(i)}))+(1-y^{(i)}) \log(1-h_\theta(x^{(i)}))]+ \frac{\lambda}{2m} \sum_{j=1}^n \theta_j^2\]</p>
+
+<p>The corresponding gradient descent is<br/>
+\[\theta_j:=\theta_j-\frac{\alpha}{m}\Sigma^m_{i=1}(h_\theta(x^{(i)})-y^{(i)})x^{(i)}_j+\frac{\alpha\lambda}{m}\theta_j\]</p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/6/29</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html'>机器学习</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="14987012023353.html">
+                
+                  <h1>口语</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<ol>
+<li>发音 native</li>
+<li>流畅度</li>
+<li>地道的语料</li>
+</ol>
+
+<p>方法</p>
+
+<ol>
+<li>逐句跟读   <strong>不看原文</strong></li>
+<li>影子跟读</li>
+<li>全文复数  用到关键词句</li>
+</ol>
+
+<p>每天2个小时，1个小时跟读，1个小时背诵和跟读</p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/6/29</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='English.html'>English</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="linear_regression_with_multiple_variables.html">
+                
+                  <h1>Machine Learning (2): Linear Regression with Multiple Variables</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<ul>
+<li>
+<a href="#toc_0">Multiple Features (variables)</a>
+</li>
+<li>
+<a href="#toc_1">Gradient descent</a>
+<ul>
+<li>
+<a href="#toc_2">Feature Scaling</a>
+</li>
+<li>
+<a href="#toc_3">Learning rate</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_4">Computing Parameters Analytically</a>
+<ul>
+<li>
+<a href="#toc_5">Normal equation:</a>
+</li>
+<li>
+<a href="#toc_6">Gradient descent v.s. Normal equation</a>
+</li>
+<li>
+<a href="#toc_7">Normal Equation Non-invertible</a>
+</li>
+</ul>
+</li>
+</ul>
+
+
+<h2 id="toc_0">Multiple Features (variables)</h2>
+
+<p>Notation:<br/>
+\(m\) = the number of training examples<br/>
+\(n\) = the number of features<br/>
+\(x^{(i)}\)  = the input (feature) of \(i^{th}\) training example<br/>
+\(x^{(i)}_j\) =  value of feature \(j\) of \(i^{th}\) training example</p>
+
+<p>The multivariable form of the hypothesis function accommodating these multiple features is as follows:</p>
+
+<p>\[h_θ(x)=θ_0+θ_1x_1+θ_2x_2+θ_3x_3+⋯+θ_nx_n=\theta^Tx\] (\(n+1\)- dimensional vector)</p>
+
+<p>For convenience of notation, define \(x_0=1\)</p>
+
+<h2 id="toc_1">Gradient descent</h2>
+
+<p><strong>Hypothesis</strong>: <br/>
+\[h_\theta(x) = \theta^Tx\]</p>
+
+<p><strong>Parameters</strong>:<br/>
+\[\theta\]</p>
+
+<p><strong>Cost Function</strong>:<br/>
+\[J(\theta)=\frac{1}{2m}\Sigma^m_{i=1}(h_\theta(x^{(i)})-y^{(i)})^2\]</p>
+
+<p><strong>Gradient descent</strong>:<br/>
+Repeat until converge{</p>
+
+<p>\(\theta_j := \theta_j -\alpha\frac{\partial}{\partial \theta_j}J(\theta)=\theta_j -\alpha\frac{1}{m}(h_\theta(x^{(i)})-y^{(i)})x_j^{(i)}\)  (simultaneously update for every j= 0,1,...,n)</p>
+
+<h3 id="toc_2">Feature Scaling</h3>
+
+<p>We can speed up gradient descent by having each of our input values in roughly the same range. This is because \(\theta\) will descend quickly on small ranges and slowly on large ranges, and so will oscillate inefficiently down to the optimum when the variables are very uneven.</p>
+
+<p><strong>Idea: Make sure features are on a similar scale.</strong></p>
+
+<p>Two techniques to help with this are <strong>feature scaling</strong> and <strong>mean normalization</strong>.</p>
+
+<ul>
+<li><p><strong>Feature scaling</strong> involves dividing the input values by the range (i.e. the maximum value minus the minimum value) of the input variable, resulting in a new range of just 1. </p></li>
+<li><p><strong>Mean normalization</strong> involves subtracting the average value for an input variable from the values for that input variable resulting in a new average value for the input variable of just zero. </p></li>
+</ul>
+
+<p>Replace \(x_i\) with \( x_i -\mu_i\) to make features have approximately zero mean (Do not apply to \(x_0=1\))</p>
+
+<p>\[x_i =\frac{ x_i - \mu_i}{S_i}\]</p>
+
+<p>where  \(\mu_i\) is average value of \(x_i\) in training set, \(S_i\) is the range (max-min) or standard deviation of \(x_i\).</p>
+
+<p>E.g. \[x_1=\frac{size-1000}{2000}\]<br/>
+\[x_2=\frac{\#bedrooms-2}{5}\]</p>
+
+<h3 id="toc_3">Learning rate</h3>
+
+<p><strong>Debugging</strong>: How to make sure gradient descent is working correctly.</p>
+
+<p>-- How to choose learning rate \(\alpha\).</p>
+
+<p>Gradient descent is working correctly if \(J(\theta)\) decreases after every iteration.</p>
+
+<p>Use smaller \(\alpha\). For sufficiently small \(\alpha\), \(J(\theta)\) should decrease on every iteration.</p>
+
+<p><strong>Automatic convergence test</strong>. Declare convergence if \(J(\theta)\) decreases by less than \(E\) in one iteration, where \(E\) is some small value such as \(10^{−3}\). However in practice it&#39;s difficult to choose this threshold value.</p>
+
+<p><strong>Summary</strong>:</p>
+
+<ul>
+<li>If  \(\alpha\)  is too small: slow convergence.</li>
+<li>If \(\alpha\) is too large: may not decrease on every iteration; may not converge.</li>
+</ul>
+
+<h2 id="toc_4">Computing Parameters Analytically</h2>
+
+<h3 id="toc_5">Normal equation:</h3>
+
+<p>Gradient descent gives one way of minimizing \(J\). The &quot;Normal Equation&quot; method minimizes \(J\) by explicitly taking its derivatives with respect to the \(θj\) ’s, and setting them to zero. This allows us to find the optimum theta without iteration. The normal equation formula is given below:</p>
+
+<p>\[\theta = (X^TX)^{-1}X^Ty\]</p>
+
+<p>Matlab command: </p>
+
+<pre><code class="language-matlab">pinv(X&#39;*X)*X&#39;*y
+</code></pre>
+
+<p>where <code>pinv</code> is <code>peudoinversion</code> of matrix. It is different to <code>inv</code>.</p>
+
+<h3 id="toc_6">Gradient descent v.s. Normal equation</h3>
+
+<p><img src="media/14972614146835/Screen%20Shot%202017-06-27%20at%202.38.45%20PM.png" alt="Screen Shot 2017-06-27 at 2.38.45 P"/></p>
+
+<h3 id="toc_7">Normal Equation Non-invertible</h3>
+
+<p>The common reason causes non-invertible:</p>
+
+<ul>
+<li>Redundant features(linearly dependent)<br/>
+E.g. \(x_1\) = size in feet\(^2\), \(x_2\) = size in m\(^2\)</li>
+<li>Too many features(e.g. \(m&lt;=n\)).<br/>
+-- Delete some features, or use regularization.</li>
+</ul>
+
+<p>where \(m\) is the number of training examples, \(n\) is the number of features.</p>
+
+<p>Solutions to the above problems include deleting a feature that is linearly dependent with another or deleting one or more features when there are too many features.</p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/6/12</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html'>机器学习</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
               
 
 
@@ -913,7 +823,7 @@ print(f4())
 		  
 		      
 			      <li class="post">
-			        <a href="15318973137171.html">深度学习人物篇</a>
+			        <a href="Linking.html">CSAPP - 链接</a>
 			      </li>
 		     
 		  
