@@ -4,7 +4,7 @@
   <title><![CDATA[techlarry]]></title>
   <link href="http://larryim.cc/atom.xml" rel="self"/>
   <link href="http://larryim.cc/"/>
-  <updated>2018-07-20T06:58:28+08:00</updated>
+  <updated>2018-07-20T11:18:35+08:00</updated>
   <id>http://larryim.cc/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -67,13 +67,16 @@
 <li>
 <a href="#toc_13">5.1 Thread Pools</a>
 </li>
+<li>
+<a href="#toc_14">5.4 Grand Central Dispatch</a>
+</li>
 </ul>
 </li>
 <li>
-<a href="#toc_14">6 Threading Issues</a>
+<a href="#toc_15">6 Threading Issues</a>
 <ul>
 <li>
-<a href="#toc_15">6.1 Scheduler Activation</a>
+<a href="#toc_16">6.1 Scheduler Activation</a>
 </li>
 </ul>
 </li>
@@ -172,10 +175,10 @@
 <li>Kernel threads are supported and managed directly by the operating system.</li>
 </ul>
 
-<p>有两种不同的方法来提供线程支持：用户层的用户线程和内核层的内核线程。用户线程受内核支持，而无需内核管理；而内核线程由操作系统支持和管理。事实上所有当代操作系统都支持内核线程。</p>
+<p>有两种不同的方法来提供线程支持：用户层的用户级线程和内核层的内核级线程。用户级线程受内核支持，而无需内核管理；而内核级线程由操作系统直接支持和管理。事实上所有当代操作系统都支持内核级线程。</p>
 
 <p>Ultimately, a relationship must exist between user threads and kernel threads. There are three common ways of establishing such a relationship: the many-to-one model, the one-to-one model, and the many-to-many model.<br/>
-在用户线程和内核线程之间必然存在一种关系。有三种普遍建立这种关系的方法：多对一模型、一对一模型、多对多模型。</p>
+在用户级线程和内核级线程之间必然存在一种关系。有三种普遍建立这种关系的方法：多对一模型、一对一模型、多对多模型。</p>
 
 <h3 id="toc_7">3.1 Many-to-One Model</h3>
 
@@ -205,9 +208,10 @@
 <p>The <strong>many-to-many model</strong> multiplexes many user-level threads to a smaller or equal number of kernel threads. 多对多模型多路复用了许多用户线程到同样数量或更小数量的内核线程上。</p>
 
 <ul>
-<li>The many-to-many model suffers from neither of these shortcomings: developers can create as many user threads as necessary, and the corresponding kernel threads can run in parallel on a multiprocessor.多对多模型没有这两者的缺点：开发人员可创建任意多的用户线程，并且相应内核线程能在多处理器系统上并发执行。</li>
+<li>Developers can create as many user threads as necessary. 开发人员可创建任意多的用户线程。</li>
+<li>The corresponding kernel threads can run in parallel on a multiprocessor. 相应内核线程能在多处理器系统上并发执行。</li>
 <li>Also, when a thread performs a blocking system call, the kernel can schedule another thread for execution. 而且当一个线程执行阻塞系统调用时，内核能调度另一个线程来执行。</li>
-<li>In practice it is difficult to implement.</li>
+<li>In practice it is <strong>difficult to implement</strong>. 实际上难以实施。</li>
 </ul>
 
 <p><img src="media/15319932561412/many_to_many_model.png" alt="many_to_many_mode"/></p>
@@ -227,15 +231,15 @@
 <li>Interface can be tailored to application needs</li>
 </ul>
 
-<p>Issues</p>
+<p>Issues:</p>
 
 <ul>
-<li>A blocking system call blocks all user-level threads</li>
-<li>Asynchronous system calls can provide partial work-around</li>
-<li>A page fault blocks all user-level threads</li>
-<li>Matching threads to CPUs in a multiprocessor is hard
+<li>A blocking system call blocks all user-level threads. 阻塞系统调用能够阻塞所有用户级线程。</li>
+<li>Asynchronous system calls can provide partial work-around. 非同步系统调用能提供部分work-around. <a href="https://en.wikipedia.org/wiki/Workaround">view the definition of work-around here</a></li>
+<li>A page fault blocks all user-level threads. 缺页异常阻塞所有用户级线程。</li>
+<li>Matching threads to CPUs in a multiprocessor is hard：
 <ul>
-<li>No knowledge about # of CPUs available to address space </li>
+<li>No knowledge about the numbers of CPUs available to address space </li>
 <li>No knowledge when a thread blocks</li>
 </ul></li>
 </ul>
@@ -274,11 +278,14 @@
 
 <p>Note: Compile and link with <code>-pthread</code>.</p>
 
+<p><code>pthread</code>详细用法和实例, 见<a href="https://www.cs.cmu.edu/afs/cs/academic/class/15492-f07/www/pthreads.html">POSIX thread (pthread) libraries</a></p>
+
 <h2 id="toc_12">5 Implicit threading</h2>
 
-<p>One way to address difficulties and better support the design of concurrent and parallel applications is to transfer the creation and management of threading from application developers to compilers and run-time libraries. This strategy, termed <strong>implicit threading</strong>, is an increasingly popular trend.</p>
+<p><strong>Implicit threading</strong>(隐式线程): Transfers the creation and management of threading from application developers to compilers and run-time libraries.</p>
 
 <ul>
+<li>One way to address difficulties and better support the design of concurrent and parallel applications</li>
 <li>The advantage of this approach is that developers <strong><em><u>only need to identify parallel tasks</u></em></strong>, and the libraries determine the specific details of thread creation and management.</li>
 </ul>
 
@@ -293,17 +300,17 @@
 
 <h3 id="toc_13">5.1 Thread Pools</h3>
 
-<p>Two main issues:</p>
+<p>Two main issues exist:</p>
 
 <ul>
-<li>The thread will be discarded once it has completed its work. 线程在完成工作之后就要被丢弃</li>
-<li>Unlimited threads could exhaust system resources. 无限制的线程会耗尽系统资源</li>
+<li>The thread will be <strong>discarded</strong> once it has completed its work. 线程在完成工作之后就要被丢弃</li>
+<li><strong>Unlimited</strong> threads could exhaust system resources. 无限制的线程会耗尽系统资源</li>
 </ul>
 
 <p>Solution -&gt; <strong>thread pool</strong>(线程池)</p>
 
 <ul>
-<li>To create a number of threads at start-up, and place them into a pool, where they sit and wait for work.</li>
+<li>It creates a number of threads at start-up, and places them into a pool, where they sit and wait for work.</li>
 <li>When a server receives a request, it submits the request to the thread pool and resumes waiting for additional requests.</li>
 <li>If there is an available thread in the pool, it is awakened, and the request is serviced immediately. </li>
 <li>If the pool contains no available thread, the task is queued until one becomes free. </li>
@@ -338,9 +345,17 @@ public class ThreadPoolExample
 }
 </code></pre>
 
-<h2 id="toc_14">6 Threading Issues</h2>
+<h3 id="toc_14">5.4 Grand Central Dispatch</h3>
 
-<h3 id="toc_15">6.1 Scheduler Activation</h3>
+<p><strong>Grand Central Dispatch</strong> (GCD) is a technology for Apple&#39;s Mac OS X and iOS operating systems. It is a combination of extensions to the C languages, an API, and a run-time library that allows application developers identify sections of code to run in parallel.</p>
+
+<ul>
+<li>GCD identifies two types of dispatch queues: serial and concurrent.</li>
+</ul>
+
+<h2 id="toc_15">6 Threading Issues</h2>
+
+<h3 id="toc_16">6.1 Scheduler Activation</h3>
 
 <p>Many systems implementing either the many-to-many or the two-level model place an <em>intermediate</em> data structure between the user and kernel threads. This data structure—typically known as a <strong><u><em>lightweight process</em></u></strong>（轻量级线程）, or <strong>LWP</strong>.</p>
 
@@ -388,49 +403,6 @@ public class ThreadPoolExample
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[CSAPP - 网络编程]]></title>
-    <link href="http://larryim.cc/csapp-internet-programming.html"/>
-    <updated>2018-07-20T01:02:55+08:00</updated>
-    <id>http://larryim.cc/csapp-internet-programming.html</id>
-    <content type="html"><![CDATA[
-<ul>
-<li>
-<a href="#toc_0">1 客户端-服务器编程模型</a>
-</li>
-<li>
-<a href="#toc_1">2 网络</a>
-</li>
-</ul>
-
-
-<h2 id="toc_0">1 客户端-服务器编程模型</h2>
-
-<p>每个网络应用都是基于<strong>客户端-服务器</strong>模型的。</p>
-
-<p>客户端-服务器模型中的基本操作是<strong>事务</strong>(transaction)。一个客户端-服务器事务由以下四步组成：</p>
-
-<ul>
-<li>当一个客户端需要服务时，它向服务器发送一个请求，发起一个事务。</li>
-<li>服务器收到请求后，解释它，并以适当的方式操作它的资源。</li>
-<li>服务器给客户端发送一个响应，并等待下一个请求。</li>
-<li>客户端收到响应并处理它。</li>
-</ul>
-
-<p>客户端和服务器是进程，而不是常提到的机器或者主机。</p>
-
-<ul>
-<li>一台主机可以同时运行许多不同的客户端和服务器</li>
-<li>一个客户端和服务器的事务可以在同一台或是不同的主机上。</li>
-</ul>
-
-<h2 id="toc_1">2 网络</h2>
-
-<p>对主机而言，网络只是有一种I/O设备，是数据源和数据接收方。</p>
-
-]]></content>
-  </entry>
-  
-  <entry>
     <title type="html"><![CDATA[Operating System Concepts 3 - Processes]]></title>
     <link href="http://larryim.cc/os-concets-processes.html"/>
     <updated>2018-07-17T00:28:20+08:00</updated>
@@ -469,7 +441,7 @@ public class ThreadPoolExample
 <a href="#toc_8">3.1 Process creation</a>
 </li>
 <li>
-<a href="#toc_9">3.2 Process termintation</a>
+<a href="#toc_9">3.2 Process termination</a>
 </li>
 </ul>
 </li>
@@ -541,7 +513,7 @@ public class ThreadPoolExample
 <p><strong>Process</strong> (进程) is a program in execution.</p>
 
 <ul>
-<li>the unit of work in a modern computing system</li>
+<li>Process is the unit of work in a modern computing system</li>
 </ul>
 
 <p>The status of the <strong>current</strong> activity of a process is represented by the value of the <strong>program counter</strong> and the contents of the processor&#39;s <strong>registers</strong>.</p>
@@ -647,7 +619,7 @@ public class ThreadPoolExample
 
 <p><img src="media/15317585001692/process%20creating%20using%20the%20fork--%20system%20call.png" alt="process creating using the fork-- system cal"/></p>
 
-<h3 id="toc_9">3.2 Process termintation</h3>
+<h3 id="toc_9">3.2 Process termination</h3>
 
 <p>A process <strong>terminates</strong> when it finishes executing its final statement and asks the operating system to delete it by using the <code>exit()</code> system call.</p>
 
@@ -754,7 +726,7 @@ mmap(0, SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
 <p>Cons:</p>
 
 <ul>
-<li>limited modularity of the resulting process definitions. Changing the identifier of a process may necessiate examining all other process definitions.</li>
+<li>limited modularity of the resulting process definitions. Changing the identifier of a process may necessinate examining all other process definitions.</li>
 <li>any such hard-coding techniques, are less desirable.</li>
 </ul>
 
@@ -975,6 +947,49 @@ int main(void)
 <img src="media/15317585001692/RPC%20between%20a%20client%20and%20a%20server.png" alt="RPC between a client and a serve"/></p>
 
 <p>RPC hides all the network code into the stub procedures. This prevents the application programs, the client and the server, from having to worry about details such as sockets, network byte order, and the like.</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[CSAPP - 网络编程]]></title>
+    <link href="http://larryim.cc/csapp-internet-programming.html"/>
+    <updated>2018-07-20T01:02:55+08:00</updated>
+    <id>http://larryim.cc/csapp-internet-programming.html</id>
+    <content type="html"><![CDATA[
+<ul>
+<li>
+<a href="#toc_0">1 客户端-服务器编程模型</a>
+</li>
+<li>
+<a href="#toc_1">2 网络</a>
+</li>
+</ul>
+
+
+<h2 id="toc_0">1 客户端-服务器编程模型</h2>
+
+<p>每个网络应用都是基于<strong>客户端-服务器</strong>模型的。</p>
+
+<p>客户端-服务器模型中的基本操作是<strong>事务</strong>(transaction)。一个客户端-服务器事务由以下四步组成：</p>
+
+<ul>
+<li>当一个客户端需要服务时，它向服务器发送一个请求，发起一个事务。</li>
+<li>服务器收到请求后，解释它，并以适当的方式操作它的资源。</li>
+<li>服务器给客户端发送一个响应，并等待下一个请求。</li>
+<li>客户端收到响应并处理它。</li>
+</ul>
+
+<p>客户端和服务器是进程，而不是常提到的机器或者主机。</p>
+
+<ul>
+<li>一台主机可以同时运行许多不同的客户端和服务器</li>
+<li>一个客户端和服务器的事务可以在同一台或是不同的主机上。</li>
+</ul>
+
+<h2 id="toc_1">2 网络</h2>
+
+<p>对主机而言，网络只是有一种I/O设备，是数据源和数据接收方。</p>
 
 ]]></content>
   </entry>
