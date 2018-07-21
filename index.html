@@ -180,18 +180,23 @@
 </li>
 <li>
 <a href="#toc_8">4 套接字接口</a>
-</li>
-<li>
-<a href="#toc_9">5 Web服务器</a>
 <ul>
 <li>
-<a href="#toc_10">5.1 Web基础</a>
+<a href="#toc_9">4.1 Echo客户端和服务器示例</a>
+</li>
+</ul>
 </li>
 <li>
-<a href="#toc_11">5.2 Web内容</a>
+<a href="#toc_10">5 Web服务器</a>
+<ul>
+<li>
+<a href="#toc_11">5.1 Web基础</a>
 </li>
 <li>
-<a href="#toc_12">5.3 HTTP事务</a>
+<a href="#toc_12">5.2 Web内容</a>
+</li>
+<li>
+<a href="#toc_13">5.3 HTTP事务</a>
 </li>
 </ul>
 </li>
@@ -412,9 +417,81 @@ struct in_addr {
 </ul></li>
 </ol>
 
-<h2 id="toc_9">5 Web服务器</h2>
+<h3 id="toc_9">4.1 Echo客户端和服务器示例</h3>
 
-<h3 id="toc_10">5.1 Web基础</h3>
+<p>在和服务器建立连接之后，客户端进入一个循环，反复从标准输入读取文本行，发送文本行给服务器，从服务器读取回送的行，并输出结果到接准输出。</p>
+
+<pre><code class="language-c">#include &quot;csapp.h&quot;
+int main (int argc, char **argv) {
+    int clientfd;
+    char *host, *port, buf[MAXLINE];
+    rio_t rio;
+    
+    host = argv[1];
+    port = argv[2];
+    
+    //和服务器建立连接
+    clientfd = Open_clientfd(host, port);
+    Rio_readinitb(&amp;rio, clientfd);
+    
+    while (Fgets(buf, MAXLINE, stdin) != NULL) {
+        // 写入，也就是向服务器发送信息
+        Rio_writen(clientfd, buf, strlen(buf));
+        // 读取，也就是从服务器接收信息
+        Rio_readlineb(&amp;rio, buf, MAXLINE);
+        // 把从服务器接收的信息显示在输出中
+        Fputs(buf, stdout);
+    }
+    Close(clientfd);
+    exit(0);
+}
+</code></pre>
+
+<p>服务器在打开监听描述符后，进入一个无限循环。每次循环都等待一个来自客户端的连接请求，输出已连接客户端的域名和IP地址，并调用echo函数为这些客户端服务。在echo程序返回后，主程序关闭已连接描述符。</p>
+
+<pre><code class="language-c">#include &quot;csapp.h&quot;
+void echo(int connfd);
+int main(int argc, char **argv){
+    int listenfd, connfd;
+    socklen_t clientlen;
+    struct sockaddr_storage clientaddr; // Enough room for any addr
+    char client_hostname[MAXLINE], client_port[MAXLINE];
+    
+    // 开启监听端口，注意只开这么一次
+    listenfd = Open_listenfd(argv[1]);
+    while (1) {
+        // 需要具体的大小
+        clientlen = sizeof(struct sockaddr_storage); // Important!
+        // 等待连接
+        connfd = Accept(listenfd, (SA *)&amp;clientaddr, &amp;clientlen);
+        // 获取客户端相关信息
+        Getnameinfo((SA *) &amp;clientaddr, clientlen, client_hostname,
+                     MAXLINE, client_port, MAXLINE, 0);
+        printf(&quot;Connected to (%s, %s)\n&quot;, client_hostname, client_port);
+        // 服务器具体完成的工作
+        echo(coonfd);
+        Close(connfd);
+    }
+    exit(0);
+}
+void echo(int connfd) {
+    size_t n;
+    char buf[MAXLINE];
+    rio_t rio;
+    
+    // 读取从客户端传输过来的数据
+    Rio_readinitb(&amp;rio, connfd);
+    while((n = Rio_readlineb(&amp;rio, buf, MAXLINE)) != 0) {
+        printf(&quot;server received %d bytes\n&quot;, (int)n);
+        // 把从 client 接收到的信息再写回去
+        Rio_writen(connfd, buf, n);
+    }
+}
+</code></pre>
+
+<h2 id="toc_10">5 Web服务器</h2>
+
+<h3 id="toc_11">5.1 Web基础</h3>
 
 <p>Web客户端和服务器之间的交互用的是HTTP协议(超文本传输协议)</p>
 
@@ -427,7 +504,7 @@ struct in_addr {
 
 <p><img src="media/15320197756867/web%20server%20basics.png" alt="web server basics"/></p>
 
-<h3 id="toc_11">5.2 Web内容</h3>
+<h3 id="toc_12">5.2 Web内容</h3>
 
 <p>Web服务器返回内容给客户端，内容是与一个<strong>MIME</strong>类型相关的字节序列。(MIME -  Multipurpose Internet Mail Extensions)</p>
 
@@ -441,7 +518,7 @@ struct in_addr {
 <li>动态内容：运行一个可执行文件产生输出，返回给客户端</li>
 </ul>
 
-<h3 id="toc_12">5.3 HTTP事务</h3>
+<h3 id="toc_13">5.3 HTTP事务</h3>
 
 <p>一个HTTP请求(request)是一个请求行(request line)，后面跟随着零个或多个请求报头(request header)，再跟随一个终止报头的空行。</p>
 
