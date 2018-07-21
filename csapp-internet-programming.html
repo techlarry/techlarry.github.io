@@ -91,9 +91,9 @@
         
             <li><a href="Leetcode.html">Leetcode</a></li>
         
-            <li><a href="C/C++.html">C/C++</a></li>
+            <li><a href="programming_language.html">编程语言</a></li>
         
-            <li><a href="Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html">Python数据结构与算法</a></li>
+            <li><a href="data_structure_and_algorithm.html">数据结构和算法</a></li>
         
             <li><a href="Course.html">Course</a></li>
         
@@ -168,6 +168,28 @@
 </li>
 <li>
 <a href="#toc_1">2 网络</a>
+<ul>
+<li>
+<a href="#toc_2">2.2 网络协议</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_3">3 全球IP因特网</a>
+<ul>
+<li>
+<a href="#toc_4">3.1 IP地址</a>
+</li>
+<li>
+<a href="#toc_5">3.2 Internet Domain Names</a>
+</li>
+<li>
+<a href="#toc_6">3.3 因特网连接</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_7">4 套接字接口</a>
 </li>
 </ul>
 
@@ -185,6 +207,8 @@
 <li>客户端收到响应并处理它。</li>
 </ul>
 
+<p><img src="media/15320197756867/client-server%20model.png" alt="client-server mode"/></p>
+
 <p>客户端和服务器是进程，而不是常提到的机器或者主机。</p>
 
 <ul>
@@ -194,7 +218,225 @@
 
 <h2 id="toc_1">2 网络</h2>
 
-<p>对主机而言，网络只是有一种I/O设备，是数据源和数据接收方。</p>
+<p>对主机而言，网络只是又一种I/O设备，是数据源和数据接收方。物理上而言，网络是一个按照地理远近组成的层次系统。</p>
+
+<p>（1）最底层：以太网段<br/>
+<strong>局域网</strong>(LAN, Local Area Network)的范围一般限制在一个建筑或者校园内。最流行的局域网技术是<strong>以太网</strong>(Ethernet)，由电缆和集线器(hub)组成一个以太网段。</p>
+
+<p><img src="media/15320197756867/ethernet%20segment.png" alt="ethernet segment"/></p>
+
+<p>(2) 桥接以太网</p>
+
+<p>以太网段使用电缆和网桥(bridge)连接成较大的局域网，称为<strong>桥接以太网</strong>(bridged Ethernet)</p>
+
+<p><img src="media/15320197756867/bridged%20ethernet%20segment.png" alt="bridged ethernet segment"/></p>
+
+<p>（3）互联网络</p>
+
+<p>多个不兼容的局域网可以通过路由器(router）连接成互联网络(internet)。</p>
+
+<h3 id="toc_2">2.2 网络协议</h3>
+
+<p>互联网络是由采用完全不同和不兼容技术的各种局域网和广域网组成。那么如何能让某台主机跨过所有不兼容的网络发送数据位到另一台目的主机呢？</p>
+
+<p>解决方法：一层运行在每台主机和路由器上的协议软件，它消除了不同网络之间的差异。</p>
+
+<p>协议提供了两种基本能力：</p>
+
+<ul>
+<li>提供了命名机制
+<ul>
+<li>定义一致的主机地址(host adress)格式</li>
+<li>每台主机会被分配至少一个互联网络地址(internet address)，地址唯一地标识了主机</li>
+</ul></li>
+<li><p>传送机制</p>
+<ul>
+<li>定义了统一的传送基本单位-<strong>包</strong>(packet)</li>
+<li>包由<strong>包头</strong>(header)和<strong>有效载荷</strong>(payload)组成
+<ul>
+<li>包头包括包的大小以及源主机和目的主机的地址</li>
+<li>有效载荷包括从源主机发出的数据位</li>
+</ul></li>
+</ul>
+<p><img src="media/15320197756867/Transferring%20Internet%20Data%20Via%20Encapsulation.png" alt="Transferring Internet Data Via Encapsulation"/></p></li>
+</ul>
+
+<p>PH: Internet packet header, 互联网络包头<br/>
+FH: LAN frame header, 局域网帧头</p>
+
+<h2 id="toc_3">3 全球IP因特网</h2>
+
+<p>全球IP因特网(Global IP Internet)是最著名和最成功的互联网络(internet)实现。每台因特网主机都运行实现TCP/IP协议的软件，使用套接字接口(sockets interface)函数和Unix I/O函数来通信。</p>
+
+<p><img src="media/15320197756867/hardware%20and%20software%20organization%20of%20an%20internet%20application.png" alt="hardware and software organization of an internet application"/></p>
+
+<p>程序员眼中的因特网：</p>
+
+<ul>
+<li>主机被映射为一组32位的<strong>IP地址</strong>(IP addresses)
+<ul>
+<li>128.2.203.179</li>
+</ul></li>
+<li>IP地址被映射为一组标识符，叫做<strong>域名</strong>(domain name)</li>
+<li>因特网主机上的进程能够通过<strong>连接</strong>和任何其他因特网主机上的进程通信。</li>
+</ul>
+
+<h3 id="toc_4">3.1 IP地址</h3>
+
+<p>32位IP地址存在一个IP地址结构(<code>in_addr</code>)中</p>
+
+<ul>
+<li>IP地址在内存中是以<strong>网络字节顺序</strong>(network byte order, 大端法)存放的</li>
+</ul>
+
+<pre><code class="language-c">/* Internet address structure */ 
+struct in_addr { 
+    uint32_t s_addr; /* network byte order (big-endian) */ 
+};
+</code></pre>
+
+<h3 id="toc_5">3.2 Internet Domain Names</h3>
+
+<p><strong>域名</strong>是一串用句点分隔的单词(字母、数字和破折号)。域名集合形成了一个层次结构，可以表示为一棵树。</p>
+
+<p><img src="media/15320197756867/Internet%20Domain%20Names.png" alt="Internet Domain Names"/></p>
+
+<p><strong>域名系统</strong>(Domain Naming System, DNS): 映射IP地址和域名的数据库。可以把DNS数据库视为上百万的<strong>主机条目</strong>(host entry)的集合。</p>
+
+<ul>
+<li>DNS映射，可以通过<code>nsloopup</code>查看</li>
+<li>在最简单的情况中，一个域名和一个IP地址之间是一一映射
+<ul>
+<li><code>nslookup whaleshark.ics.cs.cmu.edu</code> - <code>Address: 128.2.210.175</code></li>
+</ul></li>
+<li>然而，在某些情况下，多个域名可以映射为同一个IP地址
+<ul>
+<li><code>nslookup cs.mit.edu/ nslookup eecs.mit.edu</code> - <code>Address: 18.62.1.6</code></li>
+</ul></li>
+<li>在最通常的情况下，多个域名可以映射到同一组的多个IP地址
+<ul>
+<li><code>nslookup www.twitter.com</code> - <code>Address: 199.16.156.6</code>, <code>Address:199.16.156.70</code></li>
+</ul></li>
+</ul>
+
+<h3 id="toc_6">3.3 因特网连接</h3>
+
+<p>客户端和服务器通过<strong>连接</strong>(connections)发送字节流来通信，每一个连接都有如下特点：</p>
+
+<ul>
+<li>点对点(point-to-point)：连接一对进程</li>
+<li>全双工(full-duplex)：数据可以同时在两个方向传送</li>
+<li>可靠性(reliable)：发送和接受的字节流顺序相同</li>
+</ul>
+
+<p>套接字(sockets)是连接的端点，套接字地址用 “地址：端口”来表示。</p>
+
+<ul>
+<li>端口(port)是一个16位整数，标识了一个进程。
+<ul>
+<li>临时端口：当可会淡发起连接请求时，内核自动分配的端口</li>
+<li>知名端口：和服务器提供的服务有短的端口 (
+<ul>
+<li>Web服务器使用端口80</li>
+<li>ssh服务器使用端口22</li>
+<li>email服务器使用端口25</li>
+</ul></li>
+</ul></li>
+</ul>
+
+<p>一个连接是由它两端的套接字地址唯一确定的（套接字对, socket pair）。</p>
+
+<p><img src="media/15320197756867/socket%20pair.png" alt="socket pai"/></p>
+
+<p>使用端口来识别服务</p>
+
+<p><img src="media/15320197756867/using%20ports%20to%20identify%20services.png" alt="using ports to identify services"/></p>
+
+<h2 id="toc_7">4 套接字接口</h2>
+
+<p>什么是套接字？</p>
+
+<ul>
+<li>对于内核来说，套接字是通信的端点。 To the kernel, a socket is an endpoint of communication</li>
+<li>对于应用来说，套接字是让应用从网络读写的文件描述符。 To an application, a socket is a file descriptor that lets the application read/write from/to the network.</li>
+</ul>
+
+<p>客户端和服务器通过对套接字描述符读写进行通信：</p>
+
+<p><img src="media/15320197756867/client%20and%20servers%20communicate%20%20via%20socket%20descriptors.png" alt="client and servers communicate  via socket descriptors"/></p>
+
+<p>(1) 通用套接字地址(generic socket address)：</p>
+
+<ul>
+<li>以套接字地址作为<code>connect()</code>, <code>bind()</code>, <code>accept</code>的实参</li>
+<li>仅仅因为那时的C不存在<code>void *</code>指针，所以套接字接口被设计成这样。</li>
+</ul>
+
+<pre><code class="language-c">struct sockaddr { 
+    uint16_t sa_family; /* Protocol family */
+    char sa_data[14]; }; /* Address data. */
+</code></pre>
+
+<p>(2) 因特网的套接字地址</p>
+
+<ul>
+<li>必须将<code>struct sockaddr_in *</code> 转换为 <code>strcut sockaddr *)</code>才能以套接字地址作为函数实参</li>
+</ul>
+
+<pre><code class="language-c">struct sockaddr_in {
+    uint16_t sin_family;
+    uint16_t sin_port;
+    struct in_addr sin_addr;
+    unsigned char sin_zero[8];
+    };
+</code></pre>
+
+<p><img src="media/15320197756867/sockets%20interface.png" alt="sockets interface"/></p>
+
+<ol>
+<li>开启服务器(start server)</li>
+<li><code>getaddrinfo</code>: 把主机名(hostname）、主机地址(host addresses)、端口(ports)和服务名(service names)转换为套接字地址结构。
+socket: 创建 socket descriptor，也就是之后用来读写的 file descriptor<br/>
+int socket(int domain, int type, int protocol)<br/>
+例如 int clientfd = socket(AF_INET, SOCK_STREAM, 0);<br/>
+AF_INET 表示在使用 32 位 IPv4 地址<br/>
+SOCK_STREAM 表示这个 socket 将是 connection 的 endpoint<br/>
+前面这种写法是协议相关的，建议使用 getaddrinfo 生成的参数来进行配置，这样就是协议无关的了<br/>
+bind: 请求 kernel 把 socket address 和 socket descriptor 绑定<br/>
+int bind(int sockfd, SA <em>addr, socklen_t addrlen);<br/>
+The process can read bytes that arrive on the connection whose endpoint is addr by reading from descriptor sockfd<br/>
+Similarly, writes to sockfd are transferred along connection whose endpoint is addr<br/>
+最好是用 getaddrinfo 生成的参数作为 addr 和 addrlen<br/>
+listen: 默认来说，我们从 socket 函数中得到的 descriptor 默认是 active socket（也就是客户端的连接），调用 listen 函数告诉 kernel 这个 socket 是被服务器使用的<br/>
+int listen(int sockfd, int backlog);<br/>
+把 sockfd 从 active socket 转换成 listening socket，用来接收客户端的请求<br/>
+backlog 的数值表示 kernel 在接收多少个请求之后（队列缓存起来）开始拒绝请求<br/>
+[</em>]accept: 调用 accept 函数，开始等待客户端请求<br/>
+int accept(int listenfd, SA *addr, int *addrlen);<br/>
+等待绑定到 listenfd 的连接接收到请求，然后把客户端的 socket address 写入到 addr，大小写入到 addrlen<br/>
+返回一个 connected descriptor 用来进行信息传输（类似 Unix I/O）<br/>
+具体的过程可以参考 图3<br/>
+开启客户端（open_clientfd 函数，设定访问地址，尝试连接）<br/>
+getaddrinfo: 设置客户端的相关信息，具体可以参见 图1&amp;2<br/>
+socket: 创建 socket descriptor，也就是之后用来读写的 file descriptor<br/>
+connect: 客户端调用 connect 来建立和服务器的连接<br/>
+int connect(int clientfd, SA *addr, socklen_t addrlen);<br/>
+尝试与在 socker address addr 的服务器建立连接<br/>
+如果成功 clientfd 可以进行读写<br/>
+connection 由 socket 对描述 (x:y, addr.sin_addr:addr.sin_port)<br/>
+x 是客户端地址，y 是客户端临时端口，后面的两个是服务器的地址和端口<br/>
+最好是用 getaddrinfo 生成的参数作为 addr 和 addrlen<br/>
+交换数据（主要是一个流程循环，客户端向服务器写入，就是发送请求；服务器向客户端写入，就是发送响应）<br/>
+[Client]rio_writen: 写入数据，相当于向服务器发送请求<br/>
+[Client]rio_readlineb: 读取数据，相当于从服务器接收响应<br/>
+[Server]rio_readlineb: 读取数据，相当于从客户端接收请求<br/>
+[Server]rio_writen: 写入数据，相当于向客户端发送响应<br/>
+关闭客户端（主要是 close）<br/>
+[Client]close: 关闭连接<br/>
+断开客户端（服务接收到客户端发来的 EOF 消息之后，断开已有的和客户端的连接）<br/>
+[Server]rio_readlineb: 收到客户端发来的关闭连接请求<br/>
+[Server]close: 关闭与客户端的连接</li>
+</ol>
 
 
     
@@ -205,16 +447,13 @@
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="os-concets-processes.html" 
-          title="Previous Post: Operating System Concepts 3 - Processes">&laquo; Operating System Concepts 3 - Processes</a>
-      
         </p>
         </div>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="hadoop_mapreduce.html" 
-          title="Next Post: Hadoop和MapReduce入门">Hadoop和MapReduce入门 &raquo;</a>
+          <a  href="os_concepts_threads_and_concurrency.html" 
+          title="Next Post: Operating System Concepts 4 - Threads & Concurrency">Operating System Concepts 4 - Threads & Concurrency &raquo;</a>
       
       </p>
         </div>
@@ -292,9 +531,9 @@ s.setAttribute('data-timestamp', +new Date());
         
             <a href="Leetcode.html"><strong>Leetcode</strong></a>
         
-            <a href="C/C++.html"><strong>C/C++</strong></a>
+            <a href="programming_language.html"><strong>编程语言</strong></a>
         
-            <a href="Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html"><strong>Python数据结构与算法</strong></a>
+            <a href="data_structure_and_algorithm.html"><strong>数据结构和算法</strong></a>
         
             <a href="Course.html"><strong>Course</strong></a>
         
@@ -337,31 +576,31 @@ s.setAttribute('data-timestamp', +new Date());
 	      
 		      
 			      <li class="post">
-			        <a href="os_concepts_threads_and_concurrency.html">Operating System Concepts 4 - Threads & Concurrency</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="os-concets-processes.html">Operating System Concepts 3 - Processes</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
 			        <a href="csapp-internet-programming.html">CSAPP - 网络编程</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="hadoop_mapreduce.html">Hadoop和MapReduce入门</a>
+			        <a href="os_concepts_threads_and_concurrency.html">Operating System Concepts 4 - Threads & Concurrency</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="Linking.html">CSAPP - 链接</a>
+			        <a href="head-first_java_note.html">Head first Java</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="cpp_by_diessection.html">[NOTE] C++ By Dissection</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="os-concets-processes.html">Operating System Concepts 3 - Processes</a>
 			      </li>
 		     
 		  

@@ -91,9 +91,9 @@
         
             <li><a href="Leetcode.html">Leetcode</a></li>
         
-            <li><a href="C/C++.html">C/C++</a></li>
+            <li><a href="programming_language.html">编程语言</a></li>
         
-            <li><a href="Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html">Python数据结构与算法</a></li>
+            <li><a href="data_structure_and_algorithm.html">数据结构和算法</a></li>
         
             <li><a href="Course.html">Course</a></li>
         
@@ -141,6 +141,241 @@
 	<div class="large-8 medium-8 columns">
 		<div class="markdown-body home-categories">
 		
+			<div class="article">
+                <a class="clearlink" href="bit_manipulation.html">
+                
+                  <h1>Bit manipulation</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h2 id="toc_0">136. Single Number</h2>
+
+<p><a href="https://leetcode.com/problems/single-number/description/">LeetCode Single Number</a></p>
+
+<p>Given an array of integers, every element appears <em>twice</em> except for one. Find that single one.</p>
+
+<p><strong>Note</strong>:<br/><br/>
+Your algorithm should have a linear runtime complexity. Could you implement it without using extra memory?</p>
+
+<p><code>^</code>(<code>xor</code>, <code>Exclusive or</code>):  outputs true whenever the inputs differ:</p>
+
+<pre><code class="language-python">0 ^ 0 = 0 
+n ^ 0 = n 
+n ^ n = 0
+</code></pre>
+
+<p><strong>Solution</strong>:</p>
+
+<pre><code class="language-python">class Solution(object):
+    def singleNumber(self, nums):
+        &quot;&quot;&quot;
+        :type nums: List[int]
+        :rtype: int
+        &quot;&quot;&quot;
+        n = 0
+        for num in nums:
+            n = n^num
+        return n     
+</code></pre>
+
+<h2 id="toc_1">137 Single Number II</h2>
+
+<p>Given an array of integers, every element appears <em>three</em> times except for one, which appears exactly once. Find that single one.</p>
+
+<p><strong>Note</strong>:<br/>
+Your algorithm should have a linear runtime complexity. Could you implement it without using extra memory?</p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/8/16</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Leetcode.html'>Leetcode</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="python_and_mysql.html">
+                
+                  <h1>Python and MySQL</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>There are a lot of python driver available for MySQL and two stand out the most. The one, traditionally everybody’s choice, sort of industrial standard <code>MySQLdb</code>. It uses a C module to link to MySQL’s client library.  For Python3, use <code>PyMySQL</code> instead, because <code>MySQLdb</code> don&#39;t support Python3. Oracle’s <code>mysql-connector</code> on the other hand is pure python so no MySQL libraries and no compilation is necessary.</p>
+
+<h2 id="toc_0">MySQL Connector/Python</h2>
+
+<p>To use Python with MySQL, you can use the MySQL Connector/Python (<a href="https://dev.mysql.com/downloads/connector/python/">Download Here</a>). For those with anaconda, just install with <code>conda</code>:</p>
+
+<pre><code class="language-text">conda install -c anaconda mysql-connector-python 
+</code></pre>
+
+<p>MySQL Connector/Python includes support for:</p>
+
+<ul>
+<li>Almost all features provided by MySQL Server.</li>
+<li>Converting parameter values back and forth between Python and MySQL data types.</li>
+<li>All MySQL extensions to standard SQL syntax.</li>
+</ul>
+
+<pre><code class="language-python">import re
+import mysql.connector
+
+# establishes the connection to MySQL.
+cnx = mysql.connector.connect(user=&#39;root&#39;, password=&#39;8032804254qq&#39;,
+                              host=&#39;127.0.0.1&#39;, database=&#39;rookery&#39;, port=&#39;3306&#39;)
+
+# creates a cursor object (cur) to use for executing queries on the database.
+
+
+cur = cnx.cursor(buffered=True)
+
+# query mysql database for list of user accounts
+sql_stmnt = &quot;SELECT DISTINCT User, Host FROM mysql.db &quot;
+sql_stmnt += &quot;WHERE Db IN(&#39;rookery&#39;,&#39;birdwatchers&#39;) &quot;
+sql_stmnt += &quot;ORDER BY User, Host&quot;
+cur.execute(sql_stmnt)
+
+# loop through list of user accounts
+for user_accounts in cur.fetchall():
+    user_name = user_accounts[0]
+    host_address = user_accounts[1]
+    user_account = user_name.decode(&#39;utf-8&#39;) + &quot;@&quot; + host_address.decode(&#39;utf-8&#39;)
+
+# display user account heading
+print(&#39;User Account:&#39;, (user_name, host_address))
+print(&quot;------------------------------------------&quot;)
+
+# query mysql for grants for user account
+sql_stmnt = &quot;show grants for &quot; + user_account
+cur.execute(sql_stmnt)
+
+# loop through grant entries for user account
+for grants in cur.fetchall():
+    # skip &#39;usage&#39; entry
+    if re.search(&#39;USAGE&#39;, grants[0]):
+        continue
+    # extract name of database and table
+    dbtb = re.search(&#39;ON\s(.*)\.+?(.+?)\sTO&#39;, grants[0])
+    db = dbtb.group(1)
+    tb = dbtb.group(2)
+
+    # change wildcard for tables to &#39;all&#39;
+    if re.search(&#39;\*&#39;, tb): tb = &quot;all&quot;
+
+    # display database and table name for privileges
+    print(&quot;database: &quot;, db, &quot;table: &quot;, tb)
+
+    # extract and display privileges for user account # for database and table
+    privs = re.search(&#39;GRANT\s(.+?)\sON&#39;, grants[0])
+    print(&#39;privileges: &#39;, privs.group(1))
+
+cur.close()
+cnx.close()
+</code></pre>
+
+<h2 id="toc_1">PyMySQL</h2>
+
+<p><a href="https://github.com/PyMySQL/PyMySQL">PyMySQL</a> is to be a drop-in replacement for <code>MySQLdb</code> and work on <code>CPython</code>, <code>PyPy</code> and <code>IronPython</code>.</p>
+
+<h3 id="toc_2">Installation</h3>
+
+<pre><code class="language-bash">$ pip install PyMySQL
+</code></pre>
+
+<h3 id="toc_3">Example</h3>
+
+<pre><code class="language-python">import pymysql
+
+# connect to the datacase
+connection = pymysql.connect(host=&#39;localhost&#39;, user=&#39;root&#39;, password=&#39;8032804254qq&#39;, db=&#39;test&#39;)
+
+with connection.cursor() as cursor:
+    &quot;&quot;&quot;
+    Create Table | CREATE TABLE `books` (
+    `book_id` int(3) NOT NULL AUTO_INCREMENT,
+    `title` text DEFAULT NULL,
+    `status` bit(1) DEFAULT b&#39;0&#39;,
+    PRIMARY KEY (`book_id`)
+    ) ENGINE=MyISAM AUTO_INCREMENT=103 DEFAULT CHARSET=utf8
+    &quot;&quot;&quot;
+    # create a new record
+    sql = &quot;INSERT INTO `books` (`title`, `status`) VALUES (%s, %s)&quot;
+    cursor.execute(sql, (&#39;GRE Reading&#39;, 1))
+    
+    # connection is not autocommit by default. So you must commit to save your changes.
+    connection.commit()
+
+with connection.cursor() as cursor:
+    sql = &quot;select `book_id`, `title`, `status` from `books`&quot;
+    cursor.execute(sql)
+    # read records
+    for book in cursor.fetchall():
+        book = list(book)
+        book[2] = ord(book[2])
+        print(book)
+</code></pre>
+
+<h2 id="toc_4">Difference? which is better?</h2>
+
+<p><code>MySQLdb</code> is a thin python wrapper around C module which implements API for MySQL database.</p>
+
+<p><code>MySQL Connector</code>is a Python module that reimplements the <a href="https://www.python.org/dev/peps/pep-0249/"><code>MySQL Database API</code></a> in Python. It is written in Python and does not have any dependencies except for the Python Standard Library. It is slower, but does not require the C library and so is more portable.</p>
+
+<h3 id="toc_5">Query Performance</h3>
+
+<p>Obviously, <code>MySQLdb</code> has better performance, especially when it comes to large data sets.</p>
+
+<p><img src="media/15026944183320/Untitled.png" alt="Untitled"/></p>
+
+<h2 id="toc_6">Reference</h2>
+
+<p>1.<a href="https://stackoverflow.com/questions/32575857/the-differences-between-mysqldb-and-mysqlconnector">The differences between MySQLdb and mysqlconnector</a><br/>
+2.<a href="http://charlesnagy.info/it/python/python-mysqldb-vs-mysql-connector-query-performance">Python MySQLdb vs mysql-connector query performance</a></p>
+
+<ol>
+<li><a href="https://wiki.openstack.org/wiki/PyMySQL_evaluation">PyMySQL evaluation</a></li>
+</ol>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/8/14</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E5%BA%93.html'>数据库</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
 			<div class="article">
                 <a class="clearlink" href="database_and_SQL.html">
                 
@@ -830,186 +1065,6 @@ mysql&gt; select count(*)
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="regular_expression_in_MySQL.html">
-                
-                  <h1>Regular Expression in MySQL</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p><code>MySQL</code> support pattern-matching operations performed with the <code>REGEXP</code> operator in SQL statements.</p>
-
-<pre><code class="language-sql">mysql &gt; select common_name as &#39;Birds Great and Small&#39;
-      -&gt; from birds
-      -&gt; where common_name regexp &#39;Least|Great&#39;
-      -&gt; order by common_name desc
-      -&gt; limit 10;
-
-+-----------------------+
-| Birds Great and Small |
-+-----------------------+
-| Least Tern            |
-| Least Storm-Petrel    |
-| Least Seedsnipe       |
-| Least Sandpiper       |
-| Least Pygmy-Owl       |
-| Least Pauraque        |
-| Least Nighthawk       |
-| Least Honeyguide      |
-| Least Grebe           |
-| Least Flycatcher      |
-+-----------------------+
-
-</code></pre>
-
-<p><code>REGEXP</code> Operator is case insensitive. If we want an expression to be case sensitive, we&#39;ll need to add the <code>Binary</code> option.</p>
-
-<pre><code class="language-sql">mysql &gt; select common_name as &#39;Hawks&#39;
-      -&gt; from birds
-      -&gt; where common_name regexp binary &#39;Hawk&#39;
-      -&gt; and common_name not regexp &#39;Hawk-Owl&#39;
-      -&gt; order by family_id
-      -&gt; limit 10;
-+------------------------+
-| Hawks                  |
-+------------------------+
-| Ornate Hawk-Eagle      |
-| Wallace&#39;s Hawk-Eagle   |
-| Pinsker&#39;s Hawk-Eagle   |
-| Philippine Hawk-Eagle  |
-| Sulawesi Hawk-Eagle    |
-| Javan Hawk-Eagle       |
-| Blyth&#39;s Hawk-Eagle     |
-| Mountain Hawk-Eagle    |
-| Flores Hawk-Eagle      |
-| Madagascar Cuckoo-Hawk |
-+------------------------+
-</code></pre>
-
-<h2 id="toc_0">Syntax of Regular Expressions</h2>
-
-<ul>
-<li><code>^</code>: Match the beginning of a string</li>
-<li><code>$</code>: Match the end of a string</li>
-<li><code>.</code>: Match any character</li>
-<li><code>a*</code>: Match any sequence of zero or more <code>a</code> characters</li>
-<li><code>a+</code>: Match any sequence of one or more <code>a</code> characters</li>
-<li><code>a?</code>: Match either zero or one <code>a</code> character</li>
-<li><code>de|abc</code>: Match either of the sequences <code>de</code> or <code>abc</code></li>
-<li><code>(abc)*</code>: Match zero or more instances of the sequence <code>abc</code></li>
-</ul>
-
-<h2 id="toc_1">Rescources</h2>
-
-<ul>
-<li><a href="https://dev.mysql.com/doc/refman/5.7/en/regexp.html">Regular Expressions</a></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/8/14</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E5%BA%93.html'>数据库</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="Dynamic_Programming_Optimal_Binary_Search_Tree.html">
-                
-                  <h1>Dynamic Programming (4): Optimal Binary Search Tree</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>An <code>Optimal Binary Search Tree (Optimal BST)</code> is a binary search tree which provides the smallest possible search time for a given sequence of access probabilities. The cost of a BST node is the level of that node plus one multiplied by its frequency.</p>
-
-<p><strong>Problem Statement</strong>: Given a sorted array \(keys[0.. n-1]\) of search keys and an array \(freq[0.. n-1]\) of frequency counts, where \(freq[i]\) is the number of searches to \(keys[i]\). Construct a binary search tree of all keys such that the total cost of all the searches is as small as possible.</p>
-
-<h2 id="toc_0">Optimal Substructure</h2>
-
-<p>The optimal cost of node \(i,...,j\) can be recursively calculated using the following formula.</p>
-
-<p>\(Cost(i,j) = \sum \limits^{j}_{k=i}freq[k] + \min \limits_{r=i}^j[Cost(i,r-1)+Cost(r+1,j)]\)</p>
-
-<p>We try all nodes one by one as root (\(r\) varies from \(i\) to \(j\)). When we make \(r\)th node as root, we recursively calculate optimal cost from \(i\) to \(r-1\) and \(r+1\) to \(j\). </p>
-
-<h3 id="toc_1">Implementation: top-down with memoization</h3>
-
-<pre><code class="language-python">def optimal_bst(freq):
-    def opt_cost(hash_table, freq, i, j):
-        &quot;&quot;&quot;
-        Optimal Binary Search Tree
-        Recursive Method used here
-        &quot;&quot;&quot;
-
-        # base case: only 0~1 element
-        if j &lt; i:
-            return 0
-        if j == i:
-            return freq[i]
-
-        # if already exists
-        if (i, j) in hash_table:
-            return hash_table[(i, j)]
-
-        min_cost = sys.maxsize
-        for r in range(i, j + 1):
-            cost = opt_cost(hash_table, freq, i, r - 1) + opt_cost(hash_table, freq, r + 1, j)
-            if cost &lt; min_cost:
-                min_cost = cost
-
-        hash_table[(i, j)] = sum(freq[i:j + 1]) + min_cost
-        return hash_table[(i, j)]
-
-    return opt_cost({}, freq, 0, len(freq) - 1)
-</code></pre>
-
-<h2 id="toc_2">Reference</h2>
-
-<ul>
-<li><a href="http://ac.els-cdn.com/S0304397596003209/1-s2.0-S0304397596003209-main.pdf?_tid=1505980e-7cd4-11e7-83de-00000aacb361&amp;acdnat=1502263778_53b76d131a06906e9fe3adfadc778677">Optimal Binary Search Tree</a></li>
-<li><a href="http://www.geeksforgeeks.org/dynamic-programming-set-24-optimal-binary-search-tree/">Optimal Binary Search Tree GeeksforGeeks</a></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/8/9</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92.html'>动态规划</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1066,9 +1121,9 @@ mysql&gt; select count(*)
         
             <a href="Leetcode.html"><strong>Leetcode</strong></a>
         
-            <a href="C/C++.html"><strong>C/C++</strong></a>
+            <a href="programming_language.html"><strong>编程语言</strong></a>
         
-            <a href="Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95.html"><strong>Python数据结构与算法</strong></a>
+            <a href="data_structure_and_algorithm.html"><strong>数据结构和算法</strong></a>
         
             <a href="Course.html"><strong>Course</strong></a>
         
@@ -1111,31 +1166,31 @@ mysql&gt; select count(*)
 	      
 		      
 			      <li class="post">
-			        <a href="os_concepts_threads_and_concurrency.html">Operating System Concepts 4 - Threads & Concurrency</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="os-concets-processes.html">Operating System Concepts 3 - Processes</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
 			        <a href="csapp-internet-programming.html">CSAPP - 网络编程</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="hadoop_mapreduce.html">Hadoop和MapReduce入门</a>
+			        <a href="os_concepts_threads_and_concurrency.html">Operating System Concepts 4 - Threads & Concurrency</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="Linking.html">CSAPP - 链接</a>
+			        <a href="head-first_java_note.html">Head first Java</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="cpp_by_diessection.html">[NOTE] C++ By Dissection</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="os-concets-processes.html">Operating System Concepts 3 - Processes</a>
 			      </li>
 		     
 		  
