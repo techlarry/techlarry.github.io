@@ -142,6 +142,125 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="14973149842140.html">
+                
+                  <h1>搜索</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>搜索是在一个项目集合中找到一个特定项目的算法过程。返回值一般是<code>bool</code>:<code>True</code> or <code>False</code>. 搜索的几种常见方法：顺序查找、二分法查找、二叉树查找、哈希查找</p>
+
+<h2 id="toc_0">在python中查找</h2>
+
+<p>在python中，查找一个元素是否在列表中非常简单，可以用<code>in</code>操作符</p>
+
+<pre><code class="language-python">&gt;&gt;&gt; 15 in [3,5,2,4,1]
+False
+&gt;&gt;&gt; 3 in [3,5,2,4,1]
+True
+&gt;&gt;&gt;
+</code></pre>
+
+<h2 id="toc_1">顺序查找</h2>
+
+<p>顺序查找从列表中的第一个项目开始，我们按照顺序次序，简单地从一个项移动到另一个项，直到找到我们正在查找的项或遍历完整个列表。如果我们遍历完整个列表，则说明正在搜索的项不存在。</p>
+
+<p><img src="media/14973149842140/14973392316280.png" alt=""/></p>
+
+<pre><code class="language-python">def sequential_search(alist, item):
+    &quot;&quot;&quot;
+    顺序查找
+    &quot;&quot;&quot;
+
+    for i in range(len(alist)):
+        if alist[i] == item:
+            return True
+
+    return False
+</code></pre>
+
+<h2 id="toc_2">二分查找</h2>
+
+<p>二分查找过程类似于查字典。首先，假设表中元素是按升序排列，将表中间位置记录的关键字与查找关键字比较，如果两者相等，则查找成功；否则利用中间位置记录将表分成前、后两个子表，如果中间位置记录的关键字大于查找关键字，则进一步查找前一子表，否则进一步查找后一子表。重复以上过程，直到找到满足条件的记录，使查找成功，或直到子表不存在为止，此时查找不成功。</p>
+
+<ul>
+<li>优点是比较次数少，查找速度快，平均性能好</li>
+<li>缺点是要求待查表为有序表，且插入删除困难</li>
+<li>因此，折半查找方法适用于不经常变动而查找频繁的有序列表。</li>
+</ul>
+
+<p><img src="media/14973149842140/14973392434825.png" alt=""/></p>
+
+<pre><code class="language-python">
+def binary_search(alist, item):
+    &quot;&quot;&quot;
+    二分查找, 递归
+    &quot;&quot;&quot;
+
+    n = len(alist)
+    if n &gt;0:
+        mid = n//2
+
+        if alist[mid] == item:
+            return True
+        elif alist[mid] &gt; item:
+            return binary_search(alist[:mid], item)
+        else:
+            return binary_search(alist[mid+1:], item)
+    return False
+
+def binary_search2(alist, item):
+    &quot;&quot;&quot;
+    二分查找，非递归
+    &quot;&quot;&quot;
+    n = len(alist)
+    first = 0
+    last = n-1
+    while first &lt;= last:
+        mid = (first+last)//2
+        if alist[mid] == item:
+            return True
+        elif alist[mid] &gt; item:
+            last = mid-1
+        else:
+            first = mid+1
+
+    return False
+
+</code></pre>
+
+<h2 id="toc_3">时间复杂度</h2>
+
+<ul>
+<li>最优时间复杂度: \(O(1)\)</li>
+<li>最坏时间复杂度: \(O(\log n)\)</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/6/13</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='data_structure_and_algorithm.html'>数据结构和算法</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="14973620419454.html">
                 
                   <h1>魔法方法(一)：自定义序列</h1>
@@ -567,60 +686,6 @@ s.salary = -1000
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="14969711309827.html">
-                
-                  <h1>数据结构介绍</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h2 id="toc_0">概念</h2>
-
-<p>数据是一个抽象的概念，将其进行分类后得到程序设计语言中的基本类型。如：int，float，char等。数据元素之间不是独立的，存在特定的关系，这些关系便是结构。数据结构指数据对象中数据元素之间的关系。</p>
-
-<p>程序= 数据结构+算法<br/>
-总结：算法是为了解决实际问题而设计的，数据结构是算法需要处理的问题载体。</p>
-
-<h2 id="toc_1">抽象数据类型(Abstract Data Type)</h2>
-
-<p>抽象数据类型(ADT)的含义是指一个数学模型以及定义在此数学模型上的一组操作。即把数据类型和数据类型上的运算捆在一起，进行封装。引入抽象数据类型的目的是把数据类型的表示和数据类型上运算的实现与这些数据类型和运算在程序中的引用隔开，使它们相互独立。</p>
-
-<h2 id="toc_2">内存、类型本质、连续存储</h2>
-
-<p>内存是连续的存储空间，内存的基本存储单元是一个字节，1个字节(Byte)是8位(Bit)</p>
-
-<p>顺序表的内存形式：</p>
-
-<ul>
-<li>逻辑地址：0,1,2,3,...,n01</li>
-<li>元素存储: e0,e1,e2,e3,....,en-1</li>
-<li>物理地址:l0,l0+c,l0+2c,l0+3c,l0+(n-1)c</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/6/9</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='data_structure_and_algorithm.html'>数据结构和算法</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -728,7 +793,7 @@ s.salary = -1000
 		  
 		      
 			      <li class="post">
-			        <a href="diagrammatize_TCP/IP.html">图解TCP/IP</a>
+			        <a href="15323640524161.html">Machine Learning with large datasets</a>
 			      </li>
 		     
 		  
@@ -740,13 +805,13 @@ s.salary = -1000
 		  
 		      
 			      <li class="post">
-			        <a href="os-concets-processes.html">Operating System Concepts 3 - Processes</a>
+			        <a href="diagrammatize_TCP/IP.html">图解TCP/IP</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="os_concepts_threads_and_concurrency.html">Operating System Concepts 4 - Threads & Concurrency</a>
+			        <a href="os-concets-processes.html">Operating System Concepts 3 - Processes</a>
 			      </li>
 		     
 		  

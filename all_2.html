@@ -142,6 +142,313 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="os-concepts-os-structures.html">
+                
+                  <h1>Operating System Concepts 2 - Operating System structures</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<ul>
+<li>
+<a href="#toc_0">Operating system service</a>
+</li>
+<li>
+<a href="#toc_1">User Interface</a>
+</li>
+<li>
+<a href="#toc_2">System call</a>
+<ul>
+<li>
+<a href="#toc_3">API</a>
+</li>
+<li>
+<a href="#toc_4">Types of system calls</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_5">System Service</a>
+</li>
+<li>
+<a href="#toc_6">OS Design and Implementation</a>
+</li>
+<li>
+<a href="#toc_7">Operating system structure</a>
+<ul>
+<li>
+<a href="#toc_8">Monolithic structure</a>
+</li>
+<li>
+<a href="#toc_9">Layered</a>
+</li>
+<li>
+<a href="#toc_10">Microkernel</a>
+</li>
+<li>
+<a href="#toc_11">Modules</a>
+</li>
+<li>
+<a href="#toc_12">Hybrid systems</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_13">System boot</a>
+</li>
+</ul>
+
+
+<h2 id="toc_0">Operating system service</h2>
+
+<p>The figure below is a view of the various operating-system services and how they interrelate.</p>
+
+<p><img src="media/15317361625058/A%20view%20of%20operating%20system%20services.png" alt="A view of operating system services"/></p>
+
+<h2 id="toc_1">User Interface</h2>
+
+<p>There&#39;re mainly three ways for users to interface with the operating system:</p>
+
+<ul>
+<li>command interpreter</li>
+<li>graphical user interface</li>
+<li>touch-screen interface</li>
+</ul>
+
+<h2 id="toc_2">System call</h2>
+
+<p>Purpose of System Call: System calls provide an <strong>interface to the services</strong> made available by an operating system.</p>
+
+<h3 id="toc_3">API</h3>
+
+<p>Typically, application developers design programs according to an application programming interface(<strong>API</strong>, 应用程序编程接口) rather than invoking <strong>actual system call</strong>.</p>
+
+<ul>
+<li>because even simple program may make heavy use of system call.</li>
+<li><strong>program portabilit</strong>y: expect programs to compile and run other system that supports the same API</li>
+<li><strong>run-time environment</strong>(RTE, 运行时环境) - the full suit of software needed to execute applications, including its compilers, interpreters, libraries, loaders.</li>
+</ul>
+
+<h3 id="toc_4">Types of system calls</h3>
+
+<p>System calls can be grouped roughly into six major categories:<br/>
+系统调用可分成六大类：进程控制，文件管理，设备管理，信息维护，通信和保护。</p>
+
+<ul>
+<li>process control</li>
+<li>file management</li>
+<li>device management</li>
+<li>information maintenance</li>
+<li>communications</li>
+<li>protection</li>
+</ul>
+
+<p><img src="media/15317361625058/examplesofunixandlinuxsystemcalls.png" alt="Examples of Windows and Unix systemcalls"/></p>
+
+<p>Three ways to pass parameters to the operating system:</p>
+
+<ul>
+<li>when less than five parameters, passing the parameters in registers</li>
+<li>when more than five parameters, parameters are stored in a block, passing the address of the block in a register</li>
+<li>using stack</li>
+</ul>
+
+<h2 id="toc_5">System Service</h2>
+
+<p><strong>System services</strong>, also known as <strong>system utilities</strong>, provide a convenient environment for program development and execution.</p>
+
+<h2 id="toc_6">OS Design and Implementation</h2>
+
+<p>One important principle of OS design is <u>the separation of <strong>policy</strong> from <strong>mechanism</strong></u> . Mechanisms determine <strong>how</strong> to do something; policies determine <strong>what</strong> will be done.<br/>
+操作系统设计的一个重要原则是策略（policy）和机制（mechanism）的分离。机制决定如何做，策略决定做什么。</p>
+
+<ul>
+<li>The separation of policy and mechanism is important for <strong>flexibility</strong>.</li>
+</ul>
+
+<h2 id="toc_7">Operating system structure</h2>
+
+<h3 id="toc_8">Monolithic structure</h3>
+
+<p>Operating systems with <strong>monolithic structure</strong> (单体结构) place all of the functionality of kernel into a <strong>single</strong>, <strong>static</strong> binary file that runs in a <strong>single</strong> address space.</p>
+
+<ul>
+<li>a common technique for designing operating system</li>
+<li>e.g. original Unix operating system ( figure below)</li>
+</ul>
+
+<p><img src="media/15317361625058/traditional%20unix%20system%20structure.png" alt="Traditional Unix system structure"/></p>
+
+<ul>
+<li>e.g. Linux is based on Unix and is structured similarly, as shown in figure below.</li>
+</ul>
+
+<p><img src="media/15317361625058/linux%20system%20structure.png" alt="linux system structure"/></p>
+
+<p>pros</p>
+
+<ul>
+<li>simplicity of kernels</li>
+<li>a distinct performance advantage</li>
+<li>very little overhead in the system-call interface</li>
+<li>fast communication within the kernel</li>
+</ul>
+
+<p>cons</p>
+
+<ul>
+<li>difficult to implement and extend</li>
+</ul>
+
+<h3 id="toc_9">Layered</h3>
+
+<p>A <strong>loosely coupled</strong> (松耦合) system is divided into separate, smaller components that have specific and limited functionality (<strong>modular</strong> approach). All these components together comprise the kernel .</p>
+
+<ul>
+<li>changes in one component affect only that component</li>
+</ul>
+
+<p>A system can be made modular in many ways.</p>
+
+<ul>
+<li>one way is the layered approach.</li>
+</ul>
+
+<p>For the <strong>layered operating system</strong> (层次式操作系统), it is broken into a number of layers.</p>
+
+<ul>
+<li>The bottom layer is the hardware; the highest is the user interface.</li>
+<li>low-level layers can be invoked by higher-level layers</li>
+</ul>
+
+<p>pros</p>
+
+<ul>
+<li>simplicity of construction and debugging
+<ul>
+<li>each layer is implemented only with operations provided by lower-level layers. </li>
+<li>higher-level layers can be debugged without any concern for the lower-level layers</li>
+</ul></li>
+</ul>
+
+<p>cons</p>
+
+<ul>
+<li>difficulty of defining the functionality of each layer</li>
+<li>poor performance
+<ul>
+<li>overhead of requiring a user program to traverse through multiple layers to obtain an operating-system service </li>
+</ul></li>
+</ul>
+
+<p>Used in computer networks and web applications</p>
+
+<p><img src="media/15317361625058/alayeredoperatingsystem.png" alt="A layered operating system"/></p>
+
+<h3 id="toc_10">Microkernel</h3>
+
+<p>Another way to modularized the kernel is using microkernel approach (微内核)。</p>
+
+<ul>
+<li><strong>removing all nonessential</strong> components from the kernel and implementing them as <strong>user-level</strong> programs the reside in <strong>separate</strong> address spaces.</li>
+<li>smaller kernel</li>
+</ul>
+
+<p>A typical microkernel shown below.<br/>
+<img src="media/15317361625058/a%20typical%20microkernel.png" alt="A typical microkernel"/></p>
+
+<p>pros</p>
+
+<ul>
+<li>easy to extend the os
+<ul>
+<li>all new services added to user space do not require modification of the kernel.</li>
+<li>when modification of kernel needed, changes tend to be fewer because of small kernel</li>
+</ul></li>
+<li>more security and reliability
+<ul>
+<li>since most services are running as user</li>
+</ul></li>
+</ul>
+
+<p>cons</p>
+
+<ul>
+<li>performance may suffer due to increased system function overhead.
+<ul>
+<li>messages of user-level services to communicate must be copied between the services. </li>
+</ul></li>
+</ul>
+
+<p>Best-known microkernel os is <strong>Darwin</strong>, the kernel component of the macOS and iOS.  </p>
+
+<h3 id="toc_11">Modules</h3>
+
+<p>Perhaps the best current methodology for operating system design involves using <strong>loadable kernel modules</strong>(LVMs, 可装载内核模块). Here, the kernel has a set of core components and can link in additional services via modules, either at boot time or during run time.</p>
+
+<ul>
+<li>design purpose: for the kernel to provide core services, while other services are implemented <strong>dynamically</strong>, as the kernel is running</li>
+</ul>
+
+<h3 id="toc_12">Hybrid systems</h3>
+
+<p>In practice, <strong>very few</strong> operating system adopt a single, strictly defined structure. Instead, they <strong>combine different structures</strong><br/>
+, resulting in <strong>hybrid systems</strong> that address performance, security, and usability issues.</p>
+
+<p>Architecture of Apple’s macOS and iOS operating systems:<br/>
+<img src="media/15317361625058/Architecture%20of%20Apple%E2%80%99s%20macOS%20and%20iOS%20operating%20systems.png" alt="Architecture of Apple’s macOS and iOS operating systems"/></p>
+
+<p>Darwin provides two system-call interfaces: Mach system calls and BSD system calls.</p>
+
+<p>The structure of Darwin:<br/>
+<img src="media/15317361625058/The%20structure%20of%20Darwin..png" alt="The structure of Darwin."/></p>
+
+<p>To address such performance problems, Darwin combines Mach, BSD, the I/O kit, and any kernel extensions into a <strong>single</strong> address space.</p>
+
+<p><a href="https://developer.apple.com/library/archive/documentation/Darwin/Conceptual/KernelProgramming/Architecture/Architecture.html#//apple_ref/doc/uid/TP30000905-CH1g-CACDAEDC">detailed documents for Darwin kernel</a></p>
+
+<h2 id="toc_13">System boot</h2>
+
+<p>The process of starting a computer by loading the kernel is known as <strong>booting</strong> the system.</p>
+
+<ol>
+<li>A small piece of code known as the <strong>bootstrap program</strong>（引导程序） or boot loader locates the kernel.</li>
+<li>The kernel is loaded into memory and started.</li>
+<li>The kernel initializes hardware.</li>
+<li>The root file system is mounted.</li>
+</ol>
+
+<p>bootstrap program:</p>
+
+<ul>
+<li>usually, bootstrap program located in BIOS( nonvolatile firmware(固件) on motherboard, <a href="https://en.wikipedia.org/wiki/BIOS">wiki</a>)</li>
+<li><strong>GRUB</strong> is an open-source bootstrap program for Linux and Unix systems <a href="https://en.wikipedia.org/wiki/GNU_GRUB">wiki</a>.</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/2/18</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Computer%20System.html'>Computer System</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="Hadoop%20_the_definitive_guide_1-Hadoop_fundamentals.html">
                 
                   <h1>Hadoop the definitive guide 1 - Hadoop fundamentals</h1>
@@ -959,40 +1266,6 @@ int main(int argc, char **argv)
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15312166852240.html">
-                
-                  <h1>CSE 421/521 Operating Systems</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>主页：<a href="https://www.ops-class.org">https://www.ops-class.org</a><br/>
-Notes: </p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/7/10</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Course.html'>Course</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1100,7 +1373,7 @@ Notes: </p>
 		  
 		      
 			      <li class="post">
-			        <a href="diagrammatize_TCP/IP.html">图解TCP/IP</a>
+			        <a href="15323640524161.html">Machine Learning with large datasets</a>
 			      </li>
 		     
 		  
@@ -1112,13 +1385,13 @@ Notes: </p>
 		  
 		      
 			      <li class="post">
-			        <a href="os-concets-processes.html">Operating System Concepts 3 - Processes</a>
+			        <a href="diagrammatize_TCP/IP.html">图解TCP/IP</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="os_concepts_threads_and_concurrency.html">Operating System Concepts 4 - Threads & Concurrency</a>
+			        <a href="os-concets-processes.html">Operating System Concepts 3 - Processes</a>
 			      </li>
 		     
 		  

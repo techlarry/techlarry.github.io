@@ -163,26 +163,68 @@
 </li>
 <li>
 <a href="#toc_3">4 Methods use instance variables</a>
-</li>
-<li>
-<a href="#toc_4">5 Writing a Program</a>
-</li>
-<li>
-<a href="#toc_5">6 Using the Java Library</a>
-</li>
-<li>
-<a href="#toc_6">7 better living in Objectville</a>
 <ul>
 <li>
-<a href="#toc_7">7.1 overriding</a>
+<a href="#toc_4">4.1 Methods</a>
 </li>
 <li>
-<a href="#toc_8">7.2 polymorphism</a>
+<a href="#toc_5">4.2 Getters and setters</a>
 </li>
 <li>
-<a href="#toc_9">7.3 method overloading</a>
+<a href="#toc_6">4.3 Encapsulation</a>
+</li>
+<li>
+<a href="#toc_7">Instance variables.</a>
+</li>
+<li>
+<a href="#toc_8">instance and local variables.</a>
+</li>
+<li>
+<a href="#toc_9">Comparing variables</a>
 </li>
 </ul>
+</li>
+<li>
+<a href="#toc_10">5 Writing a Program</a>
+</li>
+<li>
+<a href="#toc_11">6  Get to know the Java API</a>
+</li>
+<li>
+<a href="#toc_12">7 Inheritance and polymorphism</a>
+<ul>
+<li>
+<a href="#toc_13">7.1 overriding</a>
+</li>
+<li>
+<a href="#toc_14">7.2 polymorphism</a>
+</li>
+<li>
+<a href="#toc_15">7.3 method overloading</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_16">8 interfaces and abstract classes</a>
+<ul>
+<li>
+<a href="#toc_17">Abstract classes</a>
+</li>
+<li>
+<a href="#toc_18">Abstract methods</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_19">the ultimate superclass: Object</a>
+<ul>
+<li>
+<a href="#toc_20">Using polymorphic references of type Object has a price</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_21">9 constructors and garbage collection</a>
 </li>
 </ul>
 
@@ -217,81 +259,163 @@ while (x) {} //wrong
 
 <h2 id="toc_2">3 Primitives and references</h2>
 
+<p>Variables must always be declared with a name and a type. Variables come in two flavors: <strong>primitive</strong> and <strong>reference</strong>.(变量的生命必须有类型和名称。变量有两种：primitive和引用)</p>
+
+<p><strong>primitive variable</strong>:</p>
+
 <ul>
-<li>Variables come in two flavors: primitive and reference.变量有两种：primitive和引用</li>
-<li>Variables must always be declared with a name and a type.变量的生命必须有类型和名称。</li>
 <li>A primitive variable value is the bits representing the value. primitive变量的值是表示该值的位。</li>
-<li>A reference variable value is the bits representing a way to get to an object on the heap.引用变量的值是表示一种到达堆上的对象的方法的位。</li>
 </ul>
 
-<p>Object reference variable</p>
+<p><strong>Reference variable</strong></p>
 
 <ul>
-<li>there&#39;s only an object reference variable</li>
-<li>it doesn&#39;t hold the object itself, but it holds something like a pointer. or an address</li>
-<li>Objects live in one place and one place only - the garbage collectible heap</li>
+<li>A reference variable value is the bits representing a way to get to an object on the heap.引用变量的值是表示一种到达堆上的对象的方法的位。</li>
+<li>A reference variable is like a remote control. Using the dot operator(<code>.</code>) on a reference variable is like pressing a button on the remote control to access a method or instance variables.</li>
+<li>A reference variable has a value of <code>null</code> when it is not referencing any object.</li>
 </ul>
 
-<p>The 3 steps of object declaration, creation and assignment<br/>
+<p><strong>Array</strong></p>
+
+<ul>
+<li>An array is always an object, even if the array is declared to hold primitives. </li>
+<li>Every element in an array is just a variable.</li>
+</ul>
+
+<p>The 3 steps of <strong>object declaration, creation and assignment</strong><br/>
 (e.g. <code>Dog myDog = new Dog()</code>);</p>
 
 <ul>
-<li>declare a reference variable: tell the JVM to allocate space for a reference variable, and names that variable myDog</li>
-<li>create an object: tells the JCM to allocate space for a new Dog object on the heap.</li>
-<li>Link the object and the reference: Assigns the new Dog to the reference variable myDog.</li>
+<li><strong>declare</strong> a reference variable: tell the JVM to allocate space for a reference variable, and names that variable myDog</li>
+<li><strong>create</strong> an object: tells the JCM to allocate space for a new Dog object on the heap.</li>
+<li><strong>Link</strong> the object and the reference: Assigns the new Dog to the reference variable myDog.</li>
 </ul>
-
-<p>A reference variable has a value of null when it is not referencing any object.</p>
-
-<p>object abandoned is eligible for garbage collection</p>
-
-<p>the array is an object, even though it&#39;s an array of primitives.</p>
 
 <h2 id="toc_3">4 Methods use instance variables</h2>
 
-<p>class define what an object knows and what an object does. Things an object knows are its instance variables(state), things an object does are its methods(behavior).</p>
+<h3 id="toc_4">4.1 Methods</h3>
 
-<p>States affects behavior, behavior affects state.</p>
+<p><strong>Class define what an object knows and what an object does.</strong> Things an object knows are its <em>instance variables</em>(state), things an object does are its <em>methods</em>(behavior).</p>
 
-<p>A method uses parameters. A caller passes arguments.</p>
+<p><strong>Methods</strong>:<br/>
+<strong>A method uses parameters. A caller passes arguments.</strong></p>
 
 <ul>
-<li>arguments are the things you pass into the methods.</li>
+<li>Arguments are the things you pass into the methods.</li>
+<li>If a method takes a parameters, you must pass it something.</li>
+<li>Methods can return values. Every method is declared is declared with a return type.</li>
+<li>If you declare a method to return a value, you <em>must</em> return a value of the declared type or a value that is <em>compatible</em> with the declared type.</li>
+<li>Java is <strong>pass-by-value</strong>, which means <strong>pass-by-copy</strong>.</li>
 </ul>
 
-<p>if a method takes a parameters, you must pass it something.</p>
+<h3 id="toc_5">4.2 Getters and setters</h3>
 
-<p>The number and type of values you pass in must match the order and type of the parameters declared by the method.</p>
+<p><strong>Getters</strong> and <strong>setters</strong> let you, well, <em>get and set things</em>.</p>
 
-<p>Java is pass-by-value, which means pass-by-copy.</p>
+<ul>
+<li>A Getter&#39;s sole purpose in life is to send back, as a return value, the value of whatever it is that particular Getter is supposed to be Getting.</li>
+</ul>
 
-<p>A method must declare a return type. A void return type means the method doesn’t return anything.</p>
+<h3 id="toc_6">4.3 Encapsulation</h3>
 
-<p>If a method declares a non-void return type, it must return a value compatible with the declared return type.</p>
+<p>By forcing everybody to call a setter method, we can protect variables from unacceptable changes.</p>
 
-<p>Getters and setters let you, well, <em>get and set things</em>.</p>
+<pre><code class="language-java">theCat.height = 0 //yikes! we can&#39;t let this happen
 
-<p>Mark instance variables private. mark getters and setter public.</p>
+public void setHeight(int ht){
+    if (ht&gt;9){ // we punt in checks to guarantee a minimum cat height.
+        height=ht;
+    }
+}
+</code></pre>
 
-<p>Encapsulation puts a force-ﬁeld around my instance variables, so nobody can set them to, let’s say, something inappropriate.</p>
+<p>An <strong>encapsulation</strong> <em>starter</em> rule of thumb: mark your instances variables <strong><em>private</em></strong>, and provide <strong><em>public</em></strong> getters and setters for access control.</p>
 
-<p>The point to setters (and getters, too) is that you can change your mind later, without breaking anybody else’s code!</p>
+<ul>
+<li>Encapsulations puts a force-field around my instance variables, so nobody can set them to something <em>inappropriate</em>.</li>
+<li>The point to setters (and getters, too) is that <strong><em>you can change your mind later, without breaking anybody else’s code</em></strong>!</li>
+</ul>
+
+<pre><code class="language-java">class GoodDog {
+    private int size; //Make the instance variable private
+    public int getSize() { // make the getter methods public
+        return size; 
+    }
+
+    public void setSize(int s) {  // make the setter methods public
+        size = s; 
+    }
+
+    // even though the methods don&#39;t really add new functionality,
+    // the cool thing is that you can change your mind later.
+    // you can come back and make a method safer, faster, better
+    void bark() {
+        if (size &gt; 60) { 
+            System.out.println(“Wooof! Wooof!”); 
+        } else if (size &gt; 14) {
+            System.out.println(“Ruff! Ruff!”); } 
+        else {
+            System.out.println(“Yip! Yip!”); 
+        }
+    }
+}
+</code></pre>
+
+<h3 id="toc_7">Instance variables.</h3>
 
 <p>You don&#39;t have to initialize instance variables, because they always have a default value.</p>
 
-<p>The difference between instance and local variables.</p>
-
 <ul>
-<li>Instance variables are declared inside a class but not within a method</li>
-<li>Local variables are declares within a method.</li>
-<li><p>Local variables must be initialized before use.</p>
-<p>if you want to know if two objects are equal. And for that, you need the <code>.equal()</code> method.</p>
-<ul>
-<li>whether two different objects should be treated as equal depends on what makes sense for that particular object type. (e.g. dog/string)</li>
-</ul></li>
+<li>intergers: 0</li>
+<li>floating points: 0.0</li>
+<li>booleans: false</li>
+<li>references: null</li>
 </ul>
 
-<h2 id="toc_4">5 Writing a Program</h2>
+<h3 id="toc_8">instance and local variables.</h3>
+
+<p>The difference between instance and local variables:</p>
+
+<ul>
+<li><strong>Instance</strong> variables are declared <u>inside a class</u> but not within a method.</li>
+<li><strong>Local</strong> variables are declares <u>within a method</u> .</li>
+<li><strong>Local</strong> variables <u>must be initialized</u> before use.</li>
+</ul>
+
+<h3 id="toc_9">Comparing variables</h3>
+
+<p>If you want to know if two objects are <strong>equal</strong>, you need the <code>.equal()</code> method.</p>
+
+<ul>
+<li>whether two different objects should be treated as equal depends on what makes sense for that particular object type. (e.g. dog/string)</li>
+</ul>
+
+<pre><code class="language-java">String S = &quot;baby&quot;;
+S.equal(another_string);
+</code></pre>
+
+<p>To see if two reference are the same (which means they refer to the same object on the heap) use the <code>==</code> operator.</p>
+
+<pre><code class="language-text">Foo a = new Foo(); 
+Foo b = new Foo(); 
+Foo c = a; 
+if (a == b) { // false } 
+if (a == c) { // true } 
+if (b == c) { // false }
+</code></pre>
+
+<p>To compare two primitives, use the <code>==</code> operator.</p>
+
+<ul>
+<li>Operator <code>==</code> doesn&#39;t care about the size of the variable, so all the extra zeros on the left end don&#39;t matter.</li>
+</ul>
+
+<pre><code class="language-java">int a = 3;
+byte b = 3;
+if (a==b){ //true}
+</code></pre>
+
+<h2 id="toc_10">5 Writing a Program</h2>
 
 <ul>
 <li><strong>prep code</strong>: a form of pseudocode, to help you focus on the logic without stressing about syntax. 一种伪代码</li>
@@ -299,7 +423,7 @@ while (x) {} //wrong
 <li><strong>real code</strong>: the actual implementation of the class. 真实代码</li>
 </ul>
 
-<p><strong>Extreme Programming</strong>:</p>
+<p><strong>Extreme Programming</strong>（<a href="https://en.wikipedia.org/wiki/Extreme_programming">极限编程</a>):</p>
 
 <ul>
 <li>Write the test code first</li>
@@ -307,18 +431,19 @@ while (x) {} //wrong
 <li>Develop in iteration cycles.</li>
 </ul>
 
-<h2 id="toc_5">6 Using the Java Library</h2>
+<h2 id="toc_11">6  Get to know the Java API</h2>
 
 <p><code>ArrayList</code> is a class in the core Java library (the API).</p>
 
 <ul>
-<li> <code>add(Object elem)</code>: Adds the objects parameter to the list</li>
-<li> <code>remove(int index)</code>: Removes the object at the index parameter.</li>
-<li> <code>remove(Object elem)</code>: Removes this object(if it&#39;s in the ArrayList)`.</li>
-<li> <code>contains(Object elem)</code>: Returns <code>true</code> if there&#39;s a match for the object paramter</li>
-<li> <code>isEmpty()</code>: Returns <code>true</code> if the list has no elements</li>
-<li> <code>index(Object elem)</code>: Returns either the index of the object parameter, or -1</li>
-<li> <code>get(int index)</code>: Return the object currently at the index parameter.</li>
+<li> <code>boolean add(Object elem)</code>: Adds the objects parameter to the list(return <code>true</code>).</li>
+<li> <code>boolean remove(int index)</code>: Removes the object at the index parameter. Returns <code>true</code> if the element was in the list.</li>
+<li> <code>boolean remove(Object elem)</code>: Removes this object(if it&#39;s in the ArrayList).</li>
+<li> <code>boolean contains(Object elem)</code>: Returns <code>true</code> if there&#39;s a match for the object parameter.</li>
+<li> <code>boolean isEmpty()</code>: Returns <code>true</code> if the list has no elements</li>
+<li> <code>int indexOf(Object elem)</code>: Returns either the index of the object parameter, or -1</li>
+<li> <code>size()</code>: Return the number of elements currently in the list.</li>
+<li> <code>Object get(int index)</code>: Return the object currently at the index parameter.</li>
 </ul>
 
 <p>You have to know the full name of the class you want to use in your code. You have two options:</p>
@@ -334,9 +459,9 @@ while (x) {} //wrong
 </ul></li>
 </ul>
 
-<h2 id="toc_6">7 better living in Objectville</h2>
+<h2 id="toc_12">7 Inheritance and polymorphism</h2>
 
-<h3 id="toc_7">7.1 overriding</h3>
+<h3 id="toc_13">7.1 overriding</h3>
 
 <p><strong>Overriding</strong>（重写) just means that a subclass redefines one of its inherited methods when it needs to change or extend the behavior of that method.</p>
 
@@ -372,9 +497,9 @@ public void roam(){
 <p>when you define a supertype for a group of classes, any subclass of that supertype can be substituted where the supertype is expected.<br/>
 当你定义出一组类的父型时，你可以用子型的任何类来填补任何需要或期待父型的位置。</p>
 
-<h3 id="toc_8">7.2 polymorphism</h3>
+<h3 id="toc_14">7.2 polymorphism</h3>
 
-<p>with polymorphism, the reference type can be a superclass of the actual object type. 运用多态时，引用类型可以是实际对象类型的父类。</p>
+<p>With polymorphism, the reference type can be a superclass of the actual object type. 运用多态时，引用类型可以是实际对象类型的父类。</p>
 
 <pre><code class="language-java">Animal[] animals = new Animal[3];
 animals [0] = new Dog();
@@ -427,7 +552,7 @@ class PetOwner {
 <li>The method can&#39;t be less accessible. 不能降低方法的访问权限</li>
 </ul>
 
-<h3 id="toc_9">7.3 method overloading</h3>
+<h3 id="toc_15">7.3 method overloading</h3>
 
 <p><strong>Method overloading</strong>(方法重载) is nothing more than having two methods with the same name but different argument lists. 方法重载就是方法名称相同，但参数列表不同。 </p>
 
@@ -437,6 +562,116 @@ class PetOwner {
 <li>You can&#39;t change only the return type 不能只改变返回类型</li>
 <li>You can vary the access levels in any direction 可以更改访问权限</li>
 </ul>
+
+<h2 id="toc_16">8 interfaces and abstract classes</h2>
+
+<p>What&#39;s an interface? it&#39;s a 100% abstract class. <br/>
+What&#39;s an abstract class? it&#39;s a class that can&#39;t be instantiated.</p>
+
+<h3 id="toc_17">Abstract classes</h3>
+
+<p>Here&#39;s where it gets weird:</p>
+
+<pre><code class="language-text">Animal anim = new Animal(); 
+</code></pre>
+
+<p>There two are the same type, but what the heck does an Animal object look like?</p>
+
+<p><strong>Some classes just should not be instantiated!</strong><br/>
+How?  By marking the class as <strong>abstract</strong>, the compiler will stop any code, anywhere, from ever creating an instance of that type. i.e. prevent a class from ever being instantiated.</p>
+
+<p>Making a class abstract before the class declaration:</p>
+
+<pre><code class="language-java">abstract class Caine extends Animal {
+    public void roam() {}
+}
+</code></pre>
+
+<p>When you&#39;re designing your class inheritance structure, you have to decide which classes are <em>abstract</em> and which are <em>concrete</em>. </p>
+
+<ul>
+<li><strong>Concrete</strong> classes are those that are specific enough to be instantiated. </li>
+<li>A <strong>concrete</strong> class just means that it&#39;s OK to make objects of that type.</li>
+<li>An <strong>abstract class</strong> has virtually no use, no value, no purpose in life, unless it is extended.</li>
+</ul>
+
+<h3 id="toc_18">Abstract methods</h3>
+
+<p>An <strong>abstract method</strong> means the method must be overriden, whereas an abstract class means the class must be extended.</p>
+
+<ul>
+<li>there isn&#39;t any code that would make sense in the abstract method, you won&#39;t put in a method body. e.g. <code>public abstract void eat()</code>.</li>
+<li>If you declare an abstract method, you must mark the class abstract as well. You can&#39;t have an abstract method in a non-abstract class.</li>
+<li>You must implement all abstract methods.</li>
+</ul>
+
+<h2 id="toc_19">the ultimate superclass: Object</h2>
+
+<p>Every class in Java extends class Object. Class Object is the mother of all classes; it&#39;s the superclass of everything. Java中的每个类都是从Object这个类继承出来的。Object类是所有类的妈妈，他是所有类的父类。</p>
+
+<ul>
+<li>Any class that doesn&#39;t <em>explicitly</em> extend another class, <em>implicitly</em> extends Object.</li>
+</ul>
+
+<p>Methods of Object class:</p>
+
+<ul>
+<li><code>equals()</code>: tell you if two objects are considered equal.</li>
+<li><code>getClass()</code>: Gives you back the class that object was instantiated from.</li>
+<li><code>hashCode()</code>: Prints out a hashcode for the object</li>
+<li><code>toString()</code>: Prints out a String message with the name of the class and some other number we rarely care about.</li>
+</ul>
+
+<p>Object is a <strong>non-abstract</strong> class because it&#39;s got method implementation code that all classes can inherit and use out-of-box, without having to override the methods.</p>
+
+<p>The Object class serves two main purpose:</p>
+
+<ul>
+<li>to act as a polymorphic type for methods that need to work on any class that you or anyone else makes 作为方法的多态类型</li>
+<li>to provide real method code that all objects in Java need at runtime (and putting them in class Object means all other classes inherit them).提供Java在执行期堆任何对象都有需要的实现方法代码。</li>
+</ul>
+
+<h3 id="toc_20">Using polymorphic references of type Object has a price</h3>
+
+<p>When you put an object into an <code>ArrayList&lt;Dog&gt;</code>, it goes in as a Dog, and coms out as a Dog:</p>
+
+<pre><code class="language-java">// Make an ArrayList declared to hold Dog objects.
+ArrayList&lt;Dog&gt; myDogArrayList = new ArrayList&lt;Dog&gt;();
+// Make a Dog
+Dog aDog = new Dog();
+// Add the Dog to the list
+myDogArrayList.add(aDog);
+//Assign the Dog from the list to a new Dog reference variable
+Dog d = myDogArrayList.get(0);
+</code></pre>
+
+<p><strong>Everything comes out of an <code>ArrayList&lt;Object&gt;</code> as a reference of type Object, regardless of what the actual object is.</strong> 任何从<code>ArrayList&lt;Object&gt;</code>取出的东西都会被当作Object类型的引用，而不管它原来是什么。</p>
+
+<pre><code class="language-java">// make an ArrayList declared to hold any type of Object
+ArrayList&lt;Object&gt; myDogArrayList = new ArrayList&lt;object&gt;()
+// make a Dog
+Dog aDog = new Dog();
+// Add the Dog to the list
+myDogArrayList.add(aDog);
+// No!! Won&#39;t compile!! the get() method returns type Object.
+// The compiler knows only that the object inherits from Object,
+// but it doesn&#39;t know it&#39;s a Dog!!
+Dog d = myDogArrayList.get(0)
+</code></pre>
+
+<p><strong>The compiler decides whether you can call a method based on the reference type, not the actual object type.</strong>:</p>
+
+<pre><code class="language-java">Object o = al.get(index);
+// Class Object has a hashCode() method
+// so you can call that method on any object in Java
+int i = o.hashCode();
+// Can&#39;t do this!! the Object class  has no idea what it means to bark().
+o.bark();
+</code></pre>
+
+<p><img src="media/15321391987415/method%20based%20on%20the%20reference%20type.png" alt="method based on the reference type"/></p>
+
+<h2 id="toc_21">9 constructors and garbage collection</h2>
 
                         
                       </div>
@@ -1436,7 +1671,7 @@ delete p; //delete single element
 		  
 		      
 			      <li class="post">
-			        <a href="diagrammatize_TCP/IP.html">图解TCP/IP</a>
+			        <a href="15323640524161.html">Machine Learning with large datasets</a>
 			      </li>
 		     
 		  
@@ -1448,13 +1683,13 @@ delete p; //delete single element
 		  
 		      
 			      <li class="post">
-			        <a href="os-concets-processes.html">Operating System Concepts 3 - Processes</a>
+			        <a href="diagrammatize_TCP/IP.html">图解TCP/IP</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="os_concepts_threads_and_concurrency.html">Operating System Concepts 4 - Threads & Concurrency</a>
+			        <a href="os-concets-processes.html">Operating System Concepts 3 - Processes</a>
 			      </li>
 		     
 		  

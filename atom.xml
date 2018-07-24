@@ -4,7 +4,7 @@
   <title><![CDATA[techlarry]]></title>
   <link href="http://larryim.cc/atom.xml" rel="self"/>
   <link href="http://larryim.cc/"/>
-  <updated>2018-07-23T23:23:05+08:00</updated>
+  <updated>2018-07-24T08:40:44+08:00</updated>
   <id>http://larryim.cc/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -32,26 +32,68 @@
 </li>
 <li>
 <a href="#toc_3">4 Methods use instance variables</a>
-</li>
-<li>
-<a href="#toc_4">5 Writing a Program</a>
-</li>
-<li>
-<a href="#toc_5">6 Using the Java Library</a>
-</li>
-<li>
-<a href="#toc_6">7 better living in Objectville</a>
 <ul>
 <li>
-<a href="#toc_7">7.1 overriding</a>
+<a href="#toc_4">4.1 Methods</a>
 </li>
 <li>
-<a href="#toc_8">7.2 polymorphism</a>
+<a href="#toc_5">4.2 Getters and setters</a>
 </li>
 <li>
-<a href="#toc_9">7.3 method overloading</a>
+<a href="#toc_6">4.3 Encapsulation</a>
+</li>
+<li>
+<a href="#toc_7">Instance variables.</a>
+</li>
+<li>
+<a href="#toc_8">instance and local variables.</a>
+</li>
+<li>
+<a href="#toc_9">Comparing variables</a>
 </li>
 </ul>
+</li>
+<li>
+<a href="#toc_10">5 Writing a Program</a>
+</li>
+<li>
+<a href="#toc_11">6  Get to know the Java API</a>
+</li>
+<li>
+<a href="#toc_12">7 Inheritance and polymorphism</a>
+<ul>
+<li>
+<a href="#toc_13">7.1 overriding</a>
+</li>
+<li>
+<a href="#toc_14">7.2 polymorphism</a>
+</li>
+<li>
+<a href="#toc_15">7.3 method overloading</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_16">8 interfaces and abstract classes</a>
+<ul>
+<li>
+<a href="#toc_17">Abstract classes</a>
+</li>
+<li>
+<a href="#toc_18">Abstract methods</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_19">the ultimate superclass: Object</a>
+<ul>
+<li>
+<a href="#toc_20">Using polymorphic references of type Object has a price</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_21">9 constructors and garbage collection</a>
 </li>
 </ul>
 
@@ -86,81 +128,163 @@ while (x) {} //wrong
 
 <h2 id="toc_2">3 Primitives and references</h2>
 
+<p>Variables must always be declared with a name and a type. Variables come in two flavors: <strong>primitive</strong> and <strong>reference</strong>.(变量的生命必须有类型和名称。变量有两种：primitive和引用)</p>
+
+<p><strong>primitive variable</strong>:</p>
+
 <ul>
-<li>Variables come in two flavors: primitive and reference.变量有两种：primitive和引用</li>
-<li>Variables must always be declared with a name and a type.变量的生命必须有类型和名称。</li>
 <li>A primitive variable value is the bits representing the value. primitive变量的值是表示该值的位。</li>
-<li>A reference variable value is the bits representing a way to get to an object on the heap.引用变量的值是表示一种到达堆上的对象的方法的位。</li>
 </ul>
 
-<p>Object reference variable</p>
+<p><strong>Reference variable</strong></p>
 
 <ul>
-<li>there&#39;s only an object reference variable</li>
-<li>it doesn&#39;t hold the object itself, but it holds something like a pointer. or an address</li>
-<li>Objects live in one place and one place only - the garbage collectible heap</li>
+<li>A reference variable value is the bits representing a way to get to an object on the heap.引用变量的值是表示一种到达堆上的对象的方法的位。</li>
+<li>A reference variable is like a remote control. Using the dot operator(<code>.</code>) on a reference variable is like pressing a button on the remote control to access a method or instance variables.</li>
+<li>A reference variable has a value of <code>null</code> when it is not referencing any object.</li>
 </ul>
 
-<p>The 3 steps of object declaration, creation and assignment<br/>
+<p><strong>Array</strong></p>
+
+<ul>
+<li>An array is always an object, even if the array is declared to hold primitives. </li>
+<li>Every element in an array is just a variable.</li>
+</ul>
+
+<p>The 3 steps of <strong>object declaration, creation and assignment</strong><br/>
 (e.g. <code>Dog myDog = new Dog()</code>);</p>
 
 <ul>
-<li>declare a reference variable: tell the JVM to allocate space for a reference variable, and names that variable myDog</li>
-<li>create an object: tells the JCM to allocate space for a new Dog object on the heap.</li>
-<li>Link the object and the reference: Assigns the new Dog to the reference variable myDog.</li>
+<li><strong>declare</strong> a reference variable: tell the JVM to allocate space for a reference variable, and names that variable myDog</li>
+<li><strong>create</strong> an object: tells the JCM to allocate space for a new Dog object on the heap.</li>
+<li><strong>Link</strong> the object and the reference: Assigns the new Dog to the reference variable myDog.</li>
 </ul>
-
-<p>A reference variable has a value of null when it is not referencing any object.</p>
-
-<p>object abandoned is eligible for garbage collection</p>
-
-<p>the array is an object, even though it&#39;s an array of primitives.</p>
 
 <h2 id="toc_3">4 Methods use instance variables</h2>
 
-<p>class define what an object knows and what an object does. Things an object knows are its instance variables(state), things an object does are its methods(behavior).</p>
+<h3 id="toc_4">4.1 Methods</h3>
 
-<p>States affects behavior, behavior affects state.</p>
+<p><strong>Class define what an object knows and what an object does.</strong> Things an object knows are its <em>instance variables</em>(state), things an object does are its <em>methods</em>(behavior).</p>
 
-<p>A method uses parameters. A caller passes arguments.</p>
+<p><strong>Methods</strong>:<br/>
+<strong>A method uses parameters. A caller passes arguments.</strong></p>
 
 <ul>
-<li>arguments are the things you pass into the methods.</li>
+<li>Arguments are the things you pass into the methods.</li>
+<li>If a method takes a parameters, you must pass it something.</li>
+<li>Methods can return values. Every method is declared is declared with a return type.</li>
+<li>If you declare a method to return a value, you <em>must</em> return a value of the declared type or a value that is <em>compatible</em> with the declared type.</li>
+<li>Java is <strong>pass-by-value</strong>, which means <strong>pass-by-copy</strong>.</li>
 </ul>
 
-<p>if a method takes a parameters, you must pass it something.</p>
+<h3 id="toc_5">4.2 Getters and setters</h3>
 
-<p>The number and type of values you pass in must match the order and type of the parameters declared by the method.</p>
+<p><strong>Getters</strong> and <strong>setters</strong> let you, well, <em>get and set things</em>.</p>
 
-<p>Java is pass-by-value, which means pass-by-copy.</p>
+<ul>
+<li>A Getter&#39;s sole purpose in life is to send back, as a return value, the value of whatever it is that particular Getter is supposed to be Getting.</li>
+</ul>
 
-<p>A method must declare a return type. A void return type means the method doesn’t return anything.</p>
+<h3 id="toc_6">4.3 Encapsulation</h3>
 
-<p>If a method declares a non-void return type, it must return a value compatible with the declared return type.</p>
+<p>By forcing everybody to call a setter method, we can protect variables from unacceptable changes.</p>
 
-<p>Getters and setters let you, well, <em>get and set things</em>.</p>
+<pre><code class="language-java">theCat.height = 0 //yikes! we can&#39;t let this happen
 
-<p>Mark instance variables private. mark getters and setter public.</p>
+public void setHeight(int ht){
+    if (ht&gt;9){ // we punt in checks to guarantee a minimum cat height.
+        height=ht;
+    }
+}
+</code></pre>
 
-<p>Encapsulation puts a force-ﬁeld around my instance variables, so nobody can set them to, let’s say, something inappropriate.</p>
+<p>An <strong>encapsulation</strong> <em>starter</em> rule of thumb: mark your instances variables <strong><em>private</em></strong>, and provide <strong><em>public</em></strong> getters and setters for access control.</p>
 
-<p>The point to setters (and getters, too) is that you can change your mind later, without breaking anybody else’s code!</p>
+<ul>
+<li>Encapsulations puts a force-field around my instance variables, so nobody can set them to something <em>inappropriate</em>.</li>
+<li>The point to setters (and getters, too) is that <strong><em>you can change your mind later, without breaking anybody else’s code</em></strong>!</li>
+</ul>
+
+<pre><code class="language-java">class GoodDog {
+    private int size; //Make the instance variable private
+    public int getSize() { // make the getter methods public
+        return size; 
+    }
+
+    public void setSize(int s) {  // make the setter methods public
+        size = s; 
+    }
+
+    // even though the methods don&#39;t really add new functionality,
+    // the cool thing is that you can change your mind later.
+    // you can come back and make a method safer, faster, better
+    void bark() {
+        if (size &gt; 60) { 
+            System.out.println(“Wooof! Wooof!”); 
+        } else if (size &gt; 14) {
+            System.out.println(“Ruff! Ruff!”); } 
+        else {
+            System.out.println(“Yip! Yip!”); 
+        }
+    }
+}
+</code></pre>
+
+<h3 id="toc_7">Instance variables.</h3>
 
 <p>You don&#39;t have to initialize instance variables, because they always have a default value.</p>
 
-<p>The difference between instance and local variables.</p>
-
 <ul>
-<li>Instance variables are declared inside a class but not within a method</li>
-<li>Local variables are declares within a method.</li>
-<li><p>Local variables must be initialized before use.</p>
-<p>if you want to know if two objects are equal. And for that, you need the <code>.equal()</code> method.</p>
-<ul>
-<li>whether two different objects should be treated as equal depends on what makes sense for that particular object type. (e.g. dog/string)</li>
-</ul></li>
+<li>intergers: 0</li>
+<li>floating points: 0.0</li>
+<li>booleans: false</li>
+<li>references: null</li>
 </ul>
 
-<h2 id="toc_4">5 Writing a Program</h2>
+<h3 id="toc_8">instance and local variables.</h3>
+
+<p>The difference between instance and local variables:</p>
+
+<ul>
+<li><strong>Instance</strong> variables are declared <u>inside a class</u> but not within a method.</li>
+<li><strong>Local</strong> variables are declares <u>within a method</u> .</li>
+<li><strong>Local</strong> variables <u>must be initialized</u> before use.</li>
+</ul>
+
+<h3 id="toc_9">Comparing variables</h3>
+
+<p>If you want to know if two objects are <strong>equal</strong>, you need the <code>.equal()</code> method.</p>
+
+<ul>
+<li>whether two different objects should be treated as equal depends on what makes sense for that particular object type. (e.g. dog/string)</li>
+</ul>
+
+<pre><code class="language-java">String S = &quot;baby&quot;;
+S.equal(another_string);
+</code></pre>
+
+<p>To see if two reference are the same (which means they refer to the same object on the heap) use the <code>==</code> operator.</p>
+
+<pre><code class="language-text">Foo a = new Foo(); 
+Foo b = new Foo(); 
+Foo c = a; 
+if (a == b) { // false } 
+if (a == c) { // true } 
+if (b == c) { // false }
+</code></pre>
+
+<p>To compare two primitives, use the <code>==</code> operator.</p>
+
+<ul>
+<li>Operator <code>==</code> doesn&#39;t care about the size of the variable, so all the extra zeros on the left end don&#39;t matter.</li>
+</ul>
+
+<pre><code class="language-java">int a = 3;
+byte b = 3;
+if (a==b){ //true}
+</code></pre>
+
+<h2 id="toc_10">5 Writing a Program</h2>
 
 <ul>
 <li><strong>prep code</strong>: a form of pseudocode, to help you focus on the logic without stressing about syntax. 一种伪代码</li>
@@ -168,7 +292,7 @@ while (x) {} //wrong
 <li><strong>real code</strong>: the actual implementation of the class. 真实代码</li>
 </ul>
 
-<p><strong>Extreme Programming</strong>:</p>
+<p><strong>Extreme Programming</strong>（<a href="https://en.wikipedia.org/wiki/Extreme_programming">极限编程</a>):</p>
 
 <ul>
 <li>Write the test code first</li>
@@ -176,18 +300,19 @@ while (x) {} //wrong
 <li>Develop in iteration cycles.</li>
 </ul>
 
-<h2 id="toc_5">6 Using the Java Library</h2>
+<h2 id="toc_11">6  Get to know the Java API</h2>
 
 <p><code>ArrayList</code> is a class in the core Java library (the API).</p>
 
 <ul>
-<li> <code>add(Object elem)</code>: Adds the objects parameter to the list</li>
-<li> <code>remove(int index)</code>: Removes the object at the index parameter.</li>
-<li> <code>remove(Object elem)</code>: Removes this object(if it&#39;s in the ArrayList)`.</li>
-<li> <code>contains(Object elem)</code>: Returns <code>true</code> if there&#39;s a match for the object paramter</li>
-<li> <code>isEmpty()</code>: Returns <code>true</code> if the list has no elements</li>
-<li> <code>index(Object elem)</code>: Returns either the index of the object parameter, or -1</li>
-<li> <code>get(int index)</code>: Return the object currently at the index parameter.</li>
+<li> <code>boolean add(Object elem)</code>: Adds the objects parameter to the list(return <code>true</code>).</li>
+<li> <code>boolean remove(int index)</code>: Removes the object at the index parameter. Returns <code>true</code> if the element was in the list.</li>
+<li> <code>boolean remove(Object elem)</code>: Removes this object(if it&#39;s in the ArrayList).</li>
+<li> <code>boolean contains(Object elem)</code>: Returns <code>true</code> if there&#39;s a match for the object parameter.</li>
+<li> <code>boolean isEmpty()</code>: Returns <code>true</code> if the list has no elements</li>
+<li> <code>int indexOf(Object elem)</code>: Returns either the index of the object parameter, or -1</li>
+<li> <code>size()</code>: Return the number of elements currently in the list.</li>
+<li> <code>Object get(int index)</code>: Return the object currently at the index parameter.</li>
 </ul>
 
 <p>You have to know the full name of the class you want to use in your code. You have two options:</p>
@@ -203,9 +328,9 @@ while (x) {} //wrong
 </ul></li>
 </ul>
 
-<h2 id="toc_6">7 better living in Objectville</h2>
+<h2 id="toc_12">7 Inheritance and polymorphism</h2>
 
-<h3 id="toc_7">7.1 overriding</h3>
+<h3 id="toc_13">7.1 overriding</h3>
 
 <p><strong>Overriding</strong>（重写) just means that a subclass redefines one of its inherited methods when it needs to change or extend the behavior of that method.</p>
 
@@ -241,9 +366,9 @@ public void roam(){
 <p>when you define a supertype for a group of classes, any subclass of that supertype can be substituted where the supertype is expected.<br/>
 当你定义出一组类的父型时，你可以用子型的任何类来填补任何需要或期待父型的位置。</p>
 
-<h3 id="toc_8">7.2 polymorphism</h3>
+<h3 id="toc_14">7.2 polymorphism</h3>
 
-<p>with polymorphism, the reference type can be a superclass of the actual object type. 运用多态时，引用类型可以是实际对象类型的父类。</p>
+<p>With polymorphism, the reference type can be a superclass of the actual object type. 运用多态时，引用类型可以是实际对象类型的父类。</p>
 
 <pre><code class="language-java">Animal[] animals = new Animal[3];
 animals [0] = new Dog();
@@ -296,7 +421,7 @@ class PetOwner {
 <li>The method can&#39;t be less accessible. 不能降低方法的访问权限</li>
 </ul>
 
-<h3 id="toc_9">7.3 method overloading</h3>
+<h3 id="toc_15">7.3 method overloading</h3>
 
 <p><strong>Method overloading</strong>(方法重载) is nothing more than having two methods with the same name but different argument lists. 方法重载就是方法名称相同，但参数列表不同。 </p>
 
@@ -307,45 +432,143 @@ class PetOwner {
 <li>You can vary the access levels in any direction 可以更改访问权限</li>
 </ul>
 
+<h2 id="toc_16">8 interfaces and abstract classes</h2>
+
+<p>What&#39;s an interface? it&#39;s a 100% abstract class. <br/>
+What&#39;s an abstract class? it&#39;s a class that can&#39;t be instantiated.</p>
+
+<h3 id="toc_17">Abstract classes</h3>
+
+<p>Here&#39;s where it gets weird:</p>
+
+<pre><code class="language-text">Animal anim = new Animal(); 
+</code></pre>
+
+<p>There two are the same type, but what the heck does an Animal object look like?</p>
+
+<p><strong>Some classes just should not be instantiated!</strong><br/>
+How?  By marking the class as <strong>abstract</strong>, the compiler will stop any code, anywhere, from ever creating an instance of that type. i.e. prevent a class from ever being instantiated.</p>
+
+<p>Making a class abstract before the class declaration:</p>
+
+<pre><code class="language-java">abstract class Caine extends Animal {
+    public void roam() {}
+}
+</code></pre>
+
+<p>When you&#39;re designing your class inheritance structure, you have to decide which classes are <em>abstract</em> and which are <em>concrete</em>. </p>
+
+<ul>
+<li><strong>Concrete</strong> classes are those that are specific enough to be instantiated. </li>
+<li>A <strong>concrete</strong> class just means that it&#39;s OK to make objects of that type.</li>
+<li>An <strong>abstract class</strong> has virtually no use, no value, no purpose in life, unless it is extended.</li>
+</ul>
+
+<h3 id="toc_18">Abstract methods</h3>
+
+<p>An <strong>abstract method</strong> means the method must be overriden, whereas an abstract class means the class must be extended.</p>
+
+<ul>
+<li>there isn&#39;t any code that would make sense in the abstract method, you won&#39;t put in a method body. e.g. <code>public abstract void eat()</code>.</li>
+<li>If you declare an abstract method, you must mark the class abstract as well. You can&#39;t have an abstract method in a non-abstract class.</li>
+<li>You must implement all abstract methods.</li>
+</ul>
+
+<h2 id="toc_19">the ultimate superclass: Object</h2>
+
+<p>Every class in Java extends class Object. Class Object is the mother of all classes; it&#39;s the superclass of everything. Java中的每个类都是从Object这个类继承出来的。Object类是所有类的妈妈，他是所有类的父类。</p>
+
+<ul>
+<li>Any class that doesn&#39;t <em>explicitly</em> extend another class, <em>implicitly</em> extends Object.</li>
+</ul>
+
+<p>Methods of Object class:</p>
+
+<ul>
+<li><code>equals()</code>: tell you if two objects are considered equal.</li>
+<li><code>getClass()</code>: Gives you back the class that object was instantiated from.</li>
+<li><code>hashCode()</code>: Prints out a hashcode for the object</li>
+<li><code>toString()</code>: Prints out a String message with the name of the class and some other number we rarely care about.</li>
+</ul>
+
+<p>Object is a <strong>non-abstract</strong> class because it&#39;s got method implementation code that all classes can inherit and use out-of-box, without having to override the methods.</p>
+
+<p>The Object class serves two main purpose:</p>
+
+<ul>
+<li>to act as a polymorphic type for methods that need to work on any class that you or anyone else makes 作为方法的多态类型</li>
+<li>to provide real method code that all objects in Java need at runtime (and putting them in class Object means all other classes inherit them).提供Java在执行期堆任何对象都有需要的实现方法代码。</li>
+</ul>
+
+<h3 id="toc_20">Using polymorphic references of type Object has a price</h3>
+
+<p>When you put an object into an <code>ArrayList&lt;Dog&gt;</code>, it goes in as a Dog, and coms out as a Dog:</p>
+
+<pre><code class="language-java">// Make an ArrayList declared to hold Dog objects.
+ArrayList&lt;Dog&gt; myDogArrayList = new ArrayList&lt;Dog&gt;();
+// Make a Dog
+Dog aDog = new Dog();
+// Add the Dog to the list
+myDogArrayList.add(aDog);
+//Assign the Dog from the list to a new Dog reference variable
+Dog d = myDogArrayList.get(0);
+</code></pre>
+
+<p><strong>Everything comes out of an <code>ArrayList&lt;Object&gt;</code> as a reference of type Object, regardless of what the actual object is.</strong> 任何从<code>ArrayList&lt;Object&gt;</code>取出的东西都会被当作Object类型的引用，而不管它原来是什么。</p>
+
+<pre><code class="language-java">// make an ArrayList declared to hold any type of Object
+ArrayList&lt;Object&gt; myDogArrayList = new ArrayList&lt;object&gt;()
+// make a Dog
+Dog aDog = new Dog();
+// Add the Dog to the list
+myDogArrayList.add(aDog);
+// No!! Won&#39;t compile!! the get() method returns type Object.
+// The compiler knows only that the object inherits from Object,
+// but it doesn&#39;t know it&#39;s a Dog!!
+Dog d = myDogArrayList.get(0)
+</code></pre>
+
+<p><strong>The compiler decides whether you can call a method based on the reference type, not the actual object type.</strong>:</p>
+
+<pre><code class="language-java">Object o = al.get(index);
+// Class Object has a hashCode() method
+// so you can call that method on any object in Java
+int i = o.hashCode();
+// Can&#39;t do this!! the Object class  has no idea what it means to bark().
+o.bark();
+</code></pre>
+
+<p><img src="media/15321391987415/method%20based%20on%20the%20reference%20type.png" alt="method based on the reference type"/></p>
+
+<h2 id="toc_21">9 constructors and garbage collection</h2>
+
 ]]></content>
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[图解TCP/IP]]></title>
-    <link href="http://larryim.cc/diagrammatize_TCP/IP.html"/>
-    <updated>2018-01-22T14:01:39+08:00</updated>
-    <id>http://larryim.cc/diagrammatize_TCP/IP.html</id>
+    <title type="html"><![CDATA[Machine Learning with large datasets]]></title>
+    <link href="http://larryim.cc/15323640524161.html"/>
+    <updated>2018-07-24T00:40:52+08:00</updated>
+    <id>http://larryim.cc/15323640524161.html</id>
     <content type="html"><![CDATA[
-<p>在计算机通信中，事先达成一个详细的约定，并遵循这一约定进行处理，这种约定其实就是<strong>协议</strong>。</p>
+<h2 id="toc_0">1 overview</h2>
 
-<p><strong>计算机网络体系结构</strong>将网络协议进行了系统的归纳。TCP/IP就是IP、TCP、HTTP等协议的集合。除此之外，还有很多其他类型的网络体系结构。</p>
-
-<p><img src="media/15166008990128/15322220890961.jpg" alt=""/></p>
-
-<h2 id="toc_0">OSI模型</h2>
-
-<p>开放式系统互联通信参考模型(Open System Interconnection Reference Model， 简称<strong>OSI模型</strong>)。在这一模型中，每个分层都接收由它下一层所提供的特定服务，并且负责为自己的上一层提供特定的服务。上下层之间进行交互时所遵循的约定叫做接口。统一层之间的交互所遵循的约定叫做协议。</p>
+<p>Why use big data?</p>
 
 <ul>
-<li>分层可以将每个独立使用，即使系统中某些分层发生变化，也不会波及整个系统</li>
-<li>分层能够细分通信功能，更易于单独实现每个分层的协议，并界定各个分层的具体责任和义务。</li>
+<li>Simple learning methods with large data sets can outperform complex learners with smaller datasets</li>
+<li>The ordering of learning methods, best-to-worst, can be different for small datasets than from large datasets</li>
+<li>The best way to improve performance for a learning system is often to collect more data</li>
+<li>Large datasets often imply large classifiers</li>
 </ul>
 
-<p><img src="media/15166008990128/15322230855436.jpg" alt=""/></p>
+<p>Asymptotic analysis</p>
 
 <ul>
-<li>应⽤层：为应⽤程序提供服务并规定应⽤程序中通信相关的细节。包括⽂件传输、电⼦邮件、远程登录（虚拟终端）等协议。 </li>
-<li>表⽰层：将应⽤处理的信息转换为适合⽹络传输的格式，或将来⾃下⼀层的数据转换为上层能够处理的格式。因此它主要负责数据格式的转换。具体来说，就是将设备固有的数据格式转换为⽹络标准传输格式。不同设备对同⼀⽐特流解释的结果可能会不同。因此，使它们保持⼀致是这 ⼀层的主要作⽤。 </li>
-<li>会话层： 负责建⽴和断开通信连接（数据流动的逻辑通路），以及数据的分割等数据传输相关的管理。 </li>
-<li>传输层： 起着可靠传输的作⽤。只在通信双⽅节点上进⾏处理，⽽⽆需在路由器上处理。 </li>
-<li>⽹络层：将数据传输到⽬标地址。⽬标地址可以是多个⽹络通过路由器连接⽽成的某⼀个地址。因此这⼀层主要负责寻址和路由选择。 </li>
-<li>数据链路层：负责物理层⾯上互连的、节点之间的通信传输。例如与1个以太⽹相连的2个节点之间的通信。 将0、1序列划分为具有意义的数据帧传送给对端（数据帧的⽣成与接收）。 </li>
-<li>物理层：负责0、1⽐特流（0、1序列）与电压的⾼低、光的闪灭之间的互换。</li>
+<li>It measures number of operations as function of problem size</li>
+<li>Different operations (eg disk seeking, scanning, memory access) can have very very different costs</li>
+<li>Disk access is cheapest when you scan sequentially</li>
 </ul>
-
-<h2 id="toc_1">TCP/IP协议</h2>
-
-<p><img src="media/15166008990128/15322239071091.jpg" alt=""/></p>
 
 ]]></content>
   </entry>
@@ -516,7 +739,7 @@ struct in_addr {
 
 <p><img src="media/15320197756867/Internet%20Domain%20Names.png" alt="Internet Domain Names"/></p>
 
-<p><strong>域名系统</strong>(Domain Naming System, DNS)是映射IP地址和域名的数据库。可以把DNS数据库视为上百万的<strong>主机条目</strong>(host entry)的集合。</p>
+<p><strong>域名系统</strong>(Domain Naming System, DNS)是映射IP地址和域名的数据库。可以把DNS数据库视为上百万的<strong>主机条目结构</strong>(host entry structure)的集合，其中每条定义了一组域名和一组IP地址之间的映射。</p>
 
 <ul>
 <li>DNS映射，可以通过<code>nsloopup</code>查看</li>
@@ -700,7 +923,7 @@ void echo(int connfd) {
 
 <h3 id="toc_11">5.1 Web基础</h3>
 
-<p>Web客户端和服务器之间的交互用的是HTTP协议(超文本传输协议)</p>
+<p>Web客户端和服务器之间的交互用的是<strong>HTTP协议</strong>(超文本传输协议)，交互的基本过程为：</p>
 
 <ul>
 <li>客户端和服务器建立TCP连接</li>
@@ -757,6 +980,46 @@ void echo(int connfd) {
 
 <p>下面是HTTP请求的一个实例<br/>
 <img src="media/15320197756867/example%20HTTP%20transaction.png" alt="example HTTP transaction"/></p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[图解TCP/IP]]></title>
+    <link href="http://larryim.cc/diagrammatize_TCP/IP.html"/>
+    <updated>2018-01-22T14:01:39+08:00</updated>
+    <id>http://larryim.cc/diagrammatize_TCP/IP.html</id>
+    <content type="html"><![CDATA[
+<p>在计算机通信中，事先达成一个详细的约定，并遵循这一约定进行处理，这种约定其实就是<strong>协议</strong>。</p>
+
+<p><strong>计算机网络体系结构</strong>将网络协议进行了系统的归纳。TCP/IP就是IP、TCP、HTTP等协议的集合。除此之外，还有很多其他类型的网络体系结构。</p>
+
+<p><img src="media/15166008990128/15322220890961.jpg" alt=""/></p>
+
+<h2 id="toc_0">OSI模型</h2>
+
+<p>开放式系统互联通信参考模型(Open System Interconnection Reference Model， 简称<strong>OSI模型</strong>)。在这一模型中，每个分层都接收由它下一层所提供的特定服务，并且负责为自己的上一层提供特定的服务。上下层之间进行交互时所遵循的约定叫做接口。统一层之间的交互所遵循的约定叫做协议。</p>
+
+<ul>
+<li>分层可以将每个独立使用，即使系统中某些分层发生变化，也不会波及整个系统</li>
+<li>分层能够细分通信功能，更易于单独实现每个分层的协议，并界定各个分层的具体责任和义务。</li>
+</ul>
+
+<p><img src="media/15166008990128/15322230855436.jpg" alt=""/></p>
+
+<ul>
+<li>应⽤层：为应⽤程序提供服务并规定应⽤程序中通信相关的细节。包括⽂件传输、电⼦邮件、远程登录（虚拟终端）等协议。 </li>
+<li>表⽰层：将应⽤处理的信息转换为适合⽹络传输的格式，或将来⾃下⼀层的数据转换为上层能够处理的格式。因此它主要负责数据格式的转换。具体来说，就是将设备固有的数据格式转换为⽹络标准传输格式。不同设备对同⼀⽐特流解释的结果可能会不同。因此，使它们保持⼀致是这 ⼀层的主要作⽤。 </li>
+<li>会话层： 负责建⽴和断开通信连接（数据流动的逻辑通路），以及数据的分割等数据传输相关的管理。 </li>
+<li>传输层： 起着可靠传输的作⽤。只在通信双⽅节点上进⾏处理，⽽⽆需在路由器上处理。 </li>
+<li>⽹络层：将数据传输到⽬标地址。⽬标地址可以是多个⽹络通过路由器连接⽽成的某⼀个地址。因此这⼀层主要负责寻址和路由选择。 </li>
+<li>数据链路层：负责物理层⾯上互连的、节点之间的通信传输。例如与1个以太⽹相连的2个节点之间的通信。 将0、1序列划分为具有意义的数据帧传送给对端（数据帧的⽣成与接收）。 </li>
+<li>物理层：负责0、1⽐特流（0、1序列）与电压的⾼低、光的闪灭之间的互换。</li>
+</ul>
+
+<h2 id="toc_1">TCP/IP协议</h2>
+
+<p><img src="media/15166008990128/15322239071091.jpg" alt=""/></p>
 
 ]]></content>
   </entry>
@@ -4179,223 +4442,6 @@ foo() {
  }    
    
 </code></pre>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[内存对齐]]></title>
-    <link href="http://larryim.cc/memory_alignment.html"/>
-    <updated>2018-01-21T07:38:17+08:00</updated>
-    <id>http://larryim.cc/memory_alignment.html</id>
-    <content type="html"><![CDATA[
-<p>许多计算机系统对基本数据类型的合法地址做出了一些限制， <u>要求某种类型对象的地址必须是某个值\(K\)(通常是2、4或8)的倍数</u> 。这种<strong>对齐限制</strong>简化了处理器和内存系统之间的硬件设计。例如，假设一个处理器总是从内存中取8个字节，则地址必须为8的倍数。如果我们能保证将所有的double类型的数据对齐成8的倍数，那么就可以用一个内存操作来读或者写值了。否则，我们可能需要执行两次内存访问，因为对象可能被放在两个8字节内存块中。</p>
-
-<p>例如：</p>
-
-<pre><code class="language-c">#include &lt;iostream&gt;
-using namespace std;
-struct A{
-    char a;
-    int b;
-    short c;
-};
-
-struct B{
-    short c;
-    char a;
-    int b;
-};
-
-int main(){
-    cout&lt;&lt;sizeof(A)&lt;&lt;endl; //结果是12
-    cout&lt;&lt;sizeof(B)&lt;&lt;endl; //结果是8
-    return 0;
-}
-</code></pre>
-
-<p>以上结构体变量数量和类型完全相同，但是因为对齐限制，却得到了不同的结果。具体为什么会这样，请参考下面的对齐原则。</p>
-
-<h2 id="toc_0">对齐原则</h2>
-
-<ul>
-<li>任何\(K\)字节的基本对象的地址必须是K的倍数: \(\text{align}(x) = \text{sizeof}(x) = K\)</li>
-<li>结构体内存对齐要求结构体内每一个成员变量都是内存对齐的；</li>
-<li>结构体本身也要对齐。</li>
-</ul>
-
-<p>除此之外，程序员可自己指定数据的对齐大小，通过使用<code>pragma pack(x)</code>预处理命令，指定对齐大小为\(\text{pack_align}=x\)。只能指定\(2^n\)作为对齐大小，对于指定对齐大小为6、9、10这样的编译器不会理会。</p>
-
-<pre><code class="language-c">#pragma pack(x)
-//...
-#pragma pack()
-</code></pre>
-
-<p>使用<code>pragma pack(x)</code>预处理命令后，对齐大小为</p>
-
-<p>\[\text{align}(x) = \min(\text{sizeof}(x) , \text{pack_align})\] </p>
-
-<p>即<code>sizeof(x)</code>和指定对齐大小哪个小，对齐大小就为哪个。</p>
-
-<p>通过以下例子可以更好地掌握内存对齐原则：</p>
-
-<pre><code class="language-c">#include &lt;stdio.h&gt;
-#include &lt;assert.h&gt;
-#include &lt;stddef.h&gt;
-
-
-#pragma pack(1)
-    //此处指定对齐大小为1
-    //对于a，实际对齐大小为min(sizeof(int),1)=min(4,1)=1
-    //对于b，实际对齐大小为min(sizeof(char),1)=min(1,1)=1
-    //编译器会确保TEST_A首地址即a的地首址是1字节对齐的，此时a对齐
-    //对于b，由于b要求首地址1字节对齐，这显然对于任何地址都合适，所以a,b都是对齐的
-    //对于TEST_A数组，第一个TEST_A是对齐的（假设其地址为0），则第二个TEST_A的首地址为(0+5=5)，对于第二个TEST_A的两个变量a，b均对齐
-    //OK,对齐合理。因此整个结构体的大小为5   
-typedef struct TEST_A
-{
-    int a;
-    char b;
-} A;
-#pragma  pack()
-
-
-#pragma pack(2)
-    //此处指定对齐大小为2
-    //对于a，实际对齐大小为min(sizeof(int),2)=min(4,2)=2
-    //对于b，实际对齐大小为min(sizeof(char),2)=min(1,2)=1
-    //编译器会确保TEST_A首地址即a的地首址是2字节对齐的，此时a对齐
-    //对于b，由于b要求首地址1字节对齐，这显然对于任何地址都合适，所以a,b都是对齐的
-    //对于TEST_B数组，第一个TEST_B是对齐的（假设其地址为0），则第二个TEST_B的首地址为(0+5=5)，对于第二个TEST_B的变量a，显然地址5是不对齐于2字节的
-    //因此，需要在TEST_B的变量b后面填充1字节，此时连续相连的TEST_B数组才会对齐
-    //OK,对齐合理。因此整个结构体的大小为5+1=6
-typedef struct TEST_B
-{
-    int a;
-    char b;
-} B;
-#pragma  pack()
-
-   
-#pragma pack(4)
-    //此处指定对齐大小为4
-    //对于a，实际对齐大小为min(sizeof(int),2)=min(4,4)=4
-    //对于b，实际对齐大小为min(sizeof(char),2)=min(1,4)=1
-    //编译器会确保TEST_A首地址即a的地首址是4字节对齐的，此时a对齐
-    //对于b，由于b要求首地址1字节对齐，这显然对于任何地址都合适，所以a,b都是对齐的
-    //对于TEST_C数组，第一个TEST_C是对齐的（假设其地址为0），则第二个TEST_C的首地址为(0+5=5)，对于第二个TEST_C的变量a，显然地址5是不对齐于4字节的
-    //因此，需要在TEST_C的变量b后面填充3字节，此时连续相连的TEST_C数组才会对齐
-    //OK,对齐合理。因此整个结构体的大小为5+3=8
-typedef struct TEST_C
-{
-    int a;
-    char b;
-} C;
-#pragma  pack()
-
-
-#pragma pack(8)
-    //此处指定对齐大小为8
-    //对于a，实际对齐大小为min(sizeof(int),8)=min(4,8)=4
-    //对于b，实际对齐大小为min(sizeof(char),8)=min(1,8)=1
-    //编译器会确保TEST_A首地址即a的地首址是4字节对齐的，此时a对齐
-    //对于b，由于b要求首地址1字节对齐，这显然对于任何地址都合适，所以a,b都是对齐的
-    //对于TEST_D数组，第一个TEST_D是对齐的（假设其地址为0），则第二个TEST_D的首地址为(0+5=5)，对于第二个TEST_D的变量a，显然地址5是不对齐于4字节的
-    //因此，需要在TEST_D的变量b后面填充3字节，此时连续相连的TEST_D数组才会对齐
-    //OK,对齐合理。因此整个结构体的大小为5+3=8
-typedef struct TEST_D
-{
-    int a;
-    char b;
-} D;
-#pragma  pack()
-
-
-
-#pragma pack(8)
-    //此处指定对齐大小为8
-    //对于a，实际对齐大小为min(sizeof(int),8)=min(4,8)=4
-    //对于b，实际对齐大小为min(sizeof(char),8)=min(1,8)=1
-    //对于c，这是一个数组，数组的对齐大小与其单元一致，因而align(c)=align(double)=min(sizeof(double),8)=min(8,8)=8
-    //对于d，实际对齐大小为min(sizeof(char),8)=min(1,8)=1
-    //编译器会确保TEST_A首地址即a的地首址是4字节对齐的，此时a对齐
-    //对于b，由于b要求首地址1字节对齐，这显然对于任何地址都合适，所以a,b都是对齐的
-    //对于c，由于c要求首地址8字节对齐，因此前面的a+b=5，还要在c后面补上3个字节才能对齐
-    //对于d，显而易见，任何地址均对齐，此时结构体大小为4+1+3+10*8+1=89
-    //对于TEST_E数组，第一个TEST_E是对齐的（假设其地址为0），则第二个TEST_E的首地址为(0+89=89)，对于第二个TEST_E的变量a，显然地址89是不对齐于4字节的
-    //因此，需要在TEST_E的变量d后面填充7字节，此时连续相连的TEST_E数组才会对齐 
-    //(注意：此处不仅要确保下一个TEST_E的a,b变量对齐，还要确保c也对齐，所以这里不是填充3字节，而是填充7字节）
-    //OK,对齐合理。因此整个结构体的大小为(4)+(1+3)+(10*8)+(1+7)=96
-typedef struct TEST_E
-{
-    int a;
-    char b;
-    double c[10];
-    char d;
-} E;
-#pragma  pack()
-
-int main()
-{
-    A A1;
-    B B1;
-    C C1;
-    D D1;
-    E E1, E2;
-    printf(&quot;A:%zu, %zu\n&quot;, sizeof(A1), sizeof(A1));
-    printf(&quot;B:%zu\n&quot;, sizeof(B1));
-    printf(&quot;C:%zu\n&quot;, sizeof(C1));
-    printf(&quot;D:%zu\n&quot;, sizeof(D1));
-    printf(&quot;E:%zu, %zu\n&quot;, sizeof(E1), sizeof(E2));
-
-    return 0;
-}
-</code></pre>
-
-<pre><code class="language-text">A:5, 5
-B:6
-C:8
-D:8
-E:96, 96
-</code></pre>
-
-<h2 id="toc_1">内存对齐原因</h2>
-
-<p>可能你对内存印象是，内存是由一个个字节组成的：</p>
-
-<p><img src="media/15164914975645/howProgrammersSeeMemory.jpg" alt=""/></p>
-
-<p>但是很可惜，CPU却不是这么看待的：</p>
-
-<p><img src="media/15164914975645/howProcessorsSeeMemory.jpg" alt=""/></p>
-
-<p>内存读取是按块进行的，块的大小称为<strong>粒度</strong>（granularity)。实际上在存储器层次结构上的较低层向较高层传输数据的时候都是按块进行的。也就是说，数据从内存到寄存器，要经过诸多关卡(在core i7上，有L1、L2和L3高速缓存)，每个关卡都有不同的粒度。所以为了提高速度，不仅仅大的对象要保证对齐，连对象内部的数据，也需要对齐到2的幂。</p>
-
-<p>以内存读取为例，我们仔细看看为什么内存不对齐会影响读取速度？</p>
-
-<p>假设CPU要读取一个4字节大小的数据到寄存器中（假设内存读取粒度是4），分两种情况讨论：</p>
-
-<ul>
-<li>1.数据从0字节开始</li>
-<li>2.数据从1字节开始</li>
-</ul>
-
-<p>当数据从0字节开始的时候，直接将0-3四个字节完全读取到寄存器，就算完成了。</p>
-
-<p><img src="media/15164914975645/quadByteAccess.jpg" alt=""/></p>
-
-<p>当数据从1字节开始的时候，问题很复杂，首先先将前4个字节读到寄存器，并再次读取4-7字节的数据进寄存器，接着把0字节，5、6、7字节的数据剔除，最后合并1、2、3、4字节的数据进寄存器，对一个内存未对齐的寄存器进行了这么多额外操作，大大降低了性能。</p>
-
-<p><img src="media/15164914975645/unalignedAccess.jpg" alt=""/></p>
-
-<h2 id="toc_2">参考</h2>
-
-<ul>
-<li>1. 深入理解计算机体系（第三版）</li>
-<li>2. <a href="https://zh.wikipedia.org/zh-hans/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%AF%B9%E9%BD%90">数据结构对齐 维基百科</a></li>
-<li>3. <a href="https://www.cnblogs.com/xylc/p/3780907.html">https://www.cnblogs.com/xylc/p/3780907.html</a></li>
-<li>4. <a href="https://www.cnblogs.com/jijiji/p/4854581.html">https://www.cnblogs.com/jijiji/p/4854581.html</a></li>
-</ul>
 
 ]]></content>
   </entry>
