@@ -226,18 +226,19 @@
 <li>
 <a href="#toc_18">Abstract methods</a>
 </li>
-</ul>
-</li>
 <li>
 <a href="#toc_19">the ultimate superclass: Object</a>
-<ul>
+</li>
 <li>
 <a href="#toc_20">Using polymorphic references of type Object has a price</a>
 </li>
+<li>
+<a href="#toc_21">Interface</a>
+</li>
 </ul>
 </li>
 <li>
-<a href="#toc_21">9 constructors and garbage collection</a>
+<a href="#toc_22">9 constructors and garbage collection</a>
 </li>
 </ul>
 
@@ -618,7 +619,7 @@ How?  By marking the class as <strong>abstract</strong>, the compiler will stop 
 <li>You must implement all abstract methods.</li>
 </ul>
 
-<h2 id="toc_19">the ultimate superclass: Object</h2>
+<h3 id="toc_19">the ultimate superclass: Object</h3>
 
 <p>Every class in Java extends class Object. Class Object is the mother of all classes; it&#39;s the superclass of everything. Java中的每个类都是从Object这个类继承出来的。Object类是所有类的妈妈，他是所有类的父类。</p>
 
@@ -684,7 +685,94 @@ o.bark();
 
 <p><img src="media/15321391987415/method%20based%20on%20the%20reference%20type.png" alt="method based on the reference type"/></p>
 
-<h2 id="toc_21">9 constructors and garbage collection</h2>
+<p>If you&#39;re sure the object is really a Dog, you can make a new Dog reference to it by copying the Object reference, and forcing that copy to go into a Dog reference variable, using a cast (Dog).</p>
+
+<pre><code class="language-java">Object o = al.get(index);
+// cast the Object back to a Dog we know is there.
+Dog d = (Dog) o;
+d.roam();
+</code></pre>
+
+<p>If you&#39;re not sure it&#39;s a Dog, you can use the <code>instanceof</code> operator to check.</p>
+
+<pre><code class="language-java">if (o instanceof Dog) {
+    Dog d = (Dog) o;
+}
+</code></pre>
+
+<h3 id="toc_21">Interface</h3>
+
+<p>Questions: what if you want to add Dog some Pet behaviors?</p>
+
+<ul>
+<li><p>Option one: We take the easy path, and put pet method in class Animal.</p>
+<ul>
+<li>Pros: All the Animals will instantly inherit the pet behaviors. We won&#39;t have to touch the existing Animal subclasses at all.</li>
+<li>Cons: Some animals like lion, wolf are not a pet. Non-pet Animals running around with pet methods.</li>
+</ul></li>
+<li><p>Option two: We start with option one, putting the pet methods in class Animal, but we make the methods abstract.</p>
+<ul>
+<li>Pros: All classes must override the methods, but they can make the methods &quot;do-nothings&quot;.</li>
+<li>Cons: Waste a lot of time to implement every concrete Animal subclasses.</li>
+</ul></li>
+<li><p>Options three: Put the pet methods Only in the classes where they belong.</p>
+<ul>
+<li>Pros: The methods are where they belong, and only where they belong.</li>
+<li>Cons: Firstly, you&#39;d have to agree to a protocol, and all programmers of pet Animal classes now and in the future would have to know about the protocol. Secondly, you don&#39;t get to use polymorphism for the pet methods </li>
+</ul></li>
+</ul>
+
+<p>It looks like we need two superclasses at the top.<br/>
+<img src="media/15321391987415/it%20looks%20like%20we%20need%20two%20superclasses%20at%20the%20top.png" alt="it looks like we need two superclasses at the top"/></p>
+
+<p>It’s called &quot;<strong>multiple inheritance</strong>&quot;(多重继承) and it can be a Really Bad Thing. Because multiple inheritance has a problem known as <strong>The Deadly Diamond of Death</strong>(致命的死亡砖石)</p>
+
+<p><img src="media/15321391987415/deadly_diamond_of_death.png" alt="deadly_diamond_of_death"/></p>
+
+<p>Java的方案: Interface!!!</p>
+
+<ul>
+<li>A Java <strong>interface</strong>(接口) solves multiple inheritance problem by giving you much of the polymorphic benefits of multiple inheritance without the pain and suffering from the Deadly Diamond of Death.</li>
+</ul>
+
+<p>How?</p>
+
+<ul>
+<li>surprisingly simple: <strong><em>make all the methods abstract</em></strong></li>
+<li>A Java interface is like a 100% pure abstract class.</li>
+</ul>
+
+<p>To define an interface:</p>
+
+<pre><code class="language-java">//use the keyword &quot;interface&quot; instead of &quot;class&quot;
+public interface Pet {}
+</code></pre>
+
+<p>To implement an interface:</p>
+
+<pre><code class="language-java">// Use the keyword &quot;implements&quot; followed by the interface name.
+public class Dog extends Canine implements Pet {}
+</code></pre>
+
+<p>A class can implement <em>multiple</em> interfaces!</p>
+
+<pre><code class="language-java">public class Dog extends Animal implements Pet, Saveable, Paintable {}
+</code></pre>
+
+<p>Classes from <em>different</em> inheritance trees can implement the <em>same</em> interface.</p>
+
+<p><img src="media/15321391987415/Classes%20from%20different%20inheritance%20trees%20can%20implement%20the%20same%20interface..png" alt="Classes from different inheritance trees can implement the same interface."/></p>
+
+<p>How do you know whether to make a class, subclass, an abstract class, or an interface?</p>
+
+<ul>
+<li>Make a class that doesn’t extend anything (other than Object) when your new class doesn’t pass the IS-A test for any other type.</li>
+<li>Make a subclass (in other words, extend a class) only when you need to make a <strong><em>more specific</em></strong> version of a class and need to override or add new behaviors.</li>
+<li>Use an abstract class when you want to define a <strong><em>template</em></strong> for a group of subclasses, and you have at least some implementation code that all subclasses could use. Make the class abstract when you want to guarantee that nobody can make objects of that type.</li>
+<li>Use an interface when you want to define a <strong><em>role</em></strong> that other classes can play, regardless of where those classes are in the inheritance tree.</li>
+</ul>
+
+<h2 id="toc_22">9 constructors and garbage collection</h2>
 
 
     
@@ -700,8 +788,8 @@ o.bark();
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="15323640524161.html" 
-          title="Next Post: Machine Learning with large datasets">Machine Learning with large datasets &raquo;</a>
+          <a  href="diagrammatize_TCP/IP.html" 
+          title="Next Post: 图解TCP/IP">图解TCP/IP &raquo;</a>
       
       </p>
         </div>
@@ -830,7 +918,7 @@ s.setAttribute('data-timestamp', +new Date());
 		  
 		      
 			      <li class="post">
-			        <a href="15323640524161.html">Machine Learning with large datasets</a>
+			        <a href="diagrammatize_TCP/IP.html">图解TCP/IP</a>
 			      </li>
 		     
 		  
@@ -842,7 +930,7 @@ s.setAttribute('data-timestamp', +new Date());
 		  
 		      
 			      <li class="post">
-			        <a href="diagrammatize_TCP/IP.html">图解TCP/IP</a>
+			        <a href="15323640524161.html">Machine Learning with large datasets</a>
 			      </li>
 		     
 		  
