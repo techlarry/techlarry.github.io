@@ -95,8 +95,6 @@
         
             <li><a href="data_structure_and_algorithm.html">数据结构和算法</a></li>
         
-            <li><a href="Course.html">Course</a></li>
-        
             <li><a href="Python%E7%89%B9%E6%80%A7.html">Python特性</a></li>
         
             <li><a href="%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html">机器学习</a></li>
@@ -141,441 +139,6 @@
 	<div class="large-8 medium-8 columns">
 		<div class="markdown-body home-categories">
 		
-			<div class="article">
-                <a class="clearlink" href="hash_table_2_Using_hashing_to_implement_Map_ADT.html">
-                
-                  <h1>Hashing (2): Using hashing to implement Map ADT</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>The <code>map</code> abstract data type is an unordered collection of associations between a key and a data value (just like a dictionary in Python). The <code>keys</code> in a map are all unique so that there is a one-to-one relationship between a key and a value.</p>
-
-<p>The operations are given below:</p>
-
-<ul>
-<li><code>Map()</code> Create a new, empty map. If the key is already in the map, then replace the old value with the new value</li>
-<li><code>put(key, val)</code> Add a new key-value pair to the map. If the key is already in the map, then replace the old value with the new value.</li>
-<li><code>get(key)</code> Given a key, return the value stored in the map or None otherwise.</li>
-<li><code>del</code> Delete the key-value pair from the map using a statement of the form <code>del map[key]</code></li>
-<li><code>len()</code> Return the number of key-value pairs stored in the map</li>
-<li><code>in</code> Return <code>True</code> for a statement of the form <code>key in map</code>, if the given key is in the map, <code>False</code> otherwise.</li>
-</ul>
-
-<p>It would be better to use a hash table  than a list with binary search since looking up an item in a hash table can approach \(O(1)\) performance.</p>
-
-<p>Two list, are used to create <code>HashTable</code> class that implement the Map abstract data type. One called <code>slots</code> which will hold the key items; another called <code>data</code> which will hold the data values. It is important that the size of the hash table be a prime number so that the collision resolution algorithm can be as efficient as possible. </p>
-
-<p><code>hash_function</code> implements the hash function by simple <code>remainder method</code>. The collision resolution is linear probing. The <code>put</code> function assumes that there will eventually be an empty slot unless the key is already present in the <code>self.slots</code></p>
-
-<pre><code class="language-python">
-
-class HashTable:
-    &quot;&quot;&quot;
-    &gt;&gt;&gt; h=HashTable()
-    &gt;&gt;&gt; h[54]=&quot;cat&quot;
-    &gt;&gt;&gt; h[26]=&quot;dog&quot;
-    &gt;&gt;&gt; h[93]=&quot;lion&quot;
-    &gt;&gt;&gt; h[77]=&quot;bird&quot;
-    &gt;&gt;&gt; h[31]=&quot;cow&quot;
-    &gt;&gt;&gt; h[44]=&quot;goat&quot;
-    &gt;&gt;&gt; h.slots
-    [77, 44, None, None, 26, 93, None, None, None, 31, 54]
-    &gt;&gt;&gt; h.data
-    [&#39;goat&#39;, None, None, None, &#39;dog&#39;, &#39;lion&#39;, None, None, None, &#39;cow&#39;, &#39;cat&#39;]
-    &quot;&quot;&quot;
-    def __init__(self):
-        self.size = 11
-        self.slots = [None] * self.size
-        self.data = [None]* self.size
-
-    def put(self, key, data):
-        hash_value = self.hash_function(key, len(self.slots))
-        if self.slots[hash_value] is None:
-            self.slots[hash_value] = key
-            self.data[hash_value] = data
-        elif self.slots[hash_value] == key:
-            self.data[hash_value] = data
-        else:
-            # rehash
-            next_slot = self.rehash(hash_value, len(self.slots))
-            while self.slots[next_slot] is not None and self.slots[next_slot] != key:
-                next_slot = self.rehash(hash_value, len(self.slots))
-
-            if self.slots[next_slot] is None:
-                self.slots[next_slot] = key
-                self.data[hash_value] = data
-            else:
-                self.data[hash_value] = data
-
-    def hash_function(self, key, size):
-        &quot;&quot;&quot;
-        hash_function implements the simple remainder method
-        &quot;&quot;&quot;
-        return key % size
-
-    def rehash(self, old_hash, size):
-        &quot;&quot;&quot;
-        linear probing with a plus 1
-        &quot;&quot;&quot;
-        return (old_hash+1) % size
-
-    def get(self, key):
-        start_slot = self.hash_function(key, len(self.slots))
-        data = None
-        stop = False
-        found = False
-        position = start_slot
-        while self.slots[position] is not None and \
-                not found and not stop:
-            if self.slots[position] == key:
-                found = True
-                data = self.data[position]
-            else:
-                position = self.rehash(position, len(self.slots))
-            if position == start_slot:
-                stop = True
-        return data
-
-    def __getitem__(self, key):
-        return self.get(key)
-
-    def __setitem__(self, key, data):
-        self.put(key, data)
-
-    def __len__(self):
-        &quot;&quot;&quot;
-        return length
-        &quot;&quot;&quot;
-        count = 0
-        for item in self.slots:
-            if item is not None:
-                count += 1
-
-        return count
-
-    def __contains__(self, item):
-        &quot;&quot;&quot;
-        定义了使用in和not in进行成员测试时类的行为
-        &quot;&quot;&quot;
-        return self.get(item) is not None
-
-
-if __name__ == &quot;__main__&quot;:
-    import doctest
-    doctest.testmod(verbose=True)
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/7/17</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Hash%20Table.html'>Hash Table</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="heap_median_maintenance.html">
-                
-                  <h1>Heap (2): Median Maintenance</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p><strong>Problem Statement</strong>: The goal of the problem is to implement the <code>Median Maintenance</code> algorithm. The text file contains a list of the integers; you should treat this as a stream of numbers, arriving one by one. Letting \(x_i\) denote the \(i\)th number of the file, the \(k\)th median \(m_k\) is defined as the median of the numbers \(x_1,…,x_k\). (So, if \(k\) is odd, then \(m_k\) is \(((k+1)/2)\)th smallest number among \(x_1,…,x_k\); if \(k\) is even, then \(m_k\) is the \((k/2)\)th smallest number among \(x_1,…,x_k\).)</p>
-
-<h1 id="toc_0">Solution</h1>
-
-<p>We might use a max heap to represent elements that are less than the median, and a min heap to represent elements that are greater than the median.</p>
-
-<p>After balancing the heaps, the number of elements in two heaps differs at most by 1. </p>
-
-<pre><code class="language-python">Step 1: Add next item to one of the heaps
-
-   if next item &lt; maxHeap root:
-        add it to maxHeap
-   else:
-        add it to minHeap
-
-Step 2: Balance the heaps (after this step heaps will be either balanced or
-   one of them will contain 1 more item)
-
-   if number of elements in one of the heaps &gt; the other by
-   more than 1:
-        remove the root element from the one containing more elements 
-        and add to the other one
-
-Step 3: Calculate the median:
-
-   if the heaps contain equal amount of elements:
-        median = root of maxHeap
-   else:
-        median = root of the heap with more elements
-</code></pre>
-
-<h2 id="toc_1">Implementation</h2>
-
-<pre><code class="language-python">import doctest
-import sys
-
-class MinHeap(object):
-    &quot;&quot;&quot;
-    Min Heap
-    &gt;&gt;&gt; bh = MinHeap()
-    &gt;&gt;&gt; bh.buildHeap([9,5,14,18,-17,27,33,19,11,21])
-    &gt;&gt;&gt; bh.findMin()
-    -17
-    &gt;&gt;&gt; bh.delMin()
-    -17
-    &gt;&gt;&gt; bh.list[1:]
-    [5, 9, 14, 11, 21, 27, 33, 19, 18]
-    &gt;&gt;&gt; bh.insert(-100)
-    &gt;&gt;&gt; bh.delMin()
-    -100
-    &quot;&quot;&quot;
-
-    def __init__(self):
-        &quot;&quot;&quot;
-        add self.list 0 with initialization in order to divide
-        &quot;&quot;&quot;
-        self.list = [-sys.maxsize]
-        self.size = 0
-
-
-    def insert(self, k):
-        &quot;&quot;&quot;
-        Insert element to the MinBinaryHeap
-        &quot;&quot;&quot;
-        self.list.append(k)
-        self.size += 1
-        self.perc_up(self.size)
-
-
-    def findMin(self):
-        &quot;&quot;&quot;
-        Find the min element and return it
-        &quot;&quot;&quot;
-        return self.list[1]
-
-
-    def delMin(self):
-        &quot;&quot;&quot;
-        Delete the min element
-        and return it
-        &quot;&quot;&quot;
-        retrival = self.list[1]
-        self.size -= 1
-        self.list[1] = self.list[-1]
-        self.list.pop()
-        self.perc_down(1)
-
-        return retrival
-
-
-    def isEmpty(self):
-        &quot;&quot;&quot;
-        Return if the MinBinaryHeap is empty
-        &quot;&quot;&quot;
-        return self.size == 0
-
-    def __len__(self):
-        &quot;&quot;&quot;
-        Magic Method: return the length of MinBinaryHeap
-        &quot;&quot;&quot;
-        return self.size
-
-
-    def buildHeap(self, alist):
-        &quot;&quot;&quot;
-        Build a MinBinaryHeap from alist which is a collection of data
-        &quot;&quot;&quot;
-        self.list.extend(alist)
-        self.size = len(alist)
-
-        i = self.size//2
-        while i &gt; 0:
-            self.perc_down(i)
-            i -= 1
-
-    def perc_up(self, i):
-        &quot;&quot;&quot;&quot;
-        perc_up i
-        &quot;&quot;&quot;
-        while i//2&gt;0:
-            if self.list[i] &lt; self.list[i // 2]:
-                self.list[i], self.list[i // 2] = self.list[i // 2], self.list[i]
-            i = i // 2
-
-    def perc_down(self, i):
-        &quot;&quot;&quot;
-        perc down i
-        &quot;&quot;&quot;
-        while (i * 2) &lt;= self.size:
-            mc = self.minChild(i)
-            if self.list[i] &gt; self.list[mc]:
-                self.list[i], self.list[mc] = self.list[mc], self.list[i]
-            i = mc
-
-    def minChild(self, i):
-        &quot;&quot;&quot;
-        find the min child
-        &quot;&quot;&quot;
-        if i * 2 + 1 &gt; self.size:
-            return i * 2
-        else:
-            if self.list[i * 2] &lt; self.list[i * 2 + 1]:
-                return i * 2
-            else:
-                return i * 2 + 1
-
-    def __iter__(self):
-        return iter(self.list[1:])
-
-
-class MaxHeap(object):
-    &quot;&quot;&quot;
-    Max Heap
-    &gt;&gt;&gt; bh = MaxHeap()
-    &gt;&gt;&gt; bh.buildHeap([9,5,14,18,-17,27,33,19,11,21])
-    &gt;&gt;&gt; bh.delMax()
-    33
-    &gt;&gt;&gt; bh.insert(100)
-    &gt;&gt;&gt; bh.delMax()
-    100
-    &gt;&gt;&gt; len(bh)
-    9
-    &quot;&quot;&quot;
-
-    def __init__(self):
-        self.heap = MinHeap()
-
-    def insert(self, k):
-        self.heap.insert(-k)
-
-    def delMax(self):
-        return -self.heap.delMin()
-
-    def buildHeap(self, alist):
-        for i in range(len(alist)):
-            alist[i] = -alist[i]
-        self.heap.buildHeap(alist)
-
-    def findMax(self):
-        return -self.heap.findMin()
-
-    def __len__(self):
-        return self.heap.size
-
-    def __iter__(self):
-        for i in range(1, self.heap.size+1):
-            yield -self.heap.list[i]
-
-
-def median_maintenance(textfile):
-
-    min_heap = MinHeap()  # &gt; medium
-    max_heap = MaxHeap()  # &lt; medium
-
-    medians = []
-    count = 0
-
-    with open(textfile) as infile:
-        for line in infile:
-            item = int(line)
-            count += 1
-
-            # Step 1: Add next item to one of the hepas
-            # special case: initialize
-            if count == 1:
-                max_heap.insert(item)
-            else:
-                if item &lt; max_heap.findMax():
-                    max_heap.insert(item)
-                else:
-                    min_heap.insert(item)
-
-            # Step2: Balance the heap
-            if abs(len(max_heap) - len(min_heap)) &gt; 1:
-                if len(max_heap) &gt; len(min_heap):
-                    min_heap.insert(max_heap.delMax())
-                else:
-                    max_heap.insert(min_heap.delMin())
-
-            # Step3: calculate median
-            if len(max_heap) == len(min_heap):
-                median = max_heap.findMax()
-            else:
-                if len(max_heap) &gt; len(min_heap):
-                    median = max_heap.findMax()
-                else:
-                    median = min_heap.findMin()
-
-            medians.append(median)
-
-            # test
-            #for element in max_heap:
-            #    print(element, end=&#39; &#39;)
-            #for element in min_heap:
-            #    print(element, end=&#39; &#39;)
-            #print(&#39;total elem:&#39;,len(max_heap)+len(min_heap))
-
-
-    return medians
-
-if __name__ == &#39;__main__&#39;:
-    # doctest.testmod(verbose=True)
-    #textfile = &#39;SmallTest.txt&#39;
-    textfile = &#39;Median.txt&#39;
-    medians = median_maintenance(textfile)
-    answer = sum(medians)%10000
-    print(answer)
-</code></pre>
-
-<h2 id="toc_2">Resources</h2>
-
-<ol>
-<li><a href="https://stackoverflow.com/questions/14189540/python-topn-max-heap-use-heapq-or-self-implement">max heap implementation</a></li>
-<li><a href="https://stackoverflow.com/questions/10657503/find-running-median-from-a-stream-of-integers">median maintenance</a></li>
-</ol>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/7/21</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='data_structure_and_algorithm.html'>数据结构和算法</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
 			<div class="article">
                 <a class="clearlink" href="binary_search_tree.html">
                 
@@ -1252,6 +815,292 @@ class TreeNode:
                 </div>
               </div><!-- article -->
         
+			<div class="article">
+                <a class="clearlink" href="testing.html">
+                
+                  <h1>Testing</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p><a href="https://en.wikipedia.org/wiki/Unit_testing">Unit testing</a> is a software testing method by which individual units of source code, sets of one or more computer program modules together with associated control data, usage procedures, and operating procedures, are tested to determine whether they are fit for use.</p>
+
+<h2 id="toc_0">Test-driven programming</h2>
+
+<p>&quot;<strong>Test first and code later</strong>&quot; practice, known as test-driven programming, instead of test after code.</p>
+
+<h3 id="toc_1">Requirement Specification</h3>
+
+<p>When developing a piece of software, you must first know what problem the software will solve—what objectives it will meet. You can clarify your goals for the program by writing a <strong>requirement specification</strong>, a document (or just some quick notes) describing requirements the program must satisfy. </p>
+
+<h3 id="toc_2">The 1-2-3-4 of Testing</h3>
+
+<p>Here’s a breakdown of the test-driven development process:</p>
+
+<ul>
+<li>Figure out the new feature you want. Possibly document it, and then write a test for it.</li>
+<li>Write some skeleton code for the feature, so that you program runs without any syntax errors. See your test fail.</li>
+<li>Write dummy code for skeleton code, just to appease the test.</li>
+<li>Rewrite the code so that it actually pass the test.</li>
+</ul>
+
+<h2 id="toc_3">Testing Tools</h2>
+
+<p>Two brilliant modules are available to automate the testing process:</p>
+
+<ul>
+<li><code>unittest</code>: A generic testing framework.</li>
+<li><code>doctest</code>: A simpler module, designed for checking documentation, but excellent for writing unit tests as well.</li>
+</ul>
+
+<h3 id="toc_4">doctest</h3>
+
+<p>The <code>testmod</code> function checks both the module docstring and function docstring.</p>
+
+<p>E.g.</p>
+
+<pre><code class="language-python">def square(x):
+    &quot;&quot;&quot;
+    squares a number and returns the result.
+    &gt;&gt;&gt; square(2)
+    4
+    &gt;&gt;&gt; square(3)
+    9
+    &quot;&quot;&quot;
+    return x*x
+
+if __name__ == &quot;__main__&quot;:
+    import doctest, doc_test_example
+    doctest.testmod(doc_test_example, verbose=True)
+</code></pre>
+
+<p>Run the example. To get some more output, just add <code>-v</code>(for verbose)</p>
+
+<pre><code class="language-bash">$ python doc_test_example.py -v
+Trying:
+    square(2)
+Expecting:
+    4
+ok
+Trying:
+    square(3)
+Expecting:
+    9
+ok
+1 items had no tests:
+    doc_test_example
+1 items passed all tests:
+   2 tests in doc_test_example.square
+2 tests in 2 items.
+2 passed and 0 failed.
+Test passed.
+</code></pre>
+
+<h3 id="toc_5">unittest</h3>
+
+<p><code>unittest</code> which is based on the popular test framework <code>JUnit</code>, is more flexible and powerful. It allows to write very large and thorough test sets in a more structured manner.</p>
+
+<p><strong>注意： 测试方法应该以test为前缀命名</strong></p>
+
+<p>E.g.</p>
+
+<pre><code class="language-python">import unittest
+import doc_test_example as my_math
+
+class ProductTestCase(unittest.TestCase):
+
+    def testIntegers(self):
+        for x in xrange(-10,10):
+            p = my_math.square(x)
+            self.failUnless(p == x*x, &#39;Integer multiplication failed&#39;)
+
+    def testFloats(self):
+        for x in xrange(-10,10):
+            x = x/10.0
+            p = my_math.square(x)
+            self.failUnless(p == x*x, &#39;Float multiplication failed&#39;)
+
+
+if __name__ == &quot;__main__&quot;:
+    unittest.main()
+</code></pre>
+
+<p>Another example to test <code>dijkstra&#39;s algorithm</code> see <a href="http://larryim.cc/dijkstra_algorithm.html">here</a></p>
+
+<p>Methods such as <code>failUnless</code> check a condition to determine whether the given test succeeds or fails. </p>
+
+<p>The <code>unittest</code> module distinguishes between <code>errors</code>, where an exception is raised, and <code>failures</code>, which result from calls to <code>failUnless</code> and the like. </p>
+
+<h2 id="toc_6">Source Code Checking</h2>
+
+<p><a href="https://www.pylint.org">Pylint</a> and PyChecker are good tools for checking Python source code, looking for mistakes.</p>
+
+<p><code>Pylint</code> is a tool that checks for errors in Python code, tries to enforce a coding standard and looks for code smells. It can also look for certain type errors, it can recommend suggestions about how particular blocks can be refactored and can offer you details about the code’s complexity.</p>
+
+<p><code>Pylint</code> can be integrated with <code>Pycharm</code>, see <a href="https://pylint.readthedocs.io/en/latest/user_guide/ide-integration.html#pylint-in-pycharm">detail</a>.</p>
+
+<h3 id="toc_7">Resources</h3>
+
+<ul>
+<li><a href="https://www.ibm.com/developerworks/cn/linux/l-cn-pylint/index.html">如何使用 Pylint 来规范 Python 代码风格</a></li>
+<li><a href="https://www.python.org/dev/peps/pep-0008/">Style Guide for Python Code</a></li>
+</ul>
+
+<h2 id="toc_8">Profile</h2>
+
+<p><strong>When in doubt, use brute force</strong></p>
+
+<p>The standard library includes nice profiler modules called <code>profile</code> and <code>cProfile</code>.  </p>
+
+<p>A <code>profile</code> is a set of statistics that describes how often and for how long various parts of the program executed. </p>
+
+<pre><code class="language-python">&gt;&gt;&gt; import profile
+&gt;&gt;&gt; from my_math import square
+&gt;&gt;&gt; profile.run(&#39;square(1, 2)&#39;)
+</code></pre>
+
+<p>Another way to use <code>profile</code> in command-line:</p>
+
+<pre><code class="language-bash">$ python -m profile prof1py
+</code></pre>
+
+<p>The standard library also contains a module called <code>timeit</code>, which is a simple way of timing small snippets of Python code.</p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/7/14</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="magic_method_item_access.html">
+                
+                  <h1>Magic Methods: Item Access</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>Useful magic methods allows you to create objects that behave like sequences or mappings.</p>
+
+<h2 id="toc_0">Sequence and Mapping Protocol</h2>
+
+<p><code>protocol</code> in Python usually describe the rules governing some form of behavior. The <code>protocol</code> states which methods you should implement and what those methods should do. So, to be a sequence means,  to follow the sequence protocol.</p>
+
+<ul>
+<li><code>__len__(self)</code>: This method should return the number of items contained in the collection. For a sequence, this would simply be the number of elements. For a mapping, it would be the number of key-value pairs. If <code>__len__</code> returns zero (and you don’t implement <code>__nonzero__</code>, which overrides this behavior), the object is treated as false in a Boolean context (as with empty lists, tuples, strings, and dictionaries).</li>
+<li><code>__getitem__(self, key)</code>: This should return the value corresponding to the given key. For a sequence, the key should be an integer from \(0\) to \(n–1\) (or, it could be negative, as noted later), where \(n\) is the length of the sequence. For a mapping, you could really have any kind of keys.</li>
+<li><code>__setitem__(self, key, value)</code>: This should store value in a manner associated with key, so it can later be retrieved with <code>__getitem__</code>. Of course, you define this method only for mutable objects.</li>
+<li><code>__delitem__(self, key)</code>: This is called when someone uses the <code>del</code> statement on a part of the object, and should delete the element associated with key. Again, only mutable objects (and not all of them—only those for which you want to let items be removed) should define this method.</li>
+</ul>
+
+<h2 id="toc_1">Example</h2>
+
+<pre><code class="language-python">def checkIndex(key):
+    &quot;&quot;&quot;
+    Is the given key an acceptable index?
+    To be acceptable, the key should be a non-negative integer. If it
+    is not an integer, a TypeError is raised; if it is negative, an
+    IndexError is raised (since the sequence is of infinite length).
+    &quot;&quot;&quot;
+    if not isinstance(key, int):
+        raise TypeError
+    if key &lt; 0:
+        raise IndexError
+
+
+class ArithmeticSequence:
+    def __init__(self, start=0, step=1):
+        &quot;&quot;&quot;
+        Initialize the arithmetic sequence.
+        start   - the first value in the sequence
+        step    - the difference between two adjacent values
+        changed - a dictionary of values that have been modified by the user
+        &quot;&quot;&quot;
+        self.start = start
+        self.step = step
+        self.changed = {}
+
+    def __getitem__(self, key):
+        &quot;&quot;&quot;
+        Get an item from the arithmetic sequence.
+        &quot;&quot;&quot;
+        checkIndex(key)
+        try:
+            return self.changed[key]
+        except KeyError:
+            return self.start + key*self.step
+    # Store the start value
+    # Store the step value
+    # No items have been modified
+    # Modified?
+    # otherwise...
+    # ...calculate the value
+
+    def __setitem__(self, key, value):
+        &quot;&quot;&quot;
+        Change an item in the arithmetic sequence.
+        &quot;&quot;&quot;
+        checkIndex(key)
+        self.changed[key] = value                 # Store the changed value
+
+    def __delitem__(self, key):
+        &quot;&quot;&quot;
+        Delete the key provided from sequence
+        &quot;&quot;&quot;
+        checkIndex(key)
+        del self.changed[key]
+
+
+
+if __name__ == &quot;__main__&quot;:
+    s = ArithmeticSequence(1, 2)
+    print(s[4])
+    s[4]=3
+    print(s[4])
+    del s[4]
+    print(s[4])
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/7/18</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
               
 
 
@@ -1312,8 +1161,6 @@ class TreeNode:
         
             <a href="data_structure_and_algorithm.html"><strong>数据结构和算法</strong></a>
         
-            <a href="Course.html"><strong>Course</strong></a>
-        
             <a href="Python%E7%89%B9%E6%80%A7.html"><strong>Python特性</strong></a>
         
             <a href="%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html"><strong>机器学习</strong></a>
@@ -1353,6 +1200,12 @@ class TreeNode:
 	      
 		      
 			      <li class="post">
+			        <a href="Hadoop%20_the_definitive_guide_1-Hadoop_fundamentals.html">Hadoop权威指南(I) - Hadoop基础知识</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="head-first_java_note.html">Head first Java</a>
 			      </li>
 		     
@@ -1372,12 +1225,6 @@ class TreeNode:
 		      
 			      <li class="post">
 			        <a href="15323640524161.html">Machine Learning with large datasets</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="os-concets-processes.html">Operating System Concepts 3 - Processes</a>
 			      </li>
 		     
 		  
