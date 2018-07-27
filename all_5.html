@@ -140,6 +140,158 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="Dynamic_Programming_Knapsack_Problem.html">
+                
+                  <h1>Dynamic Programming (3): 0-1 Knapsack Problem</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>The most common problem being solved is the <code>0-1 knapsack problem</code>(0-1背包问题), which restricts the number \(w_i\) of copies of each kind of item to zero or one. Given a set of \(n\) items numbered from 1 up to \(n\), each with a weight \(w_i\) and a value \(v_i\), along with a maximum weight capacity \(W\),</p>
+
+<p>\[\begin{equation}<br/>
+\begin{split}<br/>
+&amp;\text{maximize} \sum_{i=1}^nv_ix_i\\<br/>
+&amp;\text{subject to} \sum_{i=1}^n w_ix_i \le W \quad \text{and} \quad x_i \in \{0,1\}\\<br/>
+\end{split}<br/>
+\end{equation}\]</p>
+
+<p>Informally, the problem is to maximize the sum of the values of the items in the knapsack so that the sum of the weights is less than or equal to the knapsack&#39;s capacity.</p>
+
+<p><img src="media/15022680636956/15207485328974.png" alt=""/></p>
+
+<h2 id="toc_0">Bottom-up method</h2>
+
+<h3 id="toc_1">Solving</h3>
+
+<p>Assume \(w_i, w_2,..., w_n, W\) are strictly positive integers. Define \(m[i,w]\) to be the maximum value that can be attained with weight less than or equal to \(w\) using items up to \(i\) (first \(i\) items).</p>
+
+<p>We can define \(m[i,w]\) recursively as follows:</p>
+
+<ul>
+<li>\(m[0, w]=0 \)</li>
+<li>\(m[i,w]=m[i-1, w]\) \(if w_i &gt; w\) ( the new item is more than the current weight limit)</li>
+<li>\(m[i,w]= max(m[i-1,w],m[i-1,w-w_i]+v_i\)) if \(w_i \le w\)</li>
+</ul>
+
+<p>The following is pseudo code for the dynamic program:</p>
+
+<pre><code class="language-python">// Input:
+// Values (stored in array v)
+// Weights (stored in array w)
+// Number of distinct items (n)
+// Knapsack capacity (W)
+  
+for j from 0 to W do:
+     m[0, j] := 0
+  
+for i from 1 to n do:
+    for j from 0 to W do:
+        if w[i] &gt; j then:
+            m[i, j] := m[i-1, j]
+        else:
+            m[i, j] := max(m[i-1, j], m[i-1, j-w[i]] + v[i])
+</code></pre>
+
+<h3 id="toc_2">Implementation</h3>
+
+<pre><code class="language-python">def knapsack01(value, weight, w_size):
+    &quot;&quot;&quot;
+    kanapsack01 solves a 0-1 knapsack problem,
+    input: values(value) and weights(W) of items to put into knapsack ( size of which is w_size)
+    output: the index of items that maximize the value of items putted in the knapsack
+    the index of items counts from 0, and corresponding value
+    &quot;&quot;&quot;
+    n = len(value)  # the number of items
+    # maximum value that can be attained with weight &lt;= weight using first i items
+    m = np.zeros(shape=(n+1, w_size+1), dtype=int)
+    for i in range(w_size+1):
+        m[0, i] = 0
+
+    if not isinstance(w_size, int):
+        raise ValueError(&#39;knapsack_size should be an integer&#39;)
+
+    for i in range(1, n+1):  # items
+        for j in range(1, w_size+1):  # sizes
+            if weight[i-1] &gt; j:
+                m[i, j] = m[i - 1, j]
+            else:
+                m[i, j] = max(m[i - 1, j], m[i - 1, j - weight[i-1]] + value[i-1])
+
+    max_val = m[-1, -1]
+    items = set()
+
+    while max_val &gt; 0 and i &gt; 0:
+        if max_val - value[i-1] in m[i - 1, :]:
+            max_val = max_val - value[i-1]
+            items.add(i-1)
+            i -= 1
+        else:
+            i -= 1
+    return items, m[-1, -1]
+</code></pre>
+
+<h2 id="toc_3">top-down with memoization</h2>
+
+<pre><code class="language-python">def knapsack01_recursive(hash_table, value, weight, i, j):
+    # base case: when 1 items here
+    if i == 1:
+        if weight[i - 1] &lt; j:
+            hash_table[(i, j)] = value[i - 1]
+            return value[i - 1]
+        else:
+            hash_table[(i, j)] = 0
+        return 0
+
+    # sub-problem computed
+    if (i, j) in hash_table:
+        return hash_table[(i, j)]
+    else:
+        if weight[i - 1] &gt; j:
+            # only case 1
+            hash_table[(i, j)] = knapsack01_recursive(hash_table, value, weight, i - 1, j)
+        else:
+            #  case 1, item i-1 excluded
+            case1 = knapsack01_recursive(hash_table, value, weight, i - 1, j)
+            # case 2, item i-1 included
+            case2 = knapsack01_recursive(hash_table, value, weight, i - 1, j - weight[i - 1]) + value[i - 1]
+            hash_table[(i, j)] = max(case1, case2)
+
+    return hash_table[(i, j)]
+</code></pre>
+
+<h2 id="toc_4">Reference</h2>
+
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Knapsack_problem#cite_ref-plateau85_15-0">Knapsack Problem WIKIPEDIA</a></li>
+<li><a href="https://stackoverflow.com/questions/5683066/knapsack-problem-classic">Knapsack problem Stack Overflow</a></li>
+<li><a href="http://www.es.ele.tue.nl/education/5MC10/Solutions/knapsack.pdf">The knapsack Problem PPT</a></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/8/9</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92.html'>动态规划</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="Coursera_notebook_jupyter.html">
                 
                   <h1>技巧：Coursera下载Jupyter notebook相关文件</h1>
@@ -541,156 +693,6 @@ We sort the subproblems by size and solve them in size order, smallest first. Wh
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="graph_basic.html">
-                
-                  <h1>Graph</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<ul>
-<li>
-<a href="#toc_0">Vocabulary and Definitions</a>
-</li>
-<li>
-<a href="#toc_1">Representation</a>
-</li>
-<li>
-<a href="#toc_2">The graph ADT</a>
-</li>
-<li>
-<a href="#toc_3">Implementation</a>
-</li>
-</ul>
-
-
-<p>Definition: A graph can be represented by \(G\) where \(G=(V,E)\). For the graph \(G\), \(V\) is a set of vertices and \(E\) is a set of edges. Each edge is a tuple \((v,w)\) where \(w, v \in V\). </p>
-
-<h2 id="toc_0">Vocabulary and Definitions</h2>
-
-<ul>
-<li><p>Vertex<br/>
-A <code>vertex</code> ( also a <code>node</code>) is a fundamental part of a graph. It can have a name <code>key</code>. A vertex may also have additional information called <code>payload</code>.</p></li>
-<li><p>Edge<br/>
-An <code>Edge</code> (also an <code>arc</code>) connects two vertices, and may be one-way(<code>directed graph</code>) or two-way(<code>undirected graph</code>).</p></li>
-<li><p>Weight<br/>
-Edges may be weighted to show that there is a cost (<code>weight</code>)to go from one vertex to another. E.g. the distance between the two cities.</p></li>
-<li><p>Path<br/>
-A <code>path</code> in a graph is a sequence of vertices that are connected by edges. Formally we could define a path as \(w_1, w_2,...,w_n\) such that \((w_i,w_{i+1}) \in E\) for all \(1 \le i \le  n-1\). The weighted path length is the sum of the weights of the edges in the path. </p></li>
-<li><p>Cycle<br/>
-A <code>cycle</code> in a directed graph is a graph that starts and ends at the same vertex.  A graph with no cycles is called an <code>acyclic graph</code>. A directed graph with no cycles is called a <code>directed acyclic graph</code> or a <code>DAG</code>.</p></li>
-</ul>
-
-<h2 id="toc_1">Representation</h2>
-
-<p>Adjacency Matrix<br/>
-Adjacency List<br/>
-Edge List<br/>
-<img src="media/14988021902558/Screen%20Shot%202017-06-30%20at%202.06.25%20PM.png" alt="Screen Shot 2017-06-30 at 2.06.25 P"/></p>
-
-<p>A <code>path</code> in a graph \(G\) is a sequence of vertices \(v_0,v_1,...,v_n\) so that for all \(i, (v_i,v_{i+1})\) is an edge of \(G\).</p>
-
-<h2 id="toc_2">The graph ADT</h2>
-
-<p>The graph abstract data type (ADT) is defined as follows:</p>
-
-<ul>
-<li><code>Graph()</code> creates a new, empty graph.</li>
-<li><code>addVertex(vert)</code> adds an instance of <code>Vertex</code> to the graph.</li>
-<li><code>addEdge(fromVert, toVert)</code>Adds a new, directed edge to the graph that connects two vertices.</li>
-<li><code>addEdge(fromVert, toVert, weight)</code> Adds a new, weighted, directed edge to the graph that connects two vertices.</li>
-<li><code>getVertex(vertKey)</code> finds the vertex in the graph named vertKey.</li>
-<li><code>getVertices()</code> returns the list of all vertices in the graph.</li>
-<li><code>in</code> returns <code>True</code> for a statement of the form vertex in graph, if the given vertex is in the graph,<code>False</code> otherwise.</li>
-</ul>
-
-<h2 id="toc_3">Implementation</h2>
-
-<p>We will create two classes, <code>Graph</code>, which holds the master list of vertices, and <code>Vertex</code>, which will represent each vertex in the graph.</p>
-
-<p>Each <code>Vertex</code> uses a dictionary to keep track of the vertices to which it is connected, and the weight of each edge. This dictionary is called <code>connectedTo</code>. The listing below shows the code for the <code>Vertex</code> class. The constructor simply initializes the <code>id</code>, which will typically be a string, and the <code>connectedTo</code> dictionary. The <code>addNeighbor</code> method is used add a connection from this vertex to another. The g<code>etConnections</code> method returns all of the vertices in the adjacency list, as represented by the <code>connectedTo</code>instance variable. The <code>getWeight</code> method returns the weight of the edge from this vertex to the vertex passed as a parameter.</p>
-
-<pre><code class="language-python">class Vertex:
-    def __init__(self,key):
-        self.id = key
-        self.connectedTo = {}
-
-    def addNeighbor(self,nbr,weight=0):
-        self.connectedTo[nbr] = weight
-
-    def __str__(self):
-        return str(self.id) + &#39; connectedTo: &#39; + str([x.id for x in self.connectedTo])
-
-    def getConnections(self):
-        return self.connectedTo.keys()
-
-    def getId(self):
-        return self.id
-
-    def getWeight(self,nbr):
-        return self.connectedTo[nbr]
-</code></pre>
-
-<p>The <code>Graph</code> class, shown in the next listing, contains a dictionary that maps vertex names to vertex objects. <code>Graph</code> also provides methods for adding vertices to a graph and connecting one vertex to another. The <code>getVertices</code> method returns the names of all of the vertices in the graph. In addition, we have implemented the <code>__iter__</code> method to make it easy to iterate over all the vertex objects in a particular graph. Together, the two methods allow you to iterate over the vertices in a graph by name, or by the objects themselves.</p>
-
-<pre><code class="language-python">class Graph:
-    def __init__(self):
-        self.vertList = {}
-        self.numVertices = 0
-
-    def addVertex(self,key):
-        self.numVertices = self.numVertices + 1
-        newVertex = Vertex(key)
-        self.vertList[key] = newVertex
-        return newVertex
-
-    def getVertex(self,n):
-        if n in self.vertList:
-            return self.vertList[n]
-        else:
-            return None
-
-    def __contains__(self,n):
-        return n in self.vertList
-
-    def addEdge(self,f,t,cost=0):
-        if f not in self.vertList:
-            nv = self.addVertex(f)
-        if t not in self.vertList:
-            nv = self.addVertex(t)
-        self.vertList[f].addNeighbor(self.vertList[t], cost)
-
-    def getVertices(self):
-        return self.vertList.keys()
-
-    def __iter__(self):
-        return iter(self.vertList.values())
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/6/30</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Graph.html'>Graph</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -796,6 +798,12 @@ Edge List<br/>
 		  
 		      
 			      <li class="post">
+			        <a href="os_concepts_CPU_scheduling.html">Operating System Concepts 5 - CPU Scheduling</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="os_concepts_synchronization_examples.html">Operating System Concepts 7 - Synchronization Examples</a>
 			      </li>
 		     
@@ -809,12 +817,6 @@ Edge List<br/>
 		      
 			      <li class="post">
 			        <a href="diagrammatize_TCP_IP.html">图解TCP/IP</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="csapp-internet-programming.html">CSAPP - 网络编程</a>
 			      </li>
 		     
 		  

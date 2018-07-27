@@ -160,18 +160,68 @@
       </div><!-- article -->
 
       <div class="article-content">
-      <h2 id="toc_0">1 Background</h2>
+      <ul>
+<li>
+<a href="#toc_0">1 Background</a>
+</li>
+<li>
+<a href="#toc_1">2 The Critical-Section problem</a>
+</li>
+<li>
+<a href="#toc_2">3 Peterson&#39;s Solution</a>
+</li>
+<li>
+<a href="#toc_3">4 Hardware support for Synchronization</a>
+<ul>
+<li>
+<a href="#toc_4">4.1 Memory barriers</a>
+</li>
+<li>
+<a href="#toc_5">4.2 Hardware instructions</a>
+</li>
+<li>
+<a href="#toc_6">4.3 Atomic variables</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_7">5 Mutex locks</a>
+</li>
+<li>
+<a href="#toc_8">6 Semaphores</a>
+</li>
+<li>
+<a href="#toc_9">7 Monitors</a>
+</li>
+<li>
+<a href="#toc_10">8 Liveness</a>
+<ul>
+<li>
+<a href="#toc_11">8.1 Deadlock</a>
+</li>
+<li>
+<a href="#toc_12">8.2 Priority Inversion</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_13">9 Evaluation</a>
+</li>
+</ul>
 
-<p>A <strong>race condition</strong>(竞争条件) is a situation where several processes access and manipulate the same data concurrently and the outcome of the execution depends on the particular order in which the access takes place.</p>
+
+<h2 id="toc_0">1 Background</h2>
+
+<p>A <strong>race condition</strong>(竞争条件) occurs when several processes access and manipulate the same data concurrently and the outcome of the execution depends on the particular order in which the access takes place.</p>
 
 <p>多个进程并发访问和操作同一数据，且执行结果与访问发生的特定顺序有关，称之为竞争条件。</p>
 
 <h2 id="toc_1">2 The Critical-Section problem</h2>
 
-<p>A <strong>critical section</strong>（临界区） is a segment of code, in which the process may be accessing and updating data that is shared with at least one other process.</p>
+<p>A <strong>critical section</strong>（临界区） is a section of code, in which the process may be accessing and updating data that is shared with at least one other process.</p>
 
 <ul>
-<li>When one process is executing in its critical section, no other process is allowed to execute in tis critical section.</li>
+<li>When one process is executing in its critical section, no other process is allowed to execute in its critical section.</li>
 </ul>
 
 <p>The <strong>critical-section problem</strong>（临界区问题） is to design a protocol that the processes can use to synchronize their activity so as to cooperatively share data.</p>
@@ -179,8 +229,8 @@
 <ul>
 <li>Each process must request permission to enter its critical section.</li>
 <li>The section of code implementing this request is the <strong>entry section</strong>（进入区）</li>
-<li>The critical section may be followed by an exit section (退出区)。</li>
-<li>The remaining code is the remainder section （剩余区)。</li>
+<li>The critical section may be followed by an <strong>exit section</strong> (退出区)。</li>
+<li>The remaining code is the **remainder section **（剩余区)。</li>
 </ul>
 
 <p><img src="media/15326525991493/general%20structure%20of%20a%20typical%20process.png" alt="general structure of a typical process"/></p>
@@ -188,30 +238,25 @@
 <p>A solution to the critical-section problem must satisfy the following three requirements:</p>
 
 <ol>
-<li>Mutual exclusion (互斥): If process \(P_i\) is executing in its critical section, then no other processes can be executing in their critical sections. 如果进程\(P_i\)在其临界区内执行，那么其他进程都不能在其临界区内执行；</li>
-<li><p>Progress (前进): If no process is executing in its critical section and some processes wish to enter their critical sections, then only those processes that are not executing in their remainder sections can participate in deciding which will enter its critical section next, and this selection cannot be postponed indefinitely. 如果没有进程在其临界区内执行且有进程需进入临界区，那么只有那么不在剩余区内执行的进程可参加选择，以确定谁能下一个进入临界区，且这种选择不能无限推迟；</p></li>
-<li><p>Bounded waiting (有限等待): There exists a bound, or limit, on the number of times that other processes are allowed to enter their critical sections after a process has made a request to enter its critical section and before that request is granted. 从一个进程做出进入临界区的请求，直到该请求允许为止，其他进程允许进入其临界区内的次数有上限。</p></li>
+<li><strong>Mutual exclusion</strong> (互斥): If process \(P_i\) is executing in its critical section, then no other processes can be executing in their critical sections. 如果进程\(P_i\)在其临界区内执行，那么其他进程都不能在其临界区内执行；</li>
+<li><p><strong>Progress</strong> (前进): If no process is executing in its critical section and some processes wish to enter their critical sections, then only those processes that are not executing in their remainder sections can participate in deciding which will enter its critical section next, and this selection cannot be postponed indefinitely. 如果没有进程在其临界区内执行且有进程需进入临界区，那么只有那么不在剩余区内执行的进程可参加选择，以确定谁能下一个进入临界区，且这种选择不能无限推迟；</p></li>
+<li><p><strong>Bounded waiting</strong> (有限等待): There exists a bound, or limit, on the number of times that other processes are allowed to enter their critical sections after a process has made a request to enter its critical section and before that request is granted. 从一个进程做出进入临界区的请求，直到该请求允许为止，其他进程允许进入其临界区内的次数有上限。</p></li>
 </ol>
 
-<p>Two general approaches are used to handle critical sections in operating systems: <strong>preemptive kernels</strong>（抢占内核） and n<strong>onpreemptive kernels</strong>（非抢占内核）.</p>
+<p>Two general approaches are used to handle critical sections in operating systems: <strong>preemptive kernels</strong>（抢占内核） and <strong>nonpreemptive kernels</strong>（非抢占内核）.</p>
 
 <ul>
 <li>A preemptive kernel allows a process to be preempted while it is running in kernel mode. 抢占内核允许处于内核模式的进程被抢占。</li>
 <li>A nonpreemptive kernel does not allow a process running in kernel mode to be preempted.A kernel-model process will run until it exists kernel mode, blocks, or voluntarily yields control of the CPU.非抢占内核不允许内核模式的进程被抢占。</li>
+<li>A nonpreemptive kernel is essentially free from race conditions on kernel data structures, as only on process is active in the kernel at at time. 非抢占内核的内核从根本上不会导致竞争条件，因为在内核中一次只有一个进程是活跃的。</li>
+<li>Preemptive kernels must be carefully designed to ensure that shared kernel data are free from race conditions. 对于抢占内核需要认真设计以确保共享内和数据免于竞争条件。</li>
+<li>A preemptive kernel may be more responsive, since there is less risk that a kernel-model process will run for an arbitrarily long period before relinquishing the processor to waiting process. 抢占内核的响应更快，因为处于内核模式的进程在释放CPU之前不会运行过久。</li>
+<li>A preemptive kernel is more suitable for real-time programming, as it will allow a real-time process to preemptive a process currently running in the kernel. 抢占内核更适合实时编程，因为它能允许实时进程抢占处于内核模式运行的其他进程。</li>
 </ul>
-
-<p>Obviously, a nonpreemptive kernel is essentially free from race conditions on kernel data structures, as only on process is active in the kernel at at time. Preemptive kernels must be carefully designed to ensure that shared kernel data are free from race conditions. 非抢占内核的内核数据结构从根本上不会导致竞争条件，对于抢占内核需要认真设计以确保其内核数据结构不会导致竞争条件。</p>
-
-<ul>
-<li>A preemptive kernel may be more responsive, since there is less risk that a kernel-model process will run for an arbitrarily long period before relinquishing the processor to waiting process.</li>
-<li>A preemptive kernel is more suitable for real-time programming, as it will allow a real-time process to preemptive a process currently running in the kernel.</li>
-</ul>
-
-<p>但抢占内核更受欢迎，因为抢占内核更适合实时编程，因为它能允许实时进程抢占处于内核模式运行的其他进程。再者，抢占内核的响应更快，因为处于内核模式的进程在释放CPU之前不会运行过久。</p>
 
 <h2 id="toc_2">3 Peterson&#39;s Solution</h2>
 
-<p>Peterson’s solution（Peterson 算法） is restricted to two processes that alternate execution between their critical sections and remainder sections. The processes are numbered \(P_0\) and \(P_1\). For convenience, when presenting \(P_i\), we use \(P_j\) to denote the other process; that is \(j\) equals \(1-i\).</p>
+<p><strong>Peterson’s solution</strong>(Peterson 算法) is restricted to two processes that alternate execution between their critical sections and remainder sections. The processes are numbered \(P_0\) and \(P_1\). For convenience, when presenting \(P_i\), we use \(P_j\) to denote the other process; that is \(j\) equals \(1-i\).</p>
 
 <p>Peterson&#39;s solution requires the two processes to share two data items:</p>
 
@@ -237,16 +282,24 @@ boolean flag[2];
 <li>The <code>flag</code> array is used to indicate if a process is ready to enter its critical section.</li>
 </ul>
 
-<p><strong>Note</strong>:  Peterson’s solution is not guaranteed to work on modern computer architectures for the primary reason that, to improve system performance, <strong>processors and/or compilers may reorder read and write operations that have no dependencies</strong>.</p>
+<p><strong>Note</strong>:  Peterson’s solution is <strong>not guaranteed</strong> to work on modern computer architectures for the primary reason that, to improve system performance, <strong>processors and/or compilers may reorder read and write operations that have no dependencies</strong>.</p>
 
 <p>If the assignments of the first two statements that appear in the entry section of Peterson&#39;s solution are reordered. It is possible that both threads may be active in their critical sections at the same time.<br/>
 <img src="media/15326525991493/the%20effects%20of%20instruction%20reordering%20in%20Peterson&#x27;s%20solution.png" alt="the effects of instruction reordering in Peterson&#39;s solution"/></p>
 
 <h2 id="toc_3">4 Hardware support for Synchronization</h2>
 
+<p>Hardware support for the critical-section problem includes, </p>
+
+<ul>
+<li>memory barriers</li>
+<li>hardware instructions</li>
+<li>atomic variables</li>
+</ul>
+
 <h3 id="toc_4">4.1 Memory barriers</h3>
 
-<p>How a computer architecture determines what memory guarantees it will provide to an application program is known as its <strong>memory model</strong>. In general, a memory model falls into one of two categories:</p>
+<p>How a computer architecture determines what memory guarantees it will provide to an application program is known as its <strong>memory model</strong>(内存模型). In general, a memory model falls into one of two categories:</p>
 
 <ol>
 <li><strong>Strongly ordered</strong>, where a memory modification on one processor is immediately visible to all other processors.</li>
@@ -263,7 +316,7 @@ boolean flag[2];
 
 <p>Many modern computer systems provide special hardware instructions that allow either to test and modify the content of a word or to swap the contents of two words atomically - that is, one uninterruptible unit.</p>
 
-<p>The definition of the atomic <code>test_and_set</code> instruction:</p>
+<p>The definition of the atomic <code>test_and_set()</code> instruction:</p>
 
 <pre><code class="language-c">boolean test and set(boolean *target) { 
     boolean rv = *target; 
@@ -304,15 +357,19 @@ while (true);
 }
 </code></pre>
 
-<h2 id="toc_6">5 Mutex locks</h2>
+<h3 id="toc_6">4.3 Atomic variables</h3>
+
+<p><strong>Atomic variables</strong> (原子变量) provides atomic operations on basic data types such as integers and booleans. Their use is often limited to single updates of shared data such as counters and sequence generators.</p>
+
+<h2 id="toc_7">5 Mutex locks</h2>
 
 <p>ISSUE: The hardware-based solutions are complicated as well as generally inaccessible to application programmers.</p>
 
 <p>SOLUTION: Operating-system designers build higher-level software tools. The simplest of these tools is the <strong>mutex lock</strong>(互斥锁)。</p>
 
 <ul>
-<li>A process must acquire the lock before entering a critical section; </li>
-<li>A processs releases the lock when it exists the critical section.</li>
+<li>A process must <strong>acquire</strong> the lock before entering a critical section; </li>
+<li>A process <strong>releases</strong> the lock when it exists the critical section.</li>
 <li>A mutex lock has a boolean variable <strong>available</strong>, whose value indicates if the lock is available or not.</li>
 <li>Calls to either <code>acquire()</code> or <code>release()</code> must be performed atomically. Thus mutex locks can be implemented using the CAS operation.</li>
 </ul>
@@ -339,7 +396,7 @@ while (true);
 <p>The main disadvantage of the implementation is that it requires <strong>busy waiting</strong>.</p>
 
 <ul>
-<li>while  a process is in its critical section, any other process that tries enter its critical section must loop continously in the call to <code>acquire()</code>.</li>
+<li>while  a process is in its critical section, any other process that tries enter its critical section must loop continuously in the call to <code>acquire()</code>.</li>
 <li>it wastes CPU cycles.</li>
 </ul>
 
@@ -348,6 +405,8 @@ while (true);
 <ul>
 <li>advantage: no context switch is required</li>
 </ul>
+
+<p>Spinlocks are not appropriate for single-processor systems yet are often used in multiprocessor systems.</p>
 
 <p>在UNIX中，自旋锁相关的API：</p>
 
@@ -362,9 +421,9 @@ int pthread_spin_unlock(pthread_spinlock_t *);
 int pthread_spin_destroy(pthread_spinlock_t *);
 </code></pre>
 
-<h2 id="toc_7">6 Semaphores</h2>
+<h2 id="toc_8">6 Semaphores</h2>
 
-<p>A <strong>semaphore</strong>(信号量) S is an integer variable that, apart from initialization, is accessed only through two standard atomic operatins: <code>wait()</code> and <code>signal()</code>. 信号量S是个整数变量，除了初始化外，它只能通过两个标准原子操作：<code>wait()</code>和<code>signal()</code>来访问。</p>
+<p>A <strong>semaphore</strong>(信号量) S is an integer variable that, apart from initialization, is accessed only through two standard atomic operations: <code>wait()</code> and <code>signal()</code>. 信号量S是个整数变量，除了初始化外，它只能通过两个标准原子操作：<code>wait()</code>和<code>signal()</code>来访问。</p>
 
 <p>The definition of <code>wait()</code> is as follows:</p>
 
@@ -384,12 +443,11 @@ int pthread_spin_destroy(pthread_spinlock_t *);
 
 <p>All modifications to the integer value of the semaphore in the <code>wait()</code> and <code>signal()</code> operations must be executed atomically.  在<code>wait()</code>和<code>signal()</code>操作中，对信号量整型值的修改必须不可分地执行。</p>
 
-<p>Operating systems often distinguish between counting and binary semaphores.</p>
+<p>Operating systems often distinguish between counting and binary semaphores.通常操作系统区分计数信号量和二进制信号量。</p>
 
 <ul>
-<li>The value of a <strong>counting semaphore</strong>(计数信号量) can range over an unrestricted domain.</li>
-<li>The value of a <strong>binary semaphore</strong>(二进制信号量) can range only between 0 and 1.<br/>
-通常操作系统区分计数信号量和二进制信号量。计数信号量的值域不受限制，而二进制信号量的值只能为0或1。</li>
+<li>The value of a <strong>counting semaphore</strong>(计数信号量) can range over an unrestricted domain.计数信号量的值域不受限制。</li>
+<li>The value of a <strong>binary semaphore</strong>(二进制信号量) can range only between 0 and 1. 二进制信号量的值只能为0或1。</li>
 </ul>
 
 <p>Counting semaphores can be used to control access to  a given resource consisting of a finite number of instances.</p>
@@ -401,11 +459,78 @@ int pthread_spin_destroy(pthread_spinlock_t *);
 <li>When the count for the semaphore goes to 0, all resources are being used. After that, processes that wish to use a resource will block until the count becomes greater than 0.</li>
 </ul>
 
-<h2 id="toc_8">7 Monitors</h2>
+<h2 id="toc_9">7 Monitors</h2>
 
-<h2 id="toc_9">8 Liveness</h2>
+<p>Issues: various types of errors can be generated easily when programmers use semaphores or mutex locks incorrectly to solve the critical-section problem.</p>
 
-<h2 id="toc_10">9 Evaluation</h2>
+<ul>
+<li>interchanges the order of <code>wait()</code> and <code>signal()</code></li>
+<li>replaces <code>signal()</code> with <code>wait()</code></li>
+<li>omits <code>wait()</code> or <code>signal()</code></li>
+</ul>
+
+<p>Solution: An abstract data type, <strong>monitor</strong>(管程), includes a set of programmer-defined operation related to mutual exclusion within the monitor. A monitor uses <strong>condition variables</strong> that allow processes to wait for certain conditions to become true and to signal one another when conditions have been set to true.</p>
+
+<p>Pseudocode syntax of a monitor:</p>
+
+<pre><code class="language-c">monitor monitor name { /* shared variable declarations */
+    function P1 ( . . . ) { . . .}
+    function P2 ( . . . ) { . . .}
+        .
+        .
+    function Pn ( . . . ) { . . .}
+    initialization code ( . . . ) { . . .}
+}
+</code></pre>
+
+<p><img src="media/15326525991493/monitor%20with%20condition%20variables.png" alt="monitor with condition variables"/></p>
+
+<h2 id="toc_10">8 Liveness</h2>
+
+<h3 id="toc_11">8.1 Deadlock</h3>
+
+<p><strong>deadlocked</strong>(死锁): two or more processes are waiting indefinitely for an event.</p>
+
+<p>A set of processes is in a deadlocked state when every process in the set is waiting for an event that can be caused only by another process in the set.</p>
+
+<h3 id="toc_12">8.2 Priority Inversion</h3>
+
+<p>A scheduling challenge arises when a higher-priority process needs to read or modify kernel data that are currently being accessed by a lower-priority process—or a chain of lower-priority processes. </p>
+
+<ul>
+<li>Since kernel data are typically protected with a lock, the higher-priority process will have to wait for a lower-priority one to finish with the resource. </li>
+<li>The situation becomes more complicated if the lower-priority process is preempted in favor of another process with a higher priority.</li>
+</ul>
+
+<p>As an example, assume we have three processes—\(L\), \(M\), and \(H\)—whose priorities follow the order \(L &lt; M &lt; H\). </p>
+
+<ul>
+<li>Assume that process \(H\) requires a semaphore \(S\), which is currently being accessed by process \(L\). </li>
+<li>Ordinarily, process \(H\) would wait for \(L\) to finish using resource S. </li>
+<li>However, now suppose that process \(M\) becomes runnable, thereby preempting process \(L\). </li>
+<li>Indirectly, a process with a lower priority—process \(M\)—has affected how long process \(H\) must wait for \(L\) to relinquish resource \(S\).</li>
+</ul>
+
+<p>This liveness problem is known as <strong>priority inversion</strong>（优先级反转）, and it can occur only in systems with more than two priorities. </p>
+
+<p>Solution：  priority-inheritance protocol(优先级继承协议)：</p>
+
+<ul>
+<li>All processes that are accessing resources needed by a higher-priority process inherit the higher priority until they are finished with the resources. </li>
+<li>When they are finished, priorities revert to original values.</li>
+</ul>
+
+<h2 id="toc_13">9 Evaluation</h2>
+
+<p>Performance differences between CAS-based synchronization and traditional synchronization (such as mutex locks and semaphores) under varying contention loads:</p>
+
+<ul>
+<li><strong>Uncontended</strong>： Although both options are generally fast, CAS protection will be somewhat faster than traditional synchronization.</li>
+<li><strong>Moderate contention</strong>： CAS protection will be faster—possibly much faster —than traditional synchronization.</li>
+<li><strong>High contention</strong>： Under very highly contended loads, traditional synchronization will ultimately be faster than CAS-based synchronization.</li>
+</ul>
+
+<p>Higher-level tools such as monitors and condition variables may have significant overhead, and may be less likely to scale in highly contended situations.</p>
 
 
     
@@ -421,8 +546,8 @@ int pthread_spin_destroy(pthread_spinlock_t *);
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="os_concepts_synchronization_examples.html" 
-          title="Next Post: Operating System Concepts 7 - Synchronization Examples">Operating System Concepts 7 - Synchronization Examples &raquo;</a>
+          <a  href="os_concepts_CPU_scheduling.html" 
+          title="Next Post: Operating System Concepts 5 - CPU Scheduling">Operating System Concepts 5 - CPU Scheduling &raquo;</a>
       
       </p>
         </div>
@@ -549,6 +674,12 @@ s.setAttribute('data-timestamp', +new Date());
 		  
 		      
 			      <li class="post">
+			        <a href="os_concepts_CPU_scheduling.html">Operating System Concepts 5 - CPU Scheduling</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="os_concepts_synchronization_examples.html">Operating System Concepts 7 - Synchronization Examples</a>
 			      </li>
 		     
@@ -562,12 +693,6 @@ s.setAttribute('data-timestamp', +new Date());
 		      
 			      <li class="post">
 			        <a href="diagrammatize_TCP_IP.html">图解TCP/IP</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="csapp-internet-programming.html">CSAPP - 网络编程</a>
 			      </li>
 		     
 		  

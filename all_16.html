@@ -140,6 +140,88 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15046658203135.html">
+                
+                  <h1>TensorFlow Q</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h3 id="toc_0">Q1: what&#39;s the difference between <code>tf.placeholder</code> and <code>tf.Variable</code></h3>
+
+<p>In general, we use <code>tf.placeholder</code> to feed actual training examples, while using <code>tf.Variable</code> for parameters such as weights (\(W\)) and biases (\(b\)) for models.</p>
+
+<p>With <code>tf.Variable</code>, we have to provide an initial value when declaring it. And we don&#39;t have to provide an initial value until running time with a <code>feed_dict</code>.</p>
+
+<h3 id="toc_1">Q2: what&#39;s the difference between <code>tf.random_normal</code> and <code>tf.trucated_normal</code></h3>
+
+<p><code>tf.trucated_normal</code> generates values following a normal distribution with specified mean and standard deviation, except that values whose magnitude is more than 2 standard deviations from the mean are dropped and re-picked.</p>
+
+<pre><code class="language-text">import tensorflow as tf
+import matplotlib.pyplot as plt
+%matplotlib inline
+Session = tf.InteractiveSession()
+</code></pre>
+
+<pre><code class="language-text">mean = 0.0
+std = 1.0
+shape = (10000,)
+hist_range = (-5, 5)
+
+A = tf.truncated_normal(shape, mean, std)
+B = tf.random_normal(shape, mean, std)
+a, b = Session.run([A, B])
+</code></pre>
+
+<pre><code class="language-text">f, (ax1, ax2) = plt.subplots(2,1)
+f1 = ax1.hist(a, bins= 100, range=hist_range)
+f2 = ax2.hist(b, bins= 100, range=hist_range)
+</code></pre>
+
+<p><img src="media/15046658203135/output_2_0.png" alt="output_2_0"/></p>
+
+<h3 id="toc_2">Q3: What&#39;s the difference between <code>tf.Variable</code> and <code>tf.get_variable</code></h3>
+
+<p><code>tf.get_variable</code> will make it way easier to refactor code if you need to share variables at any time.</p>
+
+<pre><code class="language-python">import tensorflow as tf
+
+with tf.variable_scope(&quot;scope1&quot;):
+    w1 = tf.get_variable(&quot;w1&quot;, shape=[2,3])
+    w2 = tf.Variable(1.0, name=&quot;w2&quot;)
+with tf.variable_scope(&quot;scope1&quot;, reuse=True):
+    w1_p = tf.get_variable(&quot;w1&quot;, shape=[2,3])
+    w2_p = tf.Variable(1.0, name=&quot;w2&quot;)
+
+print(w1 is w1_p, w2 is w2_p)
+
+#Output: True  False
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/9/6</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Tensorflow.html'>Tensorflow</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15050418178399.html">
                 
                   <h1>Recurrent Neural Network</h1>
@@ -459,44 +541,6 @@ running_var = momentum * running_var + (1 - momentum) * sample_var
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15046649572570.html">
-                
-                  <h1>Pandas</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>To convert a pandas <code>dataframe</code> (df) to a numpy <code>ndarray</code>, use this code:</p>
-
-<pre><code class="language-text">df=df.values
-</code></pre>
-
-<p>df now becomes a numpy <code>ndarray</code>.</p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/9/6</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -602,6 +646,12 @@ running_var = momentum * running_var + (1 - momentum) * sample_var
 		  
 		      
 			      <li class="post">
+			        <a href="os_concepts_CPU_scheduling.html">Operating System Concepts 5 - CPU Scheduling</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="os_concepts_synchronization_examples.html">Operating System Concepts 7 - Synchronization Examples</a>
 			      </li>
 		     
@@ -615,12 +665,6 @@ running_var = momentum * running_var + (1 - momentum) * sample_var
 		      
 			      <li class="post">
 			        <a href="diagrammatize_TCP_IP.html">图解TCP/IP</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="csapp-internet-programming.html">CSAPP - 网络编程</a>
 			      </li>
 		     
 		  

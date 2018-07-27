@@ -140,6 +140,136 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15066079292359.html">
+                
+                  <h1>C++面试经典100题</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h2 id="toc_0">1. 请填写BOOL , float, 指针变量与“零值”比较的 if 语句</h2>
+
+<p>提示：这里“零值”可以是0, 0.0 , <code>FALSE</code> 或者“空指针”。例如 <code>int</code> 变量 \(n\) 与“零值”<br/>
+比较的<code>if</code>语句为：</p>
+
+<pre><code class="language-text">if ( n == 0 )
+if ( n != 0 )
+</code></pre>
+
+<p>以此类推。</p>
+
+<p>(1)请写出 BOOL flag 与“零值”比较的 if 语句：<br/>
+标准答案：</p>
+
+<pre><code class="language-text">if ( flag )
+if ( !flag )
+``
+
+如下写法均属不良风格，不得分。
+
+</code></pre>
+
+<p>if (flag == TRUE)<br/>
+if (flag == 1 )<br/>
+if (flag == FALSE)<br/>
+if (flag == 0)</p>
+
+<pre><code class="language-text">
+(2)请写出 `float x` 与“零值”比较的`if`语句：
+标准答案示例：
+
+
+</code></pre>
+
+<p>const float EPSINON = 0.00001;<br/>
+if ((x &gt;= - EPSINON) &amp;&amp; (x &lt;= EPSINON)</p>
+
+<pre><code class="language-text">
+不可将浮点变量用`==`或`！=`与数字比较，应该设法转化成`&gt;=`或`&lt;=`此
+类形式。
+如下是错误的写法，不得分。
+
+</code></pre>
+
+<p>if (x == 0.0)<br/>
+if (x != 0.0)</p>
+
+<pre><code class="language-text">
+(3)请写出 `char *p` 与“零值”比较的 `if` 语句：
+标准答案：对于空指针值，用`#NULL` 表示
+
+</code></pre>
+
+<p>if (p == NULL)<br/>
+if (p != NULL)</p>
+
+<pre><code class="language-text">
+如下写法均属不良风格，不得分。
+
+</code></pre>
+
+<p>if (p == 0)<br/>
+if (p != 0)<br/>
+if (p)<br/>
+if (!)</p>
+
+<pre><code class="language-text">
+
+
+## 2.32位C++程序，计算sizeof的值
+
+![](media/15066079292359/15066082580402.jpg)
+
+`sizeof(str) = 6`; //字符串数组，大小是六个字节(加上&#39;\0&#39;共六个)。
+`sizeof(p) = 4`; // 指针的内容就是一个指向目标地址的整数，所以不管指向`char`、`int`还是其他，32位机指针一律是4个字节。
+
+`sizeof(n) = 4`; // `int`型变量是4个字节。
+右侧：
+`sizeof(str) = 4`; // 这里的str不再是100字节。当数组作为函数的参数进行传递时，也就是作为参数入栈，那么该数组自动退化成同类型的指针。
+`sizeof(p) = 4`; // 同样，指针类型一律4个字节。
+
+## 3. long a=0x801010; a+5=?
+
+0x801010 用二进制表示 为：“ 1000 0000 0001 0000 0001 0000” ，十进制的值为 8392720 ，再加 上 5 就是 8392725 。
+
+##4. 用变量 `a` 给出下面的定义
+
+* 一个有 10 个指针的数组，该指针是指向一个整型数的;
+* 一个指向有 10 个整型数数组的指针 ;
+* 一个指向函数的指针，该函数有一个整型参数并返 回一个整型数 ;
+* 一个有 10 个指针的数组，该指针指向一个函数，该 函数有一个整型参数并返回一个整型数 ;
+
+* int * a[10]; 
+* int (*a)[10]
+* int (*a)(int); 
+* int (*a[10])(int)
+
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/9/28</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Leetcode.html'>Leetcode</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15058297239665.html">
                 
                   <h1>GAN</h1>
@@ -438,88 +568,6 @@ V = E_{x\sim P_{data}}[\log D(x)] + E_{x\sim P_G}[\log (1-D(x)]<br/>
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15046658203135.html">
-                
-                  <h1>TensorFlow Q</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h3 id="toc_0">Q1: what&#39;s the difference between <code>tf.placeholder</code> and <code>tf.Variable</code></h3>
-
-<p>In general, we use <code>tf.placeholder</code> to feed actual training examples, while using <code>tf.Variable</code> for parameters such as weights (\(W\)) and biases (\(b\)) for models.</p>
-
-<p>With <code>tf.Variable</code>, we have to provide an initial value when declaring it. And we don&#39;t have to provide an initial value until running time with a <code>feed_dict</code>.</p>
-
-<h3 id="toc_1">Q2: what&#39;s the difference between <code>tf.random_normal</code> and <code>tf.trucated_normal</code></h3>
-
-<p><code>tf.trucated_normal</code> generates values following a normal distribution with specified mean and standard deviation, except that values whose magnitude is more than 2 standard deviations from the mean are dropped and re-picked.</p>
-
-<pre><code class="language-text">import tensorflow as tf
-import matplotlib.pyplot as plt
-%matplotlib inline
-Session = tf.InteractiveSession()
-</code></pre>
-
-<pre><code class="language-text">mean = 0.0
-std = 1.0
-shape = (10000,)
-hist_range = (-5, 5)
-
-A = tf.truncated_normal(shape, mean, std)
-B = tf.random_normal(shape, mean, std)
-a, b = Session.run([A, B])
-</code></pre>
-
-<pre><code class="language-text">f, (ax1, ax2) = plt.subplots(2,1)
-f1 = ax1.hist(a, bins= 100, range=hist_range)
-f2 = ax2.hist(b, bins= 100, range=hist_range)
-</code></pre>
-
-<p><img src="media/15046658203135/output_2_0.png" alt="output_2_0"/></p>
-
-<h3 id="toc_2">Q3: What&#39;s the difference between <code>tf.Variable</code> and <code>tf.get_variable</code></h3>
-
-<p><code>tf.get_variable</code> will make it way easier to refactor code if you need to share variables at any time.</p>
-
-<pre><code class="language-python">import tensorflow as tf
-
-with tf.variable_scope(&quot;scope1&quot;):
-    w1 = tf.get_variable(&quot;w1&quot;, shape=[2,3])
-    w2 = tf.Variable(1.0, name=&quot;w2&quot;)
-with tf.variable_scope(&quot;scope1&quot;, reuse=True):
-    w1_p = tf.get_variable(&quot;w1&quot;, shape=[2,3])
-    w2_p = tf.Variable(1.0, name=&quot;w2&quot;)
-
-print(w1 is w1_p, w2 is w2_p)
-
-#Output: True  False
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/9/6</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Tensorflow.html'>Tensorflow</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -625,6 +673,12 @@ print(w1 is w1_p, w2 is w2_p)
 		  
 		      
 			      <li class="post">
+			        <a href="os_concepts_CPU_scheduling.html">Operating System Concepts 5 - CPU Scheduling</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="os_concepts_synchronization_examples.html">Operating System Concepts 7 - Synchronization Examples</a>
 			      </li>
 		     
@@ -638,12 +692,6 @@ print(w1 is w1_p, w2 is w2_p)
 		      
 			      <li class="post">
 			        <a href="diagrammatize_TCP_IP.html">图解TCP/IP</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="csapp-internet-programming.html">CSAPP - 网络编程</a>
 			      </li>
 		     
 		  

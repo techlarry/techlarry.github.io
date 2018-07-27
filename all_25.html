@@ -140,6 +140,93 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="python_iterator.html">
+                
+                  <h1>Iterators</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>An object that implements the <code>__iter__</code> method is <code>iterable</code>, and the object implementing <code>next</code> is the <code>iterator</code>.</p>
+
+<p>Why Iterator?<br/>
+<strong>not overkill, and more general, simpler, elegant</strong></p>
+
+<p>It is recommended that iterators implement an <code>__iter__</code>method of their own in addition (returning self), so they themselves can be used directly in <code>for</code> loops.</p>
+
+<p>Here an example of Fibonacci numbers.</p>
+
+<pre><code class="language-python">
+class Fibs:
+    &quot;&quot;&quot;
+    Fibonacci numbers
+    &quot;&quot;&quot;
+
+    def __init__(self):
+        self.a = 0
+        self.b = 1
+
+    def __next__(self):
+        self.a, self.b = self.b, self.a + self.b
+        if self.a &gt; 1000:
+            raise StopIteration
+        return self.a
+
+    def __iter__(self):
+        return self
+
+if __name__ == &quot;__main__&quot;:
+    fibs = Fibs()
+    for f in fibs:
+        print(f)
+</code></pre>
+
+<h3 id="toc_0">iterable to iterator</h3>
+
+<p>The built-in function <code>iter</code> can be used to get an iterator from an <code>iterable</code> object.</p>
+
+<pre><code class="language-python">&gt;&gt;&gt; iterable = [1,2,3]
+&gt;&gt;&gt; iterator = iter(iterable)
+&gt;&gt;&gt; next(iterator)
+1
+</code></pre>
+
+<h3 id="toc_1">iterator to sequence</h3>
+
+<p>Using the <code>list</code> constructor, an iterator can be easily converted to a sequence.</p>
+
+<hr/>
+
+<pre><code class="language-python">&gt;&gt;&gt; h = Fibs
+&gt;&gt;&gt; h = Fibs()
+&gt;&gt;&gt; list(h)
+[1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987]
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/7/23</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="hash_table_2_Using_hashing_to_implement_Map_ADT.html">
                 
                   <h1>Hashing (2): Using hashing to implement Map ADT</h1>
@@ -1064,192 +1151,6 @@ class TreeNode:
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="14969804243106.html">
-                
-                  <h1>栈与队列</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h2 id="toc_0">栈</h2>
-
-<p>栈(<code>stack</code>)，是一种容器，可存入数据元素、访问元素、删除元素，它的特点是只能在容器的一端加入数据（<code>push</code>）和输出数据(<code>pop</code>)的运算。没有了位置概念，保证任何时候可以访问，删除的元素都是此前最后存入的那个元素，确定了一种默认的访问顺序。</p>
-
-<p>栈数据结构只允许在一端进行操作，按照后进先出(<code>LIFO, Last In First Out</code>)的原理运作。</p>
-
-<p>栈可以用顺序表实现，也可以用链表实现。</p>
-
-<p><img src="media/14969804243106/Screen%20Shot%202017-06-10%20at%203.14.14%20PM.png" alt="Screen Shot 2017-06-10 at 3.14.14 P"/></p>
-
-<h3 id="toc_1">栈的操作</h3>
-
-<ul>
-<li><code>Stack()</code> 创建一个新的空栈</li>
-<li><code>push(item)</code> 添加一个新的元素item到栈顶</li>
-<li><code>pop()</code> 弹出栈顶元素</li>
-<li><code>peek()</code> 返回栈顶元素</li>
-<li><code>is_empty()</code> 判断栈是否为空</li>
-<li><code>size()</code> 返回栈的元素个数</li>
-</ul>
-
-<pre><code class="language-python">class Stack(object):
-    &quot;&quot;&quot;
-    创建一个新的空栈
-    &quot;&quot;&quot;
-    def __init__(self):
-        self.__list = []
-
-    def push(self, item):
-        &quot;&quot;&quot;
-        添加一个新的元素item到栈顶
-        &quot;&quot;&quot;
-        self.__list.append(item)
-
-    def pop(self):
-        &quot;&quot;&quot;
-        弹出栈顶元素
-        &quot;&quot;&quot;
-        return self.__list.pop()
-
-    def peek(self):
-        &quot;&quot;&quot;
-        返回栈顶元素
-        &quot;&quot;&quot;
-        if self.is_empty():
-            return None
-        else:
-            return self.__list[-1]
-
-    def is_empty(self):
-        &quot;&quot;&quot;
-        判断栈是否为空
-        &quot;&quot;&quot;
-        return not self.__list  ## 空链表、空字典等是假
-
-    def size(self):
-        &quot;&quot;&quot;
-        返回栈的元素个数
-        &quot;&quot;&quot;
-        return self.__list.__len__()
-</code></pre>
-
-<h2 id="toc_2">队列</h2>
-
-<p>队列(<code>queue</code>,美音/kju/)只是允许在一端进行插入操作，而在另一段进行删除操作的线性表。队列是一种先进先出（<code>First In First Out, FIFO</code>）的线性表。允许插入的一端为队尾，允许删除的一端为队头。队列不允许在中间部位进行操作。</p>
-
-<p><img src="media/14969804243106/Screen%20Shot%202017-06-10%20at%203.21.23%20PM.png" alt="Screen Shot 2017-06-10 at 3.21.23 P"/></p>
-
-<h3 id="toc_3">队列的操作</h3>
-
-<ul>
-<li><code>Queue()</code> 创建一个空的队列</li>
-<li><code>enqueue(item)</code> 往队列中添加一个item元素</li>
-<li><code>dequeue()</code> 从队列头部删除一个元素</li>
-<li><code>is_empty()</code> 判断一个队列是否为空</li>
-<li><code>size()</code> 返回队列的大小</li>
-</ul>
-
-<pre><code class="language-python">class Queue(object):
-    &quot;&quot;&quot;队列&quot;&quot;&quot;
-    def __init__(self):
-        self.__list = []
-
-    def enqueue(self, item):
-        &quot;&quot;&quot;往队列中添加一个item元素&quot;&quot;&quot;
-        self.__list.append(item)
-
-    def dequeue(self):
-        &quot;&quot;&quot;从队列头部删除一个元素&quot;&quot;&quot;
-        return self.__list.pop(0)
-
-    def is_empty(self):
-        &quot;&quot;&quot;判断一个队列是否为空&quot;&quot;&quot;
-        return not self.__list
-
-    def size(self):
-        &quot;&quot;&quot;返回队列的大小&quot;&quot;&quot;
-        return len(self.__list)
-</code></pre>
-
-<h2 id="toc_4">双端队列</h2>
-
-<p>双端队列(deque，全名double-ended queue, (pronounced “deck”))，是一种具有队列和栈的性质的数据结构。</p>
-
-<p>双端队列中的元素可以从两端弹出，其限定插入和删除操作在表的两端进行。双端队列可以在队列任意一端入队和出队。</p>
-
-<p><img src="media/14969804243106/14970822950255.png" alt=""/></p>
-
-<h3 id="toc_5">双端队列的操作</h3>
-
-<ul>
-<li><code>Deque()</code> 创建一个空的双端队列</li>
-<li><code>add_front(item)</code> 从队头加入一个item元素</li>
-<li><code>add_rear(item)</code> 从队尾加入一个item元素</li>
-<li><code>remove_front()</code> 从队头删除一个item元素</li>
-<li><code>remove_rear()</code> 从队尾删除一个item元素</li>
-<li><code>is_empty()</code> 判断双端队列是否为空</li>
-<li><code>size()</code> 返回队列的大小</li>
-</ul>
-
-<pre><code class="language-python">class Deque():
-    &quot;&quot;&quot;
-    创建一个空的双端队列
-    &quot;&quot;&quot;
-    def __init__(self):
-        self.__list = []
-
-    def add_front(self, item):
-        &quot;&quot;&quot;从队头加入一个item元素&quot;&quot;&quot;
-        self.__list.insert(0, item)
-
-    def add_rear(self, item):
-        &quot;&quot;&quot;从队尾加入一个item元素&quot;&quot;&quot;
-        self.__list.append(item)
-    
-    def remove_front(self):
-        &quot;&quot;&quot;从队头删除一个item元素&quot;&quot;&quot;
-        return self.__list.pop(0)
-
-    def remove_rear(self):
-        &quot;&quot;&quot;从队尾删除一个item元素&quot;&quot;&quot;
-        return self.__list.pop()
-    
-    def is_empty(self):
-        &quot;&quot;&quot;判断双端队列是否为空&quot;&quot;&quot;
-        return not self.__list
-
-    def size(self):
-        &quot;&quot;&quot;返回队列的大小&quot;&quot;&quot;
-        return self.__list.__len__()
-    ```
-
-
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/6/9</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='data_structure_and_algorithm.html'>数据结构和算法</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1355,6 +1256,12 @@ class TreeNode:
 		  
 		      
 			      <li class="post">
+			        <a href="os_concepts_CPU_scheduling.html">Operating System Concepts 5 - CPU Scheduling</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="os_concepts_synchronization_examples.html">Operating System Concepts 7 - Synchronization Examples</a>
 			      </li>
 		     
@@ -1368,12 +1275,6 @@ class TreeNode:
 		      
 			      <li class="post">
 			        <a href="diagrammatize_TCP_IP.html">图解TCP/IP</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="csapp-internet-programming.html">CSAPP - 网络编程</a>
 			      </li>
 		     
 		  

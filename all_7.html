@@ -140,6 +140,92 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="Dynamic_Programming_Maximum_weight_independent_set.html">
+                
+                  <h1>Dynamic Programming (2): Maximum weight independent set</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p><strong>Input</strong>: A path graph \(G=(V,E)\) with nonnegative weights on vertices.<br/>
+<strong>Output</strong>: an <code>independent set</code>(独立集) of maximum total weight.</p>
+
+<p><strong>Background</strong>:<br/>
+A <code>path graph</code> is a tree with two nodes of vertex degree 1, and the other \(n-2\) nodes of vertex degree 2. A path graph is therefore a graph that can be drawn so that all of its vertices and edges lie on a single straight line.</p>
+
+<p>A <code>Independent set</code> is a set of vertices in a graph, no two of which are adjacent.</p>
+
+<p><img src="media/15022903354046/15154354379203.jpg" alt=""/></p>
+
+<h2 id="toc_0">Basis</h2>
+
+<p>An optimal solution can have one of two properties:</p>
+
+<ul>
+<li>Either the last element in the path is not part of the maximum weighted independent set (in which case we know that the solution is equally valid for the subgraph V’ formed by popping the last vertex off the path)</li>
+<li>Or the last element is part of the set (in which case we know that the predecessor cannot be part of the set, and the solution minus the last vertex is equally valid for the subgraph V’&#39; formed by popping off the last two vertices of the path)</li>
+</ul>
+
+<h2 id="toc_1">Proposed algorithm</h2>
+
+<p>A dynamic programming approach can solve the problem in linear time:</p>
+
+<ul>
+<li>Recursively compute \(S_1=\) max-weight independent set of \(G&#39;\) (formed by popping the last vertex off the path)</li>
+<li>Recursively compute \(S_2=\) max-weight independent set of \(G&quot;\) (formed by popping off the last two vertices of the path)</li>
+<li>Return \(S_1\) or \(S_2 \cup{v_n}\), whichever is better.</li>
+</ul>
+
+<h3 id="toc_2">Implementation</h3>
+
+<pre><code class="language-python">def maximum_weight_independent_set(weights):
+    &quot;&quot;&quot;
+    Compute Maximum weight independent set for a path graph.
+    Weights of vertexes in the path graph are given.
+    Return maximum weight independent set.
+    &quot;&quot;&quot;
+    num = len(weights)
+    a = [0] * (num + 1)
+    in_set = []  # independent set
+    a[0], a[1] = 0, weights[0]
+
+    for i in range(2, num + 1):
+        a[i] = max(a[i - 1], a[i - 2] + weights[i - 1])
+
+    while i &gt;= 1: # start i: # last element
+        if a[i - 1] &gt;= a[i - 2] + weights[i - 1]: # last vertex not in set
+            i -= 1
+        else: # last vertex is in set
+            in_set.append(i - 1)
+            i -= 2
+    in_set.reverse()
+    return in_set
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/8/8</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92.html'>动态规划</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="tmux_tool_linux.html">
                 
                   <h1>tmux</h1>
@@ -396,56 +482,6 @@ dis.dis(f)
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="introduction_to_computer_system_CMU.html">
-                
-                  <h1>CMU 15-213 Introduction to Computer Systems</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>CMU 15-213 <code>Introduction to Computer Systems</code>是最受欢迎的计算机课之一。与这门课对应的课本CSAPP被各大名校所采用，也被无数学生拜读。课程内容涉及广泛、由浅入深，是进入计算机科学的最佳课程，也是各种击破BAT笔试题的必备良药(<a href="https://book.douban.com/review/5627139/">这篇帖子描述了笔试题所对应的章节</a>)。</p>
-
-<p>非常幸运的是，CMU在网上分享了几乎所有课程资料，想学习课程的同学几乎可以和CMU学生一样学习该课程。</p>
-
-<p>课程资料：</p>
-
-<ul>
-<li><a href="https://scs.hosted.panopto.com/Panopto/Pages/Sessions/List.aspx#folderID=%22b96d90ae-9871-4fae-91e2-b1627b43e25e%22&amp;sortColumn=0&amp;sortAscending=true">课程视频</a></li>
-<li><a href="http://www.cs.cmu.edu/afs/cs/academic/class/15213-f15/www/schedule.html">课程主页</a>，包括了PPT，代码</li>
-<li><a href="http://csapp.cs.cmu.edu">课本CSAPP主页</a>，包括了Lab资源。</li>
-</ul>
-
-<p>Lab攻略:</p>
-
-<ul>
-<li><a href="http://larryim.cc/wiki/2017/12/30/CSAPP-Attack-Lab/">Lab3 Attack Lab</a></li>
-<li><a href="http://larryim.cc/wiki/2017/12/30/CSAPP-Cache-Lab/">Lab4 Cache Lab</a></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/12/14</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Computer%20System.html'>Computer System</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -551,6 +587,12 @@ dis.dis(f)
 		  
 		      
 			      <li class="post">
+			        <a href="os_concepts_CPU_scheduling.html">Operating System Concepts 5 - CPU Scheduling</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="os_concepts_synchronization_examples.html">Operating System Concepts 7 - Synchronization Examples</a>
 			      </li>
 		     
@@ -564,12 +606,6 @@ dis.dis(f)
 		      
 			      <li class="post">
 			        <a href="diagrammatize_TCP_IP.html">图解TCP/IP</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="csapp-internet-programming.html">CSAPP - 网络编程</a>
 			      </li>
 		     
 		  
