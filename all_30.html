@@ -140,6 +140,194 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="14969929726510.html">
+                
+                  <h1>Python 类属性与实例属性</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>Python属于动态语言，类属性很好体现了python动态语言这一特性。<br/>
+对于属性，通常可以通过类属性和实例属性的形式调用。<br/>
+看一个例子：</p>
+
+<pre><code class="language-python">class AAA():
+    aaa = 10
+    
+obj1 = AAA()
+obj2 = AAA()
+print(obj1.aaa, obj2.aaa, AAA.aaa) # result: 10 10 10
+
+obj1.aaa += 2
+print(obj1.aaa, obj2.aaa, AAA.aaa) # result: 12 10 10
+
+AAA.aaa += 4
+print(obj1.aaa,obj2.aaa,AAA.aaa)  # result: 12 14 14
+</code></pre>
+
+<p>上例中，<code>AAA.aaa</code>就属于<strong>类属性</strong>形式，<code>obj1.aaa</code>属于<strong>实例属性</strong>的形式</p>
+
+<h2 id="toc_0">属性查找机制</h2>
+
+<p>Python中属性查找是一个向上查找的机制，具体可参考下图所示：<br/>
+       <img src="media/14969929726510/Screen%20Shot%202017-06-09%20at%203.39.06%20PM.png" alt="Screen Shot 2017-06-09 at 3.39.06 P"/></p>
+
+<p>所以</p>
+
+<ul>
+<li>当调用类属性<code>AAA.aaa</code>时，直接从<code>AAA</code>获取其属性<code>aaa</code></li>
+<li>当调用实例属性<code>obj1.aaa</code>时，python按照由下到上的顺序查找属性，当<code>job1</code>和<code>job2</code>没有时，到类<code>AAA</code>中去查找</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/6/9</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="14969711309826.html">
+                
+                  <h1>内置LIST，DICT 时间复杂度</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h2 id="toc_0">timeit 模块</h2>
+
+<pre><code class="language-python">class timeit.Timer(stmt=&#39;pass&#39;, setup=&#39;pass&#39;, timer=&lt;timer function&gt;)
+</code></pre>
+
+<ul>
+<li>Timer是测量小段代码执行速度的类。</li>
+<li>stmt参数是要测试的代码语句（statment）；</li>
+<li>setup参数是运行代码时需要的设置；</li>
+<li>timer参数是一个定时器函数，与平台有关。</li>
+</ul>
+
+<p>timeit.Timer.timeit(number=1000000)</p>
+
+<p>Timer类中测试语句执行速度的对象方法。number参数是测试代码时的测试次数，默认为1000000次。方法返回执行代码的平均耗时，一个float类型的秒数。</p>
+
+<pre><code class="language-python">from timeit import Timer
+
+li1 = [1,2]
+li2 = [23,5]
+li = li1+li2
+
+li = [i for i in range(10000)]
+li = list(range(10000))
+
+def t1():
+    li = []
+    for i in range(10000):
+        li.append(i)
+
+def t2():
+    li = []
+    for i in range(10000):
+        li += [i]
+
+def t3():
+    li = [ i for i in range(10000)]
+
+def t4():
+    li = list(range(10000))
+
+timer1 = Timer(&#39;t1()&#39;,&quot;from __main__ import t1&quot;)
+timer2 = Timer(&#39;t2()&#39;,&#39;from __main__ import t2&#39;)
+timer3 = Timer(&#39;t3()&#39;,&#39;from __main__ import t3&#39;)
+timer4 = Timer(&#39;t4()&#39;,&#39;from __main__ import t4&#39;)
+
+
+print(&#39;append&#39;,timer1.timeit(1000))
+print(&#39;+&#39;,timer2.timeit(1000))
+print(&#39;comprehesion&#39;,timer3.timeit(1000))
+print(&#39;list(range)&#39;,timer4.timeit(1000))
+
+
+# pop
+x = range(2000000)
+pop_zero = Timer(&quot;x.pop(0)&quot;, &quot;from __main__ import x&quot;)
+pop_end = Timer(&quot;x.pop()&quot;, &quot;from __main__ import x&quot;)
+print(&#39;pop zero&#39;, pop_zero.timeit(1000))
+print(&#39;pop end&#39;, pop_end.timeit(1000))
+
+</code></pre>
+
+<h2 id="toc_1">list 内置操作的时间复杂度</h2>
+
+<pre><code class="language-text">* Operatation Big-O Efficiency
+* indexx[]          O(1)
+* index assignment  O(1)
+* append            O(1)
+* pop()             O(1)    #弹出
+* pop(i)            O(n)    #插入
+* insert(i, item)   O(n)
+* del operator      O(n)
+* iteration         O(n)
+* contains(in)      O(n)
+* get slice[x:y]    O(k)    # 取切片
+* del slice         O(n)    #删除切片
+* set slice         O(n+k)  #设置切片
+* reverse           O(n)
+* concatenate       O(k)
+* sort              O(nlogn)
+* multiply          O(nk)
+</code></pre>
+
+<h2 id="toc_2">dict 内置操作的时间复杂度</h2>
+
+<pre><code class="language-text">* copy                O(n)
+* get item            O(n)   #取
+* set item            O(n)   #设置
+* delete tiem         O(n)   #删除键
+* contains(in)        O(1)    #包含，不用遍历
+* iteration           O(n)    #迭代
+
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/6/9</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='data_structure_and_algorithm.html'>数据结构和算法</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="14969800806372.html">
                 
                   <h1>顺序表</h1>
@@ -335,13 +523,19 @@
 	      
 		      
 			      <li class="post">
-			        <a href="Hadoop%20_the_definitive_guide_1-Hadoop_fundamentals.html">Hadoop权威指南(I) - Hadoop基础知识</a>
+			        <a href="os_concepts_synchronization_tools.html">Operating System Concepts 6 - Synchronization Tools</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="head-first_java_note.html">Head first Java</a>
+			        <a href="os_concepts_synchronization_examples.html">Operating System Concepts 7 - Synchronization Examples</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="os-concets-processes.html">Operating System Concepts 3 - Processes</a>
 			      </li>
 		     
 		  
@@ -354,12 +548,6 @@
 		      
 			      <li class="post">
 			        <a href="csapp-internet-programming.html">CSAPP - 网络编程</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15323640524161.html">Machine Learning with large datasets</a>
 			      </li>
 		     
 		  

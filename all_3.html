@@ -140,6 +140,233 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="overhead.html">
+                
+                  <h1>Overhead</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p><strong>overhead</strong>这个词在计算机中经常出现，那么它到底是什么意思呢？</p>
+
+<p>overhead视风格可以翻译成「额外开销」、「额外消耗」、「虚耗」。</p>
+
+<p>额外开销是建立一个操作所需的资源，它可能看起来不相关，但是却是必须的。就好像当你需要去某个地方的时候，你可能需要一辆车。但是如果你开车上街这件事是大量的额外开销，你可能会想要走路；但是如果你要开车穿越一个国家，额外开销是值得的。</p>
+
+<p>The meaning of the word can differ a lot with context. In general, it&#39;s resources (most often memory and CPU time) that are used, which do not contribute directly to the intended result, but are required by the technology or method that is being used. Examples:</p>
+
+<ul>
+<li><p>Protocol overhead: Ethernet frames, IP packets and TCP segments all have headers, TCP connections require handshake packets. Thus, you cannot use the entire bandwidth the hardware is capable of for your actual data. You can reduce the overhead by using larger packet sizes and UDP has a smaller header and no handshake.</p></li>
+<li><p>Data structure memory overhead: A linked list requires at least one pointer for each element it contains. If the elements are the same size as a pointer, this means a 50% memory overhead, whereas an array can potentially have 0% overhead.</p></li>
+<li><p>Method call overhead: A well-designed program is broken down into lots of short methods. But each method call requires setting up a stack frame, copying parameters and a return address. This represents CPU overhead compared to a program that does everything in a single monolithic function. Of course, the added maintainability makes it very much worth it, but in some cases, excessive method calls can have a significant performance impact.</p></li>
+</ul>
+
+<h2 id="toc_0">参考</h2>
+
+<ul>
+<li><a href="https://stackoverflow.com/questions/2860234/what-is-overhead">https://stackoverflow.com/questions/2860234/what-is-overhead</a></li>
+<li><a href="https://www.zhihu.com/question/20596199?sort=created">https://www.zhihu.com/question/20596199?sort=created</a></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/1/21</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Computer%20System.html'>Computer System</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15146536465849.html">
+                
+                  <h1>CSAPP - x86-64汇编</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h2 id="toc_0">汇编代码格式</h2>
+
+<p>现在主要存在<code>ATT</code>和<code>Intel</code>两种汇编代码格式。<code>ATT</code>格式是<code>GCC</code>、 <code>OBJDUMP</code>常用工具的默认格式。其他的诸如Microsoft的工具和来自Intel的文档都是<code>Intel</code>格式的。本文使用<code>ATT</code>格式。</p>
+
+<p><code>ATT</code>汇编格式的注释格式有两种</p>
+
+<pre><code class="language-text"># this is a comment
+/* this is a comment */
+</code></pre>
+
+<h2 id="toc_1">寄存器</h2>
+
+<p><code>x86-64</code>体系结构广泛存在于个人电脑中。它拥有16个整数寄存器，分别存储64位的值。这些寄存器可以存储地址或整数数据，其分布如下：</p>
+
+<p><img src="media/15146536465849/sfd.png" alt="sfd"/></p>
+
+<p>根据惯例，寄存器%rbx, %rbp和%r12~%r15被划分为<strong>被调用者保存寄存器</strong>。所有其他的寄存器，除了栈指针%rsp都分类为<strong>调用者保存寄存器</strong>。</p>
+
+<ul>
+<li>在函数被调用时，不能改变<strong>被</strong>调用者寄存器；</li>
+<li>如果要改变的话，只能把<strong>被</strong>调用者寄存器的值压入栈中，在使用后，从栈中恢复<strong>被</strong>调用者寄存器。</li>
+</ul>
+
+<h3 id="toc_2">rip 寄存器与PC相对寻址</h3>
+
+<p>%rip 的名称来自于(instruction pointer register，指令指针寄存器)。%rip其实就是<strong>程序计数器</strong>(Program Counter, PC), <u><em>存放着下一条指令的地址</em></u> 。不可以直接修改%rip。</p>
+
+<p>-&gt; <code>instruction pointer = program counter = %rip</code></p>
+
+<p>%rip的其他很重要的一个用法就是RIP/<strong>PC相对寻址</strong>(RIP/PC relative addressing)。即<code>%rip + displacement</code>的用法。</p>
+
+<p>例如，</p>
+
+<pre><code class="language-assembly">mov    0x202a62(%rip),%rdi        # 6044d0 &lt;infile&gt;  rdi = infile
+</code></pre>
+
+<p>表示传输%rip+0x202a62的地址对应的内存上的内容到%rdi。</p>
+
+<p>下面说说它是怎么进行PC相对寻址的。</p>
+
+<ul>
+<li>源文件经过预处理器、编译器、汇编器处理，输出<strong>可重定位目标文件</strong></li>
+<li>再经过<strong>符号解析</strong>(Symbol resolution)把代码中的每个符号引用和一个符号定义关联起来之后，要完成<strong>重定位</strong>(Relocation)任务，最终输出<strong>可执行目标文件</strong>。
+<ul>
+<li>在<strong>重定位</strong>阶段，ELF(可重定位目标文件在LINUX系统上的一种格式)文件中的<code>R_X86_64_PC32</code>重定位类型重定位了一个使用32位PC相对地址的引用。</li>
+<li>当CPU执行一条使用PC相对寻址的指令时，它就将在指令中编码的32位值加上PC的当前运行时值，得到<strong>有效地址</strong>。</li>
+</ul></li>
+</ul>
+
+<h2 id="toc_3">指令</h2>
+
+<p>指令主要有<code>mov</code>数据传送指令，<code>push</code>、<code>pop</code>压入和压出栈数据，<code>add</code>,<code>sub</code>等算数操作指令，<code>ret</code>, <code>call</code>等转移控制指令。</p>
+
+<h3 id="toc_4">数据传送指令</h3>
+
+<table>
+<thead>
+<tr>
+<th>指令</th>
+<th>效果</th>
+<th>描述</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>MOV S, D</td>
+<td>将S中数据传送到D中</td>
+<td>传送</td>
+</tr>
+<tr>
+<td>movb</td>
+<td>传送字节</td>
+<td></td>
+</tr>
+<tr>
+<td>movw</td>
+<td>传送字(双字节)</td>
+<td></td>
+</tr>
+<tr>
+<td>movl</td>
+<td>传送双字(四字节)</td>
+<td></td>
+</tr>
+<tr>
+<td>MOVS S, D</td>
+<td>将S中数据传送到D，过程中做了符号扩展处理 传送需要符号扩展的字节</td>
+<td></td>
+</tr>
+<tr>
+<td>movsbw</td>
+<td>将做了符号扩展的字节传送到字</td>
+<td></td>
+</tr>
+<tr>
+<td>movsbl</td>
+<td>将做了符号扩展的字节传送到双字</td>
+<td></td>
+</tr>
+<tr>
+<td>movswl</td>
+<td>将做了符号扩展的字传送到双字</td>
+<td></td>
+</tr>
+<tr>
+<td>MOVZ S, D</td>
+<td>将S中数据传送到D，过程中做了零扩展处理</td>
+<td>传送需要零扩展的字节</td>
+</tr>
+<tr>
+<td>movzbw</td>
+<td>将做了零扩展的字节传送到</td>
+<td></td>
+</tr>
+<tr>
+<td>movzbl</td>
+<td>将做了零扩展的字节传送到双字</td>
+<td></td>
+</tr>
+<tr>
+<td>movzwl</td>
+<td>将做了零扩展的字传送到双字</td>
+<td></td>
+</tr>
+<tr>
+<td>pushl S</td>
+<td>R[%esp] &lt;- R[%esp] - 4; M[R[%esp]] &lt;- S;</td>
+<td>将双字压栈</td>
+</tr>
+<tr>
+<td>popl D</td>
+<td>D &lt;- M[R[%esp]]; R[%esp] &lt;- R[%esp] + 4;</td>
+<td>将双字出栈</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="toc_5">ret, call指令</h3>
+
+<p>在x86-64上，<code>ret</code>指令，相当于从栈中弹出地址A，然后把PC设置为A。<br/>
+<code>pop %rip</code><br/>
+而<code>call</code>指令，刚好相反，把%rip 压入栈中，然后跳到函数对应的地址。</p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/12/31</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Computer%20System.html'>Computer System</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="objdump_disassembler.html">
                 
                   <h1>Objdump 反汇编</h1>
@@ -791,383 +1018,6 @@ foo() {
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="Computer_memory.html">
-                
-                  <h1>CSAPP - 存储器层次结构</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>存储器系统(memory system)是一个具有不同 <u>容量</u> 、 <u>成本</u> 和 <u>访问时间</u> 的存储设备的层次结构。</p>
-
-<p><strong>局部性</strong>(locality)：具有良好局部性的程序倾向于一次又一次地访问相同的数据项集合，或是倾向于访问邻近的数据项集合。</p>
-
-<h2 id="toc_0">1 存储技术</h2>
-
-<h3 id="toc_1">1.1 RAM</h3>
-
-<p>随机访问存储器(Random-Access Memory, RAM)分为两类：静态(SRAM)和动态(DRAM)的。SRAM比DRAM更快，但也贵得多。</p>
-
-<h3 id="toc_2">1.2 磁盘</h3>
-
-<p>磁盘是由盘片(platter)构成的。每个盘片如同切西瓜一样被“切”成一块一块的扇面，同时沿着半径的方向被划分成了一组同心圆(磁道, track)，每条磁道被扇面切成很多的扇形区域叫做扇区（sector, 扇区是从磁盘读出和写入信息的最小单位，包含相等数量的数据位，通常为512字节），不同盘片上的同半径磁道组成了柱面。</p>
-
-<p><img src="media/15089188725996/15312767746205.jpg" alt=""/></p>
-
-<p>磁盘的容量： 磁头数 × 磁道数 × 每道扇区数 × 每扇区字节数</p>
-
-<h2 id="toc_3">2 局部性</h2>
-
-<p>一个编写良好的计算机程序常常具有良好的局部性(locality)。也就是，它们倾向于引用邻近于其他最近引用过的数据项的数据项(空间局部性)，或者最近引用过的数据项本身(时间局部性)。</p>
-
-<p>现代计算机系统的各个层次，从硬件到操作系统、再到应用程序，它们的设计都利用了局部性。</p>
-
-<h2 id="toc_4">3 存储器层次结构 Memory Hierarchy</h2>
-
-<p>一般而言，从高层往低层走，存储设备变得更慢、更便宜和更大。</p>
-
-<p><img src="media/15128019428341/15128077150126.png" alt="存储器层次结构"/></p>
-
-<h2 id="toc_5">虚拟内存 Virtual Memory</h2>
-
-<p>虚拟内存(<code>Virtual Memory</code>)是一个抽象概念。它为每个进程提供了假象，即每个进程都在独占地使用内存。每个进程看到的内存都是一致的，称为虚拟地址空间<code>Virtual Address Space</code>.</p>
-
-<p>虚拟内存在不同操作系统上有区别，以Linux系统为例,下面是<code>Linux  x86-64运行时的内存映像</code>。</p>
-
-<p><img src="media/15089188725996/linux_virtual_memory.png" alt="linux_virtual_memory"/></p>
-
-<p>虚拟地址空间由如下几部分组成：</p>
-
-<ul>
-<li>代码（<code>.text</code>）: 这里存放的是CPU要执行的指令。代码段是可共享的，相同的代码在内存中只会有一个拷贝，同时这个段是只读的，防止程序由于错误而修改自身的指令。</li>
-<li>初始化数据段（<code>.data</code>）: 这里存放的是程序中需要明确赋初始值的变量，例如位于所有函数之外的全局变量：<code>int val=&quot;100</code>。需要强调的是，以上两段都是位于程序的可执行文件中，内核在调用<code>exec</code>函数启动该程序时从源程序文件中读入。</li>
-<li>未初始化数据段（<code>.bss</code>）: 位于这一段中的数据，内核在执行该程序前，将其初始化为0或者<code>null</code>。例如出现在任何函数之外的全局变量：int sum;</li>
-<li>堆（<code>Heap</code>）: 这个段用于在程序中进行动态内存申请，例如经常用到的<code>malloc</code>，<code>new</code>系列函数就是从这个段中申请内存。</li>
-<li>共享库(<code>Shared Library</code>): 用来存放像C标准库和数学哭这样的共享库的代码和数据的区域。</li>
-<li>栈（<code>Stack</code>）: 函数中的局部变量以及在函数调用过程中产生的临时变量都保存在此段中，具体见下面一节。</li>
-<li>内核虚拟内存：包含内核中的代码和数据结构。</li>
-</ul>
-
-<p>注意：</p>
-
-<ul>
-<li>底部内存地址是最小的，越往上地址越大。</li>
-<li>堆(正向增长)和栈(反向增长)的生长方向(箭头➡️所指方向)是相反的。</li>
-</ul>
-
-<p>下面是程序示意：</p>
-
-<pre><code class="language-c"> #include&lt;stdio.h&gt;    
- #include &lt;malloc.h&gt;    
-     
- void print(char *,int);    
- int main()    
-{    
-      char *s1 = &quot;abcde&quot;;  //&quot;abcde&quot;作为字符串常量存储在常量区 s1、s2、s5拥有相同的地址  
-      char *s2 = &quot;abcde&quot;;    
-      char s3[] = &quot;abcd&quot;;    
-      long int *s4[100];    
-      char *s5 = &quot;abcde&quot;;    
-      int a = 5;    
-      int b =6;//a,b在栈上，&amp;a&gt;&amp;b地址反向增长    
-     
-     printf(&quot;variables address in main function: s1=%p  s2=%p s3=%p s4=%p s5=%p a=%p b=%p \n&quot;,     
-             s1,s2,s3,s4,s5,&amp;a,&amp;b);   
-     printf(&quot;variables address in processcall:n&quot;);    
-        print(&quot;ddddddddd&quot;,5);//参数入栈从右至左进行,p先进栈,str后进 &amp;p&gt;&amp;str    
-     printf(&quot;main=%p print=%p \n&quot;,main,print);    
-     //打印代码段中主函数和子函数的地址，编译时先编译的地址低，后编译的地址高main&lt;print    
- }    
-  
- void print(char *str,int p)    
-{    
-     char *s1 = &quot;abcde&quot;;  //abcde在常量区，s1在栈上    
-     char *s2 = &quot;abcde&quot;;  //abcde在常量区，s2在栈上 s2-s1=6可能等于0，编译器优化了相同的常量，只在内存保存一份    
-     //而&amp;s1&gt;&amp;s2    
-     char s3[] = &quot;abcdeee&quot;;//abcdeee在常量区，s3在栈上，数组保存的内容为abcdeee的一份拷贝    
-     long int *s4[100];    
-     char *s5 = &quot;abcde&quot;;    
-     int a = 5;    
-     int b =6;    
-     int c;    
-     int d;           //a,b,c,d均在栈上，&amp;a&gt;&amp;b&gt;&amp;c&gt;&amp;d地址反向增长    
-     char *q=str;   
-     int m=p;           
-     char *r=(char *)malloc(1);    
-     char *w=(char *)malloc(1) ;  // r&lt;w 堆正向增长    
-    
-     printf(&quot;s1=%p s2=%p s3=%p s4=%p s5=%p a=%p b=%p c=%p d=%p str=%p q=%p p=%p m=%p r=%p w=%p \n&quot;,    
-            s1,s2,s3,s4,s5,&amp;a,&amp;b,&amp;c,&amp;d,&amp;str,q,&amp;p,&amp;m,r,w);   
-     /* 栈和堆是在程序运行时候动态分配的，局部变量均在栈上分配。 
-        栈是反向增长的，地址递减；malloc等分配的内存空间在堆空间。堆是正向增长的，地址递增。   
-        r,w变量在栈上(则&amp;r&gt;&amp;w)，r,w所指内容在堆中(即r&lt;w)。*/   
- }    
-   
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/10/25</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Computer%20System.html'>Computer System</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="memory_alignment.html">
-                
-                  <h1>内存对齐</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>许多计算机系统对基本数据类型的合法地址做出了一些限制， <u>要求某种类型对象的地址必须是某个值\(K\)(通常是2、4或8)的倍数</u> 。这种<strong>对齐限制</strong>简化了处理器和内存系统之间的硬件设计。例如，假设一个处理器总是从内存中取8个字节，则地址必须为8的倍数。如果我们能保证将所有的double类型的数据对齐成8的倍数，那么就可以用一个内存操作来读或者写值了。否则，我们可能需要执行两次内存访问，因为对象可能被放在两个8字节内存块中。</p>
-
-<p>例如：</p>
-
-<pre><code class="language-c">#include &lt;iostream&gt;
-using namespace std;
-struct A{
-    char a;
-    int b;
-    short c;
-};
-
-struct B{
-    short c;
-    char a;
-    int b;
-};
-
-int main(){
-    cout&lt;&lt;sizeof(A)&lt;&lt;endl; //结果是12
-    cout&lt;&lt;sizeof(B)&lt;&lt;endl; //结果是8
-    return 0;
-}
-</code></pre>
-
-<p>以上结构体变量数量和类型完全相同，但是因为对齐限制，却得到了不同的结果。具体为什么会这样，请参考下面的对齐原则。</p>
-
-<h2 id="toc_0">对齐原则</h2>
-
-<ul>
-<li>任何\(K\)字节的基本对象的地址必须是K的倍数: \(\text{align}(x) = \text{sizeof}(x) = K\)</li>
-<li>结构体内存对齐要求结构体内每一个成员变量都是内存对齐的；</li>
-<li>结构体本身也要对齐。</li>
-</ul>
-
-<p>除此之外，程序员可自己指定数据的对齐大小，通过使用<code>pragma pack(x)</code>预处理命令，指定对齐大小为\(\text{pack_align}=x\)。只能指定\(2^n\)作为对齐大小，对于指定对齐大小为6、9、10这样的编译器不会理会。</p>
-
-<pre><code class="language-c">#pragma pack(x)
-//...
-#pragma pack()
-</code></pre>
-
-<p>使用<code>pragma pack(x)</code>预处理命令后，对齐大小为</p>
-
-<p>\[\text{align}(x) = \min(\text{sizeof}(x) , \text{pack_align})\] </p>
-
-<p>即<code>sizeof(x)</code>和指定对齐大小哪个小，对齐大小就为哪个。</p>
-
-<p>通过以下例子可以更好地掌握内存对齐原则：</p>
-
-<pre><code class="language-c">#include &lt;stdio.h&gt;
-#include &lt;assert.h&gt;
-#include &lt;stddef.h&gt;
-
-
-#pragma pack(1)
-    //此处指定对齐大小为1
-    //对于a，实际对齐大小为min(sizeof(int),1)=min(4,1)=1
-    //对于b，实际对齐大小为min(sizeof(char),1)=min(1,1)=1
-    //编译器会确保TEST_A首地址即a的地首址是1字节对齐的，此时a对齐
-    //对于b，由于b要求首地址1字节对齐，这显然对于任何地址都合适，所以a,b都是对齐的
-    //对于TEST_A数组，第一个TEST_A是对齐的（假设其地址为0），则第二个TEST_A的首地址为(0+5=5)，对于第二个TEST_A的两个变量a，b均对齐
-    //OK,对齐合理。因此整个结构体的大小为5   
-typedef struct TEST_A
-{
-    int a;
-    char b;
-} A;
-#pragma  pack()
-
-
-#pragma pack(2)
-    //此处指定对齐大小为2
-    //对于a，实际对齐大小为min(sizeof(int),2)=min(4,2)=2
-    //对于b，实际对齐大小为min(sizeof(char),2)=min(1,2)=1
-    //编译器会确保TEST_A首地址即a的地首址是2字节对齐的，此时a对齐
-    //对于b，由于b要求首地址1字节对齐，这显然对于任何地址都合适，所以a,b都是对齐的
-    //对于TEST_B数组，第一个TEST_B是对齐的（假设其地址为0），则第二个TEST_B的首地址为(0+5=5)，对于第二个TEST_B的变量a，显然地址5是不对齐于2字节的
-    //因此，需要在TEST_B的变量b后面填充1字节，此时连续相连的TEST_B数组才会对齐
-    //OK,对齐合理。因此整个结构体的大小为5+1=6
-typedef struct TEST_B
-{
-    int a;
-    char b;
-} B;
-#pragma  pack()
-
-   
-#pragma pack(4)
-    //此处指定对齐大小为4
-    //对于a，实际对齐大小为min(sizeof(int),2)=min(4,4)=4
-    //对于b，实际对齐大小为min(sizeof(char),2)=min(1,4)=1
-    //编译器会确保TEST_A首地址即a的地首址是4字节对齐的，此时a对齐
-    //对于b，由于b要求首地址1字节对齐，这显然对于任何地址都合适，所以a,b都是对齐的
-    //对于TEST_C数组，第一个TEST_C是对齐的（假设其地址为0），则第二个TEST_C的首地址为(0+5=5)，对于第二个TEST_C的变量a，显然地址5是不对齐于4字节的
-    //因此，需要在TEST_C的变量b后面填充3字节，此时连续相连的TEST_C数组才会对齐
-    //OK,对齐合理。因此整个结构体的大小为5+3=8
-typedef struct TEST_C
-{
-    int a;
-    char b;
-} C;
-#pragma  pack()
-
-
-#pragma pack(8)
-    //此处指定对齐大小为8
-    //对于a，实际对齐大小为min(sizeof(int),8)=min(4,8)=4
-    //对于b，实际对齐大小为min(sizeof(char),8)=min(1,8)=1
-    //编译器会确保TEST_A首地址即a的地首址是4字节对齐的，此时a对齐
-    //对于b，由于b要求首地址1字节对齐，这显然对于任何地址都合适，所以a,b都是对齐的
-    //对于TEST_D数组，第一个TEST_D是对齐的（假设其地址为0），则第二个TEST_D的首地址为(0+5=5)，对于第二个TEST_D的变量a，显然地址5是不对齐于4字节的
-    //因此，需要在TEST_D的变量b后面填充3字节，此时连续相连的TEST_D数组才会对齐
-    //OK,对齐合理。因此整个结构体的大小为5+3=8
-typedef struct TEST_D
-{
-    int a;
-    char b;
-} D;
-#pragma  pack()
-
-
-
-#pragma pack(8)
-    //此处指定对齐大小为8
-    //对于a，实际对齐大小为min(sizeof(int),8)=min(4,8)=4
-    //对于b，实际对齐大小为min(sizeof(char),8)=min(1,8)=1
-    //对于c，这是一个数组，数组的对齐大小与其单元一致，因而align(c)=align(double)=min(sizeof(double),8)=min(8,8)=8
-    //对于d，实际对齐大小为min(sizeof(char),8)=min(1,8)=1
-    //编译器会确保TEST_A首地址即a的地首址是4字节对齐的，此时a对齐
-    //对于b，由于b要求首地址1字节对齐，这显然对于任何地址都合适，所以a,b都是对齐的
-    //对于c，由于c要求首地址8字节对齐，因此前面的a+b=5，还要在c后面补上3个字节才能对齐
-    //对于d，显而易见，任何地址均对齐，此时结构体大小为4+1+3+10*8+1=89
-    //对于TEST_E数组，第一个TEST_E是对齐的（假设其地址为0），则第二个TEST_E的首地址为(0+89=89)，对于第二个TEST_E的变量a，显然地址89是不对齐于4字节的
-    //因此，需要在TEST_E的变量d后面填充7字节，此时连续相连的TEST_E数组才会对齐 
-    //(注意：此处不仅要确保下一个TEST_E的a,b变量对齐，还要确保c也对齐，所以这里不是填充3字节，而是填充7字节）
-    //OK,对齐合理。因此整个结构体的大小为(4)+(1+3)+(10*8)+(1+7)=96
-typedef struct TEST_E
-{
-    int a;
-    char b;
-    double c[10];
-    char d;
-} E;
-#pragma  pack()
-
-int main()
-{
-    A A1;
-    B B1;
-    C C1;
-    D D1;
-    E E1, E2;
-    printf(&quot;A:%zu, %zu\n&quot;, sizeof(A1), sizeof(A1));
-    printf(&quot;B:%zu\n&quot;, sizeof(B1));
-    printf(&quot;C:%zu\n&quot;, sizeof(C1));
-    printf(&quot;D:%zu\n&quot;, sizeof(D1));
-    printf(&quot;E:%zu, %zu\n&quot;, sizeof(E1), sizeof(E2));
-
-    return 0;
-}
-</code></pre>
-
-<pre><code class="language-text">A:5, 5
-B:6
-C:8
-D:8
-E:96, 96
-</code></pre>
-
-<h2 id="toc_1">内存对齐原因</h2>
-
-<p>可能你对内存印象是，内存是由一个个字节组成的：</p>
-
-<p><img src="media/15164914975645/howProgrammersSeeMemory.jpg" alt=""/></p>
-
-<p>但是很可惜，CPU却不是这么看待的：</p>
-
-<p><img src="media/15164914975645/howProcessorsSeeMemory.jpg" alt=""/></p>
-
-<p>内存读取是按块进行的，块的大小称为<strong>粒度</strong>（granularity)。实际上在存储器层次结构上的较低层向较高层传输数据的时候都是按块进行的。也就是说，数据从内存到寄存器，要经过诸多关卡(在core i7上，有L1、L2和L3高速缓存)，每个关卡都有不同的粒度。所以为了提高速度，不仅仅大的对象要保证对齐，连对象内部的数据，也需要对齐到2的幂。</p>
-
-<p>以内存读取为例，我们仔细看看为什么内存不对齐会影响读取速度？</p>
-
-<p>假设CPU要读取一个4字节大小的数据到寄存器中（假设内存读取粒度是4），分两种情况讨论：</p>
-
-<ul>
-<li>1.数据从0字节开始</li>
-<li>2.数据从1字节开始</li>
-</ul>
-
-<p>当数据从0字节开始的时候，直接将0-3四个字节完全读取到寄存器，就算完成了。</p>
-
-<p><img src="media/15164914975645/quadByteAccess.jpg" alt=""/></p>
-
-<p>当数据从1字节开始的时候，问题很复杂，首先先将前4个字节读到寄存器，并再次读取4-7字节的数据进寄存器，接着把0字节，5、6、7字节的数据剔除，最后合并1、2、3、4字节的数据进寄存器，对一个内存未对齐的寄存器进行了这么多额外操作，大大降低了性能。</p>
-
-<p><img src="media/15164914975645/unalignedAccess.jpg" alt=""/></p>
-
-<h2 id="toc_2">参考</h2>
-
-<ul>
-<li>1. 深入理解计算机体系（第三版）</li>
-<li>2. <a href="https://zh.wikipedia.org/zh-hans/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%AF%B9%E9%BD%90">数据结构对齐 维基百科</a></li>
-<li>3. <a href="https://www.cnblogs.com/xylc/p/3780907.html">https://www.cnblogs.com/xylc/p/3780907.html</a></li>
-<li>4. <a href="https://www.cnblogs.com/jijiji/p/4854581.html">https://www.cnblogs.com/jijiji/p/4854581.html</a></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/1/21</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Computer%20System.html'>Computer System</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1267,13 +1117,19 @@ E:96, 96
 	      
 		      
 			      <li class="post">
-			        <a href="Hadoop%20_the_definitive_guide_1-Hadoop_fundamentals.html">Hadoop权威指南(I) - Hadoop基础知识</a>
+			        <a href="os_concepts_synchronization_tools.html">Operating System Concepts 6 - Synchronization Tools</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="head-first_java_note.html">Head first Java</a>
+			        <a href="os_concepts_synchronization_examples.html">Operating System Concepts 7 - Synchronization Examples</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="os-concets-processes.html">Operating System Concepts 3 - Processes</a>
 			      </li>
 		     
 		  
@@ -1286,12 +1142,6 @@ E:96, 96
 		      
 			      <li class="post">
 			        <a href="csapp-internet-programming.html">CSAPP - 网络编程</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15323640524161.html">Machine Learning with large datasets</a>
 			      </li>
 		     
 		  

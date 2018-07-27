@@ -140,6 +140,187 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="14973149842140.html">
+                
+                  <h1>搜索</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>搜索是在一个项目集合中找到一个特定项目的算法过程。返回值一般是<code>bool</code>:<code>True</code> or <code>False</code>. 搜索的几种常见方法：顺序查找、二分法查找、二叉树查找、哈希查找</p>
+
+<h2 id="toc_0">在python中查找</h2>
+
+<p>在python中，查找一个元素是否在列表中非常简单，可以用<code>in</code>操作符</p>
+
+<pre><code class="language-python">&gt;&gt;&gt; 15 in [3,5,2,4,1]
+False
+&gt;&gt;&gt; 3 in [3,5,2,4,1]
+True
+&gt;&gt;&gt;
+</code></pre>
+
+<h2 id="toc_1">顺序查找</h2>
+
+<p>顺序查找从列表中的第一个项目开始，我们按照顺序次序，简单地从一个项移动到另一个项，直到找到我们正在查找的项或遍历完整个列表。如果我们遍历完整个列表，则说明正在搜索的项不存在。</p>
+
+<p><img src="media/14973149842140/14973392316280.png" alt=""/></p>
+
+<pre><code class="language-python">def sequential_search(alist, item):
+    &quot;&quot;&quot;
+    顺序查找
+    &quot;&quot;&quot;
+
+    for i in range(len(alist)):
+        if alist[i] == item:
+            return True
+
+    return False
+</code></pre>
+
+<h2 id="toc_2">二分查找</h2>
+
+<p>二分查找过程类似于查字典。首先，假设表中元素是按升序排列，将表中间位置记录的关键字与查找关键字比较，如果两者相等，则查找成功；否则利用中间位置记录将表分成前、后两个子表，如果中间位置记录的关键字大于查找关键字，则进一步查找前一子表，否则进一步查找后一子表。重复以上过程，直到找到满足条件的记录，使查找成功，或直到子表不存在为止，此时查找不成功。</p>
+
+<ul>
+<li>优点是比较次数少，查找速度快，平均性能好</li>
+<li>缺点是要求待查表为有序表，且插入删除困难</li>
+<li>因此，折半查找方法适用于不经常变动而查找频繁的有序列表。</li>
+</ul>
+
+<p><img src="media/14973149842140/14973392434825.png" alt=""/></p>
+
+<pre><code class="language-python">
+def binary_search(alist, item):
+    &quot;&quot;&quot;
+    二分查找, 递归
+    &quot;&quot;&quot;
+
+    n = len(alist)
+    if n &gt;0:
+        mid = n//2
+
+        if alist[mid] == item:
+            return True
+        elif alist[mid] &gt; item:
+            return binary_search(alist[:mid], item)
+        else:
+            return binary_search(alist[mid+1:], item)
+    return False
+
+def binary_search2(alist, item):
+    &quot;&quot;&quot;
+    二分查找，非递归
+    &quot;&quot;&quot;
+    n = len(alist)
+    first = 0
+    last = n-1
+    while first &lt;= last:
+        mid = (first+last)//2
+        if alist[mid] == item:
+            return True
+        elif alist[mid] &gt; item:
+            last = mid-1
+        else:
+            first = mid+1
+
+    return False
+
+</code></pre>
+
+<h2 id="toc_3">时间复杂度</h2>
+
+<ul>
+<li>最优时间复杂度: \(O(1)\)</li>
+<li>最坏时间复杂度: \(O(\log n)\)</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/6/13</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='data_structure_and_algorithm.html'>数据结构和算法</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="14973620419454.html">
+                
+                  <h1>魔法方法(一)：自定义序列</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>Python中的魔法方法可以理解为对类中的内置方法的重载。</p>
+
+<h2 id="toc_0">自定义序列</h2>
+
+<p>有许多办法可以让Python类表现得像是内建序列类型(字典，元组，列表，字符串等)。</p>
+
+<h3 id="toc_1">预备知识</h3>
+
+<p>协议类似某些语言中的接口，里面包含的是一些必须实现的方法。在Python中，协议完全是非正式的，也不需要显式的声明，事实上，它们更像是一种参考标准。</p>
+
+<p>在Python中实现自定义容器类型需要用到一些协议。首先，不可变容器类型有如下协议：想实现一个不可变容器，你需要定义 <code>__len__</code> 和 <code>__getitem__</code> (后面会具体说明）。可变容器的协议除了上面提到的两个方法之外，还需要定义 <code>__setitem__</code> 和 <code>__delitem__</code> 。最后，如果你想让你的对象可以迭代，你需要定义 <code>__iter__</code> ，这个方法返回一个迭代器。迭代器必须遵守迭代器协议，需要定义 <code>__iter__</code> （返回它自己）和 <code>next</code> 方法。</p>
+
+<h3 id="toc_2">容器背后的魔法方法</h3>
+
+<ul>
+<li><p><code>__len__(self)</code><br/>
+返回容器的长度，可变和不可变类型都需要实现。</p></li>
+<li><p><code>__getitem__(self, key)</code><br/>
+定义对容器中某一项使用 self[key] 的方式进行读取操作时的行为。这也是可变和不可变容器类型都需要实现的一个方法。它应该在键的类型错误式产生 <code>TypeError</code> 异常，同时在没有与键值相匹配的内容时产生 <code>KeyError</code> 异常。</p></li>
+<li><p><code>__setitem__(self, key)</code><br/>
+定义对容器中某一项使用 self[key] 的方式进行赋值操作时的行为。它是可变容器类型必须实现的一个方法，同样应该在合适的时候产生 <code>KeyError</code> 和 <code>TypeError</code> 异常。</p></li>
+<li><p><code>__iter__(self, key)</code><br/>
+它应该返回当前容器的一个迭代器。迭代器以一连串内容的形式返回，最常见的是使用<code>iter()</code>函数调用，以及在类似 for x in container: 的循环中被调用。迭代器是他们自己的对象，需要定义 <code>__iter__</code>方法并在其中返回自己。</p></li>
+<li><p><code>__reversed__(self)</code><br/>
+定义了对容器使用<code>reversed()</code>内建函数时的行为。它应该返回一个反转之后的序列。当你的序列类是有序时，类似列表和元组，再实现这个方法，</p></li>
+<li><p><code>__contains__(self, item)</code><br/>
+<code>__contains__</code>定义了使用<code>in</code>和<code>not in</code>进行成员测试时类的行为。你可能好奇为什么这个方法不是序列协议的一部分，原因是，如果<code>__contains__</code>没有定义，Python就会迭代整个序列，如果找到了需要的一项就返回<code>True</code>。</p></li>
+<li><p><code>__missing__(self ,key)</code><br/>
+<code>__missing__</code>在字典的子类中使用，它定义了当试图访问一个字典中不存在的键时的行为（目前为止是指字典的实例，例如我有一个字典 d ， “george” 不是字典中的一个键，当试图访问 d[“george’] 时就会调用 d.__missing__(“george”))。</p></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/6/13</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="14969760398302.html">
                 
                   <h1>迭代器与生成器</h1>
@@ -503,112 +684,6 @@ s.salary = -1000
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="14969711309827.html">
-                
-                  <h1>数据结构介绍</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h2 id="toc_0">概念</h2>
-
-<p>数据是一个抽象的概念，将其进行分类后得到程序设计语言中的基本类型。如：int，float，char等。数据元素之间不是独立的，存在特定的关系，这些关系便是结构。数据结构指数据对象中数据元素之间的关系。</p>
-
-<p>程序= 数据结构+算法<br/>
-总结：算法是为了解决实际问题而设计的，数据结构是算法需要处理的问题载体。</p>
-
-<h2 id="toc_1">抽象数据类型(Abstract Data Type)</h2>
-
-<p>抽象数据类型(ADT)的含义是指一个数学模型以及定义在此数学模型上的一组操作。即把数据类型和数据类型上的运算捆在一起，进行封装。引入抽象数据类型的目的是把数据类型的表示和数据类型上运算的实现与这些数据类型和运算在程序中的引用隔开，使它们相互独立。</p>
-
-<h2 id="toc_2">内存、类型本质、连续存储</h2>
-
-<p>内存是连续的存储空间，内存的基本存储单元是一个字节，1个字节(Byte)是8位(Bit)</p>
-
-<p>顺序表的内存形式：</p>
-
-<ul>
-<li>逻辑地址：0,1,2,3,...,n01</li>
-<li>元素存储: e0,e1,e2,e3,....,en-1</li>
-<li>物理地址:l0,l0+c,l0+2c,l0+3c,l0+(n-1)c</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/6/9</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='data_structure_and_algorithm.html'>数据结构和算法</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="14969731064895.html">
-                
-                  <h1>列表</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h2 id="toc_0">列表生成式</h2>
-
-<p>列表生成式,即List Comprehensions,Python内置的非常简单却强大的可以用来创建list的生成式。</p>
-
-<p>例子</p>
-
-<pre><code class="language-python">&gt;&gt;&gt;&gt; a = [ i for i in range(1,19)]
-&gt;&gt;&gt;&gt; b = [i for i in ragne(10) if i%2 == 0]
-&gt;&gt;&gt;&gt; c = [i for i in range(3) for j in range(2)]
-&gt;&gt;&gt;&gt; d = [(i,j) for i in range(3) for j in range(2)]
-</code></pre>
-
-<h3 id="toc_1">range的风险</h3>
-
-<pre><code class="language-python">&gt;&gt;&gt; range(1,1000000000)
-</code></pre>
-
-<p>内存空间太大，但在python3中已经解决: 在需要时，才生成</p>
-
-<h2 id="toc_2">列表去重</h2>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/6/9</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -708,13 +783,19 @@ s.salary = -1000
 	      
 		      
 			      <li class="post">
-			        <a href="Hadoop%20_the_definitive_guide_1-Hadoop_fundamentals.html">Hadoop权威指南(I) - Hadoop基础知识</a>
+			        <a href="os_concepts_synchronization_tools.html">Operating System Concepts 6 - Synchronization Tools</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="head-first_java_note.html">Head first Java</a>
+			        <a href="os_concepts_synchronization_examples.html">Operating System Concepts 7 - Synchronization Examples</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="os-concets-processes.html">Operating System Concepts 3 - Processes</a>
 			      </li>
 		     
 		  
@@ -727,12 +808,6 @@ s.salary = -1000
 		      
 			      <li class="post">
 			        <a href="csapp-internet-programming.html">CSAPP - 网络编程</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15323640524161.html">Machine Learning with large datasets</a>
 			      </li>
 		     
 		  
