@@ -206,18 +206,43 @@
 </li>
 <li>
 <a href="#toc_13">4 Thread Scheduling</a>
+<ul>
+<li>
+<a href="#toc_14">4.1 Contention Scope</a>
 </li>
 <li>
-<a href="#toc_14">5 Multi-Processor Scheduling</a>
+<a href="#toc_15">4.2 Pthread Scheduling</a>
+</li>
+</ul>
 </li>
 <li>
-<a href="#toc_15">6 Real-Time CPU Scheduling</a>
+<a href="#toc_16">5 Multi-Processor Scheduling</a>
+<ul>
+<li>
+<a href="#toc_17">5.1 Approaches to Multiple-Processor Scheduling</a>
 </li>
 <li>
-<a href="#toc_16">7 Operating-System Examples</a>
+<a href="#toc_18">5.2 Multicore Processors</a>
 </li>
 <li>
-<a href="#toc_17">8 Algorithm Evaluation</a>
+<a href="#toc_19">5.3 Load Balancing</a>
+</li>
+<li>
+<a href="#toc_20">5.4 Processor Afﬁnity</a>
+</li>
+<li>
+<a href="#toc_21">5.5 Heterogeneous Multiprocessing</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_22">6 Real-Time CPU Scheduling</a>
+</li>
+<li>
+<a href="#toc_23">7 Operating-System Examples</a>
+</li>
+<li>
+<a href="#toc_24">8 Algorithm Evaluation</a>
 </li>
 </ul>
 
@@ -248,8 +273,8 @@
 <ul>
 <li>The curve is generally characterized as <strong>exponential</strong> or hyperexpoential(超指数).</li>
 <li>A large number of short CPU bursts and a small number of long CPU burst.</li>
-<li>An I/O-bounded program typically has many short CPU bursts. I/O约束程序通常具有很多短CPU区间。</li>
-<li>A CPU-bound program might have a few long CPU bursts.CPU约束程序可能有少量的长CPU区间。</li>
+<li>An I/O-bounded program typically has many short CPU bursts. I/O密集程序通常具有很多短CPU区间。</li>
+<li>A CPU-bound program might have a few long CPU bursts.CPU密集程序可能有少量的长CPU区间。</li>
 <li>The distribution can be important when implementing a CPU-scheduling algorithm. 分布有助于选择合适的CPU调度算法。</li>
 </ul>
 
@@ -419,13 +444,156 @@
 
 <h2 id="toc_13">4 Thread Scheduling</h2>
 
-<h2 id="toc_14">5 Multi-Processor Scheduling</h2>
+<h3 id="toc_14">4.1 Contention Scope</h3>
 
-<h2 id="toc_15">6 Real-Time CPU Scheduling</h2>
+<p><strong>Process contention scope</strong> (PCS，进程竞争范围), occurs when competition for the CPU takes place among threads belonging to the same process.</p>
 
-<h2 id="toc_16">7 Operating-System Examples</h2>
+<ul>
+<li>the thread library schedules user-level threads to run on an available LWP, on systems implementing the many-to-one and many-to-many models.</li>
+</ul>
 
-<h2 id="toc_17">8 Algorithm Evaluation</h2>
+<p>To decide which kernel-level thread to schedule onto a CPU, the kernel uses <strong>system-contention scope</strong> (SCS, 系统竞争范围).</p>
+
+<ul>
+<li>Systems using the one-to-one model, such as Windows and Linux schedule threads using only SCS.</li>
+</ul>
+
+<h3 id="toc_15">4.2 Pthread Scheduling</h3>
+
+<p><strong>Pthreads</strong> identifies the following contention scope values:</p>
+
+<ul>
+<li><code>PTHREAD_SCOPE_PROCESS</code> schedules threads using PCS scheduling.</li>
+<li><code>PTHREAD_SCOPE_SYSTEM</code> schedules threads using SCS scheduling.</li>
+</ul>
+
+<p>The Pthread IPC (Interprocess Communication) provides two functions for setting—and getting—the contention scope policy:</p>
+
+<ul>
+<li><code>pthread_attr_setscope(pthread_attr_t *attr, int scope)</code></li>
+<li><code>pthread_attr_getscope(pthread_attr_t *attr, int *scope)</code></li>
+</ul>
+
+<pre><code class="language-c">#include &lt;pthread.h&gt;
+#include &lt;stdio.h&gt;
+#define NUM_THREADS 5
+
+/* the thread runs in this function */
+void *runner(void *param); 
+
+int main(int argc, char *argv[])
+{
+    int i, scope;
+    pthread_t tid[NUM_THREADS];     /* the thread identifier */
+    pthread_attr_t attr;        /* set of attributes for the thread */
+
+    /* get the default attributes */
+    pthread_attr_init(&amp;attr);
+
+    /* first inquire on the current scope */
+    if (pthread_attr_getscope(&amp;attr,&amp;scope) != 0)
+        fprintf(stderr, &quot;Unable to get scheduling scope.\n&quot;);
+    else {
+        if (scope == PTHREAD_SCOPE_PROCESS)
+            printf(&quot;PTHREAD_SCOPE_PROCESS\n&quot;);
+        else if (scope == PTHREAD_SCOPE_SYSTEM)
+            printf(&quot;PTHREAD_SCOPE_SYSTEM\n&quot;);
+        else 
+            fprintf(stderr,&quot;Illegal scope value.\n&quot;);
+    }
+    
+    /* set the scheduling algorithm to PCS or SCS */
+    if (pthread_attr_setscope(&amp;attr, PTHREAD_SCOPE_SYSTEM) != 0)
+        printf(&quot;unable to set scheduling policy.\n&quot;);
+
+    /* create the threads */
+    for (i = 0; i &lt; NUM_THREADS; i++) 
+        pthread_create(&amp;tid[i],&amp;attr,runner,NULL); 
+
+    /**
+     * Now join on each thread
+     */
+    for (i = 0; i &lt; NUM_THREADS; i++) 
+        pthread_join(tid[i], NULL);
+}
+
+/**
+ * The thread will begin control in this function.
+ */
+void *runner(void *param) 
+{
+    /* do some work ... */
+
+    pthread_exit(0);
+}
+</code></pre>
+
+<h2 id="toc_16">5 Multi-Processor Scheduling</h2>
+
+<h3 id="toc_17">5.1 Approaches to Multiple-Processor Scheduling</h3>
+
+<p><strong>Asymmetric multiprocessing</strong> (AMP，非对称多处理)</p>
+
+<ul>
+<li>all scheduling decisions, I/O processing, and other system activities handled by a single processor -- the master server; the other processors execute only user code.  让一个处理器（主服务器）处理所有的调度决定、I/O处理以及其他系统活动，其他的处理器只执行用户代码。</li>
+<li>it is simple because only one core accesses the system data structures, reducing the need for data sharing. 简单，因为只有一个处理器访问系统数据结构，减轻了数据共享的需要。</li>
+<li>the master server becomes a potential bottleneck where overall system performance may be reduced.</li>
+</ul>
+
+<p><strong>Symmetric multiprocessing</strong> (SMP， 对称多处理)</p>
+
+<ul>
+<li>each processor is self-scheduling</li>
+<li>it provides two possible strategies for organizing the threads eligible to be scheduled:
+<ul>
+<li>All threads may be in a common ready queue.
+<ul>
+<li>use some form of locking to protect the common ready queue from race condition</li>
+<li>all accesses to the queue would require lock ownership, it would be a performance bottleneck.</li>
+</ul></li>
+<li>Each processor may have its own private queue of threads.
+<ul>
+<li>most common approach on systems supporting SMP</li>
+<li>more efficient use of cache memory.</li>
+</ul></li>
+</ul></li>
+</ul>
+
+<p><img src="media/15326899337167/organization%20of%20ready%20queues.png" alt="organization of ready queues"/></p>
+
+<h3 id="toc_18">5.2 Multicore Processors</h3>
+
+<p><u>Issue</u> : memory stalls occurs when a processor accesses memory, it spends a significant amount of time waiting for the data to become available.</p>
+
+<ul>
+<li>occurs primarily because modern processors operate at much faster speeds than memory</li>
+<li>occur because of a cache miss</li>
+</ul>
+
+<p><img src="media/15326899337167/memory%20stall.png" alt="memory stall"/><br/>
+<u>Solution</u> : many recent hardware designs have implemented multithreaded processing cores in which two (or more) <strong>hardware threads</strong>(硬件线程) are assigned to each core.</p>
+
+<ul>
+<li>If one hardware thread stalls while waiting for memory, the core can switch to another thread.</li>
+<li>From an operating system perspective, each hardware thread maintains its architectural state, such as instruction pointer and register set, and thus appears as a logical CPU that is available to run a software thread. This technique is known as <strong>chip multithreading</strong> (CMT, 芯片多线程). Intel use the term <strong>hyper-threading</strong>(超线程).</li>
+<li><strong>NOTE</strong>: the resources of the physical core (such as caches and pipelines) are shared among its hardware threads, and a processing core can only execute one hardware thread at a time.</li>
+</ul>
+
+<p><img src="media/15326899337167/Chip%20multithreading.png" alt="Chip multithreading"/></p>
+
+<p><img src="media/15326899337167/two%20levels%20of%20scheduling.png" alt="two levels of scheduling"/></p>
+
+<h3 id="toc_19">5.3 Load Balancing</h3>
+
+<h3 id="toc_20">5.4 Processor Afﬁnity</h3>
+
+<h3 id="toc_21">5.5 Heterogeneous Multiprocessing</h3>
+
+<h2 id="toc_22">6 Real-Time CPU Scheduling</h2>
+
+<h2 id="toc_23">7 Operating-System Examples</h2>
+
+<h2 id="toc_24">8 Algorithm Evaluation</h2>
 
 
     
