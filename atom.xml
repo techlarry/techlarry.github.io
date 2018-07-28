@@ -4,7 +4,7 @@
   <title><![CDATA[techlarry]]></title>
   <link href="http://larryim.cc/atom.xml" rel="self"/>
   <link href="http://larryim.cc/"/>
-  <updated>2018-07-28T07:29:56+08:00</updated>
+  <updated>2018-07-28T09:43:06+08:00</updated>
   <id>http://larryim.cc/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -88,19 +88,13 @@
 <li>
 <a href="#toc_20">5.4 Processor Afﬁnity</a>
 </li>
-<li>
-<a href="#toc_21">5.5 Heterogeneous Multiprocessing</a>
-</li>
 </ul>
 </li>
 <li>
-<a href="#toc_22">6 Real-Time CPU Scheduling</a>
+<a href="#toc_21">6 Real-Time CPU Scheduling</a>
 </li>
 <li>
-<a href="#toc_23">7 Operating-System Examples</a>
-</li>
-<li>
-<a href="#toc_24">8 Algorithm Evaluation</a>
+<a href="#toc_22">7 Linux Scheduling</a>
 </li>
 </ul>
 
@@ -404,12 +398,12 @@ void *runner(void *param)
 <li>each processor is self-scheduling</li>
 <li>it provides two possible strategies for organizing the threads eligible to be scheduled:
 <ul>
-<li>All threads may be in a common ready queue.
+<li>All threads may be in a _common ready queue_.
 <ul>
 <li>use some form of locking to protect the common ready queue from race condition</li>
 <li>all accesses to the queue would require lock ownership, it would be a performance bottleneck.</li>
 </ul></li>
-<li>Each processor may have its own private queue of threads.
+<li>Each processor may have its own <u>private queue</u> of threads.
 <ul>
 <li>most common approach on systems supporting SMP</li>
 <li>more efficient use of cache memory.</li>
@@ -439,19 +433,85 @@ void *runner(void *param)
 
 <p><img src="media/15326899337167/Chip%20multithreading.png" alt="Chip multithreading"/></p>
 
+<p>Two levels of scheduling needed:</p>
+
+<ul>
+<li>It chooses which software thread to run on each hardware thread.
+<ul>
+<li>It may choose any scheduling algorithm. </li>
+</ul></li>
+<li>It chooses which hardware thread to run on CPU.
+<ul>
+<li>Use a simple round-robin algorithm</li>
+<li>assigned to each hardware thread a dynamic urgency value ranging from 0 to 7, with 0 representing the lowest urgency and 7 the highest. </li>
+</ul></li>
+</ul>
+
 <p><img src="media/15326899337167/two%20levels%20of%20scheduling.png" alt="two levels of scheduling"/></p>
 
 <h3 id="toc_19">5.3 Load Balancing</h3>
 
+<p><strong>Load balancing</strong>(负载均衡) attempts to keep the workload evenly distributed across all processors in an SMP system.</p>
+
+<p>Two general approaches to load balancing:</p>
+
+<ul>
+<li><strong>Push migration</strong>: a specific task periodically checks the load on each processor and -- if it finds an imbalance -- evenly distributes the load by moving (or pushing) threads from overloaded to idle or less-busy processors.</li>
+<li><strong>Pull migration</strong>: an idle processor pulls a waiting task from a busy processor.</li>
+<li>They are not mutually exclusive and are, in fact, often implemented in parallel on load-balancing systems.</li>
+</ul>
+
 <h3 id="toc_20">5.4 Processor Afﬁnity</h3>
 
-<h3 id="toc_21">5.5 Heterogeneous Multiprocessing</h3>
+<p>Because of the high cost of invalidating and repopulating caches, most operating systems with SMP support try to <u>avoid migrating</u> a thread from one processor to another and instead attempt to keep a thread running on the same processor and take advantage of a warm cache. This is known as <strong>processor affinity</strong>(处理器亲和性)。</p>
 
-<h2 id="toc_22">6 Real-Time CPU Scheduling</h2>
+<p>Common ready queue and per-processor ready queue(section 5.1):</p>
 
-<h2 id="toc_23">7 Operating-System Examples</h2>
+<ul>
+<li>If we adopt the approach of a common ready queue, a thread may be selected for execution by any processor. Thus, if a thread is scheduled on a new processor, that processor’s cache must be repopulated.</li>
+<li>With private, per-processor ready queues, a thread is always scheduled on the same processor and can therefore benefit from the contents of a warm cache.</li>
+</ul>
 
-<h2 id="toc_24">8 Algorithm Evaluation</h2>
+<p>The main-memory architecture of a system can affect processor affinity issues as well. <strong>Non-uniform memory access</strong>(NUMA, 非一致性内存访问) where there are two physical processor chips each with their own CPU and local memory. A CPU has faster access to its local memory than to memory local to another CPU.</p>
+
+<p><img src="media/15326899337167/numa%20and%20CPU%20scheduling.png" alt="numa and CPU scheduling"/></p>
+
+<p>Interestingly, load balancing often <strong>counteracts</strong> the benefits of processor affinity.</p>
+
+<h2 id="toc_21">6 Real-Time CPU Scheduling</h2>
+
+<p>[to be continued]</p>
+
+<h2 id="toc_22">7 Linux Scheduling</h2>
+
+<p>The <strong><em>Completely Fair Scheduler</em></strong>（CFS，完全公平调度算法) is the default Linux scheduling algorithm.</p>
+
+<ul>
+<li>Each task has a <strong>virtual runtime</strong> value, which is its actual runtime normalized to the number of ready tasks.</li>
+<li>Task priority is incorporated as a <strong>decay factor</strong> into this<br/>
+formula. 
+<ul>
+<li>Lower-priority tasks have higher rates of decay than higher-priority tasks.</li>
+</ul></li>
+<li>The CPU is allocated to the task with the smallest virtual<br/>
+runtime value.</li>
+</ul>
+
+<p>Standard Linux kernels implement two <strong>scheduling classes</strong>(调度类): </p>
+
+<ul>
+<li>a default scheduling class using the CFS scheduling algorithm </li>
+<li>a real-time scheduling class.</li>
+</ul>
+
+<p>Each runnable task is placed in a <strong>red-black tree</strong> - a balanced binary search tree whose key is based on the value of virtual runtime <code>vruntime</code>.</p>
+
+<ul>
+<li>discover the leftmost node will require \(O(\log N)\) operations.</li>
+<li>Linux scheduler caches the leftmost node in the variable <code>rb_leftmost</code>, and requires only retrieving the cached value.</li>
+</ul>
+
+<p><img src="media/15326899337167/15327413379278.gif" alt=""/></p>
 
 ]]></content>
   </entry>
@@ -2280,22 +2340,22 @@ void echo(int connfd) {
 <a href="#toc_22">8 Interfaces and abstract classes</a>
 <ul>
 <li>
-<a href="#toc_23">Abstract classes</a>
+<a href="#toc_23">8.1 Abstract classes</a>
 </li>
 <li>
-<a href="#toc_24">Abstract methods</a>
+<a href="#toc_24">8.2 Abstract methods</a>
 </li>
 <li>
-<a href="#toc_25">the ultimate superclass: Object</a>
+<a href="#toc_25">8.3 The ultimate superclass: Object</a>
 </li>
 <li>
-<a href="#toc_26">Using polymorphic references of type Object has a price</a>
+<a href="#toc_26">8.4 Using polymorphic references of type Object has a price</a>
 </li>
 <li>
-<a href="#toc_27">Interface</a>
+<a href="#toc_27">8.5 Interface</a>
 </li>
 <li>
-<a href="#toc_28">Using <code>super</code></a>
+<a href="#toc_28">8.6 Using <code>super</code></a>
 </li>
 </ul>
 </li>
@@ -2677,7 +2737,7 @@ class PetOwner {
 <p>What&#39;s an interface? it&#39;s a 100% abstract class. <br/>
 What&#39;s an abstract class? it&#39;s a class that can&#39;t be instantiated.</p>
 
-<h3 id="toc_23">Abstract classes</h3>
+<h3 id="toc_23">8.1 Abstract classes</h3>
 
 <p>Here&#39;s where it gets weird:</p>
 
@@ -2704,7 +2764,7 @@ How?  By marking the class as <strong>abstract</strong>, the compiler will stop 
 <li>An <strong>abstract class</strong> has virtually no use, no value, no purpose in life, unless it is extended.</li>
 </ul>
 
-<h3 id="toc_24">Abstract methods</h3>
+<h3 id="toc_24">8.2 Abstract methods</h3>
 
 <p>An <strong>abstract method</strong> means the method must be overriden, whereas an abstract class means the class must be extended.</p>
 
@@ -2714,9 +2774,9 @@ How?  By marking the class as <strong>abstract</strong>, the compiler will stop 
 <li>You must implement all abstract methods.</li>
 </ul>
 
-<h3 id="toc_25">the ultimate superclass: Object</h3>
+<h3 id="toc_25">8.3 The ultimate superclass: Object</h3>
 
-<p>Every class in Java extends class Object. Class Object is the mother of all classes; it&#39;s the superclass of everything. Java中的每个类都是从Object这个类继承出来的。Object类是所有类的妈妈，他是所有类的父类。</p>
+<p>Every class in Java extends class Object. Class Object is the mother of all classes; it&#39;s the superclass of everything. </p>
 
 <ul>
 <li>Any class that doesn&#39;t <em>explicitly</em> extend another class, <em>implicitly</em> extends Object.</li>
@@ -2740,9 +2800,9 @@ How?  By marking the class as <strong>abstract</strong>, the compiler will stop 
 <li>to provide real method code that all objects in Java need at runtime (and putting them in class Object means all other classes inherit them).提供Java在执行期堆任何对象都有需要的实现方法代码。</li>
 </ul>
 
-<h3 id="toc_26">Using polymorphic references of type Object has a price</h3>
+<h3 id="toc_26">8.4 Using polymorphic references of type Object has a price</h3>
 
-<p>When you put an object into an <code>ArrayList&lt;Dog&gt;</code>, it goes in as a Dog, and coms out as a Dog:</p>
+<p>When you put an object into an <code>ArrayList&lt;Dog&gt;</code>, it goes in as a Dog, and comes out as a Dog:</p>
 
 <pre><code class="language-java">// Make an ArrayList declared to hold Dog objects.
 ArrayList&lt;Dog&gt; myDogArrayList = new ArrayList&lt;Dog&gt;();
@@ -2768,7 +2828,7 @@ myDogArrayList.add(aDog);
 Dog d = myDogArrayList.get(0)
 </code></pre>
 
-<p><strong>The compiler decides whether you can call a method based on the reference type, not the actual object type.</strong>:</p>
+<p><strong>The compiler decides whether you can call a method based on the <u>reference type</u> , not the actual object type.</strong></p>
 
 <pre><code class="language-java">Object o = al.get(index);
 // Class Object has a hashCode() method
@@ -2780,7 +2840,7 @@ o.bark();
 
 <p><img src="media/15321391987415/method%20based%20on%20the%20reference%20type.png" alt="method based on the reference type"/></p>
 
-<p>If you&#39;re sure the object is really a Dog, you can make a new Dog reference to it by copying the Object reference, and forcing that copy to go into a Dog reference variable, using a cast (Dog).</p>
+<p>If you&#39;re sure the object is really a Dog, you can make a new Dog reference to it by copying the Object reference, and forcing that copy to go into a Dog reference variable, using a <code>cast (Dog)</code>.</p>
 
 <pre><code class="language-java">Object o = al.get(index);
 // cast the Object back to a Dog we know is there.
@@ -2795,7 +2855,7 @@ d.roam();
 }
 </code></pre>
 
-<h3 id="toc_27">Interface</h3>
+<h3 id="toc_27">8.5 Interface</h3>
 
 <p>Questions: what if you want to add Dog some Pet behaviors?</p>
 
@@ -2867,7 +2927,7 @@ public class Dog extends Canine implements Pet {}
 <li>Use an interface when you want to define a <strong><em>role</em></strong> that other classes can play, regardless of where those classes are in the inheritance tree.</li>
 </ul>
 
-<h3 id="toc_28">Using <code>super</code></h3>
+<h3 id="toc_28">8.6 Using <code>super</code></h3>
 
 <p>What if you don&#39;t want to <em>replace</em> the method with an override in a concrete subclass, but you just want to <em>add</em> to it with some additional specific code?</p>
 
