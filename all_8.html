@@ -50,6 +50,8 @@
         
         <li id=""><a target="_self" href="about.html">About</a></li>
         
+        <li id=""><a target="_blank" href="imlarry.coding.me/imlarry">BOOK NOTES</a></li>
+        
         </ul>
 
         <ul class="right" id="search-wrap">
@@ -84,6 +86,8 @@
         <li><a target="_self" href="notebook.html">NOTEBOOK</a></li>
         
         <li><a target="_self" href="about.html">About</a></li>
+        
+        <li><a target="_blank" href="imlarry.coding.me/imlarry">BOOK NOTES</a></li>
         
 
     <li><label>Categories</label></li>
@@ -140,31 +144,45 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="introduction_to_computer_system_CMU.html">
+                <a class="clearlink" href="python_assembly_code.html">
                 
-                  <h1>CMU 15-213 Introduction to Computer Systems</h1>
+                  <h1>Python汇编代码</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<p>CMU 15-213 <code>Introduction to Computer Systems</code>是最受欢迎的计算机课之一。与这门课对应的课本CSAPP被各大名校所采用，也被无数学生拜读。课程内容涉及广泛、由浅入深，是进入计算机科学的最佳课程，也是各种击破BAT笔试题的必备良药(<a href="https://book.douban.com/review/5627139/">这篇帖子描述了笔试题所对应的章节</a>)。</p>
+                        	<p>学完了汇编语言之后，非常好奇Python程序产生的汇编代码。其实Python作为一种解释语言，其源代码是直接被<code>CPython</code>编译器编译成字节码(<code>btyecode</code>)的；然后在虚拟机中依次解释执行字节码所对应的机器码(<code>machine code</code>)。当需要重用时，字节码以<code>.pyc</code>和<code>.pyo</code>文件存在。当再次运行代码时，虚拟机直接运行<code>.pyc</code>和<code>.pyo</code>文件，省去了重新编译的过程。</p>
 
-<p>非常幸运的是，CMU在网上分享了几乎所有课程资料，想学习课程的同学几乎可以和CMU学生一样学习该课程。</p>
+<p>Python提供了<code>dis</code>模块，在代码运行时加入<code>-m dis</code>就可以得到源代码对应的汇编代码。其实<code>dis</code>在这里反汇编了字节码。</p>
 
-<p>课程资料：</p>
+<p>也可以在源代码中直接调用<code>dis</code>模块：</p>
 
-<ul>
-<li><a href="https://scs.hosted.panopto.com/Panopto/Pages/Sessions/List.aspx#folderID=%22b96d90ae-9871-4fae-91e2-b1627b43e25e%22&amp;sortColumn=0&amp;sortAscending=true">课程视频</a></li>
-<li><a href="http://www.cs.cmu.edu/afs/cs/academic/class/15213-f15/www/schedule.html">课程主页</a>，包括了PPT，代码</li>
-<li><a href="http://csapp.cs.cmu.edu">课本CSAPP主页</a>，包括了Lab资源。</li>
-</ul>
+<pre><code class="language-python">import dis
+def f(x):
+    return 1 &lt; x ** 2 &lt; 100
 
-<p>Lab攻略:</p>
+dis.dis(f)
+</code></pre>
 
-<ul>
-<li><a href="http://larryim.cc/wiki/2017/12/30/CSAPP-Attack-Lab/">Lab3 Attack Lab</a></li>
-<li><a href="http://larryim.cc/wiki/2017/12/30/CSAPP-Cache-Lab/">Lab4 Cache Lab</a></li>
-</ul>
+<p>得到的字节码指令(<code>byte code instruction</code>)如下所示：</p>
+
+<pre><code class="language-text">   4           0 LOAD_CONST               1 (1)
+              3 LOAD_FAST                0 (x)
+              6 LOAD_CONST               2 (2)
+              9 BINARY_POWER
+             10 DUP_TOP
+             11 ROT_THREE
+             12 COMPARE_OP               0 (&lt;)
+             15 JUMP_IF_FALSE_OR_POP    25
+             18 LOAD_CONST               3 (100)
+             21 COMPARE_OP               0 (&lt;)
+             24 RETURN_VALUE
+        &gt;&gt;   25 ROT_TWO
+             26 POP_TOP
+             27 RETURN_VALUE
+</code></pre>
+
+<p>字节码指令的含义可以通过<a href="https://docs.python.org/2/library/dis.html#bytecodes">官方文件</a>查找。</p>
 
                         
                       </div>
@@ -173,7 +191,7 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2017/12/14</span>
+                    <span class="date">2018/1/3</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Computer%20System.html'>Computer System</a></span>
@@ -1023,19 +1041,19 @@ copy.copy() <br/>
 	      
 		      
 			      <li class="post">
-			        <a href="os_concepts_CPU_scheduling.html">Operating System Concepts 5 - CPU Scheduling</a>
+			        <a href="exceptional_control_flow.html">CSAPP - 异常控制流</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="os_concepts_synchronization_tools.html">Operating System Concepts 6 - Synchronization Tools</a>
+			        <a href="introduction_to_computer_system_CMU.html">CMU 15-213 Introduction to Computer Systems</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="os_concepts_synchronization_examples.html">Operating System Concepts 7 - Synchronization Examples</a>
+			        <a href="os-concepts-os-structures.html">Operating System Concepts 2 - Operating System structures</a>
 			      </li>
 		     
 		  
@@ -1047,7 +1065,7 @@ copy.copy() <br/>
 		  
 		      
 			      <li class="post">
-			        <a href="diagrammatize_TCP_IP.html">图解TCP/IP</a>
+			        <a href="os_concepts_synchronization_examples.html">Operating System Concepts 7 - Synchronization Examples</a>
 			      </li>
 		     
 		  
