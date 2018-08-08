@@ -460,6 +460,30 @@
 
 
 <h4 id="posix-semaphores">POSIX Semaphores<a class="headerlink" href="#posix-semaphores" title="Permanent link">&para;</a></h4>
+<p>Semaphores are not part of the POSIX standard and instead belong to the POSIX SEM extension. POSIX specifies two types of semaphores - <strong>named</strong> and <strong>unnamed</strong> semaphores.</p>
+<p>The advantage of named semaphores is that multiple unrelated processes can easily use a common semaphore as a synchronization mechanism by simply referring to the semaphore’s name.</p>
+<p>Both Linux and macOS systems provide POSIX named semaphores.</p>
+<div class="codehilite"><pre><span class="cp">#include</span> <span class="cpf">&lt;semaphore.h&gt;</span><span class="cp"></span>
+<span class="n">sem_t</span> <span class="o">*</span><span class="n">sem</span><span class="p">;</span>
+
+<span class="cm">/* Create the semaphore and initialize it to 1 * Here, we are naming the semaphore SEM.</span>
+<span class="cm">* The O_CREAT flag indicates that the semaphore will be created if it does not already exist.</span>
+<span class="cm">* The parameter 0666 indicates that the semaphore has read/write access for other processes.</span>
+<span class="cm">* The parameter 1 indicates that the semaphore is initialized to 1.</span>
+<span class="cm">*/</span>
+
+<span class="n">sem</span> <span class="o">=</span> <span class="n">sem_open</span><span class="p">(</span><span class="s">&quot;SEM&quot;</span><span class="p">,</span> <span class="n">O_CREAT</span><span class="p">,</span> <span class="mo">0666</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+
+<span class="cm">/* acquire the semaphore */</span>
+<span class="n">sem_wait</span><span class="p">(</span><span class="n">sem</span><span class="p">);</span>
+
+<span class="cm">/* critical section */</span>
+
+<span class="cm">/* release the semaphore */</span>
+<span class="n">sem_post</span><span class="p">(</span><span class="n">sem</span><span class="p">);</span>
+</pre></div>
+
+
 <h4 id="posix-condition-variables">POSIX Condition Variables<a class="headerlink" href="#posix-condition-variables" title="Permanent link">&para;</a></h4>
 <h3 id="4-synchronization-in-java">4 Synchronization in Java<a class="headerlink" href="#4-synchronization-in-java" title="Permanent link">&para;</a></h3>
 <p>待续，还没学完JAVA呢</p>
