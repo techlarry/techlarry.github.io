@@ -431,13 +431,34 @@
 <p>Atomic integers are particularly efficient in situations where an integer variable—such as a counter—needs to be updated, since atomic operations do not require the overhead of locking mechanisms:</p>
 <p><img alt="various_atomic_operations" src="../figures/various_atomic_operations.png" /></p>
 <h4 id="locks">Locks<a class="headerlink" href="#locks" title="Permanent link">&para;</a></h4>
-<p>In situations where there are several variables contributing to a possible race condition, more sophisticated locking tools must be used. Mutex locks are available in Linux for protecting critical sections within the kernel. Here, a task must invoke the <code>mutex lock()</code> function prior to entering a critical section and the<code>mutex_unlock()</code> function after exiting the critical section.</p>
+<p>In situations where there are several variables contributing to a possible race condition, more sophisticated locking tools must be used. Mutex locks are available in Linux for protecting critical sections within the kernel. Here, a task must invoke the <code>mutex_lock()</code> function prior to entering a critical section and the<code>mutex_unlock()</code> function after exiting the critical section.</p>
 <p>Linux also provides spinlocks and semaphores (as well as reader–writer versions of these two locks) for locking in the kernel. </p>
 <p>Both spinlocks and mutex locks in the Linux kernel are <strong><em>nonrecursive</em></strong>, which means that if a thread has acquired one of these locks, it cannot acquire the same lock a second time without first releasing the lock. Otherwise, the second attempt at acquiring the lock will block.</p>
 <p>Linux provides two simple system calls — <code>preempt_disable()</code> and <code>preempt_enable()</code> —for disabling and enabling kernel preemption.</p>
 <h3 id="3-posix-synchronization">3 POSIX Synchronization<a class="headerlink" href="#3-posix-synchronization" title="Permanent link">&para;</a></h3>
 <p>The POSIX API is available for programmers at the user level and is not part of any particular operating-system kernel.</p>
 <h4 id="posix-mutex-locks">POSIX Mutex Locks<a class="headerlink" href="#posix-mutex-locks" title="Permanent link">&para;</a></h4>
+<p>Pthreads uses the <code>pthread_mutex_t</code> data type for mutex locks.</p>
+<ul>
+<li>A mutex is created with the pthread <code>mutex_init()</code> function.</li>
+<li>The mutex is acquired and released with the pthread <code>mutex_lock()</code> and pthread <code>mutex_unlock()</code> functions.</li>
+</ul>
+<div class="codehilite"><pre><span class="cp">#include</span> <span class="cpf">&lt;pthread.h&gt;</span><span class="cp"></span>
+<span class="n">pthread_mutex_t</span> <span class="n">mutex</span><span class="p">;</span> 
+
+<span class="cm">/* create and initialize the mutex lock */</span> 
+<span class="n">pthread_mutex_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+
+<span class="cm">/* acquire the mutex lock */</span>
+ <span class="n">pthread</span> <span class="nf">mutex_lock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span> 
+
+<span class="cm">/* critical section */</span> 
+
+<span class="cm">/* release the mutex lock */</span> 
+<span class="n">pthread</span> <span class="nf">mutex_unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span>
+</pre></div>
+
+
 <h4 id="posix-semaphores">POSIX Semaphores<a class="headerlink" href="#posix-semaphores" title="Permanent link">&para;</a></h4>
 <h4 id="posix-condition-variables">POSIX Condition Variables<a class="headerlink" href="#posix-condition-variables" title="Permanent link">&para;</a></h4>
 <h3 id="4-synchronization-in-java">4 Synchronization in Java<a class="headerlink" href="#4-synchronization-in-java" title="Permanent link">&para;</a></h3>
