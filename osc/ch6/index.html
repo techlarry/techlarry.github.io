@@ -106,6 +106,10 @@
                         </li>
                       
                         <li>
+                            <a href="../ch8/">Chapter 8: Deadlocks</a>
+                        </li>
+                      
+                        <li>
                             <a href="../ch13/">Chapter 13: File-System Interfaces</a>
                         </li>
                       
@@ -412,7 +416,18 @@
 <li>Calls to either <code>acquire()</code> or <code>release()</code> must be performed atomically. Thus mutex locks can be implemented using the CAS operation.</li>
 </ul>
 <p>Solution to the critical-section problem using mutex locks:</p>
-<p><img alt="mutex lock" src="../ch6/mutex%20lock.png" /></p>
+<div class="codehilite"><pre><span class="k">while</span> <span class="p">(</span><span class="nb">true</span><span class="p">)</span> <span class="p">{</span>
+    <span class="cm">/* acquire lock */</span>
+
+    <span class="cm">/* critical section */</span>
+
+    <span class="cm">/* release lock */</span>
+
+    <span class="cm">/* remainder section */</span>
+<span class="p">}</span>
+</pre></div>
+
+
 <p>The definition of <code>acquire()</code> is as follows:</p>
 <div class="codehilite"><pre><span class="n">acquire</span><span class="p">()</span> <span class="p">{</span> 
     <span class="k">while</span> <span class="p">(</span><span class="o">!</span><span class="n">available</span><span class="p">)</span> <span class="p">;</span>
@@ -439,19 +454,7 @@
 <li>Advantage: no context switch is required</li>
 </ul>
 <p>Spinlocks are not appropriate for single-processor systems yet are often used in multiprocessor systems.</p>
-<p>在UNIX中，自旋锁相关的API：</p>
-<div class="codehilite"><pre><span class="c1">// 初始化自旋锁： 用来申请使用自旋锁所需要的资源并且将它初始化为非锁定状态</span>
-<span class="kt">int</span> <span class="nf">pthread_spin_init</span><span class="p">(</span><span class="n">pthread_spinlock_t</span> <span class="o">*</span><span class="p">,</span> <span class="kt">int</span><span class="p">);</span>
-<span class="c1">// 获得一个自旋锁：如果该自旋锁当前没有被其它线程所持有，则调用该函数的线程获得该自旋锁.</span>
-<span class="c1">// 否则该函数在获得自旋锁之前不会返回。</span>
-<span class="kt">int</span> <span class="nf">pthread_spin_lock</span><span class="p">(</span><span class="n">pthread_spinlock_t</span> <span class="o">*</span><span class="p">);</span>
-<span class="c1">//释放指定的自旋锁</span>
-<span class="kt">int</span> <span class="nf">pthread_spin_unlock</span><span class="p">(</span><span class="n">pthread_spinlock_t</span> <span class="o">*</span><span class="p">);</span>
-<span class="c1">// 销毁一个自旋锁</span>
-<span class="kt">int</span> <span class="nf">pthread_spin_destroy</span><span class="p">(</span><span class="n">pthread_spinlock_t</span> <span class="o">*</span><span class="p">);</span>
-</pre></div>
-
-
+<p><a href="../ch7/#posix-spinlocks">POSIX API for Spinlocks</a></p>
 <h3 id="6-semaphores">6 Semaphores<a class="headerlink" href="#6-semaphores" title="Permanent link">&para;</a></h3>
 <p>A <strong>semaphore</strong>(信号量) S is an integer variable that, apart from initialization, is accessed only through two standard atomic operations: <code>wait()</code> and <code>signal()</code>. 信号量S是个整数变量，除了初始化外，它只能通过两个标准原子操作：<code>wait()</code>和<code>signal()</code>来访问。</p>
 <p>The definition of <code>wait()</code> is as follows:</p>
@@ -483,6 +486,7 @@
 <li>When a process releases a resource, it performs a <code>signal()</code> operation (incrementing the count). </li>
 <li>When the count for the semaphore goes to 0, all resources are being used. After that, processes that wish to use a resource will block until the count becomes greater than 0.</li>
 </ul>
+<p><a href="#posix-semaphores">POSIX API for Semaphores</a></p>
 <h3 id="7-monitors">7 Monitors<a class="headerlink" href="#7-monitors" title="Permanent link">&para;</a></h3>
 <p>Issues: various types of errors can be generated easily when programmers use semaphores or mutex locks incorrectly to solve the critical-section problem.</p>
 <ul>

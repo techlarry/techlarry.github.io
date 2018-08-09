@@ -106,6 +106,10 @@
                         </li>
                       
                         <li>
+                            <a href="../ch8/">Chapter 8: Deadlocks</a>
+                        </li>
+                      
+                        <li>
                             <a href="../ch13/">Chapter 13: File-System Interfaces</a>
                         </li>
                       
@@ -270,6 +274,7 @@
             <li><a href="#locks">Locks</a></li>
         <li class="main "><a href="#3-posix-synchronization">3 POSIX Synchronization</a></li>
             <li><a href="#posix-mutex-locks">POSIX Mutex Locks</a></li>
+            <li><a href="#posix-spinlocks">POSIX Spinlocks</a></li>
             <li><a href="#posix-semaphores">POSIX Semaphores</a></li>
             <li><a href="#posix-condition-variables">POSIX Condition Variables</a></li>
         <li class="main "><a href="#4-synchronization-in-java">4 Synchronization in Java</a></li>
@@ -456,6 +461,19 @@
 
 <span class="cm">/* release the mutex lock */</span> 
 <span class="n">pthread</span> <span class="nf">mutex_unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span>
+</pre></div>
+
+
+<h4 id="posix-spinlocks">POSIX Spinlocks<a class="headerlink" href="#posix-spinlocks" title="Permanent link">&para;</a></h4>
+<div class="codehilite"><pre><span class="c1">// 初始化自旋锁： 用来申请使用自旋锁所需要的资源并且将它初始化为非锁定状态</span>
+<span class="kt">int</span> <span class="nf">pthread_spin_init</span><span class="p">(</span><span class="n">pthread_spinlock_t</span> <span class="o">*</span><span class="p">,</span> <span class="kt">int</span><span class="p">);</span>
+<span class="c1">// 获得一个自旋锁：如果该自旋锁当前没有被其它线程所持有，则调用该函数的线程获得该自旋锁.</span>
+<span class="c1">// 否则该函数在获得自旋锁之前不会返回。</span>
+<span class="kt">int</span> <span class="nf">pthread_spin_lock</span><span class="p">(</span><span class="n">pthread_spinlock_t</span> <span class="o">*</span><span class="p">);</span>
+<span class="c1">//释放指定的自旋锁</span>
+<span class="kt">int</span> <span class="nf">pthread_spin_unlock</span><span class="p">(</span><span class="n">pthread_spinlock_t</span> <span class="o">*</span><span class="p">);</span>
+<span class="c1">// 销毁一个自旋锁</span>
+<span class="kt">int</span> <span class="nf">pthread_spin_destroy</span><span class="p">(</span><span class="n">pthread_spinlock_t</span> <span class="o">*</span><span class="p">);</span>
 </pre></div>
 
 
