@@ -275,6 +275,8 @@
         <li class="main "><a href="#5-mutex-locks">5 Mutex locks</a></li>
         <li class="main "><a href="#6-semaphores">6 Semaphores</a></li>
         <li class="main "><a href="#7-monitors">7 Monitors</a></li>
+            <li><a href="#monitor-usage">Monitor Usage</a></li>
+            <li><a href="#implementing-a-monitor-using-semaphores">Implementing a Monitor Using Semaphores</a></li>
         <li class="main "><a href="#8-liveness">8 Liveness</a></li>
             <li><a href="#deadlock">Deadlock</a></li>
             <li><a href="#priority-inversion">Priority Inversion</a></li>
@@ -300,7 +302,7 @@
 <li>The critical section may be followed by an <strong>exit section</strong>(退出区)。</li>
 <li>The remaining code is the <strong>remainder section</strong>(剩余区)。</li>
 </ul>
-<p><img alt="general structure of a typical process" src="../ch6/general%20structure%20of%20a%20typical%20process.png" /></p>
+<p><img alt="the_critical_section_problems" src="../figures/the_critical_section_problems.png" /></p>
 <p>A solution to the critical-section problem must satisfy the following three requirements:</p>
 <ol>
 <li><strong>Mutual exclusion</strong> (互斥): If process <script type="math/tex">P_i</script> is executing in its critical section, then no other processes can be executing in their critical sections. 如果进程<script type="math/tex">P_i</script>在其临界区内执行，那么其他进程都不能在其临界区内执行；</li>
@@ -486,15 +488,16 @@
 <li>When a process releases a resource, it performs a <code>signal()</code> operation (incrementing the count). </li>
 <li>When the count for the semaphore goes to 0, all resources are being used. After that, processes that wish to use a resource will block until the count becomes greater than 0.</li>
 </ul>
-<p><a href="#posix-semaphores">POSIX API for Semaphores</a></p>
+<p><a href="../ch7/#posix-semaphores">POSIX API for Semaphores</a></p>
 <h3 id="7-monitors">7 Monitors<a class="headerlink" href="#7-monitors" title="Permanent link">&para;</a></h3>
+<h4 id="monitor-usage">Monitor Usage<a class="headerlink" href="#monitor-usage" title="Permanent link">&para;</a></h4>
 <p>Issues: various types of errors can be generated easily when programmers use semaphores or mutex locks incorrectly to solve the critical-section problem.</p>
 <ul>
 <li>interchanges the order of <code>wait()</code> and <code>signal()</code></li>
 <li>replaces <code>signal()</code> with <code>wait()</code></li>
 <li>omits <code>wait()</code> or <code>signal()</code></li>
 </ul>
-<p>Solution: An abstract data type, <strong>monitor</strong>(管程), includes a set of programmer-defined operation related to mutual exclusion within the monitor. A monitor uses <strong>condition variables</strong> that allow processes to wait for certain conditions to become true and to signal one another when conditions have been set to true.</p>
+<p>Solution: An abstract data type, <strong>monitor</strong>(管程), includes a set of programmer-defined operation related to mutual exclusion within the monitor. The monitor construct ensures that only one process at a time is active within the monitor.</p>
 <p>Pseudocode syntax of a monitor:</p>
 <div class="codehilite"><pre><span class="n">monitor</span> <span class="n">monitor</span> <span class="n">name</span> <span class="p">{</span> <span class="cm">/* shared variable declarations */</span>
     <span class="n">function</span> <span class="n">P1</span> <span class="p">(</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">)</span> <span class="p">{</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.}</span>
@@ -507,7 +510,61 @@
 </pre></div>
 
 
-<p><img alt="monitor with condition variables" src="../ch6/monitor%20with%20condition%20variables.png" /></p>
+<p>A monitor uses <strong>condition variables</strong> that allow processes to wait for certain conditions to become true and to signal one another when conditions have been set to true:</p>
+<p>
+<script type="math/tex; mode=display">\text{condition x, y;}</script>
+</p>
+<p>The only operations that can be invoked on a condition variable are <code>wait()</code> and <code>signal()</code>.</p>
+<p><img alt="monitor_with_condition_variables" src="../figures/monitor_with_condition_variables.png" /></p>
+<h4 id="implementing-a-monitor-using-semaphores">Implementing a Monitor Using Semaphores<a class="headerlink" href="#implementing-a-monitor-using-semaphores" title="Permanent link">&para;</a></h4>
+<ul>
+<li>binary semaphore <code>next</code>: the signaling processes use it to suspend themselves.</li>
+<li>integer variable <code>next_count</code>: to count the number of processes suspended on <code>next</code>.</li>
+<li>condition <code>x</code>, binary semaphore <code>x_sem</code>, and integer variable <code>x_count</code> </li>
+</ul>
+<div class="codehilite"><pre><span class="n">monitor</span> <span class="n">ResourceAllocator</span> <span class="p">{</span>
+
+    <span class="n">boolean</span> <span class="n">busy</span><span class="p">;</span> 
+    <span class="n">condition</span> <span class="n">x</span><span class="p">;</span>
+
+    <span class="kt">void</span> <span class="nf">acquire</span><span class="p">(</span><span class="kt">int</span> <span class="n">time</span><span class="p">)</span> <span class="p">{</span> 
+        <span class="k">if</span> <span class="p">(</span><span class="n">busy</span><span class="p">)</span> 
+            <span class="n">x</span><span class="p">.</span><span class="n">wait</span><span class="p">(</span><span class="n">time</span><span class="p">);</span> 
+        <span class="n">busy</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span> 
+    <span class="p">}</span>
+
+    <span class="kt">void</span> <span class="nf">release</span><span class="p">()</span> <span class="p">{</span> 
+        <span class="n">busy</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span> 
+        <span class="n">x</span><span class="p">.</span><span class="n">signal</span><span class="p">();</span> 
+    <span class="p">}</span>
+
+    <span class="n">initialization</span> <span class="nf">code</span><span class="p">()</span> <span class="p">{</span> 
+        <span class="n">busy</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span> 
+    <span class="p">}</span>
+
+    <span class="n">signal</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">x_count</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span> 
+            <span class="n">next_count</span><span class="o">++</span><span class="p">;</span> 
+            <span class="n">signal</span><span class="p">(</span><span class="n">x_sem</span><span class="p">);</span> 
+            <span class="n">wait</span><span class="p">(</span><span class="n">next</span><span class="p">);</span> 
+            <span class="n">next_count</span><span class="o">--</span><span class="p">;</span> 
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="n">wait</span><span class="p">()</span> <span class="p">{</span> 
+        <span class="n">x_count</span><span class="o">++</span><span class="p">;</span> 
+        <span class="k">if</span> <span class="p">(</span><span class="n">next_count</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">signal</span><span class="p">(</span><span class="n">next</span><span class="p">);</span> 
+        <span class="k">else</span>
+            <span class="nf">signal</span><span class="p">(</span><span class="n">mutex</span><span class="p">);</span> 
+        <span class="n">wait</span><span class="p">(</span><span class="n">x_sem</span><span class="p">);</span> 
+        <span class="n">x</span> <span class="n">count</span><span class="o">--</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p><a href="../ch7/#java-monitors">Monitor in Java</a></p>
 <h3 id="8-liveness">8 Liveness<a class="headerlink" href="#8-liveness" title="Permanent link">&para;</a></h3>
 <h4 id="deadlock">Deadlock<a class="headerlink" href="#deadlock" title="Permanent link">&para;</a></h4>
 <p>Consider two threads A and B that both need <strong>simultaneous</strong> access to resources 1 and 2:</p>
@@ -529,13 +586,14 @@
 <li>Since kernel data are typically protected with a lock, the higher-priority process will have to wait for a lower-priority one to finish with the resource. </li>
 <li>The situation becomes more complicated if the lower-priority process is preempted in favor of another process with a higher priority.</li>
 </ul>
-<p>As an example, assume we have three processes—<script type="math/tex">L</script>, <script type="math/tex">M</script>, and <script type="math/tex">H</script>—whose priorities follow the order (L &lt; M &lt; H$. </p>
+<p>As an example, assume we have three processes—<script type="math/tex">L</script>, <script type="math/tex">M</script>, and <script type="math/tex">H</script>—whose priorities follow the order <script type="math/tex">L < M < H</script>. </p>
 <ul>
 <li>Assume that process <script type="math/tex">H</script> requires a semaphore <script type="math/tex">S</script>, which is currently being accessed by process <script type="math/tex">L</script>. </li>
 <li>Ordinarily, process <script type="math/tex">H</script> would wait for <script type="math/tex">L</script> to finish using resource S. </li>
 <li>However, now suppose that process <script type="math/tex">M</script> becomes runnable, thereby preempting process <script type="math/tex">L</script>. </li>
 <li>Indirectly, a process with a lower priority—process <script type="math/tex">M</script>—has affected how long process <script type="math/tex">H</script> must wait for <script type="math/tex">L</script> to relinquish resource <script type="math/tex">S</script>.</li>
 </ul>
+<p><img alt="priority_inversion" src="../figures/priority_inversion.jpg" /></p>
 <p>This liveness problem is known as <strong>priority inversion</strong>(优先级反转), and it can occur only in systems with more than two priorities. </p>
 <p>Solution：<strong>priority-inheritance protocol</strong>(优先级继承协议)：</p>
 <ul>

@@ -278,6 +278,10 @@
             <li><a href="#posix-semaphores">POSIX Semaphores</a></li>
             <li><a href="#posix-condition-variables">POSIX Condition Variables</a></li>
         <li class="main "><a href="#4-synchronization-in-java">4 Synchronization in Java</a></li>
+            <li><a href="#java-monitors">Java Monitors</a></li>
+            <li><a href="#reentrant-locks">Reentrant Locks</a></li>
+            <li><a href="#semaphores">Semaphores</a></li>
+            <li><a href="#condition-variables">Condition Variables</a></li>
     </ul>
 </div></div>
             <div class="col-md-9" role="main">
@@ -504,6 +508,62 @@
 
 <h4 id="posix-condition-variables">POSIX Condition Variables<a class="headerlink" href="#posix-condition-variables" title="Permanent link">&para;</a></h4>
 <h3 id="4-synchronization-in-java">4 Synchronization in Java<a class="headerlink" href="#4-synchronization-in-java" title="Permanent link">&para;</a></h3>
+<h4 id="java-monitors">Java Monitors<a class="headerlink" href="#java-monitors" title="Permanent link">&para;</a></h4>
+<p>Bounded buffer using Java synchronization</p>
+<div class="codehilite"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">BoundedBuffer</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;</span>
+<span class="o">{</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">BUFFER_SIZE</span> <span class="o">=</span> <span class="mi">5</span><span class="o">;</span>
+
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">count</span><span class="o">,</span> <span class="n">in</span><span class="o">,</span> <span class="n">out</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">E</span><span class="o">[]</span> <span class="n">buffer</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="nf">BoundedBuffer</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+        <span class="n">in</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+        <span class="n">buffer</span> <span class="o">=</span> <span class="o">(</span><span class="n">E</span><span class="o">[])</span> <span class="k">new</span> <span class="n">Object</span><span class="o">[</span><span class="n">BUFFER_SIZE</span><span class="o">];</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">synchronized</span> <span class="kt">void</span> <span class="nf">insert</span><span class="o">(</span><span class="n">E</span> <span class="n">item</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">while</span> <span class="o">(</span><span class="n">count</span> <span class="o">==</span> <span class="n">BUFFER_SIZE</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">try</span> <span class="o">{</span>
+                <span class="n">wait</span><span class="o">();</span>
+            <span class="o">}</span>
+            <span class="k">catch</span> <span class="o">(</span><span class="n">InterruptedException</span> <span class="n">ie</span><span class="o">)</span> <span class="o">{</span> <span class="o">}</span>
+        <span class="o">}</span>
+
+        <span class="n">buffer</span><span class="o">[</span><span class="n">in</span><span class="o">]</span> <span class="o">=</span> <span class="n">item</span><span class="o">;</span>
+        <span class="n">in</span> <span class="o">=</span> <span class="o">(</span><span class="n">in</span> <span class="o">+</span> <span class="mi">1</span><span class="o">)</span> <span class="o">%</span> <span class="n">BUFFER_SIZE</span><span class="o">;</span>
+        <span class="n">count</span><span class="o">++;</span>
+
+        <span class="n">notify</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">synchronized</span> <span class="n">E</span> <span class="nf">remove</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">E</span> <span class="n">item</span><span class="o">;</span>
+
+        <span class="k">while</span> <span class="o">(</span><span class="n">count</span> <span class="o">==</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">try</span> <span class="o">{</span>
+                <span class="n">wait</span><span class="o">();</span>
+            <span class="o">}</span>
+            <span class="k">catch</span> <span class="o">(</span><span class="n">InterruptedException</span> <span class="n">ie</span><span class="o">)</span> <span class="o">{</span> <span class="o">}</span>
+        <span class="o">}</span>
+
+        <span class="n">item</span> <span class="o">=</span> <span class="n">buffer</span><span class="o">[</span><span class="n">out</span><span class="o">];</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="o">(</span><span class="n">out</span> <span class="o">+</span> <span class="mi">1</span><span class="o">)</span> <span class="o">%</span> <span class="n">BUFFER_SIZE</span><span class="o">;</span>
+        <span class="n">count</span><span class="o">--;</span>
+
+        <span class="n">notify</span><span class="o">();</span>
+
+        <span class="k">return</span> <span class="n">item</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<h4 id="reentrant-locks">Reentrant Locks<a class="headerlink" href="#reentrant-locks" title="Permanent link">&para;</a></h4>
+<h4 id="semaphores">Semaphores<a class="headerlink" href="#semaphores" title="Permanent link">&para;</a></h4>
+<h4 id="condition-variables">Condition Variables<a class="headerlink" href="#condition-variables" title="Permanent link">&para;</a></h4>
 <p>待续，还没学完JAVA呢</p>
             </div>
         </div>
