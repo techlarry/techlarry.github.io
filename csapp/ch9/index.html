@@ -274,18 +274,24 @@
             <li><a href="#21">2.1 作为缓存的工具</a></li>
             <li><a href="#22">2.2 作为内存管理的工具</a></li>
             <li><a href="#23">2.3 作为内存保护的工具</a></li>
-        <li class="main "><a href="#3-linux">3 Linux虚拟内存系统</a></li>
-            <li><a href="#31-linux">3.1 Linux是如何组织虚拟内存的</a></li>
-            <li><a href="#32-linux">3.2 Linux 缺页异常处理</a></li>
-        <li class="main "><a href="#4">4 动态内存分配</a></li>
-            <li><a href="#42">4.2 显式分配器的要求和目标</a></li>
-            <li><a href="#421">4.2.1 分配器的要求</a></li>
-            <li><a href="#422">4.2.2 分配器的目标</a></li>
-            <li><a href="#43">4.3 实现方法</a></li>
-            <li><a href="#431">4.3.1 隐式空闲列表</a></li>
-            <li><a href="#431_1">4.3.1 显式空闲列表</a></li>
-            <li><a href="#431_2">4.3.1 分离式空闲列表</a></li>
-        <li class="main "><a href="#5-c">5 C程序中常见的与内存有关的错误</a></li>
+        <li class="main "><a href="#3">3 地址翻译</a></li>
+        <li class="main "><a href="#4-core-i7">4 core i7内存系统</a></li>
+            <li><a href="#core-i7">Core i7简介</a></li>
+            <li><a href="#core-i7_1">Core i7地址翻译</a></li>
+        <li class="main "><a href="#5-linux">5 Linux虚拟内存系统</a></li>
+            <li><a href="#linux">Linux是如何组织虚拟内存的</a></li>
+            <li><a href="#linux_1">Linux 缺页异常处理</a></li>
+        <li class="main "><a href="#6">6 内存映射</a></li>
+        <li class="main "><a href="#7">7 动态内存分配</a></li>
+            <li><a href="#72">7.2 显式分配器的要求和目标</a></li>
+            <li><a href="#721">7.2.1 分配器的要求</a></li>
+            <li><a href="#722">7.2.2 分配器的目标</a></li>
+            <li><a href="#73">7.3 实现方法</a></li>
+            <li><a href="#731">7.3.1 隐式空闲列表</a></li>
+            <li><a href="#732">7.3.2 显式空闲列表</a></li>
+            <li><a href="#733">7.3.3 分离式空闲列表</a></li>
+        <li class="main "><a href="#8">8 垃圾收集</a></li>
+        <li class="main "><a href="#9-c">9 C程序中常见的与内存有关的错误</a></li>
             <li><a href="#_1">间接引用坏指针</a></li>
             <li><a href="#_2">读未初始化的内存</a></li>
             <li><a href="#_3">允许栈缓冲区溢出</a></li>
@@ -293,7 +299,6 @@
             <li><a href="#_5">多次释放</a></li>
             <li><a href="#_6">引用已经被释放的堆块中的数据</a></li>
             <li><a href="#_7">忘记释放已分配块：</a></li>
-        <li class="main "><a href="#6-core-i7">6 core i7内存系统</a></li>
     </ul>
 </div></div>
             <div class="col-md-9" role="main">
@@ -344,7 +349,43 @@
 </ul>
 <p><img alt="vm_protection_tool" src="http://or9a8nskt.bkt.clouddn.com/vm_protection_tool.png" /></p>
 <p>如果违反许可条件，那么就触发段错误(segmentation fault)。</p>
-<h3 id="3-linux">3 Linux虚拟内存系统<a class="headerlink" href="#3-linux" title="Permanent link">&para;</a></h3>
+<h3 id="3">3 地址翻译<a class="headerlink" href="#3" title="Permanent link">&para;</a></h3>
+<h3 id="4-core-i7">4 core i7内存系统<a class="headerlink" href="#4-core-i7" title="Permanent link">&para;</a></h3>
+<h4 id="core-i7">Core i7简介<a class="headerlink" href="#core-i7" title="Permanent link">&para;</a></h4>
+<p>Core i7在2008年冬季发布，基于全新Nehalem架构，它的芯片结构如下所示：</p>
+<p><img alt="Intel Core i7 processor internal die photograph" src="../figures/Intel%20Core%20i7%20processor%20internal%20die%20photograph.png" /></p>
+<p>现在的Core i7支持48位(256TB)虚拟地址空间和52位(4PB)物理地址空间。</p>
+<p>下图给出了Core i7内存系统的重要部分。处理器封装(Processor package)包括四个核、一个大的所有核共享的L3高速缓存，以及一个DDR3内存控制器。 每一个核包含一个层次结构的TLB、一个层次结构的数据核指令高速缓存，以及一组快速的点到点链路(基于QuickPath技术)。</p>
+<ul>
+<li>TLB是四路组相联的</li>
+<li>L1、L2、L3高速缓存，块大小为64字节。</li>
+<li>L1、L2是8路组相联的，L3是16组相联的。</li>
+</ul>
+<p><img alt="Intel Core i7 Memory System" src="../figures/Intel%20Core%20i7%20Memory%20System.png" /></p>
+<h4 id="core-i7_1">Core i7地址翻译<a class="headerlink" href="#core-i7_1" title="Permanent link">&para;</a></h4>
+<p>Core i7采用四级页表层次结构。每个进程都有它自己私有的页表层次结构。CR3控制寄存器指向第一级页表(L1)的起始位置。</p>
+<p><img alt="Core i7 Address Translation" src="../figures/Core%20i7%20Address%20Translation.png" /></p>
+<p>Core i7第1-3级页表条目格式：</p>
+<p><img alt="Core i7 Level 1-­‐3 Page Table Entries" src="../figures/Core%20i7%20Level%201-%C2%AD%E2%80%903%20Page%20Table%20Entries.png" /></p>
+<p>Each entry references a 4K child page table. <strong>Significant fields</strong>:</p>
+<ul>
+<li><strong>P</strong>: Child page table present in physical memory (1) or not (0).</li>
+<li><strong>R/W</strong>: Read-­‐only or read-­‐write access access permission for all reachable pages. </li>
+<li><strong>U/S</strong>: user or supervisor (kernel) mode access permission for all reachable pages.</li>
+<li><strong>WT</strong>: Write-­‐through or write-­‐back cache policy for the child page table.</li>
+<li><strong>A</strong>: Reference bit (引用位，set by MMU on reads and writes, cleared by software).</li>
+<li><strong>PS</strong>: Page size either 4 KB or 4 MB (deﬁned for Level 1 PTEs only).</li>
+<li><strong>Page table physical base address</strong>: 40 most significant bits of physical page table address (forces page tables to be 4KB aligned) </li>
+<li><strong>XD</strong>: Disable or enable instruction fetches from all pages reachable from this PTE.</li>
+</ul>
+<p>Core i7第4级页表条目格式：</p>
+<p><img alt="Core i7 Level 4 Page Table Entries" src="../figures/Core%20i7%20Level%204%20Page%20Table%20Entries.png" /></p>
+<ul>
+<li><strong>D</strong>: Dirty bit (脏位，set by MMU on <em>writes</em>, cleared by software)</li>
+</ul>
+<p>下图给出了Core i7 MMU如何使用四级页表将虚拟地址翻译成物理地址。36位VPN被划分为四个9位的片，每个片被用作一个页表的偏移量。VPN1提供到一个L1 PET的偏移量，这个PTE包含L2页表的基地址。VPN2提供到一个L2 PET的偏移量，以此类推。</p>
+<p><img alt="Core i7 Page Table Translation" src="../figures/Core%20i7%20Page%20Table%20Translation.png" /></p>
+<h3 id="5-linux">5 Linux虚拟内存系统<a class="headerlink" href="#5-linux" title="Permanent link">&para;</a></h3>
 <p>Linux为每个进程维护了一个单独的虚拟地址空间。Linux将虚拟内存组织成一些<strong>区域</strong>的集合。一个区域就是已分配的虚拟内存的连续片。</p>
 <p>Linux虚拟地址空间由如下几个区域组成：</p>
 <ul>
@@ -357,7 +398,55 @@
 <li>内核虚拟内存：包含内核中的代码和数据结构。</li>
 </ul>
 <p><img alt="linux_virtual_memory" src="http://or9a8nskt.bkt.clouddn.com/linux_virtual_memory.png" /></p>
-<h4 id="31-linux">3.1 Linux是如何组织虚拟内存的<a class="headerlink" href="#31-linux" title="Permanent link">&para;</a></h4>
+<p>下面是程序示意：</p>
+<div class="codehilite"><pre> <span class="cp">#include</span><span class="cpf">&lt;stdio.h&gt;    </span><span class="cp"></span>
+ <span class="cp">#include</span> <span class="cpf">&lt;malloc.h&gt;    </span><span class="cp"></span>
+
+ <span class="kt">void</span> <span class="nf">print</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">,</span><span class="kt">int</span><span class="p">);</span>    
+ <span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>    
+<span class="p">{</span>    
+     <span class="kt">char</span> <span class="o">*</span><span class="n">s1</span> <span class="o">=</span> <span class="s">&quot;abcde&quot;</span><span class="p">;</span>  <span class="c1">//&quot;abcde&quot;作为字符串常量存储在常量区 s1、s2、s5拥有相同的地址  </span>
+     <span class="kt">char</span> <span class="o">*</span><span class="n">s2</span> <span class="o">=</span> <span class="s">&quot;abcde&quot;</span><span class="p">;</span>    
+     <span class="kt">char</span> <span class="n">s3</span><span class="p">[]</span> <span class="o">=</span> <span class="s">&quot;abcd&quot;</span><span class="p">;</span>    
+     <span class="kt">long</span> <span class="kt">int</span> <span class="o">*</span><span class="n">s4</span><span class="p">[</span><span class="mi">100</span><span class="p">];</span>    
+     <span class="kt">char</span> <span class="o">*</span><span class="n">s5</span> <span class="o">=</span> <span class="s">&quot;abcde&quot;</span><span class="p">;</span>    
+     <span class="kt">int</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>    
+     <span class="kt">int</span> <span class="n">b</span> <span class="o">=</span><span class="mi">6</span><span class="p">;</span><span class="c1">//a,b在栈上，&amp;a&gt;&amp;b地址反向增长    </span>
+
+     <span class="n">printf</span><span class="p">(</span><span class="s">&quot;variables address in main function: </span>
+     <span class="n">s1</span><span class="o">=%</span><span class="n">p</span>  <span class="n">s2</span><span class="o">=%</span><span class="n">p</span> <span class="n">s3</span><span class="o">=%</span><span class="n">p</span> <span class="n">s4</span><span class="o">=%</span><span class="n">p</span> <span class="n">s5</span><span class="o">=%</span><span class="n">p</span> <span class="n">a</span><span class="o">=%</span><span class="n">p</span> <span class="n">b</span><span class="o">=%</span><span class="n">p</span> <span class="err">\</span><span class="n">n</span><span class="s">&quot;, s1,s2,s3,s4,s5,&amp;a,&amp;b);   </span>
+     <span class="n">printf</span><span class="p">(</span><span class="s">&quot;variables address in processcall:n&quot;</span><span class="p">);</span>    
+     <span class="n">print</span><span class="p">(</span><span class="s">&quot;ddddddddd&quot;</span><span class="p">,</span><span class="mi">5</span><span class="p">);</span><span class="c1">//参数入栈从右至左进行,p先进栈,str后进 &amp;p&gt;&amp;str    </span>
+     <span class="n">printf</span><span class="p">(</span><span class="s">&quot;main=%p print=%p </span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="n">main</span><span class="p">,</span><span class="n">print</span><span class="p">);</span>    
+     <span class="c1">//打印代码段中主函数和子函数的地址，编译时先编译的地址低，后编译的地址高main&lt;print    </span>
+ <span class="p">}</span>    
+
+ <span class="kt">void</span> <span class="n">print</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">str</span><span class="p">,</span><span class="kt">int</span> <span class="n">p</span><span class="p">)</span>    
+<span class="p">{</span>    
+     <span class="kt">char</span> <span class="o">*</span><span class="n">s1</span> <span class="o">=</span> <span class="s">&quot;abcde&quot;</span><span class="p">;</span>  <span class="c1">//abcde在常量区，s1在栈上    </span>
+     <span class="kt">char</span> <span class="o">*</span><span class="n">s2</span> <span class="o">=</span> <span class="s">&quot;abcde&quot;</span><span class="p">;</span>  <span class="c1">//abcde在常量区，s2在栈上 s2-s1=6可能等于0，编译器优化了相同的常量，只在内存保存一份    </span>
+     <span class="c1">//而&amp;s1&gt;&amp;s2    </span>
+     <span class="kt">char</span> <span class="n">s3</span><span class="p">[]</span> <span class="o">=</span> <span class="s">&quot;abcdeee&quot;</span><span class="p">;</span><span class="c1">//abcdeee在常量区，s3在栈上，数组保存的内容为abcdeee的一份拷贝    </span>
+     <span class="kt">long</span> <span class="kt">int</span> <span class="o">*</span><span class="n">s4</span><span class="p">[</span><span class="mi">100</span><span class="p">];</span>    
+     <span class="kt">char</span> <span class="o">*</span><span class="n">s5</span> <span class="o">=</span> <span class="s">&quot;abcde&quot;</span><span class="p">;</span>    
+     <span class="kt">int</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>    
+     <span class="kt">int</span> <span class="n">b</span> <span class="o">=</span><span class="mi">6</span><span class="p">;</span>    
+     <span class="kt">int</span> <span class="n">c</span><span class="p">;</span>    
+     <span class="kt">int</span> <span class="n">d</span><span class="p">;</span>           <span class="c1">//a,b,c,d均在栈上，&amp;a&gt;&amp;b&gt;&amp;c&gt;&amp;d地址反向增长    </span>
+     <span class="kt">char</span> <span class="o">*</span><span class="n">q</span><span class="o">=</span><span class="n">str</span><span class="p">;</span>   
+     <span class="kt">int</span> <span class="n">m</span><span class="o">=</span><span class="n">p</span><span class="p">;</span>           
+     <span class="kt">char</span> <span class="o">*</span><span class="n">r</span><span class="o">=</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>    
+     <span class="kt">char</span> <span class="o">*</span><span class="n">w</span><span class="o">=</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">;</span>  <span class="c1">// r&lt;w 堆正向增长    </span>
+
+     <span class="n">printf</span><span class="p">(</span><span class="s">&quot;s1=%p s2=%p s3=%p s4=%p s5=%p a=%p b=%p c=%p d=%p str=%p q=%p p=%p m=%p r=%p w=%p </span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span><span class="n">s2</span><span class="p">,</span><span class="n">s3</span><span class="p">,</span><span class="n">s4</span><span class="p">,</span><span class="n">s5</span><span class="p">,</span><span class="o">&amp;</span><span class="n">a</span><span class="p">,</span><span class="o">&amp;</span><span class="n">b</span><span class="p">,</span><span class="o">&amp;</span><span class="n">c</span><span class="p">,</span><span class="o">&amp;</span><span class="n">d</span><span class="p">,</span><span class="o">&amp;</span><span class="n">str</span><span class="p">,</span><span class="n">q</span><span class="p">,</span><span class="o">&amp;</span><span class="n">p</span><span class="p">,</span><span class="o">&amp;</span><span class="n">m</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">w</span><span class="p">);</span>   
+     <span class="cm">/* 栈和堆是在程序运行时候动态分配的，局部变量均在栈上分配。 </span>
+<span class="cm">        栈是反向增长的，地址递减；malloc等分配的内存空间在堆空间。堆是正向增长的，地址递增。   </span>
+<span class="cm">        r,w变量在栈上(则&amp;r&gt;&amp;w)，r,w所指内容在堆中(即r&lt;w)。*/</span>   
+ <span class="p">}</span>    
+</pre></div>
+
+
+<h4 id="linux">Linux是如何组织虚拟内存的<a class="headerlink" href="#linux" title="Permanent link">&para;</a></h4>
 <p>那么Linux具体是怎么组织虚拟内存的呢？Linux内核为系统中的每个进程维护一个单独的任务结构体(<code>task_struct</code>, 在<code>sched.h</code>头文件中)。<code>task_struct</code>中的元素包含运行该进程所需要的所有信息(PID、指向用户栈的指针、可执行目标文件的名字、以及程序计数器)。</p>
 <p><img alt="vm_linux" src="http://or9a8nskt.bkt.clouddn.com/vm_linux.png" /></p>
 <p><code>task_struct</code>中的一个元素指向<code>mm_struct</code>，它描述了虚拟内存的当前状态。<code>pgd</code>指向第一级页表的基址，而<code>mmap</code>指向一个<code>vm_area_struct</code>(区域结构, 定义在<code>mm_types.h</code>)的链表。每个区域结构链表都描述了虚拟地址空间的一个区域，包含以下字段：</p>
@@ -368,22 +457,23 @@
 <li><code>vm_flags</code>: 描述进程共享/私有</li>
 <li><code>vm_next</code>: 下一个区域结构</li>
 </ul>
-<h4 id="32-linux">3.2 Linux 缺页异常处理<a class="headerlink" href="#32-linux" title="Permanent link">&para;</a></h4>
+<h4 id="linux_1">Linux 缺页异常处理<a class="headerlink" href="#linux_1" title="Permanent link">&para;</a></h4>
 <p>内存管理单元MMU在试图翻译某个虚拟地址A时，触发了一个缺页异常，引起缺页异常处理程序：</p>
 <ul>
 <li>虚拟地址A是合法的吗？-&gt; 段错误(segment fault)</li>
 <li>试图进行的内存访问是合法的吗？ -&gt; 保护异常(也引发段错误)</li>
 </ul>
 <p><img alt="linux_page_fault" src="http://or9a8nskt.bkt.clouddn.com/linux_page_fault.png" /></p>
-<h3 id="4">4 动态内存分配<a class="headerlink" href="#4" title="Permanent link">&para;</a></h3>
+<h3 id="6">6 内存映射<a class="headerlink" href="#6" title="Permanent link">&para;</a></h3>
+<h3 id="7">7 动态内存分配<a class="headerlink" href="#7" title="Permanent link">&para;</a></h3>
 <p>程序使用动态内存分配的最重要的原因是经常直到程序实际运行时，才知道某些数据结构的大小。一般使用动态内存分配器(dynamic memeory allocator)来分配动态内存。</p>
 <p>分配器根据哪个实体来负责释放已分配的块，分为两种：</p>
 <ul>
 <li><strong>显示分配器</strong>(explicit allocator)：要求程序显示地释放任何已分配的块。例如C中的malloc/free，C++中的new/delete。</li>
 <li><strong>隐式分配器</strong>(implicit allocator): 除此之外，自动释放未使用的已分配块(垃圾收集，garbage collection)。</li>
 </ul>
-<h4 id="42">4.2 显式分配器的要求和目标<a class="headerlink" href="#42" title="Permanent link">&para;</a></h4>
-<h4 id="421">4.2.1 分配器的要求<a class="headerlink" href="#421" title="Permanent link">&para;</a></h4>
+<h4 id="72">7.2 显式分配器的要求和目标<a class="headerlink" href="#72" title="Permanent link">&para;</a></h4>
+<h4 id="721">7.2.1 分配器的要求<a class="headerlink" href="#721" title="Permanent link">&para;</a></h4>
 <p>分配器有如下的要求：</p>
 <ul>
 <li>处理任意请求序列</li>
@@ -392,7 +482,7 @@
 <li>对齐块(对齐要求)</li>
 <li>不修改已分配的块</li>
 </ul>
-<h4 id="422">4.2.2 分配器的目标<a class="headerlink" href="#422" title="Permanent link">&para;</a></h4>
+<h4 id="722">7.2.2 分配器的目标<a class="headerlink" href="#722" title="Permanent link">&para;</a></h4>
 <p>分配器试图最大化吞吐率和内存利用率</p>
 <ul>
 <li>最大化吞吐率(吞吐率：每个单位时间里完成的请求数)</li>
@@ -404,19 +494,22 @@
 <p>当即使有足够的累积的块内存，但是没有单一块能够满足需求时，发生<strong>外部碎片</strong>(external fragmentation)：</p>
 <p><img alt="external_fragmentation" src="http://or9a8nskt.bkt.clouddn.com/external_fragmentation.png" /></p>
 <p>外部碎片还取决于将来的请求，例如上图，如果最后的p4请求4个字节呢？也就不会发生碎片。正因为外部碎片难以量化且不可能预测，所以分配器通常采用启发式策略来试图维持少量的大空闲块，而不是维持大量的小空闲块。</p>
-<h4 id="43">4.3 实现方法<a class="headerlink" href="#43" title="Permanent link">&para;</a></h4>
+<h4 id="73">7.3 实现方法<a class="headerlink" href="#73" title="Permanent link">&para;</a></h4>
 <ul>
 <li>隐式空闲列表 Implicit Free List</li>
 <li>显式空闲列表 Explicit Free List</li>
 <li>分离式空闲列表 Segregated Free List</li>
 </ul>
-<h4 id="431">4.3.1 隐式空闲列表<a class="headerlink" href="#431" title="Permanent link">&para;</a></h4>
+<h4 id="731">7.3.1 隐式空闲列表<a class="headerlink" href="#731" title="Permanent link">&para;</a></h4>
 <p><img alt="implicit_list" src="http://or9a8nskt.bkt.clouddn.com/implicit_list.png" /></p>
 <p>隐式空闲链表优点是简单，缺点是操作开销大。因为无论是分配还是释放块，都需要对隐式空闲列表进行搜索，复杂度是<script type="math/tex">O(n)</script>，<script type="math/tex">n</script>是已分配块和空闲块的总数。</p>
-<h4 id="431_1">4.3.1 显式空闲列表<a class="headerlink" href="#431_1" title="Permanent link">&para;</a></h4>
+<h4 id="732">7.3.2 显式空闲列表<a class="headerlink" href="#732" title="Permanent link">&para;</a></h4>
 <p><img alt="explict_list" src="http://or9a8nskt.bkt.clouddn.com/explict_list.png" /></p>
-<h4 id="431_2">4.3.1 分离式空闲列表<a class="headerlink" href="#431_2" title="Permanent link">&para;</a></h4>
-<h3 id="5-c">5 C程序中常见的与内存有关的错误<a class="headerlink" href="#5-c" title="Permanent link">&para;</a></h3>
+<h4 id="733">7.3.3 分离式空闲列表<a class="headerlink" href="#733" title="Permanent link">&para;</a></h4>
+<h3 id="8">8 垃圾收集<a class="headerlink" href="#8" title="Permanent link">&para;</a></h3>
+<p><strong>垃圾收集器</strong>(garbage collector)是一种动态内存分配器，它自动释放程序不再需要的已分配块。这些块被称作<strong>垃圾</strong>(garbage)。自动回收存储的过程叫做<strong>垃圾收集</strong>(garbage collection)。</p>
+<p><a href="../../hfj/ch9/#object-lifecycle">Java Garbage Collection</a></p>
+<h3 id="9-c">9 C程序中常见的与内存有关的错误<a class="headerlink" href="#9-c" title="Permanent link">&para;</a></h3>
 <h4 id="_1">间接引用坏指针<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h4>
 <p>这是非常常见的例子，没有引用对应的地址，少了 &amp;</p>
 <div class="codehilite"><pre><span class="kt">int</span> <span class="n">val</span><span class="p">;</span>
@@ -504,13 +597,6 @@
     <span class="k">return</span><span class="p">;</span>
 <span class="p">}</span>
 </pre></div>
-
-
-<h3 id="6-core-i7">6 core i7内存系统<a class="headerlink" href="#6-core-i7" title="Permanent link">&para;</a></h3>
-<p>Core i7在2008年冬季发布，基于全新Nehalem架构，它的芯片结构如下所示：</p>
-<p><img alt="corei7_chip" src="http://or9a8nskt.bkt.clouddn.com/15312857062358.png" /></p>
-<p>抽象的内存系统：</p>
-<p><img alt="corei7" src="http://or9a8nskt.bkt.clouddn.com/corei7.png" /></p>
             </div>
         </div>
 

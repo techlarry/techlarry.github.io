@@ -274,7 +274,14 @@
             <li><a href="#_1">磁盘</a></li>
         <li class="main "><a href="#2">2 局部性</a></li>
         <li class="main "><a href="#3-memory-hierarchy">3 存储器层次结构 Memory Hierarchy</a></li>
-        <li class="main "><a href="#4">4 虚拟内存</a></li>
+            <li><a href="#_2">存储器层次结构中的缓存</a></li>
+        <li class="main "><a href="#4">4 高速缓存存储器</a></li>
+            <li><a href="#_3">通用的高速缓存存储器组织结构</a></li>
+            <li><a href="#_4">直接映射高速缓存</a></li>
+            <li><a href="#_5">组相联高速缓存</a></li>
+            <li><a href="#_6">全相联高速缓存</a></li>
+        <li class="main "><a href="#5">5 编写高速缓存友好的代码</a></li>
+        <li class="main "><a href="#6">6 高速缓存对程序性能的影响</a></li>
     </ul>
 </div></div>
             <div class="col-md-9" role="main">
@@ -295,73 +302,54 @@
 <p>现代计算机系统的各个层次，从硬件到操作系统、再到应用程序，它们的设计都利用了局部性。</p>
 <h3 id="3-memory-hierarchy">3 存储器层次结构 Memory Hierarchy<a class="headerlink" href="#3-memory-hierarchy" title="Permanent link">&para;</a></h3>
 <p>一般而言，从高层往低层走，存储设备变得更慢、更便宜和更大。</p>
-<p><img alt="15128077150126" src="http://or9a8nskt.bkt.clouddn.com/15128077150126.png" /></p>
-<h3 id="4">4 虚拟内存<a class="headerlink" href="#4" title="Permanent link">&para;</a></h3>
-<p><strong>虚拟内存</strong>(<code>Virtual Memory</code>)是一个抽象概念。它为每个进程提供了假象，即 <em>每个进程都在独占地使用内存</em> 。每个进程看到的内存都是一致的，称为<strong>虚拟地址空间</strong> (Virtual Address Space).</p>
-<p>虚拟内存在不同操作系统上有区别，以Linux系统为例,下面是<code>Linux  x86-64运行时的内存映像</code>。</p>
-<p><img alt="linux_virtual_memory" src="http://or9a8nskt.bkt.clouddn.com/linux_virtual_memory.png" /></p>
-<p>虚拟地址空间由如下几部分组成：</p>
 <ul>
-<li><strong>代码</strong>（<code>.text</code>）: 这里存放的是CPU要执行的指令。代码段是可共享的，相同的代码在内存中只会有一个拷贝，同时这个段是只读的，防止程序由于错误而修改自身的指令。</li>
-<li><strong>初始化数据段</strong>（<code>.data</code>）: 这里存放的是程序中需要明确赋初始值的变量，例如位于所有函数之外的全局变量：<code>int val="100</code>。需要强调的是，以上两段都是位于程序的可执行文件中，内核在调用<code>exec</code>函数启动该程序时从源程序文件中读入。</li>
-<li><strong>未初始化数据段</strong>（<code>.bss</code>）: 位于这一段中的数据，内核在执行该程序前，将其初始化为0或者<code>null</code>。例如出现在任何函数之外的全局变量：int sum;</li>
-<li><strong>堆</strong>（<code>Heap</code>）: 这个段用于在程序中进行动态内存申请，例如经常用到的<code>malloc</code>，<code>new</code>系列函数就是从这个段中申请内存。</li>
-<li><strong>共享库</strong>(<code>Shared Library</code>): 用来存放像C标准库和数学哭这样的共享库的代码和数据的区域。</li>
-<li><strong>栈</strong>（<code>Stack</code>）: 函数中的局部变量以及在函数调用过程中产生的临时变量都保存在此段中，具体见下面一节。</li>
-<li><strong>内核虚拟内存</strong>：包含内核中的代码和数据结构。</li>
+<li>在最高层(L0)，是少量快速的CPU寄存器，CPU可以在一个时钟周期内访问它们。</li>
+<li>接下来是一个或多个小型到中型的基于SRAM的高速缓存存储器，可以在几个CPU时钟周期内访问它们。</li>
+<li>然后是一个大的基于DRAM的贮存，可以在几十到几百个时钟周期内访问它们。</li>
+<li>接下来是慢速但容量很大的本地磁盘。</li>
+<li>最后，有些系统包括了远程服务器上的磁盘，要通过网络来访问它们。</li>
 </ul>
-<p>注意：</p>
+<p><img alt="memory_hierarchy" src="../figures/memory_hierarchy.png" /></p>
+<h4 id="_2">存储器层次结构中的缓存<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h4>
+<p>存储器层次结构的中心思想是，对于每个<script type="math/tex">k</script>，位于<script type="math/tex">k</script>层的更快更小的存储设备作为位于<script type="math/tex">k+1</script>层的更大更慢的存储设备的缓存。换句话说，层次结构中的每一层都缓存来自较低一层的数据对象。</p>
 <ul>
-<li>底部内存地址是最小的，越往上地址越大。</li>
-<li>堆(正向增长)和栈(反向增长)的生长方向(箭头➡️所指方向)是相反的。</li>
+<li>第<script type="math/tex">k+1</script>层的存储器被划分为连续的数据对象组块(chunk)，称为块(block)。</li>
+<li>每个块都有一个唯一的地址。</li>
+<li>块的大小可以是固定的(通常)，也可以是可变的(例如存储在Web服务器上的HMTL文件).</li>
+<li>数据总是以块大小为传送单元在第<script type="math/tex">k</script>层和第<script type="math/tex">k+1</script>层之间来回复制。在层次结构中任何一对相邻的层次之间块大小是固定的(第<script type="math/tex">k</script>层和第<script type="math/tex">k+1</script>层块大小一致)，但是其他的层次对之间可以有不同的块大小。</li>
 </ul>
-<p>下面是程序示意：</p>
-<div class="codehilite"><pre> <span class="cp">#include</span><span class="cpf">&lt;stdio.h&gt;    </span><span class="cp"></span>
- <span class="cp">#include</span> <span class="cpf">&lt;malloc.h&gt;    </span><span class="cp"></span>
-
- <span class="kt">void</span> <span class="nf">print</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">,</span><span class="kt">int</span><span class="p">);</span>    
- <span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>    
-<span class="p">{</span>    
-      <span class="kt">char</span> <span class="o">*</span><span class="n">s1</span> <span class="o">=</span> <span class="s">&quot;abcde&quot;</span><span class="p">;</span>  <span class="c1">//&quot;abcde&quot;作为字符串常量存储在常量区 s1、s2、s5拥有相同的地址  </span>
-      <span class="kt">char</span> <span class="o">*</span><span class="n">s2</span> <span class="o">=</span> <span class="s">&quot;abcde&quot;</span><span class="p">;</span>    
-      <span class="kt">char</span> <span class="n">s3</span><span class="p">[]</span> <span class="o">=</span> <span class="s">&quot;abcd&quot;</span><span class="p">;</span>    
-      <span class="kt">long</span> <span class="kt">int</span> <span class="o">*</span><span class="n">s4</span><span class="p">[</span><span class="mi">100</span><span class="p">];</span>    
-      <span class="kt">char</span> <span class="o">*</span><span class="n">s5</span> <span class="o">=</span> <span class="s">&quot;abcde&quot;</span><span class="p">;</span>    
-      <span class="kt">int</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>    
-      <span class="kt">int</span> <span class="n">b</span> <span class="o">=</span><span class="mi">6</span><span class="p">;</span><span class="c1">//a,b在栈上，&amp;a&gt;&amp;b地址反向增长    </span>
-
-     <span class="n">printf</span><span class="p">(</span><span class="s">&quot;variables address in main function: s1=%p  s2=%p s3=%p s4=%p s5=%p a=%p b=%p </span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span>     
-             <span class="n">s1</span><span class="p">,</span><span class="n">s2</span><span class="p">,</span><span class="n">s3</span><span class="p">,</span><span class="n">s4</span><span class="p">,</span><span class="n">s5</span><span class="p">,</span><span class="o">&amp;</span><span class="n">a</span><span class="p">,</span><span class="o">&amp;</span><span class="n">b</span><span class="p">);</span>   
-     <span class="n">printf</span><span class="p">(</span><span class="s">&quot;variables address in processcall:n&quot;</span><span class="p">);</span>    
-        <span class="n">print</span><span class="p">(</span><span class="s">&quot;ddddddddd&quot;</span><span class="p">,</span><span class="mi">5</span><span class="p">);</span><span class="c1">//参数入栈从右至左进行,p先进栈,str后进 &amp;p&gt;&amp;str    </span>
-     <span class="n">printf</span><span class="p">(</span><span class="s">&quot;main=%p print=%p </span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="n">main</span><span class="p">,</span><span class="n">print</span><span class="p">);</span>    
-     <span class="c1">//打印代码段中主函数和子函数的地址，编译时先编译的地址低，后编译的地址高main&lt;print    </span>
- <span class="p">}</span>    
-
- <span class="kt">void</span> <span class="nf">print</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">str</span><span class="p">,</span><span class="kt">int</span> <span class="n">p</span><span class="p">)</span>    
-<span class="p">{</span>    
-     <span class="kt">char</span> <span class="o">*</span><span class="n">s1</span> <span class="o">=</span> <span class="s">&quot;abcde&quot;</span><span class="p">;</span>  <span class="c1">//abcde在常量区，s1在栈上    </span>
-     <span class="kt">char</span> <span class="o">*</span><span class="n">s2</span> <span class="o">=</span> <span class="s">&quot;abcde&quot;</span><span class="p">;</span>  <span class="c1">//abcde在常量区，s2在栈上 s2-s1=6可能等于0，编译器优化了相同的常量，只在内存保存一份    </span>
-     <span class="c1">//而&amp;s1&gt;&amp;s2    </span>
-     <span class="kt">char</span> <span class="n">s3</span><span class="p">[]</span> <span class="o">=</span> <span class="s">&quot;abcdeee&quot;</span><span class="p">;</span><span class="c1">//abcdeee在常量区，s3在栈上，数组保存的内容为abcdeee的一份拷贝    </span>
-     <span class="kt">long</span> <span class="kt">int</span> <span class="o">*</span><span class="n">s4</span><span class="p">[</span><span class="mi">100</span><span class="p">];</span>    
-     <span class="kt">char</span> <span class="o">*</span><span class="n">s5</span> <span class="o">=</span> <span class="s">&quot;abcde&quot;</span><span class="p">;</span>    
-     <span class="kt">int</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>    
-     <span class="kt">int</span> <span class="n">b</span> <span class="o">=</span><span class="mi">6</span><span class="p">;</span>    
-     <span class="kt">int</span> <span class="n">c</span><span class="p">;</span>    
-     <span class="kt">int</span> <span class="n">d</span><span class="p">;</span>           <span class="c1">//a,b,c,d均在栈上，&amp;a&gt;&amp;b&gt;&amp;c&gt;&amp;d地址反向增长    </span>
-     <span class="kt">char</span> <span class="o">*</span><span class="n">q</span><span class="o">=</span><span class="n">str</span><span class="p">;</span>   
-     <span class="kt">int</span> <span class="n">m</span><span class="o">=</span><span class="n">p</span><span class="p">;</span>           
-     <span class="kt">char</span> <span class="o">*</span><span class="n">r</span><span class="o">=</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>    
-     <span class="kt">char</span> <span class="o">*</span><span class="n">w</span><span class="o">=</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">;</span>  <span class="c1">// r&lt;w 堆正向增长    </span>
-
-     <span class="n">printf</span><span class="p">(</span><span class="s">&quot;s1=%p s2=%p s3=%p s4=%p s5=%p a=%p b=%p c=%p d=%p str=%p q=%p p=%p m=%p r=%p w=%p </span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span>    
-            <span class="n">s1</span><span class="p">,</span><span class="n">s2</span><span class="p">,</span><span class="n">s3</span><span class="p">,</span><span class="n">s4</span><span class="p">,</span><span class="n">s5</span><span class="p">,</span><span class="o">&amp;</span><span class="n">a</span><span class="p">,</span><span class="o">&amp;</span><span class="n">b</span><span class="p">,</span><span class="o">&amp;</span><span class="n">c</span><span class="p">,</span><span class="o">&amp;</span><span class="n">d</span><span class="p">,</span><span class="o">&amp;</span><span class="n">str</span><span class="p">,</span><span class="n">q</span><span class="p">,</span><span class="o">&amp;</span><span class="n">p</span><span class="p">,</span><span class="o">&amp;</span><span class="n">m</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">w</span><span class="p">);</span>   
-     <span class="cm">/* 栈和堆是在程序运行时候动态分配的，局部变量均在栈上分配。 </span>
-<span class="cm">        栈是反向增长的，地址递减；malloc等分配的内存空间在堆空间。堆是正向增长的，地址递增。   </span>
-<span class="cm">        r,w变量在栈上(则&amp;r&gt;&amp;w)，r,w所指内容在堆中(即r&lt;w)。*/</span>   
- <span class="p">}</span>    
-</pre></div>
+<p><img alt="the_basic_principle_of_caching_in_a_memory_hierarchy" src="../figures/the_basic_principle_of_caching_in_a_memory_hierarchy.png" /></p>
+<p>当程序需要第<script type="math/tex">k+1</script>层的某个数据对象<script type="math/tex">d</script>时，它首先在当前存储在第<script type="math/tex">k</script>层的一个块中查找<script type="math/tex">d</script>。如果<script type="math/tex">d</script>刚好缓存在第<script type="math/tex">k</script>层中，即<strong>缓存命中</strong>(cache hit)，否则<strong>缓存不命中</strong>(cache miss)。</p>
+<p>现代系统中到处都使用了缓存。</p>
+<p><img alt="cache_types" src="../figures/cache_types.png" /></p>
+<h3 id="4">4 高速缓存存储器<a class="headerlink" href="#4" title="Permanent link">&para;</a></h3>
+<h4 id="_3">通用的高速缓存存储器组织结构<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h4>
+<p>考虑一个计算机系统，其中每个存储器地址有<script type="math/tex">m</script>位，形成<script type="math/tex">M=2^m </script>个不同的地址。这样一个机器的高速缓存被组织成一个有<script type="math/tex">S=2^s </script>个<strong>高速缓存组</strong>(cache set)的数组。</p>
+<ul>
+<li>每个组包含<script type="math/tex">E</script>个<strong>高速缓存行</strong>(cache line)。</li>
+<li>每个行是由一个<script type="math/tex">B=2^b </script>字节的数据块(block)组成的。</li>
+<li>一个<strong>有效位</strong>(valid bit)指明这个行是否包含有意义的信息。</li>
+<li>有<script type="math/tex">t=m-(b+s)</script>个<strong>标记位</strong>(tag bit)唯一地标识存储在这个高速缓存行中的块。</li>
+</ul>
+<p><img alt="general_organization_of_a_cache" src="../figures/general_organization_of_a_cache.png" /></p>
+<p>高速缓存的大小<script type="math/tex">C</script>是指所有块的大小的和，<script type="math/tex">C=S\times E\times B</script>.</p>
+<ul>
+<li>每个组只有一行(<script type="math/tex">E=1</script>)的高速缓存称为<strong>直接映射高速缓存</strong>；</li>
+<li>每个组有多行(<script type="math/tex">E>1</script>)的高速缓存称为<strong>组相联高速缓存</strong>；</li>
+<li>一个包含所有高速缓存行的组(<script type="math/tex">E=C</script>)，称为<strong>全相联高速缓存</strong>。</li>
+</ul>
+<h4 id="_4">直接映射高速缓存<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h4>
+<p><img alt="Direct-mapped cache" src="../figures/Direct-mapped%20cache.png" /></p>
+<h4 id="_5">组相联高速缓存<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h4>
+<p><img alt="Set associative cache" src="../figures/Set%20associative%20cache.png" /></p>
+<h4 id="_6">全相联高速缓存<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h4>
+<p>一个包含所有高速缓存行的组(<script type="math/tex">E=C</script>)，称为<strong>全相联高速缓存</strong>。 因为高速缓存电路必须并行地搜索许多相匹配的标记，构造一个又大又快的全相联高速缓存很困难，并且很昂贵。因此，全相联高速缓存只适合做小的高速缓存(例如MMC中的TLB)。</p>
+<p><img alt="set_selection_in_a_fully_associative_cache" src="../figures/set_selection_in_a_fully_associative_cache.png" /></p>
+<h3 id="5">5 编写高速缓存友好的代码<a class="headerlink" href="#5" title="Permanent link">&para;</a></h3>
+<h3 id="6">6 高速缓存对程序性能的影响<a class="headerlink" href="#6" title="Permanent link">&para;</a></h3>
+<p>存储器山
+<img alt="The memory mountain" src="../figures/The%20memory%20mountain.png" /></p>
+<p><img alt="Ridges of temporal locality in the memory mountain. The graph shows a slice through Figure 6.43 with stride=16." src="../figures/Ridges%20of%20temporal%20locality%20in%20the%20memory%20mountain.%20The%20graph%20shows%20a%20slice%20through%20Figure%206.43%20with%20stride=16..png" /></p>
             </div>
         </div>
 
