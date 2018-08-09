@@ -507,8 +507,17 @@
 <p><img alt="explict_list" src="http://or9a8nskt.bkt.clouddn.com/explict_list.png" /></p>
 <h4 id="733">7.3.3 分离式空闲列表<a class="headerlink" href="#733" title="Permanent link">&para;</a></h4>
 <h3 id="8">8 垃圾收集<a class="headerlink" href="#8" title="Permanent link">&para;</a></h3>
-<p><strong>垃圾收集器</strong>(garbage collector)是一种动态内存分配器，它自动释放程序不再需要的已分配块。这些块被称作<strong>垃圾</strong>(garbage)。自动回收存储的过程叫做<strong>垃圾收集</strong>(garbage collection)。</p>
+<p><strong>垃圾收集器</strong>(garbage collector)是一种动态内存分配器，它自动释放程序不再需要的已分配块。这些块被称作<em>垃圾</em>(garbage)。自动回收存储的过程叫做<em>垃圾收集</em>(garbage collection)。</p>
 <p><a href="../../hfj/ch9/#object-lifecycle">Java Garbage Collection</a></p>
+<p>垃圾收集器将内存视为一张有向<em>可达图</em>(reachability graph)。</p>
+<ul>
+<li>图的节点被分成一组<em>根节点</em>(root node)和一组<em>堆节点</em>(heap node). </li>
+<li>有向边<script type="math/tex">p\rightarrow q</script>意味着块<script type="math/tex">p</script>中的某个位置指向块<script type="math/tex">q</script>中的某个位置。</li>
+<li>根节点不在堆中，包含指向堆中的指针。</li>
+<li>当存在一条从任意根节点出发并到达<script type="math/tex">p</script>的有向路径时，节点<script type="math/tex">p</script>是可达的。</li>
+<li>垃圾收集器维护可达图的某种表示，并释放不可达节点。</li>
+</ul>
+<p><img alt="A garbage collector’s view of memory as a directed graph." src="../figures/A%20garbage%20collector%E2%80%99s%20view%20of%20memory%20as%20a%20directed%20graph..png" /></p>
 <h3 id="9-c">9 C程序中常见的与内存有关的错误<a class="headerlink" href="#9-c" title="Permanent link">&para;</a></h3>
 <h4 id="_1">间接引用坏指针<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h4>
 <p>这是非常常见的例子，没有引用对应的地址，少了 &amp;</p>
