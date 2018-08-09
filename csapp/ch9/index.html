@@ -275,6 +275,7 @@
             <li><a href="#22">2.2 作为内存管理的工具</a></li>
             <li><a href="#23">2.3 作为内存保护的工具</a></li>
         <li class="main "><a href="#3">3 地址翻译</a></li>
+            <li><a href="#tlb">利用TLB加速地址翻译</a></li>
             <li><a href="#_1">多级页表</a></li>
         <li class="main "><a href="#4-core-i7">4 core i7内存系统</a></li>
             <li><a href="#core-i7">Core i7简介</a></li>
@@ -360,8 +361,18 @@
 <li>物理页面偏移和虚拟页面偏移是相通的。</li>
 </ul>
 <p><img alt="Address Translation With a Page Table" src="../figures/Address%20Translation%20With%20a%20Page%20Table.png" /></p>
+<h4 id="tlb">利用TLB加速地址翻译<a class="headerlink" href="#tlb" title="Permanent link">&para;</a></h4>
+<p>每次CPU产生一个虚拟地址，MMU就必须查阅一个PTE。为了试图消除这种开销，在MMU中包含了一个关于PTE的缓存，称为<strong>转译后备缓冲器</strong>(Translation Lookaside Buffer, TLB)</p>
+<p><img alt="TLB" src="../figures/TLB.png" /></p>
 <h4 id="_1">多级页表<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h4>
-<p>用来压缩页表的常用方法是使用</p>
+<p>用来压缩页表的常用方法是使用层次结构的页表。</p>
+<ul>
+<li>虚拟地址被划分为<script type="math/tex">k</script>个VPN和1个VPO。</li>
+<li>每个VPN <script type="math/tex">i</script>都是一个到第<script type="math/tex">i</script>级页表的索引，其中<script type="math/tex">\le i \le k</script>。</li>
+<li>第<script type="math/tex">j</script>级页表中的每个PTE都指向第<script type="math/tex">j+1</script>级的某个页表的基址。</li>
+<li>第<script type="math/tex">k</script>级页表中的每个PTE包含某个物理页面的PPN。</li>
+</ul>
+<p><img alt="Translation with a k-­level Page Table" src="../figures/Translation%20with%20a%20k-%C2%ADlevel%20Page%20Table.png" /></p>
 <h3 id="4-core-i7">4 core i7内存系统<a class="headerlink" href="#4-core-i7" title="Permanent link">&para;</a></h3>
 <h4 id="core-i7">Core i7简介<a class="headerlink" href="#core-i7" title="Permanent link">&para;</a></h4>
 <p>Core i7在2008年冬季发布，基于全新Nehalem架构，它的芯片结构如下所示：</p>
