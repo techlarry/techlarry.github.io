@@ -275,6 +275,7 @@
             <li><a href="#22">2.2 作为内存管理的工具</a></li>
             <li><a href="#23">2.3 作为内存保护的工具</a></li>
         <li class="main "><a href="#3">3 地址翻译</a></li>
+            <li><a href="#_1">多级页表</a></li>
         <li class="main "><a href="#4-core-i7">4 core i7内存系统</a></li>
             <li><a href="#core-i7">Core i7简介</a></li>
             <li><a href="#core-i7_1">Core i7地址翻译</a></li>
@@ -292,13 +293,13 @@
             <li><a href="#733">7.3.3 分离式空闲列表</a></li>
         <li class="main "><a href="#8">8 垃圾收集</a></li>
         <li class="main "><a href="#9-c">9 C程序中常见的与内存有关的错误</a></li>
-            <li><a href="#_1">间接引用坏指针</a></li>
-            <li><a href="#_2">读未初始化的内存</a></li>
-            <li><a href="#_3">允许栈缓冲区溢出</a></li>
-            <li><a href="#_4">引用不存在的变量</a></li>
-            <li><a href="#_5">多次释放</a></li>
-            <li><a href="#_6">引用已经被释放的堆块中的数据</a></li>
-            <li><a href="#_7">忘记释放已分配块：</a></li>
+            <li><a href="#_2">间接引用坏指针</a></li>
+            <li><a href="#_3">读未初始化的内存</a></li>
+            <li><a href="#_4">允许栈缓冲区溢出</a></li>
+            <li><a href="#_5">引用不存在的变量</a></li>
+            <li><a href="#_6">多次释放</a></li>
+            <li><a href="#_7">引用已经被释放的堆块中的数据</a></li>
+            <li><a href="#_8">忘记释放已分配块：</a></li>
     </ul>
 </div></div>
             <div class="col-md-9" role="main">
@@ -350,6 +351,17 @@
 <p><img alt="vm_protection_tool" src="http://or9a8nskt.bkt.clouddn.com/vm_protection_tool.png" /></p>
 <p>如果违反许可条件，那么就触发段错误(segmentation fault)。</p>
 <h3 id="3">3 地址翻译<a class="headerlink" href="#3" title="Permanent link">&para;</a></h3>
+<p>地址翻译是虚拟地址空间和物理地址空间之间的映射。CPU中的<strong>页表基址寄存器</strong>(Page Table Base Register, PTBR)指向当前页表。</p>
+<ul>
+<li>
+<script type="math/tex">n</script>位的虚拟地址包含两个部分：一个<script type="math/tex">p</script>位的<strong>虚拟页面偏移</strong>(Virtual Page Offset, VPO)和一个<script type="math/tex">n-p</script>位的<strong>虚拟页号</strong>(Virtual Page Number, VPN)。</li>
+<li>
+<script type="math/tex">m</script>位的物理地址包含两个部分：一个<script type="math/tex">p</script>位的<strong>物理页面偏移</strong>(Physical Page Offset, PPO)和一个<script type="math/tex">m-p</script>位的<strong>物理页号</strong>(Physical Page Number, PPN)。</li>
+<li>物理页面偏移和虚拟页面偏移是相通的。</li>
+</ul>
+<p><img alt="Address Translation With a Page Table" src="../figures/Address%20Translation%20With%20a%20Page%20Table.png" /></p>
+<h4 id="_1">多级页表<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h4>
+<p>用来压缩页表的常用方法是使用</p>
 <h3 id="4-core-i7">4 core i7内存系统<a class="headerlink" href="#4-core-i7" title="Permanent link">&para;</a></h3>
 <h4 id="core-i7">Core i7简介<a class="headerlink" href="#core-i7" title="Permanent link">&para;</a></h4>
 <p>Core i7在2008年冬季发布，基于全新Nehalem架构，它的芯片结构如下所示：</p>
@@ -514,19 +526,19 @@
 <li>图的节点被分成一组<em>根节点</em>(root node)和一组<em>堆节点</em>(heap node). </li>
 <li>有向边<script type="math/tex">p\rightarrow q</script>意味着块<script type="math/tex">p</script>中的某个位置指向块<script type="math/tex">q</script>中的某个位置。</li>
 <li>根节点不在堆中，包含指向堆中的指针。</li>
-<li>当存在一条从任意根节点出发并到达<script type="math/tex">p</script>的有向路径时，节点<script type="math/tex">p</script>是可达的。</li>
+<li>当存在一条从任意根节点出发并到达<script type="math/tex">p</script>的有向路径时，节点<script type="math/tex">p</script>是<em>可达</em>的。</li>
 <li>垃圾收集器维护可达图的某种表示，并释放不可达节点。</li>
 </ul>
 <p><img alt="A garbage collector’s view of memory as a directed graph." src="../figures/A%20garbage%20collector%E2%80%99s%20view%20of%20memory%20as%20a%20directed%20graph..png" /></p>
 <h3 id="9-c">9 C程序中常见的与内存有关的错误<a class="headerlink" href="#9-c" title="Permanent link">&para;</a></h3>
-<h4 id="_1">间接引用坏指针<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h4>
+<h4 id="_2">间接引用坏指针<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h4>
 <p>这是非常常见的例子，没有引用对应的地址，少了 &amp;</p>
 <div class="codehilite"><pre><span class="kt">int</span> <span class="n">val</span><span class="p">;</span>
 <span class="n">scanf</span><span class="p">(</span><span class="s">&quot;%d&quot;</span><span class="p">,</span> <span class="n">val</span><span class="p">);</span> <span class="c1">// 正确应该是scanf(&quot;%d, &amp;val);</span>
 </pre></div>
 
 
-<h4 id="_2">读未初始化的内存<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h4>
+<h4 id="_3">读未初始化的内存<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h4>
 <p><strong>堆内存是没有被初始化为0的</strong>：</p>
 <div class="codehilite"><pre><span class="cm">/* return y = Ax */</span>
 <span class="kt">int</span> <span class="o">*</span><span class="nf">matvec</span><span class="p">(</span><span class="kt">int</span> <span class="o">**</span><span class="n">A</span><span class="p">,</span> <span class="kt">int</span> <span class="o">*</span><span class="n">x</span><span class="p">)</span> <span class="p">{</span>
@@ -542,7 +554,7 @@
 
 
 <p>正确的方法是显式地将y[i]设置为0，或者使用<code>calloc</code>。</p>
-<h4 id="_3">允许栈缓冲区溢出<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h4>
+<h4 id="_4">允许栈缓冲区溢出<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h4>
 <p>没有检查字符串的长度（经典的缓冲区溢出攻击也是利用相同的机制）</p>
 <div class="codehilite"><pre><span class="kt">char</span> <span class="n">s</span><span class="p">[</span><span class="mi">8</span><span class="p">];</span>
 <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
@@ -550,7 +562,7 @@
 </pre></div>
 
 
-<h4 id="_4">引用不存在的变量<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h4>
+<h4 id="_5">引用不存在的变量<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h4>
 <p>尽管指针仍然指向一个合法的内存地址，但是已经不再指向一个合法的变量了。以后在程序中调用其他函数时，内存将重用它们的栈针。</p>
 <div class="codehilite"><pre><span class="kt">int</span> <span class="o">*</span><span class="nf">foo</span><span class="p">()</span> <span class="p">{</span>
     <span class="kt">int</span> <span class="n">val</span><span class="p">;</span>
@@ -560,7 +572,7 @@
 </pre></div>
 
 
-<h4 id="_5">多次释放<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h4>
+<h4 id="_6">多次释放<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h4>
 <p>这个不用多说，不能重复搞两次</p>
 <div class="codehilite"><pre><span class="n">x</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="n">N</span> <span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span>
 <span class="c1">//  &lt;manipulate x&gt;</span>
@@ -571,7 +583,7 @@
 </pre></div>
 
 
-<h4 id="_6">引用已经被释放的堆块中的数据<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h4>
+<h4 id="_7">引用已经被释放的堆块中的数据<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h4>
 <p>同样是很明显的错误，不要犯</p>
 <div class="codehilite"><pre><span class="n">x</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="n">N</span> <span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span>
 <span class="c1">//  &lt;manipulate x&gt;</span>
@@ -583,7 +595,7 @@
 </pre></div>
 
 
-<h4 id="_7">忘记释放已分配块：<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h4>
+<h4 id="_8">忘记释放已分配块：<a class="headerlink" href="#_8" title="Permanent link">&para;</a></h4>
 <div class="codehilite"><pre><span class="n">foo</span><span class="p">()</span> <span class="p">{</span>
     <span class="kt">int</span> <span class="o">*</span><span class="n">x</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="n">N</span> <span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span>
     <span class="c1">// ...</span>
