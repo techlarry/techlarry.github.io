@@ -284,23 +284,25 @@
             <li><a href="#linux">Linux是如何组织虚拟内存的</a></li>
             <li><a href="#linux_1">Linux 缺页异常处理</a></li>
         <li class="main "><a href="#6">6 内存映射</a></li>
+            <li><a href="#_2">用户级内存映射</a></li>
         <li class="main "><a href="#7">7 动态内存分配</a></li>
             <li><a href="#72">7.2 显式分配器的要求和目标</a></li>
             <li><a href="#721">7.2.1 分配器的要求</a></li>
             <li><a href="#722">7.2.2 分配器的目标</a></li>
+            <li><a href="#723">7.2.3 放置已分配的块</a></li>
             <li><a href="#73">7.3 实现方法</a></li>
             <li><a href="#731">7.3.1 隐式空闲列表</a></li>
             <li><a href="#732">7.3.2 显式空闲列表</a></li>
             <li><a href="#733">7.3.3 分离式空闲列表</a></li>
         <li class="main "><a href="#8">8 垃圾收集</a></li>
         <li class="main "><a href="#9-c">9 C程序中常见的与内存有关的错误</a></li>
-            <li><a href="#_2">间接引用坏指针</a></li>
-            <li><a href="#_3">读未初始化的内存</a></li>
-            <li><a href="#_4">允许栈缓冲区溢出</a></li>
-            <li><a href="#_5">引用不存在的变量</a></li>
-            <li><a href="#_6">多次释放</a></li>
-            <li><a href="#_7">引用已经被释放的堆块中的数据</a></li>
-            <li><a href="#_8">忘记释放已分配块：</a></li>
+            <li><a href="#_3">间接引用坏指针</a></li>
+            <li><a href="#_4">读未初始化的内存</a></li>
+            <li><a href="#_5">允许栈缓冲区溢出</a></li>
+            <li><a href="#_6">引用不存在的变量</a></li>
+            <li><a href="#_7">多次释放</a></li>
+            <li><a href="#_8">引用已经被释放的堆块中的数据</a></li>
+            <li><a href="#_9">忘记释放已分配块：</a></li>
     </ul>
 </div></div>
             <div class="col-md-9" role="main">
@@ -311,7 +313,7 @@
 <p>主存是由连续的<strong>字节大小</strong>的单元组成的数组，每字节都有一个唯一的<strong>物理地址</strong>(Physical Adress)。CPU使用物理地址访问内存的方式称为<strong>物理寻址</strong>(Physical adressing)。</p>
 <p>早期的PC以及数字信号处理器等使用物理寻址，下面是物理寻址的示意图：</p>
 <p><img alt="physical_address" src="http://or9a8nskt.bkt.clouddn.com/physical_address.png" /></p>
-<p>现代处理器通过生成一个<strong>虚拟地址</strong>(Virtual Address)来访问主存，虚拟地址经过<strong>地址翻译</strong>转换为物理地址。地址翻译由CPU内的<strong>内存管理单元</strong>(Memory Management Unit, <code>MMU</code>)负责.</p>
+<p>现代处理器通过生成一个<strong>虚拟地址</strong>(Virtual Address)来访问主存，虚拟地址经过<strong>地址翻译</strong>(Address Translation)转换为物理地址。地址翻译由CPU内的<strong>内存管理单元</strong>(Memory Management Unit, <code>MMU</code>)负责.</p>
 <p><img alt="virtual_memory" src="http://or9a8nskt.bkt.clouddn.com/virtual_memory.png" /></p>
 <p>虚拟内存充当着三个角色：</p>
 <ul>
@@ -323,11 +325,10 @@
 <h3 id="2">2 虚拟内存的三个角色<a class="headerlink" href="#2" title="Permanent link">&para;</a></h3>
 <h4 id="21">2.1 作为缓存的工具<a class="headerlink" href="#21" title="Permanent link">&para;</a></h4>
 <p>可以把主存DRAM看作是虚拟内存的缓存，类似于L1、L2、L3高速缓存是DRAM内存的缓存。也就是说可以把虚拟内存看成是存储器层次结构的一部分。</p>
-<p><img alt="vm_as_cache" src="http://or9a8nskt.bkt.clouddn.com/vm_as_cache.png" /></p>
 <p>和其他存储器层次结构中的缓存一样，较低层上的数据被分割成块，作为与较高层之间的传输单元。</p>
 <ul>
-<li>这里较低层是虚拟内存，分割成<strong>虚拟页</strong>(Virtual Page, VP)，虚拟页大小为<script type="math/tex">P=2^p</script>字节。</li>
-<li>类似的，这里的较高层，物理内存DRAM，被分割为<strong>物理页</strong>(Physical Page, PP)，大小也为<script type="math/tex">P</script>，也叫做页桢。</li>
+<li>这里较低层是虚拟内存，分割成<strong>虚拟页</strong>(Virtual Page, VP)，虚拟页大小为<script type="math/tex">P=2^p </script>字节。</li>
+<li>类似的，这里的较高层，物理内存DRAM，被分割为<strong>物理页</strong>(Physical Page, PP)，大小也为<script type="math/tex">P</script>，也叫做页桢(page frame)。</li>
 </ul>
 <p>虚拟页的状态分为三种：</p>
 <ul>
@@ -335,9 +336,10 @@
 <li><strong>缓存的</strong>(Cached): 当前已缓存在物理内存中的已分配页。</li>
 <li><strong>未缓存的</strong>(Uncached): 未缓存在物理内存中的已分配页。</li>
 </ul>
+<p><img alt="vm_as_cache" src="http://or9a8nskt.bkt.clouddn.com/vm_as_cache.png" /></p>
 <p>那么具体是怎么判断一个虚拟页的状态呢？怎么知道虚拟页放在哪个物理页中呢？</p>
 <p>物理内存中存在一个叫<strong>页表</strong>(page table)的数据结构，由操作系统负责。页表将虚拟页映射到物理页，每次内存管理单元中的<strong>地址翻译硬件</strong>将虚拟地址转换为物理地址时都会读取页表。</p>
-<p>页表其实是一个<strong>页表条目</strong>(Page Table Entry, PTE)的数组。页表条目包含一个有效位(valid bit)和一个n位地址字段。</p>
+<p>页表其实是一个<strong>页表条目</strong>(Page Table Entry, PTE)的数组。页表条目包含一个<em>有效位(</em>valid bit)和一个<script type="math/tex">n</script>位地址字段。</p>
 <p><img alt="page_table" src="http://or9a8nskt.bkt.clouddn.com/page_table.jpg" /></p>
 <p>在虚拟内存的习惯说法中，DRAM缓存命中/不命中，特称为<strong>页命中</strong>/<strong>缺页</strong>(Page Hit/ Fault)。</p>
 <h4 id="22">2.2 作为内存管理的工具<a class="headerlink" href="#22" title="Permanent link">&para;</a></h4>
@@ -375,7 +377,7 @@
 <p><img alt="Translation with a k-­level Page Table" src="../figures/Translation%20with%20a%20k-%C2%ADlevel%20Page%20Table.png" /></p>
 <h3 id="4-core-i7">4 core i7内存系统<a class="headerlink" href="#4-core-i7" title="Permanent link">&para;</a></h3>
 <h4 id="core-i7">Core i7简介<a class="headerlink" href="#core-i7" title="Permanent link">&para;</a></h4>
-<p>Core i7在2008年冬季发布，基于全新Nehalem架构，它的芯片结构如下所示：</p>
+<p>Core i7在2008年冬季发布，基于全新Nehalem(/nəˈheɪləm/)架构，它的芯片结构如下所示：</p>
 <p><img alt="Intel Core i7 processor internal die photograph" src="../figures/Intel%20Core%20i7%20processor%20internal%20die%20photograph.png" /></p>
 <p>现在的Core i7支持48位(256TB)虚拟地址空间和52位(4PB)物理地址空间。</p>
 <p>下图给出了Core i7内存系统的重要部分。处理器封装(Processor package)包括四个核、一个大的所有核共享的L3高速缓存，以及一个DDR3内存控制器。 每一个核包含一个层次结构的TLB、一个层次结构的数据核指令高速缓存，以及一组快速的点到点链路(基于QuickPath技术)。</p>
@@ -486,8 +488,24 @@
 <li>虚拟地址A是合法的吗？-&gt; 段错误(segment fault)</li>
 <li>试图进行的内存访问是合法的吗？ -&gt; 保护异常(也引发段错误)</li>
 </ul>
-<p><img alt="linux_page_fault" src="http://or9a8nskt.bkt.clouddn.com/linux_page_fault.png" /></p>
+<p><img alt="Linux Page Fault Handling " src="../figures/Linux%20Page%20Fault%20Handling%20.png" /></p>
 <h3 id="6">6 内存映射<a class="headerlink" href="#6" title="Permanent link">&para;</a></h3>
+<p>Linux 通过将一个虚拟内区域与一个磁盘上的对象(object)关联起来，以初始化这个虚拟内存区域的内容，这个过程称为<strong>内存映射</strong>(memory mapping).</p>
+<h4 id="_2">用户级内存映射<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h4>
+<p>Linux进程可以使用mmap函数来创建新的虚拟内存区域，并将对象映射到这些区域中。</p>
+<div class="codehilite"><pre><span class="kt">void</span> <span class="o">*</span><span class="n">mmap</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">start</span><span class="p">,</span> <span class="kt">int</span> <span class="n">len</span><span class="p">,</span>
+ <span class="kt">int</span> <span class="n">prot</span><span class="p">,</span> <span class="kt">int</span> <span class="n">flags</span><span class="p">,</span> <span class="kt">int</span> <span class="n">fd</span><span class="p">,</span> <span class="kt">int</span> <span class="n">offset</span><span class="p">)</span>
+</pre></div>
+
+
+<p>mmap函数要求内核创建一个新的虚拟内存区域，最好是从地址start开始的一个区域，并将文件描述符fd制定的对象的一个连续的片(chunk)映射到这个新的区域。连续的对象片大小为len字节，从距文件开始处偏移量为offset字节的地方开始。其参数：</p>
+<ul>
+<li><code>start</code>: may be 0 for “pick an address”</li>
+<li><code>prot</code>: PROT_READ, PROT_WRITE, ...</li>
+<li><code>flags</code>: MAP_ANON, MAP_PRIVATE, MAP_SHARED, ...</li>
+<li>Return a pointer to start of mapped area </li>
+</ul>
+<p><img alt="user-level-memory-mapping" src="../figures/user-level-memory-mapping.png" /></p>
 <h3 id="7">7 动态内存分配<a class="headerlink" href="#7" title="Permanent link">&para;</a></h3>
 <p>程序使用动态内存分配的最重要的原因是经常直到程序实际运行时，才知道某些数据结构的大小。一般使用动态内存分配器(dynamic memeory allocator)来分配动态内存。</p>
 <p>分配器根据哪个实体来负责释放已分配的块，分为两种：</p>
@@ -517,6 +535,13 @@
 <p>当即使有足够的累积的块内存，但是没有单一块能够满足需求时，发生<strong>外部碎片</strong>(external fragmentation)：</p>
 <p><img alt="external_fragmentation" src="http://or9a8nskt.bkt.clouddn.com/external_fragmentation.png" /></p>
 <p>外部碎片还取决于将来的请求，例如上图，如果最后的p4请求4个字节呢？也就不会发生碎片。正因为外部碎片难以量化且不可能预测，所以分配器通常采用启发式策略来试图维持少量的大空闲块，而不是维持大量的小空闲块。</p>
+<h4 id="723">7.2.3 放置已分配的块<a class="headerlink" href="#723" title="Permanent link">&para;</a></h4>
+<p>当一个应用请求一个<script type="math/tex">k</script>字节的块时，分配器搜索空闲链表，查找一个足够大可以放置所请求块的空闲块。分配器的<strong>放置策略</strong>(placement policy)有<strong>首次适配</strong>(first fit)、<strong>下一次适配</strong>(next fit)和<strong>最佳适配</strong>(best fit)。</p>
+<ul>
+<li><em>首次适配</em>从头开始搜索空闲链表，选择第一个适合的空闲块。</li>
+<li><em>下一次适配</em>从上一次查询结束的地方开始。</li>
+<li><em>最佳适配</em>检查每个空闲块，选择适合所需请求大小的最小空闲块。</li>
+</ul>
 <h4 id="73">7.3 实现方法<a class="headerlink" href="#73" title="Permanent link">&para;</a></h4>
 <ul>
 <li>隐式空闲列表 Implicit Free List</li>
@@ -542,14 +567,14 @@
 </ul>
 <p><img alt="A garbage collector’s view of memory as a directed graph." src="../figures/A%20garbage%20collector%E2%80%99s%20view%20of%20memory%20as%20a%20directed%20graph..png" /></p>
 <h3 id="9-c">9 C程序中常见的与内存有关的错误<a class="headerlink" href="#9-c" title="Permanent link">&para;</a></h3>
-<h4 id="_2">间接引用坏指针<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h4>
+<h4 id="_3">间接引用坏指针<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h4>
 <p>这是非常常见的例子，没有引用对应的地址，少了 &amp;</p>
 <div class="codehilite"><pre><span class="kt">int</span> <span class="n">val</span><span class="p">;</span>
 <span class="n">scanf</span><span class="p">(</span><span class="s">&quot;%d&quot;</span><span class="p">,</span> <span class="n">val</span><span class="p">);</span> <span class="c1">// 正确应该是scanf(&quot;%d, &amp;val);</span>
 </pre></div>
 
 
-<h4 id="_3">读未初始化的内存<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h4>
+<h4 id="_4">读未初始化的内存<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h4>
 <p><strong>堆内存是没有被初始化为0的</strong>：</p>
 <div class="codehilite"><pre><span class="cm">/* return y = Ax */</span>
 <span class="kt">int</span> <span class="o">*</span><span class="nf">matvec</span><span class="p">(</span><span class="kt">int</span> <span class="o">**</span><span class="n">A</span><span class="p">,</span> <span class="kt">int</span> <span class="o">*</span><span class="n">x</span><span class="p">)</span> <span class="p">{</span>
@@ -565,7 +590,7 @@
 
 
 <p>正确的方法是显式地将y[i]设置为0，或者使用<code>calloc</code>。</p>
-<h4 id="_4">允许栈缓冲区溢出<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h4>
+<h4 id="_5">允许栈缓冲区溢出<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h4>
 <p>没有检查字符串的长度（经典的缓冲区溢出攻击也是利用相同的机制）</p>
 <div class="codehilite"><pre><span class="kt">char</span> <span class="n">s</span><span class="p">[</span><span class="mi">8</span><span class="p">];</span>
 <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
@@ -573,7 +598,7 @@
 </pre></div>
 
 
-<h4 id="_5">引用不存在的变量<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h4>
+<h4 id="_6">引用不存在的变量<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h4>
 <p>尽管指针仍然指向一个合法的内存地址，但是已经不再指向一个合法的变量了。以后在程序中调用其他函数时，内存将重用它们的栈针。</p>
 <div class="codehilite"><pre><span class="kt">int</span> <span class="o">*</span><span class="nf">foo</span><span class="p">()</span> <span class="p">{</span>
     <span class="kt">int</span> <span class="n">val</span><span class="p">;</span>
@@ -583,7 +608,7 @@
 </pre></div>
 
 
-<h4 id="_6">多次释放<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h4>
+<h4 id="_7">多次释放<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h4>
 <p>这个不用多说，不能重复搞两次</p>
 <div class="codehilite"><pre><span class="n">x</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="n">N</span> <span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span>
 <span class="c1">//  &lt;manipulate x&gt;</span>
@@ -594,7 +619,7 @@
 </pre></div>
 
 
-<h4 id="_7">引用已经被释放的堆块中的数据<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h4>
+<h4 id="_8">引用已经被释放的堆块中的数据<a class="headerlink" href="#_8" title="Permanent link">&para;</a></h4>
 <p>同样是很明显的错误，不要犯</p>
 <div class="codehilite"><pre><span class="n">x</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="n">N</span> <span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span>
 <span class="c1">//  &lt;manipulate x&gt;</span>
@@ -606,7 +631,7 @@
 </pre></div>
 
 
-<h4 id="_8">忘记释放已分配块：<a class="headerlink" href="#_8" title="Permanent link">&para;</a></h4>
+<h4 id="_9">忘记释放已分配块：<a class="headerlink" href="#_9" title="Permanent link">&para;</a></h4>
 <div class="codehilite"><pre><span class="n">foo</span><span class="p">()</span> <span class="p">{</span>
     <span class="kt">int</span> <span class="o">*</span><span class="n">x</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="n">N</span> <span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span>
     <span class="c1">// ...</span>
