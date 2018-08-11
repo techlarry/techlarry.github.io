@@ -496,19 +496,19 @@
 <li>It is not feasible for most contemporary CPUs, since much larger page tables needed.</li>
 </ul>
 </li>
-<li>The page table is kept in main memory, and a <strong>page-table base register</strong> (PTBR, 页表基址寄存器) points to the page table.</li>
+<li>For a much large page table, the page table is kept in main memory, and a <strong>page-table base register</strong> (PTBR, 页表基址寄存器) points to the page table.</li>
 </ul>
 <p>ISSUE: Although storing the page table in main memory can yield faster context switches, it may also result in slower memory access times. Because using page-table to find a physical address need one memory access, since the page-table is kept in main memory.</p>
 <p>SOLUTION: To use a special, small, fast-lookup hardware <em>cache</em> called a <strong>translation look-aside buffer</strong>(TLB, 转译后备缓冲器).</p>
 <ul>
 <li>Each entry in the TLB consists of two parts: a key(tag) and a value.</li>
-<li>When the associative memory is presented with an item, the item is compared with all keys simultaneously. If the item is found, the corresponding value field is returned.</li>
+<li>When the associative memory is presented with an item, the item is compared with all keys <em>simultaneously</em>. If the item is found, the corresponding value field is returned.</li>
 <li>TLB is kept small, typically between 32 and 1,024 entries in size.</li>
 </ul>
 <p><img alt="Paging hardware with TLB" src="../figures/Paging%20hardware%20with%20TLB.png" /></p>
-<p>CPUs today may provide multiple levels of TLBs. </p>
+<p>CPUs today may provide <em>multiple</em> levels of TLBs. We take the Intel Core i7 as an example <a href="../../csapp/ch9/#4-core-i7">see detail here</a>:</p>
 <ul>
-<li>For instance, the Intel Core i7 CPU has a 128-entry L1 instruction TLB and a 64-entry L1 data TLB. </li>
+<li>The Intel Core i7 CPU has a 128-entry L1 instruction TLB and a 64-entry L1 data TLB. </li>
 <li>In the case of a miss at L1, it takes the CPU six cycles to check for the entry in the L2 512-entry TLB. </li>
 <li>A miss in L2 means that the CPU must either walk through the page-table entries in memory to find the associated frame address, which can take hundreds of cycles, or interrupt to the operating system to have it do the work.</li>
 </ul>
