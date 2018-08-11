@@ -114,6 +114,10 @@
                         </li>
                       
                         <li>
+                            <a href="../../osc/ch10/">Chapter 10: Virtual Memory</a>
+                        </li>
+                      
+                        <li>
                             <a href="../../osc/ch13/">Chapter 13: File-System Interfaces</a>
                         </li>
                       
@@ -284,7 +288,10 @@
             <li><a href="#linux">Linux是如何组织虚拟内存的</a></li>
             <li><a href="#linux_1">Linux 缺页异常处理</a></li>
         <li class="main "><a href="#6">6 内存映射</a></li>
-            <li><a href="#_2">用户级内存映射</a></li>
+            <li><a href="#_2">再看共享对象</a></li>
+            <li><a href="#fork">再看fork函数</a></li>
+            <li><a href="#execve">再看execve函数</a></li>
+            <li><a href="#_3">用户级内存映射</a></li>
         <li class="main "><a href="#7">7 动态内存分配</a></li>
             <li><a href="#72">7.2 显式分配器的要求和目标</a></li>
             <li><a href="#721">7.2.1 分配器的要求</a></li>
@@ -296,13 +303,13 @@
             <li><a href="#733">7.3.3 分离式空闲列表</a></li>
         <li class="main "><a href="#8">8 垃圾收集</a></li>
         <li class="main "><a href="#9-c">9 C程序中常见的与内存有关的错误</a></li>
-            <li><a href="#_3">间接引用坏指针</a></li>
-            <li><a href="#_4">读未初始化的内存</a></li>
-            <li><a href="#_5">允许栈缓冲区溢出</a></li>
-            <li><a href="#_6">引用不存在的变量</a></li>
-            <li><a href="#_7">多次释放</a></li>
-            <li><a href="#_8">引用已经被释放的堆块中的数据</a></li>
-            <li><a href="#_9">忘记释放已分配块：</a></li>
+            <li><a href="#_4">间接引用坏指针</a></li>
+            <li><a href="#_5">读未初始化的内存</a></li>
+            <li><a href="#_6">允许栈缓冲区溢出</a></li>
+            <li><a href="#_7">引用不存在的变量</a></li>
+            <li><a href="#_8">多次释放</a></li>
+            <li><a href="#_9">引用已经被释放的堆块中的数据</a></li>
+            <li><a href="#_10">忘记释放已分配块：</a></li>
     </ul>
 </div></div>
             <div class="col-md-9" role="main">
@@ -490,11 +497,41 @@
 </ul>
 <p><img alt="Linux Page Fault Handling " src="../figures/Linux%20Page%20Fault%20Handling%20.png" /></p>
 <h3 id="6">6 内存映射<a class="headerlink" href="#6" title="Permanent link">&para;</a></h3>
-<p>Linux 通过将一个虚拟内区域与一个磁盘上的对象(object)关联起来，以初始化这个虚拟内存区域的内容，这个过程称为<strong>内存映射</strong>(memory mapping).</p>
-<h4 id="_2">用户级内存映射<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h4>
+<p>Linux 通过将一个虚拟内区域与一个磁盘上的<em>对象</em>(object)关联起来，以初始化这个虚拟内存区域的内容，这个过程称为<strong>内存映射</strong>(memory mapping).</p>
+<p>一旦一个虚拟页面被初始化了，它就在一个由内核维护的专门的<strong>交换文件</strong>(swap file)之间换来换去。交换文件也叫做<strong>交换空间</strong>(swap space)或交换区域(swap area)。</p>
+<h4 id="_2">再看共享对象<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h4>
+<p>一个对象可以被映射到虚拟内存的一个区域，要么作为<strong>共享对象</strong>，要么作为<strong>私有对象</strong>。</p>
+<ul>
+<li>如果一个进程将一个共享对象映射到它的虚拟空间的一个区域内，那么这个进程对这个区域的任何写操作，对于那些也把这个共享对象映射到它们虚拟内存的其他进程而言，也是可见的。而且，这些变化也会反映在磁盘上的原始对象中。</li>
+<li>对于一个映射到私有对象的区域做的改变，对于其他进程来说是不可兼得。</li>
+<li>即使对象被映射到了多个共享区域，物理内存中也只需要存放共享对象的一个副本。</li>
+<li>
+<p>私有对象使用<strong>写时复制</strong>(copy-on-write)的巧妙技术被映射到虚拟内存中。对于每个映射私有对象的进程，相应私有区域的页表条目都被标记为只读，并且区域结构被标记为<strong>私有的写时复制</strong>。</p>
+<ul>
+<li>只要没有进程时图写它的私有区域，它们就可以继续共享物理内存中对象的一个单独副本。</li>
+<li>只要有一个进程试图写私有区域的某个页面，故障处理程序就会在物理内存中创建这个页面的一个新副本，更新页表条目指向这个新的副本，然后恢复这个页面的可写权限。</li>
+</ul>
+<p><img alt="private_copy_on_write" src="../figures/private_copy_on_write.png" /></p>
+</li>
+</ul>
+<h4 id="fork">再看fork函数<a class="headerlink" href="#fork" title="Permanent link">&para;</a></h4>
+<p>当fork函数被当前进程调用时，内核为新进程创建各种数据结构，并分配给它一个唯一的PID。</p>
+<ul>
+<li>为了给这个新进程创建虚拟内存，它创建了当前进程的<code>mm_struct</code>、区域结构<code>vm_area_struct</code>和页表的原样副本。</li>
+<li>内核将两个进程中的每个页面都标记为只读，并将两个进程中的每个区域结构都标记为私有的写时复制。</li>
+<li>当这两个进程中的任何一个进行写操作时，写时复制机制就会创建新页面。</li>
+</ul>
+<h4 id="execve">再看execve函数<a class="headerlink" href="#execve" title="Permanent link">&para;</a></h4>
+<p>execve函数在当前进程中加载并运行新程序：</p>
+<ul>
+<li>删除已存在的用户区域。</li>
+<li>映射私有区域。</li>
+<li>映射共享区域。</li>
+<li>设置程序计数器。</li>
+</ul>
+<h4 id="_3">用户级内存映射<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h4>
 <p>Linux进程可以使用mmap函数来创建新的虚拟内存区域，并将对象映射到这些区域中。</p>
-<div class="codehilite"><pre><span class="kt">void</span> <span class="o">*</span><span class="n">mmap</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">start</span><span class="p">,</span> <span class="kt">int</span> <span class="n">len</span><span class="p">,</span>
- <span class="kt">int</span> <span class="n">prot</span><span class="p">,</span> <span class="kt">int</span> <span class="n">flags</span><span class="p">,</span> <span class="kt">int</span> <span class="n">fd</span><span class="p">,</span> <span class="kt">int</span> <span class="n">offset</span><span class="p">)</span>
+<div class="codehilite"><pre><span class="kt">void</span> <span class="o">*</span><span class="n">mmap</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">start</span><span class="p">,</span> <span class="kt">int</span> <span class="n">len</span><span class="p">,</span> <span class="kt">int</span> <span class="n">prot</span><span class="p">,</span> <span class="kt">int</span> <span class="n">flags</span><span class="p">,</span> <span class="kt">int</span> <span class="n">fd</span><span class="p">,</span> <span class="kt">int</span> <span class="n">offset</span><span class="p">)</span>
 </pre></div>
 
 
@@ -567,14 +604,14 @@
 </ul>
 <p><img alt="A garbage collector’s view of memory as a directed graph." src="../figures/A%20garbage%20collector%E2%80%99s%20view%20of%20memory%20as%20a%20directed%20graph..png" /></p>
 <h3 id="9-c">9 C程序中常见的与内存有关的错误<a class="headerlink" href="#9-c" title="Permanent link">&para;</a></h3>
-<h4 id="_3">间接引用坏指针<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h4>
+<h4 id="_4">间接引用坏指针<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h4>
 <p>这是非常常见的例子，没有引用对应的地址，少了 &amp;</p>
 <div class="codehilite"><pre><span class="kt">int</span> <span class="n">val</span><span class="p">;</span>
 <span class="n">scanf</span><span class="p">(</span><span class="s">&quot;%d&quot;</span><span class="p">,</span> <span class="n">val</span><span class="p">);</span> <span class="c1">// 正确应该是scanf(&quot;%d, &amp;val);</span>
 </pre></div>
 
 
-<h4 id="_4">读未初始化的内存<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h4>
+<h4 id="_5">读未初始化的内存<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h4>
 <p><strong>堆内存是没有被初始化为0的</strong>：</p>
 <div class="codehilite"><pre><span class="cm">/* return y = Ax */</span>
 <span class="kt">int</span> <span class="o">*</span><span class="nf">matvec</span><span class="p">(</span><span class="kt">int</span> <span class="o">**</span><span class="n">A</span><span class="p">,</span> <span class="kt">int</span> <span class="o">*</span><span class="n">x</span><span class="p">)</span> <span class="p">{</span>
@@ -590,7 +627,7 @@
 
 
 <p>正确的方法是显式地将y[i]设置为0，或者使用<code>calloc</code>。</p>
-<h4 id="_5">允许栈缓冲区溢出<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h4>
+<h4 id="_6">允许栈缓冲区溢出<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h4>
 <p>没有检查字符串的长度（经典的缓冲区溢出攻击也是利用相同的机制）</p>
 <div class="codehilite"><pre><span class="kt">char</span> <span class="n">s</span><span class="p">[</span><span class="mi">8</span><span class="p">];</span>
 <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
@@ -598,7 +635,7 @@
 </pre></div>
 
 
-<h4 id="_6">引用不存在的变量<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h4>
+<h4 id="_7">引用不存在的变量<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h4>
 <p>尽管指针仍然指向一个合法的内存地址，但是已经不再指向一个合法的变量了。以后在程序中调用其他函数时，内存将重用它们的栈针。</p>
 <div class="codehilite"><pre><span class="kt">int</span> <span class="o">*</span><span class="nf">foo</span><span class="p">()</span> <span class="p">{</span>
     <span class="kt">int</span> <span class="n">val</span><span class="p">;</span>
@@ -608,7 +645,7 @@
 </pre></div>
 
 
-<h4 id="_7">多次释放<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h4>
+<h4 id="_8">多次释放<a class="headerlink" href="#_8" title="Permanent link">&para;</a></h4>
 <p>这个不用多说，不能重复搞两次</p>
 <div class="codehilite"><pre><span class="n">x</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="n">N</span> <span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span>
 <span class="c1">//  &lt;manipulate x&gt;</span>
@@ -619,7 +656,7 @@
 </pre></div>
 
 
-<h4 id="_8">引用已经被释放的堆块中的数据<a class="headerlink" href="#_8" title="Permanent link">&para;</a></h4>
+<h4 id="_9">引用已经被释放的堆块中的数据<a class="headerlink" href="#_9" title="Permanent link">&para;</a></h4>
 <p>同样是很明显的错误，不要犯</p>
 <div class="codehilite"><pre><span class="n">x</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="n">N</span> <span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span>
 <span class="c1">//  &lt;manipulate x&gt;</span>
@@ -631,7 +668,7 @@
 </pre></div>
 
 
-<h4 id="_9">忘记释放已分配块：<a class="headerlink" href="#_9" title="Permanent link">&para;</a></h4>
+<h4 id="_10">忘记释放已分配块：<a class="headerlink" href="#_10" title="Permanent link">&para;</a></h4>
 <div class="codehilite"><pre><span class="n">foo</span><span class="p">()</span> <span class="p">{</span>
     <span class="kt">int</span> <span class="o">*</span><span class="n">x</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="n">N</span> <span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span>
     <span class="c1">// ...</span>
