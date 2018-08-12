@@ -403,7 +403,7 @@
 <li><strong>R/W</strong>: Read-­‐only or read-­‐write access access permission for all reachable pages. </li>
 <li><strong>U/S</strong>: user or supervisor (kernel) mode access permission for all reachable pages.</li>
 <li><strong>WT</strong>: Write-­‐through or write-­‐back cache policy for the child page table.</li>
-<li><strong>A</strong>: Reference bit (引用位，set by MMU on reads and writes, cleared by software).</li>
+<li><strong>A</strong>: <em>Reference bit</em> (引用位，set by MMU on reads and writes, cleared by software).</li>
 <li><strong>PS</strong>: Page size either 4 KB or 4 MB (deﬁned for Level 1 PTEs only).</li>
 <li><strong>Page table physical base address</strong>: 40 most significant bits of physical page table address (forces page tables to be 4KB aligned) </li>
 <li><strong>XD</strong>: Disable or enable instruction fetches from all pages reachable from this PTE.</li>
@@ -411,7 +411,8 @@
 <p>Core i7第4级页表条目格式：</p>
 <p><img alt="Core i7 Level 4 Page Table Entries" src="../figures/Core%20i7%20Level%204%20Page%20Table%20Entries.png" /></p>
 <ul>
-<li><strong>D</strong>: Dirty bit (脏位，set by MMU on <em>writes</em>, cleared by software)</li>
+<li><strong>Page physical base address</strong>: 40 most signiﬁcant bits of physical page address (forces pages to be 4KB aligned)</li>
+<li><strong>D</strong>: <em>Dirty bit</em> (脏位, or modify bit，set by MMU on <em>writes</em>, cleared by software)</li>
 </ul>
 <p>下图给出了Core i7 MMU如何使用四级页表将虚拟地址翻译成物理地址。36位VPN被划分为四个9位的片，每个片被用作一个页表的偏移量。VPN1提供到一个L1 PET的偏移量，这个PTE包含L2页表的基地址。VPN2提供到一个L2 PET的偏移量，以此类推。</p>
 <p><img alt="Core i7 Page Table Translation" src="../figures/Core%20i7%20Page%20Table%20Translation.png" /></p>
@@ -427,7 +428,7 @@
 <li>栈（<code class="codehilite">Stack</code>）: 函数中的局部变量以及在函数调用过程中产生的临时变量都保存在此段中，具体见下面一节。</li>
 <li>内核虚拟内存：包含内核中的代码和数据结构。</li>
 </ul>
-<p><img alt="linux_virtual_memory" src="http://or9a8nskt.bkt.clouddn.com/linux_virtual_memory.png" /></p>
+<p><img alt="Virtual Address Space of a Linux Process" src="../figures/Virtual%20Address%20Space%20of%20a%20Linux%20Process.png" /></p>
 <p>下面是程序示意：</p>
 <div class="codehilite"><pre> <span class="cp">#include</span><span class="cpf">&lt;stdio.h&gt;    </span><span class="cp"></span>
  <span class="cp">#include</span> <span class="cpf">&lt;malloc.h&gt;    </span><span class="cp"></span>
