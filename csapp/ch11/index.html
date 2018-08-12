@@ -342,10 +342,11 @@ FH: LAN frame header, 局域网帧头</p>
 <p><img alt="hardware and software organization of an internet application" src="../figure/hardware%20and%20software%20organization%20of%20an%20internet%20application.png" /></p>
 <p>从程序员的角度：
 <em> 主机被映射为一组32位的<strong>IP地址</strong>(IP addresses)
-    * 128.2.203.179</em> IP地址被映射为一组标识符，叫做<strong>域名</strong>(domain name)
+    * 128.2.203.179
+</em> IP地址被映射为一组标识符，叫做<strong>域名</strong>(domain name)
 * 因特网主机上的进程能够通过<strong>连接</strong>和任何其他因特网主机上的进程通信。</p>
 <h4 id="ip">IP地址<a class="headerlink" href="#ip" title="Permanent link">&para;</a></h4>
-<p>32位IP地址存在一个IP地址结构(<code>in_addr</code>)中
+<p>32位IP地址存在一个IP地址结构(<code class="codehilite">in_addr</code>)中
 * IP地址在内存中是以<strong>网络字节顺序</strong>(network byte order, 大端法)存放的</p>
 <div class="codehilite"><pre><span class="cm">/* Internet address structure */</span> 
 <span class="k">struct</span> <span class="n">in_addr</span> <span class="p">{</span> 
@@ -358,13 +359,13 @@ FH: LAN frame header, 局域网帧头</p>
 <p><strong>域名</strong>(domain names)是一串用句点分隔的单词(字母、数字和破折号)。域名集合形成了一个层次结构，可以表示为一棵树。</p>
 <p><img alt="Internet Domain Names" src="../figure/Internet%20Domain%20Names.png" /></p>
 <p><strong>域名系统</strong>(Domain Naming System, DNS)是映射IP地址和域名的数据库。可以把DNS数据库视为上百万的<strong>主机条目结构</strong>(host entry structure)的集合，其中每条定义了一组域名和一组IP地址之间的映射。
-<em> DNS映射，可以通过<code>nsloopup</code>查看
+<em> DNS映射，可以通过<code class="codehilite">nsloopup</code>查看
 </em> 在最简单的情况中，一个域名和一个IP地址之间是一一映射
-    * <code>nslookup whaleshark.ics.cs.cmu.edu</code> - <code>Address: 128.2.210.175</code>
+    * <code class="codehilite">nslookup whaleshark.ics.cs.cmu.edu</code> - <code class="codehilite"><span class="n">Address</span><span class="o">:</span> <span class="mf">128.2</span><span class="o">.</span><span class="mf">210.175</span></code>
 <em> 然而，在某些情况下，多个域名可以映射为同一个IP地址
-    * <code>nslookup cs.mit.edu/ nslookup eecs.mit.edu</code> - <code>Address: 18.62.1.6</code>
+    * <code class="codehilite">nslookup cs.mit.edu/ nslookup eecs.mit.edu</code> - <code class="codehilite"><span class="n">Address</span><span class="o">:</span> <span class="mf">18.62</span><span class="o">.</span><span class="mf">1.6</span></code>
 </em> 在最通常的情况下，多个域名可以映射到同一组的多个IP地址
-    * <code>nslookup www.twitter.com</code> - <code>Address: 199.16.156.6</code>, <code>Address:199.16.156.70</code></p>
+    * <code class="codehilite">nslookup www.twitter.com</code> - <code class="codehilite"><span class="n">Address</span><span class="o">:</span> <span class="mf">199.16</span><span class="o">.</span><span class="mf">156.6</span></code>, <code class="codehilite"><span class="n">Address</span><span class="o">:</span><span class="mf">199.16</span><span class="o">.</span><span class="mf">156.70</span></code></p>
 <h4 id="_4">因特网连接<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h4>
 <p>客户端和服务器通过<strong>连接</strong>(connections)发送字节流来通信，每一个连接都有如下特点：</p>
 <ul>
@@ -390,8 +391,8 @@ FH: LAN frame header, 局域网帧头</p>
 <p>客户端和服务器通过对套接字描述符读写进行通信：</p>
 <p><img alt="client and servers communicate  via socket descriptors" src="../figure/client%20and%20servers%20communicate%20%20via%20socket%20descriptors.png" /></p>
 <p>(1) 通用套接字地址(generic socket address)：
-<em> 以套接字地址作为<code>connect()</code>, <code>bind()</code>, <code>accept</code>的实参
-</em> 仅仅因为那时的C不存在<code>void *</code>指针，所以套接字接口被设计成这样。</p>
+<em> 以套接字地址作为<code class="codehilite">connect()</code>, <code class="codehilite">bind()</code>, <code class="codehilite">accept</code>的实参
+</em> 仅仅因为那时的C不存在<code class="codehilite">void *</code>指针，所以套接字接口被设计成这样。</p>
 <div class="codehilite"><pre><span class="k">struct</span> <span class="n">sockaddr</span> <span class="p">{</span> 
     <span class="kt">uint16_t</span> <span class="n">sa_family</span><span class="p">;</span> <span class="cm">/* Protocol family */</span>
     <span class="kt">char</span> <span class="n">sa_data</span><span class="p">[</span><span class="mi">14</span><span class="p">];</span> <span class="p">};</span> <span class="cm">/* Address data. */</span>
@@ -399,7 +400,7 @@ FH: LAN frame header, 局域网帧头</p>
 
 
 <p>(2) 因特网的套接字地址
-* 必须将<code>struct sockaddr_in *</code> 转换为 <code>struct sockaddr *</code>才能以套接字地址作为函数实参</p>
+* 必须将<code class="codehilite">struct sockaddr_in *</code> 转换为 <code class="codehilite">struct sockaddr *</code>才能以套接字地址作为函数实参</p>
 <div class="codehilite"><pre><span class="k">struct</span> <span class="n">sockaddr_in</span> <span class="p">{</span>
     <span class="kt">uint16_t</span> <span class="n">sin_family</span><span class="p">;</span>
     <span class="kt">uint16_t</span> <span class="n">sin_port</span><span class="p">;</span>
@@ -412,16 +413,16 @@ FH: LAN frame header, 局域网帧头</p>
 <p><img alt="sockets interface" src="../figure/sockets%20interface.png" /></p>
 <ol>
 <li>开启服务器(start server)<ul>
-<li><code>getaddrinfo</code>: 把主机名(hostname）、主机地址(host addresses)、端口(ports)和服务名(service names)转换为套接字地址结构。</li>
-<li><code>socket</code>: 创建一个套接字描述符(socket descriptor)，也就是之后用来读写的 file descriptor</li>
-<li><code>bind</code>: 请求内核把套接字地址和套接字描述符绑定</li>
-<li><code>listen</code>: 将套接字描述符从一个主动套接字转换为监听套接字(listening socket)，该套接字可以接受来自客户端的连接请求</li>
-<li><code>accept</code>: 等待来自客户端的连接请求</li>
+<li><code class="codehilite">getaddrinfo</code>: 把主机名(hostname）、主机地址(host addresses)、端口(ports)和服务名(service names)转换为套接字地址结构。</li>
+<li><code class="codehilite">socket</code>: 创建一个套接字描述符(socket descriptor)，也就是之后用来读写的 file descriptor</li>
+<li><code class="codehilite">bind</code>: 请求内核把套接字地址和套接字描述符绑定</li>
+<li><code class="codehilite">listen</code>: 将套接字描述符从一个主动套接字转换为监听套接字(listening socket)，该套接字可以接受来自客户端的连接请求</li>
+<li><code class="codehilite">accept</code>: 等待来自客户端的连接请求</li>
 </ul>
 </li>
 <li>开启客户端(start client)<ul>
-<li><code>getaddrinfo</code>, <code>socket</code>与开启服务器相同</li>
-<li><code>connect</code>: 试图与服务器建立连接</li>
+<li><code class="codehilite">getaddrinfo</code>, <code class="codehilite">socket</code>与开启服务器相同</li>
+<li><code class="codehilite">connect</code>: 试图与服务器建立连接</li>
 </ul>
 </li>
 </ol>
@@ -454,7 +455,7 @@ FH: LAN frame header, 局域网帧头</p>
 </pre></div>
 
 
-<p>服务器在打开监听描述符后，进入一个无限循环。每次循环都等待一个来自客户端的连接请求，输出已连接客户端的域名和IP地址，并调用<code>echo</code>函数为这些客户端服务。在<code>echo</code>程序返回后，主程序关闭已连接描述符。</p>
+<p>服务器在打开监听描述符后，进入一个无限循环。每次循环都等待一个来自客户端的连接请求，输出已连接客户端的域名和IP地址，并调用<code class="codehilite">echo</code>函数为这些客户端服务。在<code class="codehilite">echo</code>程序返回后，主程序关闭已连接描述符。</p>
 <div class="codehilite"><pre><span class="cp">#include</span> <span class="cpf">&quot;csapp.h&quot;</span><span class="cp"></span>
 <span class="kt">void</span> <span class="nf">echo</span><span class="p">(</span><span class="kt">int</span> <span class="n">connfd</span><span class="p">);</span>
 <span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">){</span>
@@ -512,18 +513,18 @@ FH: LAN frame header, 局域网帧头</p>
 </em> 动态内容：运行一个可执行文件产生输出，返回给客户端</p>
 <h4 id="http">HTTP事务<a class="headerlink" href="#http" title="Permanent link">&para;</a></h4>
 <p>一个<strong>HTTP请求</strong>(request)是一个<strong>请求行</strong>(request line)，后面跟随着零个或多个<strong>请求报头</strong>(request header)，再跟随一个终止报头的空行。</p>
-<p><strong>请求行</strong>的格式是<code>&lt;method&gt; &lt;uri&gt; &lt;version&gt;</code>。
-<em> <code>&lt;method&gt;</code>可以是GET, POST, OPTIONS, HEAD, PUT, DELETE, TRAXE
-</em> <code>&lt;uri&gt;</code>是响应的URL的后缀，包括文件名和可选的参数
-* <code>&lt;version&gt;</code>是该请求遵循的HTTP的版本(HTTP/1.0或者HTTP/1.1)</p>
-<p><strong>请求报头</strong>的格式是<code>&lt;header name&gt;:&lt;header data&gt;</code>
+<p><strong>请求行</strong>的格式是<code class="codehilite">&lt;method&gt; &lt;uri&gt; &lt;version&gt;</code>。
+<em> <code class="codehilite">&lt;method&gt;</code>可以是GET, POST, OPTIONS, HEAD, PUT, DELETE, TRAXE
+</em> <code class="codehilite">&lt;uri&gt;</code>是响应的URL的后缀，包括文件名和可选的参数
+* <code class="codehilite">&lt;version&gt;</code>是该请求遵循的HTTP的版本(HTTP/1.0或者HTTP/1.1)</p>
+<p><strong>请求报头</strong>的格式是<code class="codehilite">&lt;header name&gt;:&lt;header data&gt;</code>
 * 为服务器提供额外信息，例如浏览器的商标名</p>
 <p><strong>HTTP响应</strong>与HTTP请求类似，是一个<strong>响应行</strong>(response line)，后面跟着零个或者多个<strong>响应报头</strong>(response header)，再跟随一个终止报头的空行，再跟随一个响应主体(response body)。</p>
-<p><strong>响应行</strong>的格式是<code>&lt;version&gt; &lt;status code&gt; &lt;status message&gt;</code>
-<em> <code>&lt;version&gt;</code>是响应所遵循的HTTP版本
-</em> <code>&lt;status-code&gt;</code>是一个3位的正整数，指明对请求的处理
-* <code>&lt;status-message&gt;</code> 英文描述</p>
-<p><strong>响应报头</strong>的格式是<code>&lt;header name&gt;:&lt;header data&gt;</code></p>
+<p><strong>响应行</strong>的格式是<code class="codehilite">&lt;version&gt; &lt;status code&gt; &lt;status message&gt;</code>
+<em> <code class="codehilite">&lt;version&gt;</code>是响应所遵循的HTTP版本
+</em> <code class="codehilite">&lt;status-code&gt;</code>是一个3位的正整数，指明对请求的处理
+* <code class="codehilite">&lt;status-message&gt;</code> 英文描述</p>
+<p><strong>响应报头</strong>的格式是<code class="codehilite">&lt;header name&gt;:&lt;header data&gt;</code></p>
 <p>下面是HTTP请求的一个实例
 <img alt="example HTTP transaction" src="../figure/example%20HTTP%20transaction.png" /></p></div>
         </div>
@@ -534,7 +535,7 @@ FH: LAN frame header, 局域网帧头</p>
         </footer>
         <script>var base_url = '../..';</script>
         <script src="../../js/base.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
         <script src="../../search/require.js"></script>
         <script src="../../search/search.js"></script>
 

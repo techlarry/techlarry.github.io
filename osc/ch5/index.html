@@ -337,7 +337,7 @@
 <h4 id="preemptive-and-nonpreemptive-scheduling">Preemptive and Nonpreemptive Scheduling<a class="headerlink" href="#preemptive-and-nonpreemptive-scheduling" title="Permanent link">&para;</a></h4>
 <p>CPU-scheduling decisions may take place under the following four circumstances: </p>
 <ol>
-<li>When a process switches from the running state to the waiting state (for example, as the result of an I/O request or an invocation of <code>wait()</code> for the termination of a child process) 当一个进程从运行状态切换到等待状态（如：I/O请求，或者调用wait等待一个子进程的终止） </li>
+<li>When a process switches from the running state to the waiting state (for example, as the result of an I/O request or an invocation of <code class="codehilite">wait()</code> for the termination of a child process) 当一个进程从运行状态切换到等待状态（如：I/O请求，或者调用wait等待一个子进程的终止） </li>
 <li>When a process switches from the running state to the ready state (for example, when an interrupt occurs) 当一个进程从运行状态切换到就绪状态（如：出现中断） </li>
 <li>When a process switches from the waiting state to the ready state (for example, at completion of I/O) 当一个进程从等待状态切换到就绪状态（如：I/O完成） </li>
 <li>When a process terminates 当一个进程终止时</li>
@@ -384,11 +384,12 @@
 </ul>
 </li>
 </ul>
-<p>The next CPU burst is generally predicted as an <strong>exponential average</strong> of the measured lengths of previous CPU bursts. Let <script type="math/tex">t_n</script> be the length of the <script type="math/tex">n</script>th CPU burst, and let <script type="math/tex">\tau_{n+1}</script> be predicted value for the next CPU burst:</p>
-<p>
+<p>The next CPU burst is generally predicted as an <strong>exponential average</strong> of the measured lengths of previous CPU bursts. Let <span><span class="MathJax_Preview">t_n</span><script type="math/tex">t_n</script></span> be the length of the <span><span class="MathJax_Preview">n</span><script type="math/tex">n</script></span>th CPU burst, and let <span><span class="MathJax_Preview">\tau_{n+1}</span><script type="math/tex">\tau_{n+1}</script></span> be predicted value for the next CPU burst:</p>
+<div>
+<div class="MathJax_Preview">\tau_{n+1}= \alpha t_n + (1-\alpha) \tau_n</div>
 <script type="math/tex; mode=display">\tau_{n+1}= \alpha t_n + (1-\alpha) \tau_n</script>
-</p>
-<p>where <script type="math/tex">0\le\alpha \le 1</script>, commonly <script type="math/tex">\alpha = 1/2</script>.</p>
+</div>
+<p>where <span><span class="MathJax_Preview">0\le\alpha \le 1</span><script type="math/tex">0\le\alpha \le 1</script></span>, commonly <span><span class="MathJax_Preview">\alpha = 1/2</span><script type="math/tex">\alpha = 1/2</script></span>.</p>
 <h4 id="round-robin-scheduling-rr">Round-Robin scheduling, RR<a class="headerlink" href="#round-robin-scheduling-rr" title="Permanent link">&para;</a></h4>
 <p>The <strong>round-robin scheduling</strong>(轮转调度) algorithm is similar to FCFS scheduling, but switch occurs after 1 <strong>time quantum</strong> (时间片).</p>
 <ul>
@@ -458,13 +459,13 @@
 <h4 id="pthread-scheduling">Pthread Scheduling<a class="headerlink" href="#pthread-scheduling" title="Permanent link">&para;</a></h4>
 <p><strong>Pthreads</strong> identifies the following contention scope values:</p>
 <ul>
-<li><code>PTHREAD_SCOPE_PROCESS</code> schedules threads using PCS scheduling.</li>
-<li><code>PTHREAD_SCOPE_SYSTEM</code> schedules threads using SCS scheduling.</li>
+<li><code class="codehilite">PTHREAD_SCOPE_PROCESS</code> schedules threads using PCS scheduling.</li>
+<li><code class="codehilite">PTHREAD_SCOPE_SYSTEM</code> schedules threads using SCS scheduling.</li>
 </ul>
 <p>The Pthread IPC (Interprocess Communication) provides two functions for setting—and getting—the contention scope policy:</p>
 <ul>
-<li><code>pthread_attr_setscope(pthread_attr_t *attr, int scope)</code></li>
-<li><code>pthread_attr_getscope(pthread_attr_t *attr, int *scope)</code></li>
+<li><code class="codehilite">pthread_attr_setscope(pthread_attr_t *attr, int scope)</code></li>
+<li><code class="codehilite">pthread_attr_getscope(pthread_attr_t *attr, int *scope)</code></li>
 </ul>
 <div class="codehilite"><pre><span class="cp">#include</span> <span class="cpf">&lt;pthread.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
@@ -622,31 +623,25 @@
 <p>Before we proceed with the details, we must define certain characteristics of the processes that are to be scheduled.</p>
 <ul>
 <li>The processes are considered <strong>periodic</strong>.</li>
-<li>Once a periodic process has acquired the CPU, it has a fixed processing <strong>time</strong> <script type="math/tex">t</script>, a <strong>deadline</strong> <script type="math/tex">d</script> by which it must be serviced by the CPU, and a <strong>period</strong> <script type="math/tex">p</script>.</li>
-<li>The <strong>rate</strong> of a periodic task is <script type="math/tex">1/p</script>.
+<li>Once a periodic process has acquired the CPU, it has a fixed processing <strong>time</strong> <span><span class="MathJax_Preview">t</span><script type="math/tex">t</script></span>, a <strong>deadline</strong> <span><span class="MathJax_Preview">d</span><script type="math/tex">d</script></span> by which it must be serviced by the CPU, and a <strong>period</strong> <span><span class="MathJax_Preview">p</span><script type="math/tex">p</script></span>.</li>
+<li>The <strong>rate</strong> of a periodic task is <span><span class="MathJax_Preview">1/p</span><script type="math/tex">1/p</script></span>.
 <img alt="periodic_task" src="../figures/periodic_task.png" /></li>
 </ul>
-<p>Let's consider an example. We have two processes, <script type="math/tex">P_1</script> and <script type="math/tex">P_2</script>. </p>
+<p>Let's consider an example. We have two processes, <span><span class="MathJax_Preview">P_1</span><script type="math/tex">P_1</script></span> and <span><span class="MathJax_Preview">P_2</span><script type="math/tex">P_2</script></span>. </p>
 <ul>
-<li>The periods: - <script type="math/tex">P_1=50</script> and <script type="math/tex">P_2=100</script>
-</li>
-<li>The processing time: <script type="math/tex">t_1=20</script> and <script type="math/tex">t_2=35</script>
-</li>
+<li>The periods: - <span><span class="MathJax_Preview">P_1=50</span><script type="math/tex">P_1=50</script></span> and <span><span class="MathJax_Preview">P_2=100</span><script type="math/tex">P_2=100</script></span> </li>
+<li>The processing time: <span><span class="MathJax_Preview">t_1=20</span><script type="math/tex">t_1=20</script></span> and <span><span class="MathJax_Preview">t_2=35</span><script type="math/tex">t_2=35</script></span> </li>
 <li>The deadline requires that it complete its CPU burst by the start of its next period.</li>
 </ul>
 <p><img alt="an_example_of_rate_monotonic_scheduling" src="../figures/an_example_of_rate_monotonic_scheduling.png" /></p>
 <p>Now suppose we use rate-monotonic scheduling:</p>
 <ul>
-<li>We assign <script type="math/tex">P_1</script> a higher priority than <script type="math/tex">P_2</script> because the period of <script type="math/tex">P_1</script> is shorter than that of <script type="math/tex">P_2</script>. </li>
-<li>
-<script type="math/tex">P_1</script> starts first and completes its CPU burst at time 20, thereby meeting its first deadline. </li>
-<li>
-<script type="math/tex">P_2</script> starts running at this point and runs until time 50. At this time, it is preempted by <script type="math/tex">P_1</script> , although it still has 5 milliseconds remaining in its CPU burst. </li>
-<li>
-<script type="math/tex">P_1</script> completes its CPU burst at time 70, at which point the scheduler resumes <script type="math/tex">P_2</script> . </li>
-<li>
-<script type="math/tex">P_2</script> completes its CPU burst at time 75, also meeting its first deadline. </li>
-<li>The system is idle until time 100, when <script type="math/tex">P_1</script> is scheduled again.</li>
+<li>We assign <span><span class="MathJax_Preview">P_1</span><script type="math/tex">P_1</script></span> a higher priority than <span><span class="MathJax_Preview">P_2</span><script type="math/tex">P_2</script></span> because the period of <span><span class="MathJax_Preview">P_1</span><script type="math/tex">P_1</script></span> is shorter than that of <span><span class="MathJax_Preview">P_2</span><script type="math/tex">P_2</script></span>. </li>
+<li><span><span class="MathJax_Preview">P_1</span><script type="math/tex">P_1</script></span> starts first and completes its CPU burst at time 20, thereby meeting its first deadline. </li>
+<li><span><span class="MathJax_Preview">P_2</span><script type="math/tex">P_2</script></span> starts running at this point and runs until time 50. At this time, it is preempted by <span><span class="MathJax_Preview">P_1</span><script type="math/tex">P_1</script></span> , although it still has 5 milliseconds remaining in its CPU burst. </li>
+<li><span><span class="MathJax_Preview">P_1</span><script type="math/tex">P_1</script></span> completes its CPU burst at time 70, at which point the scheduler resumes <span><span class="MathJax_Preview">P_2</span><script type="math/tex">P_2</script></span> . </li>
+<li><span><span class="MathJax_Preview">P_2</span><script type="math/tex">P_2</script></span> completes its CPU burst at time 75, also meeting its first deadline. </li>
+<li>The system is idle until time 100, when <span><span class="MathJax_Preview">P_1</span><script type="math/tex">P_1</script></span> is scheduled again.</li>
 </ul>
 <h3 id="7-linux-scheduling">7 Linux Scheduling<a class="headerlink" href="#7-linux-scheduling" title="Permanent link">&para;</a></h3>
 <p>The <strong><em>Completely Fair Scheduler</em></strong>(CFS，完全公平调度算法) is the default Linux scheduling algorithm after release 2.6.23 of the kernel.</p>
@@ -663,10 +658,10 @@
 <li>a default scheduling class using the CFS scheduling algorithm </li>
 <li>a real-time scheduling class.</li>
 </ul>
-<p>Each runnable task is placed in a <strong>red-black tree</strong> - a balanced binary search tree whose key is based on the value of virtual runtime <code>vruntime</code>.</p>
+<p>Each runnable task is placed in a <strong>red-black tree</strong> - a balanced binary search tree whose key is based on the value of virtual runtime <code class="codehilite">vruntime</code>.</p>
 <ul>
-<li>discover the leftmost node will require $O(\log N)$ operations.</li>
-<li>Linux scheduler caches the leftmost node in the variable <code>rb_leftmost</code>, and requires only retrieving the cached value.</li>
+<li>discover the leftmost node will require <span><span class="MathJax_Preview">O(\log N)</span><script type="math/tex">O(\log N)</script></span> operations.</li>
+<li>Linux scheduler caches the leftmost node in the variable <code class="codehilite">rb_leftmost</code>, and requires only retrieving the cached value.</li>
 </ul>
 <p><img alt="" src="../ch5/15327413379278.gif" /></p></div>
         </div>
@@ -677,7 +672,7 @@
         </footer>
         <script>var base_url = '../..';</script>
         <script src="../../js/base.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
         <script src="../../search/require.js"></script>
         <script src="../../search/search.js"></script>
 

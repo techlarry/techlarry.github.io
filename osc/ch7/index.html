@@ -307,9 +307,9 @@
 
 
 <ul>
-<li>We assume that the pool consists of <script type="math/tex">n</script> buffers, each capable of holding one item.</li>
-<li>The <code>mutex</code> binary semaphore provides mutual exclusion for accesses to the buffer pool and is initialized to the value 1.</li>
-<li>The <code>empty</code> and <code>full</code> semaphores count the number of empty and full buffers.</li>
+<li>We assume that the pool consists of <span><span class="MathJax_Preview">n</span><script type="math/tex">n</script></span> buffers, each capable of holding one item.</li>
+<li>The <code class="codehilite">mutex</code> binary semaphore provides mutual exclusion for accesses to the buffer pool and is initialized to the value 1.</li>
+<li>The <code class="codehilite">empty</code> and <code class="codehilite">full</code> semaphores count the number of empty and full buffers.</li>
 </ul>
 <div class="codehilite"><pre><span class="c1">// The code for the producer process:</span>
 <span class="k">while</span> <span class="p">(</span><span class="nb">true</span><span class="p">)</span> <span class="p">{</span>
@@ -349,7 +349,7 @@
 <li>If two readers access the shared data simultaneously, no adverse effects will result.</li>
 <li>If a writer and some other processes (either a reader or a writer) access the database simultaneously, chaos may ensue.</li>
 </ul>
-<p>Three variables are used: <strong><code>mutex</code></strong>, <strong><code>rw_mutex</code></strong>, <strong><code>readcnt</code></strong> to implement solution.</p>
+<p>Three variables are used: <strong><code class="codehilite">mutex</code></strong>, <strong><code class="codehilite">rw_mutex</code></strong>, <strong><code class="codehilite">readcnt</code></strong> to implement solution.</p>
 <div class="codehilite"><pre><span class="n">semaphore</span> <span class="n">rw_mutex</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> 
 <span class="n">semaphore</span> <span class="n">mutex</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> 
 <span class="kt">int</span> <span class="n">read</span> <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
@@ -357,14 +357,14 @@
 
 
 <ul>
-<li>semaphore <strong><code>mutex</code></strong>:  used to ensure mutual exclusion when <code>readcnt</code> is updated i.e. when any reader enters or exit from the critical section.</li>
-<li>semaphore <strong><code>rw_mutex</code></strong>: used by both readers and writers.</li>
-<li>int <strong><code>readcnt</code></strong>: the number of processes performing read in the critical section, initially 0.</li>
+<li>semaphore <strong><code class="codehilite">mutex</code></strong>:  used to ensure mutual exclusion when <code class="codehilite">readcnt</code> is updated i.e. when any reader enters or exit from the critical section.</li>
+<li>semaphore <strong><code class="codehilite">rw_mutex</code></strong>: used by both readers and writers.</li>
+<li>int <strong><code class="codehilite">readcnt</code></strong>: the number of processes performing read in the critical section, initially 0.</li>
 </ul>
 <p>Writer processes:</p>
 <ol>
 <li>Writer requests the entry to critical section.</li>
-<li>If allowed i.e. <code>wait()</code> gives a true value, it enters and performs the write. If not allowed, it keeps on waiting.</li>
+<li>If allowed i.e. <code class="codehilite">wait()</code> gives a true value, it enters and performs the write. If not allowed, it keeps on waiting.</li>
 <li>It exits the critical section.</li>
 </ol>
 <div class="codehilite"><pre><span class="k">do</span> <span class="p">{</span>
@@ -384,9 +384,9 @@
 <ol>
 <li>Reader requests the entry to critical section.</li>
 <li>If allowed:<ul>
-<li>It increments the count of number of readers inside the critical section. If this reader is the first reader entering, it locks the <code>rw_mutex</code> semaphore to restrict the entry of writers if any reader is inside.</li>
-<li>It then, signals <code>mutex</code> as any other reader is allowed to enter while others are already reading.</li>
-<li>After performing reading, it exits the critical section. When exiting, it checks if no more reader is inside, it signals the semaphore <code>rw_mutex</code> as now, writer can enter the critical section.</li>
+<li>It increments the count of number of readers inside the critical section. If this reader is the first reader entering, it locks the <code class="codehilite">rw_mutex</code> semaphore to restrict the entry of writers if any reader is inside.</li>
+<li>It then, signals <code class="codehilite">mutex</code> as any other reader is allowed to enter while others are already reading.</li>
+<li>After performing reading, it exits the critical section. When exiting, it checks if no more reader is inside, it signals the semaphore <code class="codehilite">rw_mutex</code> as now, writer can enter the critical section.</li>
 </ul>
 </li>
 <li>If not allowed, it keeps on waiting.</li>
@@ -444,21 +444,21 @@
 <p>Linux provides several different mechanisms for synchronization in the kernel. </p>
 <p>The synchronization methods discussed here to synchronization within the kernel and are therefore available only to kernel developers.</p>
 <h4 id="atomic-integer">Atomic integer<a class="headerlink" href="#atomic-integer" title="Permanent link">&para;</a></h4>
-<p>The simplest synchronization technique within the Linux kernel is an atomic integer, which is represented using the <em><a href="https://en.wikipedia.org/wiki/Opaque_data_type">opaque data type</a></em> <code>atomic_t</code>. All math operations using atomic integers are performed without interruption.</p>
+<p>The simplest synchronization technique within the Linux kernel is an atomic integer, which is represented using the <em><a href="https://en.wikipedia.org/wiki/Opaque_data_type">opaque data type</a></em> <code class="codehilite">atomic_t</code>. All math operations using atomic integers are performed without interruption.</p>
 <p>Atomic integers are particularly efficient in situations where an integer variable—such as a counter—needs to be updated, since atomic operations do not require the overhead of locking mechanisms:</p>
 <p><img alt="various_atomic_operations" src="../figures/various_atomic_operations.png" /></p>
 <h4 id="locks">Locks<a class="headerlink" href="#locks" title="Permanent link">&para;</a></h4>
-<p>In situations where there are several variables contributing to a possible race condition, more sophisticated locking tools must be used. Mutex locks are available in Linux for protecting critical sections within the kernel. Here, a task must invoke the <code>mutex_lock()</code> function prior to entering a critical section and the<code>mutex_unlock()</code> function after exiting the critical section.</p>
+<p>In situations where there are several variables contributing to a possible race condition, more sophisticated locking tools must be used. Mutex locks are available in Linux for protecting critical sections within the kernel. Here, a task must invoke the <code class="codehilite">mutex_lock()</code> function prior to entering a critical section and the<code class="codehilite">mutex_unlock()</code> function after exiting the critical section.</p>
 <p>Linux also provides spinlocks and semaphores (as well as reader–writer versions of these two locks) for locking in the kernel. </p>
 <p>Both spinlocks and mutex locks in the Linux kernel are <strong><em>nonrecursive</em></strong>, which means that if a thread has acquired one of these locks, it cannot acquire the same lock a second time without first releasing the lock. Otherwise, the second attempt at acquiring the lock will block.</p>
-<p>Linux provides two simple system calls — <code>preempt_disable()</code> and <code>preempt_enable()</code> —for disabling and enabling kernel preemption.</p>
+<p>Linux provides two simple system calls — <code class="codehilite">preempt_disable()</code> and <code class="codehilite">preempt_enable()</code> —for disabling and enabling kernel preemption.</p>
 <h3 id="3-posix-synchronization">3 POSIX Synchronization<a class="headerlink" href="#3-posix-synchronization" title="Permanent link">&para;</a></h3>
 <p>The POSIX API is available for programmers at the user level and is not part of any particular operating-system kernel.</p>
 <h4 id="posix-mutex-locks">POSIX Mutex Locks<a class="headerlink" href="#posix-mutex-locks" title="Permanent link">&para;</a></h4>
-<p>Pthreads uses the <code>pthread_mutex_t</code> data type for mutex locks.</p>
+<p>Pthreads uses the <code class="codehilite">pthread_mutex_t</code> data type for mutex locks.</p>
 <ul>
-<li>A mutex is created with the pthread <code>mutex_init()</code> function.</li>
-<li>The mutex is acquired and released with the pthread <code>mutex_lock()</code> and pthread <code>mutex_unlock()</code> functions.</li>
+<li>A mutex is created with the pthread <code class="codehilite">mutex_init()</code> function.</li>
+<li>The mutex is acquired and released with the pthread <code class="codehilite">mutex_lock()</code> and pthread <code class="codehilite">mutex_unlock()</code> functions.</li>
 </ul>
 <div class="codehilite"><pre><span class="cp">#include</span> <span class="cpf">&lt;pthread.h&gt;</span><span class="cp"></span>
 <span class="n">pthread_mutex_t</span> <span class="n">mutex</span><span class="p">;</span> 
@@ -581,7 +581,7 @@
         </footer>
         <script>var base_url = '../..';</script>
         <script src="../../js/base.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
         <script src="../../search/require.js"></script>
         <script src="../../search/search.js"></script>
 

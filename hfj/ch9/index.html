@@ -313,7 +313,7 @@
 
 <p><img alt="local_variable_is_a_referece_to_an_object" src="../figures/local_variable_is_a_referece_to_an_object-1.png" /></p>
 <h3 id="2-constructor">2 Constructor<a class="headerlink" href="#2-constructor" title="Permanent link">&para;</a></h3>
-<p><strong>Constructor</strong>(构造函数) is <em><em>the code that runs when you instantiate an object</em></em> . They only way to invoke a constructor is with the keyword <strong><code>new</code></strong> followed by the class name.</p>
+<p><strong>Constructor</strong>(构造函数) is <em><em>the code that runs when you instantiate an object</em></em> . They only way to invoke a constructor is with the keyword <strong><code class="codehilite">new</code></strong> followed by the class name.</p>
 <p>You can write a constructor for your class, but if you don't the <strong><em>compiler writes one for you</em></strong> !</p>
 <p>Here is what the compiler default constructor looks like:</p>
 <div class="codehilite"><pre><span class="kd">public</span> <span class="nf">Duck</span><span class="o">(){</span>
@@ -327,9 +327,13 @@
 <li>A constructor's name is the same as the class name. That's mandatory.</li>
 <li>Constructors have no return type, while a method need a return type.</li>
 </ul>
-<p><strong>Note</strong>: 
-<em> Java lets you declare a method with the same name as your class. The thing that separates a method from a constructor is <strong>the return type</strong>.
-</em> Constructors are <strong>not inherited</strong>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul>
+<li>Java lets you declare a method with the same name as your class. The thing that separates a method from a constructor is <strong>the return type</strong>.</li>
+<li>Constructors are <strong>not inherited</strong>.</li>
+</ul>
+</div>
 <p>The key feature of a constructor is that it runs <strong><em>before</em></strong> the object can be assigned to a reference.</p>
 <h4 id="initializing-the-state-of-an-object">Initializing the state of an object<a class="headerlink" href="#initializing-the-state-of-an-object" title="Permanent link">&para;</a></h4>
 <p>Most people use constructors to initialize the state of an object. In other words, to make and assign values to the object's instance variables. </p>
@@ -363,7 +367,7 @@
 <p>If you write a constructor that takes arguments, and you still want a no-arg constructor, you'll have to build the no-arg constructor yourself! Because the compiler won't make a default constructor if you have any constructors.</p>
 <h4 id="constructor-chaining">constructor chaining<a class="headerlink" href="#constructor-chaining" title="Permanent link">&para;</a></h4>
 <p>When an object is created, the object gets space for <em>all</em> instance variables, from all the way up the inheritance tree.</p>
-<p><strong><em>All the constructors in an object's inheritance tree must run when you make a new object.</em></strong> When a constructor runs, it immediately calls its superclass constructor, all the way up the chain until you get to the class <code>Object</code> constructor (called <strong>constructor chaining</strong>(构造函数链)).</p>
+<p><strong><em>All the constructors in an object's inheritance tree must run when you make a new object.</em></strong> When a constructor runs, it immediately calls its superclass constructor, all the way up the chain until you get to the class <code class="codehilite">Object</code> constructor (called <strong>constructor chaining</strong>(构造函数链)).</p>
 <p>eg. A new Hippo object also IS-A Animal and IS-A Object. If you want to make a Hippo, you must also make the Animal and Object parts of the Hippo.</p>
 <p><img alt="construcotr_chaining" src="../figures/construcotr_chaining-1.png" /></p>
 <div class="codehilite"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Animal</span> <span class="o">{</span> 
@@ -389,7 +393,7 @@
 
 <p><img alt="hippo_animal_constructo" src="../figures/hippo_animal_constructor.png" /></p>
 <h4 id="invoke-a-superclass-constructor">invoke a superclass constructor<a class="headerlink" href="#invoke-a-superclass-constructor" title="Permanent link">&para;</a></h4>
-<p>The only way to call a superclass constructor is by calling <code>**super()</code>**.</p>
+<p>The only way to call a superclass constructor is by calling <code class="codehilite">**super()</code>**.</p>
 <div class="codehilite"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Duck</span> <span class="kd">extends</span> <span class="n">Animal</span> <span class="o">{</span>
     <span class="kt">int</span> <span class="n">size</span><span class="o">;</span>
 
@@ -400,15 +404,18 @@
 </pre></div>
 
 
-<p>A call to <code>super()</code> in your constructor puts the superclass constructor on the top of the Stack. And that superclass constructor calls its superclass constructor. And so it goes until the Object constructor is on the top of the Stack. Once <code>Object()</code> finishes, it's popped off the Stack and goes until the original constructor is on the top of the Stack.</p>
-<p>Note: The compiler will put a call to <code>super()</code> in <strong>each</strong> of your overloaded constructors, if you do <em>not</em> have calls to <code>super()</code>.</p>
-<p><strong><em>The superclass parts of an object have to be fully-formed (completely built) before the subclass parts can be constructed.</em></strong> So the call to <code>Super()</code> must be  the <em>first</em> statement in each constructor!</p>
-<h4 id="this"><code>this</code><a class="headerlink" href="#this" title="Permanent link">&para;</a></h4>
-<p><code>this</code> is a <strong>reference</strong> to <em>the current object</em>.  </p>
+<p>A call to <code class="codehilite">super()</code> in your constructor puts the superclass constructor on the top of the Stack. And that superclass constructor calls its superclass constructor. And so it goes until the Object constructor is on the top of the Stack. Once <code class="codehilite">Object()</code> finishes, it's popped off the Stack and goes until the original constructor is on the top of the Stack.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The compiler will put a call to <code class="codehilite">super()</code> in <strong>each</strong> of your overloaded constructors, if you do <em>not</em> have calls to <code class="codehilite">super()</code>.</p>
+</div>
+<p><strong><em>The superclass parts of an object have to be fully-formed (completely built) before the subclass parts can be constructed.</em></strong> So the call to <code class="codehilite">Super()</code> must be  the <em>first</em> statement in each constructor!</p>
+<h4 id="this"><code class="codehilite">this</code><a class="headerlink" href="#this" title="Permanent link">&para;</a></h4>
+<p><code class="codehilite">this</code> is a <strong>reference</strong> to <em>the current object</em>.  </p>
 <ul>
-<li><code>this()</code> calls the real constructor and let the real constructor finish the job of construction.</li>
-<li>The call to <code>this()</code> can be used only in a constructor, and must be the <strong><em>first</em></strong> statement in a constructor.</li>
-<li>A constructor can have a call to <code>super()</code> or <code>this()</code>, but never both!</li>
+<li><code class="codehilite">this()</code> calls the real constructor and let the real constructor finish the job of construction.</li>
+<li>The call to <code class="codehilite">this()</code> can be used only in a constructor, and must be the <strong><em>first</em></strong> statement in a constructor.</li>
+<li>A constructor can have a call to <code class="codehilite">super()</code> or <code class="codehilite">this()</code>, but never both!</li>
 </ul>
 <div class="codehilite"><pre><span class="kd">class</span> <span class="nc">Mini</span> <span class="kd">extends</span> <span class="n">Car</span> <span class="o">{</span>
     <span class="n">Color</span> <span class="n">color</span><span class="o">;</span>
@@ -468,7 +475,7 @@
         </footer>
         <script>var base_url = '../..';</script>
         <script src="../../js/base.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
         <script src="../../search/require.js"></script>
         <script src="../../search/search.js"></script>
 

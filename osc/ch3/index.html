@@ -342,11 +342,11 @@
 </ul>
 <p>Process Control Block:</p>
 <p><img alt="process control block" src="http://or9a8nskt.bkt.clouddn.com/processcontrolblock.png" /></p>
-<p>The process control block in Linux is represented by the C structure <code>task_struct</code> ('include/linux/sched.h')， <a href="https://elixir.bootlin.com/linux/latest/source/include/linux/sched.h#L592">CODE LINK</a></p>
+<p>The process control block in Linux is represented by the C structure <code class="codehilite">task_struct</code> ('include/linux/sched.h')， <a href="https://elixir.bootlin.com/linux/latest/source/include/linux/sched.h#L592">CODE LINK</a></p>
 <ul>
 <li>Within the Linux kernel, all active processes are represented using a <strong>doubly linked list</strong> of task struct.</li>
 </ul>
-<p><code>Task_strut</code>:</p>
+<p><code class="codehilite">Task_strut</code>:</p>
 <p><img alt="task_strcut in Linux" src="http://or9a8nskt.bkt.clouddn.com/task_strcutinLinux.png" /></p>
 <h3 id="2-process-scheduling">2 Process scheduling<a class="headerlink" href="#2-process-scheduling" title="Permanent link">&para;</a></h3>
 <p>The <strong>process scheduler</strong>(进程调度程序) selects an available process for program execution on a core.</p>
@@ -382,12 +382,12 @@
 </ul>
 <p><img alt="process creating using the fork-- system cal" src="http://or9a8nskt.bkt.clouddn.com/process_creating_using_the_fork_system_call.png" /></p>
 <h4 id="process-termination">Process termination<a class="headerlink" href="#process-termination" title="Permanent link">&para;</a></h4>
-<p>A process <strong>terminates</strong> when it finishes executing its final statement and asks the operating system to delete it by using the <code>exit()</code> system call.</p>
+<p>A process <strong>terminates</strong> when it finishes executing its final statement and asks the operating system to delete it by using the <code class="codehilite">exit()</code> system call.</p>
 <ul>
 <li><strong>cascading termination</strong>(级联终止):  if a process terminates (either normally or abnormally), then all its children must also be terminated. </li>
-<li>A process that has terminated, but whose parent has not yet called <code>wait()</code>, is known as a <strong>zombie process</strong>(僵尸进程).</li>
-<li>if a parent did not invoke <code>wait()</code> and instead terminated, then leaving its child processes as <strong>orphan processes</strong>(孤儿进程).<ul>
-<li>Unix system may assign the <code>init</code> process as the new parent to orphan processes, and the <code>init</code> process periodically invokes <code>wait()</code>.</li>
+<li>A process that has terminated, but whose parent has not yet called <code class="codehilite">wait()</code>, is known as a <strong>zombie process</strong>(僵尸进程).</li>
+<li>if a parent did not invoke <code class="codehilite">wait()</code> and instead terminated, then leaving its child processes as <strong>orphan processes</strong>(孤儿进程).<ul>
+<li>Unix system may assign the <code class="codehilite">init</code> process as the new parent to orphan processes, and the <code class="codehilite">init</code> process periodically invokes <code class="codehilite">wait()</code>.</li>
 </ul>
 </li>
 </ul>
@@ -505,7 +505,7 @@
 </ul>
 <h3 id="7-examples-of-ipc-systems">7 Examples of IPC Systems<a class="headerlink" href="#7-examples-of-ipc-systems" title="Permanent link">&para;</a></h3>
 <h4 id="posix-shared-memory">POSIX Shared Memory<a class="headerlink" href="#posix-shared-memory" title="Permanent link">&para;</a></h4>
-<p>Here, we explore the POSIX API for shared memory. POSIX shared memory is organized using <strong>memory-mapped files</strong> (内存映射文件), which associate the region of shared memory with a file. A process must first create a shared-memory object using the <code>shm_open()</code> system call.</p>
+<p>Here, we explore the POSIX API for shared memory. POSIX shared memory is organized using <strong>memory-mapped files</strong> (内存映射文件), which associate the region of shared memory with a file. A process must first create a shared-memory object using the <code class="codehilite">shm_open()</code> system call.</p>
 <div class="codehilite"><pre><span class="n">fd</span> <span class="o">=</span> <span class="n">shm_open</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">O_CREAT</span> <span class="o">|</span> <span class="n">O_RDWR</span><span class="p">,</span> <span class="mo">0666</span><span class="p">);</span>
 <span class="n">ftruncate</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="mi">4096</span><span class="p">);</span>
 <span class="n">mmap</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">SIZE</span><span class="p">,</span> <span class="n">PROT_READ</span> <span class="o">|</span> <span class="n">PROT_WRITE</span><span class="p">,</span> <span class="n">MAP_SHARED</span><span class="p">,</span> <span class="n">fd</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
@@ -513,9 +513,9 @@
 
 
 <ul>
-<li>A successful call to <code>shm_open()</code> returns an integer file descriptor for the shared-memory object.</li>
-<li>Once the object is established, the <code>ftruncate()</code> function is used to configure the size of the object in bytes.</li>
-<li>Finally, the <code>mmap()</code> function establishes a memory-mapped file containing the shared-memory object. It returns a pointer to the shared</li>
+<li>A successful call to <code class="codehilite">shm_open()</code> returns an integer file descriptor for the shared-memory object.</li>
+<li>Once the object is established, the <code class="codehilite">ftruncate()</code> function is used to configure the size of the object in bytes.</li>
+<li>Finally, the <code class="codehilite">mmap()</code> function establishes a memory-mapped file containing the shared-memory object. It returns a pointer to the shared</li>
 </ul>
 <p><small></p>
 <div class="codehilite"><pre><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
@@ -574,8 +574,8 @@
 </ul>
 <p>Functions:</p>
 <ul>
-<li><code>mach_port_allocate()</code> creates a new port and allocates space for its queue of messages.</li>
-<li><code>mach_msg()</code> is the standard API for both sending and receiving messages.</li>
+<li><code class="codehilite">mach_port_allocate()</code> creates a new port and allocates space for its queue of messages.</li>
+<li><code class="codehilite">mach_msg()</code> is the standard API for both sending and receiving messages.</li>
 </ul>
 <div class="codehilite"><pre><span class="cp">#include</span> <span class="cpf">&lt;mach/mach.h&gt;</span><span class="cp"></span>
 
@@ -626,8 +626,8 @@
 <p><strong>Ordinary pipes</strong> allow two processes to communicate in standard producer-consumer fashion: the producer writes to one end of the pipe (the <strong>write end</strong>) and the consumer reads from the other end (the <strong>read end</strong>).</p>
 <ul>
 <li>Ordinary pipes are <strong>unidirectional</strong>, allowing only one-way communication.</li>
-<li>Function <code>pipe(int fd[])</code> constructs an ordinary pipe, where <code>fd</code> is a file descriptor.</li>
-<li>UNIX treats a pipe as <em>a special type of file</em>. Pipes can be accessed using ordinary <code>read()</code> and <code>write()</code> system calls.</li>
+<li>Function <code class="codehilite">pipe(int fd[])</code> constructs an ordinary pipe, where <code class="codehilite">fd</code> is a file descriptor.</li>
+<li>UNIX treats a pipe as <em>a special type of file</em>. Pipes can be accessed using ordinary <code class="codehilite">read()</code> and <code class="codehilite">write()</code> system calls.</li>
 <li>Ordinary pipes <strong>exit only</strong> while the processes are communicating with each other.</li>
 </ul>
 <p><img alt="file descriptors for an ordinary pipes" src="http://or9a8nskt.bkt.clouddn.com/file_descriptors_for_an_ordinary_pipes.png" /></p>
@@ -680,12 +680,12 @@
 <li>Once created, they appear as typical files in the file system.</li>
 <li>The communicating processes for named pipes must reside on the same machine.</li>
 </ul>
-<p>A FIFO is created with the <code>mkfifo()</code> system call and manipulated with the ordinary <code>open()</code>, <code>read()</code>, <code>write()</code>, and <code>close</code> system calls.：</p>
+<p>A FIFO is created with the <code class="codehilite">mkfifo()</code> system call and manipulated with the ordinary <code class="codehilite">open()</code>, <code class="codehilite">read()</code>, <code class="codehilite">write()</code>, and <code class="codehilite">close</code> system calls.：</p>
 <div class="codehilite"><pre><span class="kt">int</span> <span class="nf">mkfifo</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">filename</span><span class="p">,</span> <span class="kt">mode_t</span> <span class="n">mode</span><span class="p">);</span>
 </pre></div>
 
 
-<p>The program <code>fifowrite.c</code> is as follows.</p>
+<p>The program <code class="codehilite">fifowrite.c</code> is as follows.</p>
 <div class="codehilite"><pre><span class="cp">#include</span><span class="cpf">&lt;sys/types.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span><span class="cpf">&lt;stdlib.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span><span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
@@ -739,7 +739,7 @@
 </pre></div>
 
 
-<p>the program <code>fiforead.c</code> is as follows.</p>
+<p>the program <code class="codehilite">fiforead.c</code> is as follows.</p>
 <div class="codehilite"><pre><span class="cp">#include</span><span class="cpf">&lt;stdlib.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span><span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span><span class="cpf">&lt;sys/types.h&gt;</span><span class="cp"></span>
@@ -800,7 +800,7 @@
         </footer>
         <script>var base_url = '../..';</script>
         <script src="../../js/base.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
         <script src="../../search/require.js"></script>
         <script src="../../search/search.js"></script>
 
