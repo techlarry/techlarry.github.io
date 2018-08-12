@@ -299,6 +299,7 @@
             <li><a href="#minimizing-latency">Minimizing latency</a></li>
             <li><a href="#rate-monotonic-scheduling">Rate-Monotonic Scheduling</a></li>
         <li class="main "><a href="#7-linux-scheduling">7 Linux Scheduling</a></li>
+            <li><a href="#load-balancing-on-numa-systems">Load Balancing on NUMA systems</a></li>
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
@@ -663,7 +664,17 @@
 <li>discover the leftmost node will require <span><span class="MathJax_Preview">O(\log N)</span><script type="math/tex">O(\log N)</script></span> operations.</li>
 <li>Linux scheduler caches the leftmost node in the variable <code class="codehilite">rb_leftmost</code>, and requires only retrieving the cached value.</li>
 </ul>
-<p><img alt="" src="../ch5/15327413379278.gif" /></p></div>
+<p><img alt="" src="../ch5/15327413379278.gif" /></p>
+<h4 id="load-balancing-on-numa-systems">Load Balancing on NUMA systems<a class="headerlink" href="#load-balancing-on-numa-systems" title="Permanent link">&para;</a></h4>
+<p>Problem: On NUMA systems, migrating a thread may result in a memory access penalty due to either having to invalidate cache contents or, incurring longer memory access times.</p>
+<p>SOLUTION: Linux identifies a hierarchical system of <strong>scheduling domains</strong>(调度域) ——  a set of CPU cores that can be balanced against one another.</p>
+<p><img alt="NUMA-aware load balancing with Linux CFS schedule" src="../figures/NUMA-aware%20load%20balancing%20with%20Linux%20CFS%20scheduler.png" /></p>
+<p>The cores in each scheduling domain are grouped according to how they share the resources of the system.</p>
+<ul>
+<li>Pairs of cores share a level 2 (L2) cache and are thus organized into separate domain 0 and domain 1 .</li>
+<li>These two domains may share a level 3 (L3) cache, and are therefore organized into a processor-level domain (also known as a NUMA node).</li>
+</ul>
+<p>The general strategy behind CFS is <em>to balance loads within domains, beginning at the lowest level of the hierarchy</em>.</p></div>
         </div>
 
         <footer class="col-md-12">
