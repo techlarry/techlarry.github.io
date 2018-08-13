@@ -307,7 +307,7 @@
 <h4 id="basic-hardware">Basic Hardware<a class="headerlink" href="#basic-hardware" title="Permanent link">&para;</a></h4>
 <p>Main memory and the registers built into each processing core are the only general-purpose storage that the CPU can access directly.</p>
 <p>Registers that are built into each CPU core are generally accessible within one cycle of the CPU clock. Completing a memory access may take hundreds cycles of the CPU clock. In such cases, the processor normally needs to stall. The remedy is to add cache between the CPU and main memory for fast access.</p>
-<p>Approximate timing for various operations on a typical PC:</p>
+<p><center><big><b>Table. Approximate timing for various operations on a typical PC</b></big></center></p>
 <table>
 <thead>
 <tr>
@@ -534,14 +534,16 @@
 <p><img alt="Sharing of standard C library in a paging environment" src="../figures/Sharing%20of%20standard%20C%20library%20in%20a%20paging%20environment.png" /></p>
 <h3 id="4-structure-of-the-page-table">4 Structure of the Page Table<a class="headerlink" href="#4-structure-of-the-page-table" title="Permanent link">&para;</a></h3>
 <h4 id="hierarchical-paging">Hierarchical Paging<a class="headerlink" href="#hierarchical-paging" title="Permanent link">&para;</a></h4>
-<p>Most modern computer systems support a large logical address space <span><span class="MathJax_Preview">2^{32}-2^{64}</span><script type="math/tex">2^{32}-2^{64}</script></span>. In such an environment, the page table itself becomes excessively large.</p>
-<p>One way is to use a two-level paging algorithm, in which the page table itself is also paged.</p>
+<p>Problem: Most modern computer systems support a large logical address space <span><span class="MathJax_Preview">2^{32}-2^{64}</span><script type="math/tex">2^{32}-2^{64}</script></span>. In such an environment, the page table itself becomes excessively large.</p>
+<p>SOLUTION: <strong>Hierarchical Paging</strong>(层次化分页) uses <em>multi-level</em> tables which break up the virtual address into multiple parts.</p>
+<p>The simplest way is to use a <em>two-level paging</em> algorithm, in which the page table itself is also paged.</p>
 <p><img alt="A two-level page-table scheme" src="../figures/A%20two-level%20page-table%20scheme.png" /></p>
+<p><img alt="two-level paging" src="../figures/two-level%20paging.png" /></p>
 <p>For a system with a 64-bit logical address space, a two-level paging scheme is no longer appropriate. </p>
 <ul>
-<li>So we can page the outer page table, giving us a three-level paging scheme. </li>
+<li>So we can page the outer page table, giving us a <em>three-level paging</em> scheme. </li>
 <li>But the outer page table is still large in size. </li>
-<li>The next step would be a four-level paging scheme, where the second-level outer page table itself is also paged, and so forth.</li>
+<li>The next step would be a <em>four-level paging</em> scheme, where the second-level outer page table itself is also paged, and so forth.</li>
 <li>For 64-bit architectures, hierarchical page tables are generally considered inappropriate.</li>
 </ul>
 <h4 id="hashed-page-tables">Hashed Page Tables<a class="headerlink" href="#hashed-page-tables" title="Permanent link">&para;</a></h4>
@@ -562,7 +564,7 @@
 <p><img alt="Hashed page table" src="../figures/Hashed%20page%20table.png" /></p>
 <p><strong>Clustered page tables</strong>, which are similar to hashed page tables except that each entry in the hash table refers to several pages (such as 16) rather than a single page. It is particularly useful for sparse address spaces, where memory references are noncontiguous and scattered throughout the address space.</p>
 <h4 id="inverted-page-tables">Inverted Page Tables<a class="headerlink" href="#inverted-page-tables" title="Permanent link">&para;</a></h4>
-<p>ISSUE: One of the drawbacks of methods above is that each page table may consist of millions of entries. These tables may consume large amounts of physical memory just to keep track of how other physical memory is being used.</p>
+<p>Problem: One of the drawbacks of methods above is that each page table may consist of millions of entries. These tables may consume large amounts of physical memory just to keep track of how other physical memory is being used.</p>
 <p>SOLUTION: An <strong>inverted page table</strong>(反向页表) has one entry for each real page (or frame) of memory.</p>
 <ul>
 <li>Each entry consists of the virtual address of the page stored in that real memory location, with information about the process that owns the page.</li>

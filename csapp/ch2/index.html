@@ -274,11 +274,41 @@
                 <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
         <li class="main active"><a href="#chapter-2">Chapter 2 信息的表示和处理</a></li>
+        <li class="main "><a href="#1">1 信息存储</a></li>
+            <li><a href="#_1">十六进制表示法</a></li>
+            <li><a href="#_2">字和数据大小</a></li>
+            <li><a href="#_3">寻址和字节顺序</a></li>
+        <li class="main "><a href="#2">2 整数表示</a></li>
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
 
-<h3 id="chapter-2"><strong>Chapter 2 信息的表示和处理</strong><a class="headerlink" href="#chapter-2" title="Permanent link">&para;</a></h3></div>
+<h3 id="chapter-2"><strong>Chapter 2 信息的表示和处理</strong><a class="headerlink" href="#chapter-2" title="Permanent link">&para;</a></h3>
+<h3 id="1">1 信息存储<a class="headerlink" href="#1" title="Permanent link">&para;</a></h3>
+<p>大多数计算机使用8位的块，或者字节(byte),作为<em>最小的可寻址的内存单位</em>，而不是访问内存中单独的位。内存的每个字节都有一个唯一的数字来标识，称为它的<strong>地址</strong>(address)。</p>
+<h4 id="_1">十六进制表示法<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h4>
+<p>一个字节由8位组成。在二进制表示法中，它的值域是<span><span class="MathJax_Preview">00000000_2\sim 11111111_2</span><script type="math/tex">00000000_2\sim 11111111_2</script></span>。如果看成十进制数，它的值域是<span><span class="MathJax_Preview">0_{10}\sim 255_{10}</span><script type="math/tex">0_{10}\sim 255_{10}</script></span>。</p>
+<p>这两种符号表述法对于描述位模式来说都不是非常方便。</p>
+<ul>
+<li>二进制表示法太冗长；</li>
+<li>十进制表示法与位模式的相互转化很麻烦。</li>
+</ul>
+<p>替代的方法是，以16为技术，以十六进制(hexiademical)数来表示位模式。</p>
+<p><img alt="Hexadecimal notation" src="../figures/Hexadecimal%20notation.png" /></p>
+<h4 id="_2">字和数据大小<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h4>
+<p>每台计算机都有⼀个<strong>字⻓</strong>(word size)，标明指针数据的<strong>标称大小</strong>(norminal size)。字⻓决定的最重要的系统参数就是虚拟空间的⼤⼩。对于⼀个字⻓为<span><span class="MathJax_Preview">w</span><script type="math/tex">w</script></span>位的机器⽽⾔，虚拟地址的范围为<span><span class="MathJax_Preview">0\sim 2^w−1</span><script type="math/tex">0\sim 2^w−1</script></span>。</p>
+<p>C语言支持整数和浮点数的多种数据格式。下表为C语言各种数据类行分配的字节数。</p>
+<p><img alt="Sizes -in bytes- of C numeric data types" src="../figures/Sizes%20-in%20bytes-%20of%20C%20numeric%20data%20types.png" /></p>
+<h4 id="_3">寻址和字节顺序<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h4>
+<p>考虑一个<span><span class="MathJax_Preview">w</span><script type="math/tex">w</script></span>位的整数，其位表示为<span><span class="MathJax_Preview">[x_{w-1}, x_{w-2}, x_1, x_0]</span><script type="math/tex">[x_{w-1}, x_{w-2}, x_1, x_0]</script></span>，其中<span><span class="MathJax_Preview">x_{w-1}</span><script type="math/tex">x_{w-1}</script></span>是<strong>最高有效位</strong>(the most significant bit)，而<span><span class="MathJax_Preview">x_0</span><script type="math/tex">x_0</script></span>是<strong>最低有效位</strong>(the least significant bit).</p>
+<p>假设<span><span class="MathJax_Preview">w</span><script type="math/tex">w</script></span>是8的倍数，这些位就能被分组成字节，其中<strong>最高有效字节</strong>(the most significant byte)包含位<span><span class="MathJax_Preview">[x_{w-1}, x_{w-2},..., x_{w-8}]</span><script type="math/tex">[x_{w-1}, x_{w-2},..., x_{w-8}]</script></span>，而<strong>最低有效字节</strong>(the least significant byte)包含位<span><span class="MathJax_Preview">[x_7, x_6,..., x_0]</span><script type="math/tex">[x_7, x_6,..., x_0]</script></span>，其他字节包含中间的位。</p>
+<p>有些机器选在在内存中按照从最低有效字节到最高有效字节的顺序存储对象，这种方式称为<strong>小端法</strong>(little endian). 最高有效字节在前面的方式，称为<strong>大端法</strong>(big endian).</p>
+<p><img alt="little-endian-AND-big-endian" src="../figures/little-endian-AND-big-endian.png" /></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>大多数Intel兼容机都只用小端模式。</p>
+</div>
+<h3 id="2">2 整数表示<a class="headerlink" href="#2" title="Permanent link">&para;</a></h3></div>
         </div>
 
         <footer class="col-md-12">
