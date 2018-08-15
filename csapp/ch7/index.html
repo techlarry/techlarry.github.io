@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <meta name="author" content="Zhenhua Wang">
+        <link rel="canonical" href="http://larryim.cc/note/csapp/ch7/">
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+        <title>Chapter 7: 链接 - Zhenhua's Notes</title>
+        <link href="../../css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="../../css/font-awesome-4.5.0.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="../../css/highlight.css">
+        <link href="../../extra_css/custom.css" rel="stylesheet">
+        <link href="../../extra_css/custom.js" rel="stylesheet">
+        <link href="../../extra_css/friendly.css" rel="stylesheet">
+        <link href="../../extra_css/theme.css" rel="stylesheet">
+        <link href="../../extra_css/mkdocs/js/lunr-0.5.7.min.js" rel="stylesheet">
+        <link href="../../extra_css/mkdocs/js/mustache.min.js" rel="stylesheet">
+        <link href="../../extra_css/mkdocs/js/require.js" rel="stylesheet">
+        <link href="../../extra_css/mkdocs/js/search.js" rel="stylesheet">
+        <link href="../../extra_css/mkdocs/js/text.js" rel="stylesheet">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="../../js/jquery-1.10.2.min.js"></script>
+        <script src="../../js/bootstrap-3.0.3.min.js"></script>
+        <script src="../../js/highlight.pack.js"></script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="../..">Zhenhua's Notes</a>
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+                <!-- Main navigation -->
+                <ul class="nav navbar-nav">
+                    <li >
+                        <a href="../..">Home</a>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">OSC <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../../osc/">Contents</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch1/">Chapter 1: Introduction </a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch2/">Chapter 2: Operating System structures</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch3/">Chapter 3: Processes</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch4/">Chapter 4: Threads and Concurrency</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch5/">Chapter 5: CPU Scheduling</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch6/">Chapter 6: Synchronization Tools</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch7/">Chapter 7: Synchronization Examples</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch8/">Chapter 8: Deadlocks</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch9/">Chapter 9: Main Memory</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch10/">Chapter 10: Virtual Memory</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch11/">Chapter 11: Mass-Storage Structure</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch13/">Chapter 13: File-System Interfaces</a>
+</li>
+                        </ul>
+                    </li>
+                    <li class="dropdown active">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">CSAPP <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../">Contents</a>
+</li>
+                            
+<li >
+    <a href="../ch1/">Chapter 1: 计算机系统漫游</a>
+</li>
+                            
+<li >
+    <a href="../ch2/">Chapter 2: 信息的表示和处理</a>
+</li>
+                            
+<li >
+    <a href="../ch3/">Chapter 3: 程序的机器级表示</a>
+</li>
+                            
+<li >
+    <a href="../ch4/">Chapter 4: 处理器体系结构</a>
+</li>
+                            
+<li >
+    <a href="../ch5/">Chapter 5: 优化程序性能</a>
+</li>
+                            
+<li >
+    <a href="../ch6/">Chapter 6: 存储器层次结构</a>
+</li>
+                            
+<li class="active">
+    <a href="./">Chapter 7: 链接</a>
+</li>
+                            
+<li >
+    <a href="../ch8/">Chapter 8: 异常控制流</a>
+</li>
+                            
+<li >
+    <a href="../ch9/">Chapter 9: 虚拟内存</a>
+</li>
+                            
+<li >
+    <a href="../ch10/">Chapter 10: 系统级I/O</a>
+</li>
+                            
+<li >
+    <a href="../ch11/">Chapter 11: 网络编程</a>
+</li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">HFJ <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../../hfj/">Contents</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch1/">Chapter 1: Dive in A Quick Dip</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch2/">Chapter 2: Classes and Objects</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch3/">Chapter 3: Primitives and References</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch4/">Chapter 4: Methods use Instance Variables</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch5/">Chapter 5: Writing a Program</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch6/">Chapter 6: Get to Know the Java API</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch7/">Chapter 7: Inheritance and Polymorphism</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch8/">Chapter 8: Interfaces and Abstract Classes</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch9/">Chapter 9: Constructors and Garbage Collection</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch10/">Chapter 10: Numbers and Statics</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch11/">Chapter 11: Exception Handling</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch12/">Chapter 12: Getting GUI</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch13/">Chapter 13: Using Swing</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch14/">Chapter 14: Serialization and File I/O</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch15/">Chapter 15: Networking and Threads</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch16/">Chapter 16: Collections and Generics</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch17/">Chapter 17: Packages, Jars and Deployment</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch18/">Chapter 18: Remote deploy with RMI</a>
+</li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">LKD <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../../lkd/">Contents</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch1/">Chapter 1 : Introduction to Linux Kernel</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch2/">Chapter 2</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch3/">Chapter 3</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch4/">Chapter 4</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch5/">Chapter 5</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch6/">Chapter 6</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch7/">Chapter 7</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch8/">Chapter 8</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch9/">Chapter 9</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch10/">Chapter 10</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch11/">Chapter 11</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch12/">Chapter 12: Memory management</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch13/">Chapter 13</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch14/">Chapter 14</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch15/">Chapter 15</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch16/">Chapter 16</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch17/">Chapter 17</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch18/">Chapter 18</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch19/">Chapter 19</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch20/">Chapter 20</a>
+</li>
+                        </ul>
+                    </li>
+                    <li >
+                        <a href="../../books/">Books</a>
+                    </li>
+                </ul>
+
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                        <i class="fa fa-search"></i> Search
+                    </a>
+                </li>
+                    <li >
+                        <a rel="next" href="../ch6/">
+                            <i class="fa fa-arrow-left"></i> Previous
+                        </a>
+                    </li>
+                    <li >
+                        <a rel="prev" href="../ch8/">
+                            Next <i class="fa fa-arrow-right"></i>
+                        </a>
+                    </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#chapter-7">Chapter 7 链接</a></li>
+        <li class="main "><a href="#1">1 编译器驱动程序</a></li>
+        <li class="main "><a href="#2">2 静态链接</a></li>
+        <li class="main "><a href="#3">3 目标文件</a></li>
+        <li class="main "><a href="#4">4 可重定位目标文件</a></li>
+        <li class="main "><a href="#5">5 符号和符号表</a></li>
+        <li class="main "><a href="#6">6 符号解析</a></li>
+        <li class="main "><a href="#7">7 重定位</a></li>
+        <li class="main "><a href="#8">8 可执行目标文件</a></li>
+        <li class="main "><a href="#9">9 加载可执行目标文件</a></li>
+        <li class="main "><a href="#10">10 动态链接共享库</a></li>
+        <li class="main "><a href="#14">14 处理目标文件的工具</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<h3 id="chapter-7"><strong>Chapter 7 链接</strong><a class="headerlink" href="#chapter-7" title="Permanent link">&para;</a></h3>
+<p><strong>链接</strong>(Linking)是将各种<strong>代码</strong>和<strong>数据片段</strong>收集并组合成为一个单一文件的过程。链接可以在编译、加载、运行时执行。在现代系统中，链接由<strong>链接器</strong>(Linker)自动执行。</p>
+<p>链接器使得<strong>分离编译</strong>(separate compilation)成为可能：</p>
+<ul>
+<li>可以将源文件分解为更小、更好管理的模块，可以独立地修改和编译这些模块</li>
+<li>修改一个模块后，只需重新编译它，并重新链接，不必编译其他文件</li>
+</ul>
+<h3 id="1">1 编译器驱动程序<a class="headerlink" href="#1" title="Permanent link">&para;</a></h3>
+<p><strong>编译器驱动程序</strong>(<code class="codehilite">compiler driver</code>)，代表用户在需要时调用预处理器(cpp)、编译器(ccl)、汇编器(as)和链接器(ld)。典型的编译器驱动程序，包括GNU GCC, Clang。</p>
+<p>例如，一个简单打印hello的<code class="codehilite">hello.c</code>程序，经过下面四个阶段，生成可执行目标文件：</p>
+<div class="codehilite"><pre><span class="c1">//file: hello.c</span>
+<span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Hello World&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+<div class="codehilite"><pre>linux &gt; cpp <span class="o">[</span>other arguments<span class="o">]</span> hello.c hello.i // C预处理器cpp，将源程序翻译成一个ASCII码的中间文件
+linux &gt; cc1 hello.i -Og <span class="o">[</span>other arguments<span class="o">]</span>  -o hello.s //C编译器cc1, 翻译成一个ASCII汇编语言文件
+linux &gt; as <span class="o">[</span>other arguments<span class="o">]</span>  -o hello.o hello.s //汇编器as, 翻译成可重定位目标文件
+linux &gt; ld -o hello <span class="o">[</span>system object files and args<span class="o">]</span> hello.o //链接器ld，创建一个可执行文件
+* linux &gt; ./hello //调用加载器
+</pre></div>
+
+<p><img alt="compiler_system" src="http://or9a8nskt.bkt.clouddn.com/compiler_system.jpeg" /></p>
+<h3 id="2">2 静态链接<a class="headerlink" href="#2" title="Permanent link">&para;</a></h3>
+<p>静态链接器有两个主要任务：</p>
+<ul>
+<li><strong>符号解析</strong>(symbol resolution): 将每个符号 <em>引用</em> 正好和一个符号 <em>定义</em> 关联起来。</li>
+<li><strong>重定位</strong>(relocation): 把每个符号定义与一个内存位置关联起来，并修改所有对这些符号的引用，使得它们指向这个内存位置。</li>
+</ul>
+<h3 id="3">3 目标文件<a class="headerlink" href="#3" title="Permanent link">&para;</a></h3>
+<p>目标文件有三种格式：<strong>可重定位目标文件</strong>(<code class="codehilite"><span class="na">.o</span></code>)，<strong>可执行目标文件</strong>(<code class="codehilite"><span class="na">.out</span></code>)，<strong>共享目标文件</strong>(<code class="codehilite"><span class="na">.so</span></code>)</p>
+<ul>
+<li><strong>可重定位目标文件</strong>(.o文件)。包含二进制代码和数据，其形式可以在编译时与其他可重定位目标文件合并起来，创建一个可执行目标文件。</li>
+<li><strong>可执行目标文件</strong>(a.out文件)。包含二进制代码和数据，其形式可以被直接复制到内存并执行。</li>
+<li><strong>共享目标文件</strong>(.so文件)。在加载或者运行时被动态地加载进内存并链接</li>
+</ul>
+<p>各个系统的目标文件格式不同，Windows使用<strong>可移植可执行</strong>(Portable Executable, <code class="codehilite">PE</code>)格式。现代x86-64系统使用<strong>可执行可链接格式</strong>(Executable and Linkable Format, <code class="codehilite">ELF</code>)。</p>
+<h3 id="4">4 可重定位目标文件<a class="headerlink" href="#4" title="Permanent link">&para;</a></h3>
+<p>以可执行可链接(ELF)格式为例，一个典型的可重定位目标文件包括以下几个节：</p>
+<ul>
+<li>ELF头和节头部表</li>
+<li><code class="codehilite"><span class="na">.text</span></code> 已编译程序的机器代码</li>
+<li><code class="codehilite"><span class="na">.rodata</span></code> 只读数据</li>
+<li><code class="codehilite"><span class="na">.data</span></code>  已初始化的全局和静态C变量</li>
+<li><code class="codehilite"><span class="na">.bss</span></code>  未初始化的全局和静态C变量</li>
+<li><code class="codehilite"><span class="na">.symtab</span></code> 一个符号表</li>
+<li><code class="codehilite"><span class="na">.rel.text</span></code> 一个.text节中位置的列表</li>
+<li><code class="codehilite"><span class="na">.rel.data</span></code> 重定位信息</li>
+<li><code class="codehilite"><span class="kr">.debug</span></code> 调试符号表</li>
+<li><code class="codehilite"><span class="na">.line</span></code>  原始程序行号和机器指令之间的映射</li>
+<li><code class="codehilite"><span class="na">.strtab</span></code>  字符串表</li>
+</ul>
+<p><img alt="elf" src="http://or9a8nskt.bkt.clouddn.com/elf.png" /></p>
+<p>利用<code class="codehilite">READELF</code>程序可以显示程序<code class="codehilite">hello.c</code>生成的可执行可链接文件的信息：</p>
+<div class="codehilite"><pre>gcc hello.c -c
+readelf -a hello.o <span class="c1">### UNIX/LINUX</span>
+greadelf -a hello.o <span class="c1">### MAC, after brew install binutils</span>
+</pre></div>
+
+<p><small>
+<div class="codehilite"><pre>ELF Header:
+  Magic:   7f 45 4c 46 02 01 01 00 00 00 00 00 00 00 00 00
+  Class:                             ELF64
+  Data:                              2&#39;s complement, little endian
+  Version:                           1 (current)
+  OS/ABI:                            UNIX - System V
+  ABI Version:                       0
+  Type:                              REL (Relocatable file)
+  Machine:                           Advanced Micro Devices X86-64
+  Version:                           0x1
+  Entry point address:               0x0
+  Start of program headers:          0 (bytes into file)
+  Start of section headers:          304 (bytes into file)
+  Flags:                             0x0
+  Size of this header:               64 (bytes)
+  Size of program headers:           0 (bytes)
+  Number of program headers:         0
+  Size of section headers:           64 (bytes)
+  Number of section headers:         13
+  Section header string table index: 10
+
+Section Headers:
+  [Nr] Name              Type             Address           Offset
+       Size              EntSize          Flags  Link  Info  Align
+  [ 0]                   NULL             0000000000000000  00000000
+       0000000000000000  0000000000000000           0     0     0
+  [ 1] .text             PROGBITS         0000000000000000  00000040
+       0000000000000015  0000000000000000  AX       0     0     1
+  [ 2] .rela.text        RELA             0000000000000000  00000590
+       0000000000000030  0000000000000018          11     1     8
+  [ 3] .data             PROGBITS         0000000000000000  00000055
+       0000000000000000  0000000000000000  WA       0     0     1
+  [ 4] .bss              NOBITS           0000000000000000  00000055
+       0000000000000000  0000000000000000  WA       0     0     1
+  [ 5] .rodata           PROGBITS         0000000000000000  00000055
+       000000000000000c  0000000000000000   A       0     0     1
+  [ 6] .comment          PROGBITS         0000000000000000  00000061
+       000000000000002c  0000000000000001  MS       0     0     1
+  [ 7] .note.GNU-stack   PROGBITS         0000000000000000  0000008d
+       0000000000000000  0000000000000000           0     0     1
+  [ 8] .eh_frame         PROGBITS         0000000000000000  00000090
+       0000000000000038  0000000000000000   A       0     0     8
+  [ 9] .rela.eh_frame    RELA             0000000000000000  000005c0
+       0000000000000018  0000000000000018          11     8     8
+  [10] .shstrtab         STRTAB           0000000000000000  000000c8
+       0000000000000061  0000000000000000           0     0     1
+  [11] .symtab           SYMTAB           0000000000000000  00000470
+       0000000000000108  0000000000000018          12     9     8
+  [12] .strtab           STRTAB           0000000000000000  00000578
+       0000000000000015  0000000000000000           0     0     1
+Key to Flags:
+  W (write), A (alloc), X (execute), M (merge), S (strings), l (large)
+  I (info), L (link order), G (group), T (TLS), E (exclude), x (unknown)
+  O (extra OS processing required) o (OS specific), p (processor specific)
+
+There are no section groups in this file.
+
+There are no program headers in this file.
+
+Relocation section &#39;.rela.text&#39; at offset 0x590 contains 2 entries:
+  Offset          Info           Type           Sym. Value    Sym. Name + Addend
+000000000005  00050000000a R_X86_64_32       0000000000000000 .rodata + 0
+00000000000f  000a00000002 R_X86_64_PC32     0000000000000000 printf - 4
+
+Relocation section &#39;.rela.eh_frame&#39; at offset 0x5c0 contains 1 entries:
+  Offset          Info           Type           Sym. Value    Sym. Name + Addend
+000000000020  000200000002 R_X86_64_PC32     0000000000000000 .text + 0
+
+The decoding of unwind sections for machine type Advanced Micro Devices X86-64 is not currently supported.
+
+Symbol table &#39;.symtab&#39; contains 11 entries:
+   Num:    Value          Size Type    Bind   Vis      Ndx Name
+     0: 0000000000000000     0 NOTYPE  LOCAL  DEFAULT  UND
+     1: 0000000000000000     0 FILE    LOCAL  DEFAULT  ABS hello.c
+     2: 0000000000000000     0 SECTION LOCAL  DEFAULT    1
+     3: 0000000000000000     0 SECTION LOCAL  DEFAULT    3
+     4: 0000000000000000     0 SECTION LOCAL  DEFAULT    4
+     5: 0000000000000000     0 SECTION LOCAL  DEFAULT    5
+     6: 0000000000000000     0 SECTION LOCAL  DEFAULT    7
+     7: 0000000000000000     0 SECTION LOCAL  DEFAULT    8
+     8: 0000000000000000     0 SECTION LOCAL  DEFAULT    6
+     9: 0000000000000000    21 FUNC    GLOBAL DEFAULT    1 main
+    10: 0000000000000000     0 NOTYPE  GLOBAL DEFAULT  UND printf
+
+No version information found in this file.
+</pre></div>
+</small></p>
+<h3 id="5">5 符号和符号表<a class="headerlink" href="#5" title="Permanent link">&para;</a></h3>
+<p><code class="codehilite"><span class="na">.symtab</span></code>中的<strong>符号表</strong>，有三种不同的符号(不包括本地非静态变量)：</p>
+<ul>
+<li>由模块<span><span class="MathJax_Preview">m</span><script type="math/tex">m</script></span>定义并能被其他模块引用的<strong>全局符号</strong>。<ul>
+<li>非静态C函数和全局变量</li>
+</ul>
+</li>
+<li>由其他模块定义并被模块<span><span class="MathJax_Preview">m</span><script type="math/tex">m</script></span>引用的全局符号。<ul>
+<li>对应于其他模块中定义的非静态C函数和全局变量</li>
+</ul>
+</li>
+<li>只被模块<span><span class="MathJax_Preview">m</span><script type="math/tex">m</script></span>定义和引用的局部符号。<ul>
+<li>静态C函数和全局变量 </li>
+</ul>
+</li>
+</ul>
+<h3 id="6">6 符号解析<a class="headerlink" href="#6" title="Permanent link">&para;</a></h3>
+<p><strong>符号解析</strong>是将每个<strong>符号引用</strong>和可重定位目标文件中的<strong>符号定义</strong>关联起来。链接器的输入是一组可重定位目标文件(模块)，有些是局部的( <em>局部符号</em> ，只对定义该符号的模块可见)，有些是全局的( <em>全局符号</em> ，对其他模块可见)。</p>
+<ul>
+<li><strong>局部符号</strong>：每个模块中每个局部符号有一个定义</li>
+<li>
+<p><strong>全局符号</strong>：可重定位目标文件的符号表里的全局符号是区分<strong>强</strong>和<strong>弱</strong>的，链接器根据以下规则来处理多重定义的符号名：</p>
+<ul>
+<li>规则1: 不允许有多个同名的强符号</li>
+<li>规则2: 如果有一个强符号和多个弱符号同名，那么选择强符号</li>
+<li>规则3：如果有多个弱符号同名，那么任选一个 </li>
+</ul>
+</li>
+</ul>
+<h3 id="7">7 重定位<a class="headerlink" href="#7" title="Permanent link">&para;</a></h3>
+<p>重定位合并输入模块，并为每个符号分配运行时地址：</p>
+<ul>
+<li>重定位节和符号定义：将所有相同类型的节合并为同一类型的新的聚合节，并将运行时内存地址赋给新的聚合节和每个符号定义。<ul>
+<li>例如，来自所有输入模块的<code class="codehilite"><span class="na">.data</span></code>节被全部合并成输出的可执行目标文件的<code class="codehilite"><span class="na">.data</span></code>节   </li>
+</ul>
+</li>
+<li>重定位节中的符号引用：将运行时地址付给每个符号引用</li>
+</ul>
+<h3 id="8">8 可执行目标文件<a class="headerlink" href="#8" title="Permanent link">&para;</a></h3>
+<p>下图概括了一个典型的ELF可执行文件的给类信息。</p>
+<p><img alt="可执行目标文件" src="http://or9a8nskt.bkt.clouddn.com/可执行目标文件.png" /></p>
+<h3 id="9">9 加载可执行目标文件<a class="headerlink" href="#9" title="Permanent link">&para;</a></h3>
+<p>当在shell中执行目标文件时，首先通过调用<strong>加载器</strong>(<code class="codehilite">loader</code>)的操作系统代码来运行它，加载器将可执行目标文件的代码和数据复制到主存，跳转到程序的第一条指令(入口点，<code class="codehilite">_start_</code>函数的地址)运行该程序。</p>
+<p>在Unix系统中，加载器是系统调用(system call)<code class="codehilite">execve()</code>的回调(call back)，其任务包括：</p>
+<ul>
+<li>确认(权限，内存要求等)</li>
+<li>复制程序到主存</li>
+<li>复制命令行参数到栈</li>
+<li>初始化寄存器(例如栈针)</li>
+<li>跳到入口点(<code class="codehilite">_start_</code>)</li>
+</ul>
+<h3 id="10">10 动态链接共享库<a class="headerlink" href="#10" title="Permanent link">&para;</a></h3>
+<p>静态库有2大缺陷：</p>
+<ul>
+<li>静态库更新时，需要显示地将程序与更新了的库重新链接</li>
+<li>浪费内存资源：几乎每个C程序都使用标准I/O函数，这些函数代码会被复制到每个运行进程的文本段中</li>
+</ul>
+<p>共享库(shared library)是致力于解决静态库缺陷的产物。</p>
+<p><strong>动态链接</strong>(dynamic linking)：共享库在运行或加载时，可以加载到任意的内存地址，并和一个在内存中的程序链接起来。
+<em> 由<strong>动态链接器</strong>(dynamic linker)执行；
+</em> 在linux系统中常用<code class="codehilite"><span class="na">.so</span></code>后缀表示。</p>
+<p><img alt="dynamic_linking" src="http://or9a8nskt.bkt.clouddn.com/dynamic_linking.png" /></p>
+<h3 id="14">14 处理目标文件的工具<a class="headerlink" href="#14" title="Permanent link">&para;</a></h3>
+<p>Unix系统提供了一系列命令帮助理解和处理目标文件。这些工具包括：</p>
+<ul>
+<li><code class="codehilite">ar</code> ：创建静态库，插入、删除、列出和提取成员；</li>
+<li><code class="codehilite">STRINGS</code> ：列出目标文件中所有可以打印的字符串；</li>
+<li><code class="codehilite">STRIP</code> ：从目标文件中删除符号表信息；</li>
+<li><code class="codehilite">NM</code> ：列出目标文件符号表中定义的符号；</li>
+<li><code class="codehilite">SIZE</code> ：列出目标文件中节的名字和大小；</li>
+<li><code class="codehilite">READELF</code> ：显示一个目标文件的完整结构，包括ELF 头中编码的所有信息。</li>
+<li><code class="codehilite">OBJDUMP</code> ：显示目标文件的所有信息，最有用的功能是反汇编.text节中的二进制指令。</li>
+<li><code class="codehilite">LDD</code> ：列出可执行文件在运行时需要的共享库。</li>
+</ul></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>var base_url = '../..';</script>
+        <script src="../../js/base.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+        <script src="../../search/require.js"></script>
+        <script src="../../search/search.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td><kbd>&larr;</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td><kbd>&rarr;</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    </body>
+</html>
