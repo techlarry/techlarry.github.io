@@ -380,7 +380,8 @@
         <li class="main "><a href="#5-web">5 Web服务器</a></li>
             <li><a href="#web">Web基础</a></li>
             <li><a href="#web_1">Web内容</a></li>
-            <li><a href="#http">HTTP事务</a></li>
+            <li><a href="#http">HTTP消息结构</a></li>
+            <li><a href="#http_1">HTTP请求方法</a></li>
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
@@ -618,18 +619,19 @@ FH: LAN frame header, 局域网帧头</p>
 </li>
 <li>动态内容：运行一个可执行文件产生输出，返回给客户端</li>
 </ul>
-<h4 id="http">HTTP事务<a class="headerlink" href="#http" title="Permanent link">&para;</a></h4>
+<h4 id="http">HTTP消息结构<a class="headerlink" href="#http" title="Permanent link">&para;</a></h4>
 <p>一个<strong>HTTP请求</strong>(request)是一个<strong>请求行</strong>(request line)，后面跟随着零个或多个<strong>请求报头</strong>(request header)，再跟随一个终止报头的空行。</p>
 <p><strong>请求行</strong>的格式是<code class="codehilite">&lt;method&gt; &lt;uri&gt; &lt;version&gt;</code>。</p>
 <ul>
-<li><code class="codehilite">&lt;method&gt;</code>可以是GET, POST, OPTIONS, HEAD, PUT, DELETE, TRAXE</li>
-<li><code class="codehilite">&lt;uri&gt;</code>是响应的URL的后缀，包括文件名和可选的参数</li>
-<li><code class="codehilite">&lt;version&gt;</code>是该请求遵循的HTTP的版本(HTTP/1.0或者HTTP/1.1)</li>
+<li><code class="codehilite">&lt;method&gt;</code>请求方法：可以是GET, POST, OPTIONS, HEAD, PUT, DELETE, TRAXE</li>
+<li><code class="codehilite">&lt;uri&gt;</code>统一资源标识符(uniform resource identifier)：是响应的URL的后缀，包括文件名和可选的参数</li>
+<li><code class="codehilite">&lt;version&gt;</code>该请求遵循的HTTP的版本：HTTP/1.0或者HTTP/1.1</li>
 </ul>
 <p><strong>请求报头</strong>的格式是<code class="codehilite">&lt;header name&gt;:&lt;header data&gt;</code></p>
 <ul>
 <li>为服务器提供额外信息，例如浏览器的商标名</li>
 </ul>
+<p><img alt="General format of an HTTP request message" src="../figures/General%20format%20of%20an%20HTTP%20request%20message.png" /></p>
 <p><strong>HTTP响应</strong>与HTTP请求类似，是一个<strong>响应行</strong>(response line)，后面跟着零个或者多个<strong>响应报头</strong>(response header)，再跟随一个终止报头的空行，再跟随一个响应主体(response body)。</p>
 <p><strong>响应行</strong>的格式是<code class="codehilite">&lt;version&gt; &lt;status code&gt; &lt;status message&gt;</code></p>
 <ul>
@@ -639,7 +641,96 @@ FH: LAN frame header, 局域网帧头</p>
 </ul>
 <p><strong>响应报头</strong>的格式是<code class="codehilite">&lt;header name&gt;:&lt;header data&gt;</code></p>
 <p>下面是HTTP请求的一个实例:</p>
-<p><img alt="example HTTP transaction" src="../figure/example%20HTTP%20transaction.png" /></p></div>
+<div class="codehilite"><pre>GET /somedir/page.html HTTP/1.1 
+Host: www.someschool.edu
+Connection: close 
+User-agent: Mozilla/5.0 
+Accept-language: fr
+</pre></div>
+
+<p>一个Java的例子：</p>
+<div class="codehilite"><pre><span class="kn">import</span> <span class="nn">java.io.BufferedReader</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.InputStreamReader</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.PrintWriter</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.net.Socket</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyBlogClient</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">http_request</span><span class="o">(){</span>
+        <span class="k">try</span><span class="o">{</span>
+            <span class="n">Socket</span> <span class="n">s</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Socket</span><span class="o">(</span><span class="s">&quot;192.30.252.153&quot;</span><span class="o">,</span> <span class="mi">80</span><span class="o">);</span>
+            <span class="n">PrintWriter</span> <span class="n">writer</span> <span class="o">=</span> <span class="k">new</span> <span class="n">PrintWriter</span><span class="o">(</span><span class="n">s</span><span class="o">.</span><span class="na">getOutputStream</span><span class="o">());</span>
+            <span class="n">InputStreamReader</span> <span class="n">streamReader</span> <span class="o">=</span> <span class="k">new</span> <span class="n">InputStreamReader</span><span class="o">(</span><span class="n">s</span><span class="o">.</span><span class="na">getInputStream</span><span class="o">());</span>
+            <span class="n">BufferedReader</span> <span class="n">br</span> <span class="o">=</span> <span class="k">new</span> <span class="n">BufferedReader</span><span class="o">(</span><span class="n">streamReader</span><span class="o">);</span>
+
+            <span class="c1">//注意换行符是\r\n</span>
+            <span class="n">writer</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;GET /index.html HTTP/1.0 \r\n Host: larryim.cc  \r\n   \r\n &quot;</span><span class="o">);</span>
+
+            <span class="n">String</span> <span class="n">line</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+
+            <span class="k">while</span> <span class="o">((</span><span class="n">line</span><span class="o">=</span> <span class="n">br</span><span class="o">.</span><span class="na">readLine</span><span class="o">())!=</span> <span class="kc">null</span><span class="o">){</span>
+                <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">line</span><span class="o">);</span>
+            <span class="o">}</span>
+
+            <span class="n">br</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+            <span class="n">writer</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+
+
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">ex</span><span class="o">){</span>
+            <span class="n">ex</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">){</span>
+        <span class="n">MyBlogClient</span> <span class="n">client</span> <span class="o">=</span> <span class="k">new</span> <span class="n">MyBlogClient</span><span class="o">();</span>
+        <span class="n">client</span><span class="o">.</span><span class="na">http_request</span><span class="o">();</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</pre></div>
+
+<h4 id="http_1">HTTP请求方法<a class="headerlink" href="#http_1" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>请求方法</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td>请求指定的页面信息，并返回实体主体。</td>
+</tr>
+<tr>
+<td>HEAD</td>
+<td>类似于get请求，只不过返回的响应中没有具体的内容，用于获取报头。</td>
+</tr>
+<tr>
+<td>POST</td>
+<td>向指定资源提交数据进行处理请求（例如提交表单或者上传文件）。数据被包含在请</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td>从客户端向服务器传送的数据取代指定的文档的内容。</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td>请求服务器删除指定的页面。</td>
+</tr>
+<tr>
+<td>CONNECT</td>
+<td>HTTP/1.1协议中预留给能够将连接改为管道方式的代理服务器。</td>
+</tr>
+<tr>
+<td>OPTIONS</td>
+<td>允许客户端查看服务器的性能。</td>
+</tr>
+<tr>
+<td>TRACE</td>
+<td>回显服务器收到的请求，主要用于测试或诊断。</td>
+</tr>
+</tbody>
+</table></div>
         </div>
 
         <footer class="col-md-12">
