@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <meta name="author" content="Zhenhua Wang">
+        <link rel="canonical" href="http://larryim.cc/note/csapp/ch2/">
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+        <title>Chapter 2: 信息的表示和处理 - Zhenhua's Notes</title>
+        <link href="../../css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="../../css/font-awesome-4.5.0.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="../../css/highlight.css">
+        <link href="../../extra_css/custom.css" rel="stylesheet">
+        <link href="../../extra_css/custom.js" rel="stylesheet">
+        <link href="../../extra_css/friendly.css" rel="stylesheet">
+        <link href="../../extra_css/theme.css" rel="stylesheet">
+        <link href="../../extra_css/mkdocs/js/lunr-0.5.7.min.js" rel="stylesheet">
+        <link href="../../extra_css/mkdocs/js/mustache.min.js" rel="stylesheet">
+        <link href="../../extra_css/mkdocs/js/require.js" rel="stylesheet">
+        <link href="../../extra_css/mkdocs/js/search.js" rel="stylesheet">
+        <link href="../../extra_css/mkdocs/js/text.js" rel="stylesheet">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="../../js/jquery-1.10.2.min.js"></script>
+        <script src="../../js/bootstrap-3.0.3.min.js"></script>
+        <script src="../../js/highlight.pack.js"></script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="../..">Zhenhua's Notes</a>
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+                <!-- Main navigation -->
+                <ul class="nav navbar-nav">
+                    <li >
+                        <a href="../..">Home</a>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">OSC <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../../osc/">Contents</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch1/">Chapter 1: Introduction </a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch2/">Chapter 2: Operating System structures</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch3/">Chapter 3: Processes</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch4/">Chapter 4: Threads and Concurrency</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch5/">Chapter 5: CPU Scheduling</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch6/">Chapter 6: Synchronization Tools</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch7/">Chapter 7: Synchronization Examples</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch8/">Chapter 8: Deadlocks</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch9/">Chapter 9: Main Memory</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch10/">Chapter 10: Virtual Memory</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch11/">Chapter 11: Mass-Storage Structure</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch13/">Chapter 13: File-System Interfaces</a>
+</li>
+                        </ul>
+                    </li>
+                    <li class="dropdown active">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">CSAPP <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../">Contents</a>
+</li>
+                            
+<li >
+    <a href="../ch1/">Chapter 1: 计算机系统漫游</a>
+</li>
+                            
+<li class="active">
+    <a href="./">Chapter 2: 信息的表示和处理</a>
+</li>
+                            
+<li >
+    <a href="../ch3/">Chapter 3: 程序的机器级表示</a>
+</li>
+                            
+<li >
+    <a href="../ch4/">Chapter 4: 处理器体系结构</a>
+</li>
+                            
+<li >
+    <a href="../ch5/">Chapter 5: 优化程序性能</a>
+</li>
+                            
+<li >
+    <a href="../ch6/">Chapter 6: 存储器层次结构</a>
+</li>
+                            
+<li >
+    <a href="../ch7/">Chapter 7: 链接</a>
+</li>
+                            
+<li >
+    <a href="../ch8/">Chapter 8: 异常控制流</a>
+</li>
+                            
+<li >
+    <a href="../ch9/">Chapter 9: 虚拟内存</a>
+</li>
+                            
+<li >
+    <a href="../ch10/">Chapter 10: 系统级I/O</a>
+</li>
+                            
+<li >
+    <a href="../ch11/">Chapter 11: 网络编程</a>
+</li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">HFJ <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../../hfj/">Contents</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch1/">Chapter 1: Dive in A Quick Dip</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch2/">Chapter 2: Classes and Objects</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch3/">Chapter 3: Primitives and References</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch4/">Chapter 4: Methods use Instance Variables</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch5/">Chapter 5: Writing a Program</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch6/">Chapter 6: Get to Know the Java API</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch7/">Chapter 7: Inheritance and Polymorphism</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch8/">Chapter 8: Interfaces and Abstract Classes</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch9/">Chapter 9: Constructors and Garbage Collection</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch10/">Chapter 10: Numbers and Statics</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch11/">Chapter 11: Exception Handling</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch12/">Chapter 12: Getting GUI</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch13/">Chapter 13: Using Swing</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch14/">Chapter 14: Serialization and File I/O</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch15/">Chapter 15: Networking and Threads</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch16/">Chapter 16: Collections and Generics</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch17/">Chapter 17: Packages, Jars and Deployment</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch18/">Chapter 18: Remote deploy with RMI</a>
+</li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">LKD <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../../lkd/">Contents</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch1/">Chapter 1 : Introduction to Linux Kernel</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch2/">Chapter 2</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch3/">Chapter 3</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch4/">Chapter 4</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch5/">Chapter 5</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch6/">Chapter 6</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch7/">Chapter 7</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch8/">Chapter 8</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch9/">Chapter 9</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch10/">Chapter 10</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch11/">Chapter 11</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch12/">Chapter 12: Memory management</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch13/">Chapter 13</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch14/">Chapter 14</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch15/">Chapter 15</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch16/">Chapter 16</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch17/">Chapter 17</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch18/">Chapter 18</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch19/">Chapter 19</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch20/">Chapter 20</a>
+</li>
+                        </ul>
+                    </li>
+                    <li >
+                        <a href="../../books/">Books</a>
+                    </li>
+                </ul>
+
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                        <i class="fa fa-search"></i> Search
+                    </a>
+                </li>
+                    <li >
+                        <a rel="next" href="../ch1/">
+                            <i class="fa fa-arrow-left"></i> Previous
+                        </a>
+                    </li>
+                    <li >
+                        <a rel="prev" href="../ch3/">
+                            Next <i class="fa fa-arrow-right"></i>
+                        </a>
+                    </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#chapter-2">Chapter 2 信息的表示和处理</a></li>
+        <li class="main "><a href="#1">1 信息存储</a></li>
+            <li><a href="#_1">十六进制表示法</a></li>
+            <li><a href="#_2">字和数据大小</a></li>
+            <li><a href="#_3">寻址和字节顺序</a></li>
+        <li class="main "><a href="#2">2 整数表示</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<h3 id="chapter-2"><strong>Chapter 2 信息的表示和处理</strong><a class="headerlink" href="#chapter-2" title="Permanent link">&para;</a></h3>
+<h3 id="1">1 信息存储<a class="headerlink" href="#1" title="Permanent link">&para;</a></h3>
+<p>大多数计算机使用8位的块，或者字节(byte),作为<em>最小的可寻址的内存单位</em>，而不是访问内存中单独的位。内存的每个字节都有一个唯一的数字来标识，称为它的<strong>地址</strong>(address)。</p>
+<h4 id="_1">十六进制表示法<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h4>
+<p>一个字节由8位组成。在二进制表示法中，它的值域是<span><span class="MathJax_Preview">00000000_2\sim 11111111_2</span><script type="math/tex">00000000_2\sim 11111111_2</script></span>。如果看成十进制数，它的值域是<span><span class="MathJax_Preview">0_{10}\sim 255_{10}</span><script type="math/tex">0_{10}\sim 255_{10}</script></span>。</p>
+<p>这两种符号表述法对于描述位模式来说都不是非常方便。</p>
+<ul>
+<li>二进制表示法太冗长；</li>
+<li>十进制表示法与位模式的相互转化很麻烦。</li>
+</ul>
+<p>替代的方法是，以16为技术，以十六进制(hexiademical)数来表示位模式。</p>
+<p><img alt="Hexadecimal notation" src="../figures/Hexadecimal%20notation.png" /></p>
+<h4 id="_2">字和数据大小<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h4>
+<p>每台计算机都有⼀个<strong>字⻓</strong>(word size)，标明指针数据的<strong>标称大小</strong>(norminal size)。字⻓决定的最重要的系统参数就是虚拟空间的⼤⼩。对于⼀个字⻓为<span><span class="MathJax_Preview">w</span><script type="math/tex">w</script></span>位的机器⽽⾔，虚拟地址的范围为<span><span class="MathJax_Preview">0\sim 2^w−1</span><script type="math/tex">0\sim 2^w−1</script></span>。</p>
+<p>C语言支持整数和浮点数的多种数据格式。下表为C语言各种数据类行分配的字节数。</p>
+<p><img alt="Sizes -in bytes- of C numeric data types" src="../figures/Sizes%20-in%20bytes-%20of%20C%20numeric%20data%20types.png" /></p>
+<h4 id="_3">寻址和字节顺序<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h4>
+<p>考虑一个<span><span class="MathJax_Preview">w</span><script type="math/tex">w</script></span>位的整数，其位表示为<span><span class="MathJax_Preview">[x_{w-1}, x_{w-2}, x_1, x_0]</span><script type="math/tex">[x_{w-1}, x_{w-2}, x_1, x_0]</script></span>，其中<span><span class="MathJax_Preview">x_{w-1}</span><script type="math/tex">x_{w-1}</script></span>是<strong>最高有效位</strong>(the most significant bit)，而<span><span class="MathJax_Preview">x_0</span><script type="math/tex">x_0</script></span>是<strong>最低有效位</strong>(the least significant bit).</p>
+<p>假设<span><span class="MathJax_Preview">w</span><script type="math/tex">w</script></span>是8的倍数，这些位就能被分组成字节，其中<strong>最高有效字节</strong>(the most significant byte)包含位<span><span class="MathJax_Preview">[x_{w-1}, x_{w-2},..., x_{w-8}]</span><script type="math/tex">[x_{w-1}, x_{w-2},..., x_{w-8}]</script></span>，而<strong>最低有效字节</strong>(the least significant byte)包含位<span><span class="MathJax_Preview">[x_7, x_6,..., x_0]</span><script type="math/tex">[x_7, x_6,..., x_0]</script></span>，其他字节包含中间的位。</p>
+<p>有些机器选在在内存中按照从最低有效字节到最高有效字节的顺序存储对象，这种方式称为<strong>小端法</strong>(little endian). 最高有效字节在前面的方式，称为<strong>大端法</strong>(big endian).</p>
+<p><img alt="little-endian-AND-big-endian" src="../figures/little-endian-AND-big-endian.png" /></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>大多数Intel兼容机都只用小端模式。</p>
+</div>
+<h3 id="2">2 整数表示<a class="headerlink" href="#2" title="Permanent link">&para;</a></h3></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>var base_url = '../..';</script>
+        <script src="../../js/base.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+        <script src="../../search/require.js"></script>
+        <script src="../../search/search.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td><kbd>&larr;</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td><kbd>&rarr;</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    </body>
+</html>

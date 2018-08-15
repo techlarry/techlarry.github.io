@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <meta name="author" content="Zhenhua Wang">
+        <link rel="canonical" href="http://larryim.cc/note/csapp/ch6/">
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+        <title>Chapter 6: 存储器层次结构 - Zhenhua's Notes</title>
+        <link href="../../css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="../../css/font-awesome-4.5.0.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="../../css/highlight.css">
+        <link href="../../extra_css/custom.css" rel="stylesheet">
+        <link href="../../extra_css/custom.js" rel="stylesheet">
+        <link href="../../extra_css/friendly.css" rel="stylesheet">
+        <link href="../../extra_css/theme.css" rel="stylesheet">
+        <link href="../../extra_css/mkdocs/js/lunr-0.5.7.min.js" rel="stylesheet">
+        <link href="../../extra_css/mkdocs/js/mustache.min.js" rel="stylesheet">
+        <link href="../../extra_css/mkdocs/js/require.js" rel="stylesheet">
+        <link href="../../extra_css/mkdocs/js/search.js" rel="stylesheet">
+        <link href="../../extra_css/mkdocs/js/text.js" rel="stylesheet">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="../../js/jquery-1.10.2.min.js"></script>
+        <script src="../../js/bootstrap-3.0.3.min.js"></script>
+        <script src="../../js/highlight.pack.js"></script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="../..">Zhenhua's Notes</a>
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+                <!-- Main navigation -->
+                <ul class="nav navbar-nav">
+                    <li >
+                        <a href="../..">Home</a>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">OSC <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../../osc/">Contents</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch1/">Chapter 1: Introduction </a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch2/">Chapter 2: Operating System structures</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch3/">Chapter 3: Processes</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch4/">Chapter 4: Threads and Concurrency</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch5/">Chapter 5: CPU Scheduling</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch6/">Chapter 6: Synchronization Tools</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch7/">Chapter 7: Synchronization Examples</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch8/">Chapter 8: Deadlocks</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch9/">Chapter 9: Main Memory</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch10/">Chapter 10: Virtual Memory</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch11/">Chapter 11: Mass-Storage Structure</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch13/">Chapter 13: File-System Interfaces</a>
+</li>
+                        </ul>
+                    </li>
+                    <li class="dropdown active">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">CSAPP <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../">Contents</a>
+</li>
+                            
+<li >
+    <a href="../ch1/">Chapter 1: 计算机系统漫游</a>
+</li>
+                            
+<li >
+    <a href="../ch2/">Chapter 2: 信息的表示和处理</a>
+</li>
+                            
+<li >
+    <a href="../ch3/">Chapter 3: 程序的机器级表示</a>
+</li>
+                            
+<li >
+    <a href="../ch4/">Chapter 4: 处理器体系结构</a>
+</li>
+                            
+<li >
+    <a href="../ch5/">Chapter 5: 优化程序性能</a>
+</li>
+                            
+<li class="active">
+    <a href="./">Chapter 6: 存储器层次结构</a>
+</li>
+                            
+<li >
+    <a href="../ch7/">Chapter 7: 链接</a>
+</li>
+                            
+<li >
+    <a href="../ch8/">Chapter 8: 异常控制流</a>
+</li>
+                            
+<li >
+    <a href="../ch9/">Chapter 9: 虚拟内存</a>
+</li>
+                            
+<li >
+    <a href="../ch10/">Chapter 10: 系统级I/O</a>
+</li>
+                            
+<li >
+    <a href="../ch11/">Chapter 11: 网络编程</a>
+</li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">HFJ <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../../hfj/">Contents</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch1/">Chapter 1: Dive in A Quick Dip</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch2/">Chapter 2: Classes and Objects</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch3/">Chapter 3: Primitives and References</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch4/">Chapter 4: Methods use Instance Variables</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch5/">Chapter 5: Writing a Program</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch6/">Chapter 6: Get to Know the Java API</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch7/">Chapter 7: Inheritance and Polymorphism</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch8/">Chapter 8: Interfaces and Abstract Classes</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch9/">Chapter 9: Constructors and Garbage Collection</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch10/">Chapter 10: Numbers and Statics</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch11/">Chapter 11: Exception Handling</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch12/">Chapter 12: Getting GUI</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch13/">Chapter 13: Using Swing</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch14/">Chapter 14: Serialization and File I/O</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch15/">Chapter 15: Networking and Threads</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch16/">Chapter 16: Collections and Generics</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch17/">Chapter 17: Packages, Jars and Deployment</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch18/">Chapter 18: Remote deploy with RMI</a>
+</li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">LKD <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../../lkd/">Contents</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch1/">Chapter 1 : Introduction to Linux Kernel</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch2/">Chapter 2</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch3/">Chapter 3</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch4/">Chapter 4</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch5/">Chapter 5</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch6/">Chapter 6</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch7/">Chapter 7</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch8/">Chapter 8</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch9/">Chapter 9</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch10/">Chapter 10</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch11/">Chapter 11</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch12/">Chapter 12: Memory management</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch13/">Chapter 13</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch14/">Chapter 14</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch15/">Chapter 15</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch16/">Chapter 16</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch17/">Chapter 17</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch18/">Chapter 18</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch19/">Chapter 19</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch20/">Chapter 20</a>
+</li>
+                        </ul>
+                    </li>
+                    <li >
+                        <a href="../../books/">Books</a>
+                    </li>
+                </ul>
+
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                        <i class="fa fa-search"></i> Search
+                    </a>
+                </li>
+                    <li >
+                        <a rel="next" href="../ch5/">
+                            <i class="fa fa-arrow-left"></i> Previous
+                        </a>
+                    </li>
+                    <li >
+                        <a rel="prev" href="../ch7/">
+                            Next <i class="fa fa-arrow-right"></i>
+                        </a>
+                    </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#chapter-6">Chapter 6 存储器层次结构</a></li>
+        <li class="main "><a href="#1">1 存储技术</a></li>
+            <li><a href="#_1">随机访问存储器</a></li>
+            <li><a href="#_2">磁盘存储</a></li>
+            <li><a href="#_3">固态硬盘</a></li>
+        <li class="main "><a href="#2">2 局部性</a></li>
+        <li class="main "><a href="#3-memory-hierarchy">3 存储器层次结构 Memory Hierarchy</a></li>
+            <li><a href="#_4">存储器层次结构中的缓存</a></li>
+        <li class="main "><a href="#4">4 高速缓存存储器</a></li>
+            <li><a href="#_5">通用的高速缓存存储器组织结构</a></li>
+            <li><a href="#_6">直接映射高速缓存</a></li>
+            <li><a href="#_7">组相联高速缓存</a></li>
+            <li><a href="#_8">全相联高速缓存</a></li>
+        <li class="main "><a href="#5">5 编写高速缓存友好的代码</a></li>
+        <li class="main "><a href="#6">6 高速缓存对程序性能的影响</a></li>
+            <li><a href="#_9">存储器山</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<h3 id="chapter-6"><strong>Chapter 6 存储器层次结构</strong><a class="headerlink" href="#chapter-6" title="Permanent link">&para;</a></h3>
+<p><strong>存储器系统</strong>(memory system)是一个具有不同 <em>容量</em> 、 <em>成本</em> 和 <em>访问时间</em> 的存储设备的层次结构。</p>
+<p><strong>局部性</strong>(locality)：具有良好局部性的程序倾向于一次又一次地访问相同的数据项集合，或是倾向于访问邻近的数据项集合。</p>
+<h3 id="1">1 存储技术<a class="headerlink" href="#1" title="Permanent link">&para;</a></h3>
+<h4 id="_1">随机访问存储器<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h4>
+<p><strong>随机访问存储器</strong>(Random-Access Memory, RAM)分为两类：<strong>静态</strong>(SRAM)和<strong>动态</strong>(DRAM)的。</p>
+<ul>
+<li>SRAM比DRAM更快，但也贵得多。</li>
+<li>SRAM用来作为高速缓存存储器。</li>
+<li>DRAM用来作为主存以及图形系统的桢缓冲区。</li>
+<li>SRAM一般不会超过几兆字节。</li>
+<li>DRAM有几百或几千兆字节。</li>
+</ul>
+<h4 id="_2">磁盘存储<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h4>
+<p>磁盘是由<strong>盘片</strong>(platter)构成的。每个盘片如同切西瓜一样被“切”成一块一块的扇面，同时沿着半径的方向被划分成了一组同心圆(<strong>磁道</strong>, track)，每条磁道被扇面切成很多的扇形区域叫做<strong>扇区</strong>（sector, 扇区是从磁盘读出和写入信息的最小单位，包含相等数量的数据位，通常为512字节），不同盘片上的同半径磁道组成了柱面。</p>
+<p><img alt="platter" src="http://or9a8nskt.bkt.clouddn.com/platter.jpg" /></p>
+<p>磁盘的容量： 磁头数 × 磁道数 × 每道扇区数 × 每扇区字节数</p>
+<h4 id="_3">固态硬盘<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h4>
+<p><strong>固态硬盘</strong>(Solid State Disk, SSD)，由一个或多个闪存芯片和闪存翻译层(flash translation layer)组成。</p>
+<ul>
+<li>闪存芯片存储内容。</li>
+<li>闪存翻译层对逻辑块的请求翻译成对底层物理设备的访问。</li>
+</ul>
+<p><img alt="Solid state disk SSD" src="../figures/Solid%20state%20disk%20SSD-1.png" /></p>
+<h3 id="2">2 局部性<a class="headerlink" href="#2" title="Permanent link">&para;</a></h3>
+<p>一个编写良好的计算机程序常常具有良好的<strong>局部性</strong>(locality)。也就是，它们倾向于引用<em>邻近于</em>其他最近引用过的数据项的数据项(<strong>空间局部性</strong>)，或者<em>最近</em>引用过的数据项本身(<strong>时间局部性</strong>)。 这种倾向性，被称为<strong>局部性原理</strong>(principle of locality)或访<strong>问局部性</strong>(locality of reference)。</p>
+<p>有良好局部性的程序比局部性差的程序运行得更快。现代计算机系统的各个层次，从硬件到操作系统、再到应用程序，它们的设计都利用了局部性。</p>
+<ul>
+<li>在硬件层，通过引入高速缓存来保存最近被引用的指令和数据项，从而提高贮存的访问速度。</li>
+<li>在操作系统级，系统使用主存作为虚拟地址空间最近被引用块的高速缓存。</li>
+<li>Web浏览器将最近被引用的文档放在本地磁盘上。</li>
+</ul>
+<p>量化评价程序中局部性的一些简单原则：</p>
+<ul>
+<li>重复引用相同变量的程序具有良好的时间局部性。</li>
+<li>对于具有步长为<span><span class="MathJax_Preview">k</span><script type="math/tex">k</script></span>的引用模式的程序，步长越好，空间局部性越好。</li>
+<li>对于取指令来说，循环有好的时间和空间局部性。</li>
+</ul>
+<div class="codehilite"><pre><span class="c1">// for循环体里的指令是按照连续的顺序执行的，因此循环具有良好的空间局部性。因为循环体会被执行多次，因此也有良好的时间局部性。</span>
+<span class="kt">int</span> <span class="nf">sumvec</span><span class="p">(</span><span class="kt">int</span> <span class="n">v</span><span class="p">[</span><span class="n">N</span><span class="p">]){</span>
+    <span class="kt">int</span> <span class="n">i</span><span class="p">,</span> <span class="n">sum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span> <span class="n">N</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+        <span class="n">sum</span> <span class="o">+=</span> <span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+    <span class="k">return</span> <span class="n">sum</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+<h3 id="3-memory-hierarchy">3 存储器层次结构 Memory Hierarchy<a class="headerlink" href="#3-memory-hierarchy" title="Permanent link">&para;</a></h3>
+<p>一般而言，从高层往低层走，存储设备变得更慢、更便宜和更大。</p>
+<ul>
+<li>在最高层(L0)，是少量快速的CPU寄存器，CPU可以在一个时钟周期内访问它们。</li>
+<li>接下来是一个或多个小型到中型的基于SRAM的高速缓存存储器，可以在几个CPU时钟周期内访问它们。</li>
+<li>然后是一个大的基于DRAM的贮存，可以在几十到几百个时钟周期内访问它们。</li>
+<li>接下来是慢速但容量很大的本地磁盘。</li>
+<li>最后，有些系统包括了远程服务器上的磁盘，要通过网络来访问它们。</li>
+</ul>
+<p><img alt="memory_hierarchy" src="../figures/memory_hierarchy.png" /></p>
+<h4 id="_4">存储器层次结构中的缓存<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h4>
+<p>存储器层次结构的中心思想是，对于每个<span><span class="MathJax_Preview">k</span><script type="math/tex">k</script></span>，位于<span><span class="MathJax_Preview">k</span><script type="math/tex">k</script></span>层的更快更小的存储设备作为位于<span><span class="MathJax_Preview">k+1</span><script type="math/tex">k+1</script></span>层的更大更慢的存储设备的缓存。换句话说，层次结构中的每一层都缓存来自较低一层的数据对象。</p>
+<ul>
+<li>第<span><span class="MathJax_Preview">k+1</span><script type="math/tex">k+1</script></span>层的存储器被划分为连续的数据对象组块(chunk)，称为块(block)。</li>
+<li>每个块都有一个唯一的地址。</li>
+<li>块的大小可以是固定的(通常)，也可以是可变的(例如存储在Web服务器上的HMTL文件).</li>
+<li>数据总是以块大小为传送单元在第<span><span class="MathJax_Preview">k</span><script type="math/tex">k</script></span>层和第<span><span class="MathJax_Preview">k+1</span><script type="math/tex">k+1</script></span>层之间来回复制。在层次结构中任何一对相邻的层次之间块大小是固定的(第<span><span class="MathJax_Preview">k</span><script type="math/tex">k</script></span>层和第<span><span class="MathJax_Preview">k+1</span><script type="math/tex">k+1</script></span>层块大小一致)，但是其他的层次对之间可以有不同的块大小。</li>
+</ul>
+<p><img alt="the_basic_principle_of_caching_in_a_memory_hierarchy" src="../figures/the_basic_principle_of_caching_in_a_memory_hierarchy.png" /></p>
+<p>当程序需要第<span><span class="MathJax_Preview">k+1</span><script type="math/tex">k+1</script></span>层的某个数据对象<span><span class="MathJax_Preview">d</span><script type="math/tex">d</script></span>时，它首先在当前存储在第<span><span class="MathJax_Preview">k</span><script type="math/tex">k</script></span>层的一个块中查找<span><span class="MathJax_Preview">d</span><script type="math/tex">d</script></span>。如果<span><span class="MathJax_Preview">d</span><script type="math/tex">d</script></span>刚好缓存在第<span><span class="MathJax_Preview">k</span><script type="math/tex">k</script></span>层中，即<strong>缓存命中</strong>(cache hit)，否则<strong>缓存不命中</strong>(cache miss)。</p>
+<p>现代系统中到处都使用了缓存。</p>
+<p><img alt="cache_types" src="../figures/cache_types.png" /></p>
+<h3 id="4">4 高速缓存存储器<a class="headerlink" href="#4" title="Permanent link">&para;</a></h3>
+<h4 id="_5">通用的高速缓存存储器组织结构<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h4>
+<p>考虑一个计算机系统，其中每个存储器地址有<span><span class="MathJax_Preview">m</span><script type="math/tex">m</script></span>位，形成$M=2^m <span><span class="MathJax_Preview">个不同的地址。这样一个机器的高速缓存被组织成一个有</span><script type="math/tex">个不同的地址。这样一个机器的高速缓存被组织成一个有</script></span>S=2^s $个<strong>高速缓存组</strong>(cache set)的数组。</p>
+<ul>
+<li>每个组包含<span><span class="MathJax_Preview">E</span><script type="math/tex">E</script></span>个<strong>高速缓存行</strong>(cache line)。</li>
+<li>每个行是由一个$B=2^b $字节的数据块(block)组成的。</li>
+<li>一个<strong>有效位</strong>(valid bit)指明这个行是否包含有意义的信息。</li>
+<li>有<span><span class="MathJax_Preview">t=m-(b+s)</span><script type="math/tex">t=m-(b+s)</script></span>个<strong>标记位</strong>(tag bit)唯一地标识存储在这个高速缓存行中的块。</li>
+</ul>
+<p><img alt="general_organization_of_a_cache" src="../figures/general_organization_of_a_cache.png" /></p>
+<p>高速缓存的大小<span><span class="MathJax_Preview">C</span><script type="math/tex">C</script></span>是指所有块的大小的和，<span><span class="MathJax_Preview">C=S\times E\times B</span><script type="math/tex">C=S\times E\times B</script></span>.</p>
+<ul>
+<li>每个组只有一行(<span><span class="MathJax_Preview">E=1</span><script type="math/tex">E=1</script></span>)的高速缓存称为<strong>直接映射高速缓存</strong>；</li>
+<li>每个组有多行(<span><span class="MathJax_Preview">E&gt;1</span><script type="math/tex">E>1</script></span>)的高速缓存称为<strong>组相联高速缓存</strong>；</li>
+<li>一个包含所有高速缓存行的组(<span><span class="MathJax_Preview">E=C/B</span><script type="math/tex">E=C/B</script></span>)，称为<strong>全相联高速缓存</strong>。</li>
+</ul>
+<h4 id="_6">直接映射高速缓存<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h4>
+<p>每个组只有一行(<span><span class="MathJax_Preview">E=1</span><script type="math/tex">E=1</script></span>)的高速缓存称为<strong>直接映射高速缓存</strong>(Direct-Mapped Caches)。</p>
+<p><img alt="Direct-mapped cache" src="../figures/Direct-mapped%20cache.png" /></p>
+<p>假设我们有这样一个系统，它有一个CPU、一个寄存器文件、一个L1高速缓存和一个主存。当CPU执行一条读内存字<span><span class="MathJax_Preview">w</span><script type="math/tex">w</script></span>的指令，它向L1高速缓存请求这个字。</p>
+<ul>
+<li>如果L1高速缓存有<span><span class="MathJax_Preview">w</span><script type="math/tex">w</script></span>的一个缓存的副本，那么就得到L1高速缓存命中。高速缓存会很快抽取出<span><span class="MathJax_Preview">w</span><script type="math/tex">w</script></span>，并将它返回给CPU。</li>
+<li>否则就是缓存不命中，CPU必须等待被请求的块最终从内存达到时，L1高速缓存将这个块房子它的一个高速缓存行里，从被存储的块中抽取出字<span><span class="MathJax_Preview">w</span><script type="math/tex">w</script></span>，然后将它返回给CPU。</li>
+</ul>
+<p>高速缓存确定一个请求是否命中，然后抽取出被请求的字的过程，分为三步：</p>
+<ul>
+<li>组选择(set selection)</li>
+<li>行匹配(line matching)</li>
+<li>字抽取(word extraction)</li>
+</ul>
+<p><strong>1.直接映射高速缓存中的组选择</strong></p>
+<p>高速缓存从<span><span class="MathJax_Preview">w</span><script type="math/tex">w</script></span>的地址中间抽取出<span><span class="MathJax_Preview">s</span><script type="math/tex">s</script></span>个<strong>组索引</strong>(Set index)位。</p>
+<p><img alt="Set selection in a direct-mapped cache" src="../figures/Set%20selection%20in%20a%20direct-mapped%20cache.png" /></p>
+<p><strong>2.直接映射高速缓存中的行匹配</strong></p>
+<p>由于直接映射高速缓存中的每个组只有一行，因此当且仅当设置了有效位(valid bit)，而且高速缓存行中的标记(tag)与<span><span class="MathJax_Preview">w</span><script type="math/tex">w</script></span>的地址中的标记相匹配时，这一行中包含<span><span class="MathJax_Preview">w</span><script type="math/tex">w</script></span>的一个副本。</p>
+<p><img alt="Line matching and word selection in a directmapped cache" src="../figures/Line%20matching%20and%20word%20selection%20in%20a%20directmapped%20cache.png" /></p>
+<p><strong>3.直接映射高速缓存中的字选择</strong></p>
+<p>一旦命中，我们知道<span><span class="MathJax_Preview">w</span><script type="math/tex">w</script></span>就在这个块中的某个地方。最后一步确定所需要的字在块中是从哪里开始的。块偏移(block offset)提供了所需要的字的第一个字节的偏移。</p>
+<p><strong>4.接映射高速缓存中不命中时的行替换</strong></p>
+<p>如果缓存不命中，那么它需要从存储器层次结构的下一层去除被请求的块，然后将新的块存储在组索引位指示的组中的一个高速缓存行中。</p>
+<ul>
+<li>如果组中都是有效高速缓存行，则必须要驱除出一个现存的行。</li>
+<li>对于直接映射高速缓存来说，每个组只包含一行，用新取出的行替换当前的行。</li>
+</ul>
+<p><strong>5.直接映射高速缓存中的冲突不命中</strong></p>
+<p>当程序访问大小为2的幂的数组时，直接映射高速缓存通常会发生<strong>冲突不命中</strong>(conflit miss)。例如，考虑一个计算两个向量点积的函数：</p>
+<div class="codehilite"><pre><span class="kt">float</span> <span class="nf">dotprod</span><span class="p">(</span><span class="kt">float</span> <span class="n">x</span><span class="p">[</span><span class="mi">8</span><span class="p">],</span> <span class="kt">float</span> <span class="n">y</span><span class="p">[</span><span class="mi">8</span><span class="p">])</span> <span class="p">{</span> 
+    <span class="kt">float</span> <span class="n">sum</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">;</span> <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">8</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> 
+        <span class="n">sum</span> <span class="o">+=</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+    <span class="k">return</span> <span class="n">sum</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>假设高速混存由两个组组成，每个组容纳4个浮点数。浮点数是4个字节，<span><span class="MathJax_Preview">x</span><script type="math/tex">x</script></span>被加载到从地址0开始的32字节连续内存中，而<span><span class="MathJax_Preview">y</span><script type="math/tex">y</script></span>紧跟在<span><span class="MathJax_Preview">x</span><script type="math/tex">x</script></span>之后，从地址32开始。 每个<span><span class="MathJax_Preview">x[i]</span><script type="math/tex">x[i]</script></span>和<span><span class="MathJax_Preview">y[i]</span><script type="math/tex">y[i]</script></span>会映射到相同的高速缓存组：</p>
+<p><img alt="cache_conflix_on_direct_mapped_caches" src="../figures/cache_conflix_on_direct_mapped_caches.png" /></p>
+<ul>
+<li>在运行时，循环的第一次迭代引用<span><span class="MathJax_Preview">x[0]</span><script type="math/tex">x[0]</script></span>，缓存不命中会导致包含<span><span class="MathJax_Preview">x[0]-x[3]</span><script type="math/tex">x[0]-x[3]</script></span>的块被加载到组0.</li>
+<li>接下来，引用<span><span class="MathJax_Preview">y[0]</span><script type="math/tex">y[0]</script></span>，缓存不命中会导致包含<span><span class="MathJax_Preview">y[0]-y[3]</span><script type="math/tex">y[0]-y[3]</script></span>的块被加载到组0，覆盖前一次引用复制进来的x的值。</li>
+<li>在下一次迭代中，对<span><span class="MathJax_Preview">x[1]</span><script type="math/tex">x[1]</script></span>的引用不命中，导致<span><span class="MathJax_Preview">x[0]-x[3]</span><script type="math/tex">x[0]-x[3]</script></span>的块被重新加载到组0，覆盖掉<span><span class="MathJax_Preview">y[0]-y[3]</span><script type="math/tex">y[0]-y[3]</script></span>的块。</li>
+</ul>
+<p>这种现象，<em>高速缓存反复地加载和驱逐相同的高速缓存组</em>，叫做<b><big>抖动</big></b>(thrashing)。</p>
+<h4 id="_7">组相联高速缓存<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h4>
+<p><strong>组相联高速缓存</strong>(set associative cache)的每个组都保存有多于一个的高速缓存行。一个<span><span class="MathJax_Preview">1&lt;E&lt;C/B</span><script type="math/tex">1<E<C/B</script></span>的高速缓存通常称为<strong>E路组相联高速缓存</strong>(E-way set associative cache)。</p>
+<p><img alt="Set associative cache" src="../figures/Set%20associative%20cache.png" /></p>
+<p><strong>1. 组相联高速缓存中的组选择</strong></p>
+<p>它的组选择和直接映射高速缓存的组选择一样，组索引(set index)位标识组。</p>
+<p><img alt="Set selection in a set associative cache" src="../figures/Set%20selection%20in%20a%20set%20associative%20cache.png" /></p>
+<p><strong>2. 组相联高速缓存中的行匹配和字选择</strong></p>
+<p>它必须检查多个行的标记位和有效位，以确定所请求的字是否在组中。</p>
+<p><strong>相联存储器</strong>(associative memory)是一个(key, value)对的数组，以key为输入，返回与输入的key相匹配的(key, value）对中的value值。我们可以把相联高速缓存的每个组看成一个小的相联存储器，key是标记和有效位，而value就是块的内容。</p>
+<p>组中的任何一行都可以包含任何映射到这个组的内存块。所以高速缓存必须搜索组中的每一行，寻找一个有效的行，其标记与地址中的标记相匹配。如果找到了这样一行，那么块偏移就从这个块中选择一个字。</p>
+<p><img alt="Line matching and word selection in a set associative cache" src="../figures/Line%20matching%20and%20word%20selection%20in%20a%20set%20associative%20cache.png" /></p>
+<p><strong>3. 组相联高速缓存中不命中时的行替换</strong></p>
+<p>如果CPU请求的字不在组的任何一行中，那么就是缓存不命中，高速缓存必须从内存中取出包含这个字的块，然后进行替换。该替换哪个行呢？</p>
+<ul>
+<li>如果组中有一个空行，那么它就是个很好的候选。</li>
+<li>如果组中没有空行，必须从中选择一个非空的行。有如下几个替换策略：<ul>
+<li><strong>最不常使用</strong>(Least-Frequently-Used, LFU)策略会替换在过去某个时间窗口内引用次数最少的那一行。</li>
+<li><strong>最近最少使用</strong>(Least-Recently-Used, LRU)策略会替换最后一个访问时间最久远的那一行。 </li>
+</ul>
+</li>
+</ul>
+<h4 id="_8">全相联高速缓存<a class="headerlink" href="#_8" title="Permanent link">&para;</a></h4>
+<p>一个包含所有高速缓存行的组(<span><span class="MathJax_Preview">E=C/B</span><script type="math/tex">E=C/B</script></span>)，称为<strong>全相联高速缓存</strong>。 因为高速缓存电路必须并行地搜索许多相匹配的标记，构造一个又大又快的全相联高速缓存很困难，并且很昂贵。因此，全相联高速缓存只适合做小的高速缓存(例如MMC中的TLB)。</p>
+<p><img alt="set_selection_in_a_fully_associative_cache" src="../figures/set_selection_in_a_fully_associative_cache.png" /></p>
+<h3 id="5">5 编写高速缓存友好的代码<a class="headerlink" href="#5" title="Permanent link">&para;</a></h3>
+<h3 id="6">6 高速缓存对程序性能的影响<a class="headerlink" href="#6" title="Permanent link">&para;</a></h3>
+<h4 id="_9">存储器山<a class="headerlink" href="#_9" title="Permanent link">&para;</a></h4>
+<p>一个程序从存储系统中读数据的速率称为 <strong>读吞吐量</strong>(read throughput)。<strong>存储器山</strong>(memory mountain)是一个读吞吐量的时间和空间局部性的二维函数。</p>
+<ul>
+<li>通过不同的size(对应时间局部性)和stride(对应空间局部性)的值产生存储器山。</li>
+<li>size值越小，得到的工作集越小，时间局部性越好。</li>
+<li>stride值越小，空间局部性越好。</li>
+</ul>
+<p>Intel Core i7的存储器山：</p>
+<p><img alt="The memory mountain" src="../figures/The%20memory%20mountain.png" /></p>
+<p>Core i7的存储器山展现了一个很丰富的结构：</p>
+<ul>
+<li>垂直于size轴的是四条山脊，分别对应于完全在L1高速缓存、L2高速缓存、L3高速缓存和主存内的时间局部性区域。</li>
+<li>在L2、L3和主存山脊上，随着步长的增加，有一个空间局部性的斜坡，空间局部性下降。</li>
+</ul>
+<p><img alt="Ridges of temporal locality in the memory mountain. The graph shows a slice through Figure 6.43 with stride=16." src="../figures/Ridges%20of%20temporal%20locality%20in%20the%20memory%20mountain.%20The%20graph%20shows%20a%20slice%20through%20Figure%206.43%20with%20stride=16.png" /></p>
+<p><img alt="A slope of spatial locality. The graph shows a slice through Figure 6.43 with size=4 MB" src="../figures/A%20slope%20of%20spatial%20locality.%20The%20graph%20shows%20a%20slice%20through%20Figure%206.43%20with%20size=4%20MB.png" /></p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>var base_url = '../..';</script>
+        <script src="../../js/base.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+        <script src="../../search/require.js"></script>
+        <script src="../../search/search.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td><kbd>&larr;</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td><kbd>&rarr;</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    </body>
+</html>
