@@ -106,6 +106,10 @@
 </li>
                             
 <li >
+    <a href="../ch11/">Chapter 11: Mass-Storage Structure</a>
+</li>
+                            
+<li >
     <a href="../ch13/">Chapter 13: File-System Interfaces</a>
 </li>
                         </ul>
@@ -399,22 +403,22 @@
 <h4 id="the-process">The process<a class="headerlink" href="#the-process" title="Permanent link">&para;</a></h4>
 <p><strong>Process</strong> (进程) is a program in execution.</p>
 <ul>
-<li>Process is the unit of work in a modern computing system</li>
+<li>Process is the unit of work in a modern computing system.</li>
 </ul>
 <p>The status of the <strong>current</strong> activity of a process is represented by the value of the <strong>program counter</strong> and the contents of the processor's <strong>registers</strong>.</p>
 <p>A program by itself is not a process.</p>
 <ul>
-<li>A program is a <strong>passive</strong> entity, such as a file containing a list of instructions stored on disk</li>
-<li>A process is an <strong>active</strong> entity, with a program counter specifying the next instruction to execute</li>
+<li>A program is a <strong>passive</strong> entity, such as a file containing a list of instructions stored on disk.</li>
+<li>A process is an <strong>active</strong> entity, with a program counter specifying the next instruction to execute.</li>
 </ul>
 <h4 id="process-state">Process state<a class="headerlink" href="#process-state" title="Permanent link">&para;</a></h4>
 <p>A process may be in one of the following states:</p>
 <ul>
 <li><strong>New</strong>(新建). The process is being created. 进程正在被创建</li>
-<li><strong>Running</strong>(运行). Instructions are being executed.指令正在被执行</li>
+<li><strong>Running</strong>(运行). Instructions are being executed. 指令正在被执行</li>
 <li><strong>Waiting</strong>(等待). The process is waiting for some event to occur(such as an I/O completion or reception of a signal). 进程等待某些事件发生</li>
 <li><strong>Ready</strong>(就绪). The process is waiting to be assigned to a processor.进程等待分配处理器</li>
-<li><strong>Terminated</strong>(终止). The process has finished execution.进程执行完毕</li>
+<li><strong>Terminated</strong>(终止). The process has finished execution. 进程执行完毕</li>
 </ul>
 <p>Diagram of process state:</p>
 <p><img alt="Diagram of process state" src="http://or9a8nskt.bkt.clouddn.com/diagramofprocessstate.png" /></p>
@@ -427,7 +431,7 @@
 <li><strong>CPU-scheduling information</strong>(CPU调度信息): a process priority, pointers to scheduling queues, and any other scheduling parameters.</li>
 <li><strong>Memory-management information</strong>(内存管理信息)</li>
 <li><strong>Accounting information</strong>(记账信息): the amount of CPU and real time used, time limits, account numbers, process numbers and so on.</li>
-<li><strong>I/O status information</strong>(I/O状态信息): the list of I/O devices allocated to the process, a list of open files</li>
+<li><strong>I/O status information</strong>(I/O状态信息): the list of I/O devices allocated to the process, a list of open files.</li>
 </ul>
 <p>Process Control Block:</p>
 <p><img alt="process control block" src="http://or9a8nskt.bkt.clouddn.com/processcontrolblock.png" /></p>
@@ -482,7 +486,7 @@
 </ul>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
-<p>A problem with a single process for browser is that if a web application in any tab crashes, the entire process —— including all other tabs —— crashes as well. Chrome web browser uses a multiprocess architecture —— identifies three different types of processes: browser, renderers, plugins.</p>
+<p>A problem with a single process for a web browser is that if a web application in any tab crashes, the entire process —— including all other tabs —— crashes as well. Chrome web browser uses a multiprocess architecture —— identifies three different types of processes: browser, renderers, plugins. see <a href="https://blog.chromium.org/2008/09/multi-process-architecture.html">here</a> in detail.</p>
 </div>
 <h3 id="4-interprocess-communication">4 Interprocess communication<a class="headerlink" href="#4-interprocess-communication" title="Permanent link">&para;</a></h3>
 <p>Processes may be either <strong>independent processes</strong>(独立进程) or <strong>cooperating processes</strong>(协同进程).</p>
@@ -508,7 +512,7 @@
 </ul>
 </li>
 </ul>
-<p><img alt="shared memory and message passing" src="http://or9a8nskt.bkt.clouddn.com/shared_memory_and_message_passing.png" /></p>
+<p><img alt="shared_memory_and_message_passing" src="../figures/shared_memory_and_message_passing.png" /></p>
 <h3 id="5-ipc-in-shared-memory-system">5 IPC in shared-memory system<a class="headerlink" href="#5-ipc-in-shared-memory-system" title="Permanent link">&para;</a></h3>
 <p>Let's consider the producer-consumer problem, which is a common paradigm for cooperating processes. A <em>producer</em> process produces information that is <em>consumed</em> by a consumer process.  One solution to the producer-consumer problem uses shared memory.</p>
 <p>We generally think of a server as a producer and a client as a consumer. For example, a web server produces web content such as HTML files and images, which are consumed by the client web browser requesting the resource.</p>
@@ -598,19 +602,17 @@
 </ul>
 <h3 id="7-examples-of-ipc-systems">7 Examples of IPC Systems<a class="headerlink" href="#7-examples-of-ipc-systems" title="Permanent link">&para;</a></h3>
 <h4 id="posix-shared-memory">POSIX Shared Memory<a class="headerlink" href="#posix-shared-memory" title="Permanent link">&para;</a></h4>
-<p>Here, we explore the POSIX API for shared memory. POSIX shared memory is organized using <strong>memory-mapped files</strong> (内存映射文件), which associate the region of shared memory with a file. A process must first create a shared-memory object using the <code class="codehilite">shm_open()</code> system call.</p>
+<p>Here, we explore the POSIX API for shared memory. POSIX shared memory is organized using <strong>memory-mapped files</strong> (内存映射文件), which associate the region of shared memory with a file. A process must first create a shared-memory object using the <code class="codehilite">shm_open()</code> system call.
 <div class="codehilite"><pre><span class="n">fd</span> <span class="o">=</span> <span class="n">shm_open</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">O_CREAT</span> <span class="o">|</span> <span class="n">O_RDWR</span><span class="p">,</span> <span class="mo">0666</span><span class="p">);</span>
 <span class="n">ftruncate</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="mi">4096</span><span class="p">);</span>
 <span class="n">mmap</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">SIZE</span><span class="p">,</span> <span class="n">PROT_READ</span> <span class="o">|</span> <span class="n">PROT_WRITE</span><span class="p">,</span> <span class="n">MAP_SHARED</span><span class="p">,</span> <span class="n">fd</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-</pre></div>
-
-
+</pre></div></p>
 <ul>
 <li>A successful call to <code class="codehilite">shm_open()</code> returns an integer file descriptor for the shared-memory object.</li>
 <li>Once the object is established, the <code class="codehilite">ftruncate()</code> function is used to configure the size of the object in bytes.</li>
 <li>Finally, the <code class="codehilite">mmap()</code> function establishes a memory-mapped file containing the shared-memory object. It returns a pointer to the shared</li>
 </ul>
-<p><small></p>
+<p><small>
 <div class="codehilite"><pre><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;unistd.h&gt;</span><span class="cp"></span>
@@ -654,9 +656,7 @@
     <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
 <span class="p">}</span>
 </pre></div>
-
-
-<p></small></p>
+</small></p>
 <h4 id="mach-message-passing">Mach Message Passing<a class="headerlink" href="#mach-message-passing" title="Permanent link">&para;</a></h4>
 <p>Mach was especially designed for distributed systems. Its kernel supports the creation and destruction of multiple <strong>tasks</strong>, which are similar to processes but have multiple threads of control and fewer associated resources.  </p>
 <p>Messages are sent to, and received from, mailboxes, which are called <strong>ports</strong> in Mach. </p>
@@ -712,7 +712,6 @@
 <span class="p">);</span>
 </pre></div>
 
-
 <h4 id="pipes">Pipes<a class="headerlink" href="#pipes" title="Permanent link">&para;</a></h4>
 <p>A <strong>pipe</strong> acts as a conduit allowing two processes to communicate. Pipes were one of the first IPC mechanisms in early UNIX systems. There are two common types of pipes used on both UNIX and Windows systems: <strong>ordinary pipes</strong> and <strong>named pipes</strong>.</p>
 <h4 id="ordinary-pipes">Ordinary pipes<a class="headerlink" href="#ordinary-pipes" title="Permanent link">&para;</a></h4>
@@ -723,7 +722,7 @@
 <li>UNIX treats a pipe as <em>a special type of file</em>. Pipes can be accessed using ordinary <code class="codehilite">read()</code> and <code class="codehilite">write()</code> system calls.</li>
 <li>Ordinary pipes <strong>exit only</strong> while the processes are communicating with each other.</li>
 </ul>
-<p><img alt="file descriptors for an ordinary pipes" src="http://or9a8nskt.bkt.clouddn.com/file_descriptors_for_an_ordinary_pipes.png" /></p>
+<p><img alt="file_descriptors_for_an_ordinary_pipes" src="../figures/file_descriptors_for_an_ordinary_pipes.png" /></p>
 <div class="codehilite"><pre><span class="cp">#include</span> <span class="cpf">&lt;sys/types.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;string.h&gt;</span><span class="cp"></span>
@@ -765,7 +764,6 @@
 <span class="p">}</span>
 </pre></div>
 
-
 <h4 id="named-pipes">Named pipes<a class="headerlink" href="#named-pipes" title="Permanent link">&para;</a></h4>
 <p><strong>Named pipes</strong>（命名管道） can be <strong>bidirectional</strong>, and no parent-child relationship is required.</p>
 <ul>
@@ -776,7 +774,6 @@
 <p>A FIFO is created with the <code class="codehilite">mkfifo()</code> system call and manipulated with the ordinary <code class="codehilite">open()</code>, <code class="codehilite">read()</code>, <code class="codehilite">write()</code>, and <code class="codehilite">close</code> system calls.：</p>
 <div class="codehilite"><pre><span class="kt">int</span> <span class="nf">mkfifo</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">filename</span><span class="p">,</span> <span class="kt">mode_t</span> <span class="n">mode</span><span class="p">);</span>
 </pre></div>
-
 
 <p>The program <code class="codehilite">fifowrite.c</code> is as follows.</p>
 <div class="codehilite"><pre><span class="cp">#include</span><span class="cpf">&lt;sys/types.h&gt;</span><span class="cp"></span>
@@ -831,7 +828,6 @@
 <span class="p">}</span>
 </pre></div>
 
-
 <p>the program <code class="codehilite">fiforead.c</code> is as follows.</p>
 <div class="codehilite"><pre><span class="cp">#include</span><span class="cpf">&lt;stdlib.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span><span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
@@ -872,19 +868,81 @@
 <span class="p">}</span>
 </pre></div>
 
-
 <h3 id="8-communication-in-client-server-system">8 Communication in Client-server system<a class="headerlink" href="#8-communication-in-client-server-system" title="Permanent link">&para;</a></h3>
 <p>In this section, we explore two other strategies for communication in client-server system: <strong>sockets</strong> and <strong>remote procedure calls</strong>(RPCs)</p>
 <h4 id="sockets">Sockets<a class="headerlink" href="#sockets" title="Permanent link">&para;</a></h4>
-<p>A <strong>socket</strong>（套接字）is defined as an endpoint for communication. A socket is identified by an IP address concatenated with a port number.</p>
+<p>A <strong>socket</strong>(套接字) is defined as an <em>endpoint</em> for communication. A socket is identified by an <em>IP address concatenated with a port number</em>.</p>
 <p>Communication using sockets：</p>
-<p><img alt="communication using sockets" src="http://or9a8nskt.bkt.clouddn.com/communication_using_sockets.png" /></p>
+<p><img alt="communication_using_sockets" src="../figures/communication_using_sockets.png" /></p>
 <p>Servers implementing specific services (such as SSH, FTP, and HTTP) listen to well-known ports. Once a request is received, the server accepts a connection from the client socket to complete the connection.</p>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<p>Java provides three different types of sockets. Connection-oriented(TCP) sockets are implemented with the <code class="codehilite">Socket</code> class. </p>
+<p>The example describes a data server that uses connection-oriented TCP sockets. </p>
+<div class="codehilite"><pre><span class="kn">import</span> <span class="nn">java.net.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.*</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">DateClient</span>
+<span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span>  <span class="o">{</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="c1">// this could be changed to an IP name or address other than the localhost.</span>
+            <span class="c1">// The IP address 127.0.0.1 is a special IP address known as the loopback. </span>
+            <span class="c1">// When a computer refers to IP address 127.0.0.1, it is referring to itself.</span>
+            <span class="c1">// This mechanism allows a client and server on the same host to communicate using the TCP/IP protocol.</span>
+            <span class="n">Socket</span> <span class="n">sock</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Socket</span><span class="o">(</span><span class="s">&quot;127.0.0.1&quot;</span><span class="o">,</span><span class="mi">6013</span><span class="o">);</span>
+            <span class="n">InputStream</span> <span class="n">in</span> <span class="o">=</span> <span class="n">sock</span><span class="o">.</span><span class="na">getInputStream</span><span class="o">();</span>
+            <span class="n">BufferedReader</span> <span class="n">bin</span> <span class="o">=</span> <span class="k">new</span> <span class="n">BufferedReader</span><span class="o">(</span><span class="k">new</span> <span class="n">InputStreamReader</span><span class="o">(</span><span class="n">in</span><span class="o">));</span>
+
+            <span class="n">String</span> <span class="n">line</span><span class="o">;</span>
+            <span class="k">while</span><span class="o">(</span> <span class="o">(</span><span class="n">line</span> <span class="o">=</span> <span class="n">bin</span><span class="o">.</span><span class="na">readLine</span><span class="o">())</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span>
+                <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">line</span><span class="o">);</span>
+
+            <span class="n">sock</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">ioe</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">System</span><span class="o">.</span><span class="na">err</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">ioe</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">DateServer</span>
+<span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span>  <span class="o">{</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">ServerSocket</span> <span class="n">sock</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ServerSocket</span><span class="o">(</span><span class="mi">6013</span><span class="o">);</span>
+
+            <span class="c1">// now listen for connections</span>
+            <span class="k">while</span> <span class="o">(</span><span class="kc">true</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">Socket</span> <span class="n">client</span> <span class="o">=</span> <span class="n">sock</span><span class="o">.</span><span class="na">accept</span><span class="o">();</span>
+                <span class="c1">// we have a connection</span>
+
+                <span class="n">PrintWriter</span> <span class="n">pout</span> <span class="o">=</span> <span class="k">new</span> <span class="n">PrintWriter</span><span class="o">(</span><span class="n">client</span><span class="o">.</span><span class="na">getOutputStream</span><span class="o">(),</span> <span class="kc">true</span><span class="o">);</span>
+                <span class="c1">// write the Date to the socket</span>
+                <span class="n">pout</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="k">new</span> <span class="n">java</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">Date</span><span class="o">().</span><span class="na">toString</span><span class="o">());</span>
+
+                <span class="c1">// close the socket and resume listening for more connections</span>
+                <span class="n">client</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+        <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">ioe</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">System</span><span class="o">.</span><span class="na">err</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">ioe</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+</div>
+<p>Communication using sockets—although <em>common</em> and <em>efficient</em> —— is considered a <em>low-level</em> form of communication between distributed processes. </p>
+<ul>
+<li>One reason is that sockets allow only an <em>unstructured</em> stream of bytes to be exchanged between the communicating threads. It is the responsibility of the client or server application to impose a structure on the data.</li>
+</ul>
 <h4 id="remote-procedure-calls">Remote procedure calls<a class="headerlink" href="#remote-procedure-calls" title="Permanent link">&para;</a></h4>
-<p><strong>Remote Procedure Call</strong>（远程过程调用）allows programs on different machines to interact using simple procedure call/return semantics, just as if the two programs were in the same computer。</p>
+<p><strong>Remote Procedure Call</strong>(远程过程调用), One of the <em>most common</em> forms of remote service, allows programs on different machines to interact using simple procedure call/return semantics, just as if the two programs were in the same computer.</p>
 <p>RPC between a client and a serve：</p>
-<p><img alt="RPC_between_a_client_and_a_server" src="http://or9a8nskt.bkt.clouddn.com/RPC_between_a_client_and_a_server.png" /></p>
-<p>RPC hides all the network code into the stub procedures. This prevents the application programs, the client and the server, from having to worry about details such as sockets, network byte order, and the like.</p></div>
+<p><img alt="RPC_between_a_client_and_a_serve" src="../figures/RPC_between_a_client_and_a_server.png" /></p>
+<p>RPC hides all the network code into the stub procedures. This prevents the application programs, the client and the server, from having to worry about details such as sockets, network byte order, and the like.</p>
+<p><img alt="" src="../figures/rpc.jpg" /></p></div>
         </div>
 
         <footer class="col-md-12">

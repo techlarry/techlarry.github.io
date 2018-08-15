@@ -106,6 +106,10 @@
 </li>
                             
 <li >
+    <a href="../../osc/ch11/">Chapter 11: Mass-Storage Structure</a>
+</li>
+                            
+<li >
     <a href="../../osc/ch13/">Chapter 13: File-System Interfaces</a>
 </li>
                         </ul>
@@ -565,7 +569,6 @@
  <span class="p">}</span>    
 </pre></div>
 
-
 <h4 id="linux">Linux是如何组织虚拟内存的<a class="headerlink" href="#linux" title="Permanent link">&para;</a></h4>
 <p>那么Linux具体是怎么组织虚拟内存的呢？Linux内核为系统中的每个进程维护一个单独的任务结构体(<code class="codehilite">task_struct</code>, 在<code class="codehilite">sched.h</code>头文件中)。<code class="codehilite">task_struct</code>中的元素包含运行该进程所需要的所有信息(PID、指向用户栈的指针、可执行目标文件的名字、以及程序计数器)。</p>
 <p><img alt="vm_linux" src="http://or9a8nskt.bkt.clouddn.com/vm_linux.png" /></p>
@@ -621,7 +624,6 @@
 <p>Linux进程可以使用mmap函数来创建新的虚拟内存区域，并将对象映射到这些区域中。</p>
 <div class="codehilite"><pre><span class="kt">void</span> <span class="o">*</span><span class="n">mmap</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">start</span><span class="p">,</span> <span class="kt">int</span> <span class="n">len</span><span class="p">,</span> <span class="kt">int</span> <span class="n">prot</span><span class="p">,</span> <span class="kt">int</span> <span class="n">flags</span><span class="p">,</span> <span class="kt">int</span> <span class="n">fd</span><span class="p">,</span> <span class="kt">int</span> <span class="n">offset</span><span class="p">)</span>
 </pre></div>
-
 
 <p>mmap函数要求内核创建一个新的虚拟内存区域，最好是从地址start开始的一个区域，并将文件描述符fd制定的对象的一个连续的片(chunk)映射到这个新的区域。连续的对象片大小为len字节，从距文件开始处偏移量为offset字节的地方开始。其参数：</p>
 <ul>
@@ -698,7 +700,6 @@
 <span class="n">scanf</span><span class="p">(</span><span class="s">&quot;%d&quot;</span><span class="p">,</span> <span class="n">val</span><span class="p">);</span> <span class="c1">// 正确应该是scanf(&quot;%d, &amp;val);</span>
 </pre></div>
 
-
 <h4 id="_5">读未初始化的内存<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h4>
 <p><strong>堆内存是没有被初始化为0的</strong>：</p>
 <div class="codehilite"><pre><span class="cm">/* return y = Ax */</span>
@@ -713,7 +714,6 @@
 <span class="p">}</span>
 </pre></div>
 
-
 <p>正确的方法是显式地将y[i]设置为0，或者使用<code class="codehilite">calloc</code>。</p>
 <h4 id="_6">允许栈缓冲区溢出<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h4>
 <p>没有检查字符串的长度（经典的缓冲区溢出攻击也是利用相同的机制）</p>
@@ -721,7 +721,6 @@
 <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
 <span class="n">gets</span><span class="p">(</span><span class="n">s</span><span class="p">);</span> <span class="cm">/* stack buffer overflow, reads &quot;123456789&quot; from stdin */</span>
 </pre></div>
-
 
 <h4 id="_7">引用不存在的变量<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h4>
 <p>尽管指针仍然指向一个合法的内存地址，但是已经不再指向一个合法的变量了。以后在程序中调用其他函数时，内存将重用它们的栈针。</p>
@@ -732,7 +731,6 @@
 <span class="p">}</span>
 </pre></div>
 
-
 <h4 id="_8">多次释放<a class="headerlink" href="#_8" title="Permanent link">&para;</a></h4>
 <p>这个不用多说，不能重复搞两次</p>
 <div class="codehilite"><pre><span class="n">x</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="n">N</span> <span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span>
@@ -742,7 +740,6 @@
 <span class="c1">//  &lt;manipulate y&gt;</span>
 <span class="n">free</span><span class="p">(</span><span class="n">x</span><span class="p">);</span>
 </pre></div>
-
 
 <h4 id="_9">引用已经被释放的堆块中的数据<a class="headerlink" href="#_9" title="Permanent link">&para;</a></h4>
 <p>同样是很明显的错误，不要犯</p>
@@ -755,7 +752,6 @@
     <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">++</span><span class="p">;</span>
 </pre></div>
 
-
 <h4 id="_10">忘记释放已分配块：<a class="headerlink" href="#_10" title="Permanent link">&para;</a></h4>
 <div class="codehilite"><pre><span class="n">foo</span><span class="p">()</span> <span class="p">{</span>
     <span class="kt">int</span> <span class="o">*</span><span class="n">x</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="n">N</span> <span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span>
@@ -763,7 +759,6 @@
     <span class="k">return</span> <span class="p">;</span>
 <span class="p">}</span>
 </pre></div>
-
 
 <p>或者只释放了数据结构的一部分：</p>
 <div class="codehilite"><pre><span class="k">struct</span> <span class="n">list</span> <span class="p">{</span>

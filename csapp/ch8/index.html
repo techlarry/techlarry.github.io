@@ -106,6 +106,10 @@
 </li>
                             
 <li >
+    <a href="../../osc/ch11/">Chapter 11: Mass-Storage Structure</a>
+</li>
+                            
+<li >
     <a href="../../osc/ch13/">Chapter 13: File-System Interfaces</a>
 </li>
                         </ul>
@@ -447,17 +451,14 @@
 <span class="n">pit_t</span> <span class="nf">getppid</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
 </pre></div>
 
-
 <h4 id="_7">创建和终止进程<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h4>
 <p><strong>父进程</strong>通过调用fork函数创建一个新的运行的<strong>子进程</strong>。</p>
-<div class="codehilite"><pre><span class="cp">#include</span> <span class="cpf">&lt;sys/types.h&gt;</span><span class="cp"></span>
+<p><div class="codehilite"><pre><span class="cp">#include</span> <span class="cpf">&lt;sys/types.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;unistd.h&gt;</span><span class="cp"></span>
 
 <span class="kt">pid_t</span> <span class="nf">fork</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
 </pre></div>
-
-
-<p>新创建的子进程几乎但不完全与父进程相同：</p>
+新创建的子进程几乎但不完全与父进程相同：</p>
 <ul>
 <li><strong>相同但是独立的地址空间</strong>：子进程获得父进程虚拟地址空间的一份副本</li>
 <li><strong>共享文件</strong>：子进程获得父进程打开文件描述符相同的副本</li>
@@ -473,7 +474,6 @@
 <div class="codehilite"><pre><span class="cp">#include</span> <span class="cpf">&lt;unistd.n&gt;</span><span class="cp"></span>
 <span class="kt">unsigned</span> <span class="kt">int</span> <span class="nf">sleep</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">secs</span><span class="p">);</span>
 </pre></div>
-
 
 <h4 id="_10">加载并运行程序<a class="headerlink" href="#_10" title="Permanent link">&para;</a></h4>
 <p><code class="codehilite">execve</code>函数在当前进程的上下文中加载并运行一个新程序。
@@ -566,7 +566,6 @@
 <div class="codehilite"><pre><span class="kt">sighandler_t</span> <span class="nf">signal</span><span class="p">(</span><span class="kt">int</span> <span class="n">signum</span><span class="p">,</span> <span class="kt">sighandler_t</span> <span class="n">handler</span><span class="p">);</span>
 </pre></div>
 
-
 <p>有两个信号既不能被忽略也不能被捕获，它们是<code class="codehilite">SIGKILL</code>和<code class="codehilite">SIGSTOP</code>。即进程接收到这两个信号后，只能接受系统的默认处理，即终止线程。</p>
 <h4 id="_14">阻塞信号和进程回收<a class="headerlink" href="#_14" title="Permanent link">&para;</a></h4>
 <p>一个发出而没有被接受的信号叫做<strong>未处理信号</strong>（Pending Signal）。进程可以选择阻塞（Block）某个信号。被阻塞的信号产生时将保持在未处理状态，直到进程解除对此信号的阻塞，才执行接收的动作。阻塞和忽略是不同的，<strong>只要信号被阻塞就不会接收</strong>，而忽略是在接收之后可选的一种处理动作。</p>
@@ -645,7 +644,6 @@
 <span class="p">}</span>
 </pre></div>
 
-
 <p>在上面这个例子中，父进程创建一些子进程，这些子进程各自独立运行一段时间，然后终止。用<code class="codehilite">SIGCHLD</code>处理程序来回收子进程，其中<code class="codehilite">handler1</code>是错误的，会产生僵死子进程。<code class="codehilite">handler2</code>是安全的。原因是在<code class="codehilite">handler1</code>中，可能存在子进程先被执行，产生<code class="codehilite">SIGCHLD</code>信号；但是在子进程还未被回收之前，又有多个子进程被执行，产生多个<code class="codehilite">SIGCHLD</code>信号。于是多余的未处理<code class="codehilite">SIGCHLD</code>信号就被抛弃，只相当于一个<code class="codehilite">SIGCHLD</code>信号。最终会造成有的子进程未被回收，产生僵死子进程。</p>
 <p>执行的可能结果如下，可以看到父进程只回收了两个子进程。</p>
 <div class="codehilite"><pre>Hello from child 5617
@@ -657,20 +655,16 @@ Handler reaped child
 Parent processing input
 </pre></div>
 
-
 <h4 id="_16">显式阻塞机制<a class="headerlink" href="#_16" title="Permanent link">&para;</a></h4>
 <p>有时候不希望在发送信号后就立即去接收、处理信号，同时也不希望忽略该信号，那么可以通过<code class="codehilite">sigprocmask</code>显式地阻塞信号从而实现延迟接收信号。</p>
 <p>函数<code class="codehilite">sigprocmask</code>可以更改当前阻塞的信号集合(即blocked位向量):</p>
-<div class="codehilite"><pre><span class="kt">int</span> <span class="nf">sigprocmask</span><span class="p">(</span><span class="kt">int</span> <span class="n">how</span><span class="p">,</span> <span class="k">const</span> <span class="kt">sigset_t</span> <span class="o">*</span><span class="n">set</span><span class="p">,</span> <span class="kt">sigset_t</span> <span class="o">*</span><span class="n">oldset</span><span class="p">);</span>
+<p><div class="codehilite"><pre><span class="kt">int</span> <span class="nf">sigprocmask</span><span class="p">(</span><span class="kt">int</span> <span class="n">how</span><span class="p">,</span> <span class="k">const</span> <span class="kt">sigset_t</span> <span class="o">*</span><span class="n">set</span><span class="p">,</span> <span class="kt">sigset_t</span> <span class="o">*</span><span class="n">oldset</span><span class="p">);</span>
 </pre></div>
-
-
-<p>其具体行为依赖于how值：</p>
+其具体行为依赖于how值：</p>
 <div class="codehilite"><pre>SIG_BLOCK, blocked = blocked | set //添加set信号
 SIG_UNBLOCK, blocked = blocked &amp; ~set //删除set信号
 SIG_SETMASK, block = set //设置set信号为阻塞的信号
 </pre></div>
-
 
 <p>阻塞的信号集合其实就是一个无符号整型数组(在x86-64上，数组长度是16)。</p>
 <div class="codehilite"><pre><span class="cm">/* A `sigset_t&#39; has a bit for each signal.  */</span>
@@ -681,13 +675,11 @@ SIG_SETMASK, block = set //设置set信号为阻塞的信号
 <span class="p">}</span> <span class="kt">sigset_t</span><span class="p">;</span>
 </pre></div>
 
-
 <p>还有其他的一些函数可以对信号集进行操作：</p>
 <div class="codehilite"><pre><span class="kt">int</span> <span class="nf">sigfillset</span><span class="p">(</span><span class="kt">sigset_t</span> <span class="o">*</span><span class="n">set</span><span class="p">);</span> <span class="c1">// 信号集初始化, 然后把所有的信号加入到此信号集里</span>
 <span class="kt">int</span> <span class="nf">sigemptyset</span><span class="p">(</span><span class="kt">sigset_t</span> <span class="o">*</span><span class="n">set</span><span class="p">);</span> <span class="c1">//信号集初始化为空</span>
 <span class="kt">int</span> <span class="nf">sigaddset</span><span class="p">(</span><span class="kt">sigset_t</span> <span class="o">*</span><span class="n">set</span><span class="p">,</span> <span class="kt">int</span> <span class="n">signo</span><span class="p">);</span> <span class="c1">//将信号signo添加到信号集中  </span>
 </pre></div>
-
 
 <p>下面看个例子, 是一个具有细微同步错误的SHELL程序。如果子进程在父进程能够开始运行前就结束了，那么
 <code class="codehilite">addjob()</code> 和 <code class="codehilite">deletejob()</code> 会以错误的方式被调用。这个程序希望父进程在一个作业列表中记录着它的当前子进程，每个作业条目。 <code class="codehilite">addjob()</code> 和 <code class="codehilite">deletejob()</code> 分别想这个作业列表添加和从中删除作业。当父进程创建一个新的子进程时，它就把这个子进程添加到作业列表中。当父进程在<code class="codehilite">SIGCHLD</code> 处理程序中回收一个终止的（僵死）子进程时，它就从作业列表中删除这个子进程。乍一看，这段代码是对的。不幸的是，可能发生下面的情况：</p>
@@ -748,7 +740,6 @@ SIG_SETMASK, block = set //设置set信号为阻塞的信号
 <span class="p">}</span>
 </pre></div>
 
-
 <p>正确的做法应该如下,  通过在调用 <code class="codehilite">fork()</code> 之前，阻塞 <code class="codehilite">SIGCHLD</code> 信号，然后在我们调用了 <code class="codehilite">addjob()</code> 之后就取消阻塞这些信号，我们保证了在子进程被添加到作业列表之后回收该子进程。注意，子进程继承了它们父进程的被阻塞集合，所以我们必须在调用 <code class="codehilite">execve()</code> 之前，小心地解除子进程中阻塞的 <code class="codehilite">SIGCHLD</code> 信号。这样，父进程保证在相应的 <code class="codehilite">deletejob()</code> 之前执行 <code class="codehilite">addjob()</code>。</p>
 <div class="codehilite"><pre><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
 <span class="p">{</span>
@@ -774,7 +765,6 @@ SIG_SETMASK, block = set //设置set信号为阻塞的信号
     <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
 <span class="p">}</span>
 </pre></div>
-
 
 <h4 id="_17">信号处理程序<a class="headerlink" href="#_17" title="Permanent link">&para;</a></h4>
 <p>信号处理程序(signal handler)是重要且棘手的一个问题。其难点在：</p>

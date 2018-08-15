@@ -106,6 +106,10 @@
 </li>
                             
 <li >
+    <a href="../ch11/">Chapter 11: Mass-Storage Structure</a>
+</li>
+                            
+<li >
     <a href="../ch13/">Chapter 13: File-System Interfaces</a>
 </li>
                         </ul>
@@ -394,6 +398,11 @@
 </ul>
 <h3 id="3-system-calls">3 System calls<a class="headerlink" href="#3-system-calls" title="Permanent link">&para;</a></h3>
 <p>Purpose of System Call: System calls provide an <strong>interface to the services</strong> made available by an operating system.</p>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<p>A simple program to read data from one file and copy them to another file: <code class="codehilite">cp in.txt out.txt</code>. As you can see, even simple programs may make heavy use of the operating system.</p>
+<p><img alt="Example of how system calls are used by copying a file" src="../figures/Example%20of%20how%20system%20calls%20are%20used%20by%20copying%20a%20file.png" /></p>
+</div>
 <h4 id="api">API<a class="headerlink" href="#api" title="Permanent link">&para;</a></h4>
 <p>Typically, application developers design programs according to an application programming interface(<strong>API</strong>, 应用程序编程接口) rather than invoking <strong>actual system call</strong>.</p>
 <ul>
@@ -412,7 +421,11 @@
 <li>communications</li>
 <li>protection</li>
 </ul>
-<p><img alt="examplesofunixandlinuxsystemcalls" src="http://or9a8nskt.bkt.clouddn.com/examplesofunixandlinuxsystemcalls.png" /></p>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<p>The following illustrates various equivalent system calls for Windows and UNIX operating systems.</p>
+<p><img alt="EXAMPLES OF WINDOWS AND UNIX SYSTEM CALLS" src="../figures/EXAMPLES%20OF%20WINDOWS%20AND%20UNIX%20SYSTEM%20CALLS.png" /></p>
+</div>
 <p>Three ways to pass parameters to the operating system:</p>
 <ul>
 <li>when less than five parameters, passing the parameters in registers</li>
@@ -421,6 +434,15 @@
 </ul>
 <h3 id="4-system-services">4 System Services<a class="headerlink" href="#4-system-services" title="Permanent link">&para;</a></h3>
 <p><strong>System services</strong>, also known as <strong>system utilities</strong>, provide a convenient environment for program development and execution.</p>
+<p>They can be divided into these categories:</p>
+<ul>
+<li>File management</li>
+<li>Status information</li>
+<li>File modification</li>
+<li>Program loading and execution</li>
+<li>Communications</li>
+<li>Background services</li>
+</ul>
 <h3 id="7-os-design-and-implementation">7 OS Design and Implementation<a class="headerlink" href="#7-os-design-and-implementation" title="Permanent link">&para;</a></h3>
 <p>One important principle of OS design is <em>the separation of <strong>policy</strong> from <strong>mechanism</strong></em> . Mechanisms determine <strong>how</strong> to do something; policies determine <strong>what</strong> will be done.
 操作系统设计的一个重要原则是策略（policy）和机制（mechanism）的分离。机制决定如何做，策略决定做什么。</p>
@@ -434,11 +456,11 @@
 <li>a common technique for designing operating system</li>
 <li>e.g. original Unix operating system ( figure below)</li>
 </ul>
-<p><img alt="traditional_unix_system_structure" src="http://or9a8nskt.bkt.clouddn.com/traditional_unix_system_structure.png" /></p>
+<p><img alt="Traditional UNIX system structure" src="../figures/Traditional%20UNIX%20system%20structure.png" /></p>
 <ul>
 <li>e.g. Linux is based on Unix and is structured similarly, as shown in figure below.</li>
 </ul>
-<p><img alt="linux_system_structure" src="http://or9a8nskt.bkt.clouddn.com/linux_system_structure.png" /></p>
+<p><img alt="Linux system structure" src="../figures/Linux%20system%20structure.png" /></p>
 <p>pros:</p>
 <ul>
 <li>simplicity of kernels</li>
@@ -464,6 +486,7 @@
 <li>The bottom layer is the hardware; the highest is the user interface.</li>
 <li>low-level layers can be invoked by higher-level layers</li>
 </ul>
+<p><img alt="A_layed_Operating_System" src="http://or9a8nskt.bkt.clouddn.com/A_layed_Operating_System.png" /></p>
 <p>pros:</p>
 <ul>
 <li>simplicity of construction and debugging<ul>
@@ -480,13 +503,12 @@
 </ul>
 </li>
 </ul>
-<p>Used in computer networks and web applications</p>
-<p><img alt="A_layed_Operating_System" src="http://or9a8nskt.bkt.clouddn.com/A_layed_Operating_System.png" /></p>
+<p>Layered systems have been successfully used in computer networks (such as TCP/IP) and web applications.</p>
 <h4 id="microkernel">Microkernel<a class="headerlink" href="#microkernel" title="Permanent link">&para;</a></h4>
-<p>Another way to modularized the kernel is using microkernel approach (微内核)。</p>
+<p>Another way to modularized the kernel is using <strong>microkernel</strong>(微内核) approach.</p>
 <ul>
-<li><strong>removing all nonessential</strong> components from the kernel and implementing them as <strong>user-level</strong> programs the reside in <strong>separate</strong> address spaces.</li>
-<li>smaller kernel</li>
+<li><strong>Removing all nonessential</strong> components from the kernel and implementing them as <strong>user-level</strong> programs the reside in <strong>separate</strong> address spaces.</li>
+<li>A smaller kernel.</li>
 </ul>
 <p>A typical microkernel shown below.</p>
 <p><img alt="A_typical_microkernel" src="http://or9a8nskt.bkt.clouddn.com/A_typical_microkernel.png" /></p>
@@ -512,6 +534,11 @@
 <ul>
 <li>design purpose: for the kernel to provide core services, while other services are implemented <strong>dynamically</strong>, as the kernel is running</li>
 </ul>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<p>You can list all Linux kernel modules that are currently loaded, by entering the command <code class="codehilite">lsmod</code>(lists name, size, and where the module is being used). </p>
+<p>Linux kernel modules are loaded(inserted) using the <code class="codehilite">insmod</code> command, and are removed using the <code class="codehilite">rmmod</code> command.</p>
+</div>
 <h4 id="hybrid-systems">Hybrid systems<a class="headerlink" href="#hybrid-systems" title="Permanent link">&para;</a></h4>
 <p>In practice, <strong>very few</strong> operating system adopt a single, strictly defined structure. Instead, they <strong>combine different structures</strong>, resulting in <strong>hybrid systems</strong> that address performance, security, and usability issues.</p>
 <p>Architecture of Apple’s macOS and iOS operating systems:</p>
@@ -524,7 +551,7 @@
 <h3 id="9-system-boot">9 System boot<a class="headerlink" href="#9-system-boot" title="Permanent link">&para;</a></h3>
 <p>The process of starting a computer by loading the kernel is known as <strong>booting</strong> the system.</p>
 <ol>
-<li>A small piece of code known as the <strong>bootstrap program</strong>（引导程序） or boot loader locates the kernel.</li>
+<li>A small piece of code known as the <strong>bootstrap program</strong>(引导程序) or boot loader locates the kernel.</li>
 <li>The kernel is loaded into memory and started.</li>
 <li>The kernel initializes hardware.</li>
 <li>The root file system is mounted.</li>

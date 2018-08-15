@@ -106,6 +106,10 @@
 </li>
                             
 <li >
+    <a href="../ch11/">Chapter 11: Mass-Storage Structure</a>
+</li>
+                            
+<li >
     <a href="../ch13/">Chapter 13: File-System Interfaces</a>
 </li>
                         </ul>
@@ -422,7 +426,6 @@
 <span class="n">boolean</span> <span class="n">flag</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>
 </pre></div>
 
-
 <p>The structure of process <span><span class="MathJax_Preview">P_i</span><script type="math/tex">P_i</script></span> in Peterson's solution.</p>
 <div class="codehilite"><pre><span class="k">while</span> <span class="p">(</span><span class="nb">true</span><span class="p">)</span> <span class="p">{</span>
     <span class="n">flag</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span> 
@@ -434,7 +437,6 @@
     <span class="cm">/*remainder section */</span>
 <span class="p">}</span>
 </pre></div>
-
 
 <ul>
 <li>The variable <code class="codehilite">turn</code> indicates whose turn it is to enter its critical section.</li>
@@ -473,7 +475,6 @@
 <span class="p">}</span>
 </pre></div>
 
-
 <p>Mutual-exclusion implementation with <code class="codehilite">test_and_set()</code>:</p>
 <div class="codehilite"><pre><span class="k">do</span> <span class="p">{</span>
     <span class="k">while</span> <span class="p">(</span><span class="n">test_and_set</span><span class="p">(</span><span class="o">&amp;</span><span class="n">lock</span><span class="p">))</span> 
@@ -484,7 +485,6 @@
 <span class="k">while</span> <span class="p">(</span><span class="nb">true</span><span class="p">);</span>
 </pre></div>
 
-
 <p>The definition of the atomic <code class="codehilite">compare_and_swap()</code>（CAS）instruction:</p>
 <div class="codehilite"><pre><span class="kt">int</span> <span class="nf">compare_and_swap</span><span class="p">(</span><span class="kt">int</span> <span class="o">*</span><span class="n">value</span><span class="p">,</span> <span class="kt">int</span> <span class="n">expected</span><span class="p">,</span> <span class="kt">int</span> <span class="n">new</span> <span class="n">value</span><span class="p">)</span> <span class="p">{</span> 
     <span class="kt">int</span> <span class="n">temp</span> <span class="o">=</span> <span class="o">*</span><span class="n">value</span><span class="p">;</span>
@@ -493,7 +493,6 @@
     <span class="k">return</span> <span class="n">temp</span><span class="p">;</span>
 <span class="p">}</span>
 </pre></div>
-
 
 <p>Mutual exclusion with the <code class="codehilite">compare_and_swap()</code> instruction:</p>
 <div class="codehilite"><pre><span class="k">while</span> <span class="p">(</span><span class="nb">true</span><span class="p">)</span> <span class="p">{</span>
@@ -504,7 +503,6 @@
     <span class="cm">/* remainder section */</span>
 <span class="p">}</span>
 </pre></div>
-
 
 <h4 id="atomic-variables">Atomic variables<a class="headerlink" href="#atomic-variables" title="Permanent link">&para;</a></h4>
 <p><strong>Atomic variables</strong> (原子变量) provides atomic operations on basic data types such as integers and booleans. Their use is often limited to single updates of shared data such as counters and sequence generators.</p>
@@ -529,7 +527,6 @@
 <span class="p">}</span>
 </pre></div>
 
-
 <p>The definition of <code class="codehilite">acquire()</code> is as follows:</p>
 <div class="codehilite"><pre><span class="n">acquire</span><span class="p">()</span> <span class="p">{</span> 
     <span class="k">while</span> <span class="p">(</span><span class="o">!</span><span class="n">available</span><span class="p">)</span> <span class="p">;</span>
@@ -538,13 +535,11 @@
 <span class="p">}</span>
 </pre></div>
 
-
 <p>The definition of <code class="codehilite">release()</code> is as follows:</p>
 <div class="codehilite"><pre><span class="n">release</span><span class="p">(){</span>
     <span class="n">available</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
 <span class="p">}</span>
 </pre></div>
-
 
 <p>The main disadvantage of the implementation is that it requires <strong>busy waiting</strong>(忙等待).</p>
 <ul>
@@ -567,13 +562,11 @@
 <span class="p">{</span>
 </pre></div>
 
-
 <p>The definition of <code class="codehilite">signal()</code> is as follows:</p>
 <div class="codehilite"><pre><span class="n">signal</span><span class="p">(</span><span class="n">S</span><span class="p">){</span>
     <span class="n">S</span><span class="o">++</span><span class="p">;</span>
 <span class="p">}</span>
 </pre></div>
-
 
 <p>All modifications to the integer value of the semaphore in the <code class="codehilite">wait()</code> and <code class="codehilite">signal()</code> operations must be executed atomically.  在<code class="codehilite">wait()</code>和<code class="codehilite">signal()</code>操作中，对信号量整型值的修改必须不可分地执行。</p>
 <p>Operating systems often distinguish between counting and binary semaphores.通常操作系统区分计数信号量和二进制信号量。</p>
@@ -608,7 +601,6 @@
     <span class="n">initialization</span> <span class="n">code</span> <span class="p">(</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">)</span> <span class="p">{</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.}</span>
 <span class="p">}</span>
 </pre></div>
-
 
 <p>A monitor uses <strong>condition variables</strong> that allow processes to wait for certain conditions to become true and to signal one another when conditions have been set to true:</p>
 <div>
@@ -663,7 +655,6 @@
     <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
-
 
 <p><a href="../ch7/#java-monitors">Monitor in Java</a></p>
 <h3 id="8-liveness">8 Liveness<a class="headerlink" href="#8-liveness" title="Permanent link">&para;</a></h3>
