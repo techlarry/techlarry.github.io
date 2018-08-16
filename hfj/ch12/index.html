@@ -22,6 +22,7 @@
         <link href="../../extra_css/mkdocs/js/require.js" rel="stylesheet">
         <link href="../../extra_css/mkdocs/js/search.js" rel="stylesheet">
         <link href="../../extra_css/mkdocs/js/text.js" rel="stylesheet">
+        <link href="../../extra_css/code-tab.css" rel="stylesheet">
         <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!--[if lt IE 9]>
             <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
@@ -249,6 +250,15 @@
                         </ul>
                     </li>
                     <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">JC <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../../jc/Java_Concurrency/">Java Concurrency</a>
+</li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">LKD <b class="caret"></b></a>
                         <ul class="dropdown-menu">
                             
@@ -388,29 +398,30 @@
 <div class="admonition example">
 <p class="admonition-title">Example</p>
 <p>A button on a frame</p>
-<div class="codehilite"><pre><span class="kn">import</span> <span class="nn">javax.swing.*</span><span class="o">;</span>
+<p>```Java
+import javax.swing.*;</p>
+<p>public class AButton {
+    public static void main(String[] args){
+        // make a frame and a button
+        JFrame frame = new JFrame();
+        JButton button = new JButton("Click me");</p>
+<div class="codehilite"><pre>    // Makes the program quit as soon as you close the window
+    // If you leave this out it will just sit there on the screen forever
+    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    // add the button  to the frame&#39;s content pane
+    frame.getContentPane().add(button);
+    // give the frame a size, in pixels
+    frame.setSize(300, 300);
+    //finally, make it visible
+    // if you forget this step, you won&#39;t see anything when you run this code.
+    frame.setVisible(true);
 
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">AButton</span> <span class="o">{</span>
-    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">){</span>
-        <span class="c1">// make a frame and a button</span>
-        <span class="n">JFrame</span> <span class="n">frame</span> <span class="o">=</span> <span class="k">new</span> <span class="n">JFrame</span><span class="o">();</span>
-        <span class="n">JButton</span> <span class="n">button</span> <span class="o">=</span> <span class="k">new</span> <span class="n">JButton</span><span class="o">(</span><span class="s">&quot;Click me&quot;</span><span class="o">);</span>
-
-        <span class="c1">// Makes the program quit as soon as you close the window</span>
-        <span class="c1">// If you leave this out it will just sit there on the screen forever</span>
-        <span class="n">frame</span><span class="o">.</span><span class="na">setDefaultCloseOperation</span><span class="o">(</span><span class="n">JFrame</span><span class="o">.</span><span class="na">EXIT_ON_CLOSE</span><span class="o">);</span>
-        <span class="c1">// add the button  to the frame&#39;s content pane</span>
-        <span class="n">frame</span><span class="o">.</span><span class="na">getContentPane</span><span class="o">().</span><span class="na">add</span><span class="o">(</span><span class="n">button</span><span class="o">);</span>
-        <span class="c1">// give the frame a size, in pixels</span>
-        <span class="n">frame</span><span class="o">.</span><span class="na">setSize</span><span class="o">(</span><span class="mi">300</span><span class="o">,</span> <span class="mi">300</span><span class="o">);</span>
-        <span class="c1">//finally, make it visible</span>
-        <span class="c1">// if you forget this step, you won&#39;t see anything when you run this code.</span>
-        <span class="n">frame</span><span class="o">.</span><span class="na">setVisible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
-
-    <span class="o">}</span>
-<span class="o">}</span>
+}
 </pre></div>
 
+
+<p>}
+```</p>
 </div>
 <h3 id="2-events-sources-and-listeners">2 Events, Sources, and Listeners<a class="headerlink" href="#2-events-sources-and-listeners" title="Permanent link">&para;</a></h3>
 <p>In Java, the process of getting and handling a user event is called <strong>*event-handling</strong>.</p>
@@ -443,54 +454,52 @@
 <li>And <strong><em>you never call this method yourself!</em></strong>. However, you <em>can</em> ask the system to refresh the display (<code class="codehilite">repaint()</code>), which ultimately leads to <code class="codehilite">paintComponent()</code> being called.</li>
 </ul>
 <p>The argument to <code class="codehilite">paintComponent()</code> is declared as type Graphics (<code class="codehilite">java.awt.Graphics</code>).</p>
-<div class="codehilite"><pre><span class="kd">public</span> <span class="kt">void</span> <span class="nf">paintComponent</span><span class="o">(</span><span class="n">Graphics</span> <span class="n">g</span><span class="o">){}</span>
-</pre></div>
-
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kt>void</span> <span class=nf>paintComponent</span><span class=o>(</span><span class=n>Graphics</span> <span class=n>g</span><span class=o>){}</span>
+</pre></div></p>
 <p><i><b>The object referenced by the 'g' parameter is actually an instance of the <big>Graphics2D</big> class.</b></i></p>
 <p>If you need to use a method from the Graphics2D class, you can't <em>use</em> the paintComponent parameter 'g' straight from the method. But you can <em>cast</em> it with a new Graphics2D variable.</p>
-<div class="codehilite"><pre><span class="n">Graphics2D</span> <span class="n">g2d</span> <span class="o">=</span> <span class="o">(</span><span class="n">Graphics2D</span><span class="o">)</span> <span class="n">g</span><span class="o">;</span>
-</pre></div>
-
+<p> <div class=codehilite><pre><span class=n>Graphics2D</span> <span class=n>g2d</span> <span class=o>=</span> <span class=o>(</span><span class=n>Graphics2D</span><span class=o>)</span> <span class=n>g</span><span class=o>;</span>
+</pre></div></p>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
 <p>Paint a randomly-colored circle on a black backgraound
-<div class="codehilite"><pre><span class="kn">import</span> <span class="nn">javax.swing.*</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">java.awt.*</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">java.util.Random</span><span class="o">;</span>
+```Java
+import javax.swing.<em>;
+import java.awt.</em>;
+import java.util.Random;</p>
+<p>// Make a subclass of JPanel,
+// a widget that you can add to a frame just like anything else
+public class RandomColoredCircle extends JPanel {</p>
+<div class="codehilite"><pre>public void paintComponent(Graphics g){
+    Graphics2D g2d = (Graphics2D) g;
+    g2d.setColor(Color.orange);
+    // fill the entire panel with black (the default color)
+    g.fillRect(0,0,this.getWidth(), this.getHeight());
 
-<span class="c1">// Make a subclass of JPanel,</span>
-<span class="c1">// a widget that you can add to a frame just like anything else</span>
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">RandomColoredCircle</span> <span class="kd">extends</span> <span class="n">JPanel</span> <span class="o">{</span>
+    Random random = new Random();
+
+    Color startColor = new Color(random.nextInt(256), random.nextInt(256), random.nextInt(256));
+    Color endColor = new Color(random.nextInt(256), random.nextInt(256), random.nextInt(256));
+    GradientPaint gradient = new GradientPaint(70, 70, startColor, 150, 150, endColor);
+
+    g2d.setPaint(gradient);
+    g.fillOval(70,70,100, 100);
+}
+</pre></div>
 
 
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">paintComponent</span><span class="o">(</span><span class="n">Graphics</span> <span class="n">g</span><span class="o">){</span>
-        <span class="n">Graphics2D</span> <span class="n">g2d</span> <span class="o">=</span> <span class="o">(</span><span class="n">Graphics2D</span><span class="o">)</span> <span class="n">g</span><span class="o">;</span>
-        <span class="n">g2d</span><span class="o">.</span><span class="na">setColor</span><span class="o">(</span><span class="n">Color</span><span class="o">.</span><span class="na">orange</span><span class="o">);</span>
-        <span class="c1">// fill the entire panel with black (the default color)</span>
-        <span class="n">g</span><span class="o">.</span><span class="na">fillRect</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span><span class="mi">0</span><span class="o">,</span><span class="k">this</span><span class="o">.</span><span class="na">getWidth</span><span class="o">(),</span> <span class="k">this</span><span class="o">.</span><span class="na">getHeight</span><span class="o">());</span>
-
-        <span class="n">Random</span> <span class="n">random</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Random</span><span class="o">();</span>
-
-        <span class="n">Color</span> <span class="n">startColor</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Color</span><span class="o">(</span><span class="n">random</span><span class="o">.</span><span class="na">nextInt</span><span class="o">(</span><span class="mi">256</span><span class="o">),</span> <span class="n">random</span><span class="o">.</span><span class="na">nextInt</span><span class="o">(</span><span class="mi">256</span><span class="o">),</span> <span class="n">random</span><span class="o">.</span><span class="na">nextInt</span><span class="o">(</span><span class="mi">256</span><span class="o">));</span>
-        <span class="n">Color</span> <span class="n">endColor</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Color</span><span class="o">(</span><span class="n">random</span><span class="o">.</span><span class="na">nextInt</span><span class="o">(</span><span class="mi">256</span><span class="o">),</span> <span class="n">random</span><span class="o">.</span><span class="na">nextInt</span><span class="o">(</span><span class="mi">256</span><span class="o">),</span> <span class="n">random</span><span class="o">.</span><span class="na">nextInt</span><span class="o">(</span><span class="mi">256</span><span class="o">));</span>
-        <span class="n">GradientPaint</span> <span class="n">gradient</span> <span class="o">=</span> <span class="k">new</span> <span class="n">GradientPaint</span><span class="o">(</span><span class="mi">70</span><span class="o">,</span> <span class="mi">70</span><span class="o">,</span> <span class="n">startColor</span><span class="o">,</span> <span class="mi">150</span><span class="o">,</span> <span class="mi">150</span><span class="o">,</span> <span class="n">endColor</span><span class="o">);</span>
-
-        <span class="n">g2d</span><span class="o">.</span><span class="na">setPaint</span><span class="o">(</span><span class="n">gradient</span><span class="o">);</span>
-        <span class="n">g</span><span class="o">.</span><span class="na">fillOval</span><span class="o">(</span><span class="mi">70</span><span class="o">,</span><span class="mi">70</span><span class="o">,</span><span class="mi">100</span><span class="o">,</span> <span class="mi">100</span><span class="o">);</span>
-    <span class="o">}</span>
-<span class="o">}</span>
-
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">plot</span> <span class="o">{</span>
-    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">){</span>
-        <span class="n">RandomColoredCircle</span> <span class="n">coloredCircle</span> <span class="o">=</span> <span class="k">new</span> <span class="n">RandomColoredCircle</span><span class="o">();</span>
-        <span class="n">JFrame</span> <span class="n">frame</span> <span class="o">=</span> <span class="k">new</span> <span class="n">JFrame</span><span class="o">();</span>
-        <span class="n">frame</span><span class="o">.</span><span class="na">setDefaultCloseOperation</span><span class="o">(</span><span class="n">JFrame</span><span class="o">.</span><span class="na">EXIT_ON_CLOSE</span><span class="o">);</span>
-        <span class="n">frame</span><span class="o">.</span><span class="na">getContentPane</span><span class="o">().</span><span class="na">add</span><span class="o">(</span><span class="n">coloredCircle</span><span class="o">);</span>
-        <span class="n">frame</span><span class="o">.</span><span class="na">setSize</span><span class="o">(</span><span class="mi">300</span><span class="o">,</span> <span class="mi">300</span><span class="o">);</span>
-        <span class="n">frame</span><span class="o">.</span><span class="na">setVisible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
-    <span class="o">}</span>
-<span class="o">}</span>
-</pre></div></p>
+<p>}</p>
+<p>public class plot {
+    public static void main(String[] args){
+        RandomColoredCircle coloredCircle = new RandomColoredCircle();
+        JFrame frame = new JFrame();
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.getContentPane().add(coloredCircle);
+        frame.setSize(300, 300);
+        frame.setVisible(true);
+    }
+}
+```</p>
 <p>Output: <img alt="example_of_gradient_circle" src="../figures/example_of_gradient_circle.png" /></p>
 </div>
 <h3 id="4-multiple-listeners">4 Multiple Listeners<a class="headerlink" href="#4-multiple-listeners" title="Permanent link">&para;</a></h3>
@@ -499,100 +508,98 @@
 <p>So We need to get TWO events. How do you get <em>two</em> events when you have only <em>one</em> <code class="codehilite">actionPerformed()</code> method?</p>
 <p><strong>Option one</strong> - Implement two <code class="codehilite">actionPerformed()</code> methods: You can't. It won't compile.</p>
 <p><strong>Option two</strong> - Register the same listener with <em>both</em> buttons.</p>
-<div class="codehilite"><pre><span class="kd">public</span> <span class="kt">void</span> <span class="nf">actionPerformed</span><span class="o">(</span><span class="n">ActionEvent</span> <span class="n">event</span><span class="o">)</span> <span class="o">{</span> 
-    <span class="c1">// Query the event object to find out which button actually fired it, and use that to decide what to do</span>
-    <span class="k">if</span> <span class="o">(</span><span class="n">event</span><span class="o">.</span><span class="na">getSource</span><span class="o">()</span> <span class="o">==</span> <span class="n">colorButton</span><span class="o">)</span> <span class="o">{</span> 
-        <span class="n">frame</span><span class="o">.</span><span class="na">repaint</span><span class="o">();</span> 
-    <span class="o">}</span> <span class="k">else</span> <span class="o">{</span> 
-    <span class="n">label</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="err">“</span><span class="n">That</span> <span class="n">hurt</span><span class="o">!</span><span class="err">”</span><span class="o">);</span> 
-    <span class="o">}</span> 
-<span class="o">}</span>
-</pre></div>
-
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kt>void</span> <span class=nf>actionPerformed</span><span class=o>(</span><span class=n>ActionEvent</span> <span class=n>event</span><span class=o>)</span> <span class=o>{</span> 
+    <span class=c1>// Query the event object to find out which button actually fired it, and use that to decide what to do</span>
+    <span class=k>if</span> <span class=o>(</span><span class=n>event</span><span class=o>.</span><span class=na>getSource</span><span class=o>()</span> <span class=o>==</span> <span class=n>colorButton</span><span class=o>)</span> <span class=o>{</span> 
+        <span class=n>frame</span><span class=o>.</span><span class=na>repaint</span><span class=o>();</span> 
+    <span class=o>}</span> <span class=k>else</span> <span class=o>{</span> 
+    <span class=n>label</span><span class=o>.</span><span class=na>setText</span><span class=o>(</span><span class=err>“</span><span class=n>That</span> <span class=n>hurt</span><span class=o>!</span><span class=err>”</span><span class=o>);</span> 
+    <span class=o>}</span> 
+<span class=o>}</span>
+</pre></div></p>
 <p><em>Flaw: this does work, but in most cases it's not very OO.</em>. Usually, it hurts maintainability and extensibility.</p>
 <p><strong>Option three</strong> - Create two <em>separate</em> ActionListener classes.</p>
-<p><div class="codehilite"><pre><span class="kd">class</span> <span class="nc">MyGui</span> <span class="o">{</span> 
-    <span class="n">JFrame</span> <span class="n">frame</span><span class="o">;</span> 
-    <span class="n">JLabel</span> <span class="n">label</span><span class="o">;</span> 
-    <span class="kt">void</span> <span class="nf">gui</span><span class="o">()</span> <span class="o">{</span> 
-        <span class="c1">// code to instantiate the two listeners and register one </span>
-        <span class="c1">// with the color button and the other with the label button } </span>
-<span class="o">}</span> <span class="c1">// close class</span>
+<p> <div class=codehilite><pre><span class=kd>class</span> <span class=nc>MyGui</span> <span class=o>{</span> 
+    <span class=n>JFrame</span> <span class=n>frame</span><span class=o>;</span> 
+    <span class=n>JLabel</span> <span class=n>label</span><span class=o>;</span> 
+    <span class=kt>void</span> <span class=nf>gui</span><span class=o>()</span> <span class=o>{</span> 
+        <span class=c1>// code to instantiate the two listeners and register one </span>
+        <span class=c1>// with the color button and the other with the label button } </span>
+<span class=o>}</span> <span class=c1>// close class</span>
 
-<span class="kd">class</span> <span class="nc">ColorButtonListener</span> <span class="kd">implements</span> <span class="n">ActionListener</span> <span class="o">{</span> 
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">actionPerformed</span><span class="o">(</span><span class="n">ActionEvent</span> <span class="n">event</span><span class="o">){</span> 
-    <span class="n">frame</span><span class="o">.</span><span class="na">repaint</span><span class="o">();</span> 
-    <span class="o">}</span>
-<span class="o">}</span>
+<span class=kd>class</span> <span class=nc>ColorButtonListener</span> <span class=kd>implements</span> <span class=n>ActionListener</span> <span class=o>{</span> 
+    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>actionPerformed</span><span class=o>(</span><span class=n>ActionEvent</span> <span class=n>event</span><span class=o>){</span> 
+    <span class=n>frame</span><span class=o>.</span><span class=na>repaint</span><span class=o>();</span> 
+    <span class=o>}</span>
+<span class=o>}</span>
 
-<span class="kd">class</span> <span class="nc">LabelButtonListener</span> <span class="kd">implements</span> <span class="n">ActionListener</span> <span class="o">{</span> 
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">actionPerformed</span><span class="o">(</span><span class="n">ActionEvent</span> <span class="n">event</span><span class="o">)</span> <span class="o">{</span>
-        <span class="n">label</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="err">“</span><span class="n">That</span> <span class="n">hurt</span><span class="o">!</span><span class="err">”</span><span class="o">);</span> 
-    <span class="o">}</span> 
-<span class="o">}</span>
-</pre></div>
-<em>Flaw: these classes won’t have access to the variables they need to act on, ‘frame’ and ‘label’.</em></p>
+<span class=kd>class</span> <span class=nc>LabelButtonListener</span> <span class=kd>implements</span> <span class=n>ActionListener</span> <span class=o>{</span> 
+    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>actionPerformed</span><span class=o>(</span><span class=n>ActionEvent</span> <span class=n>event</span><span class=o>)</span> <span class=o>{</span>
+        <span class=n>label</span><span class=o>.</span><span class=na>setText</span><span class=o>(</span><span class=err>“</span><span class=n>That</span> <span class=n>hurt</span><span class=o>!</span><span class=err>”</span><span class=o>);</span> 
+    <span class=o>}</span> 
+<span class=o>}</span>
+</pre></div></p>
+<p><em>Flaw: these classes won’t have access to the variables they need to act on, ‘frame’ and ‘label’.</em></p>
 <h4 id="inner-class">Inner Class<a class="headerlink" href="#inner-class" title="Permanent link">&para;</a></h4>
 <p><b><big>SOLUTION</big>: Inner class to the rescue!</b></p>
 <ul>
 <li>All inner class can use all the methods and variables of the outer class, <strong><em>even the private ones</em></strong>.</li>
 <li>An inner class instance must be <strong><em>tied</em></strong> to an outer class instance.</li>
 </ul>
-<div class="codehilite"><pre><span class="kn">import</span> <span class="nn">javax.swing.*</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">java.awt.*</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">java.awt.event.ActionEvent</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">java.awt.event.ActionListener</span><span class="o">;</span>
+<p> <div class=codehilite><pre><span class=kn>import</span> <span class=nn>javax.swing.*</span><span class=o>;</span>
+<span class=kn>import</span> <span class=nn>java.awt.*</span><span class=o>;</span>
+<span class=kn>import</span> <span class=nn>java.awt.event.ActionEvent</span><span class=o>;</span>
+<span class=kn>import</span> <span class=nn>java.awt.event.ActionListener</span><span class=o>;</span>
 
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">PLOT</span> <span class="o">{</span>
-    <span class="n">JFrame</span> <span class="n">frame</span><span class="o">;</span>
-    <span class="n">JLabel</span> <span class="n">label</span><span class="o">;</span>
-    <span class="n">RandomColoredCircle</span> <span class="n">coloredCircle</span><span class="o">;</span>
+<span class=kd>public</span> <span class=kd>class</span> <span class=nc>PLOT</span> <span class=o>{</span>
+    <span class=n>JFrame</span> <span class=n>frame</span><span class=o>;</span>
+    <span class=n>JLabel</span> <span class=n>label</span><span class=o>;</span>
+    <span class=n>RandomColoredCircle</span> <span class=n>coloredCircle</span><span class=o>;</span>
 
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">go</span><span class="o">(){</span>
-        <span class="c1">// instead of passing (this) to the button&#39;s listener registration method,</span>
-        <span class="c1">// pass a new instance of the appropriate listener class.</span>
-        <span class="n">JButton</span> <span class="n">colorButton</span> <span class="o">=</span> <span class="k">new</span> <span class="n">JButton</span><span class="o">(</span><span class="s">&quot;Change Color&quot;</span><span class="o">);</span>
-        <span class="n">colorButton</span><span class="o">.</span><span class="na">addActionListener</span><span class="o">(</span><span class="k">new</span> <span class="n">ColorButtonListener</span><span class="o">());</span>
+    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>go</span><span class=o>(){</span>
+        <span class=c1>// instead of passing (this) to the button&#39;s listener registration method,</span>
+        <span class=c1>// pass a new instance of the appropriate listener class.</span>
+        <span class=n>JButton</span> <span class=n>colorButton</span> <span class=o>=</span> <span class=k>new</span> <span class=n>JButton</span><span class=o>(</span><span class=s>&quot;Change Color&quot;</span><span class=o>);</span>
+        <span class=n>colorButton</span><span class=o>.</span><span class=na>addActionListener</span><span class=o>(</span><span class=k>new</span> <span class=n>ColorButtonListener</span><span class=o>());</span>
 
-        <span class="n">JButton</span> <span class="n">labelButton</span> <span class="o">=</span> <span class="k">new</span> <span class="n">JButton</span><span class="o">(</span><span class="s">&quot;Change Label&quot;</span><span class="o">);</span>
-        <span class="n">labelButton</span><span class="o">.</span><span class="na">addActionListener</span><span class="o">(</span><span class="k">new</span> <span class="n">LabelButtonListener</span><span class="o">());</span>
+        <span class=n>JButton</span> <span class=n>labelButton</span> <span class=o>=</span> <span class=k>new</span> <span class=n>JButton</span><span class=o>(</span><span class=s>&quot;Change Label&quot;</span><span class=o>);</span>
+        <span class=n>labelButton</span><span class=o>.</span><span class=na>addActionListener</span><span class=o>(</span><span class=k>new</span> <span class=n>LabelButtonListener</span><span class=o>());</span>
 
-        <span class="n">label</span> <span class="o">=</span> <span class="k">new</span> <span class="n">JLabel</span><span class="o">(</span><span class="s">&quot;Label&quot;</span><span class="o">);</span>
-        <span class="n">coloredCircle</span> <span class="o">=</span> <span class="k">new</span> <span class="n">RandomColoredCircle</span><span class="o">();</span>
+        <span class=n>label</span> <span class=o>=</span> <span class=k>new</span> <span class=n>JLabel</span><span class=o>(</span><span class=s>&quot;Label&quot;</span><span class=o>);</span>
+        <span class=n>coloredCircle</span> <span class=o>=</span> <span class=k>new</span> <span class=n>RandomColoredCircle</span><span class=o>();</span>
 
-        <span class="n">frame</span> <span class="o">=</span> <span class="k">new</span> <span class="n">JFrame</span><span class="o">();</span>
-        <span class="n">frame</span><span class="o">.</span><span class="na">setDefaultCloseOperation</span><span class="o">(</span><span class="n">JFrame</span><span class="o">.</span><span class="na">EXIT_ON_CLOSE</span><span class="o">);</span>
-        <span class="n">frame</span><span class="o">.</span><span class="na">getContentPane</span><span class="o">().</span><span class="na">add</span><span class="o">(</span><span class="n">BorderLayout</span><span class="o">.</span><span class="na">CENTER</span><span class="o">,</span> <span class="n">coloredCircle</span><span class="o">);</span>
-        <span class="n">frame</span><span class="o">.</span><span class="na">getContentPane</span><span class="o">().</span><span class="na">add</span><span class="o">(</span><span class="n">BorderLayout</span><span class="o">.</span><span class="na">SOUTH</span><span class="o">,</span> <span class="n">colorButton</span><span class="o">);</span>
-        <span class="n">frame</span><span class="o">.</span><span class="na">getContentPane</span><span class="o">().</span><span class="na">add</span><span class="o">(</span><span class="n">BorderLayout</span><span class="o">.</span><span class="na">EAST</span><span class="o">,</span> <span class="n">labelButton</span><span class="o">);</span>
-        <span class="n">frame</span><span class="o">.</span><span class="na">getContentPane</span><span class="o">().</span><span class="na">add</span><span class="o">(</span><span class="n">BorderLayout</span><span class="o">.</span><span class="na">WEST</span><span class="o">,</span> <span class="n">label</span><span class="o">);</span>
-        <span class="n">frame</span><span class="o">.</span><span class="na">setSize</span><span class="o">(</span><span class="mi">400</span><span class="o">,</span> <span class="mi">300</span><span class="o">);</span>
-        <span class="n">frame</span><span class="o">.</span><span class="na">setVisible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
-    <span class="o">}</span>
+        <span class=n>frame</span> <span class=o>=</span> <span class=k>new</span> <span class=n>JFrame</span><span class=o>();</span>
+        <span class=n>frame</span><span class=o>.</span><span class=na>setDefaultCloseOperation</span><span class=o>(</span><span class=n>JFrame</span><span class=o>.</span><span class=na>EXIT_ON_CLOSE</span><span class=o>);</span>
+        <span class=n>frame</span><span class=o>.</span><span class=na>getContentPane</span><span class=o>().</span><span class=na>add</span><span class=o>(</span><span class=n>BorderLayout</span><span class=o>.</span><span class=na>CENTER</span><span class=o>,</span> <span class=n>coloredCircle</span><span class=o>);</span>
+        <span class=n>frame</span><span class=o>.</span><span class=na>getContentPane</span><span class=o>().</span><span class=na>add</span><span class=o>(</span><span class=n>BorderLayout</span><span class=o>.</span><span class=na>SOUTH</span><span class=o>,</span> <span class=n>colorButton</span><span class=o>);</span>
+        <span class=n>frame</span><span class=o>.</span><span class=na>getContentPane</span><span class=o>().</span><span class=na>add</span><span class=o>(</span><span class=n>BorderLayout</span><span class=o>.</span><span class=na>EAST</span><span class=o>,</span> <span class=n>labelButton</span><span class=o>);</span>
+        <span class=n>frame</span><span class=o>.</span><span class=na>getContentPane</span><span class=o>().</span><span class=na>add</span><span class=o>(</span><span class=n>BorderLayout</span><span class=o>.</span><span class=na>WEST</span><span class=o>,</span> <span class=n>label</span><span class=o>);</span>
+        <span class=n>frame</span><span class=o>.</span><span class=na>setSize</span><span class=o>(</span><span class=mi>400</span><span class=o>,</span> <span class=mi>300</span><span class=o>);</span>
+        <span class=n>frame</span><span class=o>.</span><span class=na>setVisible</span><span class=o>(</span><span class=kc>true</span><span class=o>);</span>
+    <span class=o>}</span>
 
-    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
-        <span class="n">PLOT</span> <span class="n">plt</span> <span class="o">=</span> <span class="k">new</span> <span class="n">PLOT</span><span class="o">();</span>
-        <span class="n">plt</span><span class="o">.</span><span class="na">go</span><span class="o">();</span>
-    <span class="o">}</span>
+    <span class=kd>public</span> <span class=kd>static</span> <span class=kt>void</span> <span class=nf>main</span><span class=o>(</span><span class=n>String</span><span class=o>[]</span> <span class=n>args</span><span class=o>)</span> <span class=o>{</span>
+        <span class=n>PLOT</span> <span class=n>plt</span> <span class=o>=</span> <span class=k>new</span> <span class=n>PLOT</span><span class=o>();</span>
+        <span class=n>plt</span><span class=o>.</span><span class=na>go</span><span class=o>();</span>
+    <span class=o>}</span>
 
-    <span class="c1">// a button that changes a label</span>
-    <span class="kd">class</span> <span class="nc">LabelButtonListener</span> <span class="kd">implements</span> <span class="n">ActionListener</span> <span class="o">{</span>
-        <span class="nd">@Override</span>
-        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">actionPerformed</span><span class="o">(</span><span class="n">ActionEvent</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
-            <span class="n">label</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="s">&quot;Ouch!&quot;</span><span class="o">);</span>
-        <span class="o">}</span>
-    <span class="o">}</span>
+    <span class=c1>// a button that changes a label</span>
+    <span class=kd>class</span> <span class=nc>LabelButtonListener</span> <span class=kd>implements</span> <span class=n>ActionListener</span> <span class=o>{</span>
+        <span class=nd>@Override</span>
+        <span class=kd>public</span> <span class=kt>void</span> <span class=nf>actionPerformed</span><span class=o>(</span><span class=n>ActionEvent</span> <span class=n>e</span><span class=o>)</span> <span class=o>{</span>
+            <span class=n>label</span><span class=o>.</span><span class=na>setText</span><span class=o>(</span><span class=s>&quot;Ouch!&quot;</span><span class=o>);</span>
+        <span class=o>}</span>
+    <span class=o>}</span>
 
-    <span class="c1">// a button that changes the color of  an oval</span>
-    <span class="kd">class</span> <span class="nc">ColorButtonListener</span> <span class="kd">implements</span> <span class="n">ActionListener</span><span class="o">{</span>
-        <span class="nd">@Override</span>
-        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">actionPerformed</span><span class="o">(</span><span class="n">ActionEvent</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
-            <span class="n">frame</span><span class="o">.</span><span class="na">repaint</span><span class="o">();</span>
-        <span class="o">}</span>
-    <span class="o">}</span>
-<span class="o">}</span>
-</pre></div>
-
+    <span class=c1>// a button that changes the color of  an oval</span>
+    <span class=kd>class</span> <span class=nc>ColorButtonListener</span> <span class=kd>implements</span> <span class=n>ActionListener</span><span class=o>{</span>
+        <span class=nd>@Override</span>
+        <span class=kd>public</span> <span class=kt>void</span> <span class=nf>actionPerformed</span><span class=o>(</span><span class=n>ActionEvent</span> <span class=n>e</span><span class=o>)</span> <span class=o>{</span>
+            <span class=n>frame</span><span class=o>.</span><span class=na>repaint</span><span class=o>();</span>
+        <span class=o>}</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></p>
 <p>output: <img alt="two_button_result" src="../figures/two_button_result.png" /></p></div>
         </div>
 
@@ -603,6 +610,7 @@
         <script>var base_url = '../..';</script>
         <script src="../../js/base.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+        <script src="../../extra_javascript/tabhack.js"></script>
         <script src="../../search/require.js"></script>
         <script src="../../search/search.js"></script>
 

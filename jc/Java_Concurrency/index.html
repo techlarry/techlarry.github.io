@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <meta name="author" content="Zhenhua Wang">
+        <link rel="canonical" href="http://larryim.cc/note/jc/Java_Concurrency/">
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+        <title>Java Concurrency - Zhenhua's Notes</title>
+        <link href="../../css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="../../css/font-awesome-4.5.0.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="../../css/highlight.css">
+        <link href="../../extra_css/custom.css" rel="stylesheet">
+        <link href="../../extra_css/custom.js" rel="stylesheet">
+        <link href="../../extra_css/friendly.css" rel="stylesheet">
+        <link href="../../extra_css/theme.css" rel="stylesheet">
+        <link href="../../extra_css/mkdocs/js/lunr-0.5.7.min.js" rel="stylesheet">
+        <link href="../../extra_css/mkdocs/js/mustache.min.js" rel="stylesheet">
+        <link href="../../extra_css/mkdocs/js/require.js" rel="stylesheet">
+        <link href="../../extra_css/mkdocs/js/search.js" rel="stylesheet">
+        <link href="../../extra_css/mkdocs/js/text.js" rel="stylesheet">
+        <link href="../../extra_css/code-tab.css" rel="stylesheet">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="../../js/jquery-1.10.2.min.js"></script>
+        <script src="../../js/bootstrap-3.0.3.min.js"></script>
+        <script src="../../js/highlight.pack.js"></script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="../..">Zhenhua's Notes</a>
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+                <!-- Main navigation -->
+                <ul class="nav navbar-nav">
+                    <li >
+                        <a href="../..">Home</a>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">OSC <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../../osc/">Contents</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch1/">Chapter 1: Introduction </a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch2/">Chapter 2: Operating System structures</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch3/">Chapter 3: Processes</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch4/">Chapter 4: Threads and Concurrency</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch5/">Chapter 5: CPU Scheduling</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch6/">Chapter 6: Synchronization Tools</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch7/">Chapter 7: Synchronization Examples</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch8/">Chapter 8: Deadlocks</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch9/">Chapter 9: Main Memory</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch10/">Chapter 10: Virtual Memory</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch11/">Chapter 11: Mass-Storage Structure</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch13/">Chapter 13: File-System Interfaces</a>
+</li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">CSAPP <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../../csapp/">Contents</a>
+</li>
+                            
+<li >
+    <a href="../../csapp/ch1/">Chapter 1: 计算机系统漫游</a>
+</li>
+                            
+<li >
+    <a href="../../csapp/ch2/">Chapter 2: 信息的表示和处理</a>
+</li>
+                            
+<li >
+    <a href="../../csapp/ch3/">Chapter 3: 程序的机器级表示</a>
+</li>
+                            
+<li >
+    <a href="../../csapp/ch4/">Chapter 4: 处理器体系结构</a>
+</li>
+                            
+<li >
+    <a href="../../csapp/ch5/">Chapter 5: 优化程序性能</a>
+</li>
+                            
+<li >
+    <a href="../../csapp/ch6/">Chapter 6: 存储器层次结构</a>
+</li>
+                            
+<li >
+    <a href="../../csapp/ch7/">Chapter 7: 链接</a>
+</li>
+                            
+<li >
+    <a href="../../csapp/ch8/">Chapter 8: 异常控制流</a>
+</li>
+                            
+<li >
+    <a href="../../csapp/ch9/">Chapter 9: 虚拟内存</a>
+</li>
+                            
+<li >
+    <a href="../../csapp/ch10/">Chapter 10: 系统级I/O</a>
+</li>
+                            
+<li >
+    <a href="../../csapp/ch11/">Chapter 11: 网络编程</a>
+</li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">HFJ <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../../hfj/">Contents</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch1/">Chapter 1: Dive in A Quick Dip</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch2/">Chapter 2: Classes and Objects</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch3/">Chapter 3: Primitives and References</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch4/">Chapter 4: Methods use Instance Variables</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch5/">Chapter 5: Writing a Program</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch6/">Chapter 6: Get to Know the Java API</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch7/">Chapter 7: Inheritance and Polymorphism</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch8/">Chapter 8: Interfaces and Abstract Classes</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch9/">Chapter 9: Constructors and Garbage Collection</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch10/">Chapter 10: Numbers and Statics</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch11/">Chapter 11: Exception Handling</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch12/">Chapter 12: Getting GUI</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch13/">Chapter 13: Using Swing</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch14/">Chapter 14: Serialization and File I/O</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch15/">Chapter 15: Networking and Threads</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch16/">Chapter 16: Collections and Generics</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch17/">Chapter 17: Packages, Jars and Deployment</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch18/">Chapter 18: Remote deploy with RMI</a>
+</li>
+                        </ul>
+                    </li>
+                    <li class="dropdown active">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">JC <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li class="active">
+    <a href="./">Java Concurrency</a>
+</li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">LKD <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../../lkd/">Contents</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch1/">Chapter 1 : Introduction to Linux Kernel</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch2/">Chapter 2</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch3/">Chapter 3</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch4/">Chapter 4</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch5/">Chapter 5</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch6/">Chapter 6</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch7/">Chapter 7</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch8/">Chapter 8</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch9/">Chapter 9</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch10/">Chapter 10</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch11/">Chapter 11</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch12/">Chapter 12: Memory management</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch13/">Chapter 13</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch14/">Chapter 14</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch15/">Chapter 15</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch16/">Chapter 16</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch17/">Chapter 17</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch18/">Chapter 18</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch19/">Chapter 19</a>
+</li>
+                            
+<li >
+    <a href="../../lkd/ch20/">Chapter 20</a>
+</li>
+                        </ul>
+                    </li>
+                    <li >
+                        <a href="../../books/">Books</a>
+                    </li>
+                </ul>
+
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                        <i class="fa fa-search"></i> Search
+                    </a>
+                </li>
+                    <li >
+                        <a rel="next" href="../../hfj/ch18/">
+                            <i class="fa fa-arrow-left"></i> Previous
+                        </a>
+                    </li>
+                    <li >
+                        <a rel="prev" href="../../lkd/">
+                            Next <i class="fa fa-arrow-right"></i>
+                        </a>
+                    </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#concurrent-programming-in-java-1-threads-and-locks">Concurrent Programming in Java 1: Threads and Locks</a></li>
+        <li class="main "><a href="#threads">Threads</a></li>
+            <li><a href="#thread-creation">Thread creation</a></li>
+        <li class="main "><a href="#structured-locks">Structured Locks</a></li>
+            <li><a href="#guarded-blocks">Guarded Blocks</a></li>
+            <li><a href="#intrinsic-locks-and-synchronization">Intrinsic Locks and Synchronization</a></li>
+        <li class="main "><a href="#unstructured-locks">Unstructured Locks</a></li>
+            <li><a href="#interface-lock">Interface Lock</a></li>
+            <li><a href="#trylock">tryLock</a></li>
+        <li class="main "><a href="#dining-philosophers">Dining Philosophers</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<h3 id="concurrent-programming-in-java-1-threads-and-locks">Concurrent Programming in Java 1: Threads and Locks<a class="headerlink" href="#concurrent-programming-in-java-1-threads-and-locks" title="Permanent link">&para;</a></h3>
+<h3 id="threads">Threads<a class="headerlink" href="#threads" title="Permanent link">&para;</a></h3>
+<p>A unique aspect of Java compared to prior mainstream programming languages is that Java included the notions of threads (as instances of the <span><span class="MathJax_Preview">\mathtt {java.lang.Thread}</span><script type="math/tex">\mathtt {java.lang.Thread}</script></span> (class) in its language definition right from the start.</p>
+<p>When an instance of <span><span class="MathJax_Preview">\mathtt {Thread}</span><script type="math/tex">\mathtt {Thread}</script></span> is created (via a <span><span class="MathJax_Preview">\mathtt {new}</span><script type="math/tex">\mathtt {new}</script></span> operation), it does not start executing right away; instead, it can only start executing when its <span><span class="MathJax_Preview">\mathtt {start}()</span><script type="math/tex">\mathtt {start}()</script></span> method is invoked. The statement or computation to be executed by the thread is specified as a parameter to the constructor.</p>
+<p>The Thread class also includes a wait operation in the form of a <span><span class="MathJax_Preview">\mathtt {join}()</span><script type="math/tex">\mathtt {join}()</script></span> method. If thread <span><span class="MathJax_Preview">\mathtt {t0}</span><script type="math/tex">\mathtt {t0}</script></span> performs a <span><span class="MathJax_Preview">\mathtt {t1.join}()</span><script type="math/tex">\mathtt {t1.join}()</script></span> call, thread <span><span class="MathJax_Preview">\mathtt {t0}</span><script type="math/tex">\mathtt {t0}</script></span> will be forced to wait until thread <span><span class="MathJax_Preview">\mathtt {t1}</span><script type="math/tex">\mathtt {t1}</script></span> completes, after which point it can safely access any values computed by thread <span><span class="MathJax_Preview">\mathtt {t1}</span><script type="math/tex">\mathtt {t1}</script></span>. Since there is no restriction on which thread can perform a <span><span class="MathJax_Preview">\mathtt {join}</span><script type="math/tex">\mathtt {join}</script></span> on which other thread, it is possible for a programmer to erroneously create a deadlock cycle with <span><span class="MathJax_Preview">\mathtt {join}</span><script type="math/tex">\mathtt {join}</script></span> operations. (A deadlock occurs when two threads wait for each other indefinitely, so that neither can make any progress.)</p>
+<h4 id="thread-creation">Thread creation<a class="headerlink" href="#thread-creation" title="Permanent link">&para;</a></h4>
+<p><a href="https://docs.oracle.com/javase/tutorial/essential/concurrency/runthread.html">Java Tutorials - Defining and Starting a Thread</a></p>
+<p>An application that creates an instance of Thread must provide the code that will run in that thread. There are two ways to do this:</p>
+<ul>
+<li><em>Provide a Runnable object</em>. The Runnable interface defines a single method, <C>run</C>, meant to contain the code executed in the thread. The Runnable object is passed to the <C>Thread</C> constructor, as in the HelloRunnable example:</li>
+</ul>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>HelloRunnable</span> <span class=kd>implements</span> <span class=n>Runnable</span> <span class=o>{</span>
+
+    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>run</span><span class=o>()</span> <span class=o>{</span>
+        <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=s>&quot;Hello from a thread!&quot;</span><span class=o>);</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kd>static</span> <span class=kt>void</span> <span class=nf>main</span><span class=o>(</span><span class=n>String</span> <span class=n>args</span><span class=o>[])</span> <span class=o>{</span>
+        <span class=o>(</span><span class=k>new</span> <span class=n>Thread</span><span class=o>(</span><span class=k>new</span> <span class=n>HelloRunnable</span><span class=o>())).</span><span class=na>start</span><span class=o>();</span>
+    <span class=o>}</span>
+
+<span class=o>}</span>
+</pre></div></p>
+<ul>
+<li><i>Subclass <C>Thread</C></i>. The <C>Thread</C> class itself implements <C>Runnable</C>, though its <C>run</C> method does nothing. An application can subclass <C>Thread</C>, providing its own implementation of <C>run</C>, as in the HelloThread example:</li>
+</ul>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>HelloThread</span> <span class=kd>extends</span> <span class=n>Thread</span> <span class=o>{</span>
+
+    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>run</span><span class=o>()</span> <span class=o>{</span>
+        <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=s>&quot;Hello from a thread!&quot;</span><span class=o>);</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kd>static</span> <span class=kt>void</span> <span class=nf>main</span><span class=o>(</span><span class=n>String</span> <span class=n>args</span><span class=o>[])</span> <span class=o>{</span>
+        <span class=o>(</span><span class=k>new</span> <span class=n>HelloThread</span><span class=o>()).</span><span class=na>start</span><span class=o>();</span>
+    <span class=o>}</span>
+
+<span class=o>}</span>
+</pre></div></p>
+<p>Which of these idioms should you use? The first idiom, which employs a <C>Runnable</C> object, is more general, because the <C>Runnable</C> object can subclass a class other than <C>Thread</C>. </p>
+<h3 id="structured-locks">Structured Locks<a class="headerlink" href="#structured-locks" title="Permanent link">&para;</a></h3>
+<p>Structured locks can be used to enforce mutual exclusion and avoid data races.</p>
+<p>A major benefit of structured locks is that their acquire and release operations are <strong>implicit</strong>, since these operations are automatically performed by the Java runtime environment when entering and exiting the scope of a <C>synchronized</C> statement or method, even if an exception is thrown in the middle.</p>
+<p><C>wait()</C> and <C>notify()</C> operations can be used to block and resume threads that need to wait for specific conditions.</p>
+<h4 id="guarded-blocks">Guarded Blocks<a class="headerlink" href="#guarded-blocks" title="Permanent link">&para;</a></h4>
+<p><a href="https://docs.oracle.com/javase/tutorial/essential/concurrency/guardmeth.html">Java Tutorials - Guarded Blocks</a></p>
+<p><strong>Guarded block</strong> is the most common coordination idiom. It begins by polling a condition that before the block can proceed.</p>
+<p>Suppose, for example <C>guardedJoy</C> is a method that must not proceed until a shared variable <C>joy</C> has been set by another thread. An efficient guard invokes <C>Object.wait</C> to suspend the current thread. The invocation of <C>wait</C> does not return until another thread has issued a notification that some special event may have occurred.</p>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kt>void</span> <span class=nf>guardedJoy</span><span class=o>()</span> <span class=o>{</span>
+    <span class=c1>// Simple loop guard. Wastes</span>
+    <span class=c1>// processor time. Don&#39;t do this!</span>
+    <span class=k>while</span><span class=o>(!</span><span class=n>joy</span><span class=o>)</span> <span class=o>{}</span>
+    <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=s>&quot;Joy has been achieved!&quot;</span><span class=o>);</span>
+<span class=o>}</span>
+</pre></div></p>
+<p>A more efficient guard invokes <C>Object.wait</C> to suspend the current thread. The invocation of wait does not return until another thread has issued a notification that some special event may have occurred — though not necessarily the event this thread is waiting for:</p>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>synchronized</span> <span class=kt>void</span> <span class=nf>guardedJoy</span><span class=o>()</span> <span class=o>{</span>
+    <span class=c1>// This guard only loops once for each special event, which may not</span>
+    <span class=c1>// be the event we&#39;re waiting for.</span>
+    <span class=k>while</span><span class=o>(!</span><span class=n>joy</span><span class=o>)</span> <span class=o>{</span>
+        <span class=k>try</span> <span class=o>{</span>
+            <span class=n>wait</span><span class=o>();</span>
+        <span class=o>}</span> <span class=k>catch</span> <span class=o>(</span><span class=n>InterruptedException</span> <span class=n>e</span><span class=o>)</span> <span class=o>{}</span>
+    <span class=o>}</span>
+    <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=s>&quot;Joy and efficiency have been achieved!&quot;</span><span class=o>);</span>
+<span class=o>}</span>
+</pre></div></p>
+<p>When <C>wait</C> is invoked, the thread releases the lock and suspends execution. At some future time, another thread will acquire the same lock and invoke <C>Object.notifyAll</C>, informing all threads waiting on that lock that something important has happened:</p>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>synchronized</span> <span class=nf>notifyJoy</span><span class=o>()</span> <span class=o>{</span>
+    <span class=n>joy</span> <span class=o>=</span> <span class=kc>true</span><span class=o>;</span>
+    <span class=n>notifyAll</span><span class=o>();</span>
+<span class=o>}</span>
+</pre></div></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><C>notifyAll()</C> wakes up all threads that are waiting on the object's monitor.</p>
+</div>
+<p>Let's use guarded blocks to create a Producer-Consumer application. This kind of application shares data between two threads: the producer, that creates the data, and the consumer, that does something with it. The two threads communicate using a shared object. Coordination is essential: the consumer thread must not attempt to retrieve the data before the producer thread has delivered it, and the producer thread must not attempt to deliver new data if the consumer hasn't retrieved the old data.</p>
+<p>The data is a series of text messages, which are shared through an object of type Drop.</p>
+<div class=md-fenced-code-tabs id=tab-tab-group-5><input name=tab-group-5 type=radio id=tab-group-5-0_Java checked=checked class=code-tab data-lang=Java aria-controls=tab-group-5-0_Java-panel role=tab><label for=tab-group-5-0_Java class=code-tab-label data-lang=Java id=tab-group-5-0_Java-label>Drop</label><div class=code-tabpanel role=tabpanel data-lang=Java id=tab-group-5-0_Java-panel aria-labelledby=tab-group-5-0_Java-label><div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>Drop</span> <span class=o>{</span>
+    <span class=c1>// Message sent from producer</span>
+    <span class=c1>// to consumer.</span>
+    <span class=kd>private</span> <span class=n>String</span> <span class=n>message</span><span class=o>;</span>
+    <span class=c1>// True if consumer should wait</span>
+    <span class=c1>// for producer to send message,</span>
+    <span class=c1>// false if producer should wait for</span>
+    <span class=c1>// consumer to retrieve message.</span>
+    <span class=kd>private</span> <span class=kt>boolean</span> <span class=n>empty</span> <span class=o>=</span> <span class=kc>true</span><span class=o>;</span>
+
+    <span class=kd>public</span> <span class=kd>synchronized</span> <span class=n>String</span> <span class=nf>take</span><span class=o>()</span> <span class=o>{</span>
+        <span class=c1>// Wait until message is</span>
+        <span class=c1>// available.</span>
+        <span class=k>while</span> <span class=o>(</span><span class=n>empty</span><span class=o>)</span> <span class=o>{</span>
+            <span class=k>try</span> <span class=o>{</span>
+                <span class=n>wait</span><span class=o>();</span>
+            <span class=o>}</span> <span class=k>catch</span> <span class=o>(</span><span class=n>InterruptedException</span> <span class=n>e</span><span class=o>)</span> <span class=o>{}</span>
+        <span class=o>}</span>
+        <span class=c1>// Toggle status.</span>
+        <span class=n>empty</span> <span class=o>=</span> <span class=kc>true</span><span class=o>;</span>
+        <span class=c1>// Notify producer that</span>
+        <span class=c1>// status has changed.</span>
+        <span class=n>notifyAll</span><span class=o>();</span>
+        <span class=k>return</span> <span class=n>message</span><span class=o>;</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kd>synchronized</span> <span class=kt>void</span> <span class=nf>put</span><span class=o>(</span><span class=n>String</span> <span class=n>message</span><span class=o>)</span> <span class=o>{</span>
+        <span class=c1>// Wait until message has</span>
+        <span class=c1>// been retrieved.</span>
+        <span class=k>while</span> <span class=o>(!</span><span class=n>empty</span><span class=o>)</span> <span class=o>{</span>
+            <span class=k>try</span> <span class=o>{</span> 
+                <span class=n>wait</span><span class=o>();</span>
+            <span class=o>}</span> <span class=k>catch</span> <span class=o>(</span><span class=n>InterruptedException</span> <span class=n>e</span><span class=o>)</span> <span class=o>{}</span>
+        <span class=o>}</span>
+        <span class=c1>// Toggle status.</span>
+        <span class=n>empty</span> <span class=o>=</span> <span class=kc>false</span><span class=o>;</span>
+        <span class=c1>// Store message.</span>
+        <span class=k>this</span><span class=o>.</span><span class=na>message</span> <span class=o>=</span> <span class=n>message</span><span class=o>;</span>
+        <span class=c1>// Notify consumer that status</span>
+        <span class=c1>// has changed.</span>
+        <span class=n>notifyAll</span><span class=o>();</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></div><input name=tab-group-5 type=radio id=tab-group-5-1_Java class=code-tab data-lang=Java aria-controls=tab-group-5-1_Java-panel role=tab><label for=tab-group-5-1_Java class=code-tab-label data-lang=Java id=tab-group-5-1_Java-label>Producer</label><div class=code-tabpanel role=tabpanel data-lang=Java id=tab-group-5-1_Java-panel aria-labelledby=tab-group-5-1_Java-label><div class=codehilite><pre><span class=kn>import</span> <span class=nn>java.util.Random</span><span class=o>;</span>
+
+<span class=kd>public</span> <span class=kd>class</span> <span class=nc>Producer</span> <span class=kd>implements</span> <span class=n>Runnable</span> <span class=o>{</span>
+    <span class=kd>private</span> <span class=n>Drop</span> <span class=n>drop</span><span class=o>;</span>
+
+    <span class=kd>public</span> <span class=nf>Producer</span><span class=o>(</span><span class=n>Drop</span> <span class=n>drop</span><span class=o>)</span> <span class=o>{</span>
+        <span class=k>this</span><span class=o>.</span><span class=na>drop</span> <span class=o>=</span> <span class=n>drop</span><span class=o>;</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>run</span><span class=o>()</span> <span class=o>{</span>
+        <span class=n>String</span> <span class=n>importantInfo</span><span class=o>[]</span> <span class=o>=</span> <span class=o>{</span>
+            <span class=s>&quot;Mares eat oats&quot;</span><span class=o>,</span>
+            <span class=s>&quot;Does eat oats&quot;</span><span class=o>,</span>
+            <span class=s>&quot;Little lambs eat ivy&quot;</span><span class=o>,</span>
+            <span class=s>&quot;A kid will eat ivy too&quot;</span>
+        <span class=o>};</span>
+        <span class=n>Random</span> <span class=n>random</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Random</span><span class=o>();</span>
+
+        <span class=k>for</span> <span class=o>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=o>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>importantInfo</span><span class=o>.</span><span class=na>length</span><span class=o>;</span> <span class=n>i</span><span class=o>++)</span> <span class=o>{</span>
+            <span class=n>drop</span><span class=o>.</span><span class=na>put</span><span class=o>(</span><span class=n>importantInfo</span><span class=o>[</span><span class=n>i</span><span class=o>]);</span>
+            <span class=k>try</span> <span class=o>{</span>
+                <span class=n>Thread</span><span class=o>.</span><span class=na>sleep</span><span class=o>(</span><span class=n>random</span><span class=o>.</span><span class=na>nextInt</span><span class=o>(</span><span class=mi>5000</span><span class=o>));</span>
+            <span class=o>}</span> <span class=k>catch</span> <span class=o>(</span><span class=n>InterruptedException</span> <span class=n>e</span><span class=o>)</span> <span class=o>{}</span>
+        <span class=o>}</span>
+        <span class=n>drop</span><span class=o>.</span><span class=na>put</span><span class=o>(</span><span class=s>&quot;DONE&quot;</span><span class=o>);</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></div><input name=tab-group-5 type=radio id=tab-group-5-2_Java class=code-tab data-lang=Java aria-controls=tab-group-5-2_Java-panel role=tab><label for=tab-group-5-2_Java class=code-tab-label data-lang=Java id=tab-group-5-2_Java-label>Consumer</label><div class=code-tabpanel role=tabpanel data-lang=Java id=tab-group-5-2_Java-panel aria-labelledby=tab-group-5-2_Java-label><div class=codehilite><pre><span class=kn>import</span> <span class=nn>java.util.Random</span><span class=o>;</span>
+
+<span class=kd>public</span> <span class=kd>class</span> <span class=nc>Consumer</span> <span class=kd>implements</span> <span class=n>Runnable</span> <span class=o>{</span>
+    <span class=kd>private</span> <span class=n>Drop</span> <span class=n>drop</span><span class=o>;</span>
+
+    <span class=kd>public</span> <span class=nf>Consumer</span><span class=o>(</span><span class=n>Drop</span> <span class=n>drop</span><span class=o>)</span> <span class=o>{</span>
+        <span class=k>this</span><span class=o>.</span><span class=na>drop</span> <span class=o>=</span> <span class=n>drop</span><span class=o>;</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>run</span><span class=o>()</span> <span class=o>{</span>
+        <span class=n>Random</span> <span class=n>random</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Random</span><span class=o>();</span>
+        <span class=k>for</span> <span class=o>(</span><span class=n>String</span> <span class=n>message</span> <span class=o>=</span> <span class=n>drop</span><span class=o>.</span><span class=na>take</span><span class=o>();</span> <span class=o>!</span> <span class=n>message</span><span class=o>.</span><span class=na>equals</span><span class=o>(</span><span class=s>&quot;DONE&quot;</span><span class=o>);</span> <span class=n>message</span> <span class=o>=</span> <span class=n>drop</span><span class=o>.</span><span class=na>take</span><span class=o>())</span> <span class=o>{</span>
+            <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>format</span><span class=o>(</span><span class=s>&quot;MESSAGE RECEIVED: %s%n&quot;</span><span class=o>,</span> <span class=n>message</span><span class=o>);</span>
+            <span class=k>try</span> <span class=o>{</span>
+                <span class=n>Thread</span><span class=o>.</span><span class=na>sleep</span><span class=o>(</span><span class=n>random</span><span class=o>.</span><span class=na>nextInt</span><span class=o>(</span><span class=mi>5000</span><span class=o>));</span>
+            <span class=o>}</span> <span class=k>catch</span> <span class=o>(</span><span class=n>InterruptedException</span> <span class=n>e</span><span class=o>)</span> <span class=o>{}</span>
+        <span class=o>}</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></div><input name=tab-group-5 type=radio id=tab-group-5-3_Java class=code-tab data-lang=Java aria-controls=tab-group-5-3_Java-panel role=tab><label for=tab-group-5-3_Java class=code-tab-label data-lang=Java id=tab-group-5-3_Java-label>Producerconsumerexample</label><div class=code-tabpanel role=tabpanel data-lang=Java id=tab-group-5-3_Java-panel aria-labelledby=tab-group-5-3_Java-label><div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>ProducerConsumerExample</span> <span class=o>{</span>
+    <span class=kd>public</span> <span class=kd>static</span> <span class=kt>void</span> <span class=nf>main</span><span class=o>(</span><span class=n>String</span><span class=o>[]</span> <span class=n>args</span><span class=o>)</span> <span class=o>{</span>
+        <span class=n>Drop</span> <span class=n>drop</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Drop</span><span class=o>();</span>
+        <span class=o>(</span><span class=k>new</span> <span class=n>Thread</span><span class=o>(</span><span class=k>new</span> <span class=n>Producer</span><span class=o>(</span><span class=n>drop</span><span class=o>))).</span><span class=na>start</span><span class=o>();</span>
+        <span class=o>(</span><span class=k>new</span> <span class=n>Thread</span><span class=o>(</span><span class=k>new</span> <span class=n>Consumer</span><span class=o>(</span><span class=n>drop</span><span class=o>))).</span><span class=na>start</span><span class=o>();</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></div></div>
+
+<h4 id="intrinsic-locks-and-synchronization">Intrinsic Locks and Synchronization<a class="headerlink" href="#intrinsic-locks-and-synchronization" title="Permanent link">&para;</a></h4>
+<p>[<a href="https://docs.oracle.com/javase/tutorial/essential/concurrency/locksync.html">Tutorial on Intrinsic Locks and Synchronization in Java</a>]</p>
+<p>Every object has an <strong>intrinsic lock</strong>(also, <strong>monitor lock </strong>or <strong>monitor</strong>) associated with it.</p>
+<p>By convention, a thread that needs exclusive and consistent access to an object's fields has to acquire the object's intrinsic lock before accessing them, and then release the intrinsic lock when it's done with them.</p>
+<p><strong>Locks In Synchronized Methods</strong> </p>
+<p>When a thread invokes a synchronized method, it automatically acquires the intrinsic lock for that method's object and releases it when the method returns. The lock release occurs even if the return was caused by an uncaught exception.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When a static synchronized method is invoked, since a static method is associated with a class, not an object, the thread acquires the intrinsic lock for the Class object associated with the class. Thus access to class's static fields is controlled by a lock that's distinct from the lock for any instance of the class.</p>
+</div>
+<p><strong>Synchronized Statements</strong></p>
+<p>Synchronized statements must specify the object that provides the intrinsic lock:</p>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kt>void</span> <span class=nf>addName</span><span class=o>(</span><span class=n>String</span> <span class=n>name</span><span class=o>)</span> <span class=o>{</span>
+    <span class=kd>synchronized</span><span class=o>(</span><span class=k>this</span><span class=o>)</span> <span class=o>{</span>
+        <span class=n>lastName</span> <span class=o>=</span> <span class=n>name</span><span class=o>;</span>
+        <span class=n>nameCount</span><span class=o>++;</span>
+    <span class=o>}</span>
+    <span class=n>nameList</span><span class=o>.</span><span class=na>add</span><span class=o>(</span><span class=n>name</span><span class=o>);</span>
+<span class=o>}</span>
+</pre></div></p>
+<p><strong>Reentrant Synchronization</strong></p>
+<p>A thread can acquire a lock that it already owns. Allowing a thread to acquire the same lock more than once enables <strong>reentrant synchronization</strong>(重入同步).</p>
+<h3 id="unstructured-locks">Unstructured Locks<a class="headerlink" href="#unstructured-locks" title="Permanent link">&para;</a></h3>
+<p>A <strong>ReentrantLock</strong>(重入锁) is <em>unstructured</em>, unlike synchronized constructs -- i.e. you don't need to use a block structure for locking and can even hold a lock across methods.</p>
+<p>A reentrant mutual exclusion <C>Lock</C> with the same basic behavior and semantics as the implicit monitor lock accessed using synchronized methods and statements, but with extended capabilities.[<a href="https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/locks/ReentrantLock.html#tryLock()">Java Doc-Class ReentrantLock</a>]</p>
+<p>It is recommended practice to <em>always</em> immediately follow a call to <C>lock</C> with a <C>try</C> block, most typically in a before/after construction such as:</p>
+<p> <div class=codehilite><pre><span class=kd>class</span> <span class=nc>X</span> <span class=o>{</span>
+   <span class=kd>private</span> <span class=kd>final</span> <span class=n>ReentrantLock</span> <span class=n>lock</span> <span class=o>=</span> <span class=k>new</span> <span class=n>ReentrantLock</span><span class=o>();</span>
+   <span class=c1>// ...</span>
+
+   <span class=kd>public</span> <span class=kt>void</span> <span class=nf>m</span><span class=o>()</span> <span class=o>{</span>
+     <span class=n>lock</span><span class=o>.</span><span class=na>lock</span><span class=o>();</span>  <span class=c1>// block until condition holds</span>
+     <span class=k>try</span> <span class=o>{</span>
+       <span class=c1>// ... method body</span>
+     <span class=o>}</span> <span class=k>finally</span> <span class=o>{</span>
+       <span class=n>lock</span><span class=o>.</span><span class=na>unlock</span><span class=o>()</span>
+     <span class=o>}</span>
+   <span class=o>}</span>
+ <span class=o>}</span>
+</pre></div></p>
+<h4 id="interface-lock">Interface Lock<a class="headerlink" href="#interface-lock" title="Permanent link">&para;</a></h4>
+<p>[<a href="https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/locks/Lock.html">Java Doc-Interface Lock</a>]</p>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>interface</span> <span class=err>&lt;</span><span class=nc>C</span><span class=o>&gt;</span><span class=n>Lock</span><span class=o>&lt;/</span><span class=n>C</span><span class=o>&gt;</span>
+</pre></div></p>
+<p><C>Lock</C> implementations provide more extensive locking operations than can be obtained using <C>synchronized</C> methods and statements. They allow more <em>flexible</em> structuring, may have quite different properties, and may support multiple associated Condition objects.</p>
+<p><strong>comparison with<C>synchronized</C> methods and statements</strong></p>
+<p>The use of synchronized methods or statements provides access to the implicit monitor lock associated with every object, but forces all lock acquisition and release to occur in a <strong>block-structured way</strong>: when multiple locks are acquired they must be released in the opposite order, and all locks must be released in the same lexical scope in which they were acquired.</p>
+<p>Implementations of the Lock interface enable the lock to be acquired and released in <strong>different scopes</strong>, and allowing multiple locks to be acquired and released in <strong>any order</strong>.</p>
+<p>In most cases, the following idiom should be used:</p>
+<p> <div class=codehilite><pre><span class=n>Lock</span> <span class=n>l</span> <span class=o>=</span> <span class=o>...;</span>
+     <span class=n>l</span><span class=o>.</span><span class=na>lock</span><span class=o>();</span>
+     <span class=k>try</span> <span class=o>{</span>
+         <span class=c1>// access the resource protected by this lock</span>
+     <span class=o>}</span> <span class=k>finally</span> <span class=o>{</span>
+         <span class=n>l</span><span class=o>.</span><span class=na>unlock</span><span class=o>();</span>
+     <span class=o>}</span>
+</pre></div></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When locking and unlocking occur in different scopes, care must be taken to ensure that all code that is executed while the lock is held is protected by try-finally or try-catch to ensure that the lock is released when necessary.</p>
+</div>
+<h4 id="trylock">tryLock<a class="headerlink" href="#trylock" title="Permanent link">&para;</a></h4>
+<p>[<a href="https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/locks/Lock.html#tryLock()">Java Doc - tryLock</a>]</p>
+<p><C>tryLock</C> acquires the lock <strong><em>only if it is free</em></strong> at the time of invocation.</p>
+<p>A typical usage idiom for this method would be:</p>
+<p> <div class=codehilite><pre>      <span class=n>Lock</span> <span class=n>lock</span> <span class=o>=</span> <span class=o>...;</span>
+      <span class=k>if</span> <span class=o>(</span><span class=n>lock</span><span class=o>.</span><span class=na>tryLock</span><span class=o>())</span> <span class=o>{</span>
+          <span class=k>try</span> <span class=o>{</span>
+              <span class=c1>// manipulate protected state</span>
+          <span class=o>}</span> <span class=k>finally</span> <span class=o>{</span>
+              <span class=n>lock</span><span class=o>.</span><span class=na>unlock</span><span class=o>();</span>
+          <span class=o>}</span>
+      <span class=o>}</span> <span class=k>else</span> <span class=o>{</span>
+          <span class=c1>// perform alternative actions</span>
+      <span class=o>}</span>
+</pre></div></p>
+<h3 id="dining-philosophers">Dining Philosophers<a class="headerlink" href="#dining-philosophers" title="Permanent link">&para;</a></h3></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>var base_url = '../..';</script>
+        <script src="../../js/base.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+        <script src="../../extra_javascript/tabhack.js"></script>
+        <script src="../../search/require.js"></script>
+        <script src="../../search/search.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td><kbd>&larr;</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td><kbd>&rarr;</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    </body>
+</html>

@@ -22,6 +22,7 @@
         <link href="../../extra_css/mkdocs/js/require.js" rel="stylesheet">
         <link href="../../extra_css/mkdocs/js/search.js" rel="stylesheet">
         <link href="../../extra_css/mkdocs/js/text.js" rel="stylesheet">
+        <link href="../../extra_css/code-tab.css" rel="stylesheet">
         <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!--[if lt IE 9]>
             <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
@@ -245,6 +246,15 @@
                             
 <li >
     <a href="../../hfj/ch18/">Chapter 18: Remote deploy with RMI</a>
+</li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">JC <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../../jc/Java_Concurrency/">Java Concurrency</a>
 </li>
                         </ul>
                     </li>
@@ -602,61 +612,61 @@
 </ul>
 <h3 id="7-examples-of-ipc-systems">7 Examples of IPC Systems<a class="headerlink" href="#7-examples-of-ipc-systems" title="Permanent link">&para;</a></h3>
 <h4 id="posix-shared-memory">POSIX Shared Memory<a class="headerlink" href="#posix-shared-memory" title="Permanent link">&para;</a></h4>
-<p>Here, we explore the POSIX API for shared memory. POSIX shared memory is organized using <strong>memory-mapped files</strong> (内存映射文件), which associate the region of shared memory with a file. A process must first create a shared-memory object using the <code class="codehilite">shm_open()</code> system call.
-<div class="codehilite"><pre><span class="n">fd</span> <span class="o">=</span> <span class="n">shm_open</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">O_CREAT</span> <span class="o">|</span> <span class="n">O_RDWR</span><span class="p">,</span> <span class="mo">0666</span><span class="p">);</span>
-<span class="n">ftruncate</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="mi">4096</span><span class="p">);</span>
-<span class="n">mmap</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">SIZE</span><span class="p">,</span> <span class="n">PROT_READ</span> <span class="o">|</span> <span class="n">PROT_WRITE</span><span class="p">,</span> <span class="n">MAP_SHARED</span><span class="p">,</span> <span class="n">fd</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+<p>Here, we explore the POSIX API for shared memory. POSIX shared memory is organized using <strong>memory-mapped files</strong> (内存映射文件), which associate the region of shared memory with a file. A process must first create a shared-memory object using the <code class="codehilite">shm_open()</code> system call.</p>
+<p> <div class=codehilite><pre><span class=n>fd</span> <span class=o>=</span> <span class=n>shm_open</span><span class=p>(</span><span class=n>name</span><span class=p>,</span> <span class=n>O_CREAT</span> <span class=o>|</span> <span class=n>O_RDWR</span><span class=p>,</span> <span class=mo>0666</span><span class=p>);</span>
+<span class=n>ftruncate</span><span class=p>(</span><span class=n>fd</span><span class=p>,</span> <span class=mi>4096</span><span class=p>);</span>
+<span class=n>mmap</span><span class=p>(</span><span class=mi>0</span><span class=p>,</span> <span class=n>SIZE</span><span class=p>,</span> <span class=n>PROT_READ</span> <span class=o>|</span> <span class=n>PROT_WRITE</span><span class=p>,</span> <span class=n>MAP_SHARED</span><span class=p>,</span> <span class=n>fd</span><span class=p>,</span> <span class=mi>0</span><span class=p>);</span>
 </pre></div></p>
 <ul>
 <li>A successful call to <code class="codehilite">shm_open()</code> returns an integer file descriptor for the shared-memory object.</li>
 <li>Once the object is established, the <code class="codehilite">ftruncate()</code> function is used to configure the size of the object in bytes.</li>
 <li>Finally, the <code class="codehilite">mmap()</code> function establishes a memory-mapped file containing the shared-memory object. It returns a pointer to the shared</li>
 </ul>
-<p><small>
-<div class="codehilite"><pre><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&lt;unistd.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&lt;fcntl.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&lt;sys/shm.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&lt;sys/stat.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&lt;sys/mman.h&gt;</span><span class="cp"></span>
+<p><small></p>
+<p> <div class=codehilite><pre><span class=cp>#include</span> <span class=cpf>&lt;stdio.h&gt;</span><span class=cp></span>
+<span class=cp>#include</span> <span class=cpf>&lt;stdlib.h&gt;</span><span class=cp></span>
+<span class=cp>#include</span> <span class=cpf>&lt;unistd.h&gt;</span><span class=cp></span>
+<span class=cp>#include</span> <span class=cpf>&lt;fcntl.h&gt;</span><span class=cp></span>
+<span class=cp>#include</span> <span class=cpf>&lt;sys/shm.h&gt;</span><span class=cp></span>
+<span class=cp>#include</span> <span class=cpf>&lt;sys/stat.h&gt;</span><span class=cp></span>
+<span class=cp>#include</span> <span class=cpf>&lt;sys/mman.h&gt;</span><span class=cp></span>
 
-<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
-<span class="p">{</span>
-    <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">name</span> <span class="o">=</span> <span class="s">&quot;OS&quot;</span><span class="p">;</span>
-    <span class="k">const</span> <span class="kt">int</span> <span class="n">SIZE</span> <span class="o">=</span> <span class="mi">4096</span><span class="p">;</span>
+<span class=kt>int</span> <span class=nf>main</span><span class=p>()</span>
+<span class=p>{</span>
+    <span class=k>const</span> <span class=kt>char</span> <span class=o>*</span><span class=n>name</span> <span class=o>=</span> <span class=s>&quot;OS&quot;</span><span class=p>;</span>
+    <span class=k>const</span> <span class=kt>int</span> <span class=n>SIZE</span> <span class=o>=</span> <span class=mi>4096</span><span class=p>;</span>
 
-    <span class="kt">int</span> <span class="n">shm_fd</span><span class="p">;</span>
-    <span class="kt">void</span> <span class="o">*</span><span class="n">ptr</span><span class="p">;</span>
-    <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
+    <span class=kt>int</span> <span class=n>shm_fd</span><span class=p>;</span>
+    <span class=kt>void</span> <span class=o>*</span><span class=n>ptr</span><span class=p>;</span>
+    <span class=kt>int</span> <span class=n>i</span><span class=p>;</span>
 
-    <span class="cm">/* open the shared memory segment */</span>
-    <span class="n">shm_fd</span> <span class="o">=</span> <span class="n">shm_open</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">O_RDONLY</span><span class="p">,</span> <span class="mo">0666</span><span class="p">);</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">shm_fd</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;shared memory failed</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
-        <span class="n">exit</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">);</span>
-    <span class="p">}</span>
+    <span class=cm>/* open the shared memory segment */</span>
+    <span class=n>shm_fd</span> <span class=o>=</span> <span class=n>shm_open</span><span class=p>(</span><span class=n>name</span><span class=p>,</span> <span class=n>O_RDONLY</span><span class=p>,</span> <span class=mo>0666</span><span class=p>);</span>
+    <span class=k>if</span> <span class=p>(</span><span class=n>shm_fd</span> <span class=o>==</span> <span class=o>-</span><span class=mi>1</span><span class=p>)</span> <span class=p>{</span>
+        <span class=n>printf</span><span class=p>(</span><span class=s>&quot;shared memory failed</span><span class=se>\n</span><span class=s>&quot;</span><span class=p>);</span>
+        <span class=n>exit</span><span class=p>(</span><span class=o>-</span><span class=mi>1</span><span class=p>);</span>
+    <span class=p>}</span>
 
-    <span class="cm">/* now map the shared memory segment in the address space of the process */</span>
-    <span class="n">ptr</span> <span class="o">=</span> <span class="n">mmap</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">SIZE</span><span class="p">,</span> <span class="n">PROT_READ</span><span class="p">,</span> <span class="n">MAP_SHARED</span><span class="p">,</span> <span class="n">shm_fd</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">ptr</span> <span class="o">==</span> <span class="n">MAP_FAILED</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Map failed</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
-        <span class="n">exit</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">);</span>
-    <span class="p">}</span>
+    <span class=cm>/* now map the shared memory segment in the address space of the process */</span>
+    <span class=n>ptr</span> <span class=o>=</span> <span class=n>mmap</span><span class=p>(</span><span class=mi>0</span><span class=p>,</span><span class=n>SIZE</span><span class=p>,</span> <span class=n>PROT_READ</span><span class=p>,</span> <span class=n>MAP_SHARED</span><span class=p>,</span> <span class=n>shm_fd</span><span class=p>,</span> <span class=mi>0</span><span class=p>);</span>
+    <span class=k>if</span> <span class=p>(</span><span class=n>ptr</span> <span class=o>==</span> <span class=n>MAP_FAILED</span><span class=p>)</span> <span class=p>{</span>
+        <span class=n>printf</span><span class=p>(</span><span class=s>&quot;Map failed</span><span class=se>\n</span><span class=s>&quot;</span><span class=p>);</span>
+        <span class=n>exit</span><span class=p>(</span><span class=o>-</span><span class=mi>1</span><span class=p>);</span>
+    <span class=p>}</span>
 
-    <span class="cm">/* now read from the shared memory region */</span>
-    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%s&quot;</span><span class="p">,(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="n">ptr</span><span class="p">);</span>
+    <span class=cm>/* now read from the shared memory region */</span>
+    <span class=n>printf</span><span class=p>(</span><span class=s>&quot;%s&quot;</span><span class=p>,(</span><span class=kt>char</span> <span class=o>*</span><span class=p>)</span><span class=n>ptr</span><span class=p>);</span>
 
-    <span class="cm">/* remove the shared memory segment */</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">shm_unlink</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Error removing %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="n">name</span><span class="p">);</span>
-        <span class="n">exit</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">);</span>
-    <span class="p">}</span>
+    <span class=cm>/* remove the shared memory segment */</span>
+    <span class=k>if</span> <span class=p>(</span><span class=n>shm_unlink</span><span class=p>(</span><span class=n>name</span><span class=p>)</span> <span class=o>==</span> <span class=o>-</span><span class=mi>1</span><span class=p>)</span> <span class=p>{</span>
+        <span class=n>printf</span><span class=p>(</span><span class=s>&quot;Error removing %s</span><span class=se>\n</span><span class=s>&quot;</span><span class=p>,</span><span class=n>name</span><span class=p>);</span>
+        <span class=n>exit</span><span class=p>(</span><span class=o>-</span><span class=mi>1</span><span class=p>);</span>
+    <span class=p>}</span>
 
-    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span>
-</pre></div>
-</small></p>
+    <span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+<span class=p>}</span>
+</pre></div></p>
+<p></small></p>
 <h4 id="mach-message-passing">Mach Message Passing<a class="headerlink" href="#mach-message-passing" title="Permanent link">&para;</a></h4>
 <p>Mach was especially designed for distributed systems. Its kernel supports the creation and destruction of multiple <strong>tasks</strong>, which are similar to processes but have multiple threads of control and fewer associated resources.  </p>
 <p>Messages are sent to, and received from, mailboxes, which are called <strong>ports</strong> in Mach. </p>
@@ -670,48 +680,47 @@
 <li><code class="codehilite">mach_port_allocate()</code> creates a new port and allocates space for its queue of messages.</li>
 <li><code class="codehilite">mach_msg()</code> is the standard API for both sending and receiving messages.</li>
 </ul>
-<div class="codehilite"><pre><span class="cp">#include</span> <span class="cpf">&lt;mach/mach.h&gt;</span><span class="cp"></span>
+<p> <div class=codehilite><pre><span class=cp>#include</span> <span class=cpf>&lt;mach/mach.h&gt;</span><span class=cp></span>
 
-<span class="k">struct</span> <span class="n">message</span> <span class="p">{</span>
-    <span class="n">mach_msg_header_t</span> <span class="n">header</span><span class="p">;</span>
-    <span class="kt">int</span> <span class="n">data</span><span class="p">;</span>
-<span class="p">};</span>
+<span class=k>struct</span> <span class=n>message</span> <span class=p>{</span>
+    <span class=n>mach_msg_header_t</span> <span class=n>header</span><span class=p>;</span>
+    <span class=kt>int</span> <span class=n>data</span><span class=p>;</span>
+<span class=p>};</span>
 
-<span class="n">mach_port_t</span> <span class="n">client</span><span class="p">;</span>
-<span class="n">mach_port_t</span> <span class="n">server</span><span class="p">;</span>
+<span class=n>mach_port_t</span> <span class=n>client</span><span class=p>;</span>
+<span class=n>mach_port_t</span> <span class=n>server</span><span class=p>;</span>
 
-<span class="cm">/* Client Code */</span>
+<span class=cm>/* Client Code */</span>
 
-<span class="k">struct</span> <span class="n">message</span> <span class="n">message</span><span class="p">;</span>
+<span class=k>struct</span> <span class=n>message</span> <span class=n>message</span><span class=p>;</span>
 
-<span class="c1">// construct the header</span>
-<span class="n">message</span><span class="p">.</span><span class="n">header</span><span class="p">.</span><span class="n">msgh_size</span> <span class="o">=</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">message</span><span class="p">);</span>
-<span class="n">message</span><span class="p">.</span><span class="n">header</span><span class="p">.</span><span class="n">msgh_remote_port</span> <span class="o">=</span> <span class="n">server</span><span class="p">;</span>
-<span class="n">message</span><span class="p">.</span><span class="n">header</span><span class="p">.</span><span class="n">msgh_local_port</span> <span class="o">=</span> <span class="n">client</span><span class="p">;</span>
+<span class=c1>// construct the header</span>
+<span class=n>message</span><span class=p>.</span><span class=n>header</span><span class=p>.</span><span class=n>msgh_size</span> <span class=o>=</span> <span class=k>sizeof</span><span class=p>(</span><span class=n>message</span><span class=p>);</span>
+<span class=n>message</span><span class=p>.</span><span class=n>header</span><span class=p>.</span><span class=n>msgh_remote_port</span> <span class=o>=</span> <span class=n>server</span><span class=p>;</span>
+<span class=n>message</span><span class=p>.</span><span class=n>header</span><span class=p>.</span><span class=n>msgh_local_port</span> <span class=o>=</span> <span class=n>client</span><span class=p>;</span>
 
-<span class="c1">// send the message</span>
-<span class="n">mach</span> <span class="nf">msg</span><span class="p">(</span><span class="o">&amp;</span><span class="n">message</span><span class="p">.</span><span class="n">header</span><span class="p">,</span> <span class="c1">// message header</span>
-         <span class="n">MACH_SEND_MSG</span><span class="p">,</span> <span class="c1">// sending a message</span>
-         <span class="k">sizeof</span><span class="p">(</span><span class="n">message</span><span class="p">),</span> <span class="c1">// size of message sent</span>
-         <span class="mi">0</span><span class="p">,</span> <span class="c1">// maximum size of received message - unnecessary</span>
-         <span class="n">MACH_PORT_NULL</span><span class="p">,</span> <span class="c1">// name of receive port - unnecessary</span>
-         <span class="n">MACH_MSG_TIMEOUT_NONE</span><span class="p">,</span> <span class="c1">// no time outs MACH PORT NULL // no notify port</span>
-<span class="p">);</span>
+<span class=c1>// send the message</span>
+<span class=n>mach</span> <span class=nf>msg</span><span class=p>(</span><span class=o>&amp;</span><span class=n>message</span><span class=p>.</span><span class=n>header</span><span class=p>,</span> <span class=c1>// message header</span>
+         <span class=n>MACH_SEND_MSG</span><span class=p>,</span> <span class=c1>// sending a message</span>
+         <span class=k>sizeof</span><span class=p>(</span><span class=n>message</span><span class=p>),</span> <span class=c1>// size of message sent</span>
+         <span class=mi>0</span><span class=p>,</span> <span class=c1>// maximum size of received message - unnecessary</span>
+         <span class=n>MACH_PORT_NULL</span><span class=p>,</span> <span class=c1>// name of receive port - unnecessary</span>
+         <span class=n>MACH_MSG_TIMEOUT_NONE</span><span class=p>,</span> <span class=c1>// no time outs MACH PORT NULL // no notify port</span>
+<span class=p>);</span>
 
-<span class="cm">/* Server Code */</span>
+<span class=cm>/* Server Code */</span>
 
-<span class="k">struct</span> <span class="n">message</span> <span class="n">message</span><span class="p">;</span>
+<span class=k>struct</span> <span class=n>message</span> <span class=n>message</span><span class=p>;</span>
 
-<span class="c1">// receive the message</span>
-<span class="n">mach_msg</span><span class="p">(</span><span class="o">&amp;</span><span class="n">message</span><span class="p">.</span><span class="n">header</span><span class="p">,</span> <span class="c1">// message header</span>
-  <span class="n">MACH_RCV_MSG</span><span class="p">,</span> <span class="c1">// sending a message  0, // size of message sent</span>
-  <span class="k">sizeof</span><span class="p">(</span><span class="n">message</span><span class="p">),</span> <span class="c1">// maximum size of received message</span>
-  <span class="n">server</span><span class="p">,</span> <span class="c1">// name of receive port</span>
-  <span class="n">MACH_MSG_TIMEOUT_NONE</span><span class="p">,</span> <span class="c1">// no time outs</span>
-  <span class="n">MACH_PORT_NULL</span> <span class="c1">// no notify port</span>
-<span class="p">);</span>
-</pre></div>
-
+<span class=c1>// receive the message</span>
+<span class=n>mach_msg</span><span class=p>(</span><span class=o>&amp;</span><span class=n>message</span><span class=p>.</span><span class=n>header</span><span class=p>,</span> <span class=c1>// message header</span>
+  <span class=n>MACH_RCV_MSG</span><span class=p>,</span> <span class=c1>// sending a message  0, // size of message sent</span>
+  <span class=k>sizeof</span><span class=p>(</span><span class=n>message</span><span class=p>),</span> <span class=c1>// maximum size of received message</span>
+  <span class=n>server</span><span class=p>,</span> <span class=c1>// name of receive port</span>
+  <span class=n>MACH_MSG_TIMEOUT_NONE</span><span class=p>,</span> <span class=c1>// no time outs</span>
+  <span class=n>MACH_PORT_NULL</span> <span class=c1>// no notify port</span>
+<span class=p>);</span>
+</pre></div></p>
 <h4 id="pipes">Pipes<a class="headerlink" href="#pipes" title="Permanent link">&para;</a></h4>
 <p>A <strong>pipe</strong> acts as a conduit allowing two processes to communicate. Pipes were one of the first IPC mechanisms in early UNIX systems. There are two common types of pipes used on both UNIX and Windows systems: <strong>ordinary pipes</strong> and <strong>named pipes</strong>.</p>
 <h4 id="ordinary-pipes">Ordinary pipes<a class="headerlink" href="#ordinary-pipes" title="Permanent link">&para;</a></h4>
@@ -723,47 +732,46 @@
 <li>Ordinary pipes <strong>exit only</strong> while the processes are communicating with each other.</li>
 </ul>
 <p><img alt="file_descriptors_for_an_ordinary_pipes" src="../figures/file_descriptors_for_an_ordinary_pipes.png" /></p>
-<div class="codehilite"><pre><span class="cp">#include</span> <span class="cpf">&lt;sys/types.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&lt;string.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&lt;unistd.h&gt;</span><span class="cp"></span>
+<p> <div class=codehilite><pre><span class=cp>#include</span> <span class=cpf>&lt;sys/types.h&gt;</span><span class=cp></span>
+<span class=cp>#include</span> <span class=cpf>&lt;stdio.h&gt;</span><span class=cp></span>
+<span class=cp>#include</span> <span class=cpf>&lt;string.h&gt;</span><span class=cp></span>
+<span class=cp>#include</span> <span class=cpf>&lt;unistd.h&gt;</span><span class=cp></span>
 
-<span class="cp">#define BUFFER_SIZE 25</span>
-<span class="cp">#define READ_END 0</span>
-<span class="cp">#define WRITE_END 1</span>
+<span class=cp>#define BUFFER_SIZE 25</span>
+<span class=cp>#define READ_END 0</span>
+<span class=cp>#define WRITE_END 1</span>
 
-<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
-<span class="p">{</span>
-        <span class="kt">char</span> <span class="n">write_msg</span><span class="p">[</span><span class="n">BUFFER_SIZE</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;Greetings&quot;</span><span class="p">;</span>
-        <span class="kt">char</span> <span class="n">read_msg</span><span class="p">[</span><span class="n">BUFFER_SIZE</span><span class="p">];</span>
-        <span class="kt">int</span> <span class="n">fd</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>
-        <span class="kt">pid_t</span> <span class="n">pid</span><span class="p">;</span>
+<span class=kt>int</span> <span class=nf>main</span><span class=p>(</span><span class=kt>void</span><span class=p>)</span>
+<span class=p>{</span>
+        <span class=kt>char</span> <span class=n>write_msg</span><span class=p>[</span><span class=n>BUFFER_SIZE</span><span class=p>]</span> <span class=o>=</span> <span class=s>&quot;Greetings&quot;</span><span class=p>;</span>
+        <span class=kt>char</span> <span class=n>read_msg</span><span class=p>[</span><span class=n>BUFFER_SIZE</span><span class=p>];</span>
+        <span class=kt>int</span> <span class=n>fd</span><span class=p>[</span><span class=mi>2</span><span class=p>];</span>
+        <span class=kt>pid_t</span> <span class=n>pid</span><span class=p>;</span>
 
-        <span class="cm">/* create the pipe */</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">pipe</span><span class="p">(</span><span class="n">fd</span><span class="p">)</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">){</span>
-                <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&quot;Pipe failed&quot;</span><span class="p">);</span>
-                <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
-        <span class="p">}</span>
+        <span class=cm>/* create the pipe */</span>
+        <span class=k>if</span> <span class=p>(</span><span class=n>pipe</span><span class=p>(</span><span class=n>fd</span><span class=p>)</span> <span class=o>==</span> <span class=o>-</span><span class=mi>1</span><span class=p>){</span>
+                <span class=n>fprintf</span><span class=p>(</span><span class=n>stderr</span><span class=p>,</span> <span class=s>&quot;Pipe failed&quot;</span><span class=p>);</span>
+                <span class=k>return</span> <span class=mi>1</span><span class=p>;</span>
+        <span class=p>}</span>
 
-        <span class="cm">/* fork a child process */</span>
-        <span class="n">pid</span> <span class="o">=</span> <span class="n">fork</span><span class="p">();</span>
+        <span class=cm>/* fork a child process */</span>
+        <span class=n>pid</span> <span class=o>=</span> <span class=n>fork</span><span class=p>();</span>
 
-        <span class="k">if</span> <span class="p">(</span><span class="n">pid</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">){</span> <span class="cm">/* parent process */</span>
-                <span class="n">close</span><span class="p">(</span><span class="n">fd</span><span class="p">[</span><span class="n">READ_END</span><span class="p">]);</span><span class="cm">/* close the unused end of the pipe */</span>
-                <span class="n">write</span><span class="p">(</span><span class="n">fd</span><span class="p">[</span><span class="n">WRITE_END</span><span class="p">],</span> <span class="n">write_msg</span><span class="p">,</span> <span class="n">strlen</span><span class="p">(</span><span class="n">write_msg</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span> <span class="cm">/* write to the pipe */</span>
-                <span class="n">close</span><span class="p">(</span><span class="n">fd</span><span class="p">[</span><span class="n">WRITE_END</span><span class="p">]);</span>  <span class="cm">/* close the write end of the pipe */</span>
-        <span class="p">}</span>
-        <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">pid</span><span class="o">==</span><span class="mi">0</span><span class="p">){</span> <span class="cm">/* child process */</span>
-                <span class="n">close</span><span class="p">(</span><span class="n">fd</span><span class="p">[</span><span class="n">WRITE_END</span><span class="p">]);</span> <span class="cm">/* close the unused end of the pipe */</span>
-                <span class="n">read</span><span class="p">(</span><span class="n">fd</span><span class="p">[</span><span class="n">READ_END</span><span class="p">],</span> <span class="n">read_msg</span><span class="p">,</span> <span class="n">BUFFER_SIZE</span><span class="p">);</span> <span class="cm">/* read from the pipe */</span>
-                <span class="n">printf</span><span class="p">(</span><span class="s">&quot;read: %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">read_msg</span><span class="p">);</span>
-                <span class="n">close</span><span class="p">(</span><span class="n">fd</span><span class="p">[</span><span class="n">READ_END</span><span class="p">]);</span> <span class="cm">/* close the read end of the pipe */</span>
-        <span class="p">}</span>
-        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+        <span class=k>if</span> <span class=p>(</span><span class=n>pid</span><span class=o>&gt;</span><span class=mi>0</span><span class=p>){</span> <span class=cm>/* parent process */</span>
+                <span class=n>close</span><span class=p>(</span><span class=n>fd</span><span class=p>[</span><span class=n>READ_END</span><span class=p>]);</span><span class=cm>/* close the unused end of the pipe */</span>
+                <span class=n>write</span><span class=p>(</span><span class=n>fd</span><span class=p>[</span><span class=n>WRITE_END</span><span class=p>],</span> <span class=n>write_msg</span><span class=p>,</span> <span class=n>strlen</span><span class=p>(</span><span class=n>write_msg</span><span class=p>)</span><span class=o>+</span><span class=mi>1</span><span class=p>);</span> <span class=cm>/* write to the pipe */</span>
+                <span class=n>close</span><span class=p>(</span><span class=n>fd</span><span class=p>[</span><span class=n>WRITE_END</span><span class=p>]);</span>  <span class=cm>/* close the write end of the pipe */</span>
+        <span class=p>}</span>
+        <span class=k>else</span> <span class=k>if</span> <span class=p>(</span><span class=n>pid</span><span class=o>==</span><span class=mi>0</span><span class=p>){</span> <span class=cm>/* child process */</span>
+                <span class=n>close</span><span class=p>(</span><span class=n>fd</span><span class=p>[</span><span class=n>WRITE_END</span><span class=p>]);</span> <span class=cm>/* close the unused end of the pipe */</span>
+                <span class=n>read</span><span class=p>(</span><span class=n>fd</span><span class=p>[</span><span class=n>READ_END</span><span class=p>],</span> <span class=n>read_msg</span><span class=p>,</span> <span class=n>BUFFER_SIZE</span><span class=p>);</span> <span class=cm>/* read from the pipe */</span>
+                <span class=n>printf</span><span class=p>(</span><span class=s>&quot;read: %s</span><span class=se>\n</span><span class=s>&quot;</span><span class=p>,</span> <span class=n>read_msg</span><span class=p>);</span>
+                <span class=n>close</span><span class=p>(</span><span class=n>fd</span><span class=p>[</span><span class=n>READ_END</span><span class=p>]);</span> <span class=cm>/* close the read end of the pipe */</span>
+        <span class=p>}</span>
+        <span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
 
-<span class="p">}</span>
-</pre></div>
-
+<span class=p>}</span>
+</pre></div></p>
 <h4 id="named-pipes">Named pipes<a class="headerlink" href="#named-pipes" title="Permanent link">&para;</a></h4>
 <p><strong>Named pipes</strong>（命名管道） can be <strong>bidirectional</strong>, and no parent-child relationship is required.</p>
 <ul>
@@ -772,102 +780,99 @@
 <li>The communicating processes for named pipes must reside on the same machine.</li>
 </ul>
 <p>A FIFO is created with the <code class="codehilite">mkfifo()</code> system call and manipulated with the ordinary <code class="codehilite">open()</code>, <code class="codehilite">read()</code>, <code class="codehilite">write()</code>, and <code class="codehilite">close</code> system calls.：</p>
-<div class="codehilite"><pre><span class="kt">int</span> <span class="nf">mkfifo</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">filename</span><span class="p">,</span> <span class="kt">mode_t</span> <span class="n">mode</span><span class="p">);</span>
-</pre></div>
-
+<p> <div class=codehilite><pre><span class=kt>int</span> <span class=nf>mkfifo</span><span class=p>(</span><span class=k>const</span> <span class=kt>char</span> <span class=o>*</span><span class=n>filename</span><span class=p>,</span> <span class=kt>mode_t</span> <span class=n>mode</span><span class=p>);</span>
+</pre></div></p>
 <p>The program <code class="codehilite">fifowrite.c</code> is as follows.</p>
-<div class="codehilite"><pre><span class="cp">#include</span><span class="cpf">&lt;sys/types.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span><span class="cpf">&lt;stdlib.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span><span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span><span class="cpf">&lt;fcntl.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span><span class="cpf">&lt;limits.h&gt;</span><span class="cp"></span>
-<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
-<span class="p">{</span>
-    <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">fifo_name</span> <span class="o">=</span> <span class="s">&quot;/tmp/my_fifo&quot;</span><span class="p">;</span>
-    <span class="kt">int</span> <span class="n">pipe_fd</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
-    <span class="kt">int</span> <span class="n">data_fd</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
-    <span class="kt">int</span> <span class="n">res</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-    <span class="k">const</span> <span class="kt">int</span> <span class="n">open_mode</span> <span class="o">=</span> <span class="n">O_WRONLY</span><span class="p">;</span>
-    <span class="kt">char</span> <span class="n">buffer</span><span class="p">[</span><span class="n">PIPE_BUF</span><span class="o">+</span><span class="mi">1</span><span class="p">];</span>
-    <span class="k">if</span><span class="p">(</span><span class="n">access</span><span class="p">(</span><span class="n">fifo_name</span><span class="p">,</span><span class="n">F_OK</span><span class="p">)</span><span class="o">==-</span><span class="mi">1</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="n">res</span> <span class="o">=</span> <span class="n">mkfifo</span><span class="p">(</span><span class="n">fifo_name</span><span class="p">,</span><span class="mo">0777</span><span class="p">);</span>
-        <span class="k">if</span><span class="p">(</span><span class="n">res</span><span class="o">!=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="p">{</span>
-            <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span><span class="s">&quot;could not create fifo</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
-            <span class="n">exit</span><span class="p">(</span><span class="n">EXIT_FAILURE</span><span class="p">);</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;process %d opening fifo O_WRONLY</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="n">getpid</span><span class="p">());</span>
-    <span class="n">pipe_fd</span> <span class="o">=</span> <span class="n">open</span><span class="p">(</span><span class="n">fifo_name</span><span class="p">,</span><span class="n">open_mode</span><span class="p">);</span>
-    <span class="n">data_fd</span> <span class="o">=</span> <span class="n">open</span><span class="p">(</span><span class="s">&quot;data.txt&quot;</span><span class="p">,</span><span class="n">O_RDONLY</span><span class="p">);</span>
-    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;process %d result %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="n">getpid</span><span class="p">(),</span><span class="n">pipe_fd</span><span class="p">);</span>
-    <span class="k">if</span><span class="p">(</span><span class="n">pipe_fd</span><span class="o">!=-</span><span class="mi">1</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="kt">int</span> <span class="n">bytes_read</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-        <span class="n">bytes_read</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="n">data_fd</span><span class="p">,</span><span class="n">buffer</span><span class="p">,</span><span class="n">PIPE_BUF</span><span class="p">);</span>
-        <span class="k">while</span><span class="p">(</span><span class="n">bytes_read</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">)</span>
-        <span class="p">{</span>
-            <span class="n">res</span> <span class="o">=</span> <span class="n">write</span><span class="p">(</span><span class="n">pipe_fd</span><span class="p">,</span><span class="n">buffer</span><span class="p">,</span><span class="n">bytes_read</span><span class="p">);</span>
-            <span class="k">if</span><span class="p">(</span><span class="n">res</span><span class="o">==-</span><span class="mi">1</span><span class="p">)</span>
-            <span class="p">{</span>
-                <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span><span class="s">&quot;write error</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
-                <span class="n">exit</span><span class="p">(</span><span class="n">EXIT_FAILURE</span><span class="p">);</span>
-            <span class="p">}</span>
-            <span class="n">bytes_read</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="n">data_fd</span><span class="p">,</span><span class="n">buffer</span><span class="p">,</span><span class="n">PIPE_BUF</span><span class="p">);</span>
-            <span class="n">buffer</span><span class="p">[</span><span class="n">bytes_read</span><span class="p">]</span><span class="o">=</span><span class="sc">&#39;\0&#39;</span><span class="p">;</span>
-        <span class="p">}</span>
-        <span class="n">close</span><span class="p">(</span><span class="n">pipe_fd</span><span class="p">);</span>
-        <span class="n">close</span><span class="p">(</span><span class="n">data_fd</span><span class="p">);</span>
-    <span class="p">}</span>
-    <span class="k">else</span><span class="p">{</span>
-        <span class="n">exit</span><span class="p">(</span><span class="n">EXIT_FAILURE</span><span class="p">);</span>
-    <span class="p">}</span>
-    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;process %d finished.</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="n">getpid</span><span class="p">());</span>
-    <span class="n">exit</span><span class="p">(</span><span class="n">EXIT_SUCCESS</span><span class="p">);</span>
-<span class="p">}</span>
-</pre></div>
-
+<p> <div class=codehilite><pre><span class=cp>#include</span><span class=cpf>&lt;sys/types.h&gt;</span><span class=cp></span>
+<span class=cp>#include</span><span class=cpf>&lt;stdlib.h&gt;</span><span class=cp></span>
+<span class=cp>#include</span><span class=cpf>&lt;stdio.h&gt;</span><span class=cp></span>
+<span class=cp>#include</span><span class=cpf>&lt;fcntl.h&gt;</span><span class=cp></span>
+<span class=cp>#include</span><span class=cpf>&lt;limits.h&gt;</span><span class=cp></span>
+<span class=kt>int</span> <span class=nf>main</span><span class=p>()</span>
+<span class=p>{</span>
+    <span class=k>const</span> <span class=kt>char</span> <span class=o>*</span><span class=n>fifo_name</span> <span class=o>=</span> <span class=s>&quot;/tmp/my_fifo&quot;</span><span class=p>;</span>
+    <span class=kt>int</span> <span class=n>pipe_fd</span> <span class=o>=</span> <span class=o>-</span><span class=mi>1</span><span class=p>;</span>
+    <span class=kt>int</span> <span class=n>data_fd</span> <span class=o>=</span> <span class=o>-</span><span class=mi>1</span><span class=p>;</span>
+    <span class=kt>int</span> <span class=n>res</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+    <span class=k>const</span> <span class=kt>int</span> <span class=n>open_mode</span> <span class=o>=</span> <span class=n>O_WRONLY</span><span class=p>;</span>
+    <span class=kt>char</span> <span class=n>buffer</span><span class=p>[</span><span class=n>PIPE_BUF</span><span class=o>+</span><span class=mi>1</span><span class=p>];</span>
+    <span class=k>if</span><span class=p>(</span><span class=n>access</span><span class=p>(</span><span class=n>fifo_name</span><span class=p>,</span><span class=n>F_OK</span><span class=p>)</span><span class=o>==-</span><span class=mi>1</span><span class=p>)</span>
+    <span class=p>{</span>
+        <span class=n>res</span> <span class=o>=</span> <span class=n>mkfifo</span><span class=p>(</span><span class=n>fifo_name</span><span class=p>,</span><span class=mo>0777</span><span class=p>);</span>
+        <span class=k>if</span><span class=p>(</span><span class=n>res</span><span class=o>!=</span><span class=mi>0</span><span class=p>)</span>
+        <span class=p>{</span>
+            <span class=n>fprintf</span><span class=p>(</span><span class=n>stderr</span><span class=p>,</span><span class=s>&quot;could not create fifo</span><span class=se>\n</span><span class=s>&quot;</span><span class=p>);</span>
+            <span class=n>exit</span><span class=p>(</span><span class=n>EXIT_FAILURE</span><span class=p>);</span>
+        <span class=p>}</span>
+    <span class=p>}</span>
+    <span class=n>printf</span><span class=p>(</span><span class=s>&quot;process %d opening fifo O_WRONLY</span><span class=se>\n</span><span class=s>&quot;</span><span class=p>,</span><span class=n>getpid</span><span class=p>());</span>
+    <span class=n>pipe_fd</span> <span class=o>=</span> <span class=n>open</span><span class=p>(</span><span class=n>fifo_name</span><span class=p>,</span><span class=n>open_mode</span><span class=p>);</span>
+    <span class=n>data_fd</span> <span class=o>=</span> <span class=n>open</span><span class=p>(</span><span class=s>&quot;data.txt&quot;</span><span class=p>,</span><span class=n>O_RDONLY</span><span class=p>);</span>
+    <span class=n>printf</span><span class=p>(</span><span class=s>&quot;process %d result %d</span><span class=se>\n</span><span class=s>&quot;</span><span class=p>,</span><span class=n>getpid</span><span class=p>(),</span><span class=n>pipe_fd</span><span class=p>);</span>
+    <span class=k>if</span><span class=p>(</span><span class=n>pipe_fd</span><span class=o>!=-</span><span class=mi>1</span><span class=p>)</span>
+    <span class=p>{</span>
+        <span class=kt>int</span> <span class=n>bytes_read</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+        <span class=n>bytes_read</span> <span class=o>=</span> <span class=n>read</span><span class=p>(</span><span class=n>data_fd</span><span class=p>,</span><span class=n>buffer</span><span class=p>,</span><span class=n>PIPE_BUF</span><span class=p>);</span>
+        <span class=k>while</span><span class=p>(</span><span class=n>bytes_read</span><span class=o>&gt;</span><span class=mi>0</span><span class=p>)</span>
+        <span class=p>{</span>
+            <span class=n>res</span> <span class=o>=</span> <span class=n>write</span><span class=p>(</span><span class=n>pipe_fd</span><span class=p>,</span><span class=n>buffer</span><span class=p>,</span><span class=n>bytes_read</span><span class=p>);</span>
+            <span class=k>if</span><span class=p>(</span><span class=n>res</span><span class=o>==-</span><span class=mi>1</span><span class=p>)</span>
+            <span class=p>{</span>
+                <span class=n>fprintf</span><span class=p>(</span><span class=n>stderr</span><span class=p>,</span><span class=s>&quot;write error</span><span class=se>\n</span><span class=s>&quot;</span><span class=p>);</span>
+                <span class=n>exit</span><span class=p>(</span><span class=n>EXIT_FAILURE</span><span class=p>);</span>
+            <span class=p>}</span>
+            <span class=n>bytes_read</span> <span class=o>=</span> <span class=n>read</span><span class=p>(</span><span class=n>data_fd</span><span class=p>,</span><span class=n>buffer</span><span class=p>,</span><span class=n>PIPE_BUF</span><span class=p>);</span>
+            <span class=n>buffer</span><span class=p>[</span><span class=n>bytes_read</span><span class=p>]</span><span class=o>=</span><span class=sc>&#39;\0&#39;</span><span class=p>;</span>
+        <span class=p>}</span>
+        <span class=n>close</span><span class=p>(</span><span class=n>pipe_fd</span><span class=p>);</span>
+        <span class=n>close</span><span class=p>(</span><span class=n>data_fd</span><span class=p>);</span>
+    <span class=p>}</span>
+    <span class=k>else</span><span class=p>{</span>
+        <span class=n>exit</span><span class=p>(</span><span class=n>EXIT_FAILURE</span><span class=p>);</span>
+    <span class=p>}</span>
+    <span class=n>printf</span><span class=p>(</span><span class=s>&quot;process %d finished.</span><span class=se>\n</span><span class=s>&quot;</span><span class=p>,</span><span class=n>getpid</span><span class=p>());</span>
+    <span class=n>exit</span><span class=p>(</span><span class=n>EXIT_SUCCESS</span><span class=p>);</span>
+<span class=p>}</span>
+</pre></div></p>
 <p>the program <code class="codehilite">fiforead.c</code> is as follows.</p>
-<div class="codehilite"><pre><span class="cp">#include</span><span class="cpf">&lt;stdlib.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span><span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span><span class="cpf">&lt;sys/types.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span><span class="cpf">&lt;fcntl.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span><span class="cpf">&lt;limits.h&gt;</span><span class="cp"></span>
-<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
-<span class="p">{</span>
-    <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">fifo_name</span> <span class="o">=</span> <span class="s">&quot;/tmp/my_fifo&quot;</span><span class="p">;</span>
-    <span class="kt">int</span> <span class="n">pipe_fd</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
-    <span class="kt">int</span> <span class="n">data_fd</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
-    <span class="kt">int</span> <span class="n">res</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-    <span class="kt">int</span> <span class="n">open_mode</span> <span class="o">=</span> <span class="n">O_RDONLY</span><span class="p">;</span>
-    <span class="kt">char</span> <span class="n">buffer</span><span class="p">[</span><span class="n">PIPE_BUF</span><span class="o">+</span><span class="mi">1</span><span class="p">];</span>
-    <span class="kt">int</span> <span class="n">bytes_read</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-    <span class="kt">int</span> <span class="n">bytes_write</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-    <span class="n">memset</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span><span class="sc">&#39;\0&#39;</span><span class="p">,</span><span class="k">sizeof</span><span class="p">(</span><span class="n">buffer</span><span class="p">));</span>
+<p> <div class=codehilite><pre><span class=cp>#include</span><span class=cpf>&lt;stdlib.h&gt;</span><span class=cp></span>
+<span class=cp>#include</span><span class=cpf>&lt;stdio.h&gt;</span><span class=cp></span>
+<span class=cp>#include</span><span class=cpf>&lt;sys/types.h&gt;</span><span class=cp></span>
+<span class=cp>#include</span><span class=cpf>&lt;fcntl.h&gt;</span><span class=cp></span>
+<span class=cp>#include</span><span class=cpf>&lt;limits.h&gt;</span><span class=cp></span>
+<span class=kt>int</span> <span class=nf>main</span><span class=p>()</span>
+<span class=p>{</span>
+    <span class=k>const</span> <span class=kt>char</span> <span class=o>*</span><span class=n>fifo_name</span> <span class=o>=</span> <span class=s>&quot;/tmp/my_fifo&quot;</span><span class=p>;</span>
+    <span class=kt>int</span> <span class=n>pipe_fd</span> <span class=o>=</span> <span class=o>-</span><span class=mi>1</span><span class=p>;</span>
+    <span class=kt>int</span> <span class=n>data_fd</span> <span class=o>=</span> <span class=o>-</span><span class=mi>1</span><span class=p>;</span>
+    <span class=kt>int</span> <span class=n>res</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+    <span class=kt>int</span> <span class=n>open_mode</span> <span class=o>=</span> <span class=n>O_RDONLY</span><span class=p>;</span>
+    <span class=kt>char</span> <span class=n>buffer</span><span class=p>[</span><span class=n>PIPE_BUF</span><span class=o>+</span><span class=mi>1</span><span class=p>];</span>
+    <span class=kt>int</span> <span class=n>bytes_read</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+    <span class=kt>int</span> <span class=n>bytes_write</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+    <span class=n>memset</span><span class=p>(</span><span class=n>buffer</span><span class=p>,</span><span class=sc>&#39;\0&#39;</span><span class=p>,</span><span class=k>sizeof</span><span class=p>(</span><span class=n>buffer</span><span class=p>));</span>
 
-    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;process %d opening FIFO O_RDONLY</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="n">getpid</span><span class="p">());</span>
-    <span class="n">pipe_fd</span> <span class="o">=</span> <span class="n">open</span><span class="p">(</span><span class="n">fifo_name</span><span class="p">,</span><span class="n">open_mode</span><span class="p">);</span>
-    <span class="n">data_fd</span> <span class="o">=</span> <span class="n">open</span><span class="p">(</span><span class="s">&quot;dataformfifo.txt&quot;</span><span class="p">,</span><span class="n">O_WRONLY</span><span class="o">|</span><span class="n">O_CREAT</span><span class="p">,</span><span class="mo">0644</span><span class="p">);</span>
-    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;process %d result %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="n">getpid</span><span class="p">(),</span><span class="n">pipe_fd</span><span class="p">);</span>
-    <span class="k">if</span><span class="p">(</span><span class="n">pipe_fd</span><span class="o">!=-</span><span class="mi">1</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="k">do</span><span class="p">{</span>
-            <span class="n">res</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="n">pipe_fd</span><span class="p">,</span><span class="n">buffer</span><span class="p">,</span><span class="n">PIPE_BUF</span><span class="p">);</span>
-            <span class="n">bytes_write</span> <span class="o">=</span> <span class="n">write</span><span class="p">(</span><span class="n">data_fd</span><span class="p">,</span><span class="n">buffer</span><span class="p">,</span><span class="n">res</span><span class="p">);</span>
-            <span class="n">bytes_read</span> <span class="o">+=</span><span class="n">res</span><span class="p">;</span>
-        <span class="p">}</span><span class="k">while</span><span class="p">(</span><span class="n">res</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">);</span>
-        <span class="n">close</span><span class="p">(</span><span class="n">pipe_fd</span><span class="p">);</span>
-        <span class="n">close</span><span class="p">(</span><span class="n">data_fd</span><span class="p">);</span>
-    <span class="p">}</span>
-    <span class="k">else</span><span class="p">{</span>
-        <span class="n">exit</span><span class="p">(</span><span class="n">EXIT_FAILURE</span><span class="p">);</span>
-    <span class="p">}</span>
-    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;process %d finished,%d bytes read</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="n">getpid</span><span class="p">(),</span><span class="n">bytes_read</span><span class="p">);</span>
-    <span class="n">exit</span><span class="p">(</span><span class="n">EXIT_SUCCESS</span><span class="p">);</span>
-<span class="p">}</span>
-</pre></div>
-
+    <span class=n>printf</span><span class=p>(</span><span class=s>&quot;process %d opening FIFO O_RDONLY</span><span class=se>\n</span><span class=s>&quot;</span><span class=p>,</span><span class=n>getpid</span><span class=p>());</span>
+    <span class=n>pipe_fd</span> <span class=o>=</span> <span class=n>open</span><span class=p>(</span><span class=n>fifo_name</span><span class=p>,</span><span class=n>open_mode</span><span class=p>);</span>
+    <span class=n>data_fd</span> <span class=o>=</span> <span class=n>open</span><span class=p>(</span><span class=s>&quot;dataformfifo.txt&quot;</span><span class=p>,</span><span class=n>O_WRONLY</span><span class=o>|</span><span class=n>O_CREAT</span><span class=p>,</span><span class=mo>0644</span><span class=p>);</span>
+    <span class=n>printf</span><span class=p>(</span><span class=s>&quot;process %d result %d</span><span class=se>\n</span><span class=s>&quot;</span><span class=p>,</span><span class=n>getpid</span><span class=p>(),</span><span class=n>pipe_fd</span><span class=p>);</span>
+    <span class=k>if</span><span class=p>(</span><span class=n>pipe_fd</span><span class=o>!=-</span><span class=mi>1</span><span class=p>)</span>
+    <span class=p>{</span>
+        <span class=k>do</span><span class=p>{</span>
+            <span class=n>res</span> <span class=o>=</span> <span class=n>read</span><span class=p>(</span><span class=n>pipe_fd</span><span class=p>,</span><span class=n>buffer</span><span class=p>,</span><span class=n>PIPE_BUF</span><span class=p>);</span>
+            <span class=n>bytes_write</span> <span class=o>=</span> <span class=n>write</span><span class=p>(</span><span class=n>data_fd</span><span class=p>,</span><span class=n>buffer</span><span class=p>,</span><span class=n>res</span><span class=p>);</span>
+            <span class=n>bytes_read</span> <span class=o>+=</span><span class=n>res</span><span class=p>;</span>
+        <span class=p>}</span><span class=k>while</span><span class=p>(</span><span class=n>res</span><span class=o>&gt;</span><span class=mi>0</span><span class=p>);</span>
+        <span class=n>close</span><span class=p>(</span><span class=n>pipe_fd</span><span class=p>);</span>
+        <span class=n>close</span><span class=p>(</span><span class=n>data_fd</span><span class=p>);</span>
+    <span class=p>}</span>
+    <span class=k>else</span><span class=p>{</span>
+        <span class=n>exit</span><span class=p>(</span><span class=n>EXIT_FAILURE</span><span class=p>);</span>
+    <span class=p>}</span>
+    <span class=n>printf</span><span class=p>(</span><span class=s>&quot;process %d finished,%d bytes read</span><span class=se>\n</span><span class=s>&quot;</span><span class=p>,</span><span class=n>getpid</span><span class=p>(),</span><span class=n>bytes_read</span><span class=p>);</span>
+    <span class=n>exit</span><span class=p>(</span><span class=n>EXIT_SUCCESS</span><span class=p>);</span>
+<span class=p>}</span>
+</pre></div></p>
 <h3 id="8-communication-in-client-server-system">8 Communication in Client-server system<a class="headerlink" href="#8-communication-in-client-server-system" title="Permanent link">&para;</a></h3>
 <p>In this section, we explore two other strategies for communication in client-server system: <strong>sockets</strong> and <strong>remote procedure calls</strong>(RPCs)</p>
 <h4 id="sockets">Sockets<a class="headerlink" href="#sockets" title="Permanent link">&para;</a></h4>
@@ -879,59 +884,61 @@
 <p class="admonition-title">Example</p>
 <p>Java provides three different types of sockets. Connection-oriented(TCP) sockets are implemented with the <code class="codehilite">Socket</code> class. </p>
 <p>The example describes a data server that uses connection-oriented TCP sockets. </p>
-<div class="codehilite"><pre><span class="kn">import</span> <span class="nn">java.net.*</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">java.io.*</span><span class="o">;</span>
+<p>```Java
+import java.net.<em>;
+import java.io.</em>;</p>
+<p>public class DateClient
+{
+    public static void main(String[] args)  {
+        try {
+            // this could be changed to an IP name or address other than the localhost.
+            // The IP address 127.0.0.1 is a special IP address known as the loopback. 
+            // When a computer refers to IP address 127.0.0.1, it is referring to itself.
+            // This mechanism allows a client and server on the same host to communicate using the TCP/IP protocol.
+            Socket sock = new Socket("127.0.0.1",6013);
+            InputStream in = sock.getInputStream();
+            BufferedReader bin = new BufferedReader(new InputStreamReader(in));</p>
+<div class="codehilite"><pre>        String line;
+        while( (line = bin.readLine()) != null)
+            System.out.println(line);
 
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">DateClient</span>
-<span class="o">{</span>
-    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span>  <span class="o">{</span>
-        <span class="k">try</span> <span class="o">{</span>
-            <span class="c1">// this could be changed to an IP name or address other than the localhost.</span>
-            <span class="c1">// The IP address 127.0.0.1 is a special IP address known as the loopback. </span>
-            <span class="c1">// When a computer refers to IP address 127.0.0.1, it is referring to itself.</span>
-            <span class="c1">// This mechanism allows a client and server on the same host to communicate using the TCP/IP protocol.</span>
-            <span class="n">Socket</span> <span class="n">sock</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Socket</span><span class="o">(</span><span class="s">&quot;127.0.0.1&quot;</span><span class="o">,</span><span class="mi">6013</span><span class="o">);</span>
-            <span class="n">InputStream</span> <span class="n">in</span> <span class="o">=</span> <span class="n">sock</span><span class="o">.</span><span class="na">getInputStream</span><span class="o">();</span>
-            <span class="n">BufferedReader</span> <span class="n">bin</span> <span class="o">=</span> <span class="k">new</span> <span class="n">BufferedReader</span><span class="o">(</span><span class="k">new</span> <span class="n">InputStreamReader</span><span class="o">(</span><span class="n">in</span><span class="o">));</span>
-
-            <span class="n">String</span> <span class="n">line</span><span class="o">;</span>
-            <span class="k">while</span><span class="o">(</span> <span class="o">(</span><span class="n">line</span> <span class="o">=</span> <span class="n">bin</span><span class="o">.</span><span class="na">readLine</span><span class="o">())</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span>
-                <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">line</span><span class="o">);</span>
-
-            <span class="n">sock</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
-        <span class="o">}</span>
-        <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">ioe</span><span class="o">)</span> <span class="o">{</span>
-                <span class="n">System</span><span class="o">.</span><span class="na">err</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">ioe</span><span class="o">);</span>
-        <span class="o">}</span>
-    <span class="o">}</span>
-<span class="o">}</span>
-
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">DateServer</span>
-<span class="o">{</span>
-    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span>  <span class="o">{</span>
-        <span class="k">try</span> <span class="o">{</span>
-            <span class="n">ServerSocket</span> <span class="n">sock</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ServerSocket</span><span class="o">(</span><span class="mi">6013</span><span class="o">);</span>
-
-            <span class="c1">// now listen for connections</span>
-            <span class="k">while</span> <span class="o">(</span><span class="kc">true</span><span class="o">)</span> <span class="o">{</span>
-                <span class="n">Socket</span> <span class="n">client</span> <span class="o">=</span> <span class="n">sock</span><span class="o">.</span><span class="na">accept</span><span class="o">();</span>
-                <span class="c1">// we have a connection</span>
-
-                <span class="n">PrintWriter</span> <span class="n">pout</span> <span class="o">=</span> <span class="k">new</span> <span class="n">PrintWriter</span><span class="o">(</span><span class="n">client</span><span class="o">.</span><span class="na">getOutputStream</span><span class="o">(),</span> <span class="kc">true</span><span class="o">);</span>
-                <span class="c1">// write the Date to the socket</span>
-                <span class="n">pout</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="k">new</span> <span class="n">java</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">Date</span><span class="o">().</span><span class="na">toString</span><span class="o">());</span>
-
-                <span class="c1">// close the socket and resume listening for more connections</span>
-                <span class="n">client</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
-            <span class="o">}</span>
-        <span class="o">}</span>
-        <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">ioe</span><span class="o">)</span> <span class="o">{</span>
-                <span class="n">System</span><span class="o">.</span><span class="na">err</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">ioe</span><span class="o">);</span>
-        <span class="o">}</span>
-    <span class="o">}</span>
-<span class="o">}</span>
+        sock.close();
+    }
+    catch (IOException ioe) {
+            System.err.println(ioe);
+    }
+}
 </pre></div>
 
+
+<p>}</p>
+<p>public class DateServer
+{
+    public static void main(String[] args)  {
+        try {
+            ServerSocket sock = new ServerSocket(6013);</p>
+<div class="codehilite"><pre>        // now listen for connections
+        while (true) {
+            Socket client = sock.accept();
+            // we have a connection
+
+            PrintWriter pout = new PrintWriter(client.getOutputStream(), true);
+            // write the Date to the socket
+            pout.println(new java.util.Date().toString());
+
+            // close the socket and resume listening for more connections
+            client.close();
+        }
+    }
+    catch (IOException ioe) {
+            System.err.println(ioe);
+    }
+}
+</pre></div>
+
+
+<p>}
+```</p>
 </div>
 <p>Communication using sockets—although <em>common</em> and <em>efficient</em> —— is considered a <em>low-level</em> form of communication between distributed processes. </p>
 <ul>
@@ -952,6 +959,7 @@
         <script>var base_url = '../..';</script>
         <script src="../../js/base.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+        <script src="../../extra_javascript/tabhack.js"></script>
         <script src="../../search/require.js"></script>
         <script src="../../search/search.js"></script>
 

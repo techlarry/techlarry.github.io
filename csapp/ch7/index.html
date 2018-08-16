@@ -22,6 +22,7 @@
         <link href="../../extra_css/mkdocs/js/require.js" rel="stylesheet">
         <link href="../../extra_css/mkdocs/js/search.js" rel="stylesheet">
         <link href="../../extra_css/mkdocs/js/text.js" rel="stylesheet">
+        <link href="../../extra_css/code-tab.css" rel="stylesheet">
         <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!--[if lt IE 9]>
             <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
@@ -249,6 +250,15 @@
                         </ul>
                     </li>
                     <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">JC <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../../jc/Java_Concurrency/">Java Concurrency</a>
+</li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">LKD <b class="caret"></b></a>
                         <ul class="dropdown-menu">
                             
@@ -392,22 +402,20 @@
 <h3 id="1">1 编译器驱动程序<a class="headerlink" href="#1" title="Permanent link">&para;</a></h3>
 <p><strong>编译器驱动程序</strong>(<code class="codehilite">compiler driver</code>)，代表用户在需要时调用预处理器(cpp)、编译器(ccl)、汇编器(as)和链接器(ld)。典型的编译器驱动程序，包括GNU GCC, Clang。</p>
 <p>例如，一个简单打印hello的<code class="codehilite">hello.c</code>程序，经过下面四个阶段，生成可执行目标文件：</p>
-<div class="codehilite"><pre><span class="c1">//file: hello.c</span>
-<span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
+<div class=md-fenced-code-tabs id=tab-tab-group-0><input name=tab-group-0 type=radio id=tab-group-0-0_C checked=checked class=code-tab data-lang=C aria-controls=tab-group-0-0_C-panel role=tab><label for=tab-group-0-0_C class=code-tab-label data-lang=C id=tab-group-0-0_C-label>C</label><div class=code-tabpanel role=tabpanel data-lang=C id=tab-group-0-0_C-panel aria-labelledby=tab-group-0-0_C-label><div class=codehilite><pre><span class=c1>//file: hello.c</span>
+<span class=cp>#include</span> <span class=cpf>&lt;stdio.h&gt;</span><span class=cp></span>
 
-<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
-<span class="p">{</span>
-    <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
-    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Hello World&quot;</span><span class="p">);</span>
-<span class="p">}</span>
-</pre></div>
-
-<div class="codehilite"><pre>linux &gt; cpp <span class="o">[</span>other arguments<span class="o">]</span> hello.c hello.i // C预处理器cpp，将源程序翻译成一个ASCII码的中间文件
-linux &gt; cc1 hello.i -Og <span class="o">[</span>other arguments<span class="o">]</span>  -o hello.s //C编译器cc1, 翻译成一个ASCII汇编语言文件
-linux &gt; as <span class="o">[</span>other arguments<span class="o">]</span>  -o hello.o hello.s //汇编器as, 翻译成可重定位目标文件
-linux &gt; ld -o hello <span class="o">[</span>system object files and args<span class="o">]</span> hello.o //链接器ld，创建一个可执行文件
+<span class=kt>int</span> <span class=nf>main</span><span class=p>()</span>
+<span class=p>{</span>
+    <span class=kt>int</span> <span class=n>i</span><span class=p>;</span>
+    <span class=n>printf</span><span class=p>(</span><span class=s>&quot;Hello World&quot;</span><span class=p>);</span>
+<span class=p>}</span>
+</pre></div></div><input name=tab-group-0 type=radio id=tab-group-0-1_bash class=code-tab data-lang=bash aria-controls=tab-group-0-1_bash-panel role=tab><label for=tab-group-0-1_bash class=code-tab-label data-lang=bash id=tab-group-0-1_bash-label>Bash</label><div class=code-tabpanel role=tabpanel data-lang=bash id=tab-group-0-1_bash-panel aria-labelledby=tab-group-0-1_bash-label><div class=codehilite><pre>linux &gt; cpp <span class=o>[</span>other arguments<span class=o>]</span> hello.c hello.i // C预处理器cpp，将源程序翻译成一个ASCII码的中间文件
+linux &gt; cc1 hello.i -Og <span class=o>[</span>other arguments<span class=o>]</span>  -o hello.s //C编译器cc1, 翻译成一个ASCII汇编语言文件
+linux &gt; as <span class=o>[</span>other arguments<span class=o>]</span>  -o hello.o hello.s //汇编器as, 翻译成可重定位目标文件
+linux &gt; ld -o hello <span class=o>[</span>system object files and args<span class=o>]</span> hello.o //链接器ld，创建一个可执行文件
 * linux &gt; ./hello //调用加载器
-</pre></div>
+</pre></div></div></div>
 
 <p><img alt="compiler_system" src="http://or9a8nskt.bkt.clouddn.com/compiler_system.jpeg" /></p>
 <h3 id="2">2 静态链接<a class="headerlink" href="#2" title="Permanent link">&para;</a></h3>
@@ -441,13 +449,12 @@ linux &gt; ld -o hello <span class="o">[</span>system object files and args<span
 </ul>
 <p><img alt="elf" src="http://or9a8nskt.bkt.clouddn.com/elf.png" /></p>
 <p>利用<code class="codehilite">READELF</code>程序可以显示程序<code class="codehilite">hello.c</code>生成的可执行可链接文件的信息：</p>
-<div class="codehilite"><pre>gcc hello.c -c
-readelf -a hello.o <span class="c1">### UNIX/LINUX</span>
-greadelf -a hello.o <span class="c1">### MAC, after brew install binutils</span>
-</pre></div>
-
-<p><small>
-<div class="codehilite"><pre>ELF Header:
+<p> <div class=codehilite><pre>gcc hello.c -c
+readelf -a hello.o <span class=c1>### UNIX/LINUX</span>
+greadelf -a hello.o <span class=c1>### MAC, after brew install binutils</span>
+</pre></div></p>
+<p><small></p>
+<p> <div class=codehilite><pre>ELF Header:
   Magic:   7f 45 4c 46 02 01 01 00 00 00 00 00 00 00 00 00
   Class:                             ELF64
   Data:                              2&#39;s complement, little endian
@@ -532,8 +539,8 @@ Symbol table &#39;.symtab&#39; contains 11 entries:
     10: 0000000000000000     0 NOTYPE  GLOBAL DEFAULT  UND printf
 
 No version information found in this file.
-</pre></div>
-</small></p>
+</pre></div></p>
+<p></small></p>
 <h3 id="5">5 符号和符号表<a class="headerlink" href="#5" title="Permanent link">&para;</a></h3>
 <p><code class="codehilite"><span class="na">.symtab</span></code>中的<strong>符号表</strong>，有三种不同的符号(不包括本地非静态变量)：</p>
 <ul>
@@ -617,6 +624,7 @@ No version information found in this file.
         <script>var base_url = '../..';</script>
         <script src="../../js/base.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+        <script src="../../extra_javascript/tabhack.js"></script>
         <script src="../../search/require.js"></script>
         <script src="../../search/search.js"></script>
 

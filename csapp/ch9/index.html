@@ -22,6 +22,7 @@
         <link href="../../extra_css/mkdocs/js/require.js" rel="stylesheet">
         <link href="../../extra_css/mkdocs/js/search.js" rel="stylesheet">
         <link href="../../extra_css/mkdocs/js/text.js" rel="stylesheet">
+        <link href="../../extra_css/code-tab.css" rel="stylesheet">
         <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!--[if lt IE 9]>
             <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
@@ -245,6 +246,15 @@
                             
 <li >
     <a href="../../hfj/ch18/">Chapter 18: Remote deploy with RMI</a>
+</li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">JC <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../../jc/Java_Concurrency/">Java Concurrency</a>
 </li>
                         </ul>
                     </li>
@@ -523,52 +533,51 @@
 </ul>
 <p><img alt="Virtual Address Space of a Linux Process" src="../figures/Virtual%20Address%20Space%20of%20a%20Linux%20Process.png" /></p>
 <p>下面是程序示意：</p>
-<div class="codehilite"><pre> <span class="cp">#include</span><span class="cpf">&lt;stdio.h&gt;    </span><span class="cp"></span>
- <span class="cp">#include</span> <span class="cpf">&lt;malloc.h&gt;    </span><span class="cp"></span>
+<p> <div class=codehilite><pre> <span class=cp>#include</span><span class=cpf>&lt;stdio.h&gt;    </span><span class=cp></span>
+ <span class=cp>#include</span> <span class=cpf>&lt;malloc.h&gt;    </span><span class=cp></span>
 
- <span class="kt">void</span> <span class="nf">print</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">,</span><span class="kt">int</span><span class="p">);</span>    
- <span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>    
-<span class="p">{</span>    
-     <span class="kt">char</span> <span class="o">*</span><span class="n">s1</span> <span class="o">=</span> <span class="s">&quot;abcde&quot;</span><span class="p">;</span>  <span class="c1">//&quot;abcde&quot;作为字符串常量存储在常量区 s1、s2、s5拥有相同的地址  </span>
-     <span class="kt">char</span> <span class="o">*</span><span class="n">s2</span> <span class="o">=</span> <span class="s">&quot;abcde&quot;</span><span class="p">;</span>    
-     <span class="kt">char</span> <span class="n">s3</span><span class="p">[]</span> <span class="o">=</span> <span class="s">&quot;abcd&quot;</span><span class="p">;</span>    
-     <span class="kt">long</span> <span class="kt">int</span> <span class="o">*</span><span class="n">s4</span><span class="p">[</span><span class="mi">100</span><span class="p">];</span>    
-     <span class="kt">char</span> <span class="o">*</span><span class="n">s5</span> <span class="o">=</span> <span class="s">&quot;abcde&quot;</span><span class="p">;</span>    
-     <span class="kt">int</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>    
-     <span class="kt">int</span> <span class="n">b</span> <span class="o">=</span><span class="mi">6</span><span class="p">;</span><span class="c1">//a,b在栈上，&amp;a&gt;&amp;b地址反向增长    </span>
+ <span class=kt>void</span> <span class=nf>print</span><span class=p>(</span><span class=kt>char</span> <span class=o>*</span><span class=p>,</span><span class=kt>int</span><span class=p>);</span>    
+ <span class=kt>int</span> <span class=nf>main</span><span class=p>()</span>    
+<span class=p>{</span>    
+     <span class=kt>char</span> <span class=o>*</span><span class=n>s1</span> <span class=o>=</span> <span class=s>&quot;abcde&quot;</span><span class=p>;</span>  <span class=c1>//&quot;abcde&quot;作为字符串常量存储在常量区 s1、s2、s5拥有相同的地址  </span>
+     <span class=kt>char</span> <span class=o>*</span><span class=n>s2</span> <span class=o>=</span> <span class=s>&quot;abcde&quot;</span><span class=p>;</span>    
+     <span class=kt>char</span> <span class=n>s3</span><span class=p>[]</span> <span class=o>=</span> <span class=s>&quot;abcd&quot;</span><span class=p>;</span>    
+     <span class=kt>long</span> <span class=kt>int</span> <span class=o>*</span><span class=n>s4</span><span class=p>[</span><span class=mi>100</span><span class=p>];</span>    
+     <span class=kt>char</span> <span class=o>*</span><span class=n>s5</span> <span class=o>=</span> <span class=s>&quot;abcde&quot;</span><span class=p>;</span>    
+     <span class=kt>int</span> <span class=n>a</span> <span class=o>=</span> <span class=mi>5</span><span class=p>;</span>    
+     <span class=kt>int</span> <span class=n>b</span> <span class=o>=</span><span class=mi>6</span><span class=p>;</span><span class=c1>//a,b在栈上，&amp;a&gt;&amp;b地址反向增长    </span>
 
-     <span class="n">printf</span><span class="p">(</span><span class="s">&quot;variables address in main function: </span>
-     <span class="n">s1</span><span class="o">=%</span><span class="n">p</span>  <span class="n">s2</span><span class="o">=%</span><span class="n">p</span> <span class="n">s3</span><span class="o">=%</span><span class="n">p</span> <span class="n">s4</span><span class="o">=%</span><span class="n">p</span> <span class="n">s5</span><span class="o">=%</span><span class="n">p</span> <span class="n">a</span><span class="o">=%</span><span class="n">p</span> <span class="n">b</span><span class="o">=%</span><span class="n">p</span> <span class="err">\</span><span class="n">n</span><span class="s">&quot;, s1,s2,s3,s4,s5,&amp;a,&amp;b);   </span>
-     <span class="n">printf</span><span class="p">(</span><span class="s">&quot;variables address in processcall:n&quot;</span><span class="p">);</span>    
-     <span class="n">print</span><span class="p">(</span><span class="s">&quot;ddddddddd&quot;</span><span class="p">,</span><span class="mi">5</span><span class="p">);</span><span class="c1">//参数入栈从右至左进行,p先进栈,str后进 &amp;p&gt;&amp;str    </span>
-     <span class="n">printf</span><span class="p">(</span><span class="s">&quot;main=%p print=%p </span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="n">main</span><span class="p">,</span><span class="n">print</span><span class="p">);</span>    
-     <span class="c1">//打印代码段中主函数和子函数的地址，编译时先编译的地址低，后编译的地址高main&lt;print    </span>
- <span class="p">}</span>    
+     <span class=n>printf</span><span class=p>(</span><span class=s>&quot;variables address in main function: </span>
+     <span class=n>s1</span><span class=o>=%</span><span class=n>p</span>  <span class=n>s2</span><span class=o>=%</span><span class=n>p</span> <span class=n>s3</span><span class=o>=%</span><span class=n>p</span> <span class=n>s4</span><span class=o>=%</span><span class=n>p</span> <span class=n>s5</span><span class=o>=%</span><span class=n>p</span> <span class=n>a</span><span class=o>=%</span><span class=n>p</span> <span class=n>b</span><span class=o>=%</span><span class=n>p</span> <span class=err>\</span><span class=n>n</span><span class=s>&quot;, s1,s2,s3,s4,s5,&amp;a,&amp;b);   </span>
+     <span class=n>printf</span><span class=p>(</span><span class=s>&quot;variables address in processcall:n&quot;</span><span class=p>);</span>    
+     <span class=n>print</span><span class=p>(</span><span class=s>&quot;ddddddddd&quot;</span><span class=p>,</span><span class=mi>5</span><span class=p>);</span><span class=c1>//参数入栈从右至左进行,p先进栈,str后进 &amp;p&gt;&amp;str    </span>
+     <span class=n>printf</span><span class=p>(</span><span class=s>&quot;main=%p print=%p </span><span class=se>\n</span><span class=s>&quot;</span><span class=p>,</span><span class=n>main</span><span class=p>,</span><span class=n>print</span><span class=p>);</span>    
+     <span class=c1>//打印代码段中主函数和子函数的地址，编译时先编译的地址低，后编译的地址高main&lt;print    </span>
+ <span class=p>}</span>    
 
- <span class="kt">void</span> <span class="n">print</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">str</span><span class="p">,</span><span class="kt">int</span> <span class="n">p</span><span class="p">)</span>    
-<span class="p">{</span>    
-     <span class="kt">char</span> <span class="o">*</span><span class="n">s1</span> <span class="o">=</span> <span class="s">&quot;abcde&quot;</span><span class="p">;</span>  <span class="c1">//abcde在常量区，s1在栈上    </span>
-     <span class="kt">char</span> <span class="o">*</span><span class="n">s2</span> <span class="o">=</span> <span class="s">&quot;abcde&quot;</span><span class="p">;</span>  <span class="c1">//abcde在常量区，s2在栈上 s2-s1=6可能等于0，编译器优化了相同的常量，只在内存保存一份    </span>
-     <span class="c1">//而&amp;s1&gt;&amp;s2    </span>
-     <span class="kt">char</span> <span class="n">s3</span><span class="p">[]</span> <span class="o">=</span> <span class="s">&quot;abcdeee&quot;</span><span class="p">;</span><span class="c1">//abcdeee在常量区，s3在栈上，数组保存的内容为abcdeee的一份拷贝    </span>
-     <span class="kt">long</span> <span class="kt">int</span> <span class="o">*</span><span class="n">s4</span><span class="p">[</span><span class="mi">100</span><span class="p">];</span>    
-     <span class="kt">char</span> <span class="o">*</span><span class="n">s5</span> <span class="o">=</span> <span class="s">&quot;abcde&quot;</span><span class="p">;</span>    
-     <span class="kt">int</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>    
-     <span class="kt">int</span> <span class="n">b</span> <span class="o">=</span><span class="mi">6</span><span class="p">;</span>    
-     <span class="kt">int</span> <span class="n">c</span><span class="p">;</span>    
-     <span class="kt">int</span> <span class="n">d</span><span class="p">;</span>           <span class="c1">//a,b,c,d均在栈上，&amp;a&gt;&amp;b&gt;&amp;c&gt;&amp;d地址反向增长    </span>
-     <span class="kt">char</span> <span class="o">*</span><span class="n">q</span><span class="o">=</span><span class="n">str</span><span class="p">;</span>   
-     <span class="kt">int</span> <span class="n">m</span><span class="o">=</span><span class="n">p</span><span class="p">;</span>           
-     <span class="kt">char</span> <span class="o">*</span><span class="n">r</span><span class="o">=</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>    
-     <span class="kt">char</span> <span class="o">*</span><span class="n">w</span><span class="o">=</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">;</span>  <span class="c1">// r&lt;w 堆正向增长    </span>
+ <span class=kt>void</span> <span class=n>print</span><span class=p>(</span><span class=kt>char</span> <span class=o>*</span><span class=n>str</span><span class=p>,</span><span class=kt>int</span> <span class=n>p</span><span class=p>)</span>    
+<span class=p>{</span>    
+     <span class=kt>char</span> <span class=o>*</span><span class=n>s1</span> <span class=o>=</span> <span class=s>&quot;abcde&quot;</span><span class=p>;</span>  <span class=c1>//abcde在常量区，s1在栈上    </span>
+     <span class=kt>char</span> <span class=o>*</span><span class=n>s2</span> <span class=o>=</span> <span class=s>&quot;abcde&quot;</span><span class=p>;</span>  <span class=c1>//abcde在常量区，s2在栈上 s2-s1=6可能等于0，编译器优化了相同的常量，只在内存保存一份    </span>
+     <span class=c1>//而&amp;s1&gt;&amp;s2    </span>
+     <span class=kt>char</span> <span class=n>s3</span><span class=p>[]</span> <span class=o>=</span> <span class=s>&quot;abcdeee&quot;</span><span class=p>;</span><span class=c1>//abcdeee在常量区，s3在栈上，数组保存的内容为abcdeee的一份拷贝    </span>
+     <span class=kt>long</span> <span class=kt>int</span> <span class=o>*</span><span class=n>s4</span><span class=p>[</span><span class=mi>100</span><span class=p>];</span>    
+     <span class=kt>char</span> <span class=o>*</span><span class=n>s5</span> <span class=o>=</span> <span class=s>&quot;abcde&quot;</span><span class=p>;</span>    
+     <span class=kt>int</span> <span class=n>a</span> <span class=o>=</span> <span class=mi>5</span><span class=p>;</span>    
+     <span class=kt>int</span> <span class=n>b</span> <span class=o>=</span><span class=mi>6</span><span class=p>;</span>    
+     <span class=kt>int</span> <span class=n>c</span><span class=p>;</span>    
+     <span class=kt>int</span> <span class=n>d</span><span class=p>;</span>           <span class=c1>//a,b,c,d均在栈上，&amp;a&gt;&amp;b&gt;&amp;c&gt;&amp;d地址反向增长    </span>
+     <span class=kt>char</span> <span class=o>*</span><span class=n>q</span><span class=o>=</span><span class=n>str</span><span class=p>;</span>   
+     <span class=kt>int</span> <span class=n>m</span><span class=o>=</span><span class=n>p</span><span class=p>;</span>           
+     <span class=kt>char</span> <span class=o>*</span><span class=n>r</span><span class=o>=</span><span class=p>(</span><span class=kt>char</span> <span class=o>*</span><span class=p>)</span><span class=n>malloc</span><span class=p>(</span><span class=mi>1</span><span class=p>);</span>    
+     <span class=kt>char</span> <span class=o>*</span><span class=n>w</span><span class=o>=</span><span class=p>(</span><span class=kt>char</span> <span class=o>*</span><span class=p>)</span><span class=n>malloc</span><span class=p>(</span><span class=mi>1</span><span class=p>)</span> <span class=p>;</span>  <span class=c1>// r&lt;w 堆正向增长    </span>
 
-     <span class="n">printf</span><span class="p">(</span><span class="s">&quot;s1=%p s2=%p s3=%p s4=%p s5=%p a=%p b=%p c=%p d=%p str=%p q=%p p=%p m=%p r=%p w=%p </span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span><span class="n">s2</span><span class="p">,</span><span class="n">s3</span><span class="p">,</span><span class="n">s4</span><span class="p">,</span><span class="n">s5</span><span class="p">,</span><span class="o">&amp;</span><span class="n">a</span><span class="p">,</span><span class="o">&amp;</span><span class="n">b</span><span class="p">,</span><span class="o">&amp;</span><span class="n">c</span><span class="p">,</span><span class="o">&amp;</span><span class="n">d</span><span class="p">,</span><span class="o">&amp;</span><span class="n">str</span><span class="p">,</span><span class="n">q</span><span class="p">,</span><span class="o">&amp;</span><span class="n">p</span><span class="p">,</span><span class="o">&amp;</span><span class="n">m</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">w</span><span class="p">);</span>   
-     <span class="cm">/* 栈和堆是在程序运行时候动态分配的，局部变量均在栈上分配。 </span>
-<span class="cm">        栈是反向增长的，地址递减；malloc等分配的内存空间在堆空间。堆是正向增长的，地址递增。   </span>
-<span class="cm">        r,w变量在栈上(则&amp;r&gt;&amp;w)，r,w所指内容在堆中(即r&lt;w)。*/</span>   
- <span class="p">}</span>    
-</pre></div>
-
+     <span class=n>printf</span><span class=p>(</span><span class=s>&quot;s1=%p s2=%p s3=%p s4=%p s5=%p a=%p b=%p c=%p d=%p str=%p q=%p p=%p m=%p r=%p w=%p </span><span class=se>\n</span><span class=s>&quot;</span><span class=p>,</span> <span class=n>s1</span><span class=p>,</span><span class=n>s2</span><span class=p>,</span><span class=n>s3</span><span class=p>,</span><span class=n>s4</span><span class=p>,</span><span class=n>s5</span><span class=p>,</span><span class=o>&amp;</span><span class=n>a</span><span class=p>,</span><span class=o>&amp;</span><span class=n>b</span><span class=p>,</span><span class=o>&amp;</span><span class=n>c</span><span class=p>,</span><span class=o>&amp;</span><span class=n>d</span><span class=p>,</span><span class=o>&amp;</span><span class=n>str</span><span class=p>,</span><span class=n>q</span><span class=p>,</span><span class=o>&amp;</span><span class=n>p</span><span class=p>,</span><span class=o>&amp;</span><span class=n>m</span><span class=p>,</span><span class=n>r</span><span class=p>,</span><span class=n>w</span><span class=p>);</span>   
+     <span class=cm>/* 栈和堆是在程序运行时候动态分配的，局部变量均在栈上分配。 </span>
+<span class=cm>        栈是反向增长的，地址递减；malloc等分配的内存空间在堆空间。堆是正向增长的，地址递增。   </span>
+<span class=cm>        r,w变量在栈上(则&amp;r&gt;&amp;w)，r,w所指内容在堆中(即r&lt;w)。*/</span>   
+ <span class=p>}</span>    
+</pre></div></p>
 <h4 id="linux">Linux是如何组织虚拟内存的<a class="headerlink" href="#linux" title="Permanent link">&para;</a></h4>
 <p>那么Linux具体是怎么组织虚拟内存的呢？Linux内核为系统中的每个进程维护一个单独的任务结构体(<code class="codehilite">task_struct</code>, 在<code class="codehilite">sched.h</code>头文件中)。<code class="codehilite">task_struct</code>中的元素包含运行该进程所需要的所有信息(PID、指向用户栈的指针、可执行目标文件的名字、以及程序计数器)。</p>
 <p><img alt="vm_linux" src="http://or9a8nskt.bkt.clouddn.com/vm_linux.png" /></p>
@@ -622,9 +631,8 @@
 </ul>
 <h4 id="_3">用户级内存映射<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h4>
 <p>Linux进程可以使用mmap函数来创建新的虚拟内存区域，并将对象映射到这些区域中。</p>
-<div class="codehilite"><pre><span class="kt">void</span> <span class="o">*</span><span class="n">mmap</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">start</span><span class="p">,</span> <span class="kt">int</span> <span class="n">len</span><span class="p">,</span> <span class="kt">int</span> <span class="n">prot</span><span class="p">,</span> <span class="kt">int</span> <span class="n">flags</span><span class="p">,</span> <span class="kt">int</span> <span class="n">fd</span><span class="p">,</span> <span class="kt">int</span> <span class="n">offset</span><span class="p">)</span>
-</pre></div>
-
+<p> <div class=codehilite><pre><span class=kt>void</span> <span class=o>*</span><span class=n>mmap</span><span class=p>(</span><span class=kt>void</span> <span class=o>*</span><span class=n>start</span><span class=p>,</span> <span class=kt>int</span> <span class=n>len</span><span class=p>,</span> <span class=kt>int</span> <span class=n>prot</span><span class=p>,</span> <span class=kt>int</span> <span class=n>flags</span><span class=p>,</span> <span class=kt>int</span> <span class=n>fd</span><span class=p>,</span> <span class=kt>int</span> <span class=n>offset</span><span class=p>)</span>
+</pre></div></p>
 <p>mmap函数要求内核创建一个新的虚拟内存区域，最好是从地址start开始的一个区域，并将文件描述符fd制定的对象的一个连续的片(chunk)映射到这个新的区域。连续的对象片大小为len字节，从距文件开始处偏移量为offset字节的地方开始。其参数：</p>
 <ul>
 <li><code class="codehilite">start</code>: may be 0 for “pick an address”</li>
@@ -696,84 +704,77 @@
 <h3 id="9-c">9 C程序中常见的与内存有关的错误<a class="headerlink" href="#9-c" title="Permanent link">&para;</a></h3>
 <h4 id="_4">间接引用坏指针<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h4>
 <p>这是非常常见的例子，没有引用对应的地址，少了 &amp;</p>
-<div class="codehilite"><pre><span class="kt">int</span> <span class="n">val</span><span class="p">;</span>
-<span class="n">scanf</span><span class="p">(</span><span class="s">&quot;%d&quot;</span><span class="p">,</span> <span class="n">val</span><span class="p">);</span> <span class="c1">// 正确应该是scanf(&quot;%d, &amp;val);</span>
-</pre></div>
-
+<p> <div class=codehilite><pre><span class=kt>int</span> <span class=n>val</span><span class=p>;</span>
+<span class=n>scanf</span><span class=p>(</span><span class=s>&quot;%d&quot;</span><span class=p>,</span> <span class=n>val</span><span class=p>);</span> <span class=c1>// 正确应该是scanf(&quot;%d, &amp;val);</span>
+</pre></div></p>
 <h4 id="_5">读未初始化的内存<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h4>
 <p><strong>堆内存是没有被初始化为0的</strong>：</p>
-<div class="codehilite"><pre><span class="cm">/* return y = Ax */</span>
-<span class="kt">int</span> <span class="o">*</span><span class="nf">matvec</span><span class="p">(</span><span class="kt">int</span> <span class="o">**</span><span class="n">A</span><span class="p">,</span> <span class="kt">int</span> <span class="o">*</span><span class="n">x</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kt">int</span> <span class="o">*</span><span class="n">y</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="n">N</span> <span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span>
-    <span class="kt">int</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">;</span>
+<p> <div class=codehilite><pre><span class=cm>/* return y = Ax */</span>
+<span class=kt>int</span> <span class=o>*</span><span class=nf>matvec</span><span class=p>(</span><span class=kt>int</span> <span class=o>**</span><span class=n>A</span><span class=p>,</span> <span class=kt>int</span> <span class=o>*</span><span class=n>x</span><span class=p>)</span> <span class=p>{</span>
+    <span class=kt>int</span> <span class=o>*</span><span class=n>y</span> <span class=o>=</span> <span class=n>malloc</span><span class=p>(</span><span class=n>N</span> <span class=o>*</span> <span class=k>sizeof</span><span class=p>(</span><span class=kt>int</span><span class=p>));</span>
+    <span class=kt>int</span> <span class=n>i</span><span class=p>,</span> <span class=n>j</span><span class=p>;</span>
 
-    <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">N</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
-        <span class="k">for</span> <span class="p">(</span><span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">N</span><span class="p">;</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span>
-            <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">j</span><span class="p">];</span>
-    <span class="k">return</span> <span class="n">y</span><span class="p">;</span>
-<span class="p">}</span>
-</pre></div>
-
+    <span class=k>for</span> <span class=p>(</span><span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>N</span><span class=p>;</span> <span class=n>i</span><span class=o>++</span><span class=p>)</span>
+        <span class=k>for</span> <span class=p>(</span><span class=n>j</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>j</span> <span class=o>&lt;</span> <span class=n>N</span><span class=p>;</span> <span class=n>j</span><span class=o>++</span><span class=p>)</span>
+            <span class=n>y</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>+=</span> <span class=n>A</span><span class=p>[</span><span class=n>i</span><span class=p>][</span><span class=n>j</span><span class=p>]</span> <span class=o>*</span> <span class=n>x</span><span class=p>[</span><span class=n>j</span><span class=p>];</span>
+    <span class=k>return</span> <span class=n>y</span><span class=p>;</span>
+<span class=p>}</span>
+</pre></div></p>
 <p>正确的方法是显式地将y[i]设置为0，或者使用<code class="codehilite">calloc</code>。</p>
 <h4 id="_6">允许栈缓冲区溢出<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h4>
 <p>没有检查字符串的长度（经典的缓冲区溢出攻击也是利用相同的机制）</p>
-<div class="codehilite"><pre><span class="kt">char</span> <span class="n">s</span><span class="p">[</span><span class="mi">8</span><span class="p">];</span>
-<span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
-<span class="n">gets</span><span class="p">(</span><span class="n">s</span><span class="p">);</span> <span class="cm">/* stack buffer overflow, reads &quot;123456789&quot; from stdin */</span>
-</pre></div>
-
+<p> <div class=codehilite><pre><span class=kt>char</span> <span class=n>s</span><span class=p>[</span><span class=mi>8</span><span class=p>];</span>
+<span class=kt>int</span> <span class=n>i</span><span class=p>;</span>
+<span class=n>gets</span><span class=p>(</span><span class=n>s</span><span class=p>);</span> <span class=cm>/* stack buffer overflow, reads &quot;123456789&quot; from stdin */</span>
+</pre></div></p>
 <h4 id="_7">引用不存在的变量<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h4>
 <p>尽管指针仍然指向一个合法的内存地址，但是已经不再指向一个合法的变量了。以后在程序中调用其他函数时，内存将重用它们的栈针。</p>
-<div class="codehilite"><pre><span class="kt">int</span> <span class="o">*</span><span class="nf">foo</span><span class="p">()</span> <span class="p">{</span>
-    <span class="kt">int</span> <span class="n">val</span><span class="p">;</span>
+<p> <div class=codehilite><pre><span class=kt>int</span> <span class=o>*</span><span class=nf>foo</span><span class=p>()</span> <span class=p>{</span>
+    <span class=kt>int</span> <span class=n>val</span><span class=p>;</span>
 
-    <span class="k">return</span> <span class="o">&amp;</span><span class="n">val</span><span class="p">;</span>
-<span class="p">}</span>
-</pre></div>
-
+    <span class=k>return</span> <span class=o>&amp;</span><span class=n>val</span><span class=p>;</span>
+<span class=p>}</span>
+</pre></div></p>
 <h4 id="_8">多次释放<a class="headerlink" href="#_8" title="Permanent link">&para;</a></h4>
 <p>这个不用多说，不能重复搞两次</p>
-<div class="codehilite"><pre><span class="n">x</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="n">N</span> <span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span>
-<span class="c1">//  &lt;manipulate x&gt;</span>
-<span class="n">free</span><span class="p">(</span><span class="n">x</span><span class="p">);</span>
-<span class="n">y</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="n">M</span> <span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span>
-<span class="c1">//  &lt;manipulate y&gt;</span>
-<span class="n">free</span><span class="p">(</span><span class="n">x</span><span class="p">);</span>
-</pre></div>
-
+<p> <div class=codehilite><pre><span class=n>x</span> <span class=o>=</span> <span class=n>malloc</span><span class=p>(</span><span class=n>N</span> <span class=o>*</span> <span class=k>sizeof</span><span class=p>(</span><span class=kt>int</span><span class=p>));</span>
+<span class=c1>//  &lt;manipulate x&gt;</span>
+<span class=n>free</span><span class=p>(</span><span class=n>x</span><span class=p>);</span>
+<span class=n>y</span> <span class=o>=</span> <span class=n>malloc</span><span class=p>(</span><span class=n>M</span> <span class=o>*</span> <span class=k>sizeof</span><span class=p>(</span><span class=kt>int</span><span class=p>));</span>
+<span class=c1>//  &lt;manipulate y&gt;</span>
+<span class=n>free</span><span class=p>(</span><span class=n>x</span><span class=p>);</span>
+</pre></div></p>
 <h4 id="_9">引用已经被释放的堆块中的数据<a class="headerlink" href="#_9" title="Permanent link">&para;</a></h4>
 <p>同样是很明显的错误，不要犯</p>
-<div class="codehilite"><pre><span class="n">x</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="n">N</span> <span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span>
-<span class="c1">//  &lt;manipulate x&gt;</span>
-<span class="n">free</span><span class="p">(</span><span class="n">x</span><span class="p">);</span>
-<span class="c1">//  ....</span>
-<span class="n">y</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="n">M</span> <span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span>
-<span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">M</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
-    <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">++</span><span class="p">;</span>
-</pre></div>
-
+<p> <div class=codehilite><pre><span class=n>x</span> <span class=o>=</span> <span class=n>malloc</span><span class=p>(</span><span class=n>N</span> <span class=o>*</span> <span class=k>sizeof</span><span class=p>(</span><span class=kt>int</span><span class=p>));</span>
+<span class=c1>//  &lt;manipulate x&gt;</span>
+<span class=n>free</span><span class=p>(</span><span class=n>x</span><span class=p>);</span>
+<span class=c1>//  ....</span>
+<span class=n>y</span> <span class=o>=</span> <span class=n>malloc</span><span class=p>(</span><span class=n>M</span> <span class=o>*</span> <span class=k>sizeof</span><span class=p>(</span><span class=kt>int</span><span class=p>));</span>
+<span class=k>for</span> <span class=p>(</span><span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>M</span><span class=p>;</span> <span class=n>i</span><span class=o>++</span><span class=p>)</span>
+    <span class=n>y</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>=</span> <span class=n>x</span><span class=p>[</span><span class=n>i</span><span class=p>]</span><span class=o>++</span><span class=p>;</span>
+</pre></div></p>
 <h4 id="_10">忘记释放已分配块：<a class="headerlink" href="#_10" title="Permanent link">&para;</a></h4>
-<div class="codehilite"><pre><span class="n">foo</span><span class="p">()</span> <span class="p">{</span>
-    <span class="kt">int</span> <span class="o">*</span><span class="n">x</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="n">N</span> <span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span>
-    <span class="c1">// ...</span>
-    <span class="k">return</span> <span class="p">;</span>
-<span class="p">}</span>
-</pre></div>
-
+<p> <div class=codehilite><pre><span class=n>foo</span><span class=p>()</span> <span class=p>{</span>
+    <span class=kt>int</span> <span class=o>*</span><span class=n>x</span> <span class=o>=</span> <span class=n>malloc</span><span class=p>(</span><span class=n>N</span> <span class=o>*</span> <span class=k>sizeof</span><span class=p>(</span><span class=kt>int</span><span class=p>));</span>
+    <span class=c1>// ...</span>
+    <span class=k>return</span> <span class=p>;</span>
+<span class=p>}</span>
+</pre></div></p>
 <p>或者只释放了数据结构的一部分：</p>
-<div class="codehilite"><pre><span class="k">struct</span> <span class="n">list</span> <span class="p">{</span>
-    <span class="kt">int</span> <span class="n">val</span><span class="p">;</span>
-    <span class="k">struct</span> <span class="n">list</span> <span class="o">*</span><span class="n">next</span><span class="p">;</span>
-<span class="p">};</span>
-<span class="n">foo</span><span class="p">()</span> <span class="p">{</span>
-    <span class="k">struct</span> <span class="n">list</span> <span class="o">*</span><span class="n">head</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">list</span><span class="p">));</span>
-    <span class="n">head</span><span class="o">-&gt;</span><span class="n">val</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-    <span class="n">head</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
-    <span class="c1">//...</span>
-    <span class="n">free</span><span class="p">(</span><span class="n">head</span><span class="p">);</span>
-    <span class="k">return</span><span class="p">;</span>
-<span class="p">}</span>
-</pre></div></div>
+<p> <div class=codehilite><pre><span class=k>struct</span> <span class=n>list</span> <span class=p>{</span>
+    <span class=kt>int</span> <span class=n>val</span><span class=p>;</span>
+    <span class=k>struct</span> <span class=n>list</span> <span class=o>*</span><span class=n>next</span><span class=p>;</span>
+<span class=p>};</span>
+<span class=n>foo</span><span class=p>()</span> <span class=p>{</span>
+    <span class=k>struct</span> <span class=n>list</span> <span class=o>*</span><span class=n>head</span> <span class=o>=</span> <span class=n>malloc</span><span class=p>(</span><span class=k>sizeof</span><span class=p>(</span><span class=k>struct</span> <span class=n>list</span><span class=p>));</span>
+    <span class=n>head</span><span class=o>-&gt;</span><span class=n>val</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+    <span class=n>head</span><span class=o>-&gt;</span><span class=n>next</span> <span class=o>=</span> <span class=nb>NULL</span><span class=p>;</span>
+    <span class=c1>//...</span>
+    <span class=n>free</span><span class=p>(</span><span class=n>head</span><span class=p>);</span>
+    <span class=k>return</span><span class=p>;</span>
+<span class=p>}</span>
+</pre></div></p></div>
         </div>
 
         <footer class="col-md-12">
@@ -783,6 +784,7 @@
         <script>var base_url = '../..';</script>
         <script src="../../js/base.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+        <script src="../../extra_javascript/tabhack.js"></script>
         <script src="../../search/require.js"></script>
         <script src="../../search/search.js"></script>
 

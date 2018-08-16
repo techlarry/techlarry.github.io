@@ -22,6 +22,7 @@
         <link href="../../extra_css/mkdocs/js/require.js" rel="stylesheet">
         <link href="../../extra_css/mkdocs/js/search.js" rel="stylesheet">
         <link href="../../extra_css/mkdocs/js/text.js" rel="stylesheet">
+        <link href="../../extra_css/code-tab.css" rel="stylesheet">
         <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!--[if lt IE 9]>
             <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
@@ -249,6 +250,15 @@
                         </ul>
                     </li>
                     <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">JC <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../../jc/Java_Concurrency/">Java Concurrency</a>
+</li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">LKD <b class="caret"></b></a>
                         <ul class="dropdown-menu">
                             
@@ -392,47 +402,45 @@
 <h3 id="1-classic-problems-of-synchronization">1 Classic Problems of Synchronization<a class="headerlink" href="#1-classic-problems-of-synchronization" title="Permanent link">&para;</a></h3>
 <h4 id="the-bounded-buffer-problem">The Bounded Buffer Problem<a class="headerlink" href="#the-bounded-buffer-problem" title="Permanent link">&para;</a></h4>
 <p>We consider the producer-consumer problem with <a href="../ch3/#5-ipc-in-shared-memory-system">bounded buffer</a>. The producer and consumer processes share the following data structures:</p>
-<div class="codehilite"><pre><span class="kt">int</span> <span class="n">n</span><span class="p">;</span>
-<span class="n">semaphore</span> <span class="n">mutex</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
-<span class="n">semaphore</span> <span class="n">empty</span> <span class="o">=</span> <span class="n">n</span><span class="p">;</span>
-<span class="n">semaphore</span> <span class="n">full</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</pre></div>
-
+<p> <div class=codehilite><pre><span class=kt>int</span> <span class=n>n</span><span class=p>;</span>
+<span class=n>semaphore</span> <span class=n>mutex</span> <span class=o>=</span> <span class=mi>1</span><span class=p>;</span>
+<span class=n>semaphore</span> <span class=n>empty</span> <span class=o>=</span> <span class=n>n</span><span class=p>;</span>
+<span class=n>semaphore</span> <span class=n>full</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</pre></div></p>
 <ul>
 <li>We assume that the pool consists of <span><span class="MathJax_Preview">n</span><script type="math/tex">n</script></span> buffers, each capable of holding one item.</li>
 <li>The <code class="codehilite">mutex</code> binary semaphore provides mutual exclusion for accesses to the buffer pool and is initialized to the value 1.</li>
 <li>The <code class="codehilite">empty</code> and <code class="codehilite">full</code> semaphores count the number of empty and full buffers.</li>
 </ul>
-<div class="codehilite"><pre><span class="c1">// The code for the producer process:</span>
-<span class="k">while</span> <span class="p">(</span><span class="nb">true</span><span class="p">)</span> <span class="p">{</span>
-    <span class="p">.</span> <span class="p">.</span> <span class="p">.</span>
-    <span class="cm">/* produce an item in next produced */</span> 
-    <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> 
-    <span class="n">wait</span><span class="p">(</span><span class="n">empty</span><span class="p">);</span> 
-    <span class="n">wait</span><span class="p">(</span><span class="n">mutex</span><span class="p">);</span> 
-    <span class="p">.</span> <span class="p">.</span> <span class="p">.</span>
-    <span class="cm">/* add next produced to the buffer */</span> 
-    <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> 
-    <span class="n">signal</span><span class="p">(</span><span class="n">mutex</span><span class="p">);</span> 
-    <span class="n">signal</span><span class="p">(</span><span class="n">full</span><span class="p">);</span>
-<span class="p">}</span>
+<p> <div class=codehilite><pre><span class=c1>// The code for the producer process:</span>
+<span class=k>while</span> <span class=p>(</span><span class=nb>true</span><span class=p>)</span> <span class=p>{</span>
+    <span class=p>.</span> <span class=p>.</span> <span class=p>.</span>
+    <span class=cm>/* produce an item in next produced */</span> 
+    <span class=p>.</span> <span class=p>.</span> <span class=p>.</span> 
+    <span class=n>wait</span><span class=p>(</span><span class=n>empty</span><span class=p>);</span> 
+    <span class=n>wait</span><span class=p>(</span><span class=n>mutex</span><span class=p>);</span> 
+    <span class=p>.</span> <span class=p>.</span> <span class=p>.</span>
+    <span class=cm>/* add next produced to the buffer */</span> 
+    <span class=p>.</span> <span class=p>.</span> <span class=p>.</span> 
+    <span class=n>signal</span><span class=p>(</span><span class=n>mutex</span><span class=p>);</span> 
+    <span class=n>signal</span><span class=p>(</span><span class=n>full</span><span class=p>);</span>
+<span class=p>}</span>
 
 
-<span class="c1">//The code for the consumer process:</span>
-<span class="k">while</span> <span class="p">(</span><span class="nb">true</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">wait</span><span class="p">(</span><span class="n">full</span><span class="p">);</span> 
-    <span class="n">wait</span><span class="p">(</span><span class="n">mutex</span><span class="p">);</span>
-    <span class="p">.</span> <span class="p">.</span> <span class="p">.</span>
-    <span class="cm">/* remove an item from buffer to next consumed */</span>
-    <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> 
-    <span class="n">signal</span><span class="p">(</span><span class="n">mutex</span><span class="p">);</span> 
-    <span class="n">signal</span><span class="p">(</span><span class="n">empty</span><span class="p">);</span>
-    <span class="p">.</span> <span class="p">.</span> <span class="p">.</span>
-    <span class="cm">/* consume the item in next consumed */</span>
-    <span class="p">.</span> <span class="p">.</span> <span class="p">.</span>
-<span class="p">}</span>
-</pre></div>
-
+<span class=c1>//The code for the consumer process:</span>
+<span class=k>while</span> <span class=p>(</span><span class=nb>true</span><span class=p>)</span> <span class=p>{</span>
+    <span class=n>wait</span><span class=p>(</span><span class=n>full</span><span class=p>);</span> 
+    <span class=n>wait</span><span class=p>(</span><span class=n>mutex</span><span class=p>);</span>
+    <span class=p>.</span> <span class=p>.</span> <span class=p>.</span>
+    <span class=cm>/* remove an item from buffer to next consumed */</span>
+    <span class=p>.</span> <span class=p>.</span> <span class=p>.</span> 
+    <span class=n>signal</span><span class=p>(</span><span class=n>mutex</span><span class=p>);</span> 
+    <span class=n>signal</span><span class=p>(</span><span class=n>empty</span><span class=p>);</span>
+    <span class=p>.</span> <span class=p>.</span> <span class=p>.</span>
+    <span class=cm>/* consume the item in next consumed */</span>
+    <span class=p>.</span> <span class=p>.</span> <span class=p>.</span>
+<span class=p>}</span>
+</pre></div></p>
 <h4 id="the-readerswriters-problem">The Readers–Writers Problem<a class="headerlink" href="#the-readerswriters-problem" title="Permanent link">&para;</a></h4>
 <p>Suppose that a database is to be shared among several concurrent processes. </p>
 <ul>
@@ -441,11 +449,10 @@
 <li>If a writer and some other processes (either a reader or a writer) access the database simultaneously, chaos may ensue.</li>
 </ul>
 <p>Three variables are used: <strong><code class="codehilite">mutex</code></strong>, <strong><code class="codehilite">rw_mutex</code></strong>, <strong><code class="codehilite">readcnt</code></strong> to implement solution.</p>
-<div class="codehilite"><pre><span class="n">semaphore</span> <span class="n">rw_mutex</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> 
-<span class="n">semaphore</span> <span class="n">mutex</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> 
-<span class="kt">int</span> <span class="n">read</span> <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</pre></div>
-
+<p> <div class=codehilite><pre><span class=n>semaphore</span> <span class=n>rw_mutex</span> <span class=o>=</span> <span class=mi>1</span><span class=p>;</span> 
+<span class=n>semaphore</span> <span class=n>mutex</span> <span class=o>=</span> <span class=mi>1</span><span class=p>;</span> 
+<span class=kt>int</span> <span class=n>read</span> <span class=n>count</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</pre></div></p>
 <ul>
 <li>semaphore <strong><code class="codehilite">mutex</code></strong>:  used to ensure mutual exclusion when <code class="codehilite">readcnt</code> is updated i.e. when any reader enters or exit from the critical section.</li>
 <li>semaphore <strong><code class="codehilite">rw_mutex</code></strong>: used by both readers and writers.</li>
@@ -457,18 +464,17 @@
 <li>If allowed i.e. <code class="codehilite">wait()</code> gives a true value, it enters and performs the write. If not allowed, it keeps on waiting.</li>
 <li>It exits the critical section.</li>
 </ol>
-<div class="codehilite"><pre><span class="k">do</span> <span class="p">{</span>
-    <span class="c1">// writer requests for critical section</span>
-    <span class="n">wait</span><span class="p">(</span><span class="n">rw_mutex</span><span class="p">);</span>  
+<p> <div class=codehilite><pre><span class=k>do</span> <span class=p>{</span>
+    <span class=c1>// writer requests for critical section</span>
+    <span class=n>wait</span><span class=p>(</span><span class=n>rw_mutex</span><span class=p>);</span>  
 
-    <span class="c1">// performs the write</span>
+    <span class=c1>// performs the write</span>
 
-    <span class="c1">// leaves the critical section</span>
-    <span class="n">signal</span><span class="p">(</span><span class="n">rw_mutex</span><span class="p">);</span>
+    <span class=c1>// leaves the critical section</span>
+    <span class=n>signal</span><span class=p>(</span><span class=n>rw_mutex</span><span class=p>);</span>
 
-<span class="p">}</span> <span class="k">while</span><span class="p">(</span><span class="nb">true</span><span class="p">);</span>
-</pre></div>
-
+<span class=p>}</span> <span class=k>while</span><span class=p>(</span><span class=nb>true</span><span class=p>);</span>
+</pre></div></p>
 <p>Reader process:</p>
 <ol>
 <li>Reader requests the entry to critical section.</li>
@@ -480,41 +486,40 @@
 </li>
 <li>If not allowed, it keeps on waiting.</li>
 </ol>
-<div class="codehilite"><pre><span class="k">do</span> <span class="p">{</span>
-   <span class="c1">// Reader wants to enter the critical section</span>
-   <span class="n">wait</span><span class="p">(</span><span class="n">mutex</span><span class="p">);</span>
+<p> <div class=codehilite><pre><span class=k>do</span> <span class=p>{</span>
+   <span class=c1>// Reader wants to enter the critical section</span>
+   <span class=n>wait</span><span class=p>(</span><span class=n>mutex</span><span class=p>);</span>
 
-   <span class="c1">// The number of readers has now increased by 1</span>
-   <span class="n">readcnt</span><span class="o">++</span><span class="p">;</span>                          
+   <span class=c1>// The number of readers has now increased by 1</span>
+   <span class=n>readcnt</span><span class=o>++</span><span class=p>;</span>                          
 
-   <span class="c1">// there is at least one reader in the critical section</span>
-   <span class="c1">// this ensure no writer can enter if there is even one reader</span>
-   <span class="c1">// thus we give preference to readers here</span>
-   <span class="k">if</span> <span class="p">(</span><span class="n">readcnt</span><span class="o">==</span><span class="mi">1</span><span class="p">)</span>     
-      <span class="n">wait</span><span class="p">(</span><span class="n">rw_mutex</span><span class="p">);</span>                    
+   <span class=c1>// there is at least one reader in the critical section</span>
+   <span class=c1>// this ensure no writer can enter if there is even one reader</span>
+   <span class=c1>// thus we give preference to readers here</span>
+   <span class=k>if</span> <span class=p>(</span><span class=n>readcnt</span><span class=o>==</span><span class=mi>1</span><span class=p>)</span>     
+      <span class=n>wait</span><span class=p>(</span><span class=n>rw_mutex</span><span class=p>);</span>                    
 
-   <span class="c1">// other readers can enter while this current reader is inside </span>
+   <span class=c1>// other readers can enter while this current reader is inside </span>
 
-   <span class="c1">// the critical section</span>
-   <span class="n">signal</span><span class="p">(</span><span class="n">mutex</span><span class="p">);</span>                   
+   <span class=c1>// the critical section</span>
+   <span class=n>signal</span><span class=p>(</span><span class=n>mutex</span><span class=p>);</span>                   
 
-        <span class="p">...</span>
-   <span class="cm">/* current reader performs reading here */</span>
-        <span class="p">...</span>
+        <span class=p>...</span>
+   <span class=cm>/* current reader performs reading here */</span>
+        <span class=p>...</span>
 
-   <span class="n">wait</span><span class="p">(</span><span class="n">mutex</span><span class="p">);</span>   <span class="c1">// a reader wants to leave</span>
+   <span class=n>wait</span><span class=p>(</span><span class=n>mutex</span><span class=p>);</span>   <span class=c1>// a reader wants to leave</span>
 
-   <span class="n">readcnt</span><span class="o">--</span><span class="p">;</span>
+   <span class=n>readcnt</span><span class=o>--</span><span class=p>;</span>
 
-   <span class="c1">// that is, no reader is left in the critical section,</span>
-   <span class="k">if</span> <span class="p">(</span><span class="n">readcnt</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> 
-       <span class="n">signal</span><span class="p">(</span><span class="n">rw_mutex</span><span class="p">);</span>         <span class="c1">// writers can enter</span>
+   <span class=c1>// that is, no reader is left in the critical section,</span>
+   <span class=k>if</span> <span class=p>(</span><span class=n>readcnt</span> <span class=o>==</span> <span class=mi>0</span><span class=p>)</span> 
+       <span class=n>signal</span><span class=p>(</span><span class=n>rw_mutex</span><span class=p>);</span>         <span class=c1>// writers can enter</span>
 
-   <span class="n">signal</span><span class="p">(</span><span class="n">mutex</span><span class="p">);</span> <span class="c1">// reader leaves</span>
+   <span class=n>signal</span><span class=p>(</span><span class=n>mutex</span><span class=p>);</span> <span class=c1>// reader leaves</span>
 
-<span class="p">}</span> <span class="k">while</span><span class="p">(</span><span class="nb">true</span><span class="p">);</span>
-</pre></div>
-
+<span class=p>}</span> <span class=k>while</span><span class=p>(</span><span class=nb>true</span><span class=p>);</span>
+</pre></div></p>
 <h4 id="the-dining-philosophers-problem">The Dining-Philosophers Problem<a class="headerlink" href="#the-dining-philosophers-problem" title="Permanent link">&para;</a></h4>
 <p>The dining-philosophers problem is an example of a large class of concurrency-control problems. It is a simple representation of the need to allocate several resources among several processes in a deadlock-free and starvation-free manner.</p>
 <p>Consider five philosophers who spend their lives thinking and eating. </p>
@@ -548,111 +553,107 @@
 <li>A mutex is created with the pthread <code class="codehilite">mutex_init()</code> function.</li>
 <li>The mutex is acquired and released with the pthread <code class="codehilite">mutex_lock()</code> and pthread <code class="codehilite">mutex_unlock()</code> functions.</li>
 </ul>
-<div class="codehilite"><pre><span class="cp">#include</span> <span class="cpf">&lt;pthread.h&gt;</span><span class="cp"></span>
-<span class="n">pthread_mutex_t</span> <span class="n">mutex</span><span class="p">;</span> 
+<p> <div class=codehilite><pre><span class=cp>#include</span> <span class=cpf>&lt;pthread.h&gt;</span><span class=cp></span>
+<span class=n>pthread_mutex_t</span> <span class=n>mutex</span><span class=p>;</span> 
 
-<span class="cm">/* create and initialize the mutex lock */</span> 
-<span class="n">pthread_mutex_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+<span class=cm>/* create and initialize the mutex lock */</span> 
+<span class=n>pthread_mutex_init</span><span class=p>(</span><span class=o>&amp;</span><span class=n>mutex</span><span class=p>,</span> <span class=nb>NULL</span><span class=p>);</span>
 
-<span class="cm">/* acquire the mutex lock */</span>
- <span class="n">pthread</span> <span class="nf">mutex_lock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span> 
+<span class=cm>/* acquire the mutex lock */</span>
+ <span class=n>pthread</span> <span class=nf>mutex_lock</span><span class=p>(</span><span class=o>&amp;</span><span class=n>mutex</span><span class=p>);</span> 
 
-<span class="cm">/* critical section */</span> 
+<span class=cm>/* critical section */</span> 
 
-<span class="cm">/* release the mutex lock */</span> 
-<span class="n">pthread</span> <span class="nf">mutex_unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span>
-</pre></div>
-
+<span class=cm>/* release the mutex lock */</span> 
+<span class=n>pthread</span> <span class=nf>mutex_unlock</span><span class=p>(</span><span class=o>&amp;</span><span class=n>mutex</span><span class=p>);</span>
+</pre></div></p>
 <h4 id="posix-spinlocks">POSIX Spinlocks<a class="headerlink" href="#posix-spinlocks" title="Permanent link">&para;</a></h4>
-<div class="codehilite"><pre><span class="c1">// 初始化自旋锁： 用来申请使用自旋锁所需要的资源并且将它初始化为非锁定状态</span>
-<span class="kt">int</span> <span class="nf">pthread_spin_init</span><span class="p">(</span><span class="n">pthread_spinlock_t</span> <span class="o">*</span><span class="p">,</span> <span class="kt">int</span><span class="p">);</span>
-<span class="c1">// 获得一个自旋锁：如果该自旋锁当前没有被其它线程所持有，则调用该函数的线程获得该自旋锁.</span>
-<span class="c1">// 否则该函数在获得自旋锁之前不会返回。</span>
-<span class="kt">int</span> <span class="nf">pthread_spin_lock</span><span class="p">(</span><span class="n">pthread_spinlock_t</span> <span class="o">*</span><span class="p">);</span>
-<span class="c1">//释放指定的自旋锁</span>
-<span class="kt">int</span> <span class="nf">pthread_spin_unlock</span><span class="p">(</span><span class="n">pthread_spinlock_t</span> <span class="o">*</span><span class="p">);</span>
-<span class="c1">// 销毁一个自旋锁</span>
-<span class="kt">int</span> <span class="nf">pthread_spin_destroy</span><span class="p">(</span><span class="n">pthread_spinlock_t</span> <span class="o">*</span><span class="p">);</span>
-</pre></div>
-
+<p> <div class=codehilite><pre><span class=c1>// 初始化自旋锁： 用来申请使用自旋锁所需要的资源并且将它初始化为非锁定状态</span>
+<span class=kt>int</span> <span class=nf>pthread_spin_init</span><span class=p>(</span><span class=n>pthread_spinlock_t</span> <span class=o>*</span><span class=p>,</span> <span class=kt>int</span><span class=p>);</span>
+<span class=c1>// 获得一个自旋锁：如果该自旋锁当前没有被其它线程所持有，则调用该函数的线程获得该自旋锁.</span>
+<span class=c1>// 否则该函数在获得自旋锁之前不会返回。</span>
+<span class=kt>int</span> <span class=nf>pthread_spin_lock</span><span class=p>(</span><span class=n>pthread_spinlock_t</span> <span class=o>*</span><span class=p>);</span>
+<span class=c1>//释放指定的自旋锁</span>
+<span class=kt>int</span> <span class=nf>pthread_spin_unlock</span><span class=p>(</span><span class=n>pthread_spinlock_t</span> <span class=o>*</span><span class=p>);</span>
+<span class=c1>// 销毁一个自旋锁</span>
+<span class=kt>int</span> <span class=nf>pthread_spin_destroy</span><span class=p>(</span><span class=n>pthread_spinlock_t</span> <span class=o>*</span><span class=p>);</span>
+</pre></div></p>
 <h4 id="posix-semaphores">POSIX Semaphores<a class="headerlink" href="#posix-semaphores" title="Permanent link">&para;</a></h4>
 <p>Semaphores are not part of the POSIX standard and instead belong to the POSIX SEM extension. POSIX specifies two types of semaphores - <strong>named</strong> and <strong>unnamed</strong> semaphores.</p>
 <p>The advantage of named semaphores is that multiple unrelated processes can easily use a common semaphore as a synchronization mechanism by simply referring to the semaphore’s name.</p>
 <p>Both Linux and macOS systems provide POSIX named semaphores.</p>
-<div class="codehilite"><pre><span class="cp">#include</span> <span class="cpf">&lt;semaphore.h&gt;</span><span class="cp"></span>
-<span class="n">sem_t</span> <span class="o">*</span><span class="n">sem</span><span class="p">;</span>
+<p> <div class=codehilite><pre><span class=cp>#include</span> <span class=cpf>&lt;semaphore.h&gt;</span><span class=cp></span>
+<span class=n>sem_t</span> <span class=o>*</span><span class=n>sem</span><span class=p>;</span>
 
-<span class="cm">/* Create the semaphore and initialize it to 1 * Here, we are naming the semaphore SEM.</span>
-<span class="cm">* The O_CREAT flag indicates that the semaphore will be created if it does not already exist.</span>
-<span class="cm">* The parameter 0666 indicates that the semaphore has read/write access for other processes.</span>
-<span class="cm">* The parameter 1 indicates that the semaphore is initialized to 1.</span>
-<span class="cm">*/</span>
+<span class=cm>/* Create the semaphore and initialize it to 1 * Here, we are naming the semaphore SEM.</span>
+<span class=cm>* The O_CREAT flag indicates that the semaphore will be created if it does not already exist.</span>
+<span class=cm>* The parameter 0666 indicates that the semaphore has read/write access for other processes.</span>
+<span class=cm>* The parameter 1 indicates that the semaphore is initialized to 1.</span>
+<span class=cm>*/</span>
 
-<span class="n">sem</span> <span class="o">=</span> <span class="n">sem_open</span><span class="p">(</span><span class="s">&quot;SEM&quot;</span><span class="p">,</span> <span class="n">O_CREAT</span><span class="p">,</span> <span class="mo">0666</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+<span class=n>sem</span> <span class=o>=</span> <span class=n>sem_open</span><span class=p>(</span><span class=s>&quot;SEM&quot;</span><span class=p>,</span> <span class=n>O_CREAT</span><span class=p>,</span> <span class=mo>0666</span><span class=p>,</span> <span class=mi>1</span><span class=p>);</span>
 
-<span class="cm">/* acquire the semaphore */</span>
-<span class="n">sem_wait</span><span class="p">(</span><span class="n">sem</span><span class="p">);</span>
+<span class=cm>/* acquire the semaphore */</span>
+<span class=n>sem_wait</span><span class=p>(</span><span class=n>sem</span><span class=p>);</span>
 
-<span class="cm">/* critical section */</span>
+<span class=cm>/* critical section */</span>
 
-<span class="cm">/* release the semaphore */</span>
-<span class="n">sem_post</span><span class="p">(</span><span class="n">sem</span><span class="p">);</span>
-</pre></div>
-
+<span class=cm>/* release the semaphore */</span>
+<span class=n>sem_post</span><span class=p>(</span><span class=n>sem</span><span class=p>);</span>
+</pre></div></p>
 <h4 id="posix-condition-variables">POSIX Condition Variables<a class="headerlink" href="#posix-condition-variables" title="Permanent link">&para;</a></h4>
 <h3 id="4-synchronization-in-java">4 Synchronization in Java<a class="headerlink" href="#4-synchronization-in-java" title="Permanent link">&para;</a></h3>
 <h4 id="java-monitors">Java Monitors<a class="headerlink" href="#java-monitors" title="Permanent link">&para;</a></h4>
 <p>Bounded buffer using Java synchronization</p>
-<div class="codehilite"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">BoundedBuffer</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;</span>
-<span class="o">{</span>
-    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">BUFFER_SIZE</span> <span class="o">=</span> <span class="mi">5</span><span class="o">;</span>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>BoundedBuffer</span><span class=o>&lt;</span><span class=n>E</span><span class=o>&gt;</span>
+<span class=o>{</span>
+    <span class=kd>private</span> <span class=kd>static</span> <span class=kd>final</span> <span class=kt>int</span> <span class=n>BUFFER_SIZE</span> <span class=o>=</span> <span class=mi>5</span><span class=o>;</span>
 
-    <span class="kd">private</span> <span class="kt">int</span> <span class="n">count</span><span class="o">,</span> <span class="n">in</span><span class="o">,</span> <span class="n">out</span><span class="o">;</span>
-    <span class="kd">private</span> <span class="n">E</span><span class="o">[]</span> <span class="n">buffer</span><span class="o">;</span>
+    <span class=kd>private</span> <span class=kt>int</span> <span class=n>count</span><span class=o>,</span> <span class=n>in</span><span class=o>,</span> <span class=n>out</span><span class=o>;</span>
+    <span class=kd>private</span> <span class=n>E</span><span class=o>[]</span> <span class=n>buffer</span><span class=o>;</span>
 
-    <span class="kd">public</span> <span class="nf">BoundedBuffer</span><span class="o">()</span> <span class="o">{</span>
-        <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
-        <span class="n">in</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
-        <span class="n">out</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
-        <span class="n">buffer</span> <span class="o">=</span> <span class="o">(</span><span class="n">E</span><span class="o">[])</span> <span class="k">new</span> <span class="n">Object</span><span class="o">[</span><span class="n">BUFFER_SIZE</span><span class="o">];</span>
-    <span class="o">}</span>
+    <span class=kd>public</span> <span class=nf>BoundedBuffer</span><span class=o>()</span> <span class=o>{</span>
+        <span class=n>count</span> <span class=o>=</span> <span class=mi>0</span><span class=o>;</span>
+        <span class=n>in</span> <span class=o>=</span> <span class=mi>0</span><span class=o>;</span>
+        <span class=n>out</span> <span class=o>=</span> <span class=mi>0</span><span class=o>;</span>
+        <span class=n>buffer</span> <span class=o>=</span> <span class=o>(</span><span class=n>E</span><span class=o>[])</span> <span class=k>new</span> <span class=n>Object</span><span class=o>[</span><span class=n>BUFFER_SIZE</span><span class=o>];</span>
+    <span class=o>}</span>
 
-    <span class="kd">public</span> <span class="kd">synchronized</span> <span class="kt">void</span> <span class="nf">insert</span><span class="o">(</span><span class="n">E</span> <span class="n">item</span><span class="o">)</span> <span class="o">{</span>
-        <span class="k">while</span> <span class="o">(</span><span class="n">count</span> <span class="o">==</span> <span class="n">BUFFER_SIZE</span><span class="o">)</span> <span class="o">{</span>
-            <span class="k">try</span> <span class="o">{</span>
-                <span class="n">wait</span><span class="o">();</span>
-            <span class="o">}</span>
-            <span class="k">catch</span> <span class="o">(</span><span class="n">InterruptedException</span> <span class="n">ie</span><span class="o">)</span> <span class="o">{</span> <span class="o">}</span>
-        <span class="o">}</span>
+    <span class=kd>public</span> <span class=kd>synchronized</span> <span class=kt>void</span> <span class=nf>insert</span><span class=o>(</span><span class=n>E</span> <span class=n>item</span><span class=o>)</span> <span class=o>{</span>
+        <span class=k>while</span> <span class=o>(</span><span class=n>count</span> <span class=o>==</span> <span class=n>BUFFER_SIZE</span><span class=o>)</span> <span class=o>{</span>
+            <span class=k>try</span> <span class=o>{</span>
+                <span class=n>wait</span><span class=o>();</span>
+            <span class=o>}</span>
+            <span class=k>catch</span> <span class=o>(</span><span class=n>InterruptedException</span> <span class=n>ie</span><span class=o>)</span> <span class=o>{</span> <span class=o>}</span>
+        <span class=o>}</span>
 
-        <span class="n">buffer</span><span class="o">[</span><span class="n">in</span><span class="o">]</span> <span class="o">=</span> <span class="n">item</span><span class="o">;</span>
-        <span class="n">in</span> <span class="o">=</span> <span class="o">(</span><span class="n">in</span> <span class="o">+</span> <span class="mi">1</span><span class="o">)</span> <span class="o">%</span> <span class="n">BUFFER_SIZE</span><span class="o">;</span>
-        <span class="n">count</span><span class="o">++;</span>
+        <span class=n>buffer</span><span class=o>[</span><span class=n>in</span><span class=o>]</span> <span class=o>=</span> <span class=n>item</span><span class=o>;</span>
+        <span class=n>in</span> <span class=o>=</span> <span class=o>(</span><span class=n>in</span> <span class=o>+</span> <span class=mi>1</span><span class=o>)</span> <span class=o>%</span> <span class=n>BUFFER_SIZE</span><span class=o>;</span>
+        <span class=n>count</span><span class=o>++;</span>
 
-        <span class="n">notify</span><span class="o">();</span>
-    <span class="o">}</span>
+        <span class=n>notify</span><span class=o>();</span>
+    <span class=o>}</span>
 
-    <span class="kd">public</span> <span class="kd">synchronized</span> <span class="n">E</span> <span class="nf">remove</span><span class="o">()</span> <span class="o">{</span>
-        <span class="n">E</span> <span class="n">item</span><span class="o">;</span>
+    <span class=kd>public</span> <span class=kd>synchronized</span> <span class=n>E</span> <span class=nf>remove</span><span class=o>()</span> <span class=o>{</span>
+        <span class=n>E</span> <span class=n>item</span><span class=o>;</span>
 
-        <span class="k">while</span> <span class="o">(</span><span class="n">count</span> <span class="o">==</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
-            <span class="k">try</span> <span class="o">{</span>
-                <span class="n">wait</span><span class="o">();</span>
-            <span class="o">}</span>
-            <span class="k">catch</span> <span class="o">(</span><span class="n">InterruptedException</span> <span class="n">ie</span><span class="o">)</span> <span class="o">{</span> <span class="o">}</span>
-        <span class="o">}</span>
+        <span class=k>while</span> <span class=o>(</span><span class=n>count</span> <span class=o>==</span> <span class=mi>0</span><span class=o>)</span> <span class=o>{</span>
+            <span class=k>try</span> <span class=o>{</span>
+                <span class=n>wait</span><span class=o>();</span>
+            <span class=o>}</span>
+            <span class=k>catch</span> <span class=o>(</span><span class=n>InterruptedException</span> <span class=n>ie</span><span class=o>)</span> <span class=o>{</span> <span class=o>}</span>
+        <span class=o>}</span>
 
-        <span class="n">item</span> <span class="o">=</span> <span class="n">buffer</span><span class="o">[</span><span class="n">out</span><span class="o">];</span>
-        <span class="n">out</span> <span class="o">=</span> <span class="o">(</span><span class="n">out</span> <span class="o">+</span> <span class="mi">1</span><span class="o">)</span> <span class="o">%</span> <span class="n">BUFFER_SIZE</span><span class="o">;</span>
-        <span class="n">count</span><span class="o">--;</span>
+        <span class=n>item</span> <span class=o>=</span> <span class=n>buffer</span><span class=o>[</span><span class=n>out</span><span class=o>];</span>
+        <span class=n>out</span> <span class=o>=</span> <span class=o>(</span><span class=n>out</span> <span class=o>+</span> <span class=mi>1</span><span class=o>)</span> <span class=o>%</span> <span class=n>BUFFER_SIZE</span><span class=o>;</span>
+        <span class=n>count</span><span class=o>--;</span>
 
-        <span class="n">notify</span><span class="o">();</span>
+        <span class=n>notify</span><span class=o>();</span>
 
-        <span class="k">return</span> <span class="n">item</span><span class="o">;</span>
-    <span class="o">}</span>
-<span class="o">}</span>
-</pre></div>
-
+        <span class=k>return</span> <span class=n>item</span><span class=o>;</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></p>
 <h4 id="reentrant-locks">Reentrant Locks<a class="headerlink" href="#reentrant-locks" title="Permanent link">&para;</a></h4>
 <h4 id="semaphores">Semaphores<a class="headerlink" href="#semaphores" title="Permanent link">&para;</a></h4>
 <h4 id="condition-variables">Condition Variables<a class="headerlink" href="#condition-variables" title="Permanent link">&para;</a></h4>
@@ -666,6 +667,7 @@
         <script>var base_url = '../..';</script>
         <script src="../../js/base.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+        <script src="../../extra_javascript/tabhack.js"></script>
         <script src="../../search/require.js"></script>
         <script src="../../search/search.js"></script>
 

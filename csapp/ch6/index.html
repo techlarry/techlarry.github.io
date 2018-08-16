@@ -22,6 +22,7 @@
         <link href="../../extra_css/mkdocs/js/require.js" rel="stylesheet">
         <link href="../../extra_css/mkdocs/js/search.js" rel="stylesheet">
         <link href="../../extra_css/mkdocs/js/text.js" rel="stylesheet">
+        <link href="../../extra_css/code-tab.css" rel="stylesheet">
         <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!--[if lt IE 9]>
             <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
@@ -249,6 +250,15 @@
                         </ul>
                     </li>
                     <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">JC <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../../jc/Java_Concurrency/">Java Concurrency</a>
+</li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">LKD <b class="caret"></b></a>
                         <ul class="dropdown-menu">
                             
@@ -424,15 +434,14 @@
 <li>对于具有步长为<span><span class="MathJax_Preview">k</span><script type="math/tex">k</script></span>的引用模式的程序，步长越好，空间局部性越好。</li>
 <li>对于取指令来说，循环有好的时间和空间局部性。</li>
 </ul>
-<div class="codehilite"><pre><span class="c1">// for循环体里的指令是按照连续的顺序执行的，因此循环具有良好的空间局部性。因为循环体会被执行多次，因此也有良好的时间局部性。</span>
-<span class="kt">int</span> <span class="nf">sumvec</span><span class="p">(</span><span class="kt">int</span> <span class="n">v</span><span class="p">[</span><span class="n">N</span><span class="p">]){</span>
-    <span class="kt">int</span> <span class="n">i</span><span class="p">,</span> <span class="n">sum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-    <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span> <span class="n">N</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
-        <span class="n">sum</span> <span class="o">+=</span> <span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
-    <span class="k">return</span> <span class="n">sum</span><span class="p">;</span>
-<span class="p">}</span>
-</pre></div>
-
+<p> <div class=codehilite><pre><span class=c1>// for循环体里的指令是按照连续的顺序执行的，因此循环具有良好的空间局部性。因为循环体会被执行多次，因此也有良好的时间局部性。</span>
+<span class=kt>int</span> <span class=nf>sumvec</span><span class=p>(</span><span class=kt>int</span> <span class=n>v</span><span class=p>[</span><span class=n>N</span><span class=p>]){</span>
+    <span class=kt>int</span> <span class=n>i</span><span class=p>,</span> <span class=n>sum</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+    <span class=k>for</span> <span class=p>(</span><span class=n>i</span><span class=o>=</span><span class=mi>0</span><span class=p>;</span> <span class=n>i</span><span class=o>&lt;</span> <span class=n>N</span><span class=p>;</span> <span class=n>i</span><span class=o>++</span><span class=p>)</span>
+        <span class=n>sum</span> <span class=o>+=</span> <span class=n>v</span><span class=p>[</span><span class=n>i</span><span class=p>];</span>
+    <span class=k>return</span> <span class=n>sum</span><span class=p>;</span>
+<span class=p>}</span>
+</pre></div></p>
 <h3 id="3-memory-hierarchy">3 存储器层次结构 Memory Hierarchy<a class="headerlink" href="#3-memory-hierarchy" title="Permanent link">&para;</a></h3>
 <p>一般而言，从高层往低层走，存储设备变得更慢、更便宜和更大。</p>
 <ul>
@@ -501,14 +510,13 @@
 </ul>
 <p><strong>5.直接映射高速缓存中的冲突不命中</strong></p>
 <p>当程序访问大小为2的幂的数组时，直接映射高速缓存通常会发生<strong>冲突不命中</strong>(conflit miss)。例如，考虑一个计算两个向量点积的函数：</p>
-<div class="codehilite"><pre><span class="kt">float</span> <span class="nf">dotprod</span><span class="p">(</span><span class="kt">float</span> <span class="n">x</span><span class="p">[</span><span class="mi">8</span><span class="p">],</span> <span class="kt">float</span> <span class="n">y</span><span class="p">[</span><span class="mi">8</span><span class="p">])</span> <span class="p">{</span> 
-    <span class="kt">float</span> <span class="n">sum</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">;</span> <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
-    <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">8</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> 
-        <span class="n">sum</span> <span class="o">+=</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
-    <span class="k">return</span> <span class="n">sum</span><span class="p">;</span>
-<span class="p">}</span>
-</pre></div>
-
+<p> <div class=codehilite><pre><span class=kt>float</span> <span class=nf>dotprod</span><span class=p>(</span><span class=kt>float</span> <span class=n>x</span><span class=p>[</span><span class=mi>8</span><span class=p>],</span> <span class=kt>float</span> <span class=n>y</span><span class=p>[</span><span class=mi>8</span><span class=p>])</span> <span class=p>{</span> 
+    <span class=kt>float</span> <span class=n>sum</span> <span class=o>=</span> <span class=mf>0.0</span><span class=p>;</span> <span class=kt>int</span> <span class=n>i</span><span class=p>;</span>
+    <span class=k>for</span> <span class=p>(</span><span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=mi>8</span><span class=p>;</span> <span class=n>i</span><span class=o>++</span><span class=p>)</span> 
+        <span class=n>sum</span> <span class=o>+=</span> <span class=n>x</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>*</span> <span class=n>y</span><span class=p>[</span><span class=n>i</span><span class=p>];</span>
+    <span class=k>return</span> <span class=n>sum</span><span class=p>;</span>
+<span class=p>}</span>
+</pre></div></p>
 <p>假设高速混存由两个组组成，每个组容纳4个浮点数。浮点数是4个字节，<span><span class="MathJax_Preview">x</span><script type="math/tex">x</script></span>被加载到从地址0开始的32字节连续内存中，而<span><span class="MathJax_Preview">y</span><script type="math/tex">y</script></span>紧跟在<span><span class="MathJax_Preview">x</span><script type="math/tex">x</script></span>之后，从地址32开始。 每个<span><span class="MathJax_Preview">x[i]</span><script type="math/tex">x[i]</script></span>和<span><span class="MathJax_Preview">y[i]</span><script type="math/tex">y[i]</script></span>会映射到相同的高速缓存组：</p>
 <p><img alt="cache_conflix_on_direct_mapped_caches" src="../figures/cache_conflix_on_direct_mapped_caches.png" /></p>
 <ul>
@@ -568,6 +576,7 @@
         <script>var base_url = '../..';</script>
         <script src="../../js/base.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+        <script src="../../extra_javascript/tabhack.js"></script>
         <script src="../../search/require.js"></script>
         <script src="../../search/search.js"></script>
 

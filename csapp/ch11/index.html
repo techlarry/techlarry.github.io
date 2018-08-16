@@ -22,6 +22,7 @@
         <link href="../../extra_css/mkdocs/js/require.js" rel="stylesheet">
         <link href="../../extra_css/mkdocs/js/search.js" rel="stylesheet">
         <link href="../../extra_css/mkdocs/js/text.js" rel="stylesheet">
+        <link href="../../extra_css/code-tab.css" rel="stylesheet">
         <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!--[if lt IE 9]>
             <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
@@ -249,6 +250,15 @@
                         </ul>
                     </li>
                     <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">JC <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../../jc/Java_Concurrency/">Java Concurrency</a>
+</li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">LKD <b class="caret"></b></a>
                         <ul class="dropdown-menu">
                             
@@ -442,12 +452,11 @@ FH: LAN frame header, 局域网帧头</p>
 <h4 id="ip">IP地址<a class="headerlink" href="#ip" title="Permanent link">&para;</a></h4>
 <p>32位IP地址存在一个IP地址结构(<code class="codehilite">in_addr</code>)中
 * IP地址在内存中是以<strong>网络字节顺序</strong>(network byte order, 大端法)存放的</p>
-<div class="codehilite"><pre><span class="cm">/* Internet address structure */</span> 
-<span class="k">struct</span> <span class="n">in_addr</span> <span class="p">{</span> 
-    <span class="kt">uint32_t</span> <span class="n">s_addr</span><span class="p">;</span> <span class="cm">/* network byte order (big-endian) */</span> 
-<span class="p">};</span>
-</pre></div>
-
+<p> <div class=codehilite><pre><span class=cm>/* Internet address structure */</span> 
+<span class=k>struct</span> <span class=n>in_addr</span> <span class=p>{</span> 
+    <span class=kt>uint32_t</span> <span class=n>s_addr</span><span class=p>;</span> <span class=cm>/* network byte order (big-endian) */</span> 
+<span class=p>};</span>
+</pre></div></p>
 <h4 id="_3">域名<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h4>
 <p><strong>域名</strong>(domain names)是一串用句点分隔的单词(字母、数字和破折号)。域名集合形成了一个层次结构，可以表示为一棵树。</p>
 <p><img alt="Internet Domain Names" src="../figure/Internet%20Domain%20Names.png" /></p>
@@ -500,20 +509,19 @@ FH: LAN frame header, 局域网帧头</p>
 <p>(1) 通用套接字地址(generic socket address)：
 <em> 以套接字地址作为<code class="codehilite">connect()</code>, <code class="codehilite">bind()</code>, <code class="codehilite">accept</code>的实参
 </em> 仅仅因为那时的C不存在<code class="codehilite">void *</code>指针，所以套接字接口被设计成这样。</p>
-<p><div class="codehilite"><pre><span class="k">struct</span> <span class="n">sockaddr</span> <span class="p">{</span> 
-    <span class="kt">uint16_t</span> <span class="n">sa_family</span><span class="p">;</span> <span class="cm">/* Protocol family */</span>
-    <span class="kt">char</span> <span class="n">sa_data</span><span class="p">[</span><span class="mi">14</span><span class="p">];</span> <span class="p">};</span> <span class="cm">/* Address data. */</span>
-</pre></div>
-(2) 因特网的套接字地址
+<p> <div class=codehilite><pre><span class=k>struct</span> <span class=n>sockaddr</span> <span class=p>{</span> 
+    <span class=kt>uint16_t</span> <span class=n>sa_family</span><span class=p>;</span> <span class=cm>/* Protocol family */</span>
+    <span class=kt>char</span> <span class=n>sa_data</span><span class=p>[</span><span class=mi>14</span><span class=p>];</span> <span class=p>};</span> <span class=cm>/* Address data. */</span>
+</pre></div></p>
+<p>(2) 因特网的套接字地址
 * 必须将<code class="codehilite">struct sockaddr_in *</code> 转换为 <code class="codehilite">struct sockaddr *</code>才能以套接字地址作为函数实参</p>
-<div class="codehilite"><pre><span class="k">struct</span> <span class="n">sockaddr_in</span> <span class="p">{</span>
-    <span class="kt">uint16_t</span> <span class="n">sin_family</span><span class="p">;</span>
-    <span class="kt">uint16_t</span> <span class="n">sin_port</span><span class="p">;</span>
-    <span class="k">struct</span> <span class="n">in_addr</span> <span class="n">sin_addr</span><span class="p">;</span>
-    <span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">sin_zero</span><span class="p">[</span><span class="mi">8</span><span class="p">];</span>
-    <span class="p">};</span>
-</pre></div>
-
+<p> <div class=codehilite><pre><span class=k>struct</span> <span class=n>sockaddr_in</span> <span class=p>{</span>
+    <span class=kt>uint16_t</span> <span class=n>sin_family</span><span class=p>;</span>
+    <span class=kt>uint16_t</span> <span class=n>sin_port</span><span class=p>;</span>
+    <span class=k>struct</span> <span class=n>in_addr</span> <span class=n>sin_addr</span><span class=p>;</span>
+    <span class=kt>unsigned</span> <span class=kt>char</span> <span class=n>sin_zero</span><span class=p>[</span><span class=mi>8</span><span class=p>];</span>
+    <span class=p>};</span>
+</pre></div></p>
 <p><img alt="sockets interface" src="../figure/sockets%20interface.png" /></p>
 <ol>
 <li>开启服务器(start server)<ul>
@@ -532,73 +540,71 @@ FH: LAN frame header, 局域网帧头</p>
 </ol>
 <h4 id="echo">Echo客户端和服务器示例<a class="headerlink" href="#echo" title="Permanent link">&para;</a></h4>
 <p>在和服务器建立连接之后，客户端进入一个循环，反复从标准输入读取文本行，发送文本行给服务器，从服务器读取回送的行，并输出结果到接准输出。</p>
-<div class="codehilite"><pre><span class="cp">#include</span> <span class="cpf">&quot;csapp.h&quot;</span><span class="cp"></span>
-<span class="kt">int</span> <span class="nf">main</span> <span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kt">int</span> <span class="n">clientfd</span><span class="p">;</span>
-    <span class="kt">char</span> <span class="o">*</span><span class="n">host</span><span class="p">,</span> <span class="o">*</span><span class="n">port</span><span class="p">,</span> <span class="n">buf</span><span class="p">[</span><span class="n">MAXLINE</span><span class="p">];</span>
-    <span class="n">rio_t</span> <span class="n">rio</span><span class="p">;</span>
+<p> <div class=codehilite><pre><span class=cp>#include</span> <span class=cpf>&quot;csapp.h&quot;</span><span class=cp></span>
+<span class=kt>int</span> <span class=nf>main</span> <span class=p>(</span><span class=kt>int</span> <span class=n>argc</span><span class=p>,</span> <span class=kt>char</span> <span class=o>**</span><span class=n>argv</span><span class=p>)</span> <span class=p>{</span>
+    <span class=kt>int</span> <span class=n>clientfd</span><span class=p>;</span>
+    <span class=kt>char</span> <span class=o>*</span><span class=n>host</span><span class=p>,</span> <span class=o>*</span><span class=n>port</span><span class=p>,</span> <span class=n>buf</span><span class=p>[</span><span class=n>MAXLINE</span><span class=p>];</span>
+    <span class=n>rio_t</span> <span class=n>rio</span><span class=p>;</span>
 
-    <span class="n">host</span> <span class="o">=</span> <span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
-    <span class="n">port</span> <span class="o">=</span> <span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>
+    <span class=n>host</span> <span class=o>=</span> <span class=n>argv</span><span class=p>[</span><span class=mi>1</span><span class=p>];</span>
+    <span class=n>port</span> <span class=o>=</span> <span class=n>argv</span><span class=p>[</span><span class=mi>2</span><span class=p>];</span>
 
-    <span class="c1">//和服务器建立连接</span>
-    <span class="n">clientfd</span> <span class="o">=</span> <span class="n">Open_clientfd</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">);</span>
-    <span class="n">Rio_readinitb</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rio</span><span class="p">,</span> <span class="n">clientfd</span><span class="p">);</span>
+    <span class=c1>//和服务器建立连接</span>
+    <span class=n>clientfd</span> <span class=o>=</span> <span class=n>Open_clientfd</span><span class=p>(</span><span class=n>host</span><span class=p>,</span> <span class=n>port</span><span class=p>);</span>
+    <span class=n>Rio_readinitb</span><span class=p>(</span><span class=o>&amp;</span><span class=n>rio</span><span class=p>,</span> <span class=n>clientfd</span><span class=p>);</span>
 
-    <span class="k">while</span> <span class="p">(</span><span class="n">Fgets</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="n">MAXLINE</span><span class="p">,</span> <span class="n">stdin</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
-        <span class="c1">// 写入，也就是向服务器发送信息</span>
-        <span class="n">Rio_writen</span><span class="p">(</span><span class="n">clientfd</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span> <span class="n">strlen</span><span class="p">(</span><span class="n">buf</span><span class="p">));</span>
-        <span class="c1">// 读取，也就是从服务器接收信息</span>
-        <span class="n">Rio_readlineb</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rio</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span> <span class="n">MAXLINE</span><span class="p">);</span>
-        <span class="c1">// 把从服务器接收的信息显示在输出中</span>
-        <span class="n">Fputs</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="n">stdout</span><span class="p">);</span>
-    <span class="p">}</span>
-    <span class="n">Close</span><span class="p">(</span><span class="n">clientfd</span><span class="p">);</span>
-    <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
-<span class="p">}</span>
-</pre></div>
-
+    <span class=k>while</span> <span class=p>(</span><span class=n>Fgets</span><span class=p>(</span><span class=n>buf</span><span class=p>,</span> <span class=n>MAXLINE</span><span class=p>,</span> <span class=n>stdin</span><span class=p>)</span> <span class=o>!=</span> <span class=nb>NULL</span><span class=p>)</span> <span class=p>{</span>
+        <span class=c1>// 写入，也就是向服务器发送信息</span>
+        <span class=n>Rio_writen</span><span class=p>(</span><span class=n>clientfd</span><span class=p>,</span> <span class=n>buf</span><span class=p>,</span> <span class=n>strlen</span><span class=p>(</span><span class=n>buf</span><span class=p>));</span>
+        <span class=c1>// 读取，也就是从服务器接收信息</span>
+        <span class=n>Rio_readlineb</span><span class=p>(</span><span class=o>&amp;</span><span class=n>rio</span><span class=p>,</span> <span class=n>buf</span><span class=p>,</span> <span class=n>MAXLINE</span><span class=p>);</span>
+        <span class=c1>// 把从服务器接收的信息显示在输出中</span>
+        <span class=n>Fputs</span><span class=p>(</span><span class=n>buf</span><span class=p>,</span> <span class=n>stdout</span><span class=p>);</span>
+    <span class=p>}</span>
+    <span class=n>Close</span><span class=p>(</span><span class=n>clientfd</span><span class=p>);</span>
+    <span class=n>exit</span><span class=p>(</span><span class=mi>0</span><span class=p>);</span>
+<span class=p>}</span>
+</pre></div></p>
 <p>服务器在打开监听描述符后，进入一个无限循环。每次循环都等待一个来自客户端的连接请求，输出已连接客户端的域名和IP地址，并调用<code class="codehilite">echo</code>函数为这些客户端服务。在<code class="codehilite">echo</code>程序返回后，主程序关闭已连接描述符。</p>
-<div class="codehilite"><pre><span class="cp">#include</span> <span class="cpf">&quot;csapp.h&quot;</span><span class="cp"></span>
-<span class="kt">void</span> <span class="nf">echo</span><span class="p">(</span><span class="kt">int</span> <span class="n">connfd</span><span class="p">);</span>
-<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">){</span>
-    <span class="kt">int</span> <span class="n">listenfd</span><span class="p">,</span> <span class="n">connfd</span><span class="p">;</span>
-    <span class="kt">socklen_t</span> <span class="n">clientlen</span><span class="p">;</span>
-    <span class="k">struct</span> <span class="n">sockaddr_storage</span> <span class="n">clientaddr</span><span class="p">;</span> <span class="c1">// Enough room for any addr</span>
-    <span class="kt">char</span> <span class="n">client_hostname</span><span class="p">[</span><span class="n">MAXLINE</span><span class="p">],</span> <span class="n">client_port</span><span class="p">[</span><span class="n">MAXLINE</span><span class="p">];</span>
+<p> <div class=codehilite><pre><span class=cp>#include</span> <span class=cpf>&quot;csapp.h&quot;</span><span class=cp></span>
+<span class=kt>void</span> <span class=nf>echo</span><span class=p>(</span><span class=kt>int</span> <span class=n>connfd</span><span class=p>);</span>
+<span class=kt>int</span> <span class=nf>main</span><span class=p>(</span><span class=kt>int</span> <span class=n>argc</span><span class=p>,</span> <span class=kt>char</span> <span class=o>**</span><span class=n>argv</span><span class=p>){</span>
+    <span class=kt>int</span> <span class=n>listenfd</span><span class=p>,</span> <span class=n>connfd</span><span class=p>;</span>
+    <span class=kt>socklen_t</span> <span class=n>clientlen</span><span class=p>;</span>
+    <span class=k>struct</span> <span class=n>sockaddr_storage</span> <span class=n>clientaddr</span><span class=p>;</span> <span class=c1>// Enough room for any addr</span>
+    <span class=kt>char</span> <span class=n>client_hostname</span><span class=p>[</span><span class=n>MAXLINE</span><span class=p>],</span> <span class=n>client_port</span><span class=p>[</span><span class=n>MAXLINE</span><span class=p>];</span>
 
-    <span class="c1">// 开启监听端口，注意只开这么一次</span>
-    <span class="n">listenfd</span> <span class="o">=</span> <span class="n">Open_listenfd</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
-    <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-        <span class="c1">// 需要具体的大小</span>
-        <span class="n">clientlen</span> <span class="o">=</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">sockaddr_storage</span><span class="p">);</span> <span class="c1">// Important!</span>
-        <span class="c1">// 等待连接</span>
-        <span class="n">connfd</span> <span class="o">=</span> <span class="n">Accept</span><span class="p">(</span><span class="n">listenfd</span><span class="p">,</span> <span class="p">(</span><span class="n">SA</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">clientaddr</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">clientlen</span><span class="p">);</span>
-        <span class="c1">// 获取客户端相关信息</span>
-        <span class="n">Getnameinfo</span><span class="p">((</span><span class="n">SA</span> <span class="o">*</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">clientaddr</span><span class="p">,</span> <span class="n">clientlen</span><span class="p">,</span> <span class="n">client_hostname</span><span class="p">,</span>
-                     <span class="n">MAXLINE</span><span class="p">,</span> <span class="n">client_port</span><span class="p">,</span> <span class="n">MAXLINE</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Connected to (%s, %s)</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">client_hostname</span><span class="p">,</span> <span class="n">client_port</span><span class="p">);</span>
-        <span class="c1">// 服务器具体完成的工作</span>
-        <span class="n">echo</span><span class="p">(</span><span class="n">coonfd</span><span class="p">);</span>
-        <span class="n">Close</span><span class="p">(</span><span class="n">connfd</span><span class="p">);</span>
-    <span class="p">}</span>
-    <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
-<span class="p">}</span>
-<span class="kt">void</span> <span class="nf">echo</span><span class="p">(</span><span class="kt">int</span> <span class="n">connfd</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kt">size_t</span> <span class="n">n</span><span class="p">;</span>
-    <span class="kt">char</span> <span class="n">buf</span><span class="p">[</span><span class="n">MAXLINE</span><span class="p">];</span>
-    <span class="n">rio_t</span> <span class="n">rio</span><span class="p">;</span>
+    <span class=c1>// 开启监听端口，注意只开这么一次</span>
+    <span class=n>listenfd</span> <span class=o>=</span> <span class=n>Open_listenfd</span><span class=p>(</span><span class=n>argv</span><span class=p>[</span><span class=mi>1</span><span class=p>]);</span>
+    <span class=k>while</span> <span class=p>(</span><span class=mi>1</span><span class=p>)</span> <span class=p>{</span>
+        <span class=c1>// 需要具体的大小</span>
+        <span class=n>clientlen</span> <span class=o>=</span> <span class=k>sizeof</span><span class=p>(</span><span class=k>struct</span> <span class=n>sockaddr_storage</span><span class=p>);</span> <span class=c1>// Important!</span>
+        <span class=c1>// 等待连接</span>
+        <span class=n>connfd</span> <span class=o>=</span> <span class=n>Accept</span><span class=p>(</span><span class=n>listenfd</span><span class=p>,</span> <span class=p>(</span><span class=n>SA</span> <span class=o>*</span><span class=p>)</span><span class=o>&amp;</span><span class=n>clientaddr</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>clientlen</span><span class=p>);</span>
+        <span class=c1>// 获取客户端相关信息</span>
+        <span class=n>Getnameinfo</span><span class=p>((</span><span class=n>SA</span> <span class=o>*</span><span class=p>)</span> <span class=o>&amp;</span><span class=n>clientaddr</span><span class=p>,</span> <span class=n>clientlen</span><span class=p>,</span> <span class=n>client_hostname</span><span class=p>,</span>
+                     <span class=n>MAXLINE</span><span class=p>,</span> <span class=n>client_port</span><span class=p>,</span> <span class=n>MAXLINE</span><span class=p>,</span> <span class=mi>0</span><span class=p>);</span>
+        <span class=n>printf</span><span class=p>(</span><span class=s>&quot;Connected to (%s, %s)</span><span class=se>\n</span><span class=s>&quot;</span><span class=p>,</span> <span class=n>client_hostname</span><span class=p>,</span> <span class=n>client_port</span><span class=p>);</span>
+        <span class=c1>// 服务器具体完成的工作</span>
+        <span class=n>echo</span><span class=p>(</span><span class=n>coonfd</span><span class=p>);</span>
+        <span class=n>Close</span><span class=p>(</span><span class=n>connfd</span><span class=p>);</span>
+    <span class=p>}</span>
+    <span class=n>exit</span><span class=p>(</span><span class=mi>0</span><span class=p>);</span>
+<span class=p>}</span>
+<span class=kt>void</span> <span class=nf>echo</span><span class=p>(</span><span class=kt>int</span> <span class=n>connfd</span><span class=p>)</span> <span class=p>{</span>
+    <span class=kt>size_t</span> <span class=n>n</span><span class=p>;</span>
+    <span class=kt>char</span> <span class=n>buf</span><span class=p>[</span><span class=n>MAXLINE</span><span class=p>];</span>
+    <span class=n>rio_t</span> <span class=n>rio</span><span class=p>;</span>
 
-    <span class="c1">// 读取从客户端传输过来的数据</span>
-    <span class="n">Rio_readinitb</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rio</span><span class="p">,</span> <span class="n">connfd</span><span class="p">);</span>
-    <span class="k">while</span><span class="p">((</span><span class="n">n</span> <span class="o">=</span> <span class="n">Rio_readlineb</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rio</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span> <span class="n">MAXLINE</span><span class="p">))</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;server received %d bytes</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">n</span><span class="p">);</span>
-        <span class="c1">// 把从 client 接收到的信息再写回去</span>
-        <span class="n">Rio_writen</span><span class="p">(</span><span class="n">connfd</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span> <span class="n">n</span><span class="p">);</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-
+    <span class=c1>// 读取从客户端传输过来的数据</span>
+    <span class=n>Rio_readinitb</span><span class=p>(</span><span class=o>&amp;</span><span class=n>rio</span><span class=p>,</span> <span class=n>connfd</span><span class=p>);</span>
+    <span class=k>while</span><span class=p>((</span><span class=n>n</span> <span class=o>=</span> <span class=n>Rio_readlineb</span><span class=p>(</span><span class=o>&amp;</span><span class=n>rio</span><span class=p>,</span> <span class=n>buf</span><span class=p>,</span> <span class=n>MAXLINE</span><span class=p>))</span> <span class=o>!=</span> <span class=mi>0</span><span class=p>)</span> <span class=p>{</span>
+        <span class=n>printf</span><span class=p>(</span><span class=s>&quot;server received %d bytes</span><span class=se>\n</span><span class=s>&quot;</span><span class=p>,</span> <span class=p>(</span><span class=kt>int</span><span class=p>)</span><span class=n>n</span><span class=p>);</span>
+        <span class=c1>// 把从 client 接收到的信息再写回去</span>
+        <span class=n>Rio_writen</span><span class=p>(</span><span class=n>connfd</span><span class=p>,</span> <span class=n>buf</span><span class=p>,</span> <span class=n>n</span><span class=p>);</span>
+    <span class=p>}</span>
+<span class=p>}</span>
+</pre></div></p>
 <h3 id="5-web">5 Web服务器<a class="headerlink" href="#5-web" title="Permanent link">&para;</a></h3>
 <h4 id="web">Web基础<a class="headerlink" href="#web" title="Permanent link">&para;</a></h4>
 <p>Web客户端和服务器之间的交互用的是<strong>HTTP协议</strong>(超文本传输协议)，交互的基本过程为：</p>
@@ -641,53 +647,51 @@ FH: LAN frame header, 局域网帧头</p>
 </ul>
 <p><strong>响应报头</strong>的格式是<code class="codehilite">&lt;header name&gt;:&lt;header data&gt;</code></p>
 <p>下面是HTTP请求的一个实例:</p>
-<div class="codehilite"><pre>GET /somedir/page.html HTTP/1.1 
+<p> <div class=codehilite><pre>GET /somedir/page.html HTTP/1.1 
 Host: www.someschool.edu
 Connection: close 
 User-agent: Mozilla/5.0 
 Accept-language: fr
-</pre></div>
-
+</pre></div></p>
 <p>一个Java的例子：</p>
-<div class="codehilite"><pre><span class="kn">import</span> <span class="nn">java.io.BufferedReader</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">java.io.InputStreamReader</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">java.io.PrintWriter</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">java.net.Socket</span><span class="o">;</span>
+<p> <div class=codehilite><pre><span class=kn>import</span> <span class=nn>java.io.BufferedReader</span><span class=o>;</span>
+<span class=kn>import</span> <span class=nn>java.io.InputStreamReader</span><span class=o>;</span>
+<span class=kn>import</span> <span class=nn>java.io.PrintWriter</span><span class=o>;</span>
+<span class=kn>import</span> <span class=nn>java.net.Socket</span><span class=o>;</span>
 
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyBlogClient</span> <span class="o">{</span>
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">http_request</span><span class="o">(){</span>
-        <span class="k">try</span><span class="o">{</span>
-            <span class="n">Socket</span> <span class="n">s</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Socket</span><span class="o">(</span><span class="s">&quot;192.30.252.153&quot;</span><span class="o">,</span> <span class="mi">80</span><span class="o">);</span>
-            <span class="n">PrintWriter</span> <span class="n">writer</span> <span class="o">=</span> <span class="k">new</span> <span class="n">PrintWriter</span><span class="o">(</span><span class="n">s</span><span class="o">.</span><span class="na">getOutputStream</span><span class="o">());</span>
-            <span class="n">InputStreamReader</span> <span class="n">streamReader</span> <span class="o">=</span> <span class="k">new</span> <span class="n">InputStreamReader</span><span class="o">(</span><span class="n">s</span><span class="o">.</span><span class="na">getInputStream</span><span class="o">());</span>
-            <span class="n">BufferedReader</span> <span class="n">br</span> <span class="o">=</span> <span class="k">new</span> <span class="n">BufferedReader</span><span class="o">(</span><span class="n">streamReader</span><span class="o">);</span>
+<span class=kd>public</span> <span class=kd>class</span> <span class=nc>MyBlogClient</span> <span class=o>{</span>
+    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>http_request</span><span class=o>(){</span>
+        <span class=k>try</span><span class=o>{</span>
+            <span class=n>Socket</span> <span class=n>s</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Socket</span><span class=o>(</span><span class=s>&quot;192.30.252.153&quot;</span><span class=o>,</span> <span class=mi>80</span><span class=o>);</span>
+            <span class=n>PrintWriter</span> <span class=n>writer</span> <span class=o>=</span> <span class=k>new</span> <span class=n>PrintWriter</span><span class=o>(</span><span class=n>s</span><span class=o>.</span><span class=na>getOutputStream</span><span class=o>());</span>
+            <span class=n>InputStreamReader</span> <span class=n>streamReader</span> <span class=o>=</span> <span class=k>new</span> <span class=n>InputStreamReader</span><span class=o>(</span><span class=n>s</span><span class=o>.</span><span class=na>getInputStream</span><span class=o>());</span>
+            <span class=n>BufferedReader</span> <span class=n>br</span> <span class=o>=</span> <span class=k>new</span> <span class=n>BufferedReader</span><span class=o>(</span><span class=n>streamReader</span><span class=o>);</span>
 
-            <span class="c1">//注意换行符是\r\n</span>
-            <span class="n">writer</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;GET /index.html HTTP/1.0 \r\n Host: larryim.cc  \r\n   \r\n &quot;</span><span class="o">);</span>
+            <span class=c1>//注意换行符是\r\n</span>
+            <span class=n>writer</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=s>&quot;GET /index.html HTTP/1.0 \r\n Host: larryim.cc  \r\n   \r\n &quot;</span><span class=o>);</span>
 
-            <span class="n">String</span> <span class="n">line</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+            <span class=n>String</span> <span class=n>line</span> <span class=o>=</span> <span class=kc>null</span><span class=o>;</span>
 
-            <span class="k">while</span> <span class="o">((</span><span class="n">line</span><span class="o">=</span> <span class="n">br</span><span class="o">.</span><span class="na">readLine</span><span class="o">())!=</span> <span class="kc">null</span><span class="o">){</span>
-                <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">line</span><span class="o">);</span>
-            <span class="o">}</span>
+            <span class=k>while</span> <span class=o>((</span><span class=n>line</span><span class=o>=</span> <span class=n>br</span><span class=o>.</span><span class=na>readLine</span><span class=o>())!=</span> <span class=kc>null</span><span class=o>){</span>
+                <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=n>line</span><span class=o>);</span>
+            <span class=o>}</span>
 
-            <span class="n">br</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
-            <span class="n">writer</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+            <span class=n>br</span><span class=o>.</span><span class=na>close</span><span class=o>();</span>
+            <span class=n>writer</span><span class=o>.</span><span class=na>close</span><span class=o>();</span>
 
 
-        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">ex</span><span class="o">){</span>
-            <span class="n">ex</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
-        <span class="o">}</span>
-    <span class="o">}</span>
+        <span class=o>}</span> <span class=k>catch</span> <span class=o>(</span><span class=n>Exception</span> <span class=n>ex</span><span class=o>){</span>
+            <span class=n>ex</span><span class=o>.</span><span class=na>printStackTrace</span><span class=o>();</span>
+        <span class=o>}</span>
+    <span class=o>}</span>
 
-    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">){</span>
-        <span class="n">MyBlogClient</span> <span class="n">client</span> <span class="o">=</span> <span class="k">new</span> <span class="n">MyBlogClient</span><span class="o">();</span>
-        <span class="n">client</span><span class="o">.</span><span class="na">http_request</span><span class="o">();</span>
-    <span class="o">}</span>
+    <span class=kd>public</span> <span class=kd>static</span> <span class=kt>void</span> <span class=nf>main</span><span class=o>(</span><span class=n>String</span><span class=o>[]</span> <span class=n>args</span><span class=o>){</span>
+        <span class=n>MyBlogClient</span> <span class=n>client</span> <span class=o>=</span> <span class=k>new</span> <span class=n>MyBlogClient</span><span class=o>();</span>
+        <span class=n>client</span><span class=o>.</span><span class=na>http_request</span><span class=o>();</span>
+    <span class=o>}</span>
 
-<span class="o">}</span>
-</pre></div>
-
+<span class=o>}</span>
+</pre></div></p>
 <h4 id="http_1">HTTP请求方法<a class="headerlink" href="#http_1" title="Permanent link">&para;</a></h4>
 <table>
 <thead>
@@ -740,6 +744,7 @@ Accept-language: fr
         <script>var base_url = '../..';</script>
         <script src="../../js/base.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+        <script src="../../extra_javascript/tabhack.js"></script>
         <script src="../../search/require.js"></script>
         <script src="../../search/search.js"></script>
 

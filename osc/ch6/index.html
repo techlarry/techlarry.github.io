@@ -22,6 +22,7 @@
         <link href="../../extra_css/mkdocs/js/require.js" rel="stylesheet">
         <link href="../../extra_css/mkdocs/js/search.js" rel="stylesheet">
         <link href="../../extra_css/mkdocs/js/text.js" rel="stylesheet">
+        <link href="../../extra_css/code-tab.css" rel="stylesheet">
         <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!--[if lt IE 9]>
             <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
@@ -249,6 +250,15 @@
                         </ul>
                     </li>
                     <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">JC <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../../jc/Java_Concurrency/">Java Concurrency</a>
+</li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">LKD <b class="caret"></b></a>
                         <ul class="dropdown-menu">
                             
@@ -422,22 +432,20 @@
 <h3 id="3-petersons-solution">3 Peterson's Solution<a class="headerlink" href="#3-petersons-solution" title="Permanent link">&para;</a></h3>
 <p><strong>Peterson’s solution</strong>(Peterson 算法) is restricted to two processes that alternate execution between their critical sections and remainder sections. The processes are numbered <span><span class="MathJax_Preview">P_0</span><script type="math/tex">P_0</script></span> and <span><span class="MathJax_Preview">P_1</span><script type="math/tex">P_1</script></span>. For convenience, when presenting <span><span class="MathJax_Preview">P_i</span><script type="math/tex">P_i</script></span>, we use <span><span class="MathJax_Preview">P_j</span><script type="math/tex">P_j</script></span> to denote the other process; that is <span><span class="MathJax_Preview">j</span><script type="math/tex">j</script></span> equals <span><span class="MathJax_Preview">1-i</span><script type="math/tex">1-i</script></span>.</p>
 <p>Peterson's solution requires the two processes to share two data items:</p>
-<div class="codehilite"><pre><span class="kt">int</span> <span class="n">turn</span><span class="p">;</span>
-<span class="n">boolean</span> <span class="n">flag</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>
-</pre></div>
-
+<p> <div class=codehilite><pre><span class=kt>int</span> <span class=n>turn</span><span class=p>;</span>
+<span class=n>boolean</span> <span class=n>flag</span><span class=p>[</span><span class=mi>2</span><span class=p>];</span>
+</pre></div></p>
 <p>The structure of process <span><span class="MathJax_Preview">P_i</span><script type="math/tex">P_i</script></span> in Peterson's solution.</p>
-<div class="codehilite"><pre><span class="k">while</span> <span class="p">(</span><span class="nb">true</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">flag</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span> 
-    <span class="n">turn</span> <span class="o">=</span> <span class="n">j</span><span class="p">;</span> 
-    <span class="k">while</span> <span class="p">(</span><span class="n">flag</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">&amp;&amp;</span> <span class="n">turn</span> <span class="o">==</span> <span class="n">j</span><span class="p">)</span> 
-        <span class="p">;</span>
-    <span class="cm">/* critical section */</span>
-    <span class="n">flag</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
-    <span class="cm">/*remainder section */</span>
-<span class="p">}</span>
-</pre></div>
-
+<p> <div class=codehilite><pre><span class=k>while</span> <span class=p>(</span><span class=nb>true</span><span class=p>)</span> <span class=p>{</span>
+    <span class=n>flag</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>=</span> <span class=nb>true</span><span class=p>;</span> 
+    <span class=n>turn</span> <span class=o>=</span> <span class=n>j</span><span class=p>;</span> 
+    <span class=k>while</span> <span class=p>(</span><span class=n>flag</span><span class=p>[</span><span class=n>j</span><span class=p>]</span> <span class=o>&amp;&amp;</span> <span class=n>turn</span> <span class=o>==</span> <span class=n>j</span><span class=p>)</span> 
+        <span class=p>;</span>
+    <span class=cm>/* critical section */</span>
+    <span class=n>flag</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>=</span> <span class=nb>false</span><span class=p>;</span>
+    <span class=cm>/*remainder section */</span>
+<span class=p>}</span>
+</pre></div></p>
 <ul>
 <li>The variable <code class="codehilite">turn</code> indicates whose turn it is to enter its critical section.</li>
 <li>The <code class="codehilite">flag</code> array is used to indicate if a process is ready to enter its critical section.</li>
@@ -468,42 +476,38 @@
 <h4 id="hardware-instructions">Hardware instructions<a class="headerlink" href="#hardware-instructions" title="Permanent link">&para;</a></h4>
 <p>Many modern computer systems provide special hardware instructions that allow either to test and modify the content of a word or to swap the contents of two words atomically - that is, one uninterruptible unit.</p>
 <p>The definition of the atomic <code class="codehilite">test_and_set()</code> instruction:</p>
-<div class="codehilite"><pre><span class="n">boolean</span> <span class="nf">test_and_set</span><span class="p">(</span><span class="n">boolean</span> <span class="o">*</span><span class="n">target</span><span class="p">)</span> <span class="p">{</span> 
-    <span class="n">boolean</span> <span class="n">rv</span> <span class="o">=</span> <span class="o">*</span><span class="n">target</span><span class="p">;</span> 
-    <span class="o">*</span><span class="n">target</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
-    <span class="k">return</span> <span class="n">rv</span><span class="p">;</span>
-<span class="p">}</span>
-</pre></div>
-
+<p> <div class=codehilite><pre><span class=n>boolean</span> <span class=nf>test_and_set</span><span class=p>(</span><span class=n>boolean</span> <span class=o>*</span><span class=n>target</span><span class=p>)</span> <span class=p>{</span> 
+    <span class=n>boolean</span> <span class=n>rv</span> <span class=o>=</span> <span class=o>*</span><span class=n>target</span><span class=p>;</span> 
+    <span class=o>*</span><span class=n>target</span> <span class=o>=</span> <span class=nb>true</span><span class=p>;</span>
+    <span class=k>return</span> <span class=n>rv</span><span class=p>;</span>
+<span class=p>}</span>
+</pre></div></p>
 <p>Mutual-exclusion implementation with <code class="codehilite">test_and_set()</code>:</p>
-<div class="codehilite"><pre><span class="k">do</span> <span class="p">{</span>
-    <span class="k">while</span> <span class="p">(</span><span class="n">test_and_set</span><span class="p">(</span><span class="o">&amp;</span><span class="n">lock</span><span class="p">))</span> 
-        <span class="p">;</span> <span class="cm">/* do nothing */</span>
-    <span class="cm">/* critical section */</span>
-    <span class="n">lock</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
-    <span class="cm">/* remainder section */</span> <span class="p">}</span> 
-<span class="k">while</span> <span class="p">(</span><span class="nb">true</span><span class="p">);</span>
-</pre></div>
-
+<p> <div class=codehilite><pre><span class=k>do</span> <span class=p>{</span>
+    <span class=k>while</span> <span class=p>(</span><span class=n>test_and_set</span><span class=p>(</span><span class=o>&amp;</span><span class=n>lock</span><span class=p>))</span> 
+        <span class=p>;</span> <span class=cm>/* do nothing */</span>
+    <span class=cm>/* critical section */</span>
+    <span class=n>lock</span> <span class=o>=</span> <span class=nb>false</span><span class=p>;</span>
+    <span class=cm>/* remainder section */</span> <span class=p>}</span> 
+<span class=k>while</span> <span class=p>(</span><span class=nb>true</span><span class=p>);</span>
+</pre></div></p>
 <p>The definition of the atomic <code class="codehilite">compare_and_swap()</code>（CAS）instruction:</p>
-<div class="codehilite"><pre><span class="kt">int</span> <span class="nf">compare_and_swap</span><span class="p">(</span><span class="kt">int</span> <span class="o">*</span><span class="n">value</span><span class="p">,</span> <span class="kt">int</span> <span class="n">expected</span><span class="p">,</span> <span class="kt">int</span> <span class="n">new</span> <span class="n">value</span><span class="p">)</span> <span class="p">{</span> 
-    <span class="kt">int</span> <span class="n">temp</span> <span class="o">=</span> <span class="o">*</span><span class="n">value</span><span class="p">;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="o">*</span><span class="n">value</span> <span class="o">==</span> <span class="n">expected</span><span class="p">)</span> 
-        <span class="o">*</span><span class="n">value</span> <span class="o">=</span> <span class="n">new</span> <span class="n">value</span><span class="p">;</span>
-    <span class="k">return</span> <span class="n">temp</span><span class="p">;</span>
-<span class="p">}</span>
-</pre></div>
-
+<p> <div class=codehilite><pre><span class=kt>int</span> <span class=nf>compare_and_swap</span><span class=p>(</span><span class=kt>int</span> <span class=o>*</span><span class=n>value</span><span class=p>,</span> <span class=kt>int</span> <span class=n>expected</span><span class=p>,</span> <span class=kt>int</span> <span class=n>new</span> <span class=n>value</span><span class=p>)</span> <span class=p>{</span> 
+    <span class=kt>int</span> <span class=n>temp</span> <span class=o>=</span> <span class=o>*</span><span class=n>value</span><span class=p>;</span>
+    <span class=k>if</span> <span class=p>(</span><span class=o>*</span><span class=n>value</span> <span class=o>==</span> <span class=n>expected</span><span class=p>)</span> 
+        <span class=o>*</span><span class=n>value</span> <span class=o>=</span> <span class=n>new</span> <span class=n>value</span><span class=p>;</span>
+    <span class=k>return</span> <span class=n>temp</span><span class=p>;</span>
+<span class=p>}</span>
+</pre></div></p>
 <p>Mutual exclusion with the <code class="codehilite">compare_and_swap()</code> instruction:</p>
-<div class="codehilite"><pre><span class="k">while</span> <span class="p">(</span><span class="nb">true</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">while</span> <span class="p">(</span><span class="n">compare_and_swap</span><span class="p">(</span><span class="o">&amp;</span><span class="n">lock</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> 
-        <span class="p">;</span> <span class="cm">/* do nothing */</span>
-    <span class="cm">/* critical section */</span>
-    <span class="n">lock</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-    <span class="cm">/* remainder section */</span>
-<span class="p">}</span>
-</pre></div>
-
+<p> <div class=codehilite><pre><span class=k>while</span> <span class=p>(</span><span class=nb>true</span><span class=p>)</span> <span class=p>{</span>
+    <span class=k>while</span> <span class=p>(</span><span class=n>compare_and_swap</span><span class=p>(</span><span class=o>&amp;</span><span class=n>lock</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=mi>1</span><span class=p>)</span> <span class=o>!=</span> <span class=mi>0</span><span class=p>)</span> 
+        <span class=p>;</span> <span class=cm>/* do nothing */</span>
+    <span class=cm>/* critical section */</span>
+    <span class=n>lock</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+    <span class=cm>/* remainder section */</span>
+<span class=p>}</span>
+</pre></div></p>
 <h4 id="atomic-variables">Atomic variables<a class="headerlink" href="#atomic-variables" title="Permanent link">&para;</a></h4>
 <p><strong>Atomic variables</strong> (原子变量) provides atomic operations on basic data types such as integers and booleans. Their use is often limited to single updates of shared data such as counters and sequence generators.</p>
 <h3 id="5-mutex-locks">5 Mutex locks<a class="headerlink" href="#5-mutex-locks" title="Permanent link">&para;</a></h3>
@@ -516,31 +520,28 @@
 <li>Calls to either <code class="codehilite">acquire()</code> or <code class="codehilite">release()</code> must be performed atomically. Thus mutex locks can be implemented using the CAS operation.</li>
 </ul>
 <p>Solution to the critical-section problem using mutex locks:</p>
-<div class="codehilite"><pre><span class="k">while</span> <span class="p">(</span><span class="nb">true</span><span class="p">)</span> <span class="p">{</span>
-    <span class="cm">/* acquire lock */</span>
+<p> <div class=codehilite><pre><span class=k>while</span> <span class=p>(</span><span class=nb>true</span><span class=p>)</span> <span class=p>{</span>
+    <span class=cm>/* acquire lock */</span>
 
-    <span class="cm">/* critical section */</span>
+    <span class=cm>/* critical section */</span>
 
-    <span class="cm">/* release lock */</span>
+    <span class=cm>/* release lock */</span>
 
-    <span class="cm">/* remainder section */</span>
-<span class="p">}</span>
-</pre></div>
-
+    <span class=cm>/* remainder section */</span>
+<span class=p>}</span>
+</pre></div></p>
 <p>The definition of <code class="codehilite">acquire()</code> is as follows:</p>
-<div class="codehilite"><pre><span class="n">acquire</span><span class="p">()</span> <span class="p">{</span> 
-    <span class="k">while</span> <span class="p">(</span><span class="o">!</span><span class="n">available</span><span class="p">)</span> <span class="p">;</span>
-        <span class="cm">/* busy wait */</span> 
-    <span class="n">available</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span> 
-<span class="p">}</span>
-</pre></div>
-
+<p> <div class=codehilite><pre><span class=n>acquire</span><span class=p>()</span> <span class=p>{</span> 
+    <span class=k>while</span> <span class=p>(</span><span class=o>!</span><span class=n>available</span><span class=p>)</span> <span class=p>;</span>
+        <span class=cm>/* busy wait */</span> 
+    <span class=n>available</span> <span class=o>=</span> <span class=nb>false</span><span class=p>;</span> 
+<span class=p>}</span>
+</pre></div></p>
 <p>The definition of <code class="codehilite">release()</code> is as follows:</p>
-<div class="codehilite"><pre><span class="n">release</span><span class="p">(){</span>
-    <span class="n">available</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
-<span class="p">}</span>
-</pre></div>
-
+<p> <div class=codehilite><pre><span class=n>release</span><span class=p>(){</span>
+    <span class=n>available</span> <span class=o>=</span> <span class=nb>true</span><span class=p>;</span>
+<span class=p>}</span>
+</pre></div></p>
 <p>The main disadvantage of the implementation is that it requires <strong>busy waiting</strong>(忙等待).</p>
 <ul>
 <li>While  a process is in its critical section, any other process that tries enter its critical section must loop continuously in the call to <code class="codehilite">acquire()</code>.</li>
@@ -555,19 +556,17 @@
 <h3 id="6-semaphores">6 Semaphores<a class="headerlink" href="#6-semaphores" title="Permanent link">&para;</a></h3>
 <p>A <strong>semaphore</strong>(信号量) S is an integer variable that, apart from initialization, is accessed only through two standard atomic operations: <code class="codehilite">wait()</code> and <code class="codehilite">signal()</code>. 信号量S是个整数变量，除了初始化外，它只能通过两个标准原子操作：<code class="codehilite">wait()</code>和<code class="codehilite">signal()</code>来访问。</p>
 <p>The definition of <code class="codehilite">wait()</code> is as follows:</p>
-<div class="codehilite"><pre><span class="n">wait</span><span class="p">(</span><span class="n">S</span><span class="p">){</span>
-    <span class="k">while</span> <span class="p">(</span><span class="n">S</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="p">;</span><span class="c1">// busy wait</span>
-    <span class="n">S</span><span class="o">--</span><span class="p">;</span>
-<span class="p">{</span>
-</pre></div>
-
+<p> <div class=codehilite><pre><span class=n>wait</span><span class=p>(</span><span class=n>S</span><span class=p>){</span>
+    <span class=k>while</span> <span class=p>(</span><span class=n>S</span> <span class=o>&lt;=</span> <span class=mi>0</span><span class=p>)</span>
+        <span class=p>;</span><span class=c1>// busy wait</span>
+    <span class=n>S</span><span class=o>--</span><span class=p>;</span>
+<span class=p>{</span>
+</pre></div></p>
 <p>The definition of <code class="codehilite">signal()</code> is as follows:</p>
-<div class="codehilite"><pre><span class="n">signal</span><span class="p">(</span><span class="n">S</span><span class="p">){</span>
-    <span class="n">S</span><span class="o">++</span><span class="p">;</span>
-<span class="p">}</span>
-</pre></div>
-
+<p> <div class=codehilite><pre><span class=n>signal</span><span class=p>(</span><span class=n>S</span><span class=p>){</span>
+    <span class=n>S</span><span class=o>++</span><span class=p>;</span>
+<span class=p>}</span>
+</pre></div></p>
 <p>All modifications to the integer value of the semaphore in the <code class="codehilite">wait()</code> and <code class="codehilite">signal()</code> operations must be executed atomically.  在<code class="codehilite">wait()</code>和<code class="codehilite">signal()</code>操作中，对信号量整型值的修改必须不可分地执行。</p>
 <p>Operating systems often distinguish between counting and binary semaphores.通常操作系统区分计数信号量和二进制信号量。</p>
 <ul>
@@ -592,16 +591,15 @@
 </ul>
 <p>Solution: An abstract data type, <strong>monitor</strong>(管程), includes a set of programmer-defined operation related to mutual exclusion within the monitor. The monitor construct ensures that only one process at a time is active within the monitor.</p>
 <p>Pseudocode syntax of a monitor:</p>
-<div class="codehilite"><pre><span class="n">monitor</span> <span class="n">monitor</span> <span class="n">name</span> <span class="p">{</span> <span class="cm">/* shared variable declarations */</span>
-    <span class="n">function</span> <span class="n">P1</span> <span class="p">(</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">)</span> <span class="p">{</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.}</span>
-    <span class="n">function</span> <span class="n">P2</span> <span class="p">(</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">)</span> <span class="p">{</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.}</span>
-        <span class="p">.</span>
-        <span class="p">.</span>
-    <span class="n">function</span> <span class="n">Pn</span> <span class="p">(</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">)</span> <span class="p">{</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.}</span>
-    <span class="n">initialization</span> <span class="n">code</span> <span class="p">(</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">)</span> <span class="p">{</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.}</span>
-<span class="p">}</span>
-</pre></div>
-
+<p> <div class=codehilite><pre><span class=n>monitor</span> <span class=n>monitor</span> <span class=n>name</span> <span class=p>{</span> <span class=cm>/* shared variable declarations */</span>
+    <span class=n>function</span> <span class=n>P1</span> <span class=p>(</span> <span class=p>.</span> <span class=p>.</span> <span class=p>.</span> <span class=p>)</span> <span class=p>{</span> <span class=p>.</span> <span class=p>.</span> <span class=p>.}</span>
+    <span class=n>function</span> <span class=n>P2</span> <span class=p>(</span> <span class=p>.</span> <span class=p>.</span> <span class=p>.</span> <span class=p>)</span> <span class=p>{</span> <span class=p>.</span> <span class=p>.</span> <span class=p>.}</span>
+        <span class=p>.</span>
+        <span class=p>.</span>
+    <span class=n>function</span> <span class=n>Pn</span> <span class=p>(</span> <span class=p>.</span> <span class=p>.</span> <span class=p>.</span> <span class=p>)</span> <span class=p>{</span> <span class=p>.</span> <span class=p>.</span> <span class=p>.}</span>
+    <span class=n>initialization</span> <span class=n>code</span> <span class=p>(</span> <span class=p>.</span> <span class=p>.</span> <span class=p>.</span> <span class=p>)</span> <span class=p>{</span> <span class=p>.</span> <span class=p>.</span> <span class=p>.}</span>
+<span class=p>}</span>
+</pre></div></p>
 <p>A monitor uses <strong>condition variables</strong> that allow processes to wait for certain conditions to become true and to signal one another when conditions have been set to true:</p>
 <div>
 <div class="MathJax_Preview">\text{condition x, y;}</div>
@@ -615,47 +613,46 @@
 <li>integer variable <code class="codehilite">next_count</code>: to count the number of processes suspended on <code class="codehilite">next</code>.</li>
 <li>condition <code class="codehilite">x</code>, binary semaphore <code class="codehilite">x_sem</code>, and integer variable <code class="codehilite">x_count</code> </li>
 </ul>
-<div class="codehilite"><pre><span class="n">monitor</span> <span class="n">ResourceAllocator</span> <span class="p">{</span>
+<p> <div class=codehilite><pre><span class=n>monitor</span> <span class=n>ResourceAllocator</span> <span class=p>{</span>
 
-    <span class="n">boolean</span> <span class="n">busy</span><span class="p">;</span> 
-    <span class="n">condition</span> <span class="n">x</span><span class="p">;</span>
+    <span class=n>boolean</span> <span class=n>busy</span><span class=p>;</span> 
+    <span class=n>condition</span> <span class=n>x</span><span class=p>;</span>
 
-    <span class="kt">void</span> <span class="nf">acquire</span><span class="p">(</span><span class="kt">int</span> <span class="n">time</span><span class="p">)</span> <span class="p">{</span> 
-        <span class="k">if</span> <span class="p">(</span><span class="n">busy</span><span class="p">)</span> 
-            <span class="n">x</span><span class="p">.</span><span class="n">wait</span><span class="p">(</span><span class="n">time</span><span class="p">);</span> 
-        <span class="n">busy</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span> 
-    <span class="p">}</span>
+    <span class=kt>void</span> <span class=nf>acquire</span><span class=p>(</span><span class=kt>int</span> <span class=n>time</span><span class=p>)</span> <span class=p>{</span> 
+        <span class=k>if</span> <span class=p>(</span><span class=n>busy</span><span class=p>)</span> 
+            <span class=n>x</span><span class=p>.</span><span class=n>wait</span><span class=p>(</span><span class=n>time</span><span class=p>);</span> 
+        <span class=n>busy</span> <span class=o>=</span> <span class=nb>true</span><span class=p>;</span> 
+    <span class=p>}</span>
 
-    <span class="kt">void</span> <span class="nf">release</span><span class="p">()</span> <span class="p">{</span> 
-        <span class="n">busy</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span> 
-        <span class="n">x</span><span class="p">.</span><span class="n">signal</span><span class="p">();</span> 
-    <span class="p">}</span>
+    <span class=kt>void</span> <span class=nf>release</span><span class=p>()</span> <span class=p>{</span> 
+        <span class=n>busy</span> <span class=o>=</span> <span class=nb>false</span><span class=p>;</span> 
+        <span class=n>x</span><span class=p>.</span><span class=n>signal</span><span class=p>();</span> 
+    <span class=p>}</span>
 
-    <span class="n">initialization</span> <span class="nf">code</span><span class="p">()</span> <span class="p">{</span> 
-        <span class="n">busy</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span> 
-    <span class="p">}</span>
+    <span class=n>initialization</span> <span class=nf>code</span><span class=p>()</span> <span class=p>{</span> 
+        <span class=n>busy</span> <span class=o>=</span> <span class=nb>false</span><span class=p>;</span> 
+    <span class=p>}</span>
 
-    <span class="n">signal</span><span class="p">()</span> <span class="p">{</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">x_count</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span> 
-            <span class="n">next_count</span><span class="o">++</span><span class="p">;</span> 
-            <span class="n">signal</span><span class="p">(</span><span class="n">x_sem</span><span class="p">);</span> 
-            <span class="n">wait</span><span class="p">(</span><span class="n">next</span><span class="p">);</span> 
-            <span class="n">next_count</span><span class="o">--</span><span class="p">;</span> 
-        <span class="p">}</span>
-    <span class="p">}</span>
+    <span class=n>signal</span><span class=p>()</span> <span class=p>{</span>
+        <span class=k>if</span> <span class=p>(</span><span class=n>x_count</span> <span class=o>&gt;</span> <span class=mi>0</span><span class=p>)</span> <span class=p>{</span> 
+            <span class=n>next_count</span><span class=o>++</span><span class=p>;</span> 
+            <span class=n>signal</span><span class=p>(</span><span class=n>x_sem</span><span class=p>);</span> 
+            <span class=n>wait</span><span class=p>(</span><span class=n>next</span><span class=p>);</span> 
+            <span class=n>next_count</span><span class=o>--</span><span class=p>;</span> 
+        <span class=p>}</span>
+    <span class=p>}</span>
 
-    <span class="n">wait</span><span class="p">()</span> <span class="p">{</span> 
-        <span class="n">x_count</span><span class="o">++</span><span class="p">;</span> 
-        <span class="k">if</span> <span class="p">(</span><span class="n">next_count</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
-            <span class="n">signal</span><span class="p">(</span><span class="n">next</span><span class="p">);</span> 
-        <span class="k">else</span>
-            <span class="nf">signal</span><span class="p">(</span><span class="n">mutex</span><span class="p">);</span> 
-        <span class="n">wait</span><span class="p">(</span><span class="n">x_sem</span><span class="p">);</span> 
-        <span class="n">x</span> <span class="n">count</span><span class="o">--</span><span class="p">;</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-
+    <span class=n>wait</span><span class=p>()</span> <span class=p>{</span> 
+        <span class=n>x_count</span><span class=o>++</span><span class=p>;</span> 
+        <span class=k>if</span> <span class=p>(</span><span class=n>next_count</span> <span class=o>&gt;</span> <span class=mi>0</span><span class=p>)</span>
+            <span class=n>signal</span><span class=p>(</span><span class=n>next</span><span class=p>);</span> 
+        <span class=k>else</span>
+            <span class=nf>signal</span><span class=p>(</span><span class=n>mutex</span><span class=p>);</span> 
+        <span class=n>wait</span><span class=p>(</span><span class=n>x_sem</span><span class=p>);</span> 
+        <span class=n>x</span> <span class=n>count</span><span class=o>--</span><span class=p>;</span>
+    <span class=p>}</span>
+<span class=p>}</span>
+</pre></div></p>
 <p><a href="../ch7/#java-monitors">Monitor in Java</a></p>
 <h3 id="8-liveness">8 Liveness<a class="headerlink" href="#8-liveness" title="Permanent link">&para;</a></h3>
 <h4 id="deadlock">Deadlock<a class="headerlink" href="#deadlock" title="Permanent link">&para;</a></h4>
@@ -709,6 +706,7 @@
         <script>var base_url = '../..';</script>
         <script src="../../js/base.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+        <script src="../../extra_javascript/tabhack.js"></script>
         <script src="../../search/require.js"></script>
         <script src="../../search/search.js"></script>
 

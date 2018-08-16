@@ -22,6 +22,7 @@
         <link href="../../extra_css/mkdocs/js/require.js" rel="stylesheet">
         <link href="../../extra_css/mkdocs/js/search.js" rel="stylesheet">
         <link href="../../extra_css/mkdocs/js/text.js" rel="stylesheet">
+        <link href="../../extra_css/code-tab.css" rel="stylesheet">
         <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!--[if lt IE 9]>
             <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
@@ -245,6 +246,15 @@
                             
 <li >
     <a href="../../hfj/ch18/">Chapter 18: Remote deploy with RMI</a>
+</li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">JC <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../../jc/Java_Concurrency/">Java Concurrency</a>
 </li>
                         </ul>
                     </li>
@@ -561,60 +571,59 @@
 <li><code class="codehilite">pthread_attr_setscope(pthread_attr_t *attr, int scope)</code></li>
 <li><code class="codehilite">pthread_attr_getscope(pthread_attr_t *attr, int *scope)</code></li>
 </ul>
-<div class="codehilite"><pre><span class="cp">#include</span> <span class="cpf">&lt;pthread.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
-<span class="cp">#define NUM_THREADS 5</span>
+<p> <div class=codehilite><pre><span class=cp>#include</span> <span class=cpf>&lt;pthread.h&gt;</span><span class=cp></span>
+<span class=cp>#include</span> <span class=cpf>&lt;stdio.h&gt;</span><span class=cp></span>
+<span class=cp>#define NUM_THREADS 5</span>
 
-<span class="cm">/* the thread runs in this function */</span>
-<span class="kt">void</span> <span class="o">*</span><span class="nf">runner</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">param</span><span class="p">);</span> 
+<span class=cm>/* the thread runs in this function */</span>
+<span class=kt>void</span> <span class=o>*</span><span class=nf>runner</span><span class=p>(</span><span class=kt>void</span> <span class=o>*</span><span class=n>param</span><span class=p>);</span> 
 
-<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span>
-<span class="p">{</span>
-    <span class="kt">int</span> <span class="n">i</span><span class="p">,</span> <span class="n">scope</span><span class="p">;</span>
-    <span class="n">pthread_t</span> <span class="n">tid</span><span class="p">[</span><span class="n">NUM_THREADS</span><span class="p">];</span>     <span class="cm">/* the thread identifier */</span>
-    <span class="n">pthread_attr_t</span> <span class="n">attr</span><span class="p">;</span>        <span class="cm">/* set of attributes for the thread */</span>
+<span class=kt>int</span> <span class=nf>main</span><span class=p>(</span><span class=kt>int</span> <span class=n>argc</span><span class=p>,</span> <span class=kt>char</span> <span class=o>*</span><span class=n>argv</span><span class=p>[])</span>
+<span class=p>{</span>
+    <span class=kt>int</span> <span class=n>i</span><span class=p>,</span> <span class=n>scope</span><span class=p>;</span>
+    <span class=n>pthread_t</span> <span class=n>tid</span><span class=p>[</span><span class=n>NUM_THREADS</span><span class=p>];</span>     <span class=cm>/* the thread identifier */</span>
+    <span class=n>pthread_attr_t</span> <span class=n>attr</span><span class=p>;</span>        <span class=cm>/* set of attributes for the thread */</span>
 
-    <span class="cm">/* get the default attributes */</span>
-    <span class="n">pthread_attr_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">attr</span><span class="p">);</span>
+    <span class=cm>/* get the default attributes */</span>
+    <span class=n>pthread_attr_init</span><span class=p>(</span><span class=o>&amp;</span><span class=n>attr</span><span class=p>);</span>
 
-    <span class="cm">/* first inquire on the current scope */</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">pthread_attr_getscope</span><span class="p">(</span><span class="o">&amp;</span><span class="n">attr</span><span class="p">,</span><span class="o">&amp;</span><span class="n">scope</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&quot;Unable to get scheduling scope.</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
-    <span class="k">else</span> <span class="p">{</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">scope</span> <span class="o">==</span> <span class="n">PTHREAD_SCOPE_PROCESS</span><span class="p">)</span>
-            <span class="n">printf</span><span class="p">(</span><span class="s">&quot;PTHREAD_SCOPE_PROCESS</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
-        <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">scope</span> <span class="o">==</span> <span class="n">PTHREAD_SCOPE_SYSTEM</span><span class="p">)</span>
-            <span class="n">printf</span><span class="p">(</span><span class="s">&quot;PTHREAD_SCOPE_SYSTEM</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
-        <span class="k">else</span> 
-            <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span><span class="s">&quot;Illegal scope value.</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
-    <span class="p">}</span>
+    <span class=cm>/* first inquire on the current scope */</span>
+    <span class=k>if</span> <span class=p>(</span><span class=n>pthread_attr_getscope</span><span class=p>(</span><span class=o>&amp;</span><span class=n>attr</span><span class=p>,</span><span class=o>&amp;</span><span class=n>scope</span><span class=p>)</span> <span class=o>!=</span> <span class=mi>0</span><span class=p>)</span>
+        <span class=n>fprintf</span><span class=p>(</span><span class=n>stderr</span><span class=p>,</span> <span class=s>&quot;Unable to get scheduling scope.</span><span class=se>\n</span><span class=s>&quot;</span><span class=p>);</span>
+    <span class=k>else</span> <span class=p>{</span>
+        <span class=k>if</span> <span class=p>(</span><span class=n>scope</span> <span class=o>==</span> <span class=n>PTHREAD_SCOPE_PROCESS</span><span class=p>)</span>
+            <span class=n>printf</span><span class=p>(</span><span class=s>&quot;PTHREAD_SCOPE_PROCESS</span><span class=se>\n</span><span class=s>&quot;</span><span class=p>);</span>
+        <span class=k>else</span> <span class=k>if</span> <span class=p>(</span><span class=n>scope</span> <span class=o>==</span> <span class=n>PTHREAD_SCOPE_SYSTEM</span><span class=p>)</span>
+            <span class=n>printf</span><span class=p>(</span><span class=s>&quot;PTHREAD_SCOPE_SYSTEM</span><span class=se>\n</span><span class=s>&quot;</span><span class=p>);</span>
+        <span class=k>else</span> 
+            <span class=n>fprintf</span><span class=p>(</span><span class=n>stderr</span><span class=p>,</span><span class=s>&quot;Illegal scope value.</span><span class=se>\n</span><span class=s>&quot;</span><span class=p>);</span>
+    <span class=p>}</span>
 
-    <span class="cm">/* set the scheduling algorithm to PCS or SCS */</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">pthread_attr_setscope</span><span class="p">(</span><span class="o">&amp;</span><span class="n">attr</span><span class="p">,</span> <span class="n">PTHREAD_SCOPE_SYSTEM</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;unable to set scheduling policy.</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+    <span class=cm>/* set the scheduling algorithm to PCS or SCS */</span>
+    <span class=k>if</span> <span class=p>(</span><span class=n>pthread_attr_setscope</span><span class=p>(</span><span class=o>&amp;</span><span class=n>attr</span><span class=p>,</span> <span class=n>PTHREAD_SCOPE_SYSTEM</span><span class=p>)</span> <span class=o>!=</span> <span class=mi>0</span><span class=p>)</span>
+        <span class=n>printf</span><span class=p>(</span><span class=s>&quot;unable to set scheduling policy.</span><span class=se>\n</span><span class=s>&quot;</span><span class=p>);</span>
 
-    <span class="cm">/* create the threads */</span>
-    <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">NUM_THREADS</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> 
-        <span class="n">pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tid</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="o">&amp;</span><span class="n">attr</span><span class="p">,</span><span class="n">runner</span><span class="p">,</span><span class="nb">NULL</span><span class="p">);</span> 
+    <span class=cm>/* create the threads */</span>
+    <span class=k>for</span> <span class=p>(</span><span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>NUM_THREADS</span><span class=p>;</span> <span class=n>i</span><span class=o>++</span><span class=p>)</span> 
+        <span class=n>pthread_create</span><span class=p>(</span><span class=o>&amp;</span><span class=n>tid</span><span class=p>[</span><span class=n>i</span><span class=p>],</span><span class=o>&amp;</span><span class=n>attr</span><span class=p>,</span><span class=n>runner</span><span class=p>,</span><span class=nb>NULL</span><span class=p>);</span> 
 
-    <span class="cm">/**</span>
-<span class="cm">     * Now join on each thread</span>
-<span class="cm">     */</span>
-    <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">NUM_THREADS</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> 
-        <span class="n">pthread_join</span><span class="p">(</span><span class="n">tid</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="nb">NULL</span><span class="p">);</span>
-<span class="p">}</span>
+    <span class=cm>/**</span>
+<span class=cm>     * Now join on each thread</span>
+<span class=cm>     */</span>
+    <span class=k>for</span> <span class=p>(</span><span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>NUM_THREADS</span><span class=p>;</span> <span class=n>i</span><span class=o>++</span><span class=p>)</span> 
+        <span class=n>pthread_join</span><span class=p>(</span><span class=n>tid</span><span class=p>[</span><span class=n>i</span><span class=p>],</span> <span class=nb>NULL</span><span class=p>);</span>
+<span class=p>}</span>
 
-<span class="cm">/**</span>
-<span class="cm"> * The thread will begin control in this function.</span>
-<span class="cm"> */</span>
-<span class="kt">void</span> <span class="o">*</span><span class="nf">runner</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">param</span><span class="p">)</span> 
-<span class="p">{</span>
-    <span class="cm">/* do some work ... */</span>
+<span class=cm>/**</span>
+<span class=cm> * The thread will begin control in this function.</span>
+<span class=cm> */</span>
+<span class=kt>void</span> <span class=o>*</span><span class=nf>runner</span><span class=p>(</span><span class=kt>void</span> <span class=o>*</span><span class=n>param</span><span class=p>)</span> 
+<span class=p>{</span>
+    <span class=cm>/* do some work ... */</span>
 
-    <span class="n">pthread_exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
-<span class="p">}</span>
-</pre></div>
-
+    <span class=n>pthread_exit</span><span class=p>(</span><span class=mi>0</span><span class=p>);</span>
+<span class=p>}</span>
+</pre></div></p>
 <h3 id="5-multi-processor-scheduling">5 Multi-Processor Scheduling<a class="headerlink" href="#5-multi-processor-scheduling" title="Permanent link">&para;</a></h3>
 <h4 id="approaches-to-multiple-processor-scheduling">Approaches to Multiple-Processor Scheduling<a class="headerlink" href="#approaches-to-multiple-processor-scheduling" title="Permanent link">&para;</a></h4>
 <p><strong>Asymmetric multiprocessing</strong> (AMP，非对称多处理)</p>
@@ -776,6 +785,7 @@
         <script>var base_url = '../..';</script>
         <script src="../../js/base.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+        <script src="../../extra_javascript/tabhack.js"></script>
         <script src="../../search/require.js"></script>
         <script src="../../search/search.js"></script>
 

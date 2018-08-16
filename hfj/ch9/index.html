@@ -22,6 +22,7 @@
         <link href="../../extra_css/mkdocs/js/require.js" rel="stylesheet">
         <link href="../../extra_css/mkdocs/js/search.js" rel="stylesheet">
         <link href="../../extra_css/mkdocs/js/text.js" rel="stylesheet">
+        <link href="../../extra_css/code-tab.css" rel="stylesheet">
         <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!--[if lt IE 9]>
             <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
@@ -249,6 +250,15 @@
                         </ul>
                     </li>
                     <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">JC <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../../jc/Java_Concurrency/">Java Concurrency</a>
+</li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">LKD <b class="caret"></b></a>
                         <ul class="dropdown-menu">
                             
@@ -392,27 +402,25 @@
 <p><strong>Local variables</strong> are declared inside a <em>method</em>, including method parameters. They're temporary, and live only as long as the method is on the stack.</p>
 <p>What about local variables that are objects?</p>
 <p><strong><em>If the local variable is a reference to an object, only the variable (the reference/remote control) goes on the stack.</em></strong></p>
-<div class="codehilite"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">StackRef</span> <span class="o">{</span>
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">foof</span><span class="o">()</span> <span class="o">{</span>
-     <span class="n">barf</span><span class="o">();</span>
-    <span class="o">}</span>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>StackRef</span> <span class=o>{</span>
+    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>foof</span><span class=o>()</span> <span class=o>{</span>
+     <span class=n>barf</span><span class=o>();</span>
+    <span class=o>}</span>
 
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">barf</span><span class="o">()</span> <span class="o">{</span>
-        <span class="n">Duck</span> <span class="n">d</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Duck</span><span class="o">(</span><span class="mi">24</span><span class="o">);</span>
-    <span class="o">}</span>
-<span class="o">}</span>
-</pre></div>
-
+    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>barf</span><span class=o>()</span> <span class=o>{</span>
+        <span class=n>Duck</span> <span class=n>d</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Duck</span><span class=o>(</span><span class=mi>24</span><span class=o>);</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></p>
 <p><img alt="local_variable_is_a_referece_to_an_object" src="../figures/local_variable_is_a_referece_to_an_object-1.png" /></p>
 <h3 id="2-constructor">2 Constructor<a class="headerlink" href="#2-constructor" title="Permanent link">&para;</a></h3>
 <p><strong>Constructor</strong>(构造函数) is <em><em>the code that runs when you instantiate an object</em></em> . They only way to invoke a constructor is with the keyword <strong><code class="codehilite">new</code></strong> followed by the class name.</p>
 <p>You can write a constructor for your class, but if you don't the <strong><em>compiler writes one for you</em></strong> !</p>
 <p>Here is what the compiler default constructor looks like:</p>
-<div class="codehilite"><pre><span class="kd">public</span> <span class="nf">Duck</span><span class="o">(){</span>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=nf>Duck</span><span class=o>(){</span>
 
-<span class="o">}</span>
-</pre></div>
-
+<span class=o>}</span>
+</pre></div></p>
 <p>A constructor does look and feel a lot like a method, but it's <em>not</em> a method. How is it different from a method?</p>
 <ul>
 <li>A constructor's name is the same as the class name. That's mandatory.</li>
@@ -429,30 +437,29 @@
 <h4 id="initializing-the-state-of-an-object">Initializing the state of an object<a class="headerlink" href="#initializing-the-state-of-an-object" title="Permanent link">&para;</a></h4>
 <p>Most people use constructors to initialize the state of an object. In other words, to make and assign values to the object's instance variables. </p>
 <p>And all you need to do is make a constructor with arguments:</p>
-<div class="codehilite"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Duck</span> <span class="o">{</span>
-    <span class="kt">int</span> <span class="n">size</span><span class="o">;</span>
-    <span class="c1">// Add an int parameter to the Duck constructor</span>
-    <span class="kd">public</span> <span class="nf">Duck</span><span class="o">(</span><span class="kt">int</span> <span class="n">duckSize</span><span class="o">)</span> <span class="o">{</span>
-        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Quack&quot;</span><span class="o">);</span>
-        <span class="c1">// use the argument value to set the size instance variable.</span>
-        <span class="n">size</span> <span class="o">=</span> <span class="n">duckSize</span><span class="o">;</span>
-        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;size is &quot;</span> <span class="o">+</span> <span class="n">size</span><span class="o">);</span>
-    <span class="o">}</span>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>Duck</span> <span class=o>{</span>
+    <span class=kt>int</span> <span class=n>size</span><span class=o>;</span>
+    <span class=c1>// Add an int parameter to the Duck constructor</span>
+    <span class=kd>public</span> <span class=nf>Duck</span><span class=o>(</span><span class=kt>int</span> <span class=n>duckSize</span><span class=o>)</span> <span class=o>{</span>
+        <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=s>&quot;Quack&quot;</span><span class=o>);</span>
+        <span class=c1>// use the argument value to set the size instance variable.</span>
+        <span class=n>size</span> <span class=o>=</span> <span class=n>duckSize</span><span class=o>;</span>
+        <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=s>&quot;size is &quot;</span> <span class=o>+</span> <span class=n>size</span><span class=o>);</span>
+    <span class=o>}</span>
 
-    <span class="kd">public</span> <span class="nf">Duck</span><span class="o">()</span> <span class="o">{</span>
-        <span class="c1">//supply default size</span>
-        <span class="n">size</span> <span class="o">=</span> <span class="mi">27</span><span class="o">;</span>
-    <span class="o">}</span>
-<span class="o">}</span>
+    <span class=kd>public</span> <span class=nf>Duck</span><span class=o>()</span> <span class=o>{</span>
+        <span class=c1>//supply default size</span>
+        <span class=n>size</span> <span class=o>=</span> <span class=mi>27</span><span class=o>;</span>
+    <span class=o>}</span>
+<span class=o>}</span>
 
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">UseADuck</span> <span class="o">{</span>
-    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
-        <span class="c1">// Pass a value to the constructor</span>
-        <span class="n">Duck</span> <span class="n">d</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Duck</span><span class="o">(</span><span class="mi">42</span><span class="o">);</span>
-    <span class="o">}</span>
-<span class="o">}</span>
-</pre></div>
-
+<span class=kd>public</span> <span class=kd>class</span> <span class=nc>UseADuck</span> <span class=o>{</span>
+    <span class=kd>public</span> <span class=kd>static</span> <span class=kt>void</span> <span class=nf>main</span><span class=o>(</span><span class=n>String</span><span class=o>[]</span> <span class=n>args</span><span class=o>)</span> <span class=o>{</span>
+        <span class=c1>// Pass a value to the constructor</span>
+        <span class=n>Duck</span> <span class=n>d</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Duck</span><span class=o>(</span><span class=mi>42</span><span class=o>);</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></p>
 <p>If you have more than one constructor in a class, it means you have <strong><em>overloaded</em></strong> constructors. <strong>The constructors MUST have different arguments lists</strong>. Different arguments lists means different variable <em>type</em>(int, Dog, etc.) and <em>order</em>.</p>
 <p>If you write a constructor that takes arguments, and you still want a no-arg constructor, you'll have to build the no-arg constructor yourself! Because the compiler won't make a default constructor if you have any constructors.</p>
 <h4 id="constructor-chaining">constructor chaining<a class="headerlink" href="#constructor-chaining" title="Permanent link">&para;</a></h4>
@@ -460,38 +467,36 @@
 <p><strong><em>All the constructors in an object's inheritance tree must run when you make a new object.</em></strong> When a constructor runs, it immediately calls its superclass constructor, all the way up the chain until you get to the class <code class="codehilite">Object</code> constructor (called <strong>constructor chaining</strong>(构造函数链)).</p>
 <p>eg. A new Hippo object also IS-A Animal and IS-A Object. If you want to make a Hippo, you must also make the Animal and Object parts of the Hippo.</p>
 <p><img alt="construcotr_chaining" src="../figures/construcotr_chaining-1.png" /></p>
-<div class="codehilite"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Animal</span> <span class="o">{</span> 
-    <span class="kd">public</span> <span class="nf">Animal</span><span class="o">()</span> <span class="o">{</span> 
-        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="err">“</span><span class="n">Making</span> <span class="n">an</span> <span class="n">Animal</span><span class="err">”</span><span class="o">);</span> 
-    <span class="o">}</span> 
-<span class="o">}</span>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>Animal</span> <span class=o>{</span> 
+    <span class=kd>public</span> <span class=nf>Animal</span><span class=o>()</span> <span class=o>{</span> 
+        <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=err>“</span><span class=n>Making</span> <span class=n>an</span> <span class=n>Animal</span><span class=err>”</span><span class=o>);</span> 
+    <span class=o>}</span> 
+<span class=o>}</span>
 
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Hippo</span> <span class="kd">extends</span> <span class="n">Animal</span> <span class="o">{</span> 
-    <span class="kd">public</span> <span class="nf">Hippo</span><span class="o">()</span> <span class="o">{</span> 
-        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="err">“</span><span class="n">Making</span> <span class="n">a</span> <span class="n">Hippo</span><span class="err">”</span><span class="o">);</span> 
-    <span class="o">}</span>
-<span class="o">}</span>
+<span class=kd>public</span> <span class=kd>class</span> <span class=nc>Hippo</span> <span class=kd>extends</span> <span class=n>Animal</span> <span class=o>{</span> 
+    <span class=kd>public</span> <span class=nf>Hippo</span><span class=o>()</span> <span class=o>{</span> 
+        <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=err>“</span><span class=n>Making</span> <span class=n>a</span> <span class=n>Hippo</span><span class=err>”</span><span class=o>);</span> 
+    <span class=o>}</span>
+<span class=o>}</span>
 
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">TestHippo</span> <span class="o">{</span>
-    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span> <span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span> <span class="o">{</span> 
-        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="err">“</span><span class="n">Starting</span><span class="o">...</span><span class="err">”</span><span class="o">);</span> 
-        <span class="n">Hippo</span> <span class="n">h</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Hippo</span><span class="o">();</span> 
-        <span class="o">}</span>
-<span class="o">}</span>
-</pre></div>
-
+<span class=kd>public</span> <span class=kd>class</span> <span class=nc>TestHippo</span> <span class=o>{</span>
+    <span class=kd>public</span> <span class=kd>static</span> <span class=kt>void</span> <span class=nf>main</span> <span class=o>(</span><span class=n>String</span><span class=o>[]</span> <span class=n>args</span> <span class=o>{</span> 
+        <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=err>“</span><span class=n>Starting</span><span class=o>...</span><span class=err>”</span><span class=o>);</span> 
+        <span class=n>Hippo</span> <span class=n>h</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Hippo</span><span class=o>();</span> 
+        <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></p>
 <p><img alt="hippo_animal_constructo" src="../figures/hippo_animal_constructor.png" /></p>
 <h4 id="invoke-a-superclass-constructor">invoke a superclass constructor<a class="headerlink" href="#invoke-a-superclass-constructor" title="Permanent link">&para;</a></h4>
 <p>The only way to call a superclass constructor is by calling <code class="codehilite">**super()</code>**.</p>
-<div class="codehilite"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Duck</span> <span class="kd">extends</span> <span class="n">Animal</span> <span class="o">{</span>
-    <span class="kt">int</span> <span class="n">size</span><span class="o">;</span>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>Duck</span> <span class=kd>extends</span> <span class=n>Animal</span> <span class=o>{</span>
+    <span class=kt>int</span> <span class=n>size</span><span class=o>;</span>
 
-    <span class="kd">public</span> <span class="nf">Duck</span><span class="o">(</span><span class="kt">int</span> <span class="n">newSize</span><span class="o">)</span> <span class="o">{</span>
-        <span class="kd">super</span><span class="o">();</span>
-    <span class="o">}</span>
-<span class="o">}</span>
-</pre></div>
-
+    <span class=kd>public</span> <span class=nf>Duck</span><span class=o>(</span><span class=kt>int</span> <span class=n>newSize</span><span class=o>)</span> <span class=o>{</span>
+        <span class=kd>super</span><span class=o>();</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></p>
 <p>A call to <code class="codehilite">super()</code> in your constructor puts the superclass constructor on the top of the Stack. And that superclass constructor calls its superclass constructor. And so it goes until the Object constructor is on the top of the Stack. Once <code class="codehilite">Object()</code> finishes, it's popped off the Stack and goes until the original constructor is on the top of the Stack.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -505,30 +510,29 @@
 <li>The call to <code class="codehilite">this()</code> can be used only in a constructor, and must be the <strong><em>first</em></strong> statement in a constructor.</li>
 <li>A constructor can have a call to <code class="codehilite">super()</code> or <code class="codehilite">this()</code>, but never both!</li>
 </ul>
-<div class="codehilite"><pre><span class="kd">class</span> <span class="nc">Mini</span> <span class="kd">extends</span> <span class="n">Car</span> <span class="o">{</span>
-    <span class="n">Color</span> <span class="n">color</span><span class="o">;</span>
-    <span class="kd">public</span> <span class="nf">Mini</span><span class="o">()</span> <span class="o">{</span> 
-        <span class="c1">// The no-arg constructor supplies a default Color</span>
-        <span class="c1">// and calls the overloaded Real Constructor (the one that calls super())</span>
-        <span class="k">this</span><span class="o">(</span><span class="n">Color</span><span class="o">.</span><span class="na">Red</span><span class="o">);</span>
-    <span class="o">}</span>
+<p> <div class=codehilite><pre><span class=kd>class</span> <span class=nc>Mini</span> <span class=kd>extends</span> <span class=n>Car</span> <span class=o>{</span>
+    <span class=n>Color</span> <span class=n>color</span><span class=o>;</span>
+    <span class=kd>public</span> <span class=nf>Mini</span><span class=o>()</span> <span class=o>{</span> 
+        <span class=c1>// The no-arg constructor supplies a default Color</span>
+        <span class=c1>// and calls the overloaded Real Constructor (the one that calls super())</span>
+        <span class=k>this</span><span class=o>(</span><span class=n>Color</span><span class=o>.</span><span class=na>Red</span><span class=o>);</span>
+    <span class=o>}</span>
 
-    <span class="kd">public</span> <span class="nf">Mini</span><span class="o">(</span><span class="n">Color</span> <span class="n">c</span><span class="o">)</span> <span class="o">{</span> 
-        <span class="c1">// The is the Real Constructor that does the real work of initializing the object</span>
-        <span class="kd">super</span><span class="o">(</span><span class="err">“</span><span class="n">Mini</span><span class="err">”</span><span class="o">);</span>   
-        <span class="n">color</span> <span class="o">=</span> <span class="n">c</span><span class="o">;</span> 
-        <span class="c1">// more initialization </span>
-    <span class="o">}</span>
+    <span class=kd>public</span> <span class=nf>Mini</span><span class=o>(</span><span class=n>Color</span> <span class=n>c</span><span class=o>)</span> <span class=o>{</span> 
+        <span class=c1>// The is the Real Constructor that does the real work of initializing the object</span>
+        <span class=kd>super</span><span class=o>(</span><span class=err>“</span><span class=n>Mini</span><span class=err>”</span><span class=o>);</span>   
+        <span class=n>color</span> <span class=o>=</span> <span class=n>c</span><span class=o>;</span> 
+        <span class=c1>// more initialization </span>
+    <span class=o>}</span>
 
-    <span class="kd">public</span> <span class="nf">Mini</span><span class="o">(</span><span class="kt">int</span> <span class="n">size</span><span class="o">)</span> <span class="o">{</span> 
-        <span class="c1">// Won&#39;t work!! Can&#39;t have super() and this() in the same constructor</span>
-        <span class="c1">// because they each must be the first statement!</span>
-        <span class="k">this</span><span class="o">(</span><span class="n">Color</span><span class="o">.</span><span class="na">Red</span><span class="o">);</span> 
-        <span class="kd">super</span><span class="o">(</span><span class="n">size</span><span class="o">);</span>
-    <span class="o">}</span>
-<span class="o">}</span>
-</pre></div>
-
+    <span class=kd>public</span> <span class=nf>Mini</span><span class=o>(</span><span class=kt>int</span> <span class=n>size</span><span class=o>)</span> <span class=o>{</span> 
+        <span class=c1>// Won&#39;t work!! Can&#39;t have super() and this() in the same constructor</span>
+        <span class=c1>// because they each must be the first statement!</span>
+        <span class=k>this</span><span class=o>(</span><span class=n>Color</span><span class=o>.</span><span class=na>Red</span><span class=o>);</span> 
+        <span class=kd>super</span><span class=o>(</span><span class=n>size</span><span class=o>);</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></p>
 <h3 id="3-object-lifespan">3 Object lifespan<a class="headerlink" href="#3-object-lifespan" title="Permanent link">&para;</a></h3>
 <p>An Object's life depends entirely on the life of references referring to it.</p>
 <ul>
@@ -563,6 +567,7 @@
         <script>var base_url = '../..';</script>
         <script src="../../js/base.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+        <script src="../../extra_javascript/tabhack.js"></script>
         <script src="../../search/require.js"></script>
         <script src="../../search/search.js"></script>
 
