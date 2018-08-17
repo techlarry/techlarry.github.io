@@ -423,15 +423,15 @@
 </li>
 <li>Close the ObjectOutputStream<ul>
 <li><code class="codehilite"><span class="n">os</span><span class="o">.</span><span class="na">close</span><span class="o">();</span></code></li>
-<li>Closing the stream at the top closes the ones underneath, so the FileOutputStream (and the file) will close automatically.   </li>
+<li>Closing the stream at the top closes the ones underneath, so the <C>FileOutputStream</C> (and the file) will close automatically.   </li>
 </ul>
 </li>
 </ul>
 <h4 id="streams">Streams<a class="headerlink" href="#streams" title="Permanent link">&para;</a></h4>
 <p>The Java I/O API has <strong>connection streams</strong>, that represent connections to destinations and sources such as files or network sockets, and <strong>chain streams</strong> that work only if chained to other streams.</p>
 <ul>
-<li>connection streams represent the connection (FileOutputStream)</li>
-<li>chain streams call methods on connection. (ObjectOutputStream)</li>
+<li>connection streams represent the connection (<C>FileOutputStream</C>)</li>
+<li>chain streams call methods on connection. (<C>ObjectOutputStream</C>)</li>
 </ul>
 <p><img alt="data_streams" src="../figures/data_streams.png" /></p>
 <ul>
@@ -456,18 +456,19 @@
 <ul>
 <li>The Serializable interface is known as a <em>marker</em> or <em>tag</em> interface, because the interface doesn't have any methods to implement.</li>
 <li>Its sole purpose is to announce that the class implementing it, is <em>serializable</em>.</li>
-<li>If any superclass of a class is serializable, the subclass is automatically serializable even if the subclass doesn't explicitly declare <em>implements Serializable</em>.</li>
+<li>If any superclass of a class is serializable, the subclass is automatically serializable even if the subclass doesn't explicitly declare <C>implements Serializable</C>.</li>
 </ul>
 <blockquote>
-<p>A <strong>marker interface</strong> is an interface that contains no method declarations, but merely designates (or "marks") a class that implements the interface as having some property. <small>[Effective Java, 2nd]</small></p>
+<p>A <strong>marker interface</strong> is an interface that contains NO method declarations, but merely designates (or "marks") a class that implements the interface as having some property. <small>[Effective Java, 2nd]</small></p>
 </blockquote>
 <p><strong>Serialization is all or nothing</strong>: Either the entire object graph is serialized correctly or serialization correctly or serialization fails.</p>
 <h4 id="transient">transient<a class="headerlink" href="#transient" title="Permanent link">&para;</a></h4>
-<p><code class="codehilite">transient</code> is a variables modifier used in serialization:</p>
+<p><C>transient</C> is a variables modifier used in serialization:</p>
 <p><b>Mark an instance variable as <i><mark class="critic">transient</mark></i> if it can't (or shouldn't) be saved.</b></p>
 <p> <div class=codehilite><pre><span class=kn>import</span> <span class=nn>java.net.*</span><span class=o>;</span>
 <span class=kd>class</span> <span class=nc>Chat</span> <span class=kd>implements</span> <span class=n>Serializable</span> <span class=o>{</span>
-    <span class=c1>// transient says, &quot;don&#39;t save this variable during serialization, just skip it&quot;.</span>
+    <span class=c1>// transient says, </span>
+    <span class=c1>// &quot;don&#39;t save this variable during serialization, just skip it&quot;.</span>
     <span class=kd>transient</span> <span class=n>String</span> <span class=n>currentID</span><span class=o>;</span>
 
     <span class=n>String</span> <span class=n>userName</span><span class=o>;</span>
@@ -499,17 +500,17 @@
 </li>
 <li>Read the object<ul>
 <li><code class="codehilite"><span class="n">Object</span> <span class="n">one</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="na">readObject</span><span class="o">();</span></code></li>
-<li>Each time you say readObject(), you get the next object in the stream. So you'll read them back in the same order in which they were written.</li>
+<li>Each time you say <C>readObject()</C>, you get the next object in the stream. So you'll read them back in the same order in which they were written.</li>
 </ul>
 </li>
 <li>Cast the objects<ul>
-<li>GameCharacter elf = (GameCharacter) one; </li>
-<li>The return value of readObject() is type Object, so you have to <em>cast</em> it back to the type you know it really is.</li>
+<li><code class="codehilite"><span class="n">GameCharacter</span> <span class="n">elf</span> <span class="o">=</span> <span class="o">(</span><span class="n">GameCharacter</span><span class="o">)</span> <span class="n">one</span><span class="o">;</span></code></li>
+<li>The return value of <C>readObject()</C> is type <C>Object</C>, so you have to <em>cast</em> it back to the type you know it really is.</li>
 </ul>
 </li>
 <li>Close the ObjectInputStream<ul>
 <li><code class="codehilite"><span class="n">os</span><span class="o">.</span><span class="na">close</span><span class="o">();</span></code> </li>
-<li>Closing the stream at the top closes the  ones underneath, so the FileInputStream and the file will close automatically.</li>
+<li>Closing the stream at the top closes the ones underneath, so the <C>FileInputStream</C> and the file will close automatically.</li>
 </ul>
 </li>
 </ul>
