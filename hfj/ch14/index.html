@@ -380,8 +380,8 @@
         <li class="main "><a href="#saving-objects">Saving Objects</a></li>
             <li><a href="#writing-a-serialized-object-to-a-file">Writing a serialized object to a file</a></li>
             <li><a href="#streams">Streams</a></li>
-            <li><a href="#serialized-objects">Serialized objects</a></li>
-            <li><a href="#implement-serializable">implement Serializable</a></li>
+            <li><a href="#saving-serialized-objects">Saving Serialized Objects</a></li>
+            <li><a href="#implement-serializable">Implement Serializable</a></li>
             <li><a href="#transient">transient</a></li>
             <li><a href="#deserialization">Deserialization</a></li>
             <li><a href="#serialversionuid">serialVersionUID</a></li>
@@ -438,18 +438,18 @@
 <li>FileOutputStreams write bytes to a file.</li>
 <li>ObjectOutputStreams turn objects into data that can be written to a stream.</li>
 </ul>
-<h4 id="serialized-objects">Serialized objects<a class="headerlink" href="#serialized-objects" title="Permanent link">&para;</a></h4>
+<h4 id="saving-serialized-objects">Saving Serialized Objects<a class="headerlink" href="#saving-serialized-objects" title="Permanent link">&para;</a></h4>
 <p>Serialization saves the entire <strong>object graph</strong>.</p>
 <ul>
 <li>When an object is serialized, all the objects it refers to from instance variables are <em>also</em> serialized.  </li>
 </ul>
 <p><img alt="object_graph" src="../figures/object_graph.png" /></p>
-<h4 id="implement-serializable">implement Serializable<a class="headerlink" href="#implement-serializable" title="Permanent link">&para;</a></h4>
+<h4 id="implement-serializable">Implement Serializable<a class="headerlink" href="#implement-serializable" title="Permanent link">&para;</a></h4>
 <p><b>If you want your class to be serializable, implement <i><mark class="critic">Serializable</mark></i>.</b></p>
 <ul>
 <li>The Serializable interface is known as a <em>marker</em> or <em>tag</em> interface, because the interface doesn't have any methods to implement.</li>
 <li>Its sole purpose is to announce that the class implementing it, is <em>serializable</em>.</li>
-<li>If  any superclass of a class is serializable, the subclass is automatically serializable even if the subclass doesn't explicitly declare <em>implements Serializable</em>.</li>
+<li>If any superclass of a class is serializable, the subclass is automatically serializable even if the subclass doesn't explicitly declare <em>implements Serializable</em>.</li>
 </ul>
 <blockquote>
 <p>A <strong>marker interface</strong> is an interface that contains no method declarations, but merely designates (or "marks") a class that implements the interface as having some property. <small>[Effective Java, 2nd]</small></p>
@@ -473,6 +473,11 @@
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>If you serialize an object, a transient reference instance variable will be brought back as <em>null</em>, regardless of the value it had at the time it was saved.</p>
+</div>
+<div class="admonition question">
+<p class="admonition-title">Question</p>
+<p>What happens if two objects in the object graph are the same object?</p>
+<p>In that case, <em>only one</em> of the objects is saved, and during deserialization, any references to that single object are restored.</p>
 </div>
 <h4 id="deserialization">Deserialization<a class="headerlink" href="#deserialization" title="Permanent link">&para;</a></h4>
 <p><strong>Deserialization</strong>(反序列化) is a lot like <strong>serialization</strong>(序列化) in reverse.</p>
