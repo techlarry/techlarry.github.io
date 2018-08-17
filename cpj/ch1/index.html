@@ -6,9 +6,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         
         <meta name="author" content="Zhenhua Wang">
-        <link rel="canonical" href="http://larryim.cc/note/jc/Java_Concurrency/">
+        <link rel="canonical" href="http://larryim.cc/note/cpj/ch1/">
         <link rel="shortcut icon" href="../../img/favicon.ico">
-        <title>Java Concurrency - Zhenhua's Notes</title>
+        <title>Concurrent Programming in Java 1: Threads and Locks - Zhenhua's Notes</title>
         <link href="../../css/bootstrap-custom.min.css" rel="stylesheet">
         <link href="../../css/font-awesome-4.5.0.css" rel="stylesheet">
         <link href="../../css/base.css" rel="stylesheet">
@@ -250,11 +250,23 @@
                         </ul>
                     </li>
                     <li class="dropdown active">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">JC <b class="caret"></b></a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">CPJ <b class="caret"></b></a>
                         <ul class="dropdown-menu">
                             
 <li class="active">
-    <a href="./">Java Concurrency</a>
+    <a href="./">Concurrent Programming in Java 1: Threads and Locks</a>
+</li>
+                            
+<li >
+    <a href="../ch2/">Concurrent Programming in Java 2: Critical Sections and Isolation</a>
+</li>
+                            
+<li >
+    <a href="../ch3/">Concurrent Programming in Java 3: Actors</a>
+</li>
+                            
+<li >
+    <a href="../ch4/">Concurrent Programming in Java 4: Concurrent Data Structures</a>
 </li>
                         </ul>
                     </li>
@@ -364,7 +376,7 @@
                         </a>
                     </li>
                     <li >
-                        <a rel="prev" href="../../lkd/">
+                        <a rel="prev" href="../ch2/">
                             Next <i class="fa fa-arrow-right"></i>
                         </a>
                     </li>
@@ -389,6 +401,7 @@
             <li><a href="#trylock">tryLock</a></li>
         <li class="main "><a href="#liveness">Liveness</a></li>
         <li class="main "><a href="#dining-philosophers">Dining Philosophers</a></li>
+            <li><a href="#implementation">Implementation</a></li>
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
@@ -610,6 +623,9 @@
 <h4 id="reentrantlock">ReentrantLock<a class="headerlink" href="#reentrantlock" title="Permanent link">&para;</a></h4>
 <p>A <strong>ReentrantLock</strong>(重入锁) is <em>unstructured</em>, unlike synchronized constructs -- i.e. you don't need to use a block structure for locking and can even hold a lock across methods.</p>
 <p>A reentrant mutual exclusion <C>Lock</C> with the same basic behavior and semantics as the implicit monitor lock accessed using synchronized methods and statements, but with extended capabilities.[<a href="https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/locks/ReentrantLock.html#tryLock()">Java Doc-Class ReentrantLock</a>]</p>
+<blockquote>
+<p>A ReentrantLock is owned by the thread last successfully locking, but not yet unlocking it. A thread invoking lock will return, successfully acquiring the lock, when the lock is not owned by another thread.</p>
+</blockquote>
 <p>It is recommended practice to <em>always</em> immediately follow a call to <C>lock</C> with a <C>try</C> block, most typically in a before/after construction such as:</p>
 <p> <div class=codehilite><pre><span class=kd>class</span> <span class=nc>X</span> <span class=o>{</span>
    <span class=kd>private</span> <span class=kd>final</span> <span class=n>ReentrantLock</span> <span class=n>lock</span> <span class=o>=</span> <span class=k>new</span> <span class=n>ReentrantLock</span><span class=o>();</span>
@@ -673,7 +689,120 @@
 </ul>
 <p><a href="../../osc/ch6.md/#8-liveness">Liveness failures in detail on OSC</a></p>
 <h3 id="dining-philosophers">Dining Philosophers<a class="headerlink" href="#dining-philosophers" title="Permanent link">&para;</a></h3>
-<p>[<a href="../../ch7.md/#the-dining-philosophers-problem">Dining Philosophers described in OSC</a>]</p></div>
+<p><a href="../../osc/ch7.md/#the-dining-philosophers-problem">Dining Philosophers described in OSC</a></p>
+<p>The philosophers follow the following protocol:</p>
+<p> <div class=codehilite><pre><span class=k>while</span><span class=o>(</span><span class=kc>true</span><span class=o>)</span> <span class=o>{</span> 
+    <span class=c1>// Initially, thinking about life, universe, and everything</span>
+    <span class=n>think</span><span class=o>();</span>
+
+    <span class=c1>// Take a break from thinking, hungry now</span>
+    <span class=n>pick_up_left_fork</span><span class=o>();</span>
+    <span class=n>pick_up_right_fork</span><span class=o>();</span>
+    <span class=n>eat</span><span class=o>();</span>
+    <span class=n>put_down_right_fork</span><span class=o>();</span>
+    <span class=n>put_down_left_fork</span><span class=o>();</span>
+
+    <span class=c1>// Not hungry anymore. Back to thinking!</span>
+<span class=o>}</span>
+</pre></div></p>
+<h4 id="implementation">Implementation<a class="headerlink" href="#implementation" title="Permanent link">&para;</a></h4>
+<p><a href="https://www.baeldung.com/java-dining-philoshophers">The Dining Philosophers Problem in Java</a></p>
+<p>We model each of our philosophers as classes that implement the Runnable interface so that we can run them as separate threads. Each Philosopher has access to two forks on his left and right sides. </p>
+<p>Consider a situation in which all philosophers grab the left fork/chopsticks at the same time, leading to the deadlock.</p>
+<p>Simply, We introduce the condition that makes the last philosopher reach for his right fork first, instead of the left. This breaks the circular wait condition and we can avert the deadlock.</p>
+<div class=md-fenced-code-tabs id=tab-tab-group-12><input name=tab-group-12 type=radio id=tab-group-12-0_Java checked=checked class=code-tab data-lang=Java aria-controls=tab-group-12-0_Java-panel role=tab><label for=tab-group-12-0_Java class=code-tab-label data-lang=Java id=tab-group-12-0_Java-label>Diningphilosopherstable</label><div class=code-tabpanel role=tabpanel data-lang=Java id=tab-group-12-0_Java-panel aria-labelledby=tab-group-12-0_Java-label><div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>DiningPhilosophersTable</span> <span class=o>{</span>
+    <span class=kd>private</span> <span class=kd>static</span> <span class=kt>int</span> <span class=n>numPhilosophers</span><span class=o>;</span>
+    <span class=kd>private</span> <span class=kd>static</span> <span class=kt>int</span> <span class=n>numForks</span><span class=o>;</span>
+
+    <span class=kd>public</span> <span class=nf>DiningPhilosophersTable</span><span class=o>(</span><span class=kt>int</span> <span class=n>num</span><span class=o>){</span>
+        <span class=k>this</span><span class=o>.</span><span class=na>numPhilosophers</span> <span class=o>=</span> <span class=n>num</span><span class=o>;</span>
+        <span class=k>this</span><span class=o>.</span><span class=na>numForks</span> <span class=o>=</span> <span class=n>num</span><span class=o>;</span>
+
+        <span class=n>Philosopher</span><span class=o>[]</span> <span class=n>philosophers</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Philosopher</span><span class=o>[</span><span class=n>numPhilosophers</span><span class=o>];</span>
+        <span class=n>Fork</span><span class=o>[]</span> <span class=n>forks</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Fork</span><span class=o>[</span><span class=n>numForks</span><span class=o>];</span> <span class=c1>// Initialize array of forks</span>
+
+        <span class=k>for</span> <span class=o>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=o>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>numForks</span><span class=o>;</span> <span class=n>i</span><span class=o>++)</span> <span class=o>{</span>
+            <span class=n>forks</span><span class=o>[</span><span class=n>i</span><span class=o>]</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Fork</span><span class=o>(</span><span class=n>i</span><span class=o>+</span><span class=mi>1</span><span class=o>);</span>
+        <span class=o>}</span>
+
+        <span class=k>for</span> <span class=o>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=o>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>numPhilosophers</span><span class=o>;</span> <span class=n>i</span><span class=o>++)</span> <span class=o>{</span>
+            <span class=c1>// avoid deadlock: the last philosopher picks up the right fork first</span>
+            <span class=k>if</span> <span class=o>(</span><span class=n>i</span> <span class=o>==</span> <span class=n>philosophers</span><span class=o>.</span><span class=na>length</span> <span class=o>-</span> <span class=mi>1</span><span class=o>)</span> <span class=o>{</span>
+                <span class=n>philosophers</span><span class=o>[</span><span class=n>i</span><span class=o>]</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Philosopher</span><span class=o>(</span><span class=n>Integer</span><span class=o>.</span><span class=na>toString</span><span class=o>(</span><span class=n>i</span><span class=o>),</span> 
+                    <span class=n>forks</span><span class=o>[(</span><span class=n>i</span> <span class=o>+</span> <span class=mi>1</span><span class=o>)</span> <span class=o>/</span> <span class=n>numForks</span><span class=o>],</span> <span class=n>forks</span><span class=o>[</span><span class=n>i</span><span class=o>]);</span>
+            <span class=o>}</span> <span class=k>else</span> <span class=o>{</span>
+                <span class=n>philosophers</span><span class=o>[</span><span class=n>i</span><span class=o>]</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Philosopher</span><span class=o>(</span><span class=n>Integer</span><span class=o>.</span><span class=na>toString</span><span class=o>(</span><span class=n>i</span><span class=o>),</span> 
+                    <span class=n>forks</span><span class=o>[</span><span class=n>i</span><span class=o>],</span> <span class=n>forks</span><span class=o>[(</span><span class=n>i</span> <span class=o>+</span> <span class=mi>1</span><span class=o>)</span> <span class=o>/</span> <span class=n>numForks</span><span class=o>]);</span>
+            <span class=o>}</span>
+        <span class=o>}</span>
+
+        <span class=k>for</span> <span class=o>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=o>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>numPhilosophers</span><span class=o>;</span> <span class=n>i</span><span class=o>++)</span> <span class=o>{</span>
+            <span class=n>Thread</span> <span class=n>thread</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Thread</span><span class=o>(</span><span class=n>philosophers</span><span class=o>[</span><span class=n>i</span><span class=o>],</span> <span class=s>&quot;Philosopher&quot;</span><span class=o>+</span><span class=n>Integer</span><span class=o>.</span><span class=na>toString</span><span class=o>(</span><span class=n>i</span><span class=o>));</span>
+            <span class=n>thread</span><span class=o>.</span><span class=na>start</span><span class=o>();</span>
+        <span class=o>}</span> <span class=c1>// end for</span>
+    <span class=o>}</span> <span class=c1>// end constructor</span>
+
+
+    <span class=kd>public</span> <span class=kd>static</span> <span class=kt>void</span> <span class=nf>main</span><span class=o>(</span><span class=n>String</span><span class=o>[]</span> <span class=n>args</span><span class=o>)</span> <span class=o>{</span>
+        <span class=n>DiningPhilosophersTable</span> <span class=n>dining</span> <span class=o>=</span> <span class=k>new</span> <span class=n>DiningPhilosophersTable</span><span class=o>(</span><span class=mi>5</span><span class=o>);</span>
+    <span class=o>}</span> <span class=c1>// end main</span>
+<span class=o>}</span>
+</pre></div></div><input name=tab-group-12 type=radio id=tab-group-12-1_Java class=code-tab data-lang=Java aria-controls=tab-group-12-1_Java-panel role=tab><label for=tab-group-12-1_Java class=code-tab-label data-lang=Java id=tab-group-12-1_Java-label>Philosopher</label><div class=code-tabpanel role=tabpanel data-lang=Java id=tab-group-12-1_Java-panel aria-labelledby=tab-group-12-1_Java-label><div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>Philosopher</span> <span class=kd>implements</span> <span class=n>Runnable</span> <span class=o>{</span>
+
+    <span class=kd>private</span> <span class=n>Fork</span> <span class=n>_left_fork</span><span class=o>;</span>
+    <span class=kd>private</span> <span class=n>Fork</span> <span class=n>_right_fork</span><span class=o>;</span>
+    <span class=kd>private</span> <span class=n>String</span> <span class=n>_name</span><span class=o>;</span>
+
+    <span class=kd>public</span> <span class=nf>Philosopher</span><span class=o>(</span><span class=n>String</span> <span class=n>name</span><span class=o>,</span> <span class=n>Fork</span> <span class=n>left_fork</span><span class=o>,</span> <span class=n>Fork</span> <span class=n>right_fork</span><span class=o>)</span> <span class=o>{</span>
+        <span class=n>_name</span> <span class=o>=</span> <span class=n>name</span><span class=o>;</span>
+        <span class=n>_left_fork</span> <span class=o>=</span> <span class=n>left_fork</span><span class=o>;</span>
+        <span class=n>_right_fork</span> <span class=o>=</span> <span class=n>right_fork</span><span class=o>;</span>
+    <span class=o>}</span>
+
+    <span class=kd>private</span> <span class=kt>void</span> <span class=nf>doAction</span><span class=o>(</span><span class=n>String</span> <span class=n>action</span><span class=o>)</span> <span class=o>{</span>
+        <span class=k>try</span> <span class=o>{</span>
+            <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=n>Thread</span><span class=o>.</span><span class=na>currentThread</span><span class=o>().</span><span class=na>getName</span><span class=o>()</span> <span class=o>+</span> <span class=s>&quot; : &quot;</span> <span class=o>+</span> <span class=n>action</span><span class=o>);</span>
+            <span class=n>Thread</span><span class=o>.</span><span class=na>sleep</span><span class=o>(((</span><span class=kt>int</span><span class=o>)</span> <span class=o>(</span><span class=n>Math</span><span class=o>.</span><span class=na>random</span><span class=o>()</span> <span class=o>*</span> <span class=mi>500</span><span class=o>)));</span>
+        <span class=o>}</span> <span class=k>catch</span> <span class=o>(</span><span class=n>InterruptedException</span> <span class=n>ex</span><span class=o>){</span>
+            <span class=n>ex</span><span class=o>.</span><span class=na>printStackTrace</span><span class=o>();</span>
+        <span class=o>}</span>
+    <span class=o>}</span>
+
+    <span class=c1>// Philosopher eats</span>
+    <span class=kd>private</span> <span class=kt>void</span> <span class=nf>eat</span><span class=o>()</span> <span class=o>{</span>
+        <span class=kd>synchronized</span> <span class=o>(</span><span class=n>_left_fork</span><span class=o>)</span> <span class=o>{</span>
+            <span class=kd>synchronized</span> <span class=o>(</span><span class=n>_right_fork</span><span class=o>)</span> <span class=o>{</span>
+                <span class=n>doAction</span><span class=o>(</span><span class=s>&quot;Eating, Using forks &quot;</span> <span class=o>+</span> <span class=n>_left_fork</span><span class=o>.</span><span class=na>get_id</span><span class=o>()</span> <span class=o>+</span> <span class=s>&quot;, &quot;</span><span class=o>+</span> <span class=n>_right_fork</span><span class=o>.</span><span class=na>get_id</span><span class=o>());</span>
+            <span class=o>}</span>
+        <span class=o>}</span>
+    <span class=o>}</span>
+
+    <span class=c1>// Philosopher thinks</span>
+    <span class=kd>private</span> <span class=kt>void</span> <span class=nf>think</span><span class=o>()</span> <span class=o>{</span>
+        <span class=n>doAction</span><span class=o>(</span><span class=s>&quot;Thinking&quot;</span><span class=o>);</span>
+
+    <span class=o>}</span>
+
+    <span class=nd>@Override</span>
+    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>run</span><span class=o>()</span> <span class=o>{</span>
+        <span class=k>for</span> <span class=o>(</span><span class=kt>int</span> <span class=n>i</span><span class=o>=</span><span class=mi>0</span><span class=o>;</span> <span class=n>i</span><span class=o>&lt;</span><span class=mi>10</span><span class=o>;</span> <span class=n>i</span><span class=o>++){</span>
+            <span class=n>eat</span><span class=o>();</span>
+            <span class=n>think</span><span class=o>();</span>
+        <span class=o>}</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></div><input name=tab-group-12 type=radio id=tab-group-12-2_Java class=code-tab data-lang=Java aria-controls=tab-group-12-2_Java-panel role=tab><label for=tab-group-12-2_Java class=code-tab-label data-lang=Java id=tab-group-12-2_Java-label>Fork</label><div class=code-tabpanel role=tabpanel data-lang=Java id=tab-group-12-2_Java-panel aria-labelledby=tab-group-12-2_Java-label><div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>Fork</span> <span class=o>{</span>
+    <span class=kd>private</span> <span class=kd>static</span> <span class=kt>int</span> <span class=n>_id</span><span class=o>;</span>
+
+    <span class=kd>public</span> <span class=nf>Fork</span><span class=o>(</span><span class=kt>int</span> <span class=n>id</span><span class=o>)</span> <span class=o>{</span>
+        <span class=k>this</span><span class=o>.</span><span class=na>_id</span> <span class=o>=</span> <span class=n>id</span><span class=o>;</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kt>int</span> <span class=nf>get_id</span><span class=o>()</span> <span class=o>{</span>
+        <span class=k>return</span> <span class=n>_id</span><span class=o>;</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></div></div></div>
         </div>
 
         <footer class="col-md-12">
