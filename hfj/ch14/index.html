@@ -522,7 +522,7 @@
 </div>
 <h4 id="serialversionuid">serialVersionUID<a class="headerlink" href="#serialversionuid" title="Permanent link">&para;</a></h4>
 <p><strong>Question</strong>: What might happen if you <strong>change the class</strong> and want to deserialize the object?</p>
-<p><strong>Result</strong>: It may throw an <code class="codehilite">InvalidClassException</code>.</p>
+<p><strong>Result</strong>: It may throw an <C>InvalidClassException</C>.</p>
 <p>Changes to a class that can hurt deserialization:</p>
 <ul>
 <li>Deleting an instance variable</li>
@@ -534,17 +534,17 @@
 </ul>
 <p>Each time an object is serialized, the object (including every object in its graph) is 'stamped' with a version ID number for the object's class. The ID is called <strong>serialVersionUID</strong>.</p>
 <blockquote>
-<p>The serialization runtime associates with each serializable class a version number, called a <strong>serialVersionUID</strong>, which is used during deserialization to verify that the sender and receiver of a serialized object have loaded classes for that object that are <em>compatible</em> with respect to serialization. If the receiver has loaded a class for the object that has a different serialVersionUID than that of the corresponding sender's class, then deserialization will result in an InvalidClassException. <small>[Java Docs]</small></p>
+<p>The serialization runtime associates with each serializable class a version number, called a <C>serialVersionUID</C>, which is used during deserialization to verify that the sender and receiver of a serialized object have loaded classes for that object that are <em>compatible</em> with respect to serialization. If the receiver has loaded a class for the object that has a different <C>serialVersionUID</C> than that of the corresponding sender's class, then deserialization will result in an InvalidClassException. <small>[Java Docs]</small></p>
 </blockquote>
-<p><strong>SOLUTION TO THE QUESTION</strong>: <strong><em>If you think there is ANY possibility that your class might evolve, put a serial version ID in your class.</em></strong></p>
+<p><strong>SOLUTION TO THE QUESTION</strong>: <strong><em>If you think there is ANY possibility that your class might evolve, put a serialVersionUID in your class.</em></strong></p>
 <ul>
-<li>As the class evolves, the serialVersionID will remain the same and the JVM thinks the class is compatible with this serialized object.</li>
+<li>As the class evolves, the <C>serialVersionUID</C> will remain the same and the JVM thinks the class is compatible with this serialized object.</li>
 </ul>
 <blockquote>
-<p>If a serializable class does <em>not</em> explicitly declare a serialVersionUID, then the serialization runtime will <em>calculate a default serialVersionUID value</em> for that class based on various aspects of the class. However, it is <strong>strongly recommended that all serializable classes explicitly declare serialVersionUID values</strong>, since the default serialVersionUID computation is highly sensitive to class details that may vary depending on compiler implementations, and can thus result in unexpected InvalidClassExceptions during deserialization. <small>[Java Docs]</small></p>
+<p>If a serializable class does <em>not</em> explicitly declare a <C>serialVersionUID</C>, then the serialization runtime will <em>calculate a default <C>serialVersionUID</C> value</em> for that class based on various aspects of the class. However, it is <strong>strongly recommended that all serializable classes explicitly declare</strong> <C>serialVersionUID</C> <strong>values</strong>, since the default <C>serialVersionUID</C> computation is highly sensitive to class details that may vary depending on compiler implementations, and can thus result in unexpected <C>InvalidClassExceptions</C> during deserialization. <small>[Java Docs]</small></p>
 </blockquote>
 <p><strong>HOW</strong>?</p>
-<p>A serializable class can declare its own serialVersionUID explicitly by declaring a field named "serialVersionUID" that must be <strong>static</strong>, <strong>final</strong>, and of type <strong>long</strong>:</p>
+<p>A serializable class can declare its own <C>serialVersionUID</C> explicitly by declaring a field named "serialVersionUID" that must be <strong>static</strong>, <strong>final</strong>, and of type <strong>long</strong>:</p>
 <p> <div class=codehilite><pre><span class=n>ANY</span><span class=o>-</span><span class=n>ACCESS</span><span class=o>-</span><span class=n>MODIFIER</span> <span class=kd>static</span> <span class=kd>final</span> <span class=kt>long</span> <span class=n>serialVersionUID</span> <span class=o>=</span> <span class=mi>42L</span><span class=o>;</span>
 </pre></div></p>
 <h3 id="writing-files">Writing Files<a class="headerlink" href="#writing-files" title="Permanent link">&para;</a></h3>
