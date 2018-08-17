@@ -435,7 +435,7 @@
 <p><a href="https://docs.oracle.com/javase/tutorial/essential/concurrency/syncmeth.html">Java tutorials - Synchronized Methods</a></p>
 <p>Making methods synchronized has two effects:</p>
 <ul>
-<li>First, it is not possible for two invocations of synchronized methods on the same object to interleave. When one thread is executing a synchronized method for an object, all other threads that invoke synchronized methods for the same object block (suspend execution) until the first thread is done with the object.</li>
+<li>First, it is NOT possible for two invocations of synchronized methods on the same object to interleave. When one thread is executing a synchronized method for an object, all other threads that invoke synchronized methods for the same object block (suspend execution) until the first thread is done with the object.</li>
 <li>Second, when a synchronized method exits, it automatically establishes a happens-before relationship with any subsequent invocation of a synchronized method for the same object. This guarantees that changes to the state of the object are visible to all threads.</li>
 </ul>
 <h3 id="structured-locks">Structured Locks<a class="headerlink" href="#structured-locks" title="Permanent link">&para;</a></h3>
@@ -474,6 +474,14 @@
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p><C>notifyAll()</C> wakes up all threads that are waiting on the object's monitor.</p>
+<p><C>notify</C> wakes up a single thread that is waiting on this object's monitor. </p>
+</div>
+<div class="admonition question">
+<p class="admonition-title">Question</p>
+<p>What's the useful difference between <C>notify()</C> and <C>notifyAll()</C> then? [<a href="https://stackoverflow.com/questions/37026/java-notify-vs-notifyall-all-over-again">ref</a>]</p>
+<p>Simply put, choosing one of them depends on why your threads are waiting to be notified.</p>
+<p>In some cases, all waiting threads can take useful action once the wait finishes. Suppose a set of threads waiting for a certain task to finish; once the task has finished, all waiting threads can continue with their business. In such a case you would use <C>notifyAll()</C> to wake up all waiting threads at the same time.</p>
+<p>Another case, for example mutually exclusive locking, only one of the waiting threads can do something useful after being notified (in this case acquire the lock). In such a case, you would rather use <C>notify()</C>. Properly implemented, you could use <C>notifyAll()</C> in this situation as well, but you would unnecessarily wake threads that can't do anything anyway.</p>
 </div>
 <p>Let's use guarded blocks to create a Producer-Consumer application. This kind of application shares data between two threads: the producer, that creates the data, and the consumer, that does something with it. The two threads communicate using a shared object. Coordination is essential: the consumer thread must not attempt to retrieve the data before the producer thread has delivered it, and the producer thread must not attempt to deliver new data if the consumer hasn't retrieved the old data.</p>
 <p>The data is a series of text messages, which are shared through an object of type Drop.</p>
@@ -576,7 +584,7 @@
 </pre></div></div></div>
 
 <h4 id="intrinsic-locks-and-synchronization">Intrinsic Locks and Synchronization<a class="headerlink" href="#intrinsic-locks-and-synchronization" title="Permanent link">&para;</a></h4>
-<p>[<a href="https://docs.oracle.com/javase/tutorial/essential/concurrency/locksync.html">Tutorial on Intrinsic Locks and Synchronization in Java</a>]</p>
+<p><a href="https://docs.oracle.com/javase/tutorial/essential/concurrency/locksync.html">Tutorial on Intrinsic Locks and Synchronization in Java</a></p>
 <p>Every object has an <strong>intrinsic lock</strong>(also, <strong>monitor lock </strong>or <strong>monitor</strong>) associated with it.</p>
 <p>By convention, a thread that needs exclusive and consistent access to an object's fields has to acquire the object's intrinsic lock before accessing them, and then release the intrinsic lock when it's done with them.</p>
 <p><strong>Locks In Synchronized Methods</strong> </p>
@@ -616,7 +624,7 @@
  <span class=o>}</span>
 </pre></div></p>
 <h4 id="interface-lock">Interface Lock<a class="headerlink" href="#interface-lock" title="Permanent link">&para;</a></h4>
-<p>[<a href="https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/locks/Lock.html">Java Doc-Interface Lock</a>]</p>
+<p><a href="https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/locks/Lock.html">Java Doc-Interface Lock</a></p>
 <p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>interface</span> <span class=err>&lt;</span><span class=nc>C</span><span class=o>&gt;</span><span class=n>Lock</span><span class=o>&lt;/</span><span class=n>C</span><span class=o>&gt;</span>
 </pre></div></p>
 <p><C>Lock</C> implementations provide more extensive locking operations than can be obtained using <C>synchronized</C> methods and statements. They allow more <em>flexible</em> structuring, may have quite different properties, and may support multiple associated Condition objects.</p>
@@ -637,7 +645,7 @@
 <p>When locking and unlocking occur in different scopes, care must be taken to ensure that all code that is executed while the lock is held is protected by try-finally or try-catch to ensure that the lock is released when necessary.</p>
 </div>
 <h4 id="trylock">tryLock<a class="headerlink" href="#trylock" title="Permanent link">&para;</a></h4>
-<p>[<a href="https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/locks/Lock.html#tryLock()">Java Doc - tryLock</a>]</p>
+<p><a href="https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/locks/Lock.html#tryLock()">Java Doc - tryLock</a></p>
 <p><C>tryLock</C> acquires the lock <strong><em>only if it is free</em></strong> at the time of invocation.</p>
 <p>A typical usage idiom for this method would be:</p>
 <p> <div class=codehilite><pre>  <span class=n>Lock</span> <span class=n>lock</span> <span class=o>=</span> <span class=o>...;</span>
