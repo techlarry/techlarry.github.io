@@ -363,6 +363,67 @@
 </li>
                         </ul>
                     </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">UJVM <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../../ujvm/">Contents</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch1/">Chapter 1 : 走进Java</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch2/">Chapter 2 : Java内存区域与内存溢出正常</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch3/">Chapter 3 : 垃圾收集器与内存分配策略</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch4/">Chapter 4 : 虚拟机性能监控与故障处理工具</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch5/">Chapter 5 : 调优案例分析与实战</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch6/">Chapter 6 : 类文件结构</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch7/">Chapter 7 : 虚拟机类加载机制</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch8/">Chapter 8 : 虚拟机字节码执行引擎</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch9/">Chapter 9 : 类加载及执行子系统的案例与实战</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch10/">Chapter 10 : 早期(编译期)优化</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch11/">Chapter 11 : 晚期(运行期)优化</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch12/">Chapter 12 : Java内存模型与线程</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch13/">Chapter 13 : 线程安全与锁优化</a>
+</li>
+                        </ul>
+                    </li>
                     <li >
                         <a href="../../books/">Books</a>
                     </li>
@@ -488,30 +549,33 @@
 <p>Ultimately, a relationship must exist between user threads and kernel threads. There are three common ways of establishing such a relationship: the many-to-one model, the one-to-one model, and the many-to-many model.
 在用户级线程和内核级线程之间必然存在一种关系。有三种普遍建立这种关系的方法：多对一模型、一对一模型、多对多模型。</p>
 <h4 id="many-to-one-model">Many-to-One Model<a class="headerlink" href="#many-to-one-model" title="Permanent link">&para;</a></h4>
-<p>The <strong><em>many-to-one model</em></strong> maps many user-level threads to one kernel thread. 多对一模型将许多用户级线程映射到一个内核线程。</p>
+<p>The <strong><em>many-to-one model</em></strong>(多对一模型) maps many user-level threads to one kernel thread. 多对一模型将许多用户级线程映射到一个内核线程。</p>
 <ul>
 <li>Thread management is done by the thread library in user space, so it is efficient. 线程管理由线程库在用户空间进行的，因而效率比较高。</li>
 <li>Also, because only one thread can access the kernel at a time, multiple threads are unable to run in parallel on multicore systems. 因为任意时刻只能有一个线程能够访问内核，多个线程不能并行运行在多处理器上。</li>
 </ul>
 <p><img alt="many_to_one_mode" src="../ch4/many_to_one_model.png" /></p>
 <h4 id="one-to-one-model">One-to-One Model<a class="headerlink" href="#one-to-one-model" title="Permanent link">&para;</a></h4>
-<p>The <strong>one-to-one model</strong> maps each user thread to a kernel thread. 一对一模型每个用户线程映射到一个内核线程。</p>
+<p>The <strong>one-to-one model</strong>(一对一模型) maps each user thread to a kernel thread. 一对一模型每个用户线程映射到一个内核线程。</p>
 <ul>
 <li>It provides more concurrency by allowing another thread to run when a thread makes a blocking system call. 该模型在一个线程执行阻塞系统调用时，能允许另一个线程继续执行，提供了更高的并发性。</li>
 <li>It also allows multiple threads to run in parallel on multiprocessors. 它也允许多个线程能并行运行在多处理器系统上。</li>
-<li>The only drawback to this model is that creating a user thread requires creating the corresponding kernel thread, and a large number of kernel threads may burden the performance of a system. 这种模型的唯一缺点是每创建一个用户线程就会创建一个相应的内核线程, 大量内核线程会影响系统性能。</li>
+<li>The only drawback to this model is that creating a user thread requires creating the corresponding kernel thread, and a large number of kernel threads may <strong><em>burden the performance of a system</em></strong>. 这种模型的唯一缺点是每创建一个用户线程就会创建一个相应的内核线程, 大量内核线程会影响系统性能。</li>
 </ul>
 <p><img alt="one_to_one_mode" src="../ch4/one_to_one_model.png" /></p>
 <h4 id="many-to-many-model">Many-to-Many Model<a class="headerlink" href="#many-to-many-model" title="Permanent link">&para;</a></h4>
-<p>The <strong>many-to-many model</strong> multiplexes many user-level threads to a smaller or equal number of kernel threads. 多对多模型多路复用了许多用户线程到同样数量或更小数量的内核线程上。</p>
+<p>The <strong>many-to-many model</strong>(多对多模型) multiplexes many user-level threads to a smaller or equal number of kernel threads. 多对多模型多路复用了许多用户线程到同样数量或更小数量的内核线程上。</p>
 <ul>
 <li>Developers can create as many user threads as necessary. 开发人员可创建任意多的用户线程。</li>
 <li>The corresponding kernel threads can run in parallel on a multiprocessor. 相应内核线程能在多处理器系统上并发执行。</li>
 <li>Also, when a thread performs a blocking system call, the kernel can schedule another thread for execution. 而且当一个线程执行阻塞系统调用时，内核能调度另一个线程来执行。</li>
-<li>In practice it is <strong>difficult to implement</strong>. 实际上难以实施。</li>
+<li>In practice it is <strong><em>difficult to implement</em></strong>. 实际上难以实施。</li>
 </ul>
 <p><img alt="many_to_many_mode" src="../ch4/many_to_many_model.png" /></p>
-<p><em><strong><em>Most operating systems now use the one-to-one model.</em></strong></em></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>Most operating systems now use the one-to-one model.</strong></p>
+</div>
 <h4 id="userkernel-level-threads">User/Kernel-Level threads<a class="headerlink" href="#userkernel-level-threads" title="Permanent link">&para;</a></h4>
 <p><a href="https://cs.nyu.edu/rgrimm/teaching/sp07-os/activations.pdf">ref: Scheduler Activations</a></p>
 <p>(1) <strong>User-Level Threads</strong>(用户级线程)</p>
