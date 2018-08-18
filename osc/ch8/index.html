@@ -254,6 +254,10 @@
                         <ul class="dropdown-menu">
                             
 <li >
+    <a href="../../cpj/">Contents</a>
+</li>
+                            
+<li >
     <a href="../../cpj/ch1/">Concurrent Programming in Java 1: Threads and Locks</a>
 </li>
                             
@@ -391,6 +395,7 @@
         <li class="main active"><a href="#operating-system-concepts-8-deadlocks">Operating System Concepts 8 - DeadLocks</a></li>
         <li class="main "><a href="#1-system-model">1 System Model</a></li>
         <li class="main "><a href="#2-deadlock-in-multithreaded-applications">2 Deadlock in Multithreaded Applications</a></li>
+            <li><a href="#livelock">Livelock</a></li>
         <li class="main "><a href="#3-deadlock-characterization">3 Deadlock Characterization</a></li>
             <li><a href="#necessary-conditions">Necessary Conditions</a></li>
             <li><a href="#resource-allocation-graph">Resource-Allocation Graph</a></li>
@@ -418,6 +423,38 @@
 <h3 id="operating-system-concepts-8-deadlocks"><strong>Operating System Concepts 8 - DeadLocks</strong><a class="headerlink" href="#operating-system-concepts-8-deadlocks" title="Permanent link">&para;</a></h3>
 <h3 id="1-system-model">1 System Model<a class="headerlink" href="#1-system-model" title="Permanent link">&para;</a></h3>
 <h3 id="2-deadlock-in-multithreaded-applications">2 Deadlock in Multithreaded Applications<a class="headerlink" href="#2-deadlock-in-multithreaded-applications" title="Permanent link">&para;</a></h3>
+<h4 id="livelock">Livelock<a class="headerlink" href="#livelock" title="Permanent link">&para;</a></h4>
+<p>Threads in deadlock will block indefinitely because each is waiting on the other, while threads in <strong>livelock</strong> can continue execution but make no meaningful progress.</p>
+<p> <div class=codehilite><pre><span class=cm>/* thread one runs in this function */</span> 
+<span class=kt>void</span> <span class=o>*</span><span class=k>do</span> <span class=n>work</span> <span class=nf>one</span><span class=p>(</span><span class=kt>void</span> <span class=o>*</span><span class=n>param</span><span class=p>)</span> <span class=p>{</span> <span class=kt>int</span> <span class=n>done</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+    <span class=k>while</span> <span class=p>(</span><span class=o>!</span><span class=n>done</span><span class=p>)</span> <span class=p>{</span>
+        <span class=n>pthread_mutex_lock</span><span class=p>(</span><span class=o>&amp;</span><span class=n>first</span> <span class=n>mutex</span><span class=p>);</span> 
+        <span class=k>if</span> <span class=p>(</span><span class=n>pthread_mutex_trylock</span><span class=p>(</span><span class=o>&amp;</span><span class=n>second</span> <span class=n>mutex</span><span class=p>))</span> <span class=p>{</span> 
+            <span class=cm>/** * Do some work */</span> 
+            <span class=n>pthread_mutex_unlock</span><span class=p>(</span><span class=o>&amp;</span><span class=n>second</span> <span class=n>mutex</span><span class=p>);</span>
+            <span class=n>pthread_mutex_unlock</span><span class=p>(</span><span class=o>&amp;</span><span class=n>first</span> <span class=n>mutex</span><span class=p>);</span> <span class=n>done</span> <span class=o>=</span> <span class=mi>1</span><span class=p>;</span> 
+        <span class=p>}</span> <span class=k>else</span> 
+            <span class=n>pthread_mutex_unlock</span><span class=p>(</span><span class=o>&amp;</span><span class=n>first</span> <span class=n>mutex</span><span class=p>);</span>
+    <span class=p>}</span>
+    <span class=n>pthread</span> <span class=n>exit</span><span class=p>(</span><span class=mi>0</span><span class=p>);</span>
+<span class=p>}</span>
+
+<span class=cm>/* thread two runs in this function */</span> 
+<span class=kt>void</span> <span class=o>*</span><span class=nf>do_work_two</span><span class=p>(</span><span class=kt>void</span> <span class=o>*</span><span class=n>param</span><span class=p>)</span> <span class=p>{</span> 
+<span class=kt>int</span> <span class=n>done</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+    <span class=k>while</span> <span class=p>(</span><span class=o>!</span><span class=n>done</span><span class=p>)</span> <span class=p>{</span>
+        <span class=n>pthread_mutex_lock</span><span class=p>(</span><span class=o>&amp;</span><span class=n>second</span> <span class=n>mutex</span><span class=p>);</span> 
+        <span class=k>if</span> <span class=p>(</span><span class=n>pthread_mutex_trylock</span><span class=p>(</span><span class=o>&amp;</span><span class=n>first</span> <span class=n>mutex</span><span class=p>))</span> <span class=p>{</span>
+             <span class=cm>/** * Do some work */</span> <span class=n>p</span>
+             <span class=n>thread_mutex_unlock</span><span class=p>(</span><span class=o>&amp;</span><span class=n>first</span> <span class=n>mutex</span><span class=p>);</span> 
+             <span class=n>pthread_mutex_unlock</span><span class=p>(</span><span class=o>&amp;</span><span class=n>second</span> <span class=n>mutex</span><span class=p>);</span> 
+             <span class=n>done</span> <span class=o>=</span> <span class=mi>1</span><span class=p>;</span> 
+         <span class=p>}</span> <span class=k>else</span> 
+            <span class=n>pthread_mutex_unlock</span><span class=p>(</span><span class=o>&amp;</span><span class=n>second</span> <span class=n>mutex</span><span class=p>);</span>
+    <span class=p>}</span>
+    <span class=n>pthread_exit</span><span class=p>(</span><span class=mi>0</span><span class=p>);</span>
+<span class=p>}</span>
+</pre></div></p>
 <h3 id="3-deadlock-characterization">3 Deadlock Characterization<a class="headerlink" href="#3-deadlock-characterization" title="Permanent link">&para;</a></h3>
 <h4 id="necessary-conditions">Necessary Conditions<a class="headerlink" href="#necessary-conditions" title="Permanent link">&para;</a></h4>
 <h4 id="resource-allocation-graph">Resource-Allocation Graph<a class="headerlink" href="#resource-allocation-graph" title="Permanent link">&para;</a></h4>

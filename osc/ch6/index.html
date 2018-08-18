@@ -254,6 +254,10 @@
                         <ul class="dropdown-menu">
                             
 <li >
+    <a href="../../cpj/">Contents</a>
+</li>
+                            
+<li >
     <a href="../../cpj/ch1/">Concurrent Programming in Java 1: Threads and Locks</a>
 </li>
                             
@@ -566,20 +570,20 @@
 <p>Spinlocks are not appropriate for single-processor systems yet are often used in multiprocessor systems.</p>
 <p><a href="../ch7/#posix-spinlocks">POSIX API for Spinlocks</a></p>
 <h3 id="6-semaphores">6 Semaphores<a class="headerlink" href="#6-semaphores" title="Permanent link">&para;</a></h3>
-<p>A <strong>semaphore</strong>(信号量) S is an integer variable that, apart from initialization, is accessed only through two standard atomic operations: <code class="codehilite">wait()</code> and <code class="codehilite">signal()</code>. 信号量S是个整数变量，除了初始化外，它只能通过两个标准原子操作：<code class="codehilite">wait()</code>和<code class="codehilite">signal()</code>来访问。</p>
-<p>The definition of <code class="codehilite">wait()</code> is as follows:</p>
+<p>A <strong>semaphore</strong>(信号量) S is an integer variable that, apart from initialization, is accessed only through two standard atomic operations: <C>wait()</C> and <C>signal()</C>. 信号量S是个整数变量，除了初始化外，它只能通过两个标准原子操作：<C>wait()</C>和<C>signal()</C>来访问。</p>
+<p>The definition of <C>wait()</C> is as follows:</p>
 <p> <div class=codehilite><pre><span class=n>wait</span><span class=p>(</span><span class=n>S</span><span class=p>){</span>
     <span class=k>while</span> <span class=p>(</span><span class=n>S</span> <span class=o>&lt;=</span> <span class=mi>0</span><span class=p>)</span>
         <span class=p>;</span><span class=c1>// busy wait</span>
     <span class=n>S</span><span class=o>--</span><span class=p>;</span>
 <span class=p>{</span>
 </pre></div></p>
-<p>The definition of <code class="codehilite">signal()</code> is as follows:</p>
+<p>The definition of <C>signal()</C> is as follows:</p>
 <p> <div class=codehilite><pre><span class=n>signal</span><span class=p>(</span><span class=n>S</span><span class=p>){</span>
     <span class=n>S</span><span class=o>++</span><span class=p>;</span>
 <span class=p>}</span>
 </pre></div></p>
-<p>All modifications to the integer value of the semaphore in the <code class="codehilite">wait()</code> and <code class="codehilite">signal()</code> operations must be executed atomically.  在<code class="codehilite">wait()</code>和<code class="codehilite">signal()</code>操作中，对信号量整型值的修改必须不可分地执行。</p>
+<p>All modifications to the integer value of the semaphore in the <C>wait()</C> and <C>signal()</C> operations must be executed atomically.  在<C>wait()</C>和<C>signal()</C>操作中，对信号量整型值的修改必须不可分地执行。</p>
 <p>Operating systems often distinguish between counting and binary semaphores.通常操作系统区分计数信号量和二进制信号量。</p>
 <ul>
 <li>The value of a <strong>counting semaphore</strong>(计数信号量) can range over an unrestricted domain.计数信号量的值域不受限制。</li>
@@ -589,17 +593,18 @@
 <ul>
 <li>The semaphore is initialized to the number of resources available. </li>
 <li>Each process that wishes to use a resource performs a <code class="codehilite">wait()</code>operation on the semaphore (thereby decrementing the count). </li>
-<li>When a process releases a resource, it performs a <code class="codehilite">signal()</code> operation (incrementing the count). </li>
+<li>When a process releases a resource, it performs a <C>signal()</C> operation (incrementing the count). </li>
 <li>When the count for the semaphore goes to 0, all resources are being used. After that, processes that wish to use a resource will block until the count becomes greater than 0.</li>
 </ul>
-<p><a href="../ch7/#posix-semaphores">POSIX API for Semaphores</a></p>
+<p><a href="../ch7/#posix-semaphores">POSIX API for Semaphores</a>
+<a href="../ch7/#semaphores">Java API for Semaphores</a></p>
 <h3 id="7-monitors">7 Monitors<a class="headerlink" href="#7-monitors" title="Permanent link">&para;</a></h3>
 <h4 id="monitor-usage">Monitor Usage<a class="headerlink" href="#monitor-usage" title="Permanent link">&para;</a></h4>
 <p>Issues: various types of errors can be generated easily when programmers use semaphores or mutex locks incorrectly to solve the critical-section problem.</p>
 <ul>
-<li>interchanges the order of <code class="codehilite">wait()</code> and <code class="codehilite">signal()</code></li>
-<li>replaces <code class="codehilite">signal()</code> with <code class="codehilite">wait()</code></li>
-<li>omits <code class="codehilite">wait()</code> or <code class="codehilite">signal()</code></li>
+<li>interchanges the order of <C>wait()</C> and <C>signal()</C></li>
+<li>replaces <C>signal()</C> with <C>wait()</C></li>
+<li>omits <C>wait()</C> or <C>signal()</C></li>
 </ul>
 <p>Solution: An abstract data type, <strong>monitor</strong>(管程), includes a set of programmer-defined operation related to mutual exclusion within the monitor. The monitor construct ensures that only one process at a time is active within the monitor.</p>
 <p>Pseudocode syntax of a monitor:</p>
@@ -617,7 +622,7 @@
 <div class="MathJax_Preview">\text{condition x, y;}</div>
 <script type="math/tex; mode=display">\text{condition x, y;}</script>
 </div>
-<p>The only operations that can be invoked on a condition variable are <code class="codehilite">wait()</code> and <code class="codehilite">signal()</code>.</p>
+<p>The only operations that can be invoked on a condition variable are <C>wait()</C> and <C>signal()</C>.</p>
 <p><img alt="monitor_with_condition_variables" src="../figures/monitor_with_condition_variables.png" /></p>
 <h4 id="implementing-a-monitor-using-semaphores">Implementing a Monitor Using Semaphores<a class="headerlink" href="#implementing-a-monitor-using-semaphores" title="Permanent link">&para;</a></h4>
 <ul>
