@@ -518,6 +518,56 @@
     <span class=p>.</span> <span class=p>.</span> <span class=p>.</span>
 <span class=p>}</span>
 </pre></div></p>
+<p>Java solution:</p>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>BoundedBuffer</span><span class=o>&lt;</span><span class=n>E</span><span class=o>&gt;</span>
+<span class=o>{</span>
+    <span class=kd>private</span> <span class=kd>static</span> <span class=kd>final</span> <span class=kt>int</span> <span class=n>BUFFER_SIZE</span> <span class=o>=</span> <span class=mi>5</span><span class=o>;</span>
+
+    <span class=kd>private</span> <span class=kt>int</span> <span class=n>count</span><span class=o>,</span> <span class=n>in</span><span class=o>,</span> <span class=n>out</span><span class=o>;</span>
+    <span class=kd>private</span> <span class=n>E</span><span class=o>[]</span> <span class=n>buffer</span><span class=o>;</span>
+
+    <span class=kd>public</span> <span class=nf>BoundedBuffer</span><span class=o>()</span> <span class=o>{</span>
+        <span class=n>count</span> <span class=o>=</span> <span class=mi>0</span><span class=o>;</span>
+        <span class=n>in</span> <span class=o>=</span> <span class=mi>0</span><span class=o>;</span>
+        <span class=n>out</span> <span class=o>=</span> <span class=mi>0</span><span class=o>;</span>
+        <span class=n>buffer</span> <span class=o>=</span> <span class=o>(</span><span class=n>E</span><span class=o>[])</span> <span class=k>new</span> <span class=n>Object</span><span class=o>[</span><span class=n>BUFFER_SIZE</span><span class=o>];</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kd>synchronized</span> <span class=kt>void</span> <span class=nf>insert</span><span class=o>(</span><span class=n>E</span> <span class=n>item</span><span class=o>)</span> <span class=o>{</span>
+        <span class=k>while</span> <span class=o>(</span><span class=n>count</span> <span class=o>==</span> <span class=n>BUFFER_SIZE</span><span class=o>)</span> <span class=o>{</span>
+            <span class=k>try</span> <span class=o>{</span>
+                <span class=n>wait</span><span class=o>();</span>
+            <span class=o>}</span>
+            <span class=k>catch</span> <span class=o>(</span><span class=n>InterruptedException</span> <span class=n>ie</span><span class=o>)</span> <span class=o>{</span> <span class=o>}</span>
+        <span class=o>}</span>
+
+        <span class=n>buffer</span><span class=o>[</span><span class=n>in</span><span class=o>]</span> <span class=o>=</span> <span class=n>item</span><span class=o>;</span>
+        <span class=n>in</span> <span class=o>=</span> <span class=o>(</span><span class=n>in</span> <span class=o>+</span> <span class=mi>1</span><span class=o>)</span> <span class=o>%</span> <span class=n>BUFFER_SIZE</span><span class=o>;</span>
+        <span class=n>count</span><span class=o>++;</span>
+
+        <span class=n>notify</span><span class=o>();</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kd>synchronized</span> <span class=n>E</span> <span class=nf>remove</span><span class=o>()</span> <span class=o>{</span>
+        <span class=n>E</span> <span class=n>item</span><span class=o>;</span>
+
+        <span class=k>while</span> <span class=o>(</span><span class=n>count</span> <span class=o>==</span> <span class=mi>0</span><span class=o>)</span> <span class=o>{</span>
+            <span class=k>try</span> <span class=o>{</span>
+                <span class=n>wait</span><span class=o>();</span>
+            <span class=o>}</span>
+            <span class=k>catch</span> <span class=o>(</span><span class=n>InterruptedException</span> <span class=n>ie</span><span class=o>)</span> <span class=o>{</span> <span class=o>}</span>
+        <span class=o>}</span>
+
+        <span class=n>item</span> <span class=o>=</span> <span class=n>buffer</span><span class=o>[</span><span class=n>out</span><span class=o>];</span>
+        <span class=n>out</span> <span class=o>=</span> <span class=o>(</span><span class=n>out</span> <span class=o>+</span> <span class=mi>1</span><span class=o>)</span> <span class=o>%</span> <span class=n>BUFFER_SIZE</span><span class=o>;</span>
+        <span class=n>count</span><span class=o>--;</span>
+
+        <span class=n>notify</span><span class=o>();</span>
+
+        <span class=k>return</span> <span class=n>item</span><span class=o>;</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></p>
 <h4 id="the-readerswriters-problem">The Readers–Writers Problem<a class="headerlink" href="#the-readerswriters-problem" title="Permanent link">&para;</a></h4>
 <p>Suppose that a database is to be shared among several concurrent processes. </p>
 <ul>
@@ -684,8 +734,9 @@
 <p>The Java language and its API have provided rich support for thread synchronization.</p>
 <h4 id="java-monitors">Java Monitors<a class="headerlink" href="#java-monitors" title="Permanent link">&para;</a></h4>
 <blockquote>
-<p>Entities possessing both locks and wait sets are generally called <strong><em>monitors</em></strong> (although almost every language defines details somewhat differently). Since every <C>Object</C> in Java has a lock and a wait set that is manipulated only by methods wait, notify, notifyAll. Any  <C>Object</C> can be serve as a monitor. [Concurrent Programming in Java 3.2.2 Monitor Mechanics]</p>
+<p>Entities possessing both locks and wait sets are generally called <strong><em>monitors</em></strong> (although almost every language defines details somewhat differently). Since every <C>Object</C> in Java has a lock and a wait set that is manipulated only by methods wait, notify, notifyAll. Any  <C>Object</C> can be serve as a monitor. <small>[Concurrent Programming in Java 3.2.2 Monitor Mechanics]</small></p>
 </blockquote>
+<p>In Java there is no keyword to directly create a monitor. To implement a monitor, you must create a new class and use <C>Lock</C> and <C>Condition</C> classes. A <C>Lock</C> can be a <C>ReentrantLock</C> or <C>ReentrantReadWriteLock</C>, i.e. any lock that implements <Lock> interface. A classic example of BoundedBuffered is illustrated in <a href="../ch7/#condition-variables">Section Condition Variables</a>.</p>
 <p>Every object in Java has associated it with a single lock. When a method is declared to be <C>synchronized</C>, calling the method requires owning the lock for the object.</p>
 <ul>
 <li>Invoking a <C>synchronized</C> method requires owning the lock on an object instance. </li>
@@ -709,56 +760,6 @@
 <li>The thread is placed in the wait set for the object.</li>
 </ol>
 <p><img alt="entry-and-wait-set" src="../figures/entry-and-wait-set.png" /></p>
-<p>Bounded buffer using Java synchronization</p>
-<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>BoundedBuffer</span><span class=o>&lt;</span><span class=n>E</span><span class=o>&gt;</span>
-<span class=o>{</span>
-    <span class=kd>private</span> <span class=kd>static</span> <span class=kd>final</span> <span class=kt>int</span> <span class=n>BUFFER_SIZE</span> <span class=o>=</span> <span class=mi>5</span><span class=o>;</span>
-
-    <span class=kd>private</span> <span class=kt>int</span> <span class=n>count</span><span class=o>,</span> <span class=n>in</span><span class=o>,</span> <span class=n>out</span><span class=o>;</span>
-    <span class=kd>private</span> <span class=n>E</span><span class=o>[]</span> <span class=n>buffer</span><span class=o>;</span>
-
-    <span class=kd>public</span> <span class=nf>BoundedBuffer</span><span class=o>()</span> <span class=o>{</span>
-        <span class=n>count</span> <span class=o>=</span> <span class=mi>0</span><span class=o>;</span>
-        <span class=n>in</span> <span class=o>=</span> <span class=mi>0</span><span class=o>;</span>
-        <span class=n>out</span> <span class=o>=</span> <span class=mi>0</span><span class=o>;</span>
-        <span class=n>buffer</span> <span class=o>=</span> <span class=o>(</span><span class=n>E</span><span class=o>[])</span> <span class=k>new</span> <span class=n>Object</span><span class=o>[</span><span class=n>BUFFER_SIZE</span><span class=o>];</span>
-    <span class=o>}</span>
-
-    <span class=kd>public</span> <span class=kd>synchronized</span> <span class=kt>void</span> <span class=nf>insert</span><span class=o>(</span><span class=n>E</span> <span class=n>item</span><span class=o>)</span> <span class=o>{</span>
-        <span class=k>while</span> <span class=o>(</span><span class=n>count</span> <span class=o>==</span> <span class=n>BUFFER_SIZE</span><span class=o>)</span> <span class=o>{</span>
-            <span class=k>try</span> <span class=o>{</span>
-                <span class=n>wait</span><span class=o>();</span>
-            <span class=o>}</span>
-            <span class=k>catch</span> <span class=o>(</span><span class=n>InterruptedException</span> <span class=n>ie</span><span class=o>)</span> <span class=o>{</span> <span class=o>}</span>
-        <span class=o>}</span>
-
-        <span class=n>buffer</span><span class=o>[</span><span class=n>in</span><span class=o>]</span> <span class=o>=</span> <span class=n>item</span><span class=o>;</span>
-        <span class=n>in</span> <span class=o>=</span> <span class=o>(</span><span class=n>in</span> <span class=o>+</span> <span class=mi>1</span><span class=o>)</span> <span class=o>%</span> <span class=n>BUFFER_SIZE</span><span class=o>;</span>
-        <span class=n>count</span><span class=o>++;</span>
-
-        <span class=n>notify</span><span class=o>();</span>
-    <span class=o>}</span>
-
-    <span class=kd>public</span> <span class=kd>synchronized</span> <span class=n>E</span> <span class=nf>remove</span><span class=o>()</span> <span class=o>{</span>
-        <span class=n>E</span> <span class=n>item</span><span class=o>;</span>
-
-        <span class=k>while</span> <span class=o>(</span><span class=n>count</span> <span class=o>==</span> <span class=mi>0</span><span class=o>)</span> <span class=o>{</span>
-            <span class=k>try</span> <span class=o>{</span>
-                <span class=n>wait</span><span class=o>();</span>
-            <span class=o>}</span>
-            <span class=k>catch</span> <span class=o>(</span><span class=n>InterruptedException</span> <span class=n>ie</span><span class=o>)</span> <span class=o>{</span> <span class=o>}</span>
-        <span class=o>}</span>
-
-        <span class=n>item</span> <span class=o>=</span> <span class=n>buffer</span><span class=o>[</span><span class=n>out</span><span class=o>];</span>
-        <span class=n>out</span> <span class=o>=</span> <span class=o>(</span><span class=n>out</span> <span class=o>+</span> <span class=mi>1</span><span class=o>)</span> <span class=o>%</span> <span class=n>BUFFER_SIZE</span><span class=o>;</span>
-        <span class=n>count</span><span class=o>--;</span>
-
-        <span class=n>notify</span><span class=o>();</span>
-
-        <span class=k>return</span> <span class=n>item</span><span class=o>;</span>
-    <span class=o>}</span>
-<span class=o>}</span>
-</pre></div></p>
 <h4 id="reentrant-locks">Reentrant Locks<a class="headerlink" href="#reentrant-locks" title="Permanent link">&para;</a></h4>
 <p>Perhaps the simplest locking mechanism available in the API is the <C>ReentrantLock</C>. A <C>ReentrantLock</C> is owned by a single thread and is used to provide mutually exclusive access to a shared resource. It provides several additional features, such as setting a <em>fairness</em> parameter, which favors granting the lock to the longest-waiting thread.</p>
 <p>A thread acquires a <C>ReentrantLock</C> lock by invoking its <C>lock()</C> method. If the lock is available - or if the thread invoking <C>lock()</C> already owns it, <C>lock()</C> assigns the invoking thread lock ownership and return control.</p>
