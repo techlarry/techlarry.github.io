@@ -518,56 +518,6 @@
     <span class=p>.</span> <span class=p>.</span> <span class=p>.</span>
 <span class=p>}</span>
 </pre></div></p>
-<p>Java solution:</p>
-<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>BoundedBuffer</span><span class=o>&lt;</span><span class=n>E</span><span class=o>&gt;</span>
-<span class=o>{</span>
-    <span class=kd>private</span> <span class=kd>static</span> <span class=kd>final</span> <span class=kt>int</span> <span class=n>BUFFER_SIZE</span> <span class=o>=</span> <span class=mi>5</span><span class=o>;</span>
-
-    <span class=kd>private</span> <span class=kt>int</span> <span class=n>count</span><span class=o>,</span> <span class=n>in</span><span class=o>,</span> <span class=n>out</span><span class=o>;</span>
-    <span class=kd>private</span> <span class=n>E</span><span class=o>[]</span> <span class=n>buffer</span><span class=o>;</span>
-
-    <span class=kd>public</span> <span class=nf>BoundedBuffer</span><span class=o>()</span> <span class=o>{</span>
-        <span class=n>count</span> <span class=o>=</span> <span class=mi>0</span><span class=o>;</span>
-        <span class=n>in</span> <span class=o>=</span> <span class=mi>0</span><span class=o>;</span>
-        <span class=n>out</span> <span class=o>=</span> <span class=mi>0</span><span class=o>;</span>
-        <span class=n>buffer</span> <span class=o>=</span> <span class=o>(</span><span class=n>E</span><span class=o>[])</span> <span class=k>new</span> <span class=n>Object</span><span class=o>[</span><span class=n>BUFFER_SIZE</span><span class=o>];</span>
-    <span class=o>}</span>
-
-    <span class=kd>public</span> <span class=kd>synchronized</span> <span class=kt>void</span> <span class=nf>insert</span><span class=o>(</span><span class=n>E</span> <span class=n>item</span><span class=o>)</span> <span class=o>{</span>
-        <span class=k>while</span> <span class=o>(</span><span class=n>count</span> <span class=o>==</span> <span class=n>BUFFER_SIZE</span><span class=o>)</span> <span class=o>{</span>
-            <span class=k>try</span> <span class=o>{</span>
-                <span class=n>wait</span><span class=o>();</span>
-            <span class=o>}</span>
-            <span class=k>catch</span> <span class=o>(</span><span class=n>InterruptedException</span> <span class=n>ie</span><span class=o>)</span> <span class=o>{</span> <span class=o>}</span>
-        <span class=o>}</span>
-
-        <span class=n>buffer</span><span class=o>[</span><span class=n>in</span><span class=o>]</span> <span class=o>=</span> <span class=n>item</span><span class=o>;</span>
-        <span class=n>in</span> <span class=o>=</span> <span class=o>(</span><span class=n>in</span> <span class=o>+</span> <span class=mi>1</span><span class=o>)</span> <span class=o>%</span> <span class=n>BUFFER_SIZE</span><span class=o>;</span>
-        <span class=n>count</span><span class=o>++;</span>
-
-        <span class=n>notify</span><span class=o>();</span>
-    <span class=o>}</span>
-
-    <span class=kd>public</span> <span class=kd>synchronized</span> <span class=n>E</span> <span class=nf>remove</span><span class=o>()</span> <span class=o>{</span>
-        <span class=n>E</span> <span class=n>item</span><span class=o>;</span>
-
-        <span class=k>while</span> <span class=o>(</span><span class=n>count</span> <span class=o>==</span> <span class=mi>0</span><span class=o>)</span> <span class=o>{</span>
-            <span class=k>try</span> <span class=o>{</span>
-                <span class=n>wait</span><span class=o>();</span>
-            <span class=o>}</span>
-            <span class=k>catch</span> <span class=o>(</span><span class=n>InterruptedException</span> <span class=n>ie</span><span class=o>)</span> <span class=o>{</span> <span class=o>}</span>
-        <span class=o>}</span>
-
-        <span class=n>item</span> <span class=o>=</span> <span class=n>buffer</span><span class=o>[</span><span class=n>out</span><span class=o>];</span>
-        <span class=n>out</span> <span class=o>=</span> <span class=o>(</span><span class=n>out</span> <span class=o>+</span> <span class=mi>1</span><span class=o>)</span> <span class=o>%</span> <span class=n>BUFFER_SIZE</span><span class=o>;</span>
-        <span class=n>count</span><span class=o>--;</span>
-
-        <span class=n>notify</span><span class=o>();</span>
-
-        <span class=k>return</span> <span class=n>item</span><span class=o>;</span>
-    <span class=o>}</span>
-<span class=o>}</span>
-</pre></div></p>
 <h4 id="the-readerswriters-problem">The Readers–Writers Problem<a class="headerlink" href="#the-readerswriters-problem" title="Permanent link">&para;</a></h4>
 <p>Suppose that a database is to be shared among several concurrent processes. </p>
 <ul>
@@ -746,7 +696,7 @@
 <li>The lock is released when the thread exits the method.</li>
 <li>If the entry set for the lock is not empty when the lock is released, the JVM arbitrarily selects a thread from this set to be the owner of the lock.</li>
 </ul>
-<p>In addition to having a lock, every object also has associated with it a <strong>wait set </strong>consisting of a set of threads.</p>
+<p>In addition to having a lock, every object also has associated with it a <strong>wait set</strong> consisting of a set of threads.</p>
 <ul>
 <li>This wait set is initially empty. </li>
 <li>When a thread enters a <C>synchronized</C> method, it owns the lock for the object.</li>
@@ -789,7 +739,7 @@
 <span class=o>}</span>
 </pre></div></p>
 <blockquote>
-<p>A counting semaphore. Conceptually, a semaphore maintains a set of permits. Each <i>acquire()</i> blocks if necessary until a permit is available, and then takes it. Each <i>release()</i> adds a permit, potentially releasing a blocking acquirer. However, no actual permit objects are used; the Semaphore just keeps a count of the number available and acts accordingly.</p>
+<p>Class <C>Semaphore</C> is a counting semaphore. Conceptually, a semaphore maintains a set of permits. Each <i>acquire()</i> blocks if necessary until a permit is available, and then takes it. Each <i>release()</i> adds a permit, potentially releasing a blocking acquirer. However, no actual permit objects are used; the Semaphore just keeps a count of the number available and acts accordingly. <a href="http://docs.oracle.com/javase/9/docs/api/java/util/concurrent/Semaphore.html">Java DOC - Semaphore</a></p>
 </blockquote>
 <h4 id="condition-variables">Condition Variables<a class="headerlink" href="#condition-variables" title="Permanent link">&para;</a></h4>
 <p><strong>Condition variables</strong> provide functionality similar to the </C>wait()</C> and <C>notify()</C> methods. To provide mutual exclusion, a condition variable must be associated with a <C>ReentrantLock</C>.</p>
