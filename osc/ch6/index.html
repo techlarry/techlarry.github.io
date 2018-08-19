@@ -591,6 +591,14 @@
 <p class="admonition-title">Important</p>
 <p>It is important to note that although atomic variables provide atomic updates, they do not entirely solve race conditions in all circumstances.</p>
 </div>
+<p> <div class=codehilite><pre><span class=n>increment</span><span class=p>(</span><span class=o>&amp;</span><span class=n>sequence</span><span class=p>);</span>
+<span class=kt>void</span> <span class=nf>increment</span><span class=p>(</span><span class=n>atomic</span> <span class=kt>int</span> <span class=o>*</span><span class=n>v</span><span class=p>)</span> <span class=p>{</span> 
+    <span class=kt>int</span> <span class=n>temp</span><span class=p>;</span>   
+    <span class=k>do</span> <span class=p>{</span> 
+        <span class=n>temp</span> <span class=o>=</span> <span class=o>*</span><span class=n>v</span><span class=p>;</span> 
+    <span class=p>}</span> 
+    <span class=k>while</span> <span class=p>(</span><span class=n>temp</span> <span class=o>!=</span> <span class=n>compare_and_swap</span><span class=p>(</span><span class=n>v</span><span class=p>,</span> <span class=n>temp</span><span class=p>,</span> <span class=n>temp</span><span class=o>+</span><span class=mi>1</span><span class=p>));</span> <span class=p>}</span>
+</pre></div></p>
 <h3 id="5-mutex-locks">5 Mutex locks<a class="headerlink" href="#5-mutex-locks" title="Permanent link">&para;</a></h3>
 <p>ISSUE: The hardware-based solutions are complicated as well as generally inaccessible to application programmers.</p>
 <p>SOLUTION: Operating-system designers build higher-level software tools. The simplest of these tools is the <strong>mutex lock</strong>(互斥锁)。</p>

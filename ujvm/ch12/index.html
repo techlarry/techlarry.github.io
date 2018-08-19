@@ -454,11 +454,199 @@
                 <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
         <li class="main active"><a href="#java-12-java">深入理解Java虚拟机 12 - Java内存模型与线程</a></li>
+        <li class="main "><a href="#1">1 概述</a></li>
+        <li class="main "><a href="#2">2 硬件的效率与一致性</a></li>
+            <li><a href="#_1">缓存一致性</a></li>
+            <li><a href="#_2">乱序执行</a></li>
+        <li class="main "><a href="#3-java">3 Java内存模型</a></li>
+            <li><a href="#_3">主内存与工作内存</a></li>
+            <li><a href="#_4">内存间交互操作</a></li>
+            <li><a href="#volatile">对于volatile型变量的特殊规则</a></li>
+            <li><a href="#longdouble">对于long和double型变量的特殊规则</a></li>
+            <li><a href="#_5">原子性、可见性与有序性</a></li>
+            <li><a href="#_6">先行发生原则</a></li>
+        <li class="main "><a href="#4-java">4 Java与线程</a></li>
+            <li><a href="#_7">线程的实现</a></li>
+            <li><a href="#java">Java线程调度</a></li>
+            <li><a href="#_8">状态转换</a></li>
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
 
-<h3 id="java-12-java"><strong>深入理解Java虚拟机 12 - Java内存模型与线程 </strong><a class="headerlink" href="#java-12-java" title="Permanent link">&para;</a></h3></div>
+<h3 id="java-12-java"><strong>深入理解Java虚拟机 12 - Java内存模型与线程 </strong><a class="headerlink" href="#java-12-java" title="Permanent link">&para;</a></h3>
+<p>并发处理的广泛应用是使得Amdahl定律代替摩尔定律成为计算机性能发展源动力的根本原因，也是人类“压榨”计算机运算能力的最有力武器。</p>
+<h3 id="1">1 概述<a class="headerlink" href="#1" title="Permanent link">&para;</a></h3>
+<p>多任务处理在现代计算机操作系统中几乎已是一项必备的功能了； 除了充分利用计算机处理器的能力外，一个服务端同时对多个客户端提供服务则是另一个更具体的并发应用场景；服务端是Java语言最擅长的领域之一，不过如何写好并发应用程序却又是服务端程序开发的难点之一，处理好并发方面的问题通常需要更多的编码经验来支持，幸好Java语言和虚拟机提供了许多工具，把并发编码的门槛降低了不少；</p>
+<h3 id="2">2 硬件的效率与一致性<a class="headerlink" href="#2" title="Permanent link">&para;</a></h3>
+<h4 id="_1">缓存一致性<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h4>
+<p>绝大多数的运算任务不可能只靠处理器计算就能完成，处理器至少要与内存交互，所以现代计算机系统都不得不加入一层读写速度尽可能接近处理器运算速度的高速缓存来作为内存与处理器之间的缓冲：将运算需要使用到的数据复制到缓存中，让运算能快速运行，当运算结束后再从缓存同步回内存之中，这样处理器就无须等待缓慢的内存读写了；</p>
+<p>基于高速缓存的存储交互很好地解决了处理器与内存的速度矛盾，但是也为计算机系统带来更高的复杂度，因为它引入了一个新的问题：<big><b>缓存一致性</b></big>(Cache Coherence). 在多处理系统中，每个处理器都有自己的高速缓存，而它们有共享同一主内存(Main memory).</p>
+<blockquote>
+<p>cache coherence is the uniformity of shared resource data that ends up stored in multiple local caches. 缓存一致性是存储在多个局部缓存中的共享资源的一致性。</p>
+</blockquote>
+<p><img alt="" src="../figures/cache_coherence.jpg" /></p>
+<p>为了解决一致性的问题，需要各个处理器访问缓存时都遵循一些协议，在读写时要根据协议来进行操作，这类协议有MSI、MESI、MOSI、Synapse、Firefly及Dragon Protocol等；Java虚拟机内存模型中定义的内存访问操作与硬件的缓存访问操作是具有可比性的。</p>
+<h4 id="_2">乱序执行<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h4>
+<p>除了增加高速缓存之外，为了使得处理器内部的运算单元能尽量被充分利用，处理器可能会对输入代码进行<strong>乱序执行</strong>(Out-Of-Order Execution)优化，处理器会在计算之后将乱序执行的结果重组，保证该结果与顺序执行的结果是一致的；与处理器的乱序执行优化类似，Java虚拟机的即时编译器中也有类似的<strong>指令重排序</strong>(Instruction Reorder)优化。</p>
+<p><strong>In-order v.s. Out-of-order Execution</strong></p>
+<p><a href="https://courses.cs.washington.edu/courses/csep548/06au/lectures/introOOO.pdf"> CSE P 548: Computer Architecture, University of Washington</a></p>
+<ul>
+<li>In-order execution 顺序执行<ul>
+<li>instructions are fetched, executed and completed in compiler-generated order</li>
+<li>one stalls, they all stall</li>
+<li>instructions are <strong>statically scheduled</strong></li>
+</ul>
+</li>
+<li>
+<p>Out-Of-Order execution 乱序执行</p>
+<ul>
+<li>instructions are fetched in compiler-generated order</li>
+<li>instruction completion is in-oder.</li>
+<li>instructions are <strong>dynamically scheduled</strong></li>
+</ul>
+<p>Dynamic Scheduling:</p>
+<p><img alt="dynamic-scheduling" src="../figures/dynamic-scheduling.png" /></p>
+</li>
+</ul>
+<p><a href="https://www.archive.ece.cmu.edu/~ece740/f11/lib/exe/fetch.php?media=wiki:lectures:onur-740-fall11-lecture10-ooo-afterlecture.pdf">CMU Computer Architecture</a></p>
+<p>In-order pipeline</p>
+<p><img alt="in-order pipeline" src="../figures/in-order%20pipeline.png" /></p>
+<ul>
+<li><strong>Problem</strong>: A true data dependency stalls dispatch of younger
+instructions into functional (execution) units</li>
+<li>Dispatch: Act of sending an instruction to a functional unit</li>
+</ul>
+<p>Out-of-order Execution (Dynamic Scheduling)</p>
+<ul>
+<li>Idea: Move the dependent instructions out of the way of
+independent ones<ul>
+<li>Rest areas for dependent instructions: Reservation stations </li>
+</ul>
+</li>
+</ul>
+<h3 id="3-java">3 Java内存模型<a class="headerlink" href="#3-java" title="Permanent link">&para;</a></h3>
+<p>Java虚拟机规范中视图定义一种<strong>Java内存模型</strong>(Java Memory Model, JMM）来屏蔽掉各种硬件和操作系统的内存访问差异，以实现让Java程序在各种平台下都能达到一致的内存访问效果。</p>
+<p><a href="https://www.cs.princeton.edu/courses/archive/fall10/cos597C/docs/memory-models.pdf">Princeton COS 597C</a></p>
+<blockquote>
+<p>Memory model is a formal specification of how the memory system will appear to the programmer, <strong>eliminating the gap between the behavior expected by the programmer and the actual behavior supported by a system</strong>. [Adve's 1995]</p>
+</blockquote>
+<p>Memory model specifies:</p>
+<ul>
+<li>How threads interact through memory </li>
+<li>What value a read can return</li>
+<li>When does a value update become visible to other threads </li>
+<li>What assumptions are allowed to make about memory when writing a program or applying some program optimization</li>
+</ul>
+<h4 id="_3">主内存与工作内存<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h4>
+<p>Java内存模型的主要目标是定义程序中<em>各个变量的访问规则</em>，即在虚拟机中将变量存储到内存和从内存中取出变量这样的底层细节.此处的变量与Java编程中所说的变量有所区别，它包括了实例字段、静态字段和构成数组对象的元素，但不包括局部变量与方法参数，因为后者是线程私有的，不会被共享；</p>
+<p>Java内存模型规定了所有的变量都存储在<strong>主内存</strong>(Main Meory)中(此处的主内存与介绍物理硬件时的主内存名字一样，两者也可以相互类比，但此处仅是虚拟机内存的一部分)，每个线程还有自己的<strong>工作内存</strong>(Working Memory, 可与前面所讲的处理器高速缓存类比)，线程的工作内存中保存了被该线程使用到的变量的主内存副本拷贝，线程对变量的所有操作都必须在工作内存中进行，而不能直接读写主内存中的变量。</p>
+<p><img alt="" src="../figures/memory_model.jpg" /></p>
+<h4 id="_4">内存间交互操作<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h4>
+<p>关于主内存与工作内存之间具体的交互协议，即一个变量如何从主内存拷贝到工作内存、如何从工作内存同步回主内存之类的实现细节，Java内存模型中定义了以下八种操作来完成，虚拟机实现时必须保证下面提及的每一种操作都是原子的、不可再分的（对于double和long类型的变量的某些操作在某些平台允许有例外）：</p>
+<ul>
+<li>lock(锁定)</li>
+<li>unlock</li>
+<li>read</li>
+<li>load</li>
+<li>use</li>
+<li>assign</li>
+<li>store</li>
+<li>write</li>
+</ul>
+<p>基于理解难度和严谨性考虑，最新的JSR-133文档中，已经放弃采用这八种操作去定义Java内存模型的访问协议了，后面将会介绍一个等效判断原则 – 先行发生原则，用来确定一个访问在并发环境下是否安全；</p>
+<h4 id="volatile">对于volatile型变量的特殊规则<a class="headerlink" href="#volatile" title="Permanent link">&para;</a></h4>
+<p>关键字<C>volatile</C>可以说是Java虚拟机提供的最轻量级的同步机制；当一个变量定义为<C>volatile</C>之后，它将具备两种特性：第一是保证此变量对所有线程的<strong>可见性</strong>，这里的可见性是指当一个线程修改了这个变量的值，新的值对于其他线程来说是可以立即得知的，而普通的变量的值在线程间传递均需要通过主内存来完成；另外一个是<strong>禁止指令重排序优化</strong>，普通的变量仅仅会保证在该方法的执行过程中所有依赖赋值结果的地方都能获取到正确的结果，而不能保证变量赋值操作的顺序与程序代码中的执行顺序一致；</p>
+<p><C>volatile</C>变量在各个线程的工作内存中不存在一致性问题。但不能说“基于volatile变量的运算在并发下时安全的”。</p>
+<p>由于<C>volatile</C>变量只能保证可见性，在不符合以下两条规则的运算场景中，我们仍然要通过加锁来保证原子性：</p>
+<ul>
+<li>运算结果并不依赖变量的当前值或者能够确保只有单一的线程修改变量的值</li>
+<li>变量不需要与其他的状态变量共同参与不变约束；</li>
+</ul>
+<p>以下场景很适合用<C>volatile</C>变量来控制并发，当<C>shutdown()</C>方法被调用时，能保证所有线程的<C>doWork()</C>方法都立刻停下来。</p>
+<p> <div class=codehilite><pre><span class=kd>volatile</span> <span class=kt>boolean</span> <span class=n>shutdownRequested</span><span class=o>;</span>
+
+<span class=kd>public</span> <span class=kt>void</span> <span class=nf>shutdown</span><span class=o>()</span> <span class=o>{</span>
+    <span class=n>shutdownRequested</span> <span class=o>=</span> <span class=kc>true</span><span class=o>;</span>
+<span class=o>}</span>
+
+<span class=kd>public</span> <span class=kt>void</span> <span class=nf>doWork</span><span class=o>()</span> <span class=o>{</span>
+    <span class=k>while</span> <span class=o>(!</span><span class=n>shutdownRequested</span><span class=o>)</span> <span class=o>{</span>
+        <span class=c1>// do stuff</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></p>
+<p><C>volatile</C>变量读操作的性能消耗与普通变量几乎没有任何差别，但是写操作则可能会慢一些，因为它需要在本地代码中出入许多内存屏障(Memory Barrier)指令来保证处理器不发生乱序执行；不过大多数场景下<C>volatile</C>的总开销仍然要比锁低，我们在<C>volatile</C>与锁之中选择的唯一依据仅仅是<C>volatile</C>的语义能否满足使用场景的需求；</p>
+<p>Java内存模型中对<C>volatile</C>变量定义的特殊规则(假设V表示<C>volatile</C>行变量)：</p>
+<ul>
+<li>在工作内存中，每次使用V前都必须先从主内存刷新最新的值，用于保证能看到其他线程对变量V所做的修改后的值</li>
+<li>在工作内存中，每次修改V之后都必须立刻同步回主内存中，用于保证其他线程可以看到自己对变量V所做的修改</li>
+<li>要求V不会被指令重排序优化，保证代码的执行顺序和程序的顺序相同。</li>
+</ul>
+<h4 id="longdouble">对于long和double型变量的特殊规则<a class="headerlink" href="#longdouble" title="Permanent link">&para;</a></h4>
+<p>Java内存模型要求<C>lock</C>、<C>unlock</C>、<C>read</C>、<C>load</C>、<C>assign</C>、<C>use</C>、<C>store</C>、<C>write</C>这八个操作都具有原子性。</p>
+<p>但是对于64位的数据类型(long和double): 允许虚拟机将没有被<C>volatile</C>修饰的64位数据的读写操作划分为两次32位的操作来进行，即允许虚拟机实现选择可以不保证64位数据类型的&lt;<C>read</C>、<C>load</C>、<C>store</C>、<C>write</C>这4个操作的原子性，这点就是所谓的<strong>long和double的非原子性协定</strong>(Nonatomic Treatment of double and long Variables)；</p>
+<p>但允许虚拟机选择把这些操作实现为具有原子性的操作，目前各种平台下的商用虚拟机几乎都选择把64位数据的读写操作作为原子操作来对待；</p>
+<h4 id="_5">原子性、可见性与有序性<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h4>
+<p><strong>原子性</strong>(Atomicity): 由Java内存模型来直接保证的原子性变量操作包括<C>read</C>、<C>load</C>、<C>assign</C>、<C>use</C>、<C>store</C>和C&gt;write</C>这六个。<C>lock</C>、<C>unlock</C>操作未直接开放给用户使用, 而反映在同步块中 ——<C>synchronized</C>块之间的操作也具备原子性；</p>
+<p><strong>可见性</strong>(Visibility)：是指当一个线程修改了共享变量的值，其他线程能够立即得知这个修改。<C>volatile</C>、<C>synchronized</C>和<C>final</C>关键字能实现可见性。
+<C>synchronized</C>同步块的可见性是由“对一个变量执行unlock操作之前，必须把此变量同步回主内存中“这条规则获得的。<C>final</C>关键字的可见性是指，被<C>final</C>修饰的字段在构造器中一旦被初始化完成，并且构造器没有把"this"的引用传递出去，那么在其他线程中就能看见<C>final</C>字段的值。</p>
+<ul>
+<li><strong>有序性</strong>(Ordering)：如果在本线程内观察，所有的操作都是有序的；如果在一个线程中观察另一个线程，所有的操作都是无序的.Java语言提供了<C>volatile</C>和<C>synchronized</C>两个关键字来保证线程之间操作的有序性, <C>volatile</C>关键字本身就包含了禁止指令重排序的语意，而<C>synchronized</C>是由“一个变量在同一时刻只允许一条线程对其进行lock操作”这条规则获得的，这个规则决定了持有同一个锁的两个同步块只能串行的进入。</li>
+</ul>
+<h4 id="_6">先行发生原则<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h4>
+<p><strong>先行发生</strong>(happens-before)原则是判断数据是否存在竞争、线程是否安全的主要依据。</p>
+<p>先行发生(happens-before)是Java内存模型中定义的两项操作之间的偏序关系，如果说操作A先行发生于操作B，其实就是说在发生操作B之前，操作A产生的影响能被操作B观察到，影响包括了修改了内存中共享变量的值、发送了消息、调用了方法等.</p>
+<p>下面是Java内存模型下一些天然的<strong>先行发生关系</strong>。这些先行发生关系无需任何同步器协助就可以存在。如果两个操作之间的关系不在此列，并且无法从以下规则推导出来的话，它们就没有顺序性保障，虚拟机可以对它们进行随意的重排序：</p>
+<ul>
+<li>程序次序规则</li>
+<li>管程锁定规则</li>
+<li><C>volatile</C>变量规则</li>
+<li>线程启动规则</li>
+<li>线程终止规则</li>
+<li>线程中断规则</li>
+<li>对象终结规则</li>
+<li>传递性；</li>
+</ul>
+<p>时间先后顺序与先行发生原则之间基本没有太大的关系，所以我们衡量并发安全问题的时候不要受到时间顺序的干扰，一切必须以先行发生原则为准；</p>
+<h3 id="4-java">4 Java与线程<a class="headerlink" href="#4-java" title="Permanent link">&para;</a></h3>
+<h4 id="_7">线程的实现<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h4>
+<p>线程是比进程更轻量级的调度执行单位，线程的引入可以把一个进程的资源分配和执行调度分开，各个线程既可以共享进程资源又可以独立调度。</p>
+<p><C>Thread</C>类与大部分的Java API有显著的差别，它的所有关键方法都是声明为<C>Native</C>的。Java线程是基于操作系统原生线程模型来实现的。</p>
+<h4 id="java">Java线程调度<a class="headerlink" href="#java" title="Permanent link">&para;</a></h4>
+<p>Java语言一共设置了10个级别的线程优先级(<C>Thread.MIN_PRIORITY</C>-<C>Thread.MAX_PRIORITY</C>)。</p>
+<p> <div class=codehilite><pre><span class=cm>/* The minimum priority that a thread can have.*/</span>
+<span class=kd>public</span> <span class=kd>static</span> <span class=kd>final</span> <span class=kt>int</span> <span class=n>MIN_PRIORITY</span> <span class=o>=</span> <span class=mi>1</span><span class=o>;</span>
+<span class=cm>/* The default priority that is assigned to a thread.*/</span>
+<span class=kd>public</span> <span class=kd>static</span> <span class=kd>final</span> <span class=kt>int</span> <span class=n>NORM_PRIORITY</span> <span class=o>=</span> <span class=mi>5</span><span class=o>;</span>
+<span class=cm>/* The maximum priority that a thread can have. */</span>
+<span class=kd>public</span> <span class=kd>static</span> <span class=kd>final</span> <span class=kt>int</span> <span class=n>MAX_PRIORITY</span> <span class=o>=</span> <span class=mi>10</span><span class=o>;</span>
+</pre></div></p>
+<h4 id="_8">状态转换<a class="headerlink" href="#_8" title="Permanent link">&para;</a></h4>
+<p>Java语言定义了五种线程状态，在任意一个时间点，一个线程只能有且只有其中一种状态，分别是</p>
+<ul>
+<li>新建(New): Thread state for a thread which has not yet started.</li>
+<li>运行(Runnable): Thread state for a runnable thread.  A thread in the runnable state is executing in the Java virtual machine but it may be waiting for other resources from the operating system such as processor.</li>
+<li>阻塞(Blocked):  Thread state for a thread blocked waiting for a monitor lock. A thread in the blocked state is waiting for a monitor lock to enter a synchronized block/method or reenter a synchronized block/method after calling <C>Object.wait</C>.</li>
+<li>无限期等待(Waiting): A thread that is waiting indefinitely for another thread to perform a particular action is in this state.<ul>
+<li><C>wait()</C></li>
+<li><C>join()</C></li>
+<li><C>LockSupport.park() </C></li>
+</ul>
+</li>
+<li>
+<p>限期等待(Timed Waiting): A thread that is waiting for another thread to perform an action for up to a specified waiting time is in this state.</p>
+<ul>
+<li><C> sleep()</C></li>
+<li><C>wait(long)</C></li>
+<li><C>join(long)</C></li>
+<li><C>LockSupport.parkNanos(long)</C></li>
+<li><C>LockSupport.parkUntil()</C></li>
+</ul>
+</li>
+<li>
+<p>结束(Terminated): A thread that has exited is in this state.</p>
+</li>
+</ul></div>
         </div>
 
         <footer class="col-md-12">
