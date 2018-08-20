@@ -491,10 +491,10 @@
 <p><big><b>线程兼容</b></big></p>
 <p><strong>线程兼容</strong>指对象本身并不是线程安全的，但是可以通过在调用端正确地使用同步手段来保证对象在并发环境中可以安全地使用；我们说一个类不是线程安全的，绝大多数时候指的是这一种情况；</p>
 <p><big><b>线程对立</b></big></p>
-<p><strong>线程对立</strong>是指无论调用端是否采取了同步措施，都无法在多线程环境中并发使用的代码，Java语言中很少出现。</p>
+<p><strong>线程对立</strong>是指无论调用端是否采取了同步措施，都无法在多线程环境中并发使用的代码，Java语言中很少出现。常见的线程对立操作还有<code class="codehilite">System.setIn()</code>, <code class="codehilite">System.setOut()</code>, <code class="codehilite">System.runFinalizersOnExit()</code>等等。</p>
 <h4 id="_1">线程安全的实现方法<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h4>
 <p><strong>Synchronized</strong></p>
-<p>在Java里面，最基本的互斥同步手段就是<C>synchronized</C>关键字，<C>synchronized</C>关键字经过编译以后，会在同步块的前后分别形成<C>monitorenter</C>&lt;和C&gt;monitorexit</C>这两个字节码指令，这两个字节码都需要一个<C>reference</C>类型的参数来指明要锁定和解锁的对象。如果Java程序中的<C>synchronized</C>明确制定了对象参数，那就是这个对象的<C>reference</C>；如果没有明确指定，那就根据<C>synchronized</C>修饰的是实例方法还是类方法，去取对应的对象作为锁对象。</p>
+<p>在Java里面，最基本的互斥同步手段就是<C>synchronized</C>关键字，<C>synchronized</C>关键字经过编译以后，会在同步块的前后分别形成<C>monitorenter</C>和<C>monitorexit</C>这两个字节码指令，这两个字节码都需要一个<C>reference</C>类型的参数来指明要锁定和解锁的对象。如果Java程序中的<C>synchronized</C>明确制定了对象参数，那就是这个对象的<C>reference</C>；如果没有明确指定，那就根据<C>synchronized</C>修饰的是实例方法还是类方法，去取对应的对象作为锁对象。</p>
 <p><a href="https://cs.au.dk/~mis/dOvs/jvmspec/ref--44.html">Java Synchronized</a></p>
 <p>The <C>monitorenter/monitorexit</C> mechanism is used by the Java <C>synchronized</C> statement to coordinate access to an object among multiple threads. For example, when you write in Java code:</p>
 <p> <div class=codehilite><pre><span class=kd>static</span> <span class=kt>void</span> <span class=nf>Sort</span><span class=o>(</span><span class=kt>int</span> <span class=o>[]</span> <span class=n>array</span><span class=o>)</span> <span class=o>{</span>
@@ -523,9 +523,9 @@
 <p>另外还可以使用<C>java.util.concurrent</C>包中的重入锁（<C>ReentrantLock</C>）来实现同步。在基本用法上，<C>ReentrantLock</C>与<C>synchronized</C>很相似，它们都具备一样的线程重入特性，只是代码写法上有点区别。</p>
 <p>不过<C>ReentrantLock</C>比<C>synchronized</C>增加了一些高级功能：等待可中断、可实现公平锁以及锁可以绑定多个条件；</p>
 <ul>
-<li>等待可中断： 是指当持有锁的线程长期不释放锁的时候，正在等待的线程可以选择放弃等待，改为处理其他事情，可中断特性对处理执行时间非常长的同步块很有帮助。</li>
-<li>公平锁是指多个线程在等待一个同一个锁是，必须按照申请的时间顺序来一次获得锁；<C>synchronzied</C>中的锁事非公平的，<C>ReentrantLock</C>默认情况下也是非公平的，但可以通过带布尔值的构造函数要求使用公平锁。</li>
-<li>绑定多个条件是指一个<C>ReentrantLock</C>对象可以同时绑定多个<C>Condition</C>对象。</li>
+<li>等待可中断: 是指当持有锁的线程长期不释放锁的时候，正在等待的线程可以选择放弃等待，改为处理其他事情，可中断特性对处理执行时间非常长的同步块很有帮助。</li>
+<li>公平锁: 是指多个线程在等待一个同一个锁时，必须按照申请的时间顺序来一次获得锁；<C>synchronzied</C>中的锁是非公平的，<C>ReentrantLock</C>默认情况下也是非公平的，但可以通过带布尔值的构造函数要求使用公平锁(<code class="codehilite"><span class="n">ReentrantLock</span><span class="err">​</span><span class="o">(</span><span class="kt">boolean</span> <span class="n">fair</span><span class="o">)</span></code>)。</li>
+<li>绑定多个条件: 是指一个<C>ReentrantLock</C>对象可以同时绑定多个<C>Condition</C>对象(<code class="codehilite"><span class="n">ReentrantLock</span><span class="o">.</span><span class="na">newCondition</span><span class="o">()</span></code>)。[<a href="../../osc/ch7.md/#condition-variables">Example</a>]</li>
 </ul>
 <p><strong>可重入</strong></p>
 <blockquote>
