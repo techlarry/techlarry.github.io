@@ -813,10 +813,10 @@ An application always allocates into a young generation, that is, eden regions, 
 [0.310s][info][gc,heap,exit ]   class space    used 442K, capacity 460K, committed 512K, reserved 1048576K
 </pre></div></p>
 <h4 id="_12">长期存活的对象将进入老年代<a class="headerlink" href="#_12" title="Permanent link">&para;</a></h4>
-<p>既然虚拟机采用了分代收集的思想来管理内存，那么内存回收时就必须能识别哪些对象应放在新生代，哪些对象应放在老年代中。为了做到这点，虚拟机给每个对象定义了一个对象年龄(Age)计数器。如果对象在Eden出生并经过第一次Minor GC后仍然存活，并且能被Survivor容纳的话，将被移动到Survivor空间中，并且对象年龄设为1。对象在Survivor区中每“熬过”一次Minor GC，年龄就增加1岁，当它的年龄增加到一定程度（默认为15岁），就将会被晋升到老年代中。对象晋升老年代的年龄阈值，可以通过参数<code class="codehilite">-XX:MaxTenuringThreshold</code>设置。</p>
-<p>读者可以试试分别以<code class="codehilite">-XX:MaxTenuringThreshold=1</code>和<code class="codehilite">-XX:MaxTenuringThreshold= 15</code>两种设置来<C>testTenuringThreshold()</C>方法，此方法中的<C>allocation1</C>对象需要256KB内存，Survivor空间可以容纳。当<code class="codehilite">MaxTenuringThreshold=1</code>时，<C>allocation1</C>对象在第二次GC发生时进入老年代，新生代已使用的内存GC后非常干净地变成0KB。而<code class="codehilite">MaxTenuringThreshold=15</code>时，第二次GC发生后，<C>allocation1</C>对象则还留在新生代Survivor空间，这时新生代仍然有404KB被占用。</p>
+<p>既然虚拟机采用了分代收集的思想来管理内存，那么内存回收时就必须能识别哪些对象应放在新生代，哪些对象应放在老年代中。为了做到这点，虚拟机给每个对象定义了一个对象年龄(Age)计数器。如果对象在Eden出生并经过第一次Minor GC后仍然存活，并且能被Survivor容纳的话，将被移动到Survivor空间中，并且对象年龄设为1。对象在Survivor区中每“熬过”一次Minor GC，年龄就增加1岁，当它的年龄增加到一定程度（默认为15岁），就将会被晋升到老年代中。对象晋升老年代的年龄阈值，可以通过参数<code class="codehilite">-XX:<span class="nt">&lt;C&gt;</span>MaxTenuringThreshold<span class="nt">&lt;/C&gt;</span></code>设置。</p>
+<p>读者可以试试分别以<code class="codehilite">-XX:<span class="nt">&lt;C&gt;</span>MaxTenuringThreshold<span class="nt">&lt;/C&gt;</span>=1</code>和<code class="codehilite">-XX:<span class="nt">&lt;C&gt;</span>MaxTenuringThreshold<span class="nt">&lt;/C&gt;</span>= 15</code>两种设置来<C>testTenuringThreshold()</C>方法，此方法中的<C>allocation1</C>对象需要256KB内存，Survivor空间可以容纳。当<code class="codehilite"><span class="nt">&lt;C&gt;</span>MaxTenuringThreshold<span class="nt">&lt;/C&gt;</span>=1</code>时，<C>allocation1</C>对象在第二次GC发生时进入老年代，新生代已使用的内存GC后非常干净地变成0KB。而<code class="codehilite"><span class="nt">&lt;C&gt;</span>MaxTenuringThreshold<span class="nt">&lt;/C&gt;</span>=15</code>时，第二次GC发生后，<C>allocation1</C>对象则还留在新生代Survivor空间，这时新生代仍然有404KB被占用。</p>
 <p> <div class=codehilite><pre><span class=cm>/**</span>
-<span class=cm> * VM参数: -Xms20M -Xmx20M -Xmn10M -XX:SurvivorRatio=8 -XX:MaxTenuringThreshold=1 -Xlog:gc* -XX:+UseSerialGC</span>
+<span class=cm> * VM参数: -Xms20M -Xmx20M -Xmn10M -XX:SurvivorRatio=8 -XX:&lt;C&gt;MaxTenuringThreshold&lt;/C&gt;=1 -Xlog:gc* -XX:+UseSerialGC</span>
 <span class=cm> */</span>
 
 <span class=kd>public</span> <span class=kd>class</span> <span class=nc>testTenuringThreshold</span> <span class=o>{</span>
@@ -826,7 +826,7 @@ An application always allocates into a young generation, that is, eden regions, 
     <span class=kd>public</span> <span class=kd>static</span> <span class=kt>void</span> <span class=nf>main</span><span class=o>(</span><span class=n>String</span><span class=o>[]</span> <span class=n>args</span><span class=o>)</span> <span class=o>{</span>
         <span class=kt>byte</span><span class=o>[]</span> <span class=n>allocation1</span><span class=o>,</span> <span class=n>allocation2</span><span class=o>,</span> <span class=n>allocation3</span><span class=o>;</span>
         <span class=n>allocation1</span> <span class=o>=</span> <span class=k>new</span> <span class=kt>byte</span><span class=o>[</span><span class=n>_1MB</span> <span class=o>/</span> <span class=mi>4</span><span class=o>];</span>
-        <span class=c1>// 什么时候进入老年代取决于XX:MaxTenuringThreshold设置</span>
+        <span class=c1>// 什么时候进入老年代取决于XX:&lt;C&gt;MaxTenuringThreshold&lt;/C&gt;设置</span>
         <span class=n>allocation2</span> <span class=o>=</span> <span class=k>new</span> <span class=kt>byte</span><span class=o>[</span><span class=mi>4</span> <span class=o>*</span> <span class=n>_1MB</span><span class=o>];</span>
         <span class=n>allocation3</span> <span class=o>=</span> <span class=k>new</span> <span class=kt>byte</span><span class=o>[</span><span class=mi>4</span> <span class=o>*</span> <span class=n>_1MB</span><span class=o>];</span>
         <span class=n>allocation3</span> <span class=o>=</span> <span class=kc>null</span><span class=o>;</span>
@@ -834,7 +834,7 @@ An application always allocates into a young generation, that is, eden regions, 
     <span class=o>}</span>
 <span class=o>}</span>
 </pre></div></p>
-<p>以<code class="codehilite">MaxTenuringThreshold=1</code>参数来运行的结果：</p>
+<p>以<code class="codehilite"><span class="nt">&lt;C&gt;</span>MaxTenuringThreshold<span class="nt">&lt;/C&gt;</span>=1</code>参数来运行的结果：</p>
 <p> <div class=codehilite><pre>[0.030s][info][gc] Using Serial
 [0.030s][info][gc,heap,coops] Heap address: 0x00000007bec00000, size: 20 MB, Compressed Oops mode: Zero based, Oop shift amount: 3
 [0.276s][info][gc,start     ] GC(0) Pause Young (Allocation Failure)
@@ -859,7 +859,7 @@ An application always allocates into a young generation, that is, eden regions, 
 [0.297s][info][gc,heap,exit ]  Metaspace       used 4996K, capacity 5032K, committed 5120K, reserved 1056768K
 [0.297s][info][gc,heap,exit ]   class space    used 443K, capacity 460K, committed 512K, reserved 1048576K
 </pre></div></p>
-<p>以<code class="codehilite">MaxTenuringThreshold=15</code>参数来运行的结果：</p>
+<p>以<code class="codehilite"><span class="nt">&lt;C&gt;</span>MaxTenuringThreshold<span class="nt">&lt;/C&gt;</span>=15</code>参数来运行的结果：</p>
 <p> <div class=codehilite><pre>[0.033s][info][gc] Using Serial
 [0.033s][info][gc,heap,coops] Heap address: 0x00000007bec00000, size: 20 MB, Compressed Oops mode: Zero based, Oop shift amount: 3
 [0.322s][info][gc,start     ] GC(0) Pause Young (Allocation Failure)
@@ -885,50 +885,9 @@ An application always allocates into a young generation, that is, eden regions, 
 [0.343s][info][gc,heap,exit ]   class space    used 456K, capacity 460K, committed 512K, reserved 1048576K
 </pre></div></p>
 <h4 id="_13">动态对象年龄判定<a class="headerlink" href="#_13" title="Permanent link">&para;</a></h4>
-<p>为了能更好地适应不同程序的内存状况，虚拟机并不是永远地要求对象的年龄必须达到了MaxTenuringThreshold才能晋升老年代，如果在Survivor空间中相同年龄所有对象大小的总和大于Survivor空间的一半，年龄大于或等于该年龄的对象就可以直接进入老年代，无须等到MaxTenuringThreshold中要求的年龄。</p>
-<p>执行代码清单3-8中的testTenuringThreshold2()方法，并设置-XX:MaxTenuringThreshold=15，会发现运行结果中Survivor的空间占用仍然为0%，而老年代比预期增加了6%，也就是说，allocation1、allocation2对象都直接进入了老年代，而没有等到15岁的临界年龄。因为这两个对象加起来已经到达了512KB，并且它们是同年的，满足同年对象达到Survivor空间的一半规则。我们只要注释掉其中一个对象new操作，就会发现另外一个就不会晋升到老年代中去了。</p>
-<p> <div class=codehilite><pre><span class=kd>private</span> <span class=kd>static</span> <span class=kd>final</span> <span class=kt>int</span> <span class=n>_1MB</span> <span class=o>=</span> <span class=mi>1024</span> <span class=o>*</span> <span class=mi>1024</span><span class=o>;</span>
-
-<span class=cm>/**</span>
-<span class=cm> * VM参数：-verbose:gc -Xms20M -Xmx20M -Xmn10M -XX:+PrintGCDetails -XX:SurvivorRatio=8 -XX:MaxTenuringThreshold=15</span>
-<span class=cm> * -XX:+PrintTenuringDistribution</span>
-<span class=cm> */</span>
-<span class=nd>@SuppressWarnings</span><span class=o>(</span><span class=s>&quot;unused&quot;</span><span class=o>)</span>
-<span class=kd>public</span> <span class=kd>static</span> <span class=kt>void</span> <span class=nf>testTenuringThreshold2</span><span class=o>()</span> <span class=o>{</span>
-  <span class=kt>byte</span><span class=o>[]</span> <span class=n>allocation1</span><span class=o>,</span> <span class=n>allocation2</span><span class=o>,</span> <span class=n>allocation3</span><span class=o>,</span> <span class=n>allocation4</span><span class=o>;</span>
-  <span class=n>allocation1</span> <span class=o>=</span> <span class=k>new</span> <span class=kt>byte</span><span class=o>[</span><span class=n>_1MB</span> <span class=o>/</span> <span class=mi>4</span><span class=o>];</span>
-    <span class=c1>// allocation1+allocation2大于survivo空间一半</span>
-  <span class=n>allocation2</span> <span class=o>=</span> <span class=k>new</span> <span class=kt>byte</span><span class=o>[</span><span class=n>_1MB</span> <span class=o>/</span> <span class=mi>4</span><span class=o>];</span> 
-  <span class=n>allocation3</span> <span class=o>=</span> <span class=k>new</span> <span class=kt>byte</span><span class=o>[</span><span class=mi>4</span> <span class=o>*</span> <span class=n>_1MB</span><span class=o>];</span>
-  <span class=n>allocation4</span> <span class=o>=</span> <span class=k>new</span> <span class=kt>byte</span><span class=o>[</span><span class=mi>4</span> <span class=o>*</span> <span class=n>_1MB</span><span class=o>];</span>
-  <span class=n>allocation4</span> <span class=o>=</span> <span class=kc>null</span><span class=o>;</span>
-  <span class=n>allocation4</span> <span class=o>=</span> <span class=k>new</span> <span class=kt>byte</span><span class=o>[</span><span class=mi>4</span> <span class=o>*</span> <span class=n>_1MB</span><span class=o>];</span>
-<span class=o>}</span>
-</pre></div></p>
-<p>运行结果：</p>
-<p> <div class=codehilite><pre>[GC [DefNew
-Desired Survivor size 524288 bytes, new threshold 1 (max 15)
-- age   1:     676824 bytes,     676824 total
-: 5115K-&gt;660K(9216K), 0.0050136 secs] 5115K-&gt;4756K(19456K), 0.0050443 secs] [Times: user=0.00 sys=0.01, real=0.01 secs]
-[GC [DefNew
-Desired Survivor size 524288 bytes, new threshold 15 (max 15)
-: 4756K-&gt;0K(9216K), 0.0010571 secs] 8852K-&gt;4756K(19456K), 0.0011009 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
-Heap
- def new generation   total 9216K, used 4178K [0x029d0000, 0x033d0000, 0x033d0000)
-  eden space 8192K,  51% used [0x029d0000, 0x02de4828, 0x031d0000)
-  from space 1024K,   0% used [0x031d0000, 0x031d0000, 0x032d0000)
-  to   space 1024K,   0% used [0x032d0000, 0x032d0000, 0x033d0000)
- tenured generation   total 10240K, used 4756K [0x033d0000, 0x03dd0000, 0x03dd0000)
-   the space 10240K,  46% used [0x033d0000, 0x038753e8, 0x03875400, 0x03dd0000)
- compacting perm gen  total 12288K, used 2114K [0x03dd0000, 0x049d0000, 0x07dd0000)
-   the space 12288K,  17% used [0x03dd0000, 0x03fe09a0, 0x03fe0a00, 0x049d0000)
-No shared spaces configured.
-</pre></div></p>
+<p>为了能更好地适应不同程序的内存状况，虚拟机并不是永远地要求对 象的年龄必须达到了<C>MaxTenuringThreshold</C>才能晋升⽼年代，如果在Survivor空间中相同年龄所有对象⼤⼩的总和⼤于Survivor空间的⼀半，年龄⼤于或等于该年龄的对象就可以直接进⼊⽼年代，⽆须等到 <C>MaxTenuringThreshold</C>中要求的年龄。    </p>
 <h4 id="_14">空间分配担保<a class="headerlink" href="#_14" title="Permanent link">&para;</a></h4>
-<p>在发生Minor GC之前，虚拟机会先检查老年代最大可用的连续空间是否大于新生代所有对象总空间，如果这个条件成立，那么Minor GC可以确保是安全的。如果不成立，则虚拟机会查看HandlePromotionFailure设置值是否允许担保失败。如果允许，那么会继续检查老年代最大可用的连续空间是否大于历次晋升到老年代对象的平均大小，如果大于，将尝试着进行一次Minor GC，尽管这次Minor GC是有风险的；如果小于，或者HandlePromotionFailure设置不允许冒险，那这时也要改为进行一次Full GC。</p>
-<p>下面解释一下“冒险”是冒了什么风险，前面提到过，新生代使用复制收集算法，但为了内存利用率，只使用其中一个Survivor空间来作为轮换备份，因此当出现大量对象在Minor GC后仍然存活的情况（最极端的情况就是内存回收后新生代中所有对象都存活），就需要老年代进行分配担保，把Survivor无法容纳的对象直接进入老年代。与生活中的贷款担保类似，老年代要进行这样的担保，前提是老年代本身还有容纳这些对象的剩余空间，一共有多少对象会活下来在实际完成内存回收之前是无法明确知道的，所以只好取之前每一次回收晋升到老年代对象容量的平均大小值作为经验值，与老年代的剩余空间进行比较，决定是否进行Full GC来让老年代腾出更多空间。</p>
-<p>取平均值进行比较其实仍然是一种动态概率的手段，也就是说，如果某次Minor GC存活后的对象突增，远远高于平均值的话，依然会导致担保失败（Handle Promotion Failure）。如果出现了HandlePromotionFailure失败，那就只好在失败后重新发起一次Full GC。虽然担保失败时绕的圈子是最大的，但大部分情况下都还是会将HandlePromotionFailure开关打开，避免Full GC过于频繁，参见代码清单3-9，请读者在JDK 6 Update 24之前的版本中运行测试。</p>
-<p><a href="http://book.2cto.com/201306/25499.html">代码和结果，点这里</a></p></div>
+<p>在发⽣Minor GC之前，虚拟机会先检查⽼年代最⼤可⽤的连续空间是否⼤于新⽣代所有对象总空间，如果这个条件成⽴，那么Minor GC可以确保是安全的。如果不成⽴，则虚拟机会查看HandlePromotionFailure设置值是否允许担保失败。如果允许，那么会继续检查⽼年代最⼤可⽤的连续空间是否⼤于历次晋升到⽼年代对象的平均⼤⼩，如果⼤于，将尝试着进⾏⼀次Minor GC，尽管这次Minor GC是有风险的；如果⼩于，或者HandlePromotionFailure设置不允许冒险，那这时也要改为进⾏⼀次Full GC。</p></div>
         </div>
 
         <footer class="col-md-12">
