@@ -474,11 +474,175 @@
                 <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
         <li class="main active"><a href="#chapter-15-networking-and-threads">Chapter 15 Networking and Threads</a></li>
+        <li class="main "><a href="#1-socket-connections">1 Socket Connections</a></li>
+            <li><a href="#make-a-network-socket-connection">Make a Network Socket Connection</a></li>
+            <li><a href="#readingwriting-fromto-a-socket">Reading/Writing From/To a Socket</a></li>
+        <li class="main "><a href="#2-threads">2 Threads</a></li>
+            <li><a href="#launching-a-thread">Launching a thread</a></li>
+            <li><a href="#runnable-interface">Runnable interface</a></li>
+            <li><a href="#thread-scheduler">Thread Scheduler</a></li>
+            <li><a href="#lock">Lock</a></li>
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
 
-<h3 id="chapter-15-networking-and-threads"><strong>Chapter 15 Networking and Threads</strong><a class="headerlink" href="#chapter-15-networking-and-threads" title="Permanent link">&para;</a></h3></div>
+<h3 id="chapter-15-networking-and-threads"><strong>Chapter 15 Networking and Threads</strong><a class="headerlink" href="#chapter-15-networking-and-threads" title="Permanent link">&para;</a></h3>
+<p>All the low-level networking details are taken care of by classes in the <C>java.net</C> library. One of Java's big benefits is that sending and receiving data over a network is just I/O with a slightly different connection stream at the end of the chain.</p>
+<h3 id="1-socket-connections">1 Socket Connections<a class="headerlink" href="#1-socket-connections" title="Permanent link">&para;</a></h3>
+<p><img alt="Connect:Send:Receive" src="../figures/Connect:Send:Receive.png" /></p>
+<h4 id="make-a-network-socket-connection">Make a Network Socket Connection<a class="headerlink" href="#make-a-network-socket-connection" title="Permanent link">&para;</a></h4>
+<p>To connect to another machine, We need a <C>Socket</C> connection. A <C>Socket</C> (<C>java.net.Socket</C> is an object that represents a network connection between two machines. A connection is a <em>relationship</em> between two machines, where two pieces of software know about each other.</p>
+<p>To make a Socket connection, you need to know two things about the server: who it is, and which port it’s running on. In other words, <strong>IP address</strong> and <strong>TCP port number</strong>.</p>
+<p> <div class=codehilite><pre><span class=c1>// 196.164.1.103 is the IP address for the sever</span>
+<span class=c1>// 5000 is TCP port number</span>
+<span class=n>Socket</span> <span class=n>chatSocket</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Socket</span><span class=o>(</span><span class=s>&quot;196.164.1.103&quot;</span><span class=o>,</span> <span class=mi>5000</span><span class=o>);</span>
+</pre></div></p>
+<p><strong>A TCP port is just a 16-bit number that identifies a specific program on the server</strong>.</p>
+<p>The TCP port numbers from 0 to 1023 are reserved for well-known services. Don’t use them for your own server programs!</p>
+<p>Well-known TCP port numbers for common server applications:</p>
+<p><img alt="well-known TCP port numbers for common server applications" src="../figures/well-known%20TCP%20port%20numbers%20for%20common%20server%20applications.png" /></p>
+<h4 id="readingwriting-fromto-a-socket">Reading/Writing From/To a Socket<a class="headerlink" href="#readingwriting-fromto-a-socket" title="Permanent link">&para;</a></h4>
+<p><strong>To read data from a <C>Socket</C>, use a <C>BufferedReader</C></strong>.</p>
+<p>To communicate over a <C>Socket</C> connection, you use regular I/P streams. One of the coolest features in Java is that the most of you I/O work won't care what you high-level chain stream is actually connected to.</p>
+<ul>
+<li>Make a <C>Socket</C> connection to the server<ul>
+<li><code class="codehilite">::Java Socket chatSocket = new Socket(&quot;127.0.0.1&quot;, 5000);</code></li>
+</ul>
+</li>
+<li>Make an <C>InputStreamReader</C> chained to the <C>Socket</C>’s low-level (connection) input stream<ul>
+<li><code class="codehilite"><span class="n">InputStreamReader</span> <span class="n">stream</span> <span class="o">=</span> <span class="k">new</span> <span class="n">InputStreamReader</span><span class="o">(</span><span class="n">chatSocket</span><span class="o">.</span><span class="na">getInputStream</span><span class="o">());</span></code></li>
+</ul>
+</li>
+<li>Make a <C>BufferedReader</C> and read!<ul>
+<li><code class="codehilite"><span class="n">BufferedReader</span> <span class="n">reader</span> <span class="o">=</span> <span class="k">new</span> <span class="n">BufferedReader</span><span class="o">(</span><span class="n">stream</span><span class="o">);</span> <span class="n">String</span> <span class="n">message</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="na">readLine</span><span class="o">();</span></code> </li>
+</ul>
+</li>
+</ul>
+<p><img alt="read data from a Socket" src="../figures/READFROMSOCKETS.png" /></p>
+<p><strong>To write data to a Socket, use a <C>PrintWriter</C></strong></p>
+<ul>
+<li>Make a <C>Socket</C> connection to the server<ul>
+<li><code class="codehilite">::Java Socket chatSocket = new Socket(&quot;127.0.0.1&quot;, 5000);</code></li>
+</ul>
+</li>
+<li>Make an <C>PrintWriter</C> chained to the <C>Socket</C>’s low-level (connection) input stream<ul>
+<li><code class="codehilite"><span class="n">PrintWriter</span> <span class="n">writer</span> <span class="o">=</span> <span class="k">new</span> <span class="n">PrintWriter</span><span class="o">(</span><span class="n">chatSocket</span><span class="o">.</span><span class="na">getOutputStream</span><span class="o">());</span></code></li>
+</ul>
+</li>
+<li>Write (print) Something!<ul>
+<li><code class="codehilite"><span class="n">writer</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;message to send); writer.print(&quot;</span><span class="n">another</span> <span class="n">message</span><span class="err">&quot;</span><span class="o">);</span></code> </li>
+</ul>
+</li>
+</ul>
+<p><img alt="WRITETOSOCKETS" src="../figures/WRITETOSOCKETS.png" /></p>
+<p>A simple demo program, which reads <code class="codehilite">index.html</code> from my personal blog "larryim.cc", is illustrated below. The format of HTTP Request is discussed in <a href="../../csapp/ch11.md/#5-web">CSAPP</a>.</p>
+<p> <div class=codehilite><pre><span class=kn>import</span> <span class=nn>java.io.BufferedReader</span><span class=o>;</span>
+<span class=kn>import</span> <span class=nn>java.io.InputStreamReader</span><span class=o>;</span>
+<span class=kn>import</span> <span class=nn>java.io.PrintWriter</span><span class=o>;</span>
+<span class=kn>import</span> <span class=nn>java.net.Socket</span><span class=o>;</span>
+
+<span class=kd>public</span> <span class=kd>class</span> <span class=nc>MyBlog</span> <span class=o>{</span>
+    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>http_request</span><span class=o>(){</span>
+        <span class=k>try</span><span class=o>{</span>
+            <span class=n>Socket</span> <span class=n>s</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Socket</span><span class=o>(</span><span class=s>&quot;192.30.252.153&quot;</span><span class=o>,</span> <span class=mi>80</span><span class=o>);</span>
+            <span class=n>InputStreamReader</span> <span class=n>streamReader</span> <span class=o>=</span> <span class=k>new</span> <span class=n>InputStreamReader</span><span class=o>(</span><span class=n>s</span><span class=o>.</span><span class=na>getInputStream</span><span class=o>());</span>
+            <span class=n>BufferedReader</span> <span class=n>br</span> <span class=o>=</span> <span class=k>new</span> <span class=n>BufferedReader</span><span class=o>(</span><span class=n>streamReader</span><span class=o>);</span>
+
+            <span class=c1>//注意换行符是\r\n</span>
+            <span class=n>writer</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=s>&quot;GET /index.html HTTP/1.0 \r\n Host: larryim.cc  \r\n   \r\n &quot;</span><span class=o>);</span>
+
+            <span class=n>String</span> <span class=n>line</span> <span class=o>=</span> <span class=kc>null</span><span class=o>;</span>
+
+            <span class=k>while</span> <span class=o>((</span><span class=n>line</span><span class=o>=</span> <span class=n>br</span><span class=o>.</span><span class=na>readLine</span><span class=o>())!=</span> <span class=kc>null</span><span class=o>){</span>
+                <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=n>line</span><span class=o>);</span>
+            <span class=o>}</span>
+            <span class=n>br</span><span class=o>.</span><span class=na>close</span><span class=o>();</span>
+        <span class=o>}</span> <span class=k>catch</span> <span class=o>(</span><span class=n>Exception</span> <span class=n>ex</span><span class=o>){</span>
+            <span class=n>ex</span><span class=o>.</span><span class=na>printStackTrace</span><span class=o>();</span>
+        <span class=o>}</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kd>static</span> <span class=kt>void</span> <span class=nf>main</span><span class=o>(</span><span class=n>String</span><span class=o>[]</span> <span class=n>args</span><span class=o>){</span>
+        <span class=n>MyBlog</span> <span class=n>client</span> <span class=o>=</span> <span class=k>new</span> <span class=n>MyBlog</span><span class=o>();</span>
+        <span class=n>client</span><span class=o>.</span><span class=na>http_request</span><span class=o>();</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></p>
+<h3 id="2-threads">2 Threads<a class="headerlink" href="#2-threads" title="Permanent link">&para;</a></h3>
+<p>To make a thread, make a <C>Thread</C>. A <C>Thread</C> is a java class that represents a thread. You'll create an instance of class <C>Thread</C> each time you want to start up a new <em>thread</em> of execution.</p>
+<p>A thread is a separate thread of execution. That means a separate stack. Remember, Java is just a process running on your underlying OS. <strong>The JVM switches between the new thread (user thread) and the original main thread, until both threads complete</strong>.</p>
+<h4 id="launching-a-thread">Launching a thread<a class="headerlink" href="#launching-a-thread" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Make a <C>Runnable</C> object (the thread’s job)<ul>
+<li><code class="codehilite"><span class="n">Runnable</span> <span class="n">threadJob</span> <span class="o">=</span> <span class="k">new</span> <span class="n">MyRunnable</span><span class="o">();</span></code></li>
+<li><C>Runnable</C> is an interface you’ll learn about on the next page. You’ll write a class that implements the <C>Runnable</C> interface, and that class is where you’ll define the work that a thread will perform. In other words, the method that will be run from the thread’s new call stack.</li>
+</ul>
+</li>
+<li>Make a <C>Thread object</C>(the worker) and give it a <C>Runnable</C>(the job)<ul>
+<li><code class="codehilite"><span class="n">Thread</span> <span class="n">myThread</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Thread</span><span class="o">(</span><span class="n">threadJob</span><span class="o">);</span></code></li>
+<li>Pass the new <C>Runnable</C> object to the <C>Thread</C> constructor. This tells the new <C>Thread</C> object which method to put on the bottom of the new stack—the <C>Runnable</C>’s <C>run()</C> method.</li>
+</ul>
+</li>
+<li>Start the Thread<ul>
+<li><code class="codehilite"><span class="n">myThread</span><span class="o">.</span><span class="na">start</span><span class="o">();</span></code></li>
+<li>Nothing happens until you call the <C>Thread</C>’s <C>start()</C> method. That’s when you go from having just a <C>Thread</C> instance to having a new thread of execution. When the new thread starts up, it takes the <C>Runnable</C> object’s <C>run()</C> method and puts it on the bottom of the new thread’s stack.</li>
+</ul>
+</li>
+</ul>
+<p><strong><C>Runnable</C> is to a <C>Thread</C> what a job is to a worker</strong>. A <C>Runnable</C> is the job a thread is supposed to run.</p>
+<h4 id="runnable-interface">Runnable interface<a class="headerlink" href="#runnable-interface" title="Permanent link">&para;</a></h4>
+<p>To make a job for your thread, implement the <C>Runnable</C> interface.</p>
+<p> <div class=codehilite><pre><span class=c1>// Runnable is in the java.lang package, so you don&#39;t need to import it.</span>
+<span class=kd>public</span> <span class=kd>class</span> <span class=nc>RunThreads</span> <span class=kd>implements</span> <span class=n>Runnable</span> <span class=o>{</span>
+
+    <span class=nd>@Override</span>
+    <span class=c1>// Runnable has only one method to implement: public void run() (with no arguments)</span>
+    <span class=c1>// This is where you put the JOB the thread is suposed to run.</span>
+    <span class=c1>// This is the method that goes at the bottom of the new stack()</span>
+    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>run</span><span class=o>()</span> <span class=o>{</span>
+        <span class=k>for</span> <span class=o>(</span><span class=kt>int</span> <span class=n>i</span><span class=o>=</span><span class=mi>0</span><span class=o>;</span> <span class=n>i</span><span class=o>&lt;</span><span class=mi>20</span><span class=o>;</span> <span class=n>i</span><span class=o>++){</span>
+            <span class=n>String</span> <span class=n>threadName</span> <span class=o>=</span> <span class=n>Thread</span><span class=o>.</span><span class=na>currentThread</span><span class=o>().</span><span class=na>getName</span><span class=o>();</span>
+            <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=n>threadName</span> <span class=o>+</span> <span class=s>&quot; is running.&quot;</span><span class=o>);</span>
+        <span class=o>}</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kd>static</span> <span class=kt>void</span> <span class=nf>main</span><span class=o>(</span><span class=n>String</span><span class=o>[]</span> <span class=n>args</span><span class=o>){</span>
+        <span class=n>RunThreads</span> <span class=n>jobs</span> <span class=o>=</span> <span class=k>new</span> <span class=n>RunThreads</span><span class=o>();</span>
+        <span class=c1>// Pass the new Runnable instance into the new Thread constructor.</span>
+        <span class=c1>// This tells the thread what method to put on the bottom of the new stack.</span>
+        <span class=c1>// In other words, the first method that the new thread will run.</span>
+        <span class=n>Thread</span> <span class=n>threadA</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Thread</span><span class=o>(</span><span class=n>jobs</span><span class=o>);</span>
+        <span class=n>Thread</span> <span class=n>threadB</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Thread</span><span class=o>(</span><span class=n>jobs</span><span class=o>);</span>
+
+        <span class=n>threadA</span><span class=o>.</span><span class=na>setName</span><span class=o>(</span><span class=s>&quot;Thread A&quot;</span><span class=o>);</span>
+        <span class=n>threadB</span><span class=o>.</span><span class=na>setName</span><span class=o>(</span><span class=s>&quot;Thread B&quot;</span><span class=o>);</span>
+
+        <span class=c1>// You won&#39;t get a new thread of execution until you call start() on the Thread instance.</span>
+        <span class=n>threadA</span><span class=o>.</span><span class=na>start</span><span class=o>();</span>
+        <span class=n>threadB</span><span class=o>.</span><span class=na>start</span><span class=o>();</span>
+
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></p>
+<p><strong>The three states of a new thread</strong>:</p>
+<p><img alt="TheThreeStatesOfANewThread" src="../figures/TheThreeStatesOfANewThread.png" /></p>
+<p>Once the thread becomes runnable, it can move back and forth between runnable, running, and an additional state: temporarily not runnable (also known as 'blocked').</p>
+<p>Typically, a thread moves back and forth between runnable and running, as the JVM thread scheduler selects a thread to run and then kicks it back out so another thread gets a chance.</p>
+<p><img alt="Typical runnable:running loopS" src="../figures/Typical%20runnable:running%20loopS.png" /></p>
+<p>A thread scheduler can move a running thread into a blocked state, for a variety of reasons. See <a href="../../ujvm/ch12.md/#_8">Understanding JVM</a>.</p>
+<h4 id="thread-scheduler">Thread Scheduler<a class="headerlink" href="#thread-scheduler" title="Permanent link">&para;</a></h4>
+<p>The thread scheduler makes all the decisions about who runs and who doesn’t.</p>
+<p>Most importantly, there are no guarantees about scheduling! So DO NOT base your program's correctness on the scheduler working in a particular way! You multi-threaded program must work no matter <em>how</em> the thread scheduler behaves.</p>
+<p>The thread's <C>sleep()</C> method does come with <em>one</em> guarantee: a sleeping thread will <em>not</em> become the currently-running thread before the length of its sleep time has expired.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Another way of making a thread is to, make a subclass of <C>Thread</C> and override the <C>Thread</C>'s <C>run()</C> method, instead of <C>Runnable</C>  implementation. However, it's rarely a good idea - not a good OO design.</p>
+</div>
+<h4 id="lock">Lock<a class="headerlink" href="#lock" title="Permanent link">&para;</a></h4>
+<p>The lock works like this:</p>
+<p><img alt="lock" src="../figures/lock.png" /></p>
+<p>Use the <C>synchronized</C> keyword to modify a method so that only one thread at a time can access it. The <C>synchronized</C> keyword means that a thread needs a key in order to access the synchronized code.</p>
+<p>Every Java object has a lock. A lock has only one key. Most of the time, the lock is unlocked and nobody cares. But if an object has <C>synchronized</C> methods, a thread can enter one of the synchronized methods ONLY if the key for the object’s lock is available. In other words, only if another thread hasn’t already grabbed the one key.</p></div>
         </div>
 
         <footer class="col-md-12">

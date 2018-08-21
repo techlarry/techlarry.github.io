@@ -487,6 +487,9 @@
             <li><a href="#writing-to-a-plain-text-file">Writing to a plain text file</a></li>
             <li><a href="#buffer">Buffer</a></li>
         <li class="main "><a href="#reading-files">Reading Files</a></li>
+        <li class="main "><a href="#java-nio">Java NIO</a></li>
+            <li><a href="#main-differences-of-nio-and-io">Main Differences of NIO and IO</a></li>
+            <li><a href="#nio-channel">NIO Channel</a></li>
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
@@ -505,11 +508,11 @@
 </ul>
 <h4 id="writing-a-serialized-object-to-a-file">Writing a serialized object to a file<a class="headerlink" href="#writing-a-serialized-object-to-a-file" title="Permanent link">&para;</a></h4>
 <ul>
-<li>Make a FileOutputStream<ul>
+<li>Make a <C>FileOutputStream</C><ul>
 <li><code class="codehilite"><span class="n">FileOutputStream</span> <span class="n">fileStream</span> <span class="o">=</span> <span class="k">new</span> <span class="n">FileOutputStream</span><span class="o">(</span><span class="s">&quot;MyGame.ser&quot;</span><span class="o">);</span></code> </li>
 </ul>
 </li>
-<li>Make an ObjectOutputStream<ul>
+<li>Make an <C>ObjectOutputStream</C><ul>
 <li><code class="codehilite"><span class="n">ObjectOutputStream</span> <span class="n">os</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ObjectOutputStream</span><span class="o">(</span><span class="n">fileStream</span><span class="o">);</span></code></li>
 </ul>
 </li>
@@ -518,7 +521,7 @@
 <li>Serializes the object referenced by character-One, and writes them to the file "myGame.ser".</li>
 </ul>
 </li>
-<li>Close the ObjectOutputStream<ul>
+<li>Close the <C>ObjectOutputStream</C><ul>
 <li><code class="codehilite"><span class="n">os</span><span class="o">.</span><span class="na">close</span><span class="o">();</span></code></li>
 <li>Closing the stream at the top closes the ones underneath, so the <C>FileOutputStream</C> (and the file) will close automatically.   </li>
 </ul>
@@ -532,11 +535,11 @@
 </ul>
 <p><img alt="data_streams" src="../figures/data_streams.png" /></p>
 <ul>
-<li>FileOutputStreams write bytes to a file.</li>
-<li>ObjectOutputStreams turn objects into data that can be written to a stream.</li>
+<li><C>FileOutputStream</C> writes bytes to a file.</li>
+<li><C>ObjectOutputStream</C> turns objects into data that can be written to a stream.</li>
 </ul>
 <blockquote>
-<p>A <C>FileOutputStream</C> is an output stream for writing data to a File or to a FileDescriptor. </p>
+<p>A <C>FileOutputStream</C> is an output stream for writing data to a File or to a <C>FileDescriptor</C>. </p>
 </blockquote>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -551,14 +554,49 @@
 <h4 id="implement-serializable">Implement Serializable<a class="headerlink" href="#implement-serializable" title="Permanent link">&para;</a></h4>
 <p><b>If you want your class to be serializable, implement <i><mark class="critic">Serializable</mark></i>.</b></p>
 <ul>
-<li>The Serializable interface is known as a <em>marker</em> or <em>tag</em> interface, because the interface doesn't have any methods to implement.</li>
+<li>The <C>Serializable</C> interface is known as a <em>marker</em> or <em>tag</em> interface, because the interface doesn't have any methods to implement.</li>
 <li>Its sole purpose is to announce that the class implementing it, is <em>serializable</em>.</li>
 <li>If any superclass of a class is serializable, the subclass is automatically serializable even if the subclass doesn't explicitly declare <C>implements Serializable</C>.</li>
 </ul>
 <blockquote>
 <p>A <strong>marker interface</strong> is an interface that contains NO method declarations, but merely designates (or "marks") a class that implements the interface as having some property. <small>[Effective Java, 2nd]</small></p>
 </blockquote>
-<p><strong>Serialization is all or nothing</strong>: Either the entire object graph is serialized correctly or serialization correctly or serialization fails.</p>
+<p>The source file of <code class="codehilite">Serializable.java</code>:</p>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>interface</span> <span class=nc>Serializable</span> <span class=o>{</span>
+<span class=o>}</span>
+</pre></div></p>
+<p><strong>Serialization is all or nothing</strong>: Either the entire object graph is serialized correctly  or serialization fails.</p>
+<p> <div class=codehilite><pre><span class=kn>import</span> <span class=nn>java.io.*</span><span class=o>;</span>
+
+<span class=kd>public</span> <span class=kd>class</span> <span class=nc>Box</span> <span class=kd>implements</span> <span class=n>Serializable</span> <span class=o>{</span>
+    <span class=c1>// No methods to implement, but when you say &quot;implements Serializable&quot;,</span>
+    <span class=c1>// it says to the JVM, &quot;it&#39;s OK to serialize objects of this type.&quot;</span>
+    <span class=kd>private</span> <span class=kt>int</span> <span class=n>width</span><span class=o>;</span>
+    <span class=kd>private</span> <span class=kt>int</span> <span class=n>hight</span><span class=o>;</span>
+
+    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>setWidth</span><span class=o>(</span><span class=kt>int</span> <span class=n>w</span><span class=o>)</span> <span class=o>{</span>
+        <span class=n>width</span> <span class=o>=</span> <span class=n>w</span><span class=o>;</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>setHight</span><span class=o>(</span><span class=kt>int</span> <span class=n>h</span><span class=o>)</span> <span class=o>{</span>
+        <span class=n>hight</span> <span class=o>=</span> <span class=n>h</span><span class=o>;</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kd>static</span> <span class=kt>void</span> <span class=nf>main</span><span class=o>(</span><span class=n>String</span><span class=o>[]</span> <span class=n>args</span><span class=o>)</span> <span class=o>{</span>
+        <span class=n>Box</span> <span class=n>box</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Box</span><span class=o>();</span>
+        <span class=n>box</span><span class=o>.</span><span class=na>setHight</span><span class=o>(</span><span class=mi>5</span><span class=o>);</span>
+        <span class=n>box</span><span class=o>.</span><span class=na>setWidth</span><span class=o>(</span><span class=mi>6</span><span class=o>);</span>
+        <span class=k>try</span> <span class=o>{</span>
+            <span class=n>FileOutputStream</span> <span class=n>outputStream</span> <span class=o>=</span> <span class=k>new</span> <span class=n>FileOutputStream</span><span class=o>(</span><span class=s>&quot;foo.ser&quot;</span><span class=o>);</span>
+            <span class=n>ObjectOutputStream</span> <span class=n>os</span> <span class=o>=</span> <span class=k>new</span> <span class=n>ObjectOutputStream</span><span class=o>(</span><span class=n>outputStream</span><span class=o>);</span>
+            <span class=n>os</span><span class=o>.</span><span class=na>writeObject</span><span class=o>(</span><span class=n>box</span><span class=o>);</span>
+            <span class=n>os</span><span class=o>.</span><span class=na>close</span><span class=o>();</span>
+        <span class=o>}</span> <span class=k>catch</span> <span class=o>(</span><span class=n>IOException</span> <span class=n>ex</span><span class=o>)</span> <span class=o>{</span>
+            <span class=n>ex</span><span class=o>.</span><span class=na>printStackTrace</span><span class=o>();</span>
+        <span class=o>}</span>
+    <span class=o>}</span><span class=c1>// end main</span>
+<span class=o>}</span><span class=c1>// end class Box</span>
+</pre></div></p>
 <h4 id="transient">transient<a class="headerlink" href="#transient" title="Permanent link">&para;</a></h4>
 <p><C>transient</C> is a variables modifier used in serialization:</p>
 <p><b>Mark an instance variable as <i><mark class="critic">transient</mark></i> if it can't (or shouldn't) be saved.</b></p>
@@ -587,11 +625,11 @@
 <h4 id="deserialization">Deserialization<a class="headerlink" href="#deserialization" title="Permanent link">&para;</a></h4>
 <p><strong>Deserialization</strong>(反序列化) is a lot like <strong>serialization</strong>(序列化) in reverse.</p>
 <ul>
-<li>Make a FileInputStream<ul>
+<li>Make a <C>FileInputStream</C><ul>
 <li><code class="codehilite"><span class="n">FileInputStream</span> <span class="n">fileStream</span> <span class="o">=</span> <span class="k">new</span> <span class="n">FileInputStream</span><span class="o">(</span><span class="s">&quot;MyGame.ser&quot;</span><span class="o">);</span></code></li>
 </ul>
 </li>
-<li>Make an ObjectInputStream<ul>
+<li>Make an <C>ObjectInputStream</C><ul>
 <li><code class="codehilite"><span class="n">ObjectInputStream</span> <span class="n">os</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ObjectInputStream</span><span class="o">(</span><span class="n">fileStream</span><span class="o">);</span></code></li>
 </ul>
 </li>
@@ -605,7 +643,7 @@
 <li>The return value of <C>readObject()</C> is type <C>Object</C>, so you have to <em>cast</em> it back to the type you know it really is.</li>
 </ul>
 </li>
-<li>Close the ObjectInputStream<ul>
+<li>Close the <C>ObjectInputStream</C><ul>
 <li><code class="codehilite"><span class="n">os</span><span class="o">.</span><span class="na">close</span><span class="o">();</span></code> </li>
 <li>Closing the stream at the top closes the ones underneath, so the <C>FileInputStream</C> and the file will close automatically.</li>
 </ul>
@@ -664,7 +702,11 @@
 <p>Some things you can do with a <C>File</C> object:</p>
 <ul>
 <li>Make a file Object representing an existing file<ul>
-<li><code class="codehilite"><span class="n">File</span> <span class="n">f</span> <span class="o">=</span> <span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="s">&quot;Mycode.txt&quot;</span><span class="o">);</span></code></li>
+<li><code class="codehilite"><span class="n">File</span> <span class="n">f</span> <span class="o">=</span> <span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="s">&quot;Mycode.txt&quot;</span><span class="o">);</span></code>// not actually create a file</li>
+</ul>
+</li>
+<li>Create a new, empty file<ul>
+<li><code class="codehilite"><span class="n">File</span><span class="o">.</span><span class="na">createNewFile</span><span class="err">​</span><span class="o">(</span><span class="s">&quot;MyFile.txt&quot;</span><span class="o">)</span></code> </li>
 </ul>
 </li>
 <li>Make a new directory<ul>
@@ -745,6 +787,85 @@
         <span class=o>}</span>
     <span class=o>}</span>
 <span class=o>}</span>
+</pre></div></p>
+<h3 id="java-nio">Java NIO<a class="headerlink" href="#java-nio" title="Permanent link">&para;</a></h3>
+<p>When studying both the Java NIO and IO API's, a question quickly pops into mind:</p>
+<p>When should I use IO and when should I use NIO?</p>
+<table>
+<thead>
+<tr>
+<th>IO</th>
+<th>NIO</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Stream oriented</td>
+<td>Buffer oriented</td>
+</tr>
+<tr>
+<td>Blocking IO</td>
+<td>Non blocking IO</td>
+</tr>
+<tr>
+<td></td>
+<td>Selectors</td>
+</tr>
+</tbody>
+</table>
+<h4 id="main-differences-of-nio-and-io">Main Differences of NIO and IO<a class="headerlink" href="#main-differences-of-nio-and-io" title="Permanent link">&para;</a></h4>
+<p>[<a href="https://dzone.com/articles/java-nio-vs-io">Java NIO vs. IO</a>，<a href="http://ifeve.com/java-nio-vs-io/">翻译</a>]</p>
+<p><strong>Stream Oriented vs. Buffer Oriented</strong></p>
+<p>The first big difference between Java NIO and IO is that IO is stream oriented(面向流), where NIO is buffer oriented(面向缓冲). </p>
+<p>Java IO being stream oriented means that you read one or more bytes at a time, from a stream. What you do with the read bytes is up to you. They are not cached anywhere. Furthermore, you cannot move forth and back in the data in a stream. If you need to move back and forth in the data read from a stream, you will need to cache it in a buffer first.</p>
+<p>Java NIO's buffer oriented approach is slightly different. Data is read into a buffer from which it is later processed. You can move forth and back in the buffer as you need to. This gives you a bit more flexibility during processing. However, you also need to check if the buffer contains all the data you need in order to fully process it. And, you need to make sure that when reading more data into the buffer, you do not overwrite data in the buffer you have not yet processed.</p>
+<p><strong>Blocking vs. Non-blocking IO</strong></p>
+<p>Java IO's various streams are blocking. That means, that when a thread invokes a read() or write(), that thread is blocked until there is some data to read, or the data is fully written. The thread can do nothing else in the meantime.</p>
+<p>Java IO: Reading data from a blocking stream.</p>
+<p><img alt="" src="../figures/JavaIOReadingDataFromABlockingStream.png" /></p>
+<p>Java NIO's non-blocking mode enables a thread to request reading data from a channel, and only get what is currently available, or nothing at all, if no data is currently available. Rather than remain blocked until data becomes available for reading, the thread can go on with something else.</p>
+<p>The same is true for non-blocking writing. A thread can request that some data be written to a channel, but not wait for it to be fully written. The thread can then go on and do something else in the mean time.</p>
+<p>What threads spend their idle time on when not blocked in IO calls, is usually performing IO on other channels in the meantime. That is, a single thread can now manage multiple channels of input and output.</p>
+<p><img alt="" src="../figures/JavaNIOReadingDataFromAChannelUntilAllNeededDataIsInBuffer.png" /></p>
+<p>If you need to manage thousands of open connections simultaneously, which each only send a little data, for instance a chat server, implementing the server in NIO is probably an advantage. Similarly, if you need to keep a lot of open connections to other computers, e.g. in a P2P network, using a single thread to manage all of your outbound connections might be an advantage. This one thread, multiple connections design is illustrated in this diagram:</p>
+<p><img alt="" src="../figures/15348420529139.png" /></p>
+<p>If you have fewer connections with very high bandwidth, sending a lot of data at a time, perhaps a classic IO server implementation might be the best fit. This diagram illustrates a classic IO server design:</p>
+<p><img alt="" src="../figures/15348420743344.png" /></p>
+<p><strong>Selectors</strong></p>
+<p>Java NIO's selectors(选择器) allow a single thread to monitor multiple channels of input. You can register multiple channels with a selector, then use a single thread to "select" the channels that have input available for processing, or select the channels that are ready for writing. This selector mechanism makes it easy for a single thread to manage multiple channels.</p>
+<h4 id="nio-channel">NIO Channel<a class="headerlink" href="#nio-channel" title="Permanent link">&para;</a></h4>
+<p>Java NIO Channels are similar to streams with a few differences:</p>
+<ul>
+<li>You can both read and write to a Channels. Streams are typically one-way (read or write).</li>
+<li>Channels can be read and written asynchronously.</li>
+<li>Channels always read from, or write to, a Buffer.</li>
+</ul>
+<p>Here are the most important Channel implementations in Java NIO:</p>
+<ul>
+<li><C>FileChannel</C> reads data from and write to files.</li>
+<li><C>DatagramChannel</C> can read and write data over the network via UDP.</li>
+<li><C>SocketChannel</C> can read and write data over the network via TCP.</li>
+<li><C>ServerSocketChannel</C> allows you to listen for incoming TCP connections, like a web server does. For each incoming connection a <C>SocketChannel</C> is created.</li>
+</ul>
+<p> <div class=codehilite><pre><span class=n>RandomAccessFile</span> <span class=n>aFile</span> <span class=o>=</span> <span class=k>new</span> <span class=n>RandomAccessFile</span><span class=o>(</span><span class=s>&quot;data/nio-data.txt&quot;</span><span class=o>,</span> <span class=s>&quot;rw&quot;</span><span class=o>);</span>
+<span class=n>FileChannel</span> <span class=n>inChannel</span> <span class=o>=</span> <span class=n>aFile</span><span class=o>.</span><span class=na>getChannel</span><span class=o>();</span>
+
+<span class=n>ByteBuffer</span> <span class=n>buf</span> <span class=o>=</span> <span class=n>ByteBuffer</span><span class=o>.</span><span class=na>allocate</span><span class=o>(</span><span class=mi>48</span><span class=o>);</span>
+
+<span class=kt>int</span> <span class=n>bytesRead</span> <span class=o>=</span> <span class=n>inChannel</span><span class=o>.</span><span class=na>read</span><span class=o>(</span><span class=n>buf</span><span class=o>);</span>
+<span class=k>while</span> <span class=o>(</span><span class=n>bytesRead</span> <span class=o>!=</span> <span class=o>-</span><span class=mi>1</span><span class=o>)</span> <span class=o>{</span>
+
+      <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=s>&quot;Read &quot;</span> <span class=o>+</span> <span class=n>bytesRead</span><span class=o>);</span>
+      <span class=n>buf</span><span class=o>.</span><span class=na>flip</span><span class=o>();</span>
+
+      <span class=k>while</span><span class=o>(</span><span class=n>buf</span><span class=o>.</span><span class=na>hasRemaining</span><span class=o>()){</span>
+          <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>print</span><span class=o>((</span><span class=kt>char</span><span class=o>)</span> <span class=n>buf</span><span class=o>.</span><span class=na>get</span><span class=o>());</span>
+      <span class=o>}</span>
+
+      <span class=n>buf</span><span class=o>.</span><span class=na>clear</span><span class=o>();</span>
+      <span class=n>bytesRead</span> <span class=o>=</span> <span class=n>inChannel</span><span class=o>.</span><span class=na>read</span><span class=o>(</span><span class=n>buf</span><span class=o>);</span>
+<span class=o>}</span>
+<span class=n>aFile</span><span class=o>.</span><span class=na>close</span><span class=o>();</span>
 </pre></div></p></div>
         </div>
 
