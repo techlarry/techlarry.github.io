@@ -709,14 +709,14 @@ An application always allocates into a young generation, that is, eden regions, 
 <p>After space-reclamation, the collection cycle restarts with another young-only phase. As backup, if the application runs out of memory while gathering liveness information, G1 performs an in-place stop-the-world full heap compaction (Full GC) like other collectors.</p>
 <h4 id="gc">理解GC日志<a class="headerlink" href="#gc" title="Permanent link">&para;</a></h4>
 <p>我们先看一段GC日志：</p>
-<p><small>
-[GC [PSYoungGen: 8987K-&gt;1016K(9216K)] 9984K-&gt;5056K(19456K), 0.0569611 secs]
-[GC [PSYoungGen: 8038K-&gt;1000K(9216K)] 12078K-&gt;10425K(19456K), 0.0709523 secs][Times：user=0.01 sys=0.00，real=0.02 secs]
-[Full GC [PSYoungGen: 1000K-&gt;0K(9216K)] [ParOldGen: 9425K-&gt;8418K(10240K)] 10425K-&gt;8418K(19456K) [PSPermGen: 9678K-&gt;9675K(21504K)], 0.3152834 secs] 
-[Full GC [PSYoungGen: 8192K-&gt;3583K(9216K)] [ParOldGen: 8418K-&gt;9508K(10240K)] 16610K-&gt;13092K(19456K) [PSPermGen: 9675K-&gt;9675K(22016K)], 0.1913859 secs] 
-[Full GC [PSYoungGen: 7716K-&gt;7702K(9216K)] [ParOldGen: 9508K-&gt;9508K(10240K)] 17224K-&gt;17210K(19456K) [PSPermGen: 9675K-&gt;9675K(21504K)], 0.2769775 secs] 
-[Full GC [PSYoungGen: 7702K-&gt;7702K(9216K)] [ParOldGen: 9508K-&gt;9409K(10240K)] 17210K-&gt;17111K(19456K) [PSPermGen: 9675K-&gt;9675K(21504K)], 0.2491993 secs] 
-</small></p>
+<p> <div class=codehilite><pre><span class=k>[GC [PSYoungGen: 8987K-&gt;1016K(9216K)] 9984K-&gt;5056K(19456K), 0.0569611 secs]</span>
+<span class=k>[GC [PSYoungGen: 8038K-&gt;1000K(9216K)] 12078K-&gt;10425K(19456K), 0.0709523 secs][Times：user=0.01 sys=0.00，real=0.02 secs]</span>
+<span class=err>[Full</span> <span class=err>GC</span> <span class=err>[PSYoungGen:</span> <span class=err>1000K-&gt;0K(9216K)]</span> <span class=err>[ParOldGen:</span> <span class=err>9425K-&gt;8418K(10240K)]</span> <span class=err>10425K-&gt;8418K(19456K)</span> <span class=err>[PSPermGen:</span> <span class=err>9678K-&gt;9675K(21504K)],</span> <span class=err>0.3152834</span> <span class=err>secs]</span> 
+<span class=err>[Full</span> <span class=err>GC</span> <span class=err>[PSYoungGen:</span> <span class=err>8192K-&gt;3583K(9216K)]</span> <span class=err>[ParOldGen:</span> <span class=err>8418K-&gt;9508K(10240K)]</span> <span class=err>16610K-&gt;13092K(19456K)</span> <span class=err>[PSPermGen:</span> <span class=err>9675K-&gt;9675K(22016K)],</span> <span class=err>0.1913859</span> <span class=err>secs]</span> 
+<span class=err>[Full</span> <span class=err>GC</span> <span class=err>[PSYoungGen:</span> <span class=err>7716K-&gt;7702K(9216K)]</span> <span class=err>[ParOldGen:</span> <span class=err>9508K-&gt;9508K(10240K)]</span> <span class=err>17224K-&gt;17210K(19456K)</span> <span class=err>[PSPermGen:</span> <span class=err>9675K-&gt;9675K(21504K)],</span> <span class=err>0.2769775</span> <span class=err>secs]</span> 
+<span class=err>[Full</span> <span class=err>GC</span> <span class=err>[PSYoungGen:</span> <span class=err>7702K-&gt;7702K(9216K)]</span> <span class=err>[ParOldGen:</span> <span class=err>9508K-&gt;9409K(10240K)]</span> <span class=err>17210K-&gt;17111K(19456K)</span> <span class=err>[PSPermGen:</span> <span class=err>9675K-&gt;9675K(21504K)],</span> <span class=err>0.2491993</span> <span class=err>secs]</span> 
+<span class=err>&lt;/small&gt;</span>
+</pre></div></p>
 <ul>
 <li>“[GC”和“[full DC”说明了这次垃圾回收的停顿类型。如果是调用<C>System.gc()</C>方法所触发的收集，那么这里显示“[Full DC(System)”.</li>
 <li>[DefNew、[Tenured、[Perm 表示GC发生的区域。[DefNew表示新生代使用Serial串行GC垃圾收集器。如果是ParNew收集器，新生代名为“[ParNew”。如果采用Parallel Scavenge收集器，那它配套的新生代名为"[PSYoungGen"。对于老年代和永久代同理。</li>
