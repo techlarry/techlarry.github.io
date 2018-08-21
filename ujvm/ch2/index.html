@@ -422,6 +422,10 @@
 <li >
     <a href="../ch13/">Chapter 13 : 线程安全与锁优化</a>
 </li>
+                            
+<li >
+    <a href="../AppendixC/">Appendix HotSpot虚拟机主要参数列表</a>
+</li>
                         </ul>
                     </li>
                     <li >
@@ -465,6 +469,7 @@
             <li><a href="#_5">直接内存</a></li>
         <li class="main "><a href="#3-hotspot">3 HotSpot虚拟机对象探秘</a></li>
             <li><a href="#_6">对象的创建</a></li>
+            <li><a href="#_7">对象的内存布局</a></li>
             <li><a href="#_8">对象的访问定位</a></li>
         <li class="main "><a href="#4-outofmemoryerror">4 实战：OutOfMemoryError异常</a></li>
             <li><a href="#java_2">Java堆溢出</a></li>
@@ -480,36 +485,56 @@
 <p>本章将从概念上介绍Java虚拟机内存的各个区域，讲解这些区域的作⽤、服务对象以及其中可能产⽣的问题。</p>
 <h3 id="2">2 运行时数据区域<a class="headerlink" href="#2" title="Permanent link">&para;</a></h3>
 <p>根据《Java虚拟机规范(Java SE 7版)》的规定， Java虚拟机所管理的内存将会包括以下⼏个运⾏时数据区域。</p>
-<p><img alt="" src="../figures/Java虚拟机运行时数据区.png" /></p>
+<p><img alt="" src="../figures/Java虚拟机运行时数据区larry.png" /></p>
 <h4 id="_1">程序计数器<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h4>
 <p>程序计数器(Program Counter Register)是一块较小的内存空间，它可以看作是当前线程所执行的字节码的行号指示器。每条线程都有⼀个独⽴的程序计数器，各条线程之间计数器互不影响，独⽴存储。</p>
 <p>如果线程正在执行的是Java方法，那么这个计数器的值就是正在执行的虚拟机字节码指令的地址；如果正在执行的是<C>Native</C>方法，这个计数器值为空(undefined)。此内存区域是唯一一个在Java虚拟机规范中没有规定任何<C>OutOfMemoryError</C>情况的区域。</p>
 <h4 id="java">Java虚拟机栈<a class="headerlink" href="#java" title="Permanent link">&para;</a></h4>
-<p>Java虚拟机栈线程私有的，它的生命周期与线程相同。每个方法执行的同时都会创建一个栈帧(Stack Frame)用于存储局部变量表、操作数栈、动态链接、方法出口等信息。</p>
+<p>Java虚拟机栈是线程私有的，它的生命周期与线程相同。每个方法执行的同时都会创建一个栈帧(Stack Frame)用于存储局部变量表、操作数栈、动态链接、方法出口等信息。</p>
 <p>局部变量表存放了编译期可知的各种基本数据类型(<C>boolean</C>、<C>byte</C>、<C>char</C>、<C>short</C>、<C>int</C>、<C>float</C>、<C>long</C>、<C>double</C>)、对象引用(<C><C>Reference</C></C>类型)和<C>returnAddress</C>类型（指向了一条字节码指令的地址）。</p>
-<p>其中64位长度的<C>long</C>和<C>double</C>类型的数据会占用2个局部变量空间（Slot），其余的数据类型占1个。局部变量表所需的内存空间在编译期间分配完成，当进入一个方法时，这个方法需要在帧中分配多大的局部变量空间是完全确定的，在方法运行期间不会改变局部变量表的大小。</p>
+<p>其中64位长度的<C>long</C>和<C>double</C>类型的数据会占用2个局部变量空间(Slot)，其余的数据类型占1个。局部变量表所需的内存空间在编译期间分配完成，当进入一个方法时，这个方法需要在帧中分配多大的局部变量空间是完全确定的，在方法运行期间不会改变局部变量表的大小。</p>
 <p>在Java虚拟机规范中，对这个区域规定了两种异常状况：</p>
 <ul>
 <li>如果线程请求栈的深度大于虚拟机所允许的深度，将抛出<C>StackOverflowError</C>异常。</li>
 <li>如果虚拟机栈可以动态扩展（当前⼤部分的Java虚拟机都可动态扩展，只不过Java虚拟机规范中也允许固定长度的虚拟机栈），如果扩展时⽆法申请到⾜够的内存，就会抛出抛出<C>OutOfMemoryError</C>异常。</li>
 </ul>
 <h4 id="_2">本地方法栈<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h4>
-<p>本地方法栈(Native Method Stack)与虚拟机栈所发挥的作用是非常相似的，它们之间的区别不过是虚拟机栈为虚拟机执行java方法，而本地栈则为虚拟机使用到的<C>Native</C>方法服务。</p>
+<p><strong>本地方法栈</strong>(Native Method Stack)与虚拟机栈所发挥的作用是非常相似的，它们之间的区别不过是虚拟机栈为虚拟机执行java方法，而本地栈则为虚拟机使用到的<C>native</C>方法服务。</p>
 <h4 id="java_1">Java堆<a class="headerlink" href="#java_1" title="Permanent link">&para;</a></h4>
-<p>Java堆(Heap)是线程共享的，在虚拟机启动时创建。Java堆的唯一目的就是存放对象实例，几乎所有的对象实例都在这里分配内存。</p>
+<p>Java<strong>堆</strong>(Heap)是线程共享的，在虚拟机启动时创建。Java堆的唯一目的就是存放对象实例，几乎所有的对象实例都在这里分配内存。</p>
 <p>Java堆是垃圾收集器管理的主要区域，因此很多时候也被称作"GC堆"(Garbage Collected Heap)。由于现在收集器基本都采用分代收集算法，所以Java堆中还可以细分为：新生代和老年代；再细致一点的有Eden空间、From Survivor空间、To Survivor空间等。</p>
 <p>Java堆在实现时，既可以实现成固定大小的，也可以是可扩展的，不过当前主流的虚拟机都是按照可扩展来实现的。</p>
 <h4 id="_3">方法区（永久代）<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h4>
 <p><strong>⽅法区</strong>(Method Area)是各个线程共享的内存区域，它⽤于存储已被虚拟机加载的类信息、常量、静态变量、即时编译器编译后的代码等数据。</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>对于HotSpot虚拟机来说，它也叫做永久代(Permanent Generation)。这是因为HotSpot虚拟机把GC分代收集扩展⾄⽅法区，或者说使⽤永久代来实现⽅法区，这样HotSpot的垃圾收集器可以像管理Java堆⼀样管理这部分内存，能够省去专门为⽅法区编写内存管理代码的⼯作。对于其他虚拟机（如BEA JRockit、IBM J9等）来说是不存在永久代的概念的。</p>
-</div>
+<p>对于HotSpot虚拟机来说，它也叫做<strong>永久代</strong>(Permanent Generation, <strong>PermGen</strong>)。这是因为HotSpot虚拟机把GC分代收集扩展⾄⽅法区，或者说使⽤永久代来实现⽅法区，这样HotSpot的垃圾收集器可以像管理Java堆⼀样管理这部分内存，能够省去专门为⽅法区编写内存管理代码的⼯作。对于其他虚拟机（如BEA JRockit、IBM J9等）来说是不存在永久代的概念的。</p>
+<p>由于永久代内可能会发生内存泄露或溢出等问题而导致的<C>java.lang.OutOfMemoryError: PermGen</C>，JEP小组从JDK1.7开始就筹划移除永久代(<a href="http://openjdk.java.net/jeps/122">JEP 122: Remove the Permanent Generation</a>)，并且在JDK 1.7中把字符串常量，符号引用等移出了永久代。到了Java 8，永久代被彻底地移出了JVM，取而代之的是<strong>元空间</strong>(Metaspace)：</p>
+<blockquote>
+<p>In JDK 8, classes metadata is now stored in the <strong>native heap</strong>(本地对内存) and this space is called <strong>Metaspace</strong>.</p>
+</blockquote>
 <p>根据Java虚拟机规范的规定，当⽅法区⽆法满⾜内存分配需求时，将抛出<C>OutOfMemoryError</C>异常。</p>
+<p><img alt="" src="../figures/hotspot_heap_structure.jpg" /></p>
+<ul>
+<li>Young Generation 新生代<ul>
+<li>Eden: where new objects get instantiated</li>
+<li>S0, S1 (Survivor space): hold live objects during minor GC<ul>
+<li>S0: from Survivor</li>
+<li>S1: to Survivor</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Old Generation (Tenured) 老年代</li>
+<li>Permanent Generation 永久代</li>
+</ul>
 <h4 id="_4">运行时常量池<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h4>
-<p>运⾏时常量池(Runtime Constant Pool）是⽅法区的⼀部分。Class文件中除了有类的版本、字段、方法、接口等描述信息外，还有一项信息就是常量池(Constant Pool)，用于存放编译期生成的各种字面量和符号引用。这部分内容将在类加载后进入方法区的运行时常量池中存放。</p>
+<p><strong>运⾏时常量池</strong>(Runtime Constant Pool）是⽅法区的⼀部分。Class文件中除了有类的版本、字段、方法、接口等描述信息外，还有一项信息就是常量池(Constant Pool)，用于存放编译期生成的各种字面量和符号引用。这部分内容将在类加载后进入方法区的运行时常量池中存放。</p>
+<p>JDK 1.7开始，字符串常量和符号引用等就被移出永久代：</p>
+<ul>
+<li>符号引用迁移至系统堆内存(Native Heap)</li>
+<li>字符串字面量迁移至Java堆(Java Heap)</li>
+</ul>
 <h4 id="_5">直接内存<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h4>
-<p>直接内存(Direct Memory)不是虚拟机运行时数据区的一部分。但是这部分内存也被频繁地使用，而且也可能导致<C>OutOfMemoryError</C>异常出现。</p>
+<p><strong>直接内存</strong>(Direct Memory)不是虚拟机运行时数据区的一部分。但是这部分内存也被频繁地使用，而且也可能导致<C>OutOfMemoryError</C>异常出现。</p>
 <p>在JDK1.4中新加入了NIO类，引入了一种基于通道与缓存区(buffer)的I/O方式，它可以使用<C>Native</C>函数库直接分配堆外内存，然后通过一个存储在Java堆中的<C>DirectByteBuffer</C>对象作为这块内存的引用进行操作。这样能在一些场景中显著提高性能，因为避免了在Java堆和<ative</C>堆中来回复制数据。</p>
 <h3 id="3-hotspot">3 HotSpot虚拟机对象探秘<a class="headerlink" href="#3-hotspot" title="Permanent link">&para;</a></h3>
 <p>本节以常⽤的虚拟机HotSpot和常⽤的内存区域Java堆为例，深⼊探讨HotSpot虚拟机在Java堆中对象分配、布局和访问的全过程。</p>
@@ -523,16 +548,16 @@
 </ul>
 <p>(3) 内存分配完之后，初始化零值（不包括对象头），如果使用TLAB，这一工作过程也可以提前至TLAB分配时进行。</p>
 <p>(4) 接下来，JVM对对象进行必要的设置，例如这个对象是哪个类的实例、如何才能找到类的元数据信息、对象的哈希码、对象的GC分代年龄等信息。这些信息存放在对象的对象头中，根据JVM当前运行状态不同，如是否启用偏向锁等，对象头会有不同的设置方式。</p>
-<p>在上⾯⼯作都完成之后，从虚拟机的视⾓来看，⼀个新的对象已经产⽣了，但从Java程序的视⾓来看，对象创建才刚刚开始——<init>⽅法还没有执⾏，所有的字段都还为零。所以，⼀般来说（由字节码中是否跟随invokespecial指令所决定），执⾏<C>new</C>指令之后会接着执⾏＜init＞⽅法，把对象按照程序员的意愿进⾏初始化，这样⼀个真正可⽤的对象才算完全产⽣出来。</p>
-<h5 id="_7">对象的内存布局<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h5>
-<p>在HotSpot虚拟机中，对象在内存中存储的布局可以分为3块区域：对象头(Header)、实例数据(Instance Data)和对齐填充(Padding)。</p>
+<p>在上⾯⼯作都完成之后，从虚拟机的视⾓来看，⼀个新的对象已经产⽣了，但从Java程序的视⾓来看，对象创建才刚刚开始——<init>⽅法还没有执⾏，所有的字段都还为零。所以，⼀般来说（由字节码中是否跟随invokespecial指令所决定），执⾏<C>new</C>指令之后会接着执⾏<init>⽅法，把对象按照程序员的意愿进⾏初始化，这样⼀个真正可⽤的对象才算完全产⽣出来。</p>
+<h4 id="_7">对象的内存布局<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h4>
+<p>在HotSpot虚拟机中，对象在内存中存储的布局可以分为3块区域：对象头(Object Header)、实例数据(Instance Data)和对齐填充(Padding)。</p>
 <p>HotSpot虚拟机的对象头包括两部分信息:</p>
 <ul>
-<li>第一部分用于存储对象自身的运行时数据（哈希码、GC分代年龄、锁状态标志、线程持有的锁、偏向线程ID、偏向时间戳等，这部分数据的存储官方称为Mark Word）</li>
-<li>另一部分是类型指针（即对象指向它的类元数据的指针，JVM通过这个指针来确定这个对象是哪个类的实例）。</li>
-<li>另外，如果对象是 ⼀个Java数组，那在对象头中还必须有⼀块⽤于记录数组长度的数据，因 为虚拟机可以通过普通Java对象的元数据信息确定Java对象的⼤⼩，但是从数组的元数据中却⽆法确定数组的⼤⼩。</li>
+<li>MarkWord: 用于存储对象自身的运行时数据（哈希码、GC分代年龄、锁状态标志、线程持有的锁、偏向线程ID、偏向时间戳等）</li>
+<li>Klass pointer: 类型指针（即对象指向它的类元数据的指针，JVM通过这个指针来确定这个对象是哪个类的实例）。</li>
+<li>另外，如果对象是⼀个Java数组，那在对象头中还必须有⼀块⽤于记录数组长度的数据，因 为虚拟机可以通过普通Java对象的元数据信息确定Java对象的⼤⼩，但是从数组的元数据中却⽆法确定数组的⼤⼩。</li>
 </ul>
-<p><img alt="" src="../figures/mark_word.jpg" /></p>
+<p><img alt="objectHeade" src="../figures/ObjectHeader.png" /></p>
 <p>HotSpot虚拟机<code class="codehilite">markOop.cpp</code>中的代码（注释）⽚段，它描述了32bit下Mark Word的存储状态。<a href="http://hg.openjdk.java.net/jdk7/jdk7/hotspot/file/9b0ca45cd756/src/share/vm/oops/markOop.hpp">source</a></p>
 <p> <div class=codehilite><pre><span class=k>enum</span> <span class=p>{</span> <span class=n>age_bits</span>                 <span class=o>=</span> <span class=mi>4</span><span class=p>,</span>
        <span class=n>lock_bits</span>                <span class=o>=</span> <span class=mi>2</span><span class=p>,</span>
@@ -544,12 +569,15 @@
   <span class=p>};</span>
 </pre></div></p>
 <p>接下来的实例数据是对象真正存储的有效信息，也是在程序代码中所定义的各种类型的字段内容。⽆论是从⽗类继承下来的，还是在⼦类中定义的，都需要记录起来。在父类中定义的变量会出现在子类之前，如果CompactFields参数值为true，那么子类中较窄的变量也可能会插入到父类变量的空隙之中。</p>
-<p>第三部分对齐填充并不是必然存在的，也没有特别的含义，它仅仅起着占位符的作⽤。由于HotSpot VM的⾃动内存管理系统要求对象起始地址 必须是8字节的整数倍，换句话说，就是对象的⼤⼩必须是8字节的整数 倍。⽽对象头部分正好是8字节的倍数(1倍或者2倍)，因此，当对象实例数据部分没有对齐时，就需要通过对齐填充来补全。</p>
+<p>对齐填充并不是必然存在的，也没有特别的含义，它仅仅起着占位符的作⽤。由于HotSpot VM的⾃动内存管理系统要求对象起始地址必须是8字节的整数倍，换句话说，就是对象的⼤⼩必须是8字节的整数倍。⽽对象头部分正好是8字节的倍数(1倍或者2倍)，因此，当对象实例数据部分没有对齐时，就需要通过对齐填充来补全。</p>
 <h4 id="_8">对象的访问定位<a class="headerlink" href="#_8" title="Permanent link">&para;</a></h4>
-<p>我们的Java程序需要通过栈上的<C>Reference</C>数据来操作堆上的具体对象。目前主流的对象访问方式有两种：句柄和直接指针。</p>
+<p>我们的Java程序需要通过栈上的<C>Reference</C>数据来操作堆上的具体对象。目前主流的对象访问方式有两种：句柄(handle)和直接指针。</p>
 <ul>
 <li>如果直接使用句柄访问，java堆中将会划分出一块内存来作为句柄池，<C>Reference</C>中存储的是对象的句柄地址，而句柄中包含了对象数据与类型数据各自的具体地址信息。</li>
 </ul>
+<blockquote>
+<p>In computer programming, a handle is an abstract reference to a resource.</p>
+</blockquote>
 <p><img alt="" src="../figures/vern通过句柄访问对象.jpg" /></p>
 <ul>
 <li>如果使用直接指针访问，那么java堆对象的布局中就必须考虑如何放置访问类型数据的相关信息，而<C>Reference</C>中存储的直接就是对象地址，如下图所示。</li>
@@ -567,11 +595,11 @@
 <p class="admonition-title">Note</p>
 <p>常见的HotSpot JVM参数</p>
 <ul>
-<li>-Xms 初始堆大小    </li>
-<li>-Xmx  最大堆大小   </li>
-<li>-Xmn  年轻代大小(1.4or lator)</li>
-<li>-XX:MaxPermSize   设置持久代最大值</li>
-<li>-Xss  每个线程的堆栈大小   </li>
+<li><code class="codehilite">-Xms</code> 初始堆大小  </li>
+<li><code class="codehilite">-Xmx</code>    最大堆大小   </li>
+<li><code class="codehilite">-Xmn</code> 年轻代大小</li>
+<li><code class="codehilite">-XX: MaxPermSize</code>    设置持久代最大值</li>
+<li><code class="codehilite">-Xss</code>    每个线程的堆栈大小   </li>
 </ul>
 </div>
 <h4 id="java_2">Java堆溢出<a class="headerlink" href="#java_2" title="Permanent link">&para;</a></h4>
@@ -600,6 +628,7 @@ Heap dump file created [29129293 bytes in 0.350 secs]
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>可以使用Eclipse Memory Analyzer打开堆转储快照⽂件。The Eclipse Memory Analyzer is a fast and feature-rich Java heap analyzer that helps you find memory leaks and reduce memory consumption.<a href="http://www.eclipse.org/mat/">Official Website</a></p>
+<p><img alt="Eclipse Memory Analyse" src="../figures/Eclipse%20Memory%20Analyser.png" /></p>
 </div>
 <p>如果是内存泄漏，可进一步通过工具查看泄漏对象到GC Roots的引用链。于是就能找到泄露对象是通过怎样的路径与GC Roots相关联并导致垃圾收集器无法自动回收它们的。掌握了泄露对象的类型信息及GC Roots引用链的信息，就可以比较准确地定位出泄露代码的位置。</p>
 <p>如果不存在泄露，换句话说，就是内存中的对象确实都还必须存活着，那就应当检查虚拟机的堆参数（-Xmx与-Xms），与机器物理内存对比看是否还可以调大，从代码上检查是否存在某些对象生命期过长、持有状态时间过长的情况，尝试减少程序运行期的内存消耗。</p>
@@ -629,7 +658,7 @@ Heap dump file created [29129293 bytes in 0.350 secs]
         <span class=o>}</span>
     <span class=o>}</span>
 <span class=o>}</span>
-</pre></div></div><input name=tab-group-3 type=radio id=tab-group-3-1_krnrzezusvcvvj4 class=code-tab data-lang aria-controls=tab-group-3-1_krnrzezusvcvvj4-panel role=tab><label for=tab-group-3-1_krnrzezusvcvvj4 class=code-tab-label data-lang id=tab-group-3-1_krnrzezusvcvvj4-label></label><div class=code-tabpanel role=tabpanel data-lang id=tab-group-3-1_krnrzezusvcvvj4-panel aria-labelledby=tab-group-3-1_krnrzezusvcvvj4-label><div class=codehilite><pre><span class=n>stackLength</span><span class=o>:</span> <span class=mi>17600</span>
+</pre></div></div><input name=tab-group-3 type=radio id=tab-group-3-1_yeoa47sw3a08xxb class=code-tab data-lang aria-controls=tab-group-3-1_yeoa47sw3a08xxb-panel role=tab><label for=tab-group-3-1_yeoa47sw3a08xxb class=code-tab-label data-lang id=tab-group-3-1_yeoa47sw3a08xxb-label></label><div class=code-tabpanel role=tabpanel data-lang id=tab-group-3-1_yeoa47sw3a08xxb-panel aria-labelledby=tab-group-3-1_yeoa47sw3a08xxb-label><div class=codehilite><pre><span class=n>stackLength</span><span class=o>:</span> <span class=mi>17600</span>
 <span class=n>Exception</span> <span class=k>in</span> <span class=n>thread</span> <span class=s2>&quot;main&quot;</span> <span class=n>java</span><span class=o>.</span><span class=na>lang</span><span class=o>.</span><span class=na>StackOverflowError</span>
     <span class=n>at</span> <span class=n>JavaVMStackOverFlowError</span><span class=o>.</span><span class=na>stackLeak</span><span class=o>(</span><span class=n>JavaVMStackOverFlowError</span><span class=o>.</span><span class=na>java</span><span class=o>:</span><span class=mi>5</span><span class=o>)</span>
 <span class=o>...</span>

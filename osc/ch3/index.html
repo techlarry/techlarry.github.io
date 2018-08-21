@@ -422,6 +422,10 @@
 <li >
     <a href="../../ujvm/ch13/">Chapter 13 : 线程安全与锁优化</a>
 </li>
+                            
+<li >
+    <a href="../../ujvm/AppendixC/">Appendix HotSpot虚拟机主要参数列表</a>
+</li>
                         </ul>
                     </li>
                     <li >
@@ -1023,10 +1027,16 @@ import java.io.</em>;</p>
 </ul>
 <h4 id="remote-procedure-calls">Remote procedure calls<a class="headerlink" href="#remote-procedure-calls" title="Permanent link">&para;</a></h4>
 <p><strong>Remote Procedure Call</strong>(远程过程调用), One of the <em>most common</em> forms of remote service, allows programs on different machines to interact using simple procedure call/return semantics, just as if the two programs were in the same computer.</p>
-<p>RPC between a client and a serve：</p>
-<p><img alt="RPC_between_a_client_and_a_serve" src="../figures/RPC_between_a_client_and_a_server.png" /></p>
-<p>RPC hides all the network code into the stub procedures. This prevents the application programs, the client and the server, from having to worry about details such as sockets, network byte order, and the like.</p>
-<p><img alt="" src="../figures/rpc.jpg" /></p></div>
+<p>The messages exchanged in RPC communication are well structured and are thus no longer just packets of data. Each message is addressed to an RPC daemon listening to a port on the remote system, and each contains an identifier specifying the function to execute and the parameters to pass to that function.</p>
+<p>The RPC system hides the details that allow communication to take place by providing a <strong>stub</strong>(存根) on each side. Typically, a separate stub exists for each separate remote procedure. </p>
+<ul>
+<li>When the client invokes a remote procedure, the RPC system calls the appropriate stub, passing it the parameters provided to the remote procedure. </li>
+<li>This stub locates the port on the server and <strong>marshals</strong>(编组) the parameters. The stub then transmits a message to the server using message passing.</li>
+<li>A similar stub on the server side receives this message and invokes the procedure on the server.</li>
+<li>If necessary, return values are passed back to the client using the same technique.</li>
+</ul>
+<p><img alt="" src="../figures/rpc.jpg" /></p>
+<p>RPC hides all the network code into the stub procedures. This prevents the application programs, the client and the server, from having to worry about details such as sockets, network byte order, and the like.</p></div>
         </div>
 
         <footer class="col-md-12">
