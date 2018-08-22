@@ -474,11 +474,152 @@
                 <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
         <li class="main active"><a href="#chapter-17-packages-jars-and-deployment">Chapter 17 Packages, Jars and Deployment</a></li>
+        <li class="main "><a href="#1-java-deployment">1 Java deployment</a></li>
+            <li><a href="#deployment-options">Deployment options</a></li>
+            <li><a href="#jar">JAR</a></li>
+            <li><a href="#jar-in-intellij-idea">JAR in IntelliJ IDEA</a></li>
+            <li><a href="#package">Package</a></li>
+        <li class="main "><a href="#2-java-web-start">2 Java Web Start</a></li>
+            <li><a href="#how-java-web-start-works">How Java Web Start works</a></li>
+            <li><a href="#the-jnlp-file">The .jnlp file</a></li>
+            <li><a href="#deploying-with-jws">Deploying with JWS</a></li>
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
 
-<h3 id="chapter-17-packages-jars-and-deployment"><strong>Chapter 17 Packages, Jars and Deployment</strong><a class="headerlink" href="#chapter-17-packages-jars-and-deployment" title="Permanent link">&para;</a></h3></div>
+<h3 id="chapter-17-packages-jars-and-deployment"><strong>Chapter 17 Packages, Jars and Deployment</strong><a class="headerlink" href="#chapter-17-packages-jars-and-deployment" title="Permanent link">&para;</a></h3>
+<h3 id="1-java-deployment">1 Java deployment<a class="headerlink" href="#1-java-deployment" title="Permanent link">&para;</a></h3>
+<h4 id="deployment-options">Deployment options<a class="headerlink" href="#deployment-options" title="Permanent link">&para;</a></h4>
+<p><img alt="DeploymentOptions" src="../figures/DeploymentOptions.png" /></p>
+<ul>
+<li>
+<p><strong>Local</strong>: The entire application runs on the end-user’s computer, as a stand-alone, probably GUI, program, deployed as an executable JAR (we’ll look at JAR in a few pages.)</p>
+</li>
+<li>
+<p><strong>Combination of local and remote</strong>: The application is distributed with a client portion running on the user’s local system, connected to a server where other parts of the application are running.</p>
+</li>
+<li>
+<p><strong>Remote</strong>: The entire Java application runs on a server system, with the client accessing the system through some non-Java means, probably a web browser.</p>
+</li>
+</ul>
+<h4 id="jar">JAR<a class="headerlink" href="#jar" title="Permanent link">&para;</a></h4>
+<p>A <strong>JAR</strong> file is a <strong>J</strong>ava <strong>AR</strong>chive. It's based on the pkzip file format, and it lets you bundle all your classes.</p>
+<p>How do you get it to run? You make the JAR <strong><em>executable</em></strong>. An executable JAR means the end-user doesn't have to pull the class files out before running the program. The user can run the app while the class files are still in the JAR. </p>
+<p>The trick is to create a <strong><em>manifest</em></strong> file, that goes in the JAR and holds information about the files in the JAR. The manifest file must tell the JVM <em>which class has the main() method</em>!</p>
+<p><strong>Making an executable JAR</strong>:</p>
+<ul>
+<li>Make sure all of your class files are in the classes directory</li>
+<li>Create a <code class="codehilite">manifest.txt</code> file that states which class has the <C>main()</C> method<ul>
+<li>Make a text file named <code class="codehilite">manifest.txt</code> that has a one line: <code class="codehilite">Main-Class: MyApp</code></li>
+<li>Press the return key after typing the MainClass line, or your manifest may not work correctly. Put the manifest file into the “classes” directory.</li>
+</ul>
+</li>
+<li>Run the jar tool to create a JAR file that contains everything in the classes directory, plus the manifest.<ul>
+<li>%cd MiniProject/classes </li>
+<li>%jar -cvmf manifest.txt app1.jar *.class OR </li>
+<li>%jar -cvmf manifest.txt app1.jar MyApp.class</li>
+</ul>
+</li>
+</ul>
+<h4 id="jar-in-intellij-idea">JAR in IntelliJ IDEA<a class="headerlink" href="#jar-in-intellij-idea" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Create Artifact: go to <code class="codehilite">File-Project Structure</code>, add new Artifact.</li>
+</ul>
+<p><img alt="CreateJarFromModules" src="../figures/CreateJarFromModules.png" /></p>
+<ul>
+<li>Add new manifest file</li>
+</ul>
+<p><img alt="addNewManifestFile" src="../figures/addNewManifestFile.png" /></p>
+<ul>
+<li>Add resources: click +, and select file you want to add.</li>
+<li>
+<p>Build: On the main menu, choose Build | Build Artifact. From the drop-down list, select the desired artifact of the type JAR.
+ <img alt="buildArtifact" src="../figures/buildArtifact.png" /></p>
+</li>
+<li>
+<p>Run: Open the Run/Debug Configurations dialog (e.g. Run | Edit Configurations). Click + and select JAR Application.</p>
+</li>
+</ul>
+<p>NOTE: 不要使用File来定位文件，使用</p>
+<p> <div class=codehilite><pre><span class=n>InputStream</span> <span class=n>stream</span> <span class=o>=</span> <span class=n>Thread</span><span class=o>.</span><span class=na>currentThread</span><span class=o>().</span><span class=na>getContextClassLoader</span><span class=o>().</span><span class=na>getResourceAsStream</span><span class=o>(</span><span class=s>&quot;file-to-add&quot;</span><span class=o>);</span>
+</pre></div></p>
+<p>来获取文件。</p>
+<h4 id="package">Package<a class="headerlink" href="#package" title="Permanent link">&para;</a></h4>
+<p>Put your classes in packages, because packages prevent class name conflicts.</p>
+<p>Sun strongly suggests a package naming convention that greatly reduces that risk -- pretend every class with your reverse domain name.</p>
+<p><font color='red'><big><C>com.headfirstjava.projects.Chart</C></big></font></p>
+<p>To put your class in a package:</p>
+<ul>
+<li>Choose a package name</li>
+<li>Put a package statement in your class<ul>
+<li><code class="codehilite">package com.headﬁrstjava;</code> </li>
+</ul>
+</li>
+<li>Set up a matching directory structure<ul>
+<li>Keep your source code in a directory structure that matches the package structure, and you’ll avoid a ton of painful headaches down the road. </li>
+</ul>
+</li>
+<li>Compiling with the -d (directory) flag<ul>
+<li><code class="codehilite"><span class="nf">%javac</span> <span class="o">-</span><span class="n">d</span> <span class="p">..</span><span class="o">/</span><span class="n">classes</span> <span class="n">com</span><span class="o">/</span><span class="n">headfirstjava</span><span class="o">/</span><span class="n">PackageExercise</span><span class="p">.</span><span class="n">java</span></code></li>
+</ul>
+</li>
+<li>Running code<ul>
+<li><code class="codehilite"><span class="nf">%java</span> <span class="n">com</span><span class="p">.</span><span class="n">head</span><span class="err">ﬁ</span><span class="n">rstjava</span><span class="p">.</span><span class="n">PackageExercise</span></code></li>
+</ul>
+</li>
+</ul>
+<h3 id="2-java-web-start">2 Java Web Start<a class="headerlink" href="#2-java-web-start" title="Permanent link">&para;</a></h3>
+<p>With Java Web Start(JWS), you application is launched for the first time from a Web browser (get it? Web Start?) but it runs as a stand-alone application (well, almost), without the constraints of the browser. And once it's downloaded to the end-user's machine, it <em>stays</em> here.</p>
+<h4 id="how-java-web-start-works">How Java Web Start works<a class="headerlink" href="#how-java-web-start-works" title="Permanent link">&para;</a></h4>
+<p><a href="https://docs.oracle.com/javase/tutorialJWS/samples/uiswing/TextFieldDemoProject/TextFieldDemo.jnlp">A Java Web Start demo from Oracle</a></p>
+<ul>
+<li>The client clicks on a Web page link to your JWS application (a <code class="codehilite"><span class="na">.jnlp</span></code> file).</li>
+<li>The Web server (HTTP) gets the request and sends back a <code class="codehilite"><span class="na">.jnlp</span></code> file (this is NOT the JAR).<ul>
+<li>The <code class="codehilite"><span class="na">.jnlp</span></code> file is an XML document that states the name of the application’s executable JAR file. </li>
+</ul>
+</li>
+<li>Java Web Start (a small 'helper app' on the client) is started up by the browser. The JWS helper app reads the <code class="codehilite"><span class="na">.jnlp</span></code> file, and asks the server for the JAR file.</li>
+<li>The Web server ‘serves’ up the requested <code class="codehilite"><span class="na">.jar</span></code> file.</li>
+<li>Java Web Start gets the JAR and starts the application by calling the specific <code class="codehilite">main()</code> method (just like an executable JAR).</li>
+</ul>
+<h4 id="the-jnlp-file">The <C>.jnlp</C> file<a class="headerlink" href="#the-jnlp-file" title="Permanent link">&para;</a></h4>
+<p><code class="codehilite"><span class="na">.jnlp</span></code>(Java Network Launch Protocol) file describes your application. This is the file the JWS app reads and uses to find your JAR and launch the app.</p>
+<p>JNLP file for the demo </p>
+<p> <div class=codehilite><pre><span class=c>&lt;!-- JNLP File for TextDemo --&gt;</span>
+<span class=nt>&lt;jnlp</span>
+  <span class=na>spec=</span><span class=s>&quot;1.0+&quot;</span>
+  <span class=na>codebase=</span><span class=s>&quot;https://docs.oracle.com/javase/tutorialJWS/samples/uiswing/TextFieldDemoProject&quot;</span>
+  <span class=na>href=</span><span class=s>&quot;TextFieldDemo.jnlp&quot;</span><span class=nt>&gt;</span>
+  <span class=nt>&lt;information&gt;</span>
+    <span class=nt>&lt;title&gt;</span>TextFieldDemo<span class=nt>&lt;/title&gt;</span>
+    <span class=nt>&lt;vendor&gt;</span>The Java(tm) Tutorial<span class=nt>&lt;/vendor&gt;</span>
+    <span class=nt>&lt;homepage</span> <span class=na>href=</span><span class=s>&quot;https://docs.oracle.com/javase/tutorial/uiswing/examples/components/index.html#TextFieldDemo&quot;</span><span class=nt>/&gt;</span>
+    <span class=nt>&lt;description&gt;</span>TextFieldDemo<span class=nt>&lt;/description&gt;</span>
+    <span class=nt>&lt;description</span> <span class=na>kind=</span><span class=s>&quot;short&quot;</span><span class=nt>&gt;</span>Uses a text field and a text area.
+    Searches for a text typed in the text field and highlights the found text in the text area.
+    <span class=nt>&lt;/description&gt;</span>
+    <span class=nt>&lt;offline-allowed/&gt;</span> // The user can run program without being connected to the internet.
+  <span class=nt>&lt;/information&gt;</span>
+  <span class=nt>&lt;resources&gt;</span>
+    <span class=nt>&lt;j2se</span> <span class=na>version=</span><span class=s>&quot;1.7+&quot;</span><span class=nt>/&gt;</span> 
+    <span class=nt>&lt;jar</span> <span class=na>href=</span><span class=s>&quot;TextFieldDemo.jar&quot;</span><span class=nt>/&gt;</span> // the name of executable JAR!
+  <span class=nt>&lt;/resources&gt;</span>
+  <span class=nt>&lt;application-desc</span> <span class=na>main-class=</span><span class=s>&quot;components.TextFieldDemo&quot;</span><span class=nt>/&gt;</span>
+<span class=nt>&lt;/jnlp&gt;</span>
+</pre></div></p>
+<ul>
+<li>The 'codebase' tag is where you specify the 'root' of where you web start stuff is on the server.</li>
+<li>The 'href' is the location of the <code class="codehilite"><span class="na">.jnlp</span></code> file relative to the codebase.</li>
+</ul>
+<h4 id="deploying-with-jws">Deploying with JWS<a class="headerlink" href="#deploying-with-jws" title="Permanent link">&para;</a></h4>
+<p>Steps for making and deploying a Java Web Start app</p>
+<ul>
+<li>Make an executable JAR for your application</li>
+<li>Write a <code class="codehilite"><span class="na">.jnlp</span></code> file</li>
+<li>Place your JAR and <code class="codehilite"><span class="na">.jnlp</span></code> files on your Web server.</li>
+<li>Add a new mime type to your Web server.</li>
+<li>Create a Web page with a link to your <code class="codehilite"><span class="na">.jnlp</span></code> ﬁle</li>
+</ul></div>
         </div>
 
         <footer class="col-md-12">

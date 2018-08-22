@@ -477,11 +477,14 @@
         <li class="main "><a href="#1-socket-connections">1 Socket Connections</a></li>
             <li><a href="#make-a-network-socket-connection">Make a Network Socket Connection</a></li>
             <li><a href="#readingwriting-fromto-a-socket">Reading/Writing From/To a Socket</a></li>
+            <li><a href="#writing-a-client">Writing a client</a></li>
+            <li><a href="#writing-a-simple-server">Writing a Simple Server</a></li>
         <li class="main "><a href="#2-threads">2 Threads</a></li>
             <li><a href="#launching-a-thread">Launching a thread</a></li>
             <li><a href="#runnable-interface">Runnable interface</a></li>
             <li><a href="#thread-scheduler">Thread Scheduler</a></li>
             <li><a href="#lock">Lock</a></li>
+        <li class="main "><a href="#3-example-a-simple-chatapp">3 Example: A Simple ChatApp</a></li>
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
@@ -495,7 +498,7 @@
 <p>To make a Socket connection, you need to know two things about the server: who it is, and which port it’s running on. In other words, <strong>IP address</strong> and <strong>TCP port number</strong>.</p>
 <p> <div class=codehilite><pre><span class=c1>// 196.164.1.103 is the IP address for the sever</span>
 <span class=c1>// 5000 is TCP port number</span>
-<span class=n>Socket</span> <span class=n>chatSocket</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Socket</span><span class=o>(</span><span class=s>&quot;196.164.1.103&quot;</span><span class=o>,</span> <span class=mi>5000</span><span class=o>);</span>
+<span class=n>Socket</span> <span class=n>chatSocket</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Socket</span><span class=o>(</span><span class=s>&quot;196.164.1.103&quot;</span><span class=o>,</span> <span class=mi>3000</span><span class=o>);</span>
 </pre></div></p>
 <p><strong>A TCP port is just a 16-bit number that identifies a specific program on the server</strong>.</p>
 <p>The TCP port numbers from 0 to 1023 are reserved for well-known services. Don’t use them for your own server programs!</p>
@@ -503,10 +506,10 @@
 <p><img alt="well-known TCP port numbers for common server applications" src="../figures/well-known%20TCP%20port%20numbers%20for%20common%20server%20applications.png" /></p>
 <h4 id="readingwriting-fromto-a-socket">Reading/Writing From/To a Socket<a class="headerlink" href="#readingwriting-fromto-a-socket" title="Permanent link">&para;</a></h4>
 <p><strong>To read data from a <C>Socket</C>, use a <C>BufferedReader</C></strong>.</p>
-<p>To communicate over a <C>Socket</C> connection, you use regular I/P streams. One of the coolest features in Java is that the most of you I/O work won't care what you high-level chain stream is actually connected to.</p>
+<p>To communicate over a <C>Socket</C> connection, you use regular I/O streams. One of the coolest features in Java is that the most of you I/O work won't care what you high-level chain stream is actually connected to.</p>
 <ul>
 <li>Make a <C>Socket</C> connection to the server<ul>
-<li><code class="codehilite">::Java Socket chatSocket = new Socket(&quot;127.0.0.1&quot;, 5000);</code></li>
+<li><code class="codehilite"><span class="n">Socket</span> <span class="n">chatSocket</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Socket</span><span class="o">(</span><span class="s">&quot;127.0.0.1&quot;</span><span class="o">,</span> <span class="mi">3000</span><span class="o">);</span></code></li>
 </ul>
 </li>
 <li>Make an <C>InputStreamReader</C> chained to the <C>Socket</C>’s low-level (connection) input stream<ul>
@@ -535,6 +538,19 @@
 </li>
 </ul>
 <p><img alt="WRITETOSOCKETS" src="../figures/WRITETOSOCKETS.png" /></p>
+<h4 id="writing-a-client">Writing a client<a class="headerlink" href="#writing-a-client" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Client connects to the server and gets an input stream from it<ul>
+<li><code class="codehilite"><span class="n">Socket</span> <span class="n">socket</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Socket</span><span class="o">(</span><span class="s">&quot;127.0.0.1&quot;</span><span class="o">,</span> <span class="mi">3000</span><span class="o">)</span></code></li>
+<li><code class="codehilite"><span class="n">InputStreamReader</span> <span class="n">streamReader</span> <span class="o">=</span> <span class="k">new</span> <span class="n">InputStreamReader</span><span class="o">(</span><span class="n">socket</span><span class="o">.</span><span class="na">getInputStream</span><span class="o">());</span></code></li>
+<li><code class="codehilite"><span class="n">BufferedReader</span> <span class="n">reader</span> <span class="o">=</span> <span class="k">new</span> <span class="n">BufferedReader</span><span class="o">(</span><span class="n">streamReader</span><span class="o">)</span></code></li>
+</ul>
+</li>
+<li>Client reads a message from the server<ul>
+<li><code class="codehilite"><span class="n">message</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="na">readLine</span><span class="o">();</span></code> </li>
+</ul>
+</li>
+</ul>
 <p>A simple demo program, which reads <code class="codehilite">index.html</code> from my personal blog "larryim.cc", is illustrated below. The format of HTTP Request is discussed in <a href="../../csapp/ch11.md/#5-web">CSAPP</a>.</p>
 <p> <div class=codehilite><pre><span class=kn>import</span> <span class=nn>java.io.BufferedReader</span><span class=o>;</span>
 <span class=kn>import</span> <span class=nn>java.io.InputStreamReader</span><span class=o>;</span>
@@ -568,6 +584,21 @@
     <span class=o>}</span>
 <span class=o>}</span>
 </pre></div></p>
+<h4 id="writing-a-simple-server">Writing a Simple Server<a class="headerlink" href="#writing-a-simple-server" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Server application makes a ServerSocket, on a specific port<ul>
+<li><code class="codehilite">ServerSocket serverSock = new ServerSocket(4242);</code></li>
+</ul>
+</li>
+<li>Client makes a Socket connection to the server application<ul>
+<li><code class="codehilite">Socket sock = new Socket(“190.165.1.103”, 4242);</code></li>
+</ul>
+</li>
+<li>Server makes a new Socket to communicate with this client<ul>
+<li><code class="codehilite">Socket sock = serverSock.accept();</code></li>
+</ul>
+</li>
+</ul>
 <h3 id="2-threads">2 Threads<a class="headerlink" href="#2-threads" title="Permanent link">&para;</a></h3>
 <p>To make a thread, make a <C>Thread</C>. A <C>Thread</C> is a java class that represents a thread. You'll create an instance of class <C>Thread</C> each time you want to start up a new <em>thread</em> of execution.</p>
 <p>A thread is a separate thread of execution. That means a separate stack. Remember, Java is just a process running on your underlying OS. <strong>The JVM switches between the new thread (user thread) and the original main thread, until both threads complete</strong>.</p>
@@ -642,7 +673,172 @@
 <p>The lock works like this:</p>
 <p><img alt="lock" src="../figures/lock.png" /></p>
 <p>Use the <C>synchronized</C> keyword to modify a method so that only one thread at a time can access it. The <C>synchronized</C> keyword means that a thread needs a key in order to access the synchronized code.</p>
-<p>Every Java object has a lock. A lock has only one key. Most of the time, the lock is unlocked and nobody cares. But if an object has <C>synchronized</C> methods, a thread can enter one of the synchronized methods ONLY if the key for the object’s lock is available. In other words, only if another thread hasn’t already grabbed the one key.</p></div>
+<p>Every Java object has a lock. A lock has only one key. Most of the time, the lock is unlocked and nobody cares. But if an object has <C>synchronized</C> methods, a thread can enter one of the synchronized methods ONLY if the key for the object’s lock is available. In other words, only if another thread hasn’t already grabbed the one key.</p>
+<h3 id="3-example-a-simple-chatapp">3 Example: A Simple ChatApp<a class="headerlink" href="#3-example-a-simple-chatapp" title="Permanent link">&para;</a></h3>
+<div class=md-fenced-code-tabs id=tab-tab-group-3><input name=tab-group-3 type=radio id=tab-group-3-0_Java checked=checked class=code-tab data-lang=Java aria-controls=tab-group-3-0_Java-panel role=tab><label for=tab-group-3-0_Java class=code-tab-label data-lang=Java id=tab-group-3-0_Java-label>Client</label><div class=code-tabpanel role=tabpanel data-lang=Java id=tab-group-3-0_Java-panel aria-labelledby=tab-group-3-0_Java-label><div class=codehilite><pre><span class=kn>package</span> <span class=nn>com.headfirstjava.chat</span><span class=o>;</span>
+
+<span class=kn>import</span> <span class=nn>javax.swing.*</span><span class=o>;</span>
+<span class=kn>import</span> <span class=nn>java.awt.*</span><span class=o>;</span>
+<span class=kn>import</span> <span class=nn>java.awt.event.ActionEvent</span><span class=o>;</span>
+<span class=kn>import</span> <span class=nn>java.awt.event.ActionListener</span><span class=o>;</span>
+<span class=kn>import</span> <span class=nn>java.io.*</span><span class=o>;</span>
+<span class=kn>import</span> <span class=nn>java.net.Socket</span><span class=o>;</span>
+
+<span class=kd>public</span> <span class=kd>class</span> <span class=nc>ChatClient</span> <span class=o>{</span>
+    <span class=n>JFrame</span> <span class=n>frame</span><span class=o>;</span>
+    <span class=n>String</span> <span class=n>out_message</span><span class=o>;</span>     <span class=c1>// message sent to a server</span>
+    <span class=n>ScrollPane</span> <span class=n>scroll</span><span class=o>;</span>
+    <span class=n>JTextArea</span> <span class=n>inMessage</span><span class=o>;</span>      <span class=c1>// incoming message from a server</span>
+    <span class=n>JTextField</span> <span class=n>outTextField</span><span class=o>;</span>
+    <span class=n>JButton</span> <span class=n>button</span><span class=o>;</span>         <span class=c1>// a button to send message</span>
+    <span class=n>PrintWriter</span> <span class=n>writer</span><span class=o>;</span>
+    <span class=n>BufferedReader</span> <span class=n>reader</span><span class=o>;</span>
+    <span class=n>Thread</span> <span class=n>backgroundJob</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Thread</span><span class=o>(</span><span class=k>new</span> <span class=n>ReceiveMessage</span><span class=o>());</span>
+
+    <span class=kd>private</span> <span class=kt>void</span> <span class=nf>establishConnection</span><span class=o>()</span> <span class=o>{</span>
+        <span class=k>try</span> <span class=o>{</span>
+            <span class=n>Socket</span> <span class=n>socket</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Socket</span><span class=o>(</span><span class=s>&quot;127.0.0.1&quot;</span><span class=o>,</span> <span class=mi>3000</span><span class=o>);</span>
+            <span class=n>writer</span> <span class=o>=</span> <span class=k>new</span> <span class=n>PrintWriter</span><span class=o>(</span><span class=n>socket</span><span class=o>.</span><span class=na>getOutputStream</span><span class=o>());</span>
+            <span class=n>InputStreamReader</span> <span class=n>streamReader</span> <span class=o>=</span> <span class=k>new</span> <span class=n>InputStreamReader</span><span class=o>(</span><span class=n>socket</span><span class=o>.</span><span class=na>getInputStream</span><span class=o>());</span>
+            <span class=n>reader</span> <span class=o>=</span> <span class=k>new</span> <span class=n>BufferedReader</span><span class=o>(</span><span class=n>streamReader</span><span class=o>);</span>
+        <span class=o>}</span> <span class=k>catch</span> <span class=o>(</span><span class=n>IOException</span> <span class=n>ex</span><span class=o>)</span> <span class=o>{</span>
+            <span class=n>ex</span><span class=o>.</span><span class=na>printStackTrace</span><span class=o>();</span>
+        <span class=o>}</span>
+    <span class=o>}</span>
+
+    <span class=kd>private</span> <span class=kt>void</span> <span class=nf>gui</span><span class=o>()</span> <span class=o>{</span>
+        <span class=n>frame</span> <span class=o>=</span> <span class=k>new</span> <span class=n>JFrame</span><span class=o>(</span><span class=s>&quot;Ludirously Simple Chat Client&quot;</span><span class=o>);</span>
+
+        <span class=n>inMessage</span> <span class=o>=</span> <span class=k>new</span> <span class=n>JTextArea</span><span class=o>(</span><span class=mi>7</span><span class=o>,</span> <span class=mi>14</span><span class=o>);</span>
+        <span class=n>outTextField</span> <span class=o>=</span> <span class=k>new</span> <span class=n>JTextField</span><span class=o>(</span><span class=mi>18</span><span class=o>);</span>
+        <span class=n>button</span> <span class=o>=</span> <span class=k>new</span> <span class=n>JButton</span><span class=o>(</span><span class=s>&quot;Send&quot;</span><span class=o>);</span>
+        <span class=n>button</span><span class=o>.</span><span class=na>setSize</span><span class=o>(</span><span class=mi>300</span><span class=o>,</span> <span class=mi>40</span><span class=o>);</span>
+        <span class=n>scroll</span> <span class=o>=</span> <span class=k>new</span> <span class=n>ScrollPane</span><span class=o>();</span>
+        <span class=n>scroll</span><span class=o>.</span><span class=na>add</span><span class=o>(</span><span class=n>inMessage</span><span class=o>);</span>
+        <span class=n>inMessage</span><span class=o>.</span><span class=na>setLineWrap</span><span class=o>(</span><span class=kc>true</span><span class=o>);</span>
+        <span class=n>frame</span><span class=o>.</span><span class=na>setDefaultCloseOperation</span><span class=o>(</span><span class=n>JFrame</span><span class=o>.</span><span class=na>EXIT_ON_CLOSE</span><span class=o>);</span>
+
+        <span class=n>frame</span><span class=o>.</span><span class=na>getContentPane</span><span class=o>().</span><span class=na>add</span><span class=o>(</span><span class=n>BorderLayout</span><span class=o>.</span><span class=na>NORTH</span><span class=o>,</span> <span class=n>scroll</span><span class=o>);</span>
+        <span class=n>frame</span><span class=o>.</span><span class=na>getContentPane</span><span class=o>().</span><span class=na>add</span><span class=o>(</span><span class=n>BorderLayout</span><span class=o>.</span><span class=na>WEST</span><span class=o>,</span> <span class=n>outTextField</span><span class=o>);</span>
+        <span class=n>frame</span><span class=o>.</span><span class=na>getContentPane</span><span class=o>().</span><span class=na>add</span><span class=o>(</span><span class=n>BorderLayout</span><span class=o>.</span><span class=na>EAST</span><span class=o>,</span> <span class=n>button</span><span class=o>);</span>
+        <span class=n>button</span><span class=o>.</span><span class=na>addActionListener</span><span class=o>(</span><span class=k>new</span> <span class=n>ButtonListener</span><span class=o>());</span>
+        <span class=n>frame</span><span class=o>.</span><span class=na>setSize</span><span class=o>(</span><span class=mi>300</span><span class=o>,</span> <span class=mi>200</span><span class=o>);</span>
+        <span class=n>frame</span><span class=o>.</span><span class=na>setVisible</span><span class=o>(</span><span class=kc>true</span><span class=o>);</span>
+    <span class=o>}</span>
+
+
+    <span class=kd>class</span> <span class=nc>ButtonListener</span> <span class=kd>implements</span> <span class=n>ActionListener</span> <span class=o>{</span>
+
+        <span class=nd>@Override</span>
+        <span class=kd>public</span> <span class=kt>void</span> <span class=nf>actionPerformed</span><span class=o>(</span><span class=n>ActionEvent</span> <span class=n>e</span><span class=o>)</span> <span class=o>{</span>
+            <span class=n>out_message</span> <span class=o>=</span> <span class=n>outTextField</span><span class=o>.</span><span class=na>getText</span><span class=o>();</span>
+            <span class=n>outTextField</span><span class=o>.</span><span class=na>setText</span><span class=o>(</span><span class=s>&quot;&quot;</span><span class=o>);</span>
+            <span class=n>outTextField</span><span class=o>.</span><span class=na>requestFocus</span><span class=o>();</span>
+            <span class=n>writer</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=n>out_message</span><span class=o>);</span>
+            <span class=n>writer</span><span class=o>.</span><span class=na>flush</span><span class=o>();</span>
+        <span class=o>}</span>
+    <span class=o>}</span>
+
+
+    <span class=kd>class</span> <span class=nc>ReceiveMessage</span> <span class=kd>implements</span> <span class=n>Runnable</span> <span class=o>{</span>
+
+        <span class=nd>@Override</span>
+        <span class=kd>public</span> <span class=kt>void</span> <span class=nf>run</span><span class=o>()</span> <span class=o>{</span>
+            <span class=k>while</span> <span class=o>(</span><span class=kc>true</span><span class=o>)</span> <span class=o>{</span>
+                <span class=n>String</span> <span class=n>line</span> <span class=o>=</span> <span class=kc>null</span><span class=o>;</span>
+                <span class=k>try</span> <span class=o>{</span>
+                    <span class=k>while</span> <span class=o>((</span><span class=n>line</span> <span class=o>=</span> <span class=n>reader</span><span class=o>.</span><span class=na>readLine</span><span class=o>())!=</span> <span class=kc>null</span><span class=o>)</span> <span class=o>{</span>
+                        <span class=n>inMessage</span><span class=o>.</span><span class=na>append</span><span class=o>(</span><span class=n>line</span><span class=o>);</span>
+                    <span class=o>}</span>
+                <span class=o>}</span> <span class=k>catch</span> <span class=o>(</span><span class=n>IOException</span> <span class=n>ex</span><span class=o>)</span> <span class=o>{</span>
+                    <span class=n>ex</span><span class=o>.</span><span class=na>printStackTrace</span><span class=o>();</span>
+                <span class=o>}</span>
+            <span class=o>}</span><span class=c1>// end while</span>
+        <span class=o>}</span> <span class=c1>// end run</span>
+    <span class=o>}</span> <span class=c1>// end class</span>
+
+    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>start</span><span class=o>()</span> <span class=o>{</span>
+        <span class=n>gui</span><span class=o>();</span>
+        <span class=n>establishConnection</span><span class=o>();</span>
+        <span class=n>backgroundJob</span><span class=o>.</span><span class=na>start</span><span class=o>();</span>
+
+
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kd>static</span> <span class=kt>void</span> <span class=nf>main</span><span class=o>(</span><span class=n>String</span><span class=o>[]</span> <span class=n>args</span><span class=o>){</span>
+        <span class=n>ChatClient</span> <span class=n>client</span> <span class=o>=</span> <span class=k>new</span> <span class=n>ChatClient</span><span class=o>();</span>
+        <span class=n>client</span><span class=o>.</span><span class=na>start</span><span class=o>();</span>
+    <span class=o>}</span>
+
+
+<span class=o>}</span>
+</pre></div></div><input name=tab-group-3 type=radio id=tab-group-3-1_Java class=code-tab data-lang=Java aria-controls=tab-group-3-1_Java-panel role=tab><label for=tab-group-3-1_Java class=code-tab-label data-lang=Java id=tab-group-3-1_Java-label>Server</label><div class=code-tabpanel role=tabpanel data-lang=Java id=tab-group-3-1_Java-panel aria-labelledby=tab-group-3-1_Java-label><div class=codehilite><pre><span class=kn>package</span> <span class=nn>com.headfirstjava.chat</span><span class=o>;</span>
+
+<span class=kn>import</span> <span class=nn>java.io.*</span><span class=o>;</span>
+<span class=kn>import</span> <span class=nn>java.net.*</span><span class=o>;</span>
+<span class=kn>import</span> <span class=nn>java.util.*</span><span class=o>;</span>
+
+
+<span class=kd>public</span> <span class=kd>class</span> <span class=nc>ChatServer</span>
+<span class=o>{</span>
+    <span class=n>ArrayList</span> <span class=n>clientOutputStreams</span><span class=o>;</span>
+
+    <span class=kd>public</span> <span class=kd>class</span> <span class=nc>ClientHandler</span> <span class=kd>implements</span> <span class=n>Runnable</span> <span class=o>{</span>
+        <span class=n>BufferedReader</span> <span class=n>reader</span><span class=o>;</span>
+        <span class=n>Socket</span> <span class=n>sock</span><span class=o>;</span>
+
+        <span class=kd>public</span> <span class=nf>ClientHandler</span><span class=o>(</span><span class=n>Socket</span> <span class=n>clientSocket</span><span class=o>)</span> <span class=o>{</span>
+            <span class=k>try</span> <span class=o>{</span>
+                <span class=n>sock</span> <span class=o>=</span> <span class=n>clientSocket</span><span class=o>;</span>
+                <span class=n>InputStreamReader</span> <span class=n>isReader</span> <span class=o>=</span> <span class=k>new</span> <span class=n>InputStreamReader</span><span class=o>(</span><span class=n>sock</span><span class=o>.</span><span class=na>getInputStream</span><span class=o>());</span>
+                <span class=n>reader</span> <span class=o>=</span> <span class=k>new</span> <span class=n>BufferedReader</span><span class=o>(</span><span class=n>isReader</span><span class=o>);</span>
+
+            <span class=o>}</span> <span class=k>catch</span> <span class=o>(</span><span class=n>Exception</span> <span class=n>ex</span><span class=o>)</span> <span class=o>{</span> <span class=n>ex</span><span class=o>.</span><span class=na>printStackTrace</span><span class=o>();</span> <span class=o>}</span>
+        <span class=o>}</span>
+
+        <span class=kd>public</span> <span class=kt>void</span> <span class=nf>run</span><span class=o>()</span> <span class=o>{</span>
+            <span class=n>String</span> <span class=n>message</span><span class=o>;</span>
+            <span class=k>try</span> <span class=o>{</span>
+                <span class=k>while</span> <span class=o>((</span><span class=n>message</span> <span class=o>=</span> <span class=n>reader</span><span class=o>.</span><span class=na>readLine</span><span class=o>())</span> <span class=o>!=</span> <span class=kc>null</span><span class=o>)</span> <span class=o>{</span>
+                    <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=s>&quot;read &quot;</span> <span class=o>+</span> <span class=n>message</span><span class=o>);</span>
+                    <span class=n>tellEveryone</span><span class=o>(</span><span class=n>message</span><span class=o>);</span>
+                <span class=o>}</span>
+            <span class=o>}</span> <span class=k>catch</span> <span class=o>(</span><span class=n>Exception</span> <span class=n>ex</span><span class=o>)</span> <span class=o>{</span> <span class=n>ex</span><span class=o>.</span><span class=na>printStackTrace</span><span class=o>();</span> <span class=o>}</span>
+        <span class=o>}</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kd>static</span> <span class=kt>void</span> <span class=nf>main</span><span class=o>(</span><span class=n>String</span><span class=o>[]</span> <span class=n>args</span><span class=o>)</span> <span class=o>{</span>
+        <span class=k>new</span> <span class=n>ChatServer</span><span class=o>().</span><span class=na>go</span><span class=o>();</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>go</span><span class=o>()</span> <span class=o>{</span>
+        <span class=n>clientOutputStreams</span> <span class=o>=</span> <span class=k>new</span> <span class=n>ArrayList</span><span class=o>();</span>
+        <span class=k>try</span> <span class=o>{</span>
+            <span class=n>ServerSocket</span> <span class=n>serverSock</span> <span class=o>=</span> <span class=k>new</span> <span class=n>ServerSocket</span><span class=o>(</span><span class=mi>3000</span><span class=o>);</span>
+            <span class=k>while</span><span class=o>(</span><span class=kc>true</span><span class=o>)</span> <span class=o>{</span>
+                <span class=n>Socket</span> <span class=n>clientSocket</span> <span class=o>=</span> <span class=n>serverSock</span><span class=o>.</span><span class=na>accept</span><span class=o>();</span>
+                <span class=n>PrintWriter</span> <span class=n>writer</span> <span class=o>=</span> <span class=k>new</span> <span class=n>PrintWriter</span><span class=o>(</span><span class=n>clientSocket</span><span class=o>.</span><span class=na>getOutputStream</span><span class=o>());</span>
+                <span class=n>clientOutputStreams</span><span class=o>.</span><span class=na>add</span><span class=o>(</span><span class=n>writer</span><span class=o>);</span>
+
+                <span class=n>Thread</span> <span class=n>t</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Thread</span><span class=o>(</span><span class=k>new</span> <span class=n>ClientHandler</span><span class=o>(</span><span class=n>clientSocket</span><span class=o>));</span>
+                <span class=n>t</span><span class=o>.</span><span class=na>start</span><span class=o>();</span>
+                <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=s>&quot;got a connection&quot;</span><span class=o>);</span>
+            <span class=o>}</span>
+        <span class=o>}</span> <span class=k>catch</span> <span class=o>(</span><span class=n>Exception</span> <span class=n>ex</span><span class=o>)</span> <span class=o>{</span> <span class=n>ex</span><span class=o>.</span><span class=na>printStackTrace</span><span class=o>();</span> <span class=o>}</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>tellEveryone</span><span class=o>(</span><span class=n>String</span> <span class=n>message</span><span class=o>)</span> <span class=o>{</span>
+        <span class=n>Iterator</span> <span class=n>it</span> <span class=o>=</span> <span class=n>clientOutputStreams</span><span class=o>.</span><span class=na>iterator</span><span class=o>();</span>
+        <span class=k>while</span> <span class=o>(</span><span class=n>it</span><span class=o>.</span><span class=na>hasNext</span><span class=o>())</span> <span class=o>{</span>
+            <span class=k>try</span> <span class=o>{</span>
+                <span class=n>PrintWriter</span> <span class=n>writer</span> <span class=o>=</span> <span class=o>(</span><span class=n>PrintWriter</span><span class=o>)</span> <span class=n>it</span><span class=o>.</span><span class=na>next</span><span class=o>();</span>
+                <span class=n>writer</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=n>message</span><span class=o>);</span>
+                <span class=n>writer</span><span class=o>.</span><span class=na>flush</span><span class=o>();</span>
+            <span class=o>}</span> <span class=k>catch</span> <span class=o>(</span><span class=n>Exception</span> <span class=n>ex</span><span class=o>)</span> <span class=o>{</span> <span class=n>ex</span><span class=o>.</span><span class=na>printStackTrace</span><span class=o>();</span> <span class=o>}</span>
+        <span class=o>}</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></div></div></div>
         </div>
 
         <footer class="col-md-12">

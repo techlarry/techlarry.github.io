@@ -474,30 +474,85 @@
                 <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
         <li class="main active"><a href="#chapter-13-using-swing">Chapter 13 Using Swing</a></li>
-        <li class="main "><a href="#playing-with-swing-components">Playing with Swing Components</a></li>
+        <li class="main "><a href="#1-swing-components">1 Swing components</a></li>
+        <li class="main "><a href="#2-layout-managers">2 Layout Managers</a></li>
+            <li><a href="#border-layout">Border layout</a></li>
+            <li><a href="#flow-layout">Flow layout</a></li>
+            <li><a href="#box-layout">Box layout</a></li>
+        <li class="main "><a href="#3-playing-with-swing-components">3 Playing with Swing Components</a></li>
             <li><a href="#jtextfield">JTextField</a></li>
+            <li><a href="#jtextarea">JTextArea</a></li>
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
 
 <h3 id="chapter-13-using-swing"><strong>Chapter 13 Using Swing</strong><a class="headerlink" href="#chapter-13-using-swing" title="Permanent link">&para;</a></h3>
-<h3 id="playing-with-swing-components">Playing with Swing Components<a class="headerlink" href="#playing-with-swing-components" title="Permanent link">&para;</a></h3>
+<h3 id="1-swing-components">1 Swing components<a class="headerlink" href="#1-swing-components" title="Permanent link">&para;</a></h3>
+<p><strong><em>Component</em></strong> is the more correct term for what we've been calling a <em>widiget</em>. Text fields, buttons, scrollable lists, etc. are all components. They all extend <C>javax.swing.JComponent</C>.</p>
+<h3 id="2-layout-managers">2 Layout Managers<a class="headerlink" href="#2-layout-managers" title="Permanent link">&para;</a></h3>
+<p>A layout manager is a Java object associated with a particular component, almost always a <em>background</em> component. Different layout managers have different policies for arranging components.</p>
+<p>The Big Three layout managers: <strong>border</strong>, <strong>flow</strong>, and <strong>box</strong>.</p>
+<h4 id="border-layout">Border layout<a class="headerlink" href="#border-layout" title="Permanent link">&para;</a></h4>
+<p>A BorderLayout manager divides a background component into five regions. You can add only one component per region to a background controlled by a BorderLayout manager. Components laid out by this manager usually don’t get to have their preferred size. BorderLayout is the default layout manager for a frame!</p>
+<p>BorderLayout cares about five regions: east, west, north, south, and center</p>
+<p> <div class=codehilite><pre><span class=n>frame</span><span class=o>.</span><span class=na>getContentPane</span><span class=o>().</span><span class=na>add</span><span class=o>(</span><span class=n>BorderLayout</span><span class=o>.</span><span class=na>EAST</span><span class=o>,</span> <span class=n>button</span><span class=o>);</span>
+</pre></div></p>
+<h4 id="flow-layout">Flow layout<a class="headerlink" href="#flow-layout" title="Permanent link">&para;</a></h4>
+<p>A FlowLayout manager acts kind of like a word processor, except with components instead of words. Each component is the size it wants to be, and they’re laid out left to right in the order that they’re added, with “word-wrap” turned on. So when a component won’t ﬁt horizontally, it drops to the next “line” in the layout. FlowLayout is the default layout manager for a panel!</p>
+<p>FlowLayout cares about the ﬂow of the components: left to right, top to bottom, in the order they were added.</p>
+<p>A <C>JPanel</C>’s layout manager is FlowLayout, by default. Anything inside the panel (in other words, components added to the panel by calling <C>panel.add(aComponent)</C>) are under the panel’s FlowLayout manager’s control.</p>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kt>void</span> <span class=nf>go</span><span class=o>()</span> <span class=o>{</span>
+    <span class=n>JFrame</span> <span class=n>frame</span> <span class=o>=</span> <span class=k>new</span> <span class=n>JFrame</span><span class=o>();</span> 
+    <span class=n>JPanel</span> <span class=n>panel</span> <span class=o>=</span> <span class=k>new</span> <span class=n>JPanel</span><span class=o>();</span> 
+    <span class=n>panel</span><span class=o>.</span><span class=na>setBackground</span><span class=o>(</span><span class=n>Color</span><span class=o>.</span><span class=na>darkGray</span><span class=o>);</span>
+
+    <span class=n>JButton</span> <span class=n>button</span> <span class=o>=</span> <span class=k>new</span> <span class=n>JButton</span><span class=o>(</span><span class=err>“</span><span class=n>shock</span> <span class=n>me</span><span class=err>”</span><span class=o>);</span> 
+    <span class=n>JButton</span> <span class=n>buttonTwo</span> <span class=o>=</span> <span class=k>new</span> <span class=n>JButton</span><span class=o>(</span><span class=err>“</span><span class=n>bliss</span><span class=err>”</span><span class=o>);</span>
+
+    <span class=n>panel</span><span class=o>.</span><span class=na>add</span><span class=o>(</span><span class=n>button</span><span class=o>);</span> <span class=n>panel</span><span class=o>.</span><span class=na>add</span><span class=o>(</span><span class=n>buttonTwo</span><span class=o>);</span>
+
+    <span class=n>frame</span><span class=o>.</span><span class=na>getContentPane</span><span class=o>().</span><span class=na>add</span><span class=o>(</span><span class=n>BorderLayout</span><span class=o>.</span><span class=na>EAST</span><span class=o>,</span> <span class=n>panel</span><span class=o>);</span>   
+    <span class=n>frame</span><span class=o>.</span><span class=na>setSize</span><span class=o>(</span><span class=mi>250</span><span class=o>,</span><span class=mi>200</span><span class=o>);</span> <span class=n>frame</span><span class=o>.</span><span class=na>setVisible</span><span class=o>(</span><span class=kc>true</span><span class=o>);</span>
+<span class=o>}</span>
+</pre></div></p>
+<p><img alt="JPanelFlowLayout" src="../figures/JPanelFlowLayout.png" /></p>
+<h4 id="box-layout">Box layout<a class="headerlink" href="#box-layout" title="Permanent link">&para;</a></h4>
+<p>Unlike FlowLayout, BoxLayout can force a ‘new line’ to make the components wrap to the next line, even if there’s room for them to ﬁt horizontally.</p>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kt>void</span> <span class=nf>go</span><span class=o>()</span> <span class=o>{</span>
+    <span class=n>JFrame</span> <span class=n>frame</span> <span class=o>=</span> <span class=k>new</span> <span class=n>JFrame</span><span class=o>();</span> 
+    <span class=n>JPanel</span> <span class=n>panel</span> <span class=o>=</span> <span class=k>new</span> <span class=n>JPanel</span><span class=o>();</span>
+    <span class=n>panel</span><span class=o>.</span><span class=na>setBackground</span><span class=o>(</span><span class=n>Color</span><span class=o>.</span><span class=na>darkGray</span><span class=o>);</span>
+    <span class=c1>//Change the layout manager to be a new instance of BoxLayout</span>
+    <span class=n>panel</span><span class=o>.</span><span class=na>setLayout</span><span class=o>(</span><span class=k>new</span> <span class=n>BoxLayout</span><span class=o>(</span><span class=n>panel</span><span class=o>,</span> <span class=n>BoxLayout</span><span class=o>.</span><span class=na>Y_AXIS</span><span class=o>));</span>
+
+    <span class=n>JButton</span> <span class=n>button</span> <span class=o>=</span> <span class=k>new</span> <span class=n>JButton</span><span class=o>(</span><span class=err>“</span><span class=n>shock</span> <span class=n>me</span><span class=err>”</span><span class=o>);</span> 
+    <span class=n>JButton</span> <span class=n>buttonTwo</span> <span class=o>=</span> <span class=k>new</span> <span class=n>JButton</span><span class=o>(</span><span class=err>“</span><span class=n>bliss</span><span class=err>”</span><span class=o>);</span> 
+    <span class=n>panel</span><span class=o>.</span><span class=na>add</span><span class=o>(</span><span class=n>button</span><span class=o>);</span>
+    <span class=n>panel</span><span class=o>.</span><span class=na>add</span><span class=o>(</span><span class=n>buttonTwo</span><span class=o>);</span> 
+    <span class=n>frame</span><span class=o>.</span><span class=na>getContentPane</span><span class=o>().</span><span class=na>add</span><span class=o>(</span><span class=n>BorderLayout</span><span class=o>.</span><span class=na>EAST</span><span class=o>,</span> <span class=n>panel</span><span class=o>);</span>   
+    <span class=n>frame</span><span class=o>.</span><span class=na>setSize</span><span class=o>(</span><span class=mi>250</span><span class=o>,</span><span class=mi>200</span><span class=o>);</span> 
+    <span class=n>frame</span><span class=o>.</span><span class=na>setVisible</span><span class=o>(</span><span class=kc>true</span><span class=o>);</span>
+<span class=o>}</span>
+</pre></div></p>
+<p><img alt="BoxLayout" src="../figures/BoxLayout.png" /></p>
+<h3 id="3-playing-with-swing-components">3 Playing with Swing Components<a class="headerlink" href="#3-playing-with-swing-components" title="Permanent link">&para;</a></h3>
+<p>The Java Tutorials by Oracle, describes every Swing component with excellent demos, see <a href="https://docs.oracle.com/javase/tutorial/uiswing/components/index.html">here</a>.</p>
 <h4 id="jtextfield">JTextField<a class="headerlink" href="#jtextfield" title="Permanent link">&para;</a></h4>
 <p><img alt="JTextField" src="../figures/JTextField.png" /></p>
 <p>Constructors</p>
 <ul>
-<li><code class="codehilite">JTextField ﬁeld = new JTextField(20);</code></li>
-<li><code class="codehilite">JTextField ﬁeld = new JTextField(“Your name”);</code></li>
+<li><code class="codehilite"><span class="n">JTextField</span> <span class="n">ﬁeld</span> <span class="o">=</span> <span class="k">new</span> <span class="n">JTextField</span><span class="o">(</span><span class="mi">20</span><span class="o">);</span></code></li>
+<li><code class="codehilite"><span class="n">JTextField</span> <span class="n">ﬁeld</span> <span class="o">=</span> <span class="k">new</span> <span class="n">JTextField</span><span class="o">(</span><span class="err">“</span><span class="n">Your</span> <span class="n">name</span><span class="err">”</span><span class="o">);</span></code></li>
 </ul>
 <p>How to use it?</p>
 <ul>
 <li>Get text out of it<ul>
-<li><code class="codehilite">System.out.println(ﬁeld.getText());</code></li>
+<li><code class="codehilite"><span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">ﬁeld</span><span class="o">.</span><span class="na">getText</span><span class="o">());</span></code></li>
 </ul>
 </li>
 <li>Put text in it<ul>
-<li><code class="codehilite">field.setText(&quot;whatever&quot;);</code></li>
-<li><code class="codehilite">field.setText(&quot;&quot;);</code></li>
+<li><code class="codehilite"><span class="n">field</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="s">&quot;whatever&quot;</span><span class="o">);</span></code></li>
+<li><code class="codehilite"><span class="o">:::</span><span class="n">Java</span> <span class="n">field</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="s">&quot;&quot;</span><span class="o">);</span></code></li>
 </ul>
 </li>
 <li>Get an ActionEvent when the user presses return or enter<ul>
@@ -505,11 +560,47 @@
 </ul>
 </li>
 <li>Select/Highlight the text in the ﬁeld<ul>
-<li><code class="codehilite">field.selectAll();</code></li>
+<li><code class="codehilite"><span class="n">field</span><span class="o">.</span><span class="na">selectAll</span><span class="o">();</span></code></li>
 </ul>
 </li>
 <li>Put the cursor back in the ﬁeld (so the user can just start typing)<ul>
-<li><code class="codehilite">field.requestFocus();</code></li>
+<li><code class="codehilite"><span class="n">field</span><span class="o">.</span><span class="na">requestFocus</span><span class="o">();</span></code></li>
+</ul>
+</li>
+</ul>
+<h4 id="jtextarea">JTextArea<a class="headerlink" href="#jtextarea" title="Permanent link">&para;</a></h4>
+<p><img alt="JTextArea" src="../figures/JTextArea.png" /></p>
+<p>Unlike <C>JTextField</C>, <C>JTextArea</C> can have more than one line of text. To make a <C>JTextArea</C> scroll, you have to stick it in a <C>ScrollPane</C>.</p>
+<ul>
+<li>Constructor<ul>
+<li><code class="codehilite"><span class="n">JTextArea</span> <span class="n">textArea</span> <span class="o">=</span> <span class="k">new</span> <span class="n">JTextArea</span><span class="o">(</span><span class="mi">10</span><span class="o">,</span><span class="mi">20</span><span class="o">);</span></code></li>
+</ul>
+</li>
+<li>Make it have a vertical scrollbar only</li>
+</ul>
+<p> <div class=codehilite><pre><span class=n>JScrollPane</span> <span class=n>scroller</span> <span class=o>=</span> <span class=k>new</span> <span class=n>JScrollPane</span><span class=o>();</span>
+<span class=n>scroll</span><span class=o>.</span><span class=na>add</span><span class=o>(</span><span class=n>text</span><span class=o>)</span> 
+<span class=n>textArea</span><span class=o>.</span><span class=na>setColumns</span><span class=o>(</span><span class=mi>20</span><span class=o>);</span>
+<span class=n>textArea</span><span class=o>.</span><span class=na>setLineWrap</span><span class=o>(</span><span class=kc>true</span><span class=o>);</span>
+<span class=n>textArea</span><span class=o>.</span><span class=na>setRows</span><span class=o>(</span><span class=mi>5</span><span class=o>);</span>
+<span class=n>textArea</span><span class=o>.</span><span class=na>setWrapStyleWord</span><span class=o>(</span><span class=kc>true</span><span class=o>);</span>
+<span class=n>textArea</span><span class=o>.</span><span class=na>setEditable</span><span class=o>(</span><span class=kc>false</span><span class=o>);</span><span class=n>panel</span><span class=o>.</span><span class=na>add</span><span class=o>(</span><span class=n>scroller</span><span class=o>);</span>
+</pre></div></p>
+<ul>
+<li>Replace the text that’s in it<ul>
+<li><code class="codehilite">text.setText(“Not all who are lost are wandering”);</code></li>
+</ul>
+</li>
+<li>Append to the text that’s in it<ul>
+<li><code class="codehilite">text.append(“button clicked”);</code></li>
+</ul>
+</li>
+<li>Select/Highlight the text in the ﬁeld<ul>
+<li><code class="codehilite">text.selectAll();</code></li>
+</ul>
+</li>
+<li>Put the cursor back in the ﬁeld (so the user can just start typing)<ul>
+<li><code class="codehilite">text.requestFocus();</code></li>
 </ul>
 </li>
 </ul></div>
