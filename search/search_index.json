@@ -2722,7 +2722,7 @@
         }, 
         {
             "location": "/hfj/ch16/", 
-            "text": "Chapter 16 Collections and Generics\n\n\nCollections.sort()\n\n\nProblem: ArrayList class does NOT have a \nsort()\n method\n\n\nSolution: you could use the \nCollections.sort()\n method\n\n\nExample: sort a list of songs by song title.\n\n\n \nArrayList\nString\n \nsongList\n \n=\n \nnew\n \nArrayList\n();\n\n\ngetSongs\n();\n\n\nCollections\n.\nsort\n(\nsongList\n);\n\n\n\n\nSorting objects\n\n\nBut if you need \n objects, not just simple \nStrings\n.\n\n\nTry: We override \ntoString()\n method in class \n.\n\n\n \n// We override toString(), because when you do a System.out.println(aSongObject),\n\n\n// we want to see the title.\n\n\n// When you do a System.out.println(aListOfSongs),\n\n\n// it calls the toString() method of EACH element in the list.\n\n\npublic\n \nString\n \ntoString\n()\n \n{\n\n    \nreturn\n \ntitle\n;\n\n\n}\n\n\n\n\nResult: However, it won\u2019t compile!\n\n\n \npublic\n \nstatic\n \nT\n \nextends\n \nComparable\n?\n \nsuper\n \nT\n \nvoid\n \nsort\n\u200b\n(\nList\nT\n \nlist\n)\n\n\n\n\nThe \nsort\n method (along with other things in the whole collection framework in Java) makes heavy use of \ngenerics\n. Anytime you see something with angle brackets in Java source code or documentation, ti means generics.\n\n\nGenerics types\n\n\nGenerics means more type safety.\n\n\nVirtually all of the code you write that deals with generics will be collection-related code. The main point of generics is let you write type-safe collections. (e.g. the compiler stop you from putting a \nDog\n into a list of Ducks).\n\n\nBefore generics (which means before Java 5.0), the compiler could not care less what you put into a collection, because all collection implementations were declared to hold type \nObject\n. You could put \nanything\n in any \nArrayList\n; it was like all \nArrayList\n were declared as \nArrayList\nObject\n.\n\n\nLearning generics\n\n\n\n\nCreating instances of generified \nclasses\n(like \nArrayList\n)\n\n\nnew\n \nArrayList\nSong\n()\n\n\n\n\n\n\nDeclaring and assigning \nvariables\n of generic types\n\n\nList\nSong\n \nsongList\n \n=\n \nnew\n \nArrayList\nSong\n()\n\n\n\n\n\n\nDeclaring (and invoking) \nmethods\n that take generic types\n\n\nvoid\n \nfoo\n(\nList\nSong\n \nList\n)\n\n\nx\n.\nfoo\n(\nsongList\n)\n \n\n\n\n\n\n\n\n\ngeneric classes\n\n\n\n\nThink of E\" as a stand-in for \"the type of element you want this collection to hold and return.\" (E is for Element.) \n\n\ngeneric methods\n\n\nA generic \nclass\n means that the \nclass declaration\n includes a type parameter. A generic \nmethod\n means that the method declaration uses a type parameter in its signature.\n\n\nYou can use type parameters in a method in several different ways:\n\n\n\n\nUsing a type parameter defined in the class declaration\n\n\n\n\n \npublic\n \nclass\n \nArrayList\nE\n \nextends\n \nAbstractList\nE\n \n...\n \n{\n\n    \n// You can use the \nE\n here ONLY because\n\n    \n// it\ns already defined as part of the class\n\n    \npublic\n \nboolean\n \nadd\n(\nE\n \no\n)\n\n\n\n\n\n\nUsing a type parameter that was NOT defined in the class declaration\n\n\n\n\n \n//Here we can use \nT\n because we declared \nT\n earlier in the method declaration\n\n\npublic\n \nT\n \nextends\n \nAnimals\n \nvoid\n \ntakeThing\nArrayList\nT\n \nlist\n)\n\n\n\n\nIf the class itself doesn't use a type parameter, you can still specify one for a method, by declaring it in a really unusual space -- \nbefore the return type\n. This method says that T can be \"any type of Animal\".\n\n\n\n\nThis:\n\n\n \npublic\n \nT\n \nextends\n \nAnimals\n \nvoid\n \ntakeThing\nArrayList\nT\n \nlist\n)\n\n\n\n\nIs NOT\n the same as this:\n\n\n \npublic\n \nvoid\n \ntakeThing\n(\nArrayList\nAnimal\n \nlist\n)\n\n\n\n\nThe first one, means that any \nArrayList\n declared of a type that is \nAnimal\n or one of \nAnimal\n's subtypes, is legal. So you could invoke the top method using an \nArrayList\n, \nArrayList\n or \nArrayList\n.\n\n\nBut.. the one on the bottom, means that \nonly\n an \nArrayList\n is legal.\n\n\nThe sort() method\n\n\nThe \nsort()\n method of \ncollections\n can take only lists of \nComparable\n objects.\n\n\nSong is NOT a subtype of \nComparable\n, so you cannot \nsort()\n the list of Songs.\n\n\nextends\n\n\nIn generics, the keyword \"extends\" really means \"is-a\", and works for BOTH classes and interfaces.\n\n\n\n\nComparable\n is an interface.\n\n\n \npublic\n \ninterface\n \nComparable\nT\n \n{\n\n    \npublic\n \nint\n \ncompareTo\n(\nT\n \no\n);\n\n\n}\n\n\n\n\nThe new, improved, comparable Song class\n\n\nWe decide we want to sort by title, so we implement the \ncompareTo()\n method to compare the title of the \nSong\n passed to the method against the title of the song on which the \ncompareTo()\n method was invoked.\n\n\n \npublic\n \nclass\n \nSong\n \nimplements\n \nComparable\n \nSong\n\n\n{\n\n    \nString\n \ntitle\n;\n\n    \nString\n \nartist\n;\n\n    \nString\n \nrating\n;\n\n    \nString\n \nbpm\n;\n\n\n\n    \npublic\n \nSong\n(\nString\n \nt\n,\n \nString\n \na\n,\n \nString\n \nr\n,\n \nString\n \nb\n)\n \n{\n\n        \ntitle\n \n=\n \nt\n;\n\n        \nartist\n \n=\n \na\n;\n\n        \nrating\n \n=\n \nr\n;\n\n        \nbpm\n \n=\n \nb\n;\n\n    \n}\n\n\n    \n// The sort() method sends a Song to compareTo()\n\n    \n// to see how that Song compares to the Song on which the method was invoked.\n\n    \npublic\n \nint\n \ncompareTo\n(\nSong\n \ns\n)\n\n    \n{\n\n        \n// Strings have a compareTo() method\n\n        \nreturn\n \ntitle\n.\ncompareTo\n(\ns\n.\ngetTitle\n());\n\n    \n}\n\n\n}\n\n\n\n\nComparator interface\n\n\n \npublic\n \ninterface\n \nComparator\nT\n \n{\n\n\n...\n\n\n\n\nComparator\n v.s. \nComparable\n\n\n\n\nInvoking the one-argument \nsort(List o)\n method means the list element\u2019s \ncompareTo()\n method determines the order. So the elements in the list MUST implement the \nComparable\n interface.\n\n\nInvoking \nsort(List o, Comparator c)\n means the list element\u2019s \ncompareTo()\n method will NOT be called, and the \nComparator\n\u2019s \ncompare()\n method will be used instead. That means the elements in the list do NOT need to implement the \nComparable\n interface.\n\n\n\n\n \n// Create a class that implements Comparator\n\n\n// its type parameter matches the type we\nre going to compare - in this case Song objects.\n\n\nclass\n \nArtistCompare\n \nimplements\n \nComparator\nSong\n \n{\n\n    \npublic\n \nint\n \ncompare\n(\nSong\n \none\n,\n \nSong\n \ntwo\n)\n \n{\n\n        \n// We\nre letting the String variables (for artist) do the actual comparison.\n\n        \n// since Strings already know how to alphabetize themselves.\n\n        \nreturn\n \none\n.\ngetArtist\n().\ncompareTo\n(\ntwo\n.\ngetArtist\n());\n\n\n}\n\n\n}\n\n\n\n// Make an instance of the Comparator\n\n\nArtistCompare\n \nartistCompare\n \n=\n \nnew\n \nArtistCompare\n();\n\n\n// Invoke sort(), passing it the list and a reference to the new custom Comparator object.\n\n\nCollections\n.\nsort\n(\nsongList\n,\n \nartistCompare\n);\n\n\n\n\nUh-oh. The sorting all works, but now we have duplicates... We need a \nSet\n instead of a \nList\n.\n\n\nCollection\n\n\nThe Collection API\n\n\nNote that the \nMap\n interface doesn't actually extend the \n interface, but \nMap\n is still considered part of the \"Collection Framework\" (also known as the \"Collection API\").\n\n\n\n\nObject equality\n\n\nWhat makes two objects equal?\n\n\nreference\n equality v.s. \nobject\n equality.\n\n\nReference equality\n: Two references that refer to the same object on the heap are equal. If you want to know if two references are really referring to the same object, use the == operator, which (remember) compares the bits in the variables. If both references point to the same object, the bits will be identical.\n\n\nObject equality\n: Two references, two objects on the heap, but the objects are considered \nmeaningfully equivalent\n. If you want to treat two different objects as equal, you must override both the \nhashCode()\n and \nequals()\n methods inherited from class \nObject\n.\n\n\nHow a \nHashSet\n checks for duplicates: \nhashCode()\n and \nequals()\n\n\nWhen you put an object into a \nHashSet\n, it uses the object's hashcode value to determine where to put the object in the \nSet\n. But it also compares the object's hashcode to the hashcode of all the other objects of the \nHashSet\n, and if there's no matching hashcode, the \nHashSet\n assumes that this new object is not a duplicate. If the \nHashSet\n finds a matching hashcode for two objects, the \nHashSet\n will then call one of the object's \nequals()\n methods to see if these hashcode-matched objects really \nare\n equal.\n\n\nThe \nSong\n class with overriden \nhashcode\n and \nequals()\n.\n\n\n \npublic\n \nclass\n \nSong\n \nimplements\n \nComparable\n \nSong\n\n\n{\n\n\n...\n\n    \npublic\n \nboolean\n \nequals\n(\nObject\n \naSong\n)\n \n{\n\n        \nSong\n \ns\n \n=\n \n(\nSong\n)\n \naSong\n;\n\n        \n// Strings have an overriden equals() method.\n\n        \nreturn\n \ngetTitle\n().\nequals\n(\ns\n.\ngetTitle\n());\n\n    \n}\n\n\n    \npublic\n \nint\n \nhashCode\n()\n \n{\n\n        \n//The String class has an overriden hashCode() method, so you can just return the result of calling hashCode() on the title.\n\n        \nreturn\n \ntitle\n.\nhashCode\n();\n\n    \n}\n\n\n...\n\n\n}\n\n\n\n// Instantiate a TreeSet \n\n\nTreeSet\nSong\n \nsongSet\n \n=\n \nnew\n \nTreeSet\nSong\n();\n\n\n// We can add all the songs from the HashSet using addAll().\n\n\nsongSet\n.\naddAll\n(\nsongList\n);\n \n\n\n\nJava Object Law For \nHashCode()\n and \nequals()\n:\n\n\nThe API docs for class Object state the rules you MUST follow:\n\n\n\n\nIf two objects are equal, they MUST have matching hashcodes.\n\n\nIf two objects are equal, calling \nequals()\n on either object MUST return true. In other words, if (a.equals(b)) then (b.equals(a)).\n\n\nIf two objects have the same hashcode value, they are NOT required to be equal. But if they\u2019re equal, they MUST have the same hashcode value.\n\n\nSo, if you override \nequals()\n, you MUST override \nhashCode()\n.\n\n\nThe default behavior of \nhashCode()\n is to generate a unique integer for each object on the heap. So if you don\u2019t override \nhashCode()\n in a class, no two objects of that type can EVER be considered equal.\n\n\nThe default behavior of \nequals()\n is to do an == comparison. In other words, to test whether the two references refer to a single object on the heap. So if you don\u2019t override \nequals()\n in a class, no two objects can EVER be considered equal since references to two different objects will always contain a different bit pattern.\n\n\na.equals(b)\n must also mean that \na.hashCode() == b.hashCode()\n\n\nBut \na.hashCode() == b.hashCode(\n) does NOT have to mean \na.equals(b)\n\n\n\n\n\n\n\n\nHow TreeSets sort\n\n\nTo use a \nTreeSet\n, one of these things must be true:\n\n\n\n\nThe elements in the list must be of a type that implements \nComparable\n\n\nYou use the \nTreeSet\n\u2019s overloaded constructor that takes a \nComparator\n\n\n\n\n \nimport\n \njava.util.Comparator\n;\n\n\nimport\n \njava.util.TreeSet\n;\n\n\n\nclass\n \nBookCompare\n \nimplements\n \nComparator\nBook\n \n{\n\n    \npublic\n \nint\n \ncompare\n(\nBook\n \none\n,\n \nBook\n \ntwo\n)\n \n{\n\n        \nreturn\n \n(\none\n.\ntitle\n.\ncompareTo\n(\ntwo\n.\ntitle\n));\n\n    \n}\n\n\n}\n\n\n\n\npublic\n \nclass\n \nBook\n \nimplements\n \nComparable\n \n{\n\n\n    \nString\n \ntitle\n;\n\n\n    \npublic\n \nBook\n(\nString\n \nt\n)\n \n{\n\n        \ntitle\n \n=\n \nt\n;\n\n    \n}\n\n\n    \npublic\n \nint\n \ncompareTo\n(\nObject\n \nb\n)\n \n{\n\n        \nBook\n \nbook\n \n=\n \n(\nBook\n)\n \nb\n;\n\n        \nreturn\n \n(\ntitle\n.\ncompareTo\n(\nbook\n.\ntitle\n));\n\n    \n}\n\n\n    \npublic\n \nString\n \ntoString\n()\n \n{\n\n        \nreturn\n \ntitle\n;\n\n    \n}\n\n\n    \npublic\n \nstatic\n \nvoid\n \nmain\n(\nString\n[]\n \nargs\n)\n \n{\n\n        \nBook\n \nb1\n \n=\n \nnew\n \nBook\n(\nHow Cats Work\n);\n\n        \nBook\n \nb2\n \n=\n \nnew\n \nBook\n(\nRemix your Body\n);\n\n        \nBook\n \nb3\n \n=\n \nnew\n \nBook\n(\nFinding Emo\n);\n\n        \nBookCompare\n \nbCompare\n \n=\n \nnew\n \nBookCompare\n();\n\n        \nTreeSet\nBook\n \ntree\n \n=\n \nnew\n \nTreeSet\nBook\n(\nbCompare\n);\n\n        \ntree\n.\nadd\n(\nnew\n \nBook\n(\nHow Cats Work\n));\n\n        \ntree\n.\nadd\n(\nnew\n \nBook\n(\nFinding Emo\n));\n\n        \ntree\n.\nadd\n(\nnew\n \nBook\n(\nRemix your Body\n));\n\n        \nSystem\n.\nout\n.\nprintln\n(\ntree\n);\n\n    \n}\n \n// end main\n\n\n}\n\n\n\n\npolymorphism and generics\n\n\nA problem with polymophism\n\n\nTestGenerics1\n shows how polymorphism works with regular arrays. Because of polymorphism, the compiler let us pass a \nDog\n array to a method with an Animal array argument. However, the \nArrayList\nAnimal\n argument WILL NOT accept an\nArrayList\nDog\n.\n\n\nTestgenerics1\npackage\n \ncom.headfirstjava.generics\n;\n\n\n\npublic\n \nclass\n \nTestGenerics1\n \n{\n\n\n    \n//If a method argument is an array of Animals, it will also take an array of any Animal subtype.\n\n    \n//In other words, if a method is declared as: void foo(Animal[] a) { }\n\n    \n// Assuming Dog extends Animal, you are free to call both: foo(anAnimalArray); foo(aDogArray);\n\n\n    \npublic\n \nstatic\n \nvoid\n \nmain\n(\nString\n[]\n \nargs\n)\n \n{\n\n        \nnew\n \nTestGenerics1\n().\ngo\n();\n\n    \n}\n\n\n    \npublic\n \nvoid\n \ngo\n()\n \n{\n\n        \n// Declare and create an Animal array, that holds both dogs and cats.\n\n        \nAnimal\n[]\n \nanimals\n \n=\n \n{\nnew\n \nDog\n(),\n \nnew\n \nCat\n(),\n \nnew\n \nDog\n()};\n\n        \n// Declare and create a Dog array, that holds only Dogs\n\n        \n// (the compiler won\u2019t let you put a Cat in).\n\n        \nDog\n[]\n \ndogs\n \n=\n \n{\nnew\n \nDog\n(),\n \nnew\n \nDog\n(),\n \nnew\n \nDog\n()};\n\n        \ntakeAnimals\n(\nanimals\n);\n\n        \ntakeAnimals\n(\ndogs\n);\n \n//\n\n    \n}\n\n\n    \n// The crucial point is that the takeAnimals() method can take an Animal[] or a Dog[]\n\n    \n// Since Dog IS-A Animal.\n\n    \npublic\n \nvoid\n \ntakeAnimals\n \n(\nAnimal\n[]\n \nanimals\n){\n\n        \nfor\n \n(\nAnimal\n \na\n \n:\n \nanimals\n)\n \n{\n\n            \na\n.\neat\n();\n\n        \n}\n \n// end for\n\n    \n}\n \n// end takeAnimals\n\n\n\n}\n \n// end class\n\n\nTestgenerics3\npackage\n \ncom.headfirstjava.generics\n;\n\n\n\nimport\n \njava.util.ArrayList\n;\n\n\n\npublic\n \nclass\n \nTestGenerics3\n \nextends\n \nTestGenerics1\n \n{\n\n\n    \n@Override\n\n    \npublic\n \nvoid\n \ngo\n()\n \n{\n\n        \nArrayList\nAnimal\n \nanimals\n \n=\n \nnew\n \nArrayList\nAnimal\n();\n\n        \nanimals\n.\nadd\n(\nnew\n \nDog\n());\n\n        \nanimals\n.\nadd\n(\nnew\n \nCat\n());\n\n        \nanimals\n.\nadd\n(\nnew\n \nDog\n());\n\n        \ntakeAnimals\n(\nanimals\n);\n \n// we know this works fine\n\n\n        \n// Make a Dog ArrayList, and put a couple Dog in.\n\n        \nArrayList\nDog\n \ndogs\n \n=\n \nnew\n \nArrayList\nDog\n();\n\n        \ndogs\n.\nadd\n(\nnew\n \nDog\n());\n\n        \ndogs\n.\nadd\n(\nnew\n \nDog\n());\n\n\n        \n// Will this work now that we change from Animal[] to ArrayList\nAnimal\n\n        \ntakeAnimals\n(\ndogs\n);\n\n    \n}\n\n\n    \npublic\n \nvoid\n \ntakeAnimals\n(\nArrayList\nAnimal\n \nanimals\n)\n \n{\n\n        \nfor\n \n(\nAnimal\n \na\n \n:\n \nanimals\n)\n \n{\n\n            \na\n.\neat\n();\n\n        \n}\n\n    \n}\n \n// end method\n\n\n}\n\n\n\n\n\nIf you declare a method to take \nArrayList\nAnimal\n, it can take ONLY an \nArrayList\nAnimal\n, not ArrayList\n or \nArrayList\nCat\n.\n\n\nQuestion: why they won\u2019t let you pass a \nArrayList\nDog\n into a method that takes an \nArrayList\nAnimal\n?\n\n\nThe reason is to stop you from possibly putting a \nCat\n in what was actually a \nDog\n list.\n\n\n \npublic\n \nvoid\n \ntakeAnimals\n(\nArrayList\nAnimal\n \nanimals\n)\n \n{\n\n    \n//Yikes!! We just stuck a Cat in what might be Dogs-only ArrayList.\n\n    \nanimals\n.\nadd\n(\nnew\n \nCat\n());\n\n\n}\n\n\n\n\nQuestion: Why does it work with arrays??\n\n\nBecause \narray types are checked again at runtime, but collection type checks happen only when you compile.\n\n\n \npublic\n \nvoid\n \ngo\n()\n \n{\n \n    \nDog\n[]\n \ndogs\n \n=\n \n{\nnew\n \nDog\n(),\n \nnew\n \nDog\n(),\n \nnew\n \nDog\n()};\n \n    \ntakeAnimals\n(\ndogs\n);\n \n\n}\n\n\npublic\n \nvoid\n \ntakeAnimals\n(\nAnimal\n[]\n \nanimals\n)\n \n{\n \n    \n// We put a new Cat into a Dog array.\n\n    \n// The compiler allowed i.\n\n    \n// But, JVM stopped it, throw an Exception during run.\n\n    \nanimals\n[\n0\n]\n \n=\n \nnew\n \nCat\n();\n \n\n}\n\n\n\n\ngeneric wildcards\n\n\nQUESTION: Wouldn\u2019t it be dreamy if there were a way to still use polymorphic collection types as method arguments, so that my veterinary program could take \nDog\n lists and \nCat\n lists?\n\n\nThere is a way to create a method argument that can accept an \nArrayList\n of any \nAnimal\n subtype. The simplest way is to use a \nwildcard\n.\n\n\n \npublic\n \nvoid\n \ntakeAnimals\n(\nArrayList\n?\n \nextends\n \nAnimal\n \nanimals\n)\n \n{\n \n    \nfor\n(\nAnimal\n \na\n:\n \nanimals\n)\n \n{\n\n        \na\n.\net\n();\n\n\n}\n\n\n\n\nWhen you use a wildcard in your method argument, the compiler will STOP you from doing anything that could hurt the list referenced by the method parameter.\n\n\nYou can still invoke methods on the elements in the list, but you cannot add elements to the list.\n\n\nIn other words, you can do things with the list elements, but you can\u2019t put new things in the list. So you\u2019re safe at runtime, because the compiler won\u2019t let you do anything that might be horrible at runtime.\n\n\nSo, this is OK inside \ntakeAnimals()\n:\n\n\n \nfor\n(\nAnimal\n \na\n:\n \nanimals\n)\n \n{\n \na\n.\neat\n();\n \n}\n\n\n\n\nBut THIS would not compile:\n\n\n \nanimals\n.\nadd\n(\nnew\n \nCat\n());\n\n\n\n\nTwo syntax for wildcard:\n\n\n \n// the results are the same\n\n\npublic\n \nT\n \nextends\n \nAnimal\n \nvoid\n \ntakeThing\n(\nArrayList\nT\n \nlist\n)\n\n\npublic\n \nvoid\n \ntakeThing\n(\nArrayList\n?\n \nextends\n \nAnimal\n \nlist\n)", 
+            "text": "Chapter 16 Collections and Generics\n\n\nCollections.sort()\n\n\nProblem: ArrayList class does NOT have a \nsort()\n method\n\n\nSolution: you could use the \nCollections.sort()\n method\n\n\nExample: sort a list of songs by song title.\n\n\n \nArrayList\nString\n \nsongList\n \n=\n \nnew\n \nArrayList\n();\n\n\ngetSongs\n();\n\n\nCollections\n.\nsort\n(\nsongList\n);\n\n\n\n\nSorting objects\n\n\nBut if you need \n objects, not just simple \nStrings\n.\n\n\nTry: We override \ntoString()\n method in class \n.\n\n\n \n// We override toString(), because when you do a System.out.println(aSongObject),\n\n\n// we want to see the title.\n\n\n// When you do a System.out.println(aListOfSongs),\n\n\n// it calls the toString() method of EACH element in the list.\n\n\npublic\n \nString\n \ntoString\n()\n \n{\n\n    \nreturn\n \ntitle\n;\n\n\n}\n\n\n\n\nResult: However, it won\u2019t compile!\n\n\n \npublic\n \nstatic\n \nT\n \nextends\n \nComparable\n?\n \nsuper\n \nT\n \nvoid\n \nsort\n\u200b\n(\nList\nT\n \nlist\n)\n\n\n\n\nThe \nsort\n method (along with other things in the whole collection framework in Java) makes heavy use of \ngenerics\n. Anytime you see something with angle brackets in Java source code or documentation, ti means generics.\n\n\nGenerics types\n\n\nGenerics means more type safety.\n\n\nVirtually all of the code you write that deals with generics will be collection-related code. The main point of generics is let you write type-safe collections. (e.g. the compiler stop you from putting a \nDog\n into a list of Ducks).\n\n\nBefore generics (which means before Java 5.0), the compiler could not care less what you put into a collection, because all collection implementations were declared to hold type \nObject\n. You could put \nanything\n in any \nArrayList\n; it was like all \nArrayList\n were declared as \nArrayList\nObject\n.\n\n\nLearning generics\n\n\n\n\nCreating instances of generified \nclasses\n(like \nArrayList\n)\n\n\nnew\n \nArrayList\nSong\n()\n\n\n\n\n\n\nDeclaring and assigning \nvariables\n of generic types\n\n\nList\nSong\n \nsongList\n \n=\n \nnew\n \nArrayList\nSong\n()\n\n\n\n\n\n\nDeclaring (and invoking) \nmethods\n that take generic types\n\n\nvoid\n \nfoo\n(\nList\nSong\n \nList\n)\n\n\nx\n.\nfoo\n(\nsongList\n)\n \n\n\n\n\n\n\n\n\ngeneric classes\n\n\n\n\nThink of E\" as a stand-in for \"the type of element you want this collection to hold and return.\" (E is for Element.) \n\n\ngeneric methods\n\n\nA generic \nclass\n means that the \nclass declaration\n includes a type parameter. A generic \nmethod\n means that the method declaration uses a type parameter in its signature.\n\n\nYou can use type parameters in a method in several different ways:\n\n\n\n\nUsing a type parameter defined in the class declaration\n\n\n\n\n \npublic\n \nclass\n \nArrayList\nE\n \nextends\n \nAbstractList\nE\n \n...\n \n{\n\n    \n// You can use the \nE\n here ONLY because\n\n    \n// it\ns already defined as part of the class\n\n    \npublic\n \nboolean\n \nadd\n(\nE\n \no\n)\n\n\n\n\n\n\nUsing a type parameter that was NOT defined in the class declaration\n\n\n\n\n \n//Here we can use \nT\n because we declared \nT\n earlier in the method declaration\n\n\npublic\n \nT\n \nextends\n \nAnimals\n \nvoid\n \ntakeThing\nArrayList\nT\n \nlist\n)\n\n\n\n\nIf the class itself doesn't use a type parameter, you can still specify one for a method, by declaring it in a really unusual space -- \nbefore the return type\n. This method says that T can be \"any type of Animal\".\n\n\n\n\nThis:\n\n\n \npublic\n \nT\n \nextends\n \nAnimals\n \nvoid\n \ntakeThing\nArrayList\nT\n \nlist\n)\n\n\n\n\nIs NOT\n the same as this:\n\n\n \npublic\n \nvoid\n \ntakeThing\n(\nArrayList\nAnimal\n \nlist\n)\n\n\n\n\nThe first one, means that any \nArrayList\n declared of a type that is \nAnimal\n or one of \nAnimal\n's subtypes, is legal. So you could invoke the top method using an \nArrayList\n, \nArrayList\n or \nArrayList\n.\n\n\nBut.. the one on the bottom, means that \nonly\n an \nArrayList\n is legal.\n\n\nThe sort() method\n\n\nThe \nsort()\n method of \ncollections\n can take only lists of \nComparable\n objects.\n\n\nSong is NOT a subtype of \nComparable\n, so you cannot \nsort()\n the list of Songs.\n\n\nExtends\n\n\nIn generics, the keyword \"extends\" really means \"is-a\", and works for BOTH classes and interfaces.\n\n\n\n\nComparable\n is an interface.\n\n\n \npublic\n \ninterface\n \nComparable\nT\n \n{\n\n    \npublic\n \nint\n \ncompareTo\n(\nT\n \no\n);\n\n\n}\n\n\n\n\nThe new, improved, comparable Song class\n\n\nWe decide we want to sort by title, so we implement the \ncompareTo()\n method to compare the title of the \nSong\n passed to the method against the title of the song on which the \ncompareTo()\n method was invoked.\n\n\n \npublic\n \nclass\n \nSong\n \nimplements\n \nComparable\n \nSong\n\n\n{\n\n    \nString\n \ntitle\n;\n\n    \nString\n \nartist\n;\n\n    \nString\n \nrating\n;\n\n    \nString\n \nbpm\n;\n\n\n\n    \npublic\n \nSong\n(\nString\n \nt\n,\n \nString\n \na\n,\n \nString\n \nr\n,\n \nString\n \nb\n)\n \n{\n\n        \ntitle\n \n=\n \nt\n;\n\n        \nartist\n \n=\n \na\n;\n\n        \nrating\n \n=\n \nr\n;\n\n        \nbpm\n \n=\n \nb\n;\n\n    \n}\n\n\n    \n// The sort() method sends a Song to compareTo()\n\n    \n// to see how that Song compares to the Song on which the method was invoked.\n\n    \npublic\n \nint\n \ncompareTo\n(\nSong\n \ns\n)\n\n    \n{\n\n        \n// Strings have a compareTo() method\n\n        \nreturn\n \ntitle\n.\ncompareTo\n(\ns\n.\ngetTitle\n());\n\n    \n}\n\n\n}\n\n\n\n\nComparator interface\n\n\n \npublic\n \ninterface\n \nComparator\nT\n \n{\n\n\n...\n\n\n\n\nComparator\n v.s. \nComparable\n\n\n\n\nInvoking the one-argument \nsort(List o)\n method means the list element\u2019s \ncompareTo()\n method determines the order. So the elements in the list MUST implement the \nComparable\n interface.\n\n\nInvoking \nsort(List o, Comparator c)\n means the list element\u2019s \ncompareTo()\n method will NOT be called, and the \nComparator\n\u2019s \ncompare()\n method will be used instead. That means the elements in the list do NOT need to implement the \nComparable\n interface.\n\n\n\n\n \n// Create a class that implements Comparator\n\n\n// its type parameter matches the type we\nre going to compare - in this case Song objects.\n\n\nclass\n \nArtistCompare\n \nimplements\n \nComparator\nSong\n \n{\n\n    \npublic\n \nint\n \ncompare\n(\nSong\n \none\n,\n \nSong\n \ntwo\n)\n \n{\n\n        \n// We\nre letting the String variables (for artist) do the actual comparison.\n\n        \n// since Strings already know how to alphabetize themselves.\n\n        \nreturn\n \none\n.\ngetArtist\n().\ncompareTo\n(\ntwo\n.\ngetArtist\n());\n\n\n}\n\n\n}\n\n\n\n// Make an instance of the Comparator\n\n\nArtistCompare\n \nartistCompare\n \n=\n \nnew\n \nArtistCompare\n();\n\n\n// Invoke sort(), passing it the list and a reference to the new custom Comparator object.\n\n\nCollections\n.\nsort\n(\nsongList\n,\n \nartistCompare\n);\n\n\n\n\nUh-oh. The sorting all works, but now we have duplicates... We need a \nSet\n instead of a \nList\n.\n\n\nCollection\n\n\nThe Collection API\n\n\nNote that the \nMap\n interface doesn't actually extend the \n interface, but \nMap\n is still considered part of the \"Collection Framework\" (also known as the \"Collection API\").\n\n\n\n\nObject equality\n\n\nWhat makes two objects equal?\n\n\nreference\n equality v.s. \nobject\n equality.\n\n\nReference equality\n: Two references that refer to the same object on the heap are equal. If you want to know if two references are really referring to the same object, use the == operator, which (remember) compares the bits in the variables. If both references point to the same object, the bits will be identical.\n\n\nObject equality\n: Two references, two objects on the heap, but the objects are considered \nmeaningfully equivalent\n. If you want to treat two different objects as equal, you must override both the \nhashCode()\n and \nequals()\n methods inherited from class \nObject\n.\n\n\nHow a \nHashSet\n checks for duplicates: \nhashCode()\n and \nequals()\n\n\nWhen you put an object into a \nHashSet\n, it uses the object's hashcode value to determine where to put the object in the \nSet\n. But it also compares the object's hashcode to the hashcode of all the other objects of the \nHashSet\n, and if there's no matching hashcode, the \nHashSet\n assumes that this new object is not a duplicate. If the \nHashSet\n finds a matching hashcode for two objects, the \nHashSet\n will then call one of the object's \nequals()\n methods to see if these hashcode-matched objects really \nare\n equal.\n\n\nThe \nSong\n class with overriden \nhashcode\n and \nequals()\n.\n\n\n \npublic\n \nclass\n \nSong\n \nimplements\n \nComparable\n \nSong\n\n\n{\n\n\n...\n\n    \npublic\n \nboolean\n \nequals\n(\nObject\n \naSong\n)\n \n{\n\n        \nSong\n \ns\n \n=\n \n(\nSong\n)\n \naSong\n;\n\n        \n// Strings have an overriden equals() method.\n\n        \nreturn\n \ngetTitle\n().\nequals\n(\ns\n.\ngetTitle\n());\n\n    \n}\n\n\n    \npublic\n \nint\n \nhashCode\n()\n \n{\n\n        \n//The String class has an overriden hashCode() method, so you can just return the result of calling hashCode() on the title.\n\n        \nreturn\n \ntitle\n.\nhashCode\n();\n\n    \n}\n\n\n...\n\n\n}\n\n\n\n// Instantiate a TreeSet \n\n\nTreeSet\nSong\n \nsongSet\n \n=\n \nnew\n \nTreeSet\nSong\n();\n\n\n// We can add all the songs from the HashSet using addAll().\n\n\nsongSet\n.\naddAll\n(\nsongList\n);\n \n\n\n\nJava Object Law For \nHashCode()\n and \nequals()\n:\n\n\nThe API docs for class Object state the rules you MUST follow:\n\n\n\n\nIf two objects are equal, they MUST have matching hashcodes.\n\n\nIf two objects are equal, calling \nequals()\n on either object MUST return true. In other words, if (a.equals(b)) then (b.equals(a)).\n\n\nIf two objects have the same hashcode value, they are NOT required to be equal. But if they\u2019re equal, they MUST have the same hashcode value.\n\n\nSo, if you override \nequals()\n, you MUST override \nhashCode()\n.\n\n\nThe default behavior of \nhashCode()\n is to generate a unique integer for each object on the heap. So if you don\u2019t override \nhashCode()\n in a class, no two objects of that type can EVER be considered equal.\n\n\nThe default behavior of \nequals()\n is to do an == comparison. In other words, to test whether the two references refer to a single object on the heap. So if you don\u2019t override \nequals()\n in a class, no two objects can EVER be considered equal since references to two different objects will always contain a different bit pattern.\n\n\na.equals(b)\n must also mean that \na.hashCode() == b.hashCode()\n\n\nBut \na.hashCode() == b.hashCode(\n) does NOT have to mean \na.equals(b)\n\n\n\n\n\n\n\n\nHow TreeSets sort\n\n\nTo use a \nTreeSet\n, one of these things must be true:\n\n\n\n\nThe elements in the list must be of a type that implements \nComparable\n\n\nYou use the \nTreeSet\n\u2019s overloaded constructor that takes a \nComparator\n\n\n\n\n \nimport\n \njava.util.Comparator\n;\n\n\nimport\n \njava.util.TreeSet\n;\n\n\n\nclass\n \nBookCompare\n \nimplements\n \nComparator\nBook\n \n{\n\n    \npublic\n \nint\n \ncompare\n(\nBook\n \none\n,\n \nBook\n \ntwo\n)\n \n{\n\n        \nreturn\n \n(\none\n.\ntitle\n.\ncompareTo\n(\ntwo\n.\ntitle\n));\n\n    \n}\n\n\n}\n\n\n\n\npublic\n \nclass\n \nBook\n \nimplements\n \nComparable\n \n{\n\n\n    \nString\n \ntitle\n;\n\n\n    \npublic\n \nBook\n(\nString\n \nt\n)\n \n{\n\n        \ntitle\n \n=\n \nt\n;\n\n    \n}\n\n\n    \npublic\n \nint\n \ncompareTo\n(\nObject\n \nb\n)\n \n{\n\n        \nBook\n \nbook\n \n=\n \n(\nBook\n)\n \nb\n;\n\n        \nreturn\n \n(\ntitle\n.\ncompareTo\n(\nbook\n.\ntitle\n));\n\n    \n}\n\n\n    \npublic\n \nString\n \ntoString\n()\n \n{\n\n        \nreturn\n \ntitle\n;\n\n    \n}\n\n\n    \npublic\n \nstatic\n \nvoid\n \nmain\n(\nString\n[]\n \nargs\n)\n \n{\n\n        \nBook\n \nb1\n \n=\n \nnew\n \nBook\n(\nHow Cats Work\n);\n\n        \nBook\n \nb2\n \n=\n \nnew\n \nBook\n(\nRemix your Body\n);\n\n        \nBook\n \nb3\n \n=\n \nnew\n \nBook\n(\nFinding Emo\n);\n\n        \nBookCompare\n \nbCompare\n \n=\n \nnew\n \nBookCompare\n();\n\n        \nTreeSet\nBook\n \ntree\n \n=\n \nnew\n \nTreeSet\nBook\n(\nbCompare\n);\n\n        \ntree\n.\nadd\n(\nnew\n \nBook\n(\nHow Cats Work\n));\n\n        \ntree\n.\nadd\n(\nnew\n \nBook\n(\nFinding Emo\n));\n\n        \ntree\n.\nadd\n(\nnew\n \nBook\n(\nRemix your Body\n));\n\n        \nSystem\n.\nout\n.\nprintln\n(\ntree\n);\n\n    \n}\n \n// end main\n\n\n}\n\n\n\n\npolymorphism and generics\n\n\nA problem with polymophism\n\n\nTestGenerics1\n shows how polymorphism works with regular arrays. Because of polymorphism, the compiler let us pass a \nDog\n array to a method with an Animal array argument. However, the \nArrayList\nAnimal\n argument WILL NOT accept an\nArrayList\nDog\n.\n\n\nTestgenerics1\npackage\n \ncom.headfirstjava.generics\n;\n\n\n\npublic\n \nclass\n \nTestGenerics1\n \n{\n\n\n    \n//If a method argument is an array of Animals, it will also take an array of any Animal subtype.\n\n    \n//In other words, if a method is declared as: void foo(Animal[] a) { }\n\n    \n// Assuming Dog extends Animal, you are free to call both: foo(anAnimalArray); foo(aDogArray);\n\n\n    \npublic\n \nstatic\n \nvoid\n \nmain\n(\nString\n[]\n \nargs\n)\n \n{\n\n        \nnew\n \nTestGenerics1\n().\ngo\n();\n\n    \n}\n\n\n    \npublic\n \nvoid\n \ngo\n()\n \n{\n\n        \n// Declare and create an Animal array, that holds both dogs and cats.\n\n        \nAnimal\n[]\n \nanimals\n \n=\n \n{\nnew\n \nDog\n(),\n \nnew\n \nCat\n(),\n \nnew\n \nDog\n()};\n\n        \n// Declare and create a Dog array, that holds only Dogs\n\n        \n// (the compiler won\u2019t let you put a Cat in).\n\n        \nDog\n[]\n \ndogs\n \n=\n \n{\nnew\n \nDog\n(),\n \nnew\n \nDog\n(),\n \nnew\n \nDog\n()};\n\n        \ntakeAnimals\n(\nanimals\n);\n\n        \ntakeAnimals\n(\ndogs\n);\n \n//\n\n    \n}\n\n\n    \n// The crucial point is that the takeAnimals() method can take an Animal[] or a Dog[]\n\n    \n// Since Dog IS-A Animal.\n\n    \npublic\n \nvoid\n \ntakeAnimals\n \n(\nAnimal\n[]\n \nanimals\n){\n\n        \nfor\n \n(\nAnimal\n \na\n \n:\n \nanimals\n)\n \n{\n\n            \na\n.\neat\n();\n\n        \n}\n \n// end for\n\n    \n}\n \n// end takeAnimals\n\n\n\n}\n \n// end class\n\n\nTestgenerics3\npackage\n \ncom.headfirstjava.generics\n;\n\n\n\nimport\n \njava.util.ArrayList\n;\n\n\n\npublic\n \nclass\n \nTestGenerics3\n \nextends\n \nTestGenerics1\n \n{\n\n\n    \n@Override\n\n    \npublic\n \nvoid\n \ngo\n()\n \n{\n\n        \nArrayList\nAnimal\n \nanimals\n \n=\n \nnew\n \nArrayList\nAnimal\n();\n\n        \nanimals\n.\nadd\n(\nnew\n \nDog\n());\n\n        \nanimals\n.\nadd\n(\nnew\n \nCat\n());\n\n        \nanimals\n.\nadd\n(\nnew\n \nDog\n());\n\n        \ntakeAnimals\n(\nanimals\n);\n \n// we know this works fine\n\n\n        \n// Make a Dog ArrayList, and put a couple Dog in.\n\n        \nArrayList\nDog\n \ndogs\n \n=\n \nnew\n \nArrayList\nDog\n();\n\n        \ndogs\n.\nadd\n(\nnew\n \nDog\n());\n\n        \ndogs\n.\nadd\n(\nnew\n \nDog\n());\n\n\n        \n// Will this work now that we change from Animal[] to ArrayList\nAnimal\n\n        \ntakeAnimals\n(\ndogs\n);\n\n    \n}\n\n\n    \npublic\n \nvoid\n \ntakeAnimals\n(\nArrayList\nAnimal\n \nanimals\n)\n \n{\n\n        \nfor\n \n(\nAnimal\n \na\n \n:\n \nanimals\n)\n \n{\n\n            \na\n.\neat\n();\n\n        \n}\n\n    \n}\n \n// end method\n\n\n}\n\n\n\n\n\nIf you declare a method to take \nArrayList\nAnimal\n, it can take ONLY an \nArrayList\nAnimal\n, not ArrayList\n or \nArrayList\nCat\n.\n\n\nQuestion: why they won\u2019t let you pass a \nArrayList\nDog\n into a method that takes an \nArrayList\nAnimal\n?\n\n\nThe reason is to stop you from possibly putting a \nCat\n in what was actually a \nDog\n list.\n\n\n \npublic\n \nvoid\n \ntakeAnimals\n(\nArrayList\nAnimal\n \nanimals\n)\n \n{\n\n    \n//Yikes!! We just stuck a Cat in what might be Dogs-only ArrayList.\n\n    \nanimals\n.\nadd\n(\nnew\n \nCat\n());\n\n\n}\n\n\n\n\nQuestion: Why does it work with arrays??\n\n\nBecause \narray types are checked again at runtime, but collection type checks happen only when you compile.\n\n\n \npublic\n \nvoid\n \ngo\n()\n \n{\n \n    \nDog\n[]\n \ndogs\n \n=\n \n{\nnew\n \nDog\n(),\n \nnew\n \nDog\n(),\n \nnew\n \nDog\n()};\n \n    \ntakeAnimals\n(\ndogs\n);\n \n\n}\n\n\npublic\n \nvoid\n \ntakeAnimals\n(\nAnimal\n[]\n \nanimals\n)\n \n{\n \n    \n// We put a new Cat into a Dog array.\n\n    \n// The compiler allowed i.\n\n    \n// But, JVM stopped it, throw an Exception during run.\n\n    \nanimals\n[\n0\n]\n \n=\n \nnew\n \nCat\n();\n \n\n}\n\n\n\n\nGeneric wildcards\n\n\nQUESTION: Wouldn\u2019t it be dreamy if there were a way to still use polymorphic collection types as method arguments, so that my veterinary program could take \nDog\n lists and \nCat\n lists?\n\n\nThere is a way to create a method argument that can accept an \nArrayList\n of any \nAnimal\n subtype. The simplest way is to use a \nwildcard\n.\n\n\n \npublic\n \nvoid\n \ntakeAnimals\n(\nArrayList\n?\n \nextends\n \nAnimal\n \nanimals\n)\n \n{\n \n    \nfor\n(\nAnimal\n \na\n:\n \nanimals\n)\n \n{\n\n        \na\n.\net\n();\n\n\n}\n\n\n\n\nWhen you use a wildcard in your method argument, the compiler will STOP you from doing anything that could hurt the list referenced by the method parameter.\n\n\nYou can still invoke methods on the elements in the list, but you cannot add elements to the list.\n\n\nIn other words, you can do things with the list elements, but you can\u2019t put new things in the list. So you\u2019re safe at runtime, because the compiler won\u2019t let you do anything that might be horrible at runtime.\n\n\nSo, this is OK inside \ntakeAnimals()\n:\n\n\n \nfor\n(\nAnimal\n \na\n:\n \nanimals\n)\n \n{\n \na\n.\neat\n();\n \n}\n\n\n\n\nBut THIS would not compile:\n\n\n \nanimals\n.\nadd\n(\nnew\n \nCat\n());\n\n\n\n\nTwo syntax for wildcard:\n\n\n \n// the results are the same\n\n\npublic\n \nT\n \nextends\n \nAnimal\n \nvoid\n \ntakeThing\n(\nArrayList\nT\n \nlist\n)\n\n\npublic\n \nvoid\n \ntakeThing\n(\nArrayList\n?\n \nextends\n \nAnimal\n \nlist\n)\n\n\n\n\nGeneric array\n\n\nFor historical and technical reasons, \ngeneric array creation is disallowed in Java\n. Instead, we need to use a cast:\n\n\n \na\n \n=\n \nnew\n \nItem\n[\ncap\n]\n \n// error\n\n\na\n \n=\n \n(\nItem\n[])\n \nnew\n \nObject\n[\ncap\n]\n \n// use a cast", 
             "title": "Chapter 16: Collections and Generics"
         }, 
         {
@@ -2768,7 +2768,7 @@
         {
             "location": "/hfj/ch16/#extends", 
             "text": "In generics, the keyword \"extends\" really means \"is-a\", and works for BOTH classes and interfaces.   Comparable  is an interface.    public   interface   Comparable T   { \n     public   int   compareTo ( T   o );  }   The new, improved, comparable Song class  We decide we want to sort by title, so we implement the  compareTo()  method to compare the title of the  Song  passed to the method against the title of the song on which the  compareTo()  method was invoked.    public   class   Song   implements   Comparable   Song  { \n     String   title ; \n     String   artist ; \n     String   rating ; \n     String   bpm ; \n\n\n     public   Song ( String   t ,   String   a ,   String   r ,   String   b )   { \n         title   =   t ; \n         artist   =   a ; \n         rating   =   r ; \n         bpm   =   b ; \n     } \n\n     // The sort() method sends a Song to compareTo() \n     // to see how that Song compares to the Song on which the method was invoked. \n     public   int   compareTo ( Song   s ) \n     { \n         // Strings have a compareTo() method \n         return   title . compareTo ( s . getTitle ()); \n     }  }", 
-            "title": "extends"
+            "title": "Extends"
         }, 
         {
             "location": "/hfj/ch16/#comparator-interface", 
@@ -2808,7 +2808,12 @@
         {
             "location": "/hfj/ch16/#generic-wildcards", 
             "text": "QUESTION: Wouldn\u2019t it be dreamy if there were a way to still use polymorphic collection types as method arguments, so that my veterinary program could take  Dog  lists and  Cat  lists?  There is a way to create a method argument that can accept an  ArrayList  of any  Animal  subtype. The simplest way is to use a  wildcard .    public   void   takeAnimals ( ArrayList ?   extends   Animal   animals )   {  \n     for ( Animal   a :   animals )   { \n         a . et ();  }   When you use a wildcard in your method argument, the compiler will STOP you from doing anything that could hurt the list referenced by the method parameter.  You can still invoke methods on the elements in the list, but you cannot add elements to the list.  In other words, you can do things with the list elements, but you can\u2019t put new things in the list. So you\u2019re safe at runtime, because the compiler won\u2019t let you do anything that might be horrible at runtime.  So, this is OK inside  takeAnimals() :    for ( Animal   a :   animals )   {   a . eat ();   }   But THIS would not compile:    animals . add ( new   Cat ());   Two syntax for wildcard:    // the results are the same  public   T   extends   Animal   void   takeThing ( ArrayList T   list )  public   void   takeThing ( ArrayList ?   extends   Animal   list )", 
-            "title": "generic wildcards"
+            "title": "Generic wildcards"
+        }, 
+        {
+            "location": "/hfj/ch16/#generic-array", 
+            "text": "For historical and technical reasons,  generic array creation is disallowed in Java . Instead, we need to use a cast:    a   =   new   Item [ cap ]   // error  a   =   ( Item [])   new   Object [ cap ]   // use a cast", 
+            "title": "Generic array"
         }, 
         {
             "location": "/hfj/ch17/", 
@@ -2904,6 +2909,251 @@
             "location": "/hfj/ch18/#jini", 
             "text": "", 
             "title": "Jini"
+        }, 
+        {
+            "location": "/tij/", 
+            "text": "TIJ\n\n\n\n\nChapter 1: Introduction\n\n\nChapter 2: Introduction to Objects\n\n\nChapter 3: Everything is an Object\n\n\nChapter 4: Opertors\n\n\nChapter 5: Controlling Execution\n\n\nChapter 6: Initialization \n Cleanup\n\n\nChapter 7: Access Control\n\n\nChapter 8: Reusing Clases\n\n\nChapter 9: Polymorphism\n\n\nChapter 10: Interfaces\n\n\nChapter 11: Inner Classes\n\n\nChapter 12: Holding Your Objects\n\n\nChapter 13: Error Handling with Exceptions\n\n\nChapter 14: Strings\n\n\nChapter 15: Type Information\n\n\nChapter 16: Generics\n\n\nChapter 17: Arrays\n\n\nChapter 18: Containers in Depth\n\n\nChapter 19: I/O\n\n\nChapter 20: Enumerated Types\n\n\nChapter 21: Annotations\n\n\nChapter 22: Concurrency\n\n\nChapter 23: Graphical User Interfaces", 
+            "title": "Contents"
+        }, 
+        {
+            "location": "/tij/#tij", 
+            "text": "Chapter 1: Introduction  Chapter 2: Introduction to Objects  Chapter 3: Everything is an Object  Chapter 4: Opertors  Chapter 5: Controlling Execution  Chapter 6: Initialization   Cleanup  Chapter 7: Access Control  Chapter 8: Reusing Clases  Chapter 9: Polymorphism  Chapter 10: Interfaces  Chapter 11: Inner Classes  Chapter 12: Holding Your Objects  Chapter 13: Error Handling with Exceptions  Chapter 14: Strings  Chapter 15: Type Information  Chapter 16: Generics  Chapter 17: Arrays  Chapter 18: Containers in Depth  Chapter 19: I/O  Chapter 20: Enumerated Types  Chapter 21: Annotations  Chapter 22: Concurrency  Chapter 23: Graphical User Interfaces", 
+            "title": "TIJ"
+        }, 
+        {
+            "location": "/tij/ch1/", 
+            "text": "Thinking in Java 1 - Introduction", 
+            "title": "Chapter 1: Introduction"
+        }, 
+        {
+            "location": "/tij/ch1/#thinking-in-java-1-introduction", 
+            "text": "", 
+            "title": "Thinking in Java 1 - Introduction"
+        }, 
+        {
+            "location": "/tij/ch2/", 
+            "text": "Thinking in Java 2 - Introduction to Objects", 
+            "title": "Chapter 2: Introduction to Objects"
+        }, 
+        {
+            "location": "/tij/ch2/#thinking-in-java-2-introduction-to-objects", 
+            "text": "", 
+            "title": "Thinking in Java 2 - Introduction to Objects"
+        }, 
+        {
+            "location": "/tij/ch3/", 
+            "text": "Thinking in Java 3 - Everything is an Object", 
+            "title": "Chapter 3: Everything is an Object"
+        }, 
+        {
+            "location": "/tij/ch3/#thinking-in-java-3-everything-is-an-object", 
+            "text": "", 
+            "title": "Thinking in Java 3 - Everything is an Object"
+        }, 
+        {
+            "location": "/tij/ch4/", 
+            "text": "Thinking in Java 4 - Operators", 
+            "title": "Chapter 4: Opertors"
+        }, 
+        {
+            "location": "/tij/ch4/#thinking-in-java-4-operators", 
+            "text": "", 
+            "title": "Thinking in Java 4 - Operators"
+        }, 
+        {
+            "location": "/tij/ch5/", 
+            "text": "Thinking in Java 5 - Controlling Execution", 
+            "title": "Chapter 5: Controlling Execution"
+        }, 
+        {
+            "location": "/tij/ch5/#thinking-in-java-5-controlling-execution", 
+            "text": "", 
+            "title": "Thinking in Java 5 - Controlling Execution"
+        }, 
+        {
+            "location": "/tij/ch6/", 
+            "text": "Thinking in Java 6 - Initialization \n Cleanup", 
+            "title": "Chapter 6: Initialization & Cleanup"
+        }, 
+        {
+            "location": "/tij/ch6/#thinking-in-java-6-initialization-cleanup", 
+            "text": "", 
+            "title": "Thinking in Java 6 - Initialization &amp; Cleanup"
+        }, 
+        {
+            "location": "/tij/ch7/", 
+            "text": "Thinking in Java 7 - Access Control", 
+            "title": "Chapter 7: Access Control"
+        }, 
+        {
+            "location": "/tij/ch7/#thinking-in-java-7-access-control", 
+            "text": "", 
+            "title": "Thinking in Java 7 - Access Control"
+        }, 
+        {
+            "location": "/tij/ch8/", 
+            "text": "Thinking in Java 8 - Reusing Classes", 
+            "title": "Chapter 8: Reusing Clases"
+        }, 
+        {
+            "location": "/tij/ch8/#thinking-in-java-8-reusing-classes", 
+            "text": "", 
+            "title": "Thinking in Java 8 - Reusing Classes"
+        }, 
+        {
+            "location": "/tij/ch9/", 
+            "text": "Thinking in Java 9 - Polymorphism", 
+            "title": "Chapter 9: Polymorphism"
+        }, 
+        {
+            "location": "/tij/ch9/#thinking-in-java-9-polymorphism", 
+            "text": "", 
+            "title": "Thinking in Java 9 - Polymorphism"
+        }, 
+        {
+            "location": "/tij/ch10/", 
+            "text": "Thinking in Java 10 - Interfaces", 
+            "title": "Chapter 10: Interfaces"
+        }, 
+        {
+            "location": "/tij/ch10/#thinking-in-java-10-interfaces", 
+            "text": "", 
+            "title": "Thinking in Java 10 - Interfaces"
+        }, 
+        {
+            "location": "/tij/ch11/", 
+            "text": "Thinking in Java 11 - Inner Classes", 
+            "title": "Chapter 11: Inner Classes"
+        }, 
+        {
+            "location": "/tij/ch11/#thinking-in-java-11-inner-classes", 
+            "text": "", 
+            "title": "Thinking in Java 11 - Inner Classes"
+        }, 
+        {
+            "location": "/tij/ch12/", 
+            "text": "Thinking in Java 12 - Holding Your Objects", 
+            "title": "Chapter 12: Holding Your Objects"
+        }, 
+        {
+            "location": "/tij/ch12/#thinking-in-java-12-holding-your-objects", 
+            "text": "", 
+            "title": "Thinking in Java 12 - Holding Your Objects"
+        }, 
+        {
+            "location": "/tij/ch13/", 
+            "text": "Thinking in Java 13 - Error Handling with Exceptions", 
+            "title": "Chapter 13: Error Handling with Exceptions"
+        }, 
+        {
+            "location": "/tij/ch13/#thinking-in-java-13-error-handling-with-exceptions", 
+            "text": "", 
+            "title": "Thinking in Java 13 - Error Handling with Exceptions"
+        }, 
+        {
+            "location": "/tij/ch14/", 
+            "text": "Thinking in Java 14 - String", 
+            "title": "Chapter 14: Strings"
+        }, 
+        {
+            "location": "/tij/ch14/#thinking-in-java-14-string", 
+            "text": "", 
+            "title": "Thinking in Java 14 - String"
+        }, 
+        {
+            "location": "/tij/ch15/", 
+            "text": "Thinking in Java 15 - Type Information", 
+            "title": "Chapter 15: Type Information"
+        }, 
+        {
+            "location": "/tij/ch15/#thinking-in-java-15-type-information", 
+            "text": "", 
+            "title": "Thinking in Java 15 - Type Information"
+        }, 
+        {
+            "location": "/tij/ch16/", 
+            "text": "Thinking in Java 16- Generics", 
+            "title": "Chapter 16: Generics"
+        }, 
+        {
+            "location": "/tij/ch16/#thinking-in-java-16-generics", 
+            "text": "", 
+            "title": "Thinking in Java 16- Generics"
+        }, 
+        {
+            "location": "/tij/ch17/", 
+            "text": "Thinking in Java 17 - Arrays", 
+            "title": "Chapter 17: Arrays"
+        }, 
+        {
+            "location": "/tij/ch17/#thinking-in-java-17-arrays", 
+            "text": "", 
+            "title": "Thinking in Java 17 - Arrays"
+        }, 
+        {
+            "location": "/tij/ch18/", 
+            "text": "Thinking in Java 18 - Containers in Depth", 
+            "title": "Chapter 18: Containers in Depth"
+        }, 
+        {
+            "location": "/tij/ch18/#thinking-in-java-18-containers-in-depth", 
+            "text": "", 
+            "title": "Thinking in Java 18 - Containers in Depth"
+        }, 
+        {
+            "location": "/tij/ch19/", 
+            "text": "Thinking in Java 19 - I/O", 
+            "title": "Chapter 19: I/O"
+        }, 
+        {
+            "location": "/tij/ch19/#thinking-in-java-19-io", 
+            "text": "", 
+            "title": "Thinking in Java 19 - I/O"
+        }, 
+        {
+            "location": "/tij/ch20/", 
+            "text": "Thinking in Java 20 - Enumerated Types", 
+            "title": "Chapter 20: Enumerated Types"
+        }, 
+        {
+            "location": "/tij/ch20/#thinking-in-java-20-enumerated-types", 
+            "text": "", 
+            "title": "Thinking in Java 20 - Enumerated Types"
+        }, 
+        {
+            "location": "/tij/ch21/", 
+            "text": "Thinking in Java 21 - Annotations\n\n\nAnnotations (also known as \nmetadata\n) provide a formalized way to add information to your code so that you can easily use that data at some later point. \n\n\nThe syntax of annotations is reasonably simple and consists mainly of the addition of the @ symbol to the language. Java SE5 contains three general purpose built-in annotations, defined in \njava.lang\n\n\n\n\n\n\n@\nOverride\n, to indicate that a method definition is intended to override a method in the base class. This generates a compiler error if you accidentally misspell the method name or give an improper signature.\n\n\n\n\n\n\n@\nDeprecated\n, to produce a compiler warning if this element is used.\n\n\n\n\n\n\n@\nSuppressWarnings\n, to turn off inappropriate compiler warnings. This annotation is allowed but not supported in earlier releases of Java SE5 (it was ignored).\n\n\n\n\n\n\nMeta-annotations\n\n\nThere are currently only three standard annotations (described earlier) and four meta-annotations defined in the Java language. The meta-annotations are for annotating annotations:\n\n\n@Target\n\n\n\n\n@Documented : Include this annotation in the Javadocs.\n\n\n@Inherited: Allow subclasses to inherit parent annotations.", 
+            "title": "Chapter 21: Annotations"
+        }, 
+        {
+            "location": "/tij/ch21/#thinking-in-java-21-annotations", 
+            "text": "Annotations (also known as  metadata ) provide a formalized way to add information to your code so that you can easily use that data at some later point.   The syntax of annotations is reasonably simple and consists mainly of the addition of the @ symbol to the language. Java SE5 contains three general purpose built-in annotations, defined in  java.lang    @ Override , to indicate that a method definition is intended to override a method in the base class. This generates a compiler error if you accidentally misspell the method name or give an improper signature.    @ Deprecated , to produce a compiler warning if this element is used.    @ SuppressWarnings , to turn off inappropriate compiler warnings. This annotation is allowed but not supported in earlier releases of Java SE5 (it was ignored).", 
+            "title": "Thinking in Java 21 - Annotations"
+        }, 
+        {
+            "location": "/tij/ch21/#meta-annotations", 
+            "text": "There are currently only three standard annotations (described earlier) and four meta-annotations defined in the Java language. The meta-annotations are for annotating annotations:  @Target   @Documented : Include this annotation in the Javadocs.  @Inherited: Allow subclasses to inherit parent annotations.", 
+            "title": "Meta-annotations"
+        }, 
+        {
+            "location": "/tij/ch22/", 
+            "text": "Thinking in Java 22 - Concurrency", 
+            "title": "Chapter 22: Concurrency"
+        }, 
+        {
+            "location": "/tij/ch22/#thinking-in-java-22-concurrency", 
+            "text": "", 
+            "title": "Thinking in Java 22 - Concurrency"
+        }, 
+        {
+            "location": "/tij/ch23/", 
+            "text": "Thinking in Java 23 - Graphical User Interfaces", 
+            "title": "Chapter 23: Graphical User Interfaces"
+        }, 
+        {
+            "location": "/tij/ch23/#thinking-in-java-23-graphical-user-interfaces", 
+            "text": "", 
+            "title": "Thinking in Java 23 - Graphical User Interfaces"
         }, 
         {
             "location": "/cpj/", 
@@ -3051,14 +3301,14 @@
             "title": "Concurrent Programming in Java 4: Threads and Locks"
         }, 
         {
-            "location": "/cpj/", 
-            "text": "CPJ\n\n\n\n\nConcurrent Programming in Java 1: Threads and Locks\n\n\nConcurrent Programming in Java 2: Critical Sections and Isolation\n\n\nConcurrent Programming in Java 3: Actors\n\n\nConcurrent Programming in Java 4: Concurrent Data Structures", 
+            "location": "/hadoop/", 
+            "text": "HADOOP\n\n\n\n\nChapter 1: Meet Hadoop\n\n\nChapter 2: MapReduce\n\n\nChapter 3: The Hadoop Distributed FileSystem\n\n\nChapter 4: YARN\n\n\nChapter 5: Hadoop I/O\n\n\nChapter 6: Developing a MapReduce Application\n\n\nChapter 7: How MapReduce Works\n\n\nChapter 8: MapReduce Types and Formats\n\n\nChapter 9: MapReduce Features\n\n\nChapter 10: Setting Up a Hadoop Cluster\n\n\nChapter 11: Adminstering Hadoop\n\n\nChapter 12: Avro\n\n\nChapter 13: Parquet\n\n\nChapter 14: Flume\n\n\nChapter 15: Sqoop\n\n\nChapter 16: Pig\n\n\nChapter 17: Hive\n\n\nChapter 18: Crunch\n\n\nChapter 19: Spark\n\n\nChapter 20: HBase\n\n\nChapter 21: ZooKeeper\n\n\nChapter 22: Composable Data at Center\n\n\nChapter 23: Biological Data Science: Saving Lives with Software\n\n\nChapter 24: Cascading", 
             "title": "Contents"
         }, 
         {
-            "location": "/cpj/#cpj", 
-            "text": "Concurrent Programming in Java 1: Threads and Locks  Concurrent Programming in Java 2: Critical Sections and Isolation  Concurrent Programming in Java 3: Actors  Concurrent Programming in Java 4: Concurrent Data Structures", 
-            "title": "CPJ"
+            "location": "/hadoop/#hadoop", 
+            "text": "Chapter 1: Meet Hadoop  Chapter 2: MapReduce  Chapter 3: The Hadoop Distributed FileSystem  Chapter 4: YARN  Chapter 5: Hadoop I/O  Chapter 6: Developing a MapReduce Application  Chapter 7: How MapReduce Works  Chapter 8: MapReduce Types and Formats  Chapter 9: MapReduce Features  Chapter 10: Setting Up a Hadoop Cluster  Chapter 11: Adminstering Hadoop  Chapter 12: Avro  Chapter 13: Parquet  Chapter 14: Flume  Chapter 15: Sqoop  Chapter 16: Pig  Chapter 17: Hive  Chapter 18: Crunch  Chapter 19: Spark  Chapter 20: HBase  Chapter 21: ZooKeeper  Chapter 22: Composable Data at Center  Chapter 23: Biological Data Science: Saving Lives with Software  Chapter 24: Cascading", 
+            "title": "HADOOP"
         }, 
         {
             "location": "/hadoop/ch1/", 
@@ -3887,7 +4137,7 @@
         }, 
         {
             "location": "/books/", 
-            "text": "Books and Materials\n\n\nBooks\n\n\nThe following is the primary reading list of books. Each chapter is organized as a single page; the included sections are noted with major concepts, and summary.\n\n\nCSAPP\n\n\n\n\nComputer System: A Programmer's Perspective, 3rd Edition\n\n\nby Randal E. Bryant and David A. O'Hallaron\n\n\nOSC\n\n\n\n\nOperating System Concepts (10th Edition)\n\n\nby Silberschatz Abraham, Galvin, Peter B., Gagne, Greg\n\n\nHFJ\n\n\n\n\nHead first java, 2nd Edition\n\n\nby Kathy Sierra and Bert Bates\n\n\nLKD\n\n\n\n\nLinux Kernel Development, 3rd Edition\n\n\nby Robert Love\n\n\nUJVM\n\n\n\n\n\u6df1\u5165\u7406\u89e3Java\u865a\u62df\u673a, 2nd Edition\n\n\nby \u5468\u5fd7\u660e\n\n\nHadoop\n\n\n\n\nHadoop: The Definitive Guide, 4th Edition\n\n\nby Tom White", 
+            "text": "Books and Materials\n\n\nBooks\n\n\nThe following is the primary reading list of books. Each chapter is organized as a single page; the included sections are noted with major concepts, and summary.\n\n\nCSAPP\n\n\n\n\nComputer System: A Programmer's Perspective, 3rd Edition\n\n\nby Randal E. Bryant and David A. O'Hallaron\n\n\nOSC\n\n\n\n\nOperating System Concepts (10th Edition)\n\n\nby Silberschatz Abraham, Galvin, Peter B., Gagne, Greg\n\n\nHFJ\n\n\n\n\nHead first java, 2nd Edition\n\n\nby Kathy Sierra and Bert Bates\n\n\nLKD\n\n\n\n\nLinux Kernel Development, 3rd Edition\n\n\nby Robert Love\n\n\nTIJ\n\n\n\n\nThinking in Java, 4th Edition\n\n\nby Bruce Eckel\n\n\nUJVM\n\n\n\n\n\u6df1\u5165\u7406\u89e3Java\u865a\u62df\u673a, 2nd Edition\n\n\nby \u5468\u5fd7\u660e\n\n\nHadoop\n\n\n\n\nHadoop: The Definitive Guide, 4th Edition\n\n\nby Tom White", 
             "title": "Books"
         }, 
         {
@@ -3919,6 +4169,11 @@
             "location": "/books/#lkd", 
             "text": "Linux Kernel Development, 3rd Edition  by Robert Love", 
             "title": "LKD"
+        }, 
+        {
+            "location": "/books/#tij", 
+            "text": "Thinking in Java, 4th Edition  by Bruce Eckel", 
+            "title": "TIJ"
         }, 
         {
             "location": "/books/#ujvm", 
