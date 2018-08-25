@@ -247,6 +247,71 @@
 <li >
     <a href="../../hfj/ch18/">Chapter 18: Remote deploy with RMI</a>
 </li>
+                            
+<li >
+    <a href="../../hfj/Appendix/">Appendix: The Top Ten Topics</a>
+</li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">HFDP <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../../hfdp/">Contents</a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch1/">Chapter 1: Strategy Pattern </a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch2/">Chapter 2: Observer Pattern</a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch3/">Chapter 3: Decorator Pattern </a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch4/">Chapter 4: Factory Pattern</a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch5/">Chapter 5: Singleton Pattern</a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch6/">Chapter 6: Command Pattern</a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch7/">Chapter 7: Adapter and Facade Patterns</a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch8/">Chapter 8: Template Method Pattern</a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch9/">Chapter 9: Iterator and Composite Patterns</a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch10/">Chapter 10: State Pattern</a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch11/">Chapter 11: Proxy Pattern</a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch12/">Chapter 12: Compound Pattern</a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch13/">Chapter 13: Better Living with Patterns</a>
+</li>
                         </ul>
                     </li>
                     <li class="dropdown">
@@ -587,10 +652,11 @@
             <li><a href="#_6">复制算法</a></li>
             <li><a href="#-_1">标记-整理算法</a></li>
             <li><a href="#_7">分代收集算法</a></li>
+            <li><a href="#_8">当前商用实现</a></li>
         <li class="main "><a href="#4-hotspot">4 HotSpot的算法实现</a></li>
-            <li><a href="#_8">枚举根节点</a></li>
-            <li><a href="#_9">安全点</a></li>
-            <li><a href="#_10">安全区域</a></li>
+            <li><a href="#_9">枚举根节点</a></li>
+            <li><a href="#_10">安全点</a></li>
+            <li><a href="#_11">安全区域</a></li>
         <li class="main "><a href="#5">5 垃圾收集器</a></li>
             <li><a href="#serial-collector">Serial Collector</a></li>
             <li><a href="#parnew">ParNew收集器</a></li>
@@ -602,10 +668,11 @@
             <li><a href="#gc">理解GC日志</a></li>
         <li class="main "><a href="#6">6 内存分配与回收策略</a></li>
             <li><a href="#eden">对象优先在Eden分配</a></li>
-            <li><a href="#_11">大对象直接进入老年代</a></li>
-            <li><a href="#_12">长期存活的对象将进入老年代</a></li>
-            <li><a href="#_13">动态对象年龄判定</a></li>
-            <li><a href="#_14">空间分配担保</a></li>
+            <li><a href="#_12">大对象直接进入老年代</a></li>
+            <li><a href="#_13">长期存活的对象将进入老年代</a></li>
+            <li><a href="#_14">动态对象年龄判定</a></li>
+            <li><a href="#_15">空间分配担保</a></li>
+            <li><a href="#minormajorfull-gc">Minor/Major/Full GC</a></li>
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
@@ -743,16 +810,19 @@
 <p><img alt="" src="../figures/标记整理算法.jpg" /></p>
 <h4 id="_7">分代收集算法<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h4>
 <p>当前商业虚拟机的垃圾收集都采⽤<strong>分代收集</strong>(Generational Collection)算法。根据对象存活周期的不同将内存分为几块。一般把Java堆分为新生代和老年代，根据各个年代的特点采用最合适的收集算法。在新生代中，每次垃圾收集时有大批对象死去，只有少量存活，可以选用复制算法。而老年代对象存活率高，使用标记清理或者标记整理算法。</p>
+<h4 id="_8">当前商用实现<a class="headerlink" href="#_8" title="Permanent link">&para;</a></h4>
+<p>这是现有的商用GC对应的算法：</p>
+<p><img alt="" src="../figures/15351162422039.jpg" /></p>
 <h3 id="4-hotspot">4 HotSpot的算法实现<a class="headerlink" href="#4-hotspot" title="Permanent link">&para;</a></h3>
 <p>在HotSpot虚拟机上实现垃圾回收算法时，必须对算法的执⾏效率有严格的考量，才能保证虚拟机⾼效运⾏。</p>
-<h4 id="_8">枚举根节点<a class="headerlink" href="#_8" title="Permanent link">&para;</a></h4>
+<h4 id="_9">枚举根节点<a class="headerlink" href="#_9" title="Permanent link">&para;</a></h4>
 <p>从可达性分析中从GC Roots节点找引⽤链这个操作为例，可作为GC Roots的节点主要在全局性的引⽤（例如常量或类静态属性）与执⾏上下⽂ （例如栈帧中的本地变量表）中，现在很多应⽤仅仅⽅法区就有数百兆， 如果要逐个检查这⾥⾯的引⽤，那么必然会消耗很多时间。</p>
 <p>可达性分析对执⾏时间的敏感还体现在GC停顿上，因为这项分析⼯作必须在⼀个能确保⼀致性的快照中进⾏——这⾥<strong>⼀致性</strong>的意思是指在整个分析期间整个执⾏系统看起来就像被冻结在某个时间点上，不可以出现分析过程中对象引⽤关系还在不断变化的情况，该点不满⾜的话分析结果准确性就⽆法得到保证。这点是导致GC进⾏时必须停顿所有Java执⾏线程（Sun将这件事情称为“Stop The World”）的其中⼀个重要原因，即使是在号称(⼏乎)不会发⽣停顿的CMS收集器中，<strong>枚举根节点时也是必须要停顿的</strong>。</p>
 <p>在HotSpot的实现中，是使⽤⼀组称为OopMap的数据结构来达到这个⽬的的，在类加载完成的 时候，HotSpot就把对象内什么偏移量上是什么类型的数据计算出来，在JIT(即时编译器)编译过程中，也会在特定的位置记录下栈和寄存器中哪些位置是引⽤。 这样，GC在扫描时就可以直接得知这些信息了。</p>
-<h4 id="_9">安全点<a class="headerlink" href="#_9" title="Permanent link">&para;</a></h4>
+<h4 id="_10">安全点<a class="headerlink" href="#_10" title="Permanent link">&para;</a></h4>
 <p>如果为每⼀条指令都⽣成对应的OopMap，那将会需要⼤量的额外空间，这样GC的空间成本将会变得很⾼。实际上，HotSpot没有为每条指令都生成OopMap，而只是在“特定的位置”记录了这些信息，这些位置称为<strong>安全点</strong>(Safepoint)，<strong>即程序执行时并非在所有地方都能停顿下来开始GC，只有在到达安全点时才能暂停</strong>。Safepoint的选定既不能太少以至于让GC等待时间太长，也不能过于频繁以致于过分增大运行时的负荷。所以，安全点的选定基本上是以程序“是否具有让程序长时间执行的特征”为标准选定的----因为每条指令执行的时间都非常短暂，程序不太可能因为指令流长度太长这个原因而过长时间运行，“长时间执行”的最明显特征就是指令序列复用，例如方法调用、循环跳转、异常跳转等，所以具有这些功能的指令才会产生Safepoint。</p>
 <p>由于GC时，需要所有线程在安全点中断，一种是抢占式中断；另一种是主动式中断，其中抢占式中断就是在GC发生时，首先把所有线程全部中断，如果发现有线程不在安全点，就恢复线程，让它跑到安全点上。现在⼏乎没有虚拟机实现采⽤抢先式中断来暂停线程从⽽响应GC事件。而主动式中断的思想不是直接对线程操作，仅仅是简单设置一个标志，各个线程执行时主动去轮询这个标志，发现中断标志为真时就自己中断挂起。轮询标志的地方和安全点是重合的。</p>
-<h4 id="_10">安全区域<a class="headerlink" href="#_10" title="Permanent link">&para;</a></h4>
+<h4 id="_11">安全区域<a class="headerlink" href="#_11" title="Permanent link">&para;</a></h4>
 <p>有了安全点之后，也不能完美地解决GC的问题，但实际情况却不一定。当程序没有被分配cpu时间，典型的例子就是线程处于sleep或者blocked状态，这个时候线程无法响应JVM的中断请求，“走”到安全点挂起。对于这种情况，就需要安全区域来解决。</p>
 <p><strong>安全区域</strong>(Safe Region)是指在一段代码片段之中，引用关系不会发生变化。在这个区域中的任意地方开始GC都是安全的，我们也可以把Safe Region看做是被扩展的Safepoint。</p>
 <h3 id="5">5 垃圾收集器<a class="headerlink" href="#5" title="Permanent link">&para;</a></h3>
@@ -886,16 +956,7 @@ An application always allocates into a young generation, that is, eden regions, 
 <p></small></p>
 <p>执行<C>testAllocation()</C>中分配<C>allocation4</C>对象的语句时会发生一次Minor GC，这次GC的结果是新生代6657KB变为865K，而总内存占用量则几乎没有减少（因为<C>allocation1</C>、<C>allocation2</C>、<C>allocation3</C>三个对象都是存活的，虚拟机几乎没有找到可回收的对象）。这次GC发生的原因是给<C>allocation4</C>分配内存的时候，发现Eden已经被占用了6MB，剩余空间已不足以分配<C>allocation4</C>所需的4MB内存，因此发生Minor GC。GC期间虚拟机又发现已有的3个2MB大小的对象全部无法放入Survivor空间（Survivor空间只有1MB大小），所以只好通过分配担保机制提前转移到老年代去。</p>
 <p>这次GC结束后，4MB的<C>allocation4</C>对象顺利分配在Eden中，因此程序执行完的结果是Eden占用4MB（被<C>allocation4</C>占用），Survivor空闲，老年代被占用6MB（被<C>allocation1</C>、<C>allocation2</C>、<C>allocation3</C>占用）。通过GC日志可以证实这一点。</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Minor GC/Major GC/ Full GC:</p>
-<ul>
-<li>Minor GC 当Eden区满时，触发Minor GC。</li>
-<li>Major GC: 清理永久代</li>
-<li>Full GC: 清理整个堆空间—包括年轻代和永久代</li>
-</ul>
-</div>
-<h4 id="_11">大对象直接进入老年代<a class="headerlink" href="#_11" title="Permanent link">&para;</a></h4>
+<h4 id="_12">大对象直接进入老年代<a class="headerlink" href="#_12" title="Permanent link">&para;</a></h4>
 <p>所谓的大对象是指，需要大量连续内存空间的Java对象，最典型的大对象就是那种很长的字符串以及数组。大对象对虚拟机的内存分配来说就是一个坏消息(替Java虚拟机抱怨一句，比遇到一个大对象更加坏的消息就是遇到一群“朝生夕灭”的“短命大对象”，写程序的时候应当避免)，经常出现大对象容易导致内存还有不少空间时就提前触发垃圾收集以获取足够的连续空间来“安置”它们。</p>
 <p>虚拟机提供了一个<code class="codehilite">-XX:PretenureSizeThreshold</code>参数，令大于这个设置值的对象直接在老年代分配。这样做的目的是避免在Eden区及两个Survivor区之间发生大量的内存复制（复习一下：新生代采用复制算法收集内存）。</p>
 <p>下面的<code class="codehilite">testPretenureSizeThreshold()</code>方法后，我们看到Eden空间几乎没有被使用，而老年代的10MB空间被使用了40%，也就是4MB的<C>allocation</C>对象直接就分配在老年代中，这是因为<C>PretenureSizeThreshold</C>被设置为3MB（就是3145728，这个参数不能像<code class="codehilite">-Xmx</code>之类的参数一样直接写3MB），因此超过3MB的对象都会直接在老年代进行分配。</p>
@@ -929,7 +990,7 @@ An application always allocates into a young generation, that is, eden regions, 
 [0.310s][info][gc,heap,exit ]  Metaspace       used 4968K, capacity 5032K, committed 5120K, reserved 1056768K
 [0.310s][info][gc,heap,exit ]   class space    used 442K, capacity 460K, committed 512K, reserved 1048576K
 </pre></div></p>
-<h4 id="_12">长期存活的对象将进入老年代<a class="headerlink" href="#_12" title="Permanent link">&para;</a></h4>
+<h4 id="_13">长期存活的对象将进入老年代<a class="headerlink" href="#_13" title="Permanent link">&para;</a></h4>
 <p>既然虚拟机采用了分代收集的思想来管理内存，那么内存回收时就必须能识别哪些对象应放在新生代，哪些对象应放在老年代中。为了做到这点，虚拟机给每个对象定义了一个对象年龄(Age)计数器。如果对象在Eden出生并经过第一次Minor GC后仍然存活，并且能被Survivor容纳的话，将被移动到Survivor空间中，并且对象年龄设为1。对象在Survivor区中每“熬过”一次Minor GC，年龄就增加1岁，当它的年龄增加到一定程度（默认为15岁），就将会被晋升到老年代中。对象晋升老年代的年龄阈值，可以通过参数<code class="codehilite">-XX:<span class="nt">&lt;C&gt;</span>MaxTenuringThreshold<span class="nt">&lt;/C&gt;</span></code>设置。</p>
 <p>读者可以试试分别以<code class="codehilite">-XX:<span class="nt">&lt;C&gt;</span>MaxTenuringThreshold<span class="nt">&lt;/C&gt;</span>=1</code>和<code class="codehilite">-XX:<span class="nt">&lt;C&gt;</span>MaxTenuringThreshold<span class="nt">&lt;/C&gt;</span>= 15</code>两种设置来<C>testTenuringThreshold()</C>方法，此方法中的<C>allocation1</C>对象需要256KB内存，Survivor空间可以容纳。当<code class="codehilite"><span class="nt">&lt;C&gt;</span>MaxTenuringThreshold<span class="nt">&lt;/C&gt;</span>=1</code>时，<C>allocation1</C>对象在第二次GC发生时进入老年代，新生代已使用的内存GC后非常干净地变成0KB。而<code class="codehilite"><span class="nt">&lt;C&gt;</span>MaxTenuringThreshold<span class="nt">&lt;/C&gt;</span>=15</code>时，第二次GC发生后，<C>allocation1</C>对象则还留在新生代Survivor空间，这时新生代仍然有404KB被占用。</p>
 <p> <div class=codehilite><pre><span class=cm>/**</span>
@@ -1001,10 +1062,17 @@ An application always allocates into a young generation, that is, eden regions, 
 [0.343s][info][gc,heap,exit ]  Metaspace       used 5074K, capacity 5096K, committed 5376K, reserved 1056768K
 [0.343s][info][gc,heap,exit ]   class space    used 456K, capacity 460K, committed 512K, reserved 1048576K
 </pre></div></p>
-<h4 id="_13">动态对象年龄判定<a class="headerlink" href="#_13" title="Permanent link">&para;</a></h4>
+<h4 id="_14">动态对象年龄判定<a class="headerlink" href="#_14" title="Permanent link">&para;</a></h4>
 <p>为了能更好地适应不同程序的内存状况，虚拟机并不是永远地要求对 象的年龄必须达到了<C>MaxTenuringThreshold</C>才能晋升⽼年代，如果在Survivor空间中相同年龄所有对象⼤⼩的总和⼤于Survivor空间的⼀半，年龄⼤于或等于该年龄的对象就可以直接进⼊⽼年代，⽆须等到 <C>MaxTenuringThreshold</C>中要求的年龄。    </p>
-<h4 id="_14">空间分配担保<a class="headerlink" href="#_14" title="Permanent link">&para;</a></h4>
-<p>在发⽣Minor GC之前，虚拟机会先检查⽼年代最⼤可⽤的连续空间是否⼤于新⽣代所有对象总空间，如果这个条件成⽴，那么Minor GC可以确保是安全的。如果不成⽴，则虚拟机会查看HandlePromotionFailure设置值是否允许担保失败。如果允许，那么会继续检查⽼年代最⼤可⽤的连续空间是否⼤于历次晋升到⽼年代对象的平均⼤⼩，如果⼤于，将尝试着进⾏⼀次Minor GC，尽管这次Minor GC是有风险的；如果⼩于，或者HandlePromotionFailure设置不允许冒险，那这时也要改为进⾏⼀次Full GC。</p></div>
+<h4 id="_15">空间分配担保<a class="headerlink" href="#_15" title="Permanent link">&para;</a></h4>
+<p>在发⽣Minor GC之前，虚拟机会先检查⽼年代最⼤可⽤的连续空间是否⼤于新⽣代所有对象总空间，如果这个条件成⽴，那么Minor GC可以确保是安全的。如果不成⽴，则虚拟机会查看HandlePromotionFailure设置值是否允许担保失败。如果允许，那么会继续检查⽼年代最⼤可⽤的连续空间是否⼤于历次晋升到⽼年代对象的平均⼤⼩，如果⼤于，将尝试着进⾏⼀次Minor GC，尽管这次Minor GC是有风险的；如果⼩于，或者HandlePromotionFailure设置不允许冒险，那这时也要改为进⾏⼀次Full GC。</p>
+<h4 id="minormajorfull-gc">Minor/Major/Full GC<a class="headerlink" href="#minormajorfull-gc" title="Permanent link">&para;</a></h4>
+<p><a href="../consisting of Eden and Survivor spaces">Minor GC vs Major GC vs Full GC</a></p>
+<ul>
+<li>Minor GC： 清理年轻代(Young Generation, consisting of Eden and Survivor spaces)时。</li>
+<li>Major GC: 清理老年代(Old generation, also tenured space)。</li>
+<li>Full GC: 清理整个堆空间—包括年轻代和老年代。</li>
+</ul></div>
         </div>
 
         <footer class="col-md-12">
