@@ -646,6 +646,8 @@
         <li class="main "><a href="#7-block-scope">7 Block Scope</a></li>
         <li class="main "><a href="#6-linked-invocations">6 Linked Invocations</a></li>
         <li class="main "><a href="#5-anonymous-and-static-nested-classes">5 Anonymous and Static Nested Classes</a></li>
+            <li><a href="#static-nested-classes">static nested classes</a></li>
+            <li><a href="#anonymous-inner-classes">Anonymous inner classes</a></li>
         <li class="main "><a href="#4-access-levels-and-access-modifiers">4 Access Levels and Access Modifiers</a></li>
         <li class="main "><a href="#3-string-and-stringbufferstringbuilder-methods">3 String and StringBuffer/StringBuilder Methods</a></li>
         <li class="main "><a href="#2-multidimensional-arrays">2 Multidimensional Arrays</a></li>
@@ -657,6 +659,25 @@
 
 <h3 id="appendix-the-top-ten-topics"><strong>Appendix: The Top Ten Topics</strong><a class="headerlink" href="#appendix-the-top-ten-topics" title="Permanent link">&para;</a></h3>
 <h3 id="10-bit-manipulation">10 Bit Manipulation<a class="headerlink" href="#10-bit-manipulation" title="Permanent link">&para;</a></h3>
+<p>Bitwise NOT Operator: ~, "flips all the bits of primitive"</p>
+<p> <div class=codehilite><pre><span class=kt>int</span> <span class=n>x</span> <span class=o>=</span> <span class=mi>10</span><span class=o>;</span> <span class=c1>// bits are 00001010</span>
+<span class=n>x</span> <span class=o>=</span> <span class=o>~</span><span class=n>x</span><span class=o>;</span> <span class=c1>// bits are now 11110101</span>
+</pre></div></p>
+<p>Bitwise AND Operator: &amp;, returns a value whose bits are turned on only if <em>both</em> original bits are turned on:</p>
+<p> <div class=codehilite><pre><span class=kt>int</span> <span class=n>a</span> <span class=o>=</span> <span class=n>x</span><span class=o>&amp;</span><span class=n>y</span><span class=o>;</span> <span class=c1>//bits are 0000010</span>
+</pre></div></p>
+<p>Bitwise OR Operator: |, returns a value whose bits are turned on only if <em>either</em> of the original bits are turned on;</p>
+<p> <div class=codehilite><pre><span class=kt>int</span> <span class=n>a</span> <span class=o>=</span> <span class=n>x</span><span class=o>|</span><span class=n>y</span><span class=o>;</span> <span class=c1>//bits are 00001110</span>
+</pre></div></p>
+<p>Right Shift Operator: &gt;&gt; , the sign bit does <em>not</em> change;</p>
+<p> <div class=codehilite><pre><span class=kt>int</span> <span class=n>y</span> <span class=o>=</span> <span class=n>x</span> <span class=o>&gt;&gt;</span> <span class=mi>2</span><span class=o>;</span> <span class=c1>//bits are 11111101</span>
+</pre></div></p>
+<p>Unsigned Right Shift Operator: &gt;&gt;&gt;, the sign bit <em>might</em> change:</p>
+<p> <div class=codehilite><pre><span class=kt>int</span> <span class=n>y</span> <span class=o>=</span> <span class=n>x</span> <span class=o>&gt;&gt;&gt;</span> <span class=mi>2</span><span class=o>;</span> <span class=c1>//bits are 00111101</span>
+</pre></div></p>
+<p>Left Shift Operator: &lt;&lt;, the sign bit might change.</p>
+<p> <div class=codehilite><pre><span class=kt>int</span> <span class=n>y</span> <span class=o>=</span> <span class=n>x</span> <span class=o>&lt;&lt;</span> <span class=mi>2</span><span class=o>;</span> <span class=c1>//bits are 11010100</span>
+</pre></div></p>
 <h3 id="9-immutability">9 Immutability<a class="headerlink" href="#9-immutability" title="Permanent link">&para;</a></h3>
 <blockquote>
 <p>An object is considered immutable if its state cannot change after it is constructed. <small>[<a href="https://docs.oracle.com/javase/tutorial/essential/concurrency/immutable.html">Immutable Object</a>]</small></p>
@@ -681,7 +702,34 @@
 <h3 id="6-linked-invocations">6 Linked Invocations<a class="headerlink" href="#6-linked-invocations" title="Permanent link">&para;</a></h3>
 <p>略(obvious)</p>
 <h3 id="5-anonymous-and-static-nested-classes">5 Anonymous and Static Nested Classes<a class="headerlink" href="#5-anonymous-and-static-nested-classes" title="Permanent link">&para;</a></h3>
+<p>Any Java class that's defined within the scope of another class is a <strong><em>nested</em></strong> class(嵌套类). And <em>non-static</em> class are often referred to as <strong>*inner</strong> classes(内部类).</p>
+<p>There are other kinds of inner classes including <em>static</em> and <em>anonymous</em>.</p>
+<h4 id="static-nested-classes">static nested classes<a class="headerlink" href="#static-nested-classes" title="Permanent link">&para;</a></h4>
+<p>A <strong>static nested class</strong>(静态嵌套类) is  a class enclosed with another, and marked with the static modifier. Because static nested classes are still considered a <em>member</em> of the enclosing/outer class, they still get access to any private members of the outer class.. but <em>only the ones that are also static</em>.</p>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>FooOuter</span> <span class=o>{</span>
+    <span class=kd>static</span> <span class=kd>class</span> <span class=nc>BarInner</span> <span class=o>{</span> 
+        <span class=kt>void</span> <span class=nf>sayIt</span><span class=o>()</span> <span class=o>{</span>
+        <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=err>“</span><span class=n>method</span> <span class=n>of</span> <span class=n>a</span> <span class=kd>static</span> <span class=n>inner</span> <span class=n>class</span><span class=err>”</span><span class=o>);</span> <span class=o>}</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+<span class=kd>class</span> <span class=nc>Test</span> <span class=o>{</span> 
+    <span class=kd>public</span> <span class=kd>static</span> <span class=kt>void</span> <span class=nf>main</span> <span class=o>(</span><span class=n>String</span><span class=o>[]</span> <span class=n>args</span><span class=o>)</span> <span class=o>{</span>
+        <span class=n>FooOuter</span><span class=o>.</span><span class=na>BarInner</span>
+        <span class=n>foo</span><span class=o>.</span><span class=na>sayIt</span><span class=o>();</span>
+        <span class=n>foo</span> <span class=o>=</span> <span class=k>new</span> <span class=n>FooOuter</span><span class=o>.</span><span class=na>BarInner</span><span class=o>();</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></p>
+<h4 id="anonymous-inner-classes">Anonymous inner classes<a class="headerlink" href="#anonymous-inner-classes" title="Permanent link">&para;</a></h4>
+<p>Anonymous (inner) classes(匿名内部类) enable you to make your code more concise. They enable you to declare and instantiate a class at the same time. They are like local classes except that they do not have a name. Use them if you need to use a local class only once.</p>
+<p> <div class=codehilite><pre><span class=n>button</span><span class=o>.</span><span class=na>addActionListener</span><span class=o>(</span><span class=k>new</span> <span class=n>ActionListener</span><span class=o>()</span> <span class=o>{</span> 
+    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>actionPerformed</span><span class=o>(</span><span class=n>ActionEvent</span> <span class=n>ev</span><span class=o>)</span> <span class=o>{</span> 
+    <span class=n>System</span><span class=o>.</span><span class=na>exit</span><span class=o>(</span><span class=mi>0</span><span class=o>);</span> 
+    <span class=o>}</span>
+<span class=o>});</span>
+</pre></div></p>
 <h3 id="4-access-levels-and-access-modifiers">4 Access Levels and Access Modifiers<a class="headerlink" href="#4-access-levels-and-access-modifiers" title="Permanent link">&para;</a></h3>
+<p>略</p>
 <h3 id="3-string-and-stringbufferstringbuilder-methods">3 String and StringBuffer/StringBuilder Methods<a class="headerlink" href="#3-string-and-stringbufferstringbuilder-methods" title="Permanent link">&para;</a></h3>
 <blockquote>
 <p><C>StringBuffer</C> is a thread-safe, mutable sequence of characters. A string buffer is like a <C>String</C>, but can be modified. 
