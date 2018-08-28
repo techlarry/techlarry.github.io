@@ -640,11 +640,174 @@
                 <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
         <li class="main active"><a href="#head-first-design-patterns-2-observer-pattern">Head First Design Patterns 2 - Observer Pattern</a></li>
+        <li class="main "><a href="#1-problem-statement">1 Problem Statement</a></li>
+        <li class="main "><a href="#2-observer-pttern">2 Observer PTTERN</a></li>
+            <li><a href="#meet-the-observer-pattern">Meet the Observer Pattern</a></li>
+            <li><a href="#the-observer-pattern-defined">The Observer Pattern defined</a></li>
+            <li><a href="#class-diagram">Class Diagram</a></li>
+            <li><a href="#loose-coupling">Loose Coupling</a></li>
+            <li><a href="#an-example-a-weather-station">An Example: A Weather Station</a></li>
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
 
-<h3 id="head-first-design-patterns-2-observer-pattern"><strong>Head First Design Patterns 2 - Observer Pattern</strong><a class="headerlink" href="#head-first-design-patterns-2-observer-pattern" title="Permanent link">&para;</a></h3></div>
+<h3 id="head-first-design-patterns-2-observer-pattern"><strong>Head First Design Patterns 2 - <C>Observer</C> Pattern</strong><a class="headerlink" href="#head-first-design-patterns-2-observer-pattern" title="Permanent link">&para;</a></h3>
+<h3 id="1-problem-statement">1 Problem Statement<a class="headerlink" href="#1-problem-statement" title="Permanent link">&para;</a></h3>
+<p>The task is to build an Internet-based weather monitoring station. The weather station will be based on <C>WeatherData</C> object, which tracks current weather conditions.</p>
+<p><img alt="TheWeatherMonitoringApplicationOverview" src="../figures/TheWeatherMonitoringApplicationOverview.png" /></p>
+<h3 id="2-observer-pttern">2 <C>Observer</C> PTTERN<a class="headerlink" href="#2-observer-pttern" title="Permanent link">&para;</a></h3>
+<h4 id="meet-the-observer-pattern">Meet the <C>Observer</C> Pattern<a class="headerlink" href="#meet-the-observer-pattern" title="Permanent link">&para;</a></h4>
+<p>You know how newspaper or magazine subscriptions work:</p>
+<ul>
+<li>A newspaper publisher goes into business and begins publishing newspapers.</li>
+<li>You subscribe to a particular publisher, and every time there&rsquo;s a new edition it gets delivered to you. As long as you remain a subscriber, you get new newspapers.</li>
+<li>You unsubscribe when you don&rsquo;t want papers anymore, and they stop being delivered.</li>
+<li>While the publisher remains in business, people, hotels, airlines and other businesses constantly subscribe and unsubscribe to the newspaper.</li>
+</ul>
+<p>Publishers + Subscribers = <C>Observer</C> Pattern</p>
+<h4 id="the-observer-pattern-defined">The <C>Observer</C> Pattern defined<a class="headerlink" href="#the-observer-pattern-defined" title="Permanent link">&para;</a></h4>
+<blockquote>
+<p>The <C>Observer</C> Pattern defines a one-to-many dependency between objects so that when one object changes state, all of its dependents are notified and updated automatically.</p>
+</blockquote>
+<p><img alt="ObserverPatternDemo" src="../figures/ObserverPatternDemo.png" /></p>
+<h4 id="class-diagram">Class Diagram<a class="headerlink" href="#class-diagram" title="Permanent link">&para;</a></h4>
+<p><img alt="ObserverPatternUM" src="../figures/ObserverPatternUML.png" /></p>
+<ul>
+<li>Objects use <C>Subject</C> interface to register as observers and also to remove themselves from being observers.</li>
+<li>A concrete <C>Subject</C> always implements the <C>Subject</C> interface. In addition to the register and remove methods, the concrete <C>Subject</C> implements a <C>notifyObserver</C> method that is used to update all the current observers whenever state changes. The concrete <C>Subject</C> may also have methods for setting and getting its state.</li>
+<li>All potential observers need to implement the <C>Observer</C> interface. This interface just has one method, <C>update()</C>, that gets called when the <C>Subject</C>'s state changes.</li>
+</ul>
+<h4 id="loose-coupling">Loose Coupling<a class="headerlink" href="#loose-coupling" title="Permanent link">&para;</a></h4>
+<p><strong>When two objects are loosely coupled, they can interact, but have very little knowledge of each other.</strong></p>
+<p>Loosely coupled designs allow us to build flexible OO systems that can handle change because they minimize the interdependency between objects.</p>
+<p>The <C>Observer</C> Pattern provides an object design where subjects and observers are loosely coupled.</p>
+<ul>
+<li>The only thing the <C>Subject</C> knows about an <C>Observer</C> is that it implements a certain interface (the <C>Observer</C> interface).</li>
+<li>We can add new observers at any time.</li>
+<li>We never need to modify the <C>Subject</C> to add new types of observers.</li>
+<li>We can reuse subjects or observers independently of each other.</li>
+<li>Changes to either the <C>Subject</C> or an <C>Observer</C> will not affect the other.</li>
+</ul>
+<blockquote>
+<p><strong>Design Principle</strong>: Strive for loosely coupled designs between objects that interact.</p>
+</blockquote>
+<h4 id="an-example-a-weather-station">An Example: A Weather Station<a class="headerlink" href="#an-example-a-weather-station" title="Permanent link">&para;</a></h4>
+<p><img alt="DesigningWeatherStation" src="../figures/DesigningWeatherStation.png" /></p>
+<div class=md-fenced-code-tabs id=tab-tab-group-0><input name=tab-group-0 type=radio id=tab-group-0-0_Java checked=checked class=code-tab data-lang=Java aria-controls=tab-group-0-0_Java-panel role=tab><label for=tab-group-0-0_Java class=code-tab-label data-lang=Java id=tab-group-0-0_Java-label>Subject</label><div class=code-tabpanel role=tabpanel data-lang=Java id=tab-group-0-0_Java-panel aria-labelledby=tab-group-0-0_Java-label><div class=codehilite><pre><span class=kd>public</span> <span class=kd>interface</span> <span class=nc>Subject</span> <span class=o>{</span>
+    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>registerObserver</span><span class=o>(</span><span class=n>Observer</span> <span class=n>o</span><span class=o>);</span>
+    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>removeObserver</span><span class=o>(</span><span class=n>Observer</span> <span class=n>o</span><span class=o>);</span>
+    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>notifyObservers</span><span class=o>();</span>
+<span class=o>}</span>
+
+
+
+<span class=kd>public</span> <span class=kd>class</span> <span class=nc>WeatherData</span> <span class=kd>implements</span> <span class=n>Subject</span> <span class=o>{</span>
+    <span class=kd>private</span> <span class=n>ArrayList</span><span class=o>&lt;</span><span class=n>Observer</span><span class=o>&gt;</span> <span class=n>observers</span><span class=o>;</span>
+    <span class=kd>private</span> <span class=kt>float</span> <span class=n>temperature</span><span class=o>;</span>
+    <span class=kd>private</span> <span class=kt>float</span> <span class=n>humidity</span><span class=o>;</span>
+    <span class=kd>private</span> <span class=kt>float</span> <span class=n>pressure</span><span class=o>;</span>
+
+    <span class=kd>public</span> <span class=nf>WeatherData</span><span class=o>()</span> <span class=o>{</span>
+        <span class=n>observers</span> <span class=o>=</span> <span class=k>new</span> <span class=n>ArrayList</span><span class=o>&lt;</span><span class=n>Observer</span><span class=o>&gt;();</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>registerObserver</span><span class=o>(</span><span class=n>Observer</span> <span class=n>o</span><span class=o>)</span> <span class=o>{</span>
+        <span class=n>observers</span><span class=o>.</span><span class=na>add</span><span class=o>(</span><span class=n>o</span><span class=o>);</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>removeObserver</span><span class=o>(</span><span class=n>Observer</span> <span class=n>o</span><span class=o>)</span> <span class=o>{</span>
+        <span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=n>observers</span><span class=o>.</span><span class=na>indexOf</span><span class=o>(</span><span class=n>o</span><span class=o>);</span>
+        <span class=k>if</span> <span class=o>(</span><span class=n>i</span> <span class=o>&gt;=</span> <span class=mi>0</span><span class=o>)</span> <span class=o>{</span>
+            <span class=n>observers</span><span class=o>.</span><span class=na>remove</span><span class=o>(</span><span class=n>i</span><span class=o>);</span>
+        <span class=o>}</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>notifyObservers</span><span class=o>()</span> <span class=o>{</span>
+        <span class=k>for</span> <span class=o>(</span><span class=n>Observer</span> <span class=n>observer</span> <span class=o>:</span> <span class=n>observers</span><span class=o>)</span> <span class=o>{</span>
+            <span class=n>observer</span><span class=o>.</span><span class=na>update</span><span class=o>(</span><span class=n>temperature</span><span class=o>,</span> <span class=n>humidity</span><span class=o>,</span> <span class=n>pressure</span><span class=o>);</span>
+        <span class=o>}</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>measurementsChanged</span><span class=o>()</span> <span class=o>{</span>
+        <span class=n>notifyObservers</span><span class=o>();</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>setMeasurements</span><span class=o>(</span><span class=kt>float</span> <span class=n>temperature</span><span class=o>,</span> <span class=kt>float</span> <span class=n>humidity</span><span class=o>,</span> <span class=kt>float</span> <span class=n>pressure</span><span class=o>)</span> <span class=o>{</span>
+        <span class=k>this</span><span class=o>.</span><span class=na>temperature</span> <span class=o>=</span> <span class=n>temperature</span><span class=o>;</span>
+        <span class=k>this</span><span class=o>.</span><span class=na>humidity</span> <span class=o>=</span> <span class=n>humidity</span><span class=o>;</span>
+        <span class=k>this</span><span class=o>.</span><span class=na>pressure</span> <span class=o>=</span> <span class=n>pressure</span><span class=o>;</span>
+        <span class=n>measurementsChanged</span><span class=o>();</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kt>float</span> <span class=nf>getTemperature</span><span class=o>()</span> <span class=o>{</span>
+        <span class=k>return</span> <span class=n>temperature</span><span class=o>;</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kt>float</span> <span class=nf>getHumidity</span><span class=o>()</span> <span class=o>{</span>
+        <span class=k>return</span> <span class=n>humidity</span><span class=o>;</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kt>float</span> <span class=nf>getPressure</span><span class=o>()</span> <span class=o>{</span>
+        <span class=k>return</span> <span class=n>pressure</span><span class=o>;</span>
+    <span class=o>}</span>
+
+<span class=o>}</span>
+</pre></div></div><input name=tab-group-0 type=radio id=tab-group-0-1_Java class=code-tab data-lang=Java aria-controls=tab-group-0-1_Java-panel role=tab><label for=tab-group-0-1_Java class=code-tab-label data-lang=Java id=tab-group-0-1_Java-label>Observer</label><div class=code-tabpanel role=tabpanel data-lang=Java id=tab-group-0-1_Java-panel aria-labelledby=tab-group-0-1_Java-label><div class=codehilite><pre><span class=kd>public</span> <span class=kd>interface</span> <span class=nc>Observer</span> <span class=o>{</span>
+    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>update</span><span class=o>(</span><span class=kt>float</span> <span class=n>temp</span><span class=o>,</span> <span class=kt>float</span> <span class=n>humidity</span><span class=o>,</span> <span class=kt>float</span> <span class=n>pressure</span><span class=o>);</span>
+<span class=o>}</span>
+
+<span class=kd>public</span> <span class=kd>interface</span> <span class=nc>DisplayElement</span> <span class=o>{</span>
+    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>display</span><span class=o>();</span>
+<span class=o>}</span>
+
+<span class=kd>public</span> <span class=kd>class</span> <span class=nc>StatisticsDisplay</span> <span class=kd>implements</span> <span class=n>Observer</span><span class=o>,</span> <span class=n>DisplayElement</span> <span class=o>{</span>
+    <span class=kd>private</span> <span class=kt>float</span> <span class=n>maxTemp</span> <span class=o>=</span> <span class=mf>0.0f</span><span class=o>;</span>
+    <span class=kd>private</span> <span class=kt>float</span> <span class=n>minTemp</span> <span class=o>=</span> <span class=mi>200</span><span class=o>;</span>
+    <span class=kd>private</span> <span class=kt>float</span> <span class=n>tempSum</span><span class=o>=</span> <span class=mf>0.0f</span><span class=o>;</span>
+    <span class=kd>private</span> <span class=kt>int</span> <span class=n>numReadings</span><span class=o>;</span>
+    <span class=kd>private</span> <span class=n>WeatherData</span> <span class=n>weatherData</span><span class=o>;</span>
+
+    <span class=kd>public</span> <span class=nf>StatisticsDisplay</span><span class=o>(</span><span class=n>WeatherData</span> <span class=n>weatherData</span><span class=o>)</span> <span class=o>{</span>
+        <span class=k>this</span><span class=o>.</span><span class=na>weatherData</span> <span class=o>=</span> <span class=n>weatherData</span><span class=o>;</span>
+        <span class=n>weatherData</span><span class=o>.</span><span class=na>registerObserver</span><span class=o>(</span><span class=k>this</span><span class=o>);</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>update</span><span class=o>(</span><span class=kt>float</span> <span class=n>temp</span><span class=o>,</span> <span class=kt>float</span> <span class=n>humidity</span><span class=o>,</span> <span class=kt>float</span> <span class=n>pressure</span><span class=o>)</span> <span class=o>{</span>
+        <span class=n>tempSum</span> <span class=o>+=</span> <span class=n>temp</span><span class=o>;</span>
+        <span class=n>numReadings</span><span class=o>++;</span>
+
+        <span class=k>if</span> <span class=o>(</span><span class=n>temp</span> <span class=o>&gt;</span> <span class=n>maxTemp</span><span class=o>)</span> <span class=o>{</span>
+            <span class=n>maxTemp</span> <span class=o>=</span> <span class=n>temp</span><span class=o>;</span>
+        <span class=o>}</span>
+
+        <span class=k>if</span> <span class=o>(</span><span class=n>temp</span> <span class=o>&lt;</span> <span class=n>minTemp</span><span class=o>)</span> <span class=o>{</span>
+            <span class=n>minTemp</span> <span class=o>=</span> <span class=n>temp</span><span class=o>;</span>
+        <span class=o>}</span>
+
+        <span class=n>display</span><span class=o>();</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>display</span><span class=o>()</span> <span class=o>{</span>
+        <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=s>&quot;Avg/Max/Min temperature = &quot;</span> <span class=o>+</span> <span class=o>(</span><span class=n>tempSum</span> <span class=o>/</span> <span class=n>numReadings</span><span class=o>)</span>
+            <span class=o>+</span> <span class=s>&quot;/&quot;</span> <span class=o>+</span> <span class=n>maxTemp</span> <span class=o>+</span> <span class=s>&quot;/&quot;</span> <span class=o>+</span> <span class=n>minTemp</span><span class=o>);</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></div><input name=tab-group-0 type=radio id=tab-group-0-2_Java class=code-tab data-lang=Java aria-controls=tab-group-0-2_Java-panel role=tab><label for=tab-group-0-2_Java class=code-tab-label data-lang=Java id=tab-group-0-2_Java-label>Weatherstation</label><div class=code-tabpanel role=tabpanel data-lang=Java id=tab-group-0-2_Java-panel aria-labelledby=tab-group-0-2_Java-label><div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>WeatherStation</span> <span class=o>{</span>
+
+    <span class=kd>public</span> <span class=kd>static</span> <span class=kt>void</span> <span class=nf>main</span><span class=o>(</span><span class=n>String</span><span class=o>[]</span> <span class=n>args</span><span class=o>)</span> <span class=o>{</span>
+        <span class=n>WeatherData</span> <span class=n>weatherData</span> <span class=o>=</span> <span class=k>new</span> <span class=n>WeatherData</span><span class=o>();</span>
+
+        <span class=n>CurrentConditionsDisplay</span> <span class=n>currentDisplay</span> <span class=o>=</span> 
+            <span class=k>new</span> <span class=n>CurrentConditionsDisplay</span><span class=o>(</span><span class=n>weatherData</span><span class=o>);</span>
+        <span class=n>StatisticsDisplay</span> <span class=n>statisticsDisplay</span> <span class=o>=</span> <span class=k>new</span> <span class=n>StatisticsDisplay</span><span class=o>(</span><span class=n>weatherData</span><span class=o>);</span>
+        <span class=n>ForecastDisplay</span> <span class=n>forecastDisplay</span> <span class=o>=</span> <span class=k>new</span> <span class=n>ForecastDisplay</span><span class=o>(</span><span class=n>weatherData</span><span class=o>);</span>
+
+        <span class=n>weatherData</span><span class=o>.</span><span class=na>setMeasurements</span><span class=o>(</span><span class=mi>80</span><span class=o>,</span> <span class=mi>65</span><span class=o>,</span> <span class=mf>30.4f</span><span class=o>);</span>
+        <span class=n>weatherData</span><span class=o>.</span><span class=na>setMeasurements</span><span class=o>(</span><span class=mi>82</span><span class=o>,</span> <span class=mi>70</span><span class=o>,</span> <span class=mf>29.2f</span><span class=o>);</span>
+        <span class=n>weatherData</span><span class=o>.</span><span class=na>setMeasurements</span><span class=o>(</span><span class=mi>78</span><span class=o>,</span> <span class=mi>90</span><span class=o>,</span> <span class=mf>29.2f</span><span class=o>);</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></div></div></div>
         </div>
 
         <footer class="col-md-12">

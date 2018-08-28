@@ -652,6 +652,9 @@
             <li><a href="#many-to-many-model">Many-to-Many Model</a></li>
             <li><a href="#userkernel-level-threads">User/Kernel-Level threads</a></li>
         <li class="main "><a href="#4-thread-libraries">4 Thread Libraries</a></li>
+            <li><a href="#pthreads">Pthreads</a></li>
+            <li><a href="#java-threads">Java Threads</a></li>
+            <li><a href="#java-executor-framework">Java Executor Framework</a></li>
         <li class="main "><a href="#5-implicit-threading">5 Implicit threading</a></li>
             <li><a href="#thread-pools">Thread Pools</a></li>
             <li><a href="#grand-central-dispatch">Grand Central Dispatch</a></li>
@@ -789,8 +792,10 @@
 </em> Create, exit, lock, signal, wait all require user/kernel crossings</p>
 <p><strong>NOTE</strong>: The term <strong><em>virtual processor</em></strong> is often used instead of kernel thread.</p>
 <h3 id="4-thread-libraries">4 Thread Libraries<a class="headerlink" href="#4-thread-libraries" title="Permanent link">&para;</a></h3>
-<p>A thread library provides the programmer with an API for creating and managing threads. 线程库为程序员提供了创建和管理线程的API。</p>
+<p>A <strong>thread library</strong>(线程库) provides the programmer with an API for creating and managing threads.</p>
+<h4 id="pthreads">Pthreads<a class="headerlink" href="#pthreads" title="Permanent link">&para;</a></h4>
 <p><strong>Pthreads</strong>, the threads extension of the POSIX standard, may be provided as either a user-level or a kernel-level library. Pthread作为POSIX标准扩展，可以提供用户级或内核级的库。</p>
+<p>This is a <em>specification</em> for thread behavior, not an <em>implementation</em>. Operating-system designers may implement the specification in any way they wish.</p>
 <ul>
 <li><code class="codehilite">pthread_t tid</code>: declares the identifier for the thread</li>
 <li><code class="codehilite">pthread attr_t attr</code>: declares the attributes for the thread</li>
@@ -801,10 +806,38 @@
 </ul>
 <p>Note: Compile and link with <code class="codehilite">-pthread</code>.</p>
 <p><code class="codehilite">pthread</code>详细用法和实例, 见<a href="https://www.cs.cmu.edu/afs/cs/academic/class/15492-f07/www/pthreads.html">POSIX thread (pthread) libraries</a></p>
+<h4 id="java-threads">Java Threads<a class="headerlink" href="#java-threads" title="Permanent link">&para;</a></h4>
+<p>The Java thread API allows threads to be created and managed directly in Java programs. However, because in most instances the JVM is running on top of a host operating system, the Java thread API is generally implemented using a thread library available on the host system. This means that on Windows systems, Java threads are typically implemented using the Windows API; UNIX, Linux, and macOS systems typically use Pthreads.</p>
+<p>One approach of creating thread is to define a class that implements the <C>Runnable</C> interface. The code in the <C>run()</C> method of a class that implements <C>Runnable</C> is what executes in a separate thread.</p>
+<p> <div class=codehilite><pre><span class=kd>class</span> <span class=nc>Job</span> <span class=kd>implements</span> <span class=n>Runnable</span>
+<span class=o>{</span>
+    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>run</span><span class=o>()</span> <span class=o>{</span> 
+        <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=s>&quot;I am a thread.&quot;</span><span class=o>);</span>
+<span class=o>}</span>
+</pre></div></p>
+<p>Thread creation in Java involves creating a <C>Thread</C> object and passing it an instance of a class that implements <C>Runnable</C>, followed by invoking the <C>start()</C> method on the <C>Thread</C> object.</p>
+<p> <div class=codehilite><pre><span class=n>Thread</span> <span class=n>worker</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Thread</span><span class=o>(</span><span class=k>new</span> <span class=n>Job</span><span class=o>());</span> 
+<span class=n>worker</span><span class=o>.</span><span class=na>start</span><span class=o>();</span>
+</pre></div></p>
+<h4 id="java-executor-framework">Java Executor Framework<a class="headerlink" href="#java-executor-framework" title="Permanent link">&para;</a></h4>
+<p>However, beginning with Version 1.5 and its API, Java introduced several new concurrency features that provide developers with much greater control over thread creation and communication.</p>
+<blockquote>
+<p>Executor is an object that executes submitted Runnable tasks. This interface provides a way of decoupling task submission from the mechanics of how each task will be run, including details of thread use, scheduling, etc. An Executor is normally used instead of explicitly creating threads. [<a href="http://docs.oracle.com/javase/9/docs/api/java/util/concurrent/Executor.html">Java Doc</a>]</p>
+</blockquote>
+<p>Rather than explicitly creating <C>Thread</C> objects, thread creation is instead organized around the <C>Executor</C> interface:</p>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>interface</span> <span class=nc>Executor</span> <span class=o>{</span> 
+    <span class=kt>void</span> <span class=nf>execute</span><span class=o>(</span><span class=n>Runnable</span> <span class=n>command</span><span class=o>);</span> 
+<span class=o>}</span>
+</pre></div></p>
+<p>Classes implementing this interface must define the <C>execute()</C> method, which is passed a <C>Runnable</C> object.</p>
+<p> <div class=codehilite><pre><span class=n>Executor</span> <span class=n>service</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Executor</span><span class=o>;</span> 
+<span class=n>service</span><span class=o>.</span><span class=na>execute</span><span class=o>(</span><span class=k>new</span> <span class=n>Job</span><span class=o>());</span>
+</pre></div></p>
+<p>The advantage of this approach is that it not only divides thread creation from execution but also provides a mechanism for communication between concurrent tasks.</p>
 <h3 id="5-implicit-threading">5 Implicit threading<a class="headerlink" href="#5-implicit-threading" title="Permanent link">&para;</a></h3>
 <p><strong>Implicit threading</strong>(隐式线程): Transfers the creation and management of threading from application developers to compilers and run-time libraries.</p>
 <ul>
-<li>One way to address difficulties and better support the design of concurrent and parallel applications</li>
+<li>One way to address difficulties and better support the design of concurrent and parallel applications.</li>
 <li>The advantage of this approach is that developers <strong><em><em>only need to identify parallel tasks</em></em></strong>, and the libraries determine the specific details of thread creation and management.</li>
 </ul>
 <p>In this section, we explore four alternative approaches to designing applications that can take advantage of multicore processors through implicit threading:</p>
@@ -834,8 +867,17 @@
 <li>A thread pool <strong>limits</strong> the number of threads that exist at any one point.  线程池限制了在任何时候可用线程的数量.</li>
 <li>Separating the task to be performed from the mechanics of creating the task allows us to use different strategies for running the task.</li>
 </ol>
-<p>Java线程库的一个例子：</p>
-<p> <div class=codehilite><pre><span class=kn>import</span> <span class=nn>java.util.concurrent.*</span><span class=o>;</span> 
+<p><big><font color="green">Java Thread Pool</font></big></p>
+<p>The <C>java.util.concurrent</C> package includes an API for several varieties of thread-pool architectures. Here, we focus on the following three models:</p>
+<ol>
+<li>Single thread executor — <C>newSingleThreadExecutor()</C> — creates a pool of size 1.</li>
+<li>Fixed thread executor — <C>newFixedThreadPool(int size)<C> — creates a thread pool with a specified number of threads.</li>
+<li>Cached thread executor — <C>newCachedThreadPool()</C> — creates an unbounded thread pool, reusing threads in many instances.</li>
+</ol>
+<p>Each of these factory methods creates and returns an object instance that implements the <C>ExecutorService</C> interface. <C>ExecutorService</C> extends the <C>Executor</C> interface, allowing us to invoke the <C>execute()</C> method on this object.</p>
+<p> <div class=codehilite><pre><span class=c1>//It creates a cached thread pool and submits tasks to be executed by a thread in the pool using the execute() method. </span>
+<span class=c1>// When the shutdown() method is invoked, the thread pool rejects additional tasks and shuts down once all existing tasks have completed execution.</span>
+<span class=kn>import</span> <span class=nn>java.util.concurrent.*</span><span class=o>;</span> 
 <span class=kd>public</span> <span class=kd>class</span> <span class=nc>ThreadPoolExample</span> 
 <span class=o>{</span> 
     <span class=kd>public</span> <span class=kd>static</span> <span class=kt>void</span> <span class=nf>main</span><span class=o>(</span><span class=n>String</span><span class=o>[]</span> <span class=n>args</span><span class=o>)</span> <span class=o>{</span>
@@ -919,7 +961,7 @@ vagrant   2028  1839  2028  0    1 04:18 pts/1    00:00:00 ps -efL
 </ul>
 <p><strong>Example</strong> [<a href="http://www.it.uu.se/education/course/homepage/os/vt18/module-4/implementing-threads/">ref</a>]: </p>
 <p>Let’s study an example of how scheduler activations can be used. The kernel has allocated one kernel thread (1) to a process with three user-level threads (2). The three user level threads take turn executing on the single kernel-level thread.</p>
-<p><img alt="scheduler-activations-1-2" src="../ch4/scheduler-activations-1-2.png" /></p>
+<p><img alt="scheduler-activations-1-2" src="../ch4/scheduler-activations-1.png" /></p>
 <ul>
 <li>(3) The executing thread makes a <strong>blocking system call</strong>.</li>
 <li>(4) And the the kernel blocks the calling user-level thread and the kernel-level thread used to execute the user-level thread .</li>
@@ -927,7 +969,7 @@ vagrant   2028  1839  2028  0    1 04:18 pts/1    00:00:00 ps -efL
 <li>(6) Upcall: the kernel notifies the user-level thread manager which user-level thread that is now blocked and that a new kernel-level thread is available. </li>
 <li>(7) The user-level thread manager move the other threads to the new kernel thread and resumes one of the ready threads.</li>
 </ul>
-<p><img alt="scheduler-activations-3-7" src="../ch4/scheduler-activations-3-7.png" /></p></div>
+<p><img alt="scheduler-activations-3-7" src="../ch4/scheduler-activations.png" /></p></div>
         </div>
 
         <footer class="col-md-12">
