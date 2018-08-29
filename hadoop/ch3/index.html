@@ -640,11 +640,158 @@
                 <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
         <li class="main active"><a href="#hadoop-the-definitive-guide-3-the-hadoop-distributed-filesystem">Hadoop: The Definitive Guide 3 - The Hadoop Distributed FileSystem</a></li>
+        <li class="main "><a href="#1-the-design-of-hdfs">1 The Design of HDFS</a></li>
+        <li class="main "><a href="#2-hdfs-concepts">2 HDFS Concepts</a></li>
+            <li><a href="#blocks">Blocks</a></li>
+            <li><a href="#namenodes-and-datanodes">Namenodes and Datanodes</a></li>
+            <li><a href="#block-caching">Block Caching</a></li>
+            <li><a href="#hdfs-federation">HDFS Federation</a></li>
+            <li><a href="#hdfs-high-availability">HDFS High Availability</a></li>
+        <li class="main "><a href="#3-the-command-line-interface">3 The Command-Line Interface</a></li>
+            <li><a href="#basic-filesystem-operations">Basic Filesystem Operations</a></li>
+        <li class="main "><a href="#4-hadoop-filesystems">4 Hadoop Filesystems</a></li>
+            <li><a href="#http">HTTP</a></li>
+        <li class="main "><a href="#5-the-java-interface">5 The Java Interface</a></li>
+            <li><a href="#reading-data-from-a-hadoop-url">Reading Data from a Hadoop URL</a></li>
+            <li><a href="#reading-data-using-the-filesystem-api">Reading Data Using the FileSystem API</a></li>
+        <li class="main "><a href="#6-data-flow">6 Data Flow</a></li>
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
 
-<h3 id="hadoop-the-definitive-guide-3-the-hadoop-distributed-filesystem"><strong>Hadoop: The Definitive Guide 3 - The Hadoop Distributed FileSystem</strong><a class="headerlink" href="#hadoop-the-definitive-guide-3-the-hadoop-distributed-filesystem" title="Permanent link">&para;</a></h3></div>
+<h3 id="hadoop-the-definitive-guide-3-the-hadoop-distributed-filesystem"><strong>Hadoop: The Definitive Guide 3 - The Hadoop Distributed FileSystem</strong><a class="headerlink" href="#hadoop-the-definitive-guide-3-the-hadoop-distributed-filesystem" title="Permanent link">&para;</a></h3>
+<p>Filesystems that manage the storage across a network of machines are called <strong><em>distributed filesystems</em></strong> . Hadoop comes with a distributed filesystem called HDFS, which stands for <strong><em>Hadoop Distributed Filesystem</em></strong> .</p>
+<h3 id="1-the-design-of-hdfs">1 The Design of HDFS<a class="headerlink" href="#1-the-design-of-hdfs" title="Permanent link">&para;</a></h3>
+<p>HDFS is a filesystem designed for storing very large files with streaming data access patterns, running on clusters of commodity hardware.</p>
+<ul>
+<li>Very large files: files that are hundreds of megabytes, gigabytes, or terabytes in size.</li>
+<li>Streaming data access: HDFS is built around the idea that the most efficient data processing pattern is a <strong><em>write-once, read-many-times</em></strong> pattern.</li>
+<li>Commodity hardware: It’s designed to run on clusters of commodity hardware.</li>
+</ul>
+<p>These are areas where HDFS is not a good fit today:</p>
+<ul>
+<li>Low-latency data access</li>
+<li>Lots of small files</li>
+<li>Multiple writers, arbitrary file modifications</li>
+</ul>
+<h3 id="2-hdfs-concepts">2 HDFS Concepts<a class="headerlink" href="#2-hdfs-concepts" title="Permanent link">&para;</a></h3>
+<h4 id="blocks">Blocks<a class="headerlink" href="#blocks" title="Permanent link">&para;</a></h4>
+<p>A disk has a block size, which is the minimum amount of data that it can read or write. Filesystems for a single disk build on this by dealing with data in blocks, which are an integral multiple of the disk block size.</p>
+<p>HDFS, too, has the concept of a block, but it is a much larger unit — 128 MB by default (typically a few kilobytes for ordinary file system). Unlike a filesystem for a single disk, a file in HDFS that is smaller than a single block does not occupy a full block’s worth of underlying storage. (For example, a 1 MB file stored with a block size of 128 MB uses 1 MB of disk space, not 128 MB.)</p>
+<div class="admonition question">
+<p class="admonition-title">Question</p>
+<p>WHY IS A BLOCK IN HDFS SO LARGE? To minimize the cost of seeks.</p>
+</div>
+<p>Having a block abstraction for a distributed filesystem brings several benefits.</p>
+<ul>
+<li>A file can be larger than any single disk in the network.</li>
+<li>Making the unit of abstraction a block rather than a file simplifies the storage subsystem.<ul>
+<li>storage management: because blocks are a fixed size, it is easy to calculate how many can be stored on a given disk </li>
+<li>metadata concerns: because blocks are just chunks of data to be stored, file metadata such as permissions information does not need to be stored with the blocks</li>
+</ul>
+</li>
+<li>Blocks fit well with replication for providing fault tolerance and availability.<ul>
+<li>To insure against corrupted blocks and disk and machine failure, each block is replicated to a small number of physically separate machines (typically three).</li>
+</ul>
+</li>
+</ul>
+<h4 id="namenodes-and-datanodes">Namenodes and Datanodes<a class="headerlink" href="#namenodes-and-datanodes" title="Permanent link">&para;</a></h4>
+<p>An HDFS cluster has two types of nodes operating in a master−worker pattern: a <strong><em>namenode</em></strong> (the master) and a number of <strong><em>datanodes</em></strong> (workers). </p>
+<ul>
+<li>The namenode manages the filesystem namespace. It maintains the filesystem tree and the metadata for all the files and directories in the tree. This information is stored persistently on the local disk in the form of two files: the namespace image and the edit log.</li>
+<li>The namenode also knows the datanodes on which all the blocks for a given file are located;</li>
+<li>Datanodes are the workhorses of the filesystem. They store and retrieve blocks when they are told to (by clients or the namenode), and they report back to the namenode periodically with lists of blocks that they are storing.</li>
+</ul>
+<p>If the machine running the namenode were obliterated, all the files on the filesystem would be lost since there would be no way of knowing how to reconstruct the files from the blocks on the datanodes. Possible solution:</p>
+<ul>
+<li>to back up the files that make up the persistent state of the filesystem metadata.</li>
+<li>to run a secondary namenode, which keeps a copy of the merged namespace image.</li>
+</ul>
+<h4 id="block-caching">Block Caching<a class="headerlink" href="#block-caching" title="Permanent link">&para;</a></h4>
+<p>For frequently accessed files the blocks may be explicitly cached in the datanode’s memory, in an off-heap block cache. Users or applications instruct the namenode which files to cache (and for how long) by adding a <em>cache directive</em> to a <em>cache pool</em>.</p>
+<h4 id="hdfs-federation">HDFS Federation<a class="headerlink" href="#hdfs-federation" title="Permanent link">&para;</a></h4>
+<p>Problem: On very large clusters with many files, memory becomes the limiting factor for scaling, since namenode keeps a reference to every file and block in the filesystem in memory.</p>
+<p>Solution: HDFS federation, allows a cluster to scale by adding namenodes, each of which manages a portion of the filesystem namespace.</p>
+<h4 id="hdfs-high-availability">HDFS High Availability<a class="headerlink" href="#hdfs-high-availability" title="Permanent link">&para;</a></h4>
+<p>To remedy a failed namenode, a pair of namenodes in an active-standby configuration is introduced in Hadoop 2. In the event of the failure of the active namenode, the standby takes over its duties to continue servicing client requests <em>without</em> a significant interruption.</p>
+<h3 id="3-the-command-line-interface">3 The Command-Line Interface<a class="headerlink" href="#3-the-command-line-interface" title="Permanent link">&para;</a></h3>
+<h4 id="basic-filesystem-operations">Basic Filesystem Operations<a class="headerlink" href="#basic-filesystem-operations" title="Permanent link">&para;</a></h4>
+<p>Start by copying a file from the local filesystem to HDFS:</p>
+<p> <div class=codehilite><pre><span class=c1>#The local file quangle.txt is copied to the file /user/tom/quangle.txt on the HDFS instance running on localhost.</span>
+$ hadoop fs -copyFromLocal input/docs/quangle.txt /user/tom/quangle.txt
+</pre></div></p>
+<p>Let’s copy the file back to the local filesystem:</p>
+<p> <div class=codehilite><pre>$ hadoop fs -copyToLocal quangle.txt quangle.copy.txt
+</pre></div></p>
+<h3 id="4-hadoop-filesystems">4 Hadoop Filesystems<a class="headerlink" href="#4-hadoop-filesystems" title="Permanent link">&para;</a></h3>
+<p>Hadoop has an abstract notion of filesystems, of which HDFS is just one implementation. The Java abstract class <C>org.apache.hadoop.fs.FileSystem</C> represents the client interface to a filesystem in Hadoop, and there are several concrete implementations.</p>
+<table>
+<thead>
+<tr>
+<th>Filesystem</th>
+<th>URI scheme</th>
+<th>Java implementation</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Local</td>
+<td>file</td>
+<td>fs.LocalFileSystem</td>
+<td>A filesystem for a locally connected disk with client-side checksums</td>
+</tr>
+<tr>
+<td>HDFS</td>
+<td>hfs</td>
+<td>hdfs.DistributedFileSystem</td>
+<td>Hadoop’s distributed filesystem</td>
+</tr>
+<tr>
+<td>WebHDFS</td>
+<td>webhdfs</td>
+<td>hdfs.web.WebHdfsFileSystem</td>
+<td>providing authenticated read/write access to HDFS over HTTP.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="http">HTTP<a class="headerlink" href="#http" title="Permanent link">&para;</a></h4>
+<p>The HTTP REST API exposed by the WebHDFS protocol makes it easier for other languages to interact with HDFS. Note that the HTTP interface is slower than the native Java client, so should be avoided for very large data transfers if possible.</p>
+<h3 id="5-the-java-interface">5 The Java Interface<a class="headerlink" href="#5-the-java-interface" title="Permanent link">&para;</a></h3>
+<h4 id="reading-data-from-a-hadoop-url">Reading Data from a Hadoop URL<a class="headerlink" href="#reading-data-from-a-hadoop-url" title="Permanent link">&para;</a></h4>
+<p> <div class=codehilite><pre><span class=cm>/* Usage example: </span>
+<span class=cm>    % export HADOOP_CLASSPATH=hadoop-examples.jar </span>
+<span class=cm>    % hadoop URLCat hdfs://localhost/user/tom/quangle.txt</span>
+<span class=cm> */</span>
+<span class=kn>import</span> <span class=nn>org.apache.hadoop.fs.FsUrlStreamHandlerFactory</span><span class=o>;</span>
+<span class=kn>import</span> <span class=nn>org.apache.hadoop.io.IOUtils</span><span class=o>;</span>
+
+<span class=kn>import</span> <span class=nn>java.io.InputStream</span><span class=o>;</span>
+<span class=kn>import</span> <span class=nn>java.net.URL</span><span class=o>;</span>
+
+<span class=kd>public</span> <span class=kd>class</span> <span class=nc>URLCat</span> <span class=o>{</span>
+
+    <span class=kd>static</span> <span class=o>{</span>
+        <span class=n>URL</span><span class=o>.</span><span class=na>setURLStreamHandlerFactory</span><span class=o>(</span><span class=k>new</span> <span class=n>FsUrlStreamHandlerFactory</span><span class=o>());</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kd>static</span> <span class=kt>void</span> <span class=nf>main</span><span class=o>(</span><span class=n>String</span><span class=o>[]</span> <span class=n>args</span><span class=o>)</span> <span class=kd>throws</span> <span class=n>Exception</span> <span class=o>{</span>
+        <span class=n>InputStream</span> <span class=n>in</span> <span class=o>=</span> <span class=kc>null</span><span class=o>;</span>
+        <span class=k>try</span> <span class=o>{</span>
+            <span class=n>in</span> <span class=o>=</span> <span class=k>new</span> <span class=n>URL</span><span class=o>(</span><span class=n>args</span><span class=o>[</span><span class=mi>0</span><span class=o>]).</span><span class=na>openStream</span><span class=o>();</span>
+            <span class=n>IOUtils</span><span class=o>.</span><span class=na>copyBytes</span><span class=o>(</span><span class=n>in</span><span class=o>,</span> <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>,</span> <span class=mi>4096</span><span class=o>,</span> <span class=kc>false</span><span class=o>);</span>
+        <span class=o>}</span> <span class=k>finally</span> <span class=o>{</span>
+            <span class=n>IOUtils</span><span class=o>.</span><span class=na>closeStream</span><span class=o>(</span><span class=n>in</span><span class=o>);</span>
+        <span class=o>}</span>
+
+    <span class=o>}</span>
+
+<span class=o>}</span>
+</pre></div></p>
+<h4 id="reading-data-using-the-filesystem-api">Reading Data Using the FileSystem API<a class="headerlink" href="#reading-data-using-the-filesystem-api" title="Permanent link">&para;</a></h4>
+<p>A file in a Hadoop filesystem is represented by a Hadoop <C>Path</C> object(<C>org.apache.hadoop.fs.Path</C>, not <C>java.io.File</C>).</p>
+<h3 id="6-data-flow">6 Data Flow<a class="headerlink" href="#6-data-flow" title="Permanent link">&para;</a></h3>
+<p><img alt="" src="../figures/AClientReadingDataFromHDFS.jpg" /></p></div>
         </div>
 
         <footer class="col-md-12">
