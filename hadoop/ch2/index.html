@@ -647,6 +647,7 @@
             <li><a href="#data-flow">Data Flow</a></li>
             <li><a href="#combiner-functions">Combiner Functions</a></li>
         <li class="main "><a href="#3-hadoop-streaming">3 Hadoop Streaming</a></li>
+            <li><a href="#python">Python</a></li>
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
@@ -657,10 +658,10 @@
 <p>For our example, we will write a program that mines weather data. The data we will use is from the National Climatic Data Center. It is stored using a line-oriented ASCII format, in which each line is a record.</p>
 <h4 id="analyzing-the-data-with-hadoop">Analyzing the Data with Hadoop<a class="headerlink" href="#analyzing-the-data-with-hadoop" title="Permanent link">&para;</a></h4>
 <p>MapReduce works by breaking the processing into two phases: the map phase and the reduce phase. Each phase has key-value pairs as input and output, the types of which may be chosen by the programmer. The programmer also specifies two functions: the map function and the reduce function.</p>
-<p>INPUT:</p>
+<p>MAPINPUT:</p>
 <ul>
-<li>key: the offset of the beginning of the line from the begging of the file. (no need here, just ignore it)</li>
-<li>value: raw NCDC data</li>
+<li>Key: the offset of the beginning of the line from the beginning of the file. (no need here, just ignore it)</li>
+<li>Value: raw NCDC data</li>
 </ul>
 <p> <div class=codehilite><pre>(0, 0067011990999991950051507004…9999999N9+00001+99999999999…) 
 (106, 0043011990999991950051512004…9999999N9+00221+99999999999…) 
@@ -668,9 +669,11 @@
 (318, 0043012650999991949032412004…0500001N9+01111+99999999999…) 
 (424, 0043012650999991949032418004…0500001N9+00781+99999999999…)
 </pre></div></p>
-<p>OUTPUT: </p>
+<p>MAPOUTPUT: </p>
 <ul>
 <li>The map function merely extracts the year and the air temperature , and emits them as output.</li>
+<li>Key: year</li>
+<li>Calue: air temperature</li>
 </ul>
 <p> <div class=codehilite><pre>(1950, 0)
 (1950, 22) 
@@ -785,7 +788,7 @@
 <p> <div class=codehilite><pre>$ <span class=nv>HADOOP_CLASSPATH</span><span class=o>=</span>/Users/larry/JavaProject/out/artifacts/MaxTemperature/MaxTemperature.jar 
 $ hadoop com.definitivehadoop.weatherdata.MaxTemperature resources/HadoopBook/ncdc/sample.txt output
 </pre></div></p>
-<p>When the <C>hadoop</C> command is invoked with a classname as the first argument, it launches a Java virtual machine (JVM) to run the class.The <C>hadoop</C> command adds the Hadoop libraries (and their dependencies) to the classpath and picks up the Hadoop configuration, too. To add the application classes to the classpath, we’ve defined an environment variable called <C>HADOOP_CLASSPATH</C>, which the <C>hadoop</C> script picks up.</p>
+<p>When the <C>hadoop</C> command is invoked with a classname as the first argument, it launches a Java virtual machine (JVM) to run the class. The <C>hadoop</C> command adds the Hadoop libraries (and their dependencies) to the classpath and picks up the Hadoop configuration, too. To add the application classes to the classpath, we’ve defined an environment variable called <C>HADOOP_CLASSPATH</C>, which the <C>hadoop</C> script picks up.</p>
 <p><font size=0.6em></p>
 <p> <div class=codehilite><pre>//OUTPUT 
 18:20:18,944 INFO mapreduce.Job: Counters: 30
@@ -830,12 +833,12 @@ $ hadoop com.definitivehadoop.weatherdata.MaxTemperature resources/HadoopBook/nc
 <h3 id="2-scaling-out">2 Scaling Out<a class="headerlink" href="#2-scaling-out" title="Permanent link">&para;</a></h3>
 <p>To scale out, we need to store the data in a distributed filesystem (typically HDFS). This allows Hadoop to move the MapReduce computation to each machine hosting a part of the data, using Hadoop’s resource management system, YARN.</p>
 <h4 id="data-flow">Data Flow<a class="headerlink" href="#data-flow" title="Permanent link">&para;</a></h4>
-<p>A MapReduce <strong><em>job</em></strong> is a unit of work that the client wants to be performed: it consists of the input data, the MapReduce program, and configuration information. Hadoop runs the job by dividing it into <strong><em>tasks</em></strong>, of which there are two types: <strong><em>map tasks</em></strong> and <strong><em>reduce tasks</em></strong>. The tasks are scheduled using YARN and run on nodes in the cluster.</p>
-<p>Hadoop divides the input to a MapReduce job into fixed-size pieces called <strong><em>input splits</em></strong>, or just <strong><em>splits</em></strong>. Hadoop creates one map task for each split, which runs the user-defined map function for each record in the split.</p>
+<p>A MapReduce <strong><em>job</em></strong> (作业) is a unit of work that the client wants to be performed: it consists of the input data, the MapReduce program, and configuration information. Hadoop runs the job by dividing it into <strong><em>tasks</em></strong> (任务), of which there are two types: <strong><em>map tasks</em></strong> and <strong><em>reduce tasks</em></strong>. The tasks are scheduled using YARN and run on nodes in the cluster.</p>
+<p>Hadoop divides the input to a MapReduce job into fixed-size pieces called <strong><em>input splits</em></strong> (输入分片), or just <strong><em>splits</em></strong> (分片). Hadoop creates one map task for each split, which runs the user-defined map function for each record in the split.</p>
 <p>So if we are processing the splits in parallel, the processing is better load balanced when the splits are small. On the other hand, if splits are too small, the overhead of managing the splits and map task creation begins to dominate the total job execution time.</p>
-<p>Hadoop does its best to run the map task on a node where the input data resides in HDFS, because it doesn’t use valuable cluster bandwidth. This is called the <strong><em>data locality optimization</em></strong>.</p>
+<p>Hadoop does its best to run the map task on a node where the input data resides in HDFS, because it doesn’t use valuable cluster bandwidth. This is called the <strong><em>data locality optimization</em></strong> (数据本地优化).</p>
 <p><img alt="Data-local-a-rack-local-b-off-rack-c-mapTasks" src="../figures/Data-local-a-rack-local-b-off-rack-c-mapTasks.jpg" /></p>
-<p>Map tasks write their output to the local disk, not to HDFS. Why is this? Map output is intermediate output: it’s processed by reduce tasks to produce the final output, and once the job is complete, the map output can be thrown away. So, storing it in HDFS <em>with replication</em> would be overkill.</p>
+<p>Map tasks write their output to the local disk, not to HDFS. Why is this? <strong><em>Map output is intermediate output:</em></strong> it’s processed by reduce tasks to produce the final output, and once the job is complete, the map output can be thrown away. So, storing it in HDFS <em>with replication</em> would be overkill.</p>
 <p>The data flow for the general case of multiple reduce tasks is illustrated in figure below. This diagram makes it clear why the data flow between map and reduce tasks is colloquially known as “the shuffle,” as each reduce task is fed by many map tasks.</p>
 <p><img alt="" src="../figures/MapReduceDataFlowWithMultipleReduceTask.jpg" /></p>
 <h4 id="combiner-functions">Combiner Functions<a class="headerlink" href="#combiner-functions" title="Permanent link">&para;</a></h4>
@@ -859,7 +862,48 @@ $ hadoop com.definitivehadoop.weatherdata.MaxTemperature resources/HadoopBook/nc
                 Reduce output records=2
 </pre></div></p>
 <h3 id="3-hadoop-streaming">3 Hadoop Streaming<a class="headerlink" href="#3-hadoop-streaming" title="Permanent link">&para;</a></h3>
-<p>Hadoop provides an API to MapReduce that allows you to write your map and reduce functions in languages other than Java. Hadoop Streaming uses Unix standard streams as the interface between Hadoop and your program, so you can use any language that can read standard input and write to standard output to write your MapReduce program.</p></div>
+<p>Hadoop provides an API to MapReduce that allows you to write your map and reduce functions in languages other than Java. Hadoop Streaming uses Unix standard streams (Unix标准流) as the interface between Hadoop and your program, so you can use any language that can read standard input and write to standard output to write your MapReduce program.</p>
+<p>Streaming is naturally suited for text processing. Map input data is passed over standard input to map function. A map output key-value pair is written as a single tab-delimited line. The reduce function reads lines from standard input, which the framework guarantees are sorted by key, and writes its results to standard output.</p>
+<p>Here, We take Python as an example.</p>
+<h4 id="python">Python<a class="headerlink" href="#python" title="Permanent link">&para;</a></h4>
+<div class=md-fenced-code-tabs id=tab-tab-group-12><input name=tab-group-12 type=radio id=tab-group-12-0_Python checked=checked class=code-tab data-lang=Python aria-controls=tab-group-12-0_Python-panel role=tab><label for=tab-group-12-0_Python class=code-tab-label data-lang=Python id=tab-group-12-0_Python-label>Map</label><div class=code-tabpanel role=tabpanel data-lang=Python id=tab-group-12-0_Python-panel aria-labelledby=tab-group-12-0_Python-label><div class=codehilite><pre><span class=ch>#!/Users/larry/anaconda3/bin/python</span>
+<span class=kn>import</span> <span class=nn>re</span>
+<span class=kn>import</span> <span class=nn>sys</span>
+
+<span class=k>for</span> <span class=n>line</span> <span class=ow>in</span> <span class=n>sys</span><span class=o>.</span><span class=n>stdin</span><span class=p>:</span>
+  <span class=n>val</span> <span class=o>=</span> <span class=n>line</span><span class=o>.</span><span class=n>strip</span><span class=p>()</span>
+  <span class=p>(</span><span class=n>year</span><span class=p>,</span> <span class=n>temp</span><span class=p>,</span> <span class=n>q</span><span class=p>)</span> <span class=o>=</span> <span class=p>(</span><span class=n>val</span><span class=p>[</span><span class=mi>15</span><span class=p>:</span><span class=mi>19</span><span class=p>],</span> <span class=n>val</span><span class=p>[</span><span class=mi>87</span><span class=p>:</span><span class=mi>92</span><span class=p>],</span> <span class=n>val</span><span class=p>[</span><span class=mi>92</span><span class=p>:</span><span class=mi>93</span><span class=p>])</span>
+  <span class=k>if</span> <span class=p>(</span><span class=n>temp</span> <span class=o>!=</span> <span class=s2>&quot;+9999&quot;</span> <span class=ow>and</span> <span class=n>re</span><span class=o>.</span><span class=n>match</span><span class=p>(</span><span class=s2>&quot;[01459]&quot;</span><span class=p>,</span> <span class=n>q</span><span class=p>)):</span>
+    <span class=k>print</span><span class=p>(</span><span class=s2>&quot;</span><span class=si>%s</span><span class=se>\t</span><span class=si>%s</span><span class=s2>&quot;</span><span class=o>%</span><span class=p>(</span><span class=n>year</span><span class=p>,</span> <span class=n>temp</span><span class=p>))</span>
+</pre></div></div><input name=tab-group-12 type=radio id=tab-group-12-1_Python class=code-tab data-lang=Python aria-controls=tab-group-12-1_Python-panel role=tab><label for=tab-group-12-1_Python class=code-tab-label data-lang=Python id=tab-group-12-1_Python-label>Reduce</label><div class=code-tabpanel role=tabpanel data-lang=Python id=tab-group-12-1_Python-panel aria-labelledby=tab-group-12-1_Python-label><div class=codehilite><pre><span class=ch>#!/Users/larry/anaconda3/bin/python</span>
+
+<span class=kn>import</span> <span class=nn>sys</span>
+
+<span class=p>(</span><span class=n>last_key</span><span class=p>,</span> <span class=n>max_val</span><span class=p>)</span> <span class=o>=</span> <span class=p>(</span><span class=bp>None</span><span class=p>,</span> <span class=o>-</span><span class=n>sys</span><span class=o>.</span><span class=n>maxsize</span><span class=p>)</span>
+<span class=k>for</span> <span class=n>line</span> <span class=ow>in</span> <span class=n>sys</span><span class=o>.</span><span class=n>stdin</span><span class=p>:</span>
+  <span class=p>(</span><span class=n>key</span><span class=p>,</span> <span class=n>val</span><span class=p>)</span> <span class=o>=</span> <span class=n>line</span><span class=o>.</span><span class=n>strip</span><span class=p>()</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s2>&quot;</span><span class=se>\t</span><span class=s2>&quot;</span><span class=p>)</span>
+  <span class=k>if</span> <span class=n>last_key</span> <span class=ow>and</span> <span class=n>last_key</span> <span class=o>!=</span> <span class=n>key</span><span class=p>:</span>
+    <span class=k>print</span><span class=p>(</span><span class=s2>&quot;</span><span class=si>%s</span><span class=se>\t</span><span class=si>%s</span><span class=s2>&quot;</span><span class=o>%</span><span class=p>(</span><span class=n>last_key</span><span class=p>,</span> <span class=n>max_val</span><span class=p>))</span>
+    <span class=p>(</span><span class=n>last_key</span><span class=p>,</span> <span class=n>max_val</span><span class=p>)</span> <span class=o>=</span> <span class=p>(</span><span class=n>key</span><span class=p>,</span> <span class=nb>int</span><span class=p>(</span><span class=n>val</span><span class=p>))</span>
+  <span class=k>else</span><span class=p>:</span>
+    <span class=p>(</span><span class=n>last_key</span><span class=p>,</span> <span class=n>max_val</span><span class=p>)</span> <span class=o>=</span> <span class=p>(</span><span class=n>key</span><span class=p>,</span> <span class=nb>max</span><span class=p>(</span><span class=n>max_val</span><span class=p>,</span> <span class=nb>int</span><span class=p>(</span><span class=n>val</span><span class=p>)))</span>
+
+<span class=k>if</span> <span class=n>last_key</span><span class=p>:</span>
+  <span class=k>print</span><span class=p>(</span><span class=s2>&quot;</span><span class=si>%s</span><span class=se>\t</span><span class=si>%s</span><span class=s2>&quot;</span><span class=o>%</span><span class=p>(</span><span class=n>last_key</span><span class=p>,</span> <span class=n>max_val</span><span class=p>))</span>
+</pre></div></div></div>
+
+<p>For example, to run a test:</p>
+<p> <div class=codehilite><pre>$ cat sample.txt <span class=p>|</span> ./max_temperature_map.py <span class=p>|</span> sort <span class=p>|</span> ./max_temperature_reduce.py
+<span class=m>1949</span> <span class=m>111</span> 
+<span class=m>1950</span> 22
+</pre></div></p>
+<p>The <C>hadoop</C> command doesn’t support a Streaming option; instead, you specify the Streaming JAR file along with the <C>jar</C> option. Options to the Streaming program specify the input and output paths and the map and reduce scripts.</p>
+<p> <div class=codehilite><pre>$hadoop jar $HADOOP_HOME/share/hadoop/tools/lib/hadoop-streaming-3.1.0.jar <span class=se>\</span>
+-input sample.txt <span class=se>\</span>
+-output output <span class=se>\</span>
+-mapper max_temperature_map.py <span class=se>\</span>
+-reducer max_temperature_reduce.py
+</pre></div></p></div>
         </div>
 
         <footer class="col-md-12">
