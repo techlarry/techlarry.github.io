@@ -640,11 +640,94 @@
                 <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
         <li class="main active"><a href="#hadoop-the-definitive-guide-5-hadoop-io">Hadoop: The Definitive Guide 5 - Hadoop I/O</a></li>
+        <li class="main "><a href="#1-data-integrity">1 Data Integrity</a></li>
+            <li><a href="#data-integrity-in-hdfs">Data Integrity in HDFS</a></li>
+            <li><a href="#localfilesystem">LocalFileSystem</a></li>
+            <li><a href="#checksumfilesystem">ChecksumFileSystem</a></li>
+        <li class="main "><a href="#2-compression">2 Compression</a></li>
+            <li><a href="#codecs">Codecs</a></li>
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
 
-<h3 id="hadoop-the-definitive-guide-5-hadoop-io"><strong>Hadoop: The Definitive Guide 5 - Hadoop I/O</strong><a class="headerlink" href="#hadoop-the-definitive-guide-5-hadoop-io" title="Permanent link">&para;</a></h3></div>
+<h3 id="hadoop-the-definitive-guide-5-hadoop-io"><strong>Hadoop: The Definitive Guide 5 - Hadoop I/O</strong><a class="headerlink" href="#hadoop-the-definitive-guide-5-hadoop-io" title="Permanent link">&para;</a></h3>
+<h3 id="1-data-integrity">1 Data Integrity<a class="headerlink" href="#1-data-integrity" title="Permanent link">&para;</a></h3>
+<p>The usual way of detecting corrupted data is by computing a <em>checksum</em>(校验和) for the data when it first enters the system, and again whenever it is transmitted across a channel that is unreliable and hence capable of corrupting the data.</p>
+<p>A commonly used error-detecting code is CRC-32 (32-bit cyclic redundancy check), which computes a 32-bit integer checksum for input of any size. CRC32 is used for checksumming in Hadoop's <C>checksumFileSystem</C>, while HDFS uses a more efficient variant called CRC-32C.</p>
+<h4 id="data-integrity-in-hdfs">Data Integrity in HDFS<a class="headerlink" href="#data-integrity-in-hdfs" title="Permanent link">&para;</a></h4>
+<p>HDFS transparently checksums all data written to it and by default verifies checksums when reading data. A separate checksum is created for every <C>dfs.bytes-per-checksum</C>(default 512) bytes of data.</p>
+<p>Datanodes are responsible for verifying the data they receive before storing the data and its checksum. When clients read data from datanodes, they verify checksums as well.</p>
+<p>In addition to block verification on client reads, each datanode runs a <C>DataBlockScanner</C> in a background thread that <em>periodically</em> verifies all the blocks stored on the datanode.</p>
+<p>You can find a file’s checksum with <C>hadoop fs -checksum</C>.</p>
+<h4 id="localfilesystem">LocalFileSystem<a class="headerlink" href="#localfilesystem" title="Permanent link">&para;</a></h4>
+<p>The Hadoop <C>LocalFileSystem</C> performs client-side checksumming. It is possible to disable checksums, by using <C>RawLocalFileSystem</C> in place of <C>LocalFileSystem</C></p>
+<h4 id="checksumfilesystem">ChecksumFileSystem<a class="headerlink" href="#checksumfilesystem" title="Permanent link">&para;</a></h4>
+<p><C>LocalFileSystem</C> extends <C>ChecksumFileSystem</C>, and <C>ChecksumFileSystem</C> is also a wrapper around <C>FileSystem</C> (uses decorator pattern here). The general idiom is as follows:</p>
+<p> <div class=codehilite><pre><span class=n>FileSystem</span> <span class=n>rawFs</span> <span class=o>=</span> <span class=o>...</span>
+<span class=n>FileSystem</span> <span class=n>checksummedFs</span> <span class=o>=</span> <span class=k>new</span> <span class=n>ChecksumFileSystem</span><span class=o>(</span><span class=n>rawFs</span><span class=o>);</span>
+</pre></div></p>
+<p><img alt="Screen Shot 2018-08-30 at 4.20.09 P" src="../figures/LocalFileSystemUML.png" /></p>
+<h3 id="2-compression">2 Compression<a class="headerlink" href="#2-compression" title="Permanent link">&para;</a></h3>
+<p>File compression brings two major benefits: it reduces the space needed to store files, and it speeds up data transfer across the network or to or from disk. When dealing with large volumes of data, both of these savings can be significant.</p>
+<p>A summary of compression formats:</p>
+<table>
+<thead>
+<tr>
+<th>Compression format</th>
+<th>Tools</th>
+<th>Algorithm</th>
+<th>File Extension</th>
+<th>CompressionCodec</th>
+<th>Splittable?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DEFLATE</td>
+<td>N/A</td>
+<td>DEFLATE</td>
+<td>.deflate</td>
+<td>DefaultCodec</td>
+<td>No</td>
+</tr>
+<tr>
+<td>gzip</td>
+<td>gzip</td>
+<td>DEFLATE</td>
+<td>.gz</td>
+<td>GzipCodec</td>
+<td>No</td>
+</tr>
+<tr>
+<td>bzip2</td>
+<td>bzip2</td>
+<td>bzip2</td>
+<td>.bz2</td>
+<td>BZip2Codec</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>LZO</td>
+<td>lzop</td>
+<td>LZO</td>
+<td>.lzo</td>
+<td>LzoCodec</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Snappy</td>
+<td>N/A</td>
+<td>Snappy</td>
+<td>.snappy</td>
+<td>SnappyCodec</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<p>All compression algorithm exhibit a space/time trade-off. Splittable compression formats are especially suitable for MapReduce</p>
+<h4 id="codecs">Codecs<a class="headerlink" href="#codecs" title="Permanent link">&para;</a></h4>
+<p>A <em>codec</em> is the implementation of a compression-decompression algorithm. In Hadoop, a codec is represented by an implementation of the <C>CompressionCodec</C> interface. So, for example, <C>GzipCodec</C> encapsulates the compression and decompression algorithm for gzip.</p>
+<p><hh>Compressing and decompressing streams with CompressionCodec</hh></p></div>
         </div>
 
         <footer class="col-md-12">
