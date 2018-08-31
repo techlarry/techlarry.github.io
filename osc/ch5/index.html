@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <meta name="author" content="Zhenhua Wang">
+        <link rel="canonical" href="http://larryim.cc/note/osc/ch5/">
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+        <title>Chapter 5: CPU Scheduling - Zhenhua's Notes</title>
+        <link href="../../css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="../../css/font-awesome-4.5.0.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="../../css/highlight.css">
+        <link href="../../extra_css/custom.css" rel="stylesheet">
+        <link href="../../extra_css/custom.js" rel="stylesheet">
+        <link href="../../extra_css/friendly.css" rel="stylesheet">
+        <link href="../../extra_css/theme.css" rel="stylesheet">
+        <link href="../../extra_css/mkdocs/js/lunr-0.5.7.min.js" rel="stylesheet">
+        <link href="../../extra_css/mkdocs/js/mustache.min.js" rel="stylesheet">
+        <link href="../../extra_css/mkdocs/js/require.js" rel="stylesheet">
+        <link href="../../extra_css/mkdocs/js/search.js" rel="stylesheet">
+        <link href="../../extra_css/mkdocs/js/text.js" rel="stylesheet">
+        <link href="../../extra_css/code-tab.css" rel="stylesheet">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="../../js/jquery-1.10.2.min.js"></script>
+        <script src="../../js/bootstrap-3.0.3.min.js"></script>
+        <script src="../../js/highlight.pack.js"></script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="../..">Zhenhua's Notes</a>
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+                <!-- Main navigation -->
+                <ul class="nav navbar-nav">
+                    <li >
+                        <a href="../..">Home</a>
+                    </li>
+                    <li class="dropdown active">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">OSC <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../">Contents</a>
+</li>
+                            
+<li >
+    <a href="../ch1/">Chapter 1: Introduction </a>
+</li>
+                            
+<li >
+    <a href="../ch2/">Chapter 2: Operating System structures</a>
+</li>
+                            
+<li >
+    <a href="../ch3/">Chapter 3: Processes</a>
+</li>
+                            
+<li >
+    <a href="../ch4/">Chapter 4: Threads and Concurrency</a>
+</li>
+                            
+<li class="active">
+    <a href="./">Chapter 5: CPU Scheduling</a>
+</li>
+                            
+<li >
+    <a href="../ch6/">Chapter 6: Synchronization Tools</a>
+</li>
+                            
+<li >
+    <a href="../ch7/">Chapter 7: Synchronization Examples</a>
+</li>
+                            
+<li >
+    <a href="../ch8/">Chapter 8: Deadlocks</a>
+</li>
+                            
+<li >
+    <a href="../ch9/">Chapter 9: Main Memory</a>
+</li>
+                            
+<li >
+    <a href="../ch10/">Chapter 10: Virtual Memory</a>
+</li>
+                            
+<li >
+    <a href="../ch11/">Chapter 11: Mass-Storage Structure</a>
+</li>
+                            
+<li >
+    <a href="../ch13/">Chapter 13: File-System Interfaces</a>
+</li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">CSAPP <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../../csapp/">Contents</a>
+</li>
+                            
+<li >
+    <a href="../../csapp/ch1/">Chapter 1: 计算机系统漫游</a>
+</li>
+                            
+<li >
+    <a href="../../csapp/ch2/">Chapter 2: 信息的表示和处理</a>
+</li>
+                            
+<li >
+    <a href="../../csapp/ch3/">Chapter 3: 程序的机器级表示</a>
+</li>
+                            
+<li >
+    <a href="../../csapp/ch4/">Chapter 4: 处理器体系结构</a>
+</li>
+                            
+<li >
+    <a href="../../csapp/ch5/">Chapter 5: 优化程序性能</a>
+</li>
+                            
+<li >
+    <a href="../../csapp/ch6/">Chapter 6: 存储器层次结构</a>
+</li>
+                            
+<li >
+    <a href="../../csapp/ch7/">Chapter 7: 链接</a>
+</li>
+                            
+<li >
+    <a href="../../csapp/ch8/">Chapter 8: 异常控制流</a>
+</li>
+                            
+<li >
+    <a href="../../csapp/ch9/">Chapter 9: 虚拟内存</a>
+</li>
+                            
+<li >
+    <a href="../../csapp/ch10/">Chapter 10: 系统级I/O</a>
+</li>
+                            
+<li >
+    <a href="../../csapp/ch11/">Chapter 11: 网络编程</a>
+</li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">HFJ <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../../hfj/">Contents</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch1/">Chapter 1: Dive in A Quick Dip</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch2/">Chapter 2: Classes and Objects</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch3/">Chapter 3: Primitives and References</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch4/">Chapter 4: Methods use Instance Variables</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch5/">Chapter 5: Writing a Program</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch6/">Chapter 6: Get to Know the Java API</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch7/">Chapter 7: Inheritance and Polymorphism</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch8/">Chapter 8: Interfaces and Abstract Classes</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch9/">Chapter 9: Constructors and Garbage Collection</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch10/">Chapter 10: Numbers and Statics</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch11/">Chapter 11: Exception Handling</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch12/">Chapter 12: Getting GUI</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch13/">Chapter 13: Using Swing</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch14/">Chapter 14: Serialization and File I/O</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch15/">Chapter 15: Networking and Threads</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch16/">Chapter 16: Collections and Generics</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch17/">Chapter 17: Packages, Jars and Deployment</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch18/">Chapter 18: Remote deploy with RMI</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/Appendix/">Appendix: The Top Ten Topics</a>
+</li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">HFDP <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../../hfdp/">Contents</a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch1/">Chapter 1: Strategy Pattern </a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch2/">Chapter 2: Observer Pattern</a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch3/">Chapter 3: Decorator Pattern </a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch4/">Chapter 4: Factory Pattern</a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch5/">Chapter 5: Singleton Pattern</a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch6/">Chapter 6: Command Pattern</a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch7/">Chapter 7: Adapter and Facade Patterns</a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch8/">Chapter 8: Template Method Pattern</a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch9/">Chapter 9: Iterator and Composite Patterns</a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch10/">Chapter 10: State Pattern</a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch11/">Chapter 11: Proxy Pattern</a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch12/">Chapter 12: Compound Pattern</a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch13/">Chapter 13: Better Living with Patterns</a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/Appendix/">Appendix: Design Pattern in Java Library</a>
+</li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">TIJ <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../../tij/">Contents</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch1/">Chapter 1: Introduction</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch2/">Chapter 2: Introduction to Objects</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch3/">Chapter 3: Everything is an Object</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch4/">Chapter 4: Opertors</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch5/">Chapter 5: Controlling Execution</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch6/">Chapter 6: Initialization & Cleanup</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch7/">Chapter 7: Access Control</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch8/">Chapter 8: Reusing Clases</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch9/">Chapter 9: Polymorphism</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch10/">Chapter 10: Interfaces</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch11/">Chapter 11: Inner Classes</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch12/">Chapter 12: Holding Your Objects</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch13/">Chapter 13: Error Handling with Exceptions</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch14/">Chapter 14: Strings</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch15/">Chapter 15: Type Information</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch16/">Chapter 16: Generics</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch17/">Chapter 17: Arrays</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch18/">Chapter 18: Containers in Depth</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch19/">Chapter 19: I/O</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch20/">Chapter 20: Enumerated Types</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch21/">Chapter 21: Annotations</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch22/">Chapter 22: Concurrency</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch23/">Chapter 23: Graphical User Interfaces</a>
+</li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">CPJ <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../../cpj/">Contents</a>
+</li>
+                            
+<li >
+    <a href="../../cpj/ch1/">Concurrent Programming in Java 1: Threads and Locks</a>
+</li>
+                            
+<li >
+    <a href="../../cpj/ch2/">Concurrent Programming in Java 2: Critical Sections and Isolation</a>
+</li>
+                            
+<li >
+    <a href="../../cpj/ch3/">Concurrent Programming in Java 3: Actors</a>
+</li>
+                            
+<li >
+    <a href="../../cpj/ch4/">Concurrent Programming in Java 4: Concurrent Data Structures</a>
+</li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">HADOOP <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../../hadoop/">Contents</a>
+</li>
+                            
+<li >
+    <a href="../../hadoop/ch1/">Chapter 1: Meet Hadoop</a>
+</li>
+                            
+<li >
+    <a href="../../hadoop/ch2/">Chapter 2: MapReduce</a>
+</li>
+                            
+<li >
+    <a href="../../hadoop/ch3/">Chapter 3: The Hadoop Distributed FileSystem</a>
+</li>
+                            
+<li >
+    <a href="../../hadoop/ch4/">Chapter 4: YARN</a>
+</li>
+                            
+<li >
+    <a href="../../hadoop/ch5/">Chapter 5: Hadoop I/O</a>
+</li>
+                            
+<li >
+    <a href="../../hadoop/ch6/">Chapter 6: Developing a MapReduce Application</a>
+</li>
+                            
+<li >
+    <a href="../../hadoop/ch7/">Chapter 7: How MapReduce Works</a>
+</li>
+                            
+<li >
+    <a href="../../hadoop/ch8/">Chapter 8: MapReduce Types and Formats</a>
+</li>
+                            
+<li >
+    <a href="../../hadoop/ch9/">Chapter 9: MapReduce Features</a>
+</li>
+                            
+<li >
+    <a href="../../hadoop/ch10/">Chapter 10: Setting Up a Hadoop Cluster</a>
+</li>
+                            
+<li >
+    <a href="../../hadoop/ch11/">Chapter 11: Adminstering Hadoop</a>
+</li>
+                            
+<li >
+    <a href="../../hadoop/ch12/">Chapter 12: Avro</a>
+</li>
+                            
+<li >
+    <a href="../../hadoop/ch13/">Chapter 13: Parquet</a>
+</li>
+                            
+<li >
+    <a href="../../hadoop/ch14/">Chapter 14: Flume</a>
+</li>
+                            
+<li >
+    <a href="../../hadoop/ch15/">Chapter 15: Sqoop</a>
+</li>
+                            
+<li >
+    <a href="../../hadoop/ch16/">Chapter 16: Pig</a>
+</li>
+                            
+<li >
+    <a href="../../hadoop/ch17/">Chapter 17: Hive</a>
+</li>
+                            
+<li >
+    <a href="../../hadoop/ch18/">Chapter 18: Crunch</a>
+</li>
+                            
+<li >
+    <a href="../../hadoop/ch19/">Chapter 19: Spark</a>
+</li>
+                            
+<li >
+    <a href="../../hadoop/ch20/">Chapter 20: HBase</a>
+</li>
+                            
+<li >
+    <a href="../../hadoop/ch21/">Chapter 21: ZooKeeper</a>
+</li>
+                            
+<li >
+    <a href="../../hadoop/ch22/">Chapter 22: Composable Data at Center</a>
+</li>
+                            
+<li >
+    <a href="../../hadoop/ch23/">Chapter 23: Biological Data Science: Saving Lives with Software</a>
+</li>
+                            
+<li >
+    <a href="../../hadoop/ch24/">Chapter 24: Cascading</a>
+</li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">UJVM <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../../ujvm/">Contents</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch1/">Chapter 1 : 走进Java</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch2/">Chapter 2 : Java内存区域与内存溢出正常</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch3/">Chapter 3 : 垃圾收集器与内存分配策略</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch4/">Chapter 4 : 虚拟机性能监控与故障处理工具</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch5/">Chapter 5 : 调优案例分析与实战</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch6/">Chapter 6 : 类文件结构</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch7/">Chapter 7 : 虚拟机类加载机制</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch8/">Chapter 8 : 虚拟机字节码执行引擎</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch9/">Chapter 9 : 类加载及执行子系统的案例与实战</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch10/">Chapter 10 : 早期(编译期)优化</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch11/">Chapter 11 : 晚期(运行期)优化</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch12/">Chapter 12 : Java内存模型与线程</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch13/">Chapter 13 : 线程安全与锁优化</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/AppendixC/">Appendix HotSpot虚拟机主要参数列表</a>
+</li>
+                        </ul>
+                    </li>
+                    <li >
+                        <a href="../../books/">Books</a>
+                    </li>
+                </ul>
+
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                        <i class="fa fa-search"></i> Search
+                    </a>
+                </li>
+                    <li >
+                        <a rel="next" href="../ch4/">
+                            <i class="fa fa-arrow-left"></i> Previous
+                        </a>
+                    </li>
+                    <li >
+                        <a rel="prev" href="../ch6/">
+                            Next <i class="fa fa-arrow-right"></i>
+                        </a>
+                    </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#operating-system-concepts-5-cpu-scheduling">Operating System Concepts 5 - CPU Scheduling</a></li>
+        <li class="main "><a href="#1-basic-concepts">1 Basic Concepts</a></li>
+            <li><a href="#cpu-io-burst-cycle">CPU-I/O Burst Cycle</a></li>
+            <li><a href="#cpu-scheduler">CPU Scheduler</a></li>
+            <li><a href="#preemptive-and-nonpreemptive-scheduling">Preemptive and Nonpreemptive Scheduling</a></li>
+            <li><a href="#dispatcher">Dispatcher</a></li>
+        <li class="main "><a href="#2-scheduling-criteria">2 Scheduling Criteria</a></li>
+        <li class="main "><a href="#3-scheduling-algorithms">3 Scheduling Algorithms</a></li>
+            <li><a href="#first-comefirst-serve-scheduling-fcfs">First-Come,First-Serve scheduling, FCFS</a></li>
+            <li><a href="#shortest-job-first-scheduling-sjf">Shortest-job-first scheduling, SJF</a></li>
+            <li><a href="#round-robin-scheduling-rr">Round-Robin scheduling, RR</a></li>
+            <li><a href="#priority-scheduling-algorithm">Priority scheduling algorithm</a></li>
+            <li><a href="#multilevel-queue-scheduling">Multilevel Queue Scheduling</a></li>
+            <li><a href="#multilevel-feedback-queue-scheduling">Multilevel Feedback-Queue Scheduling</a></li>
+        <li class="main "><a href="#4-thread-scheduling">4 Thread Scheduling</a></li>
+            <li><a href="#contention-scope">Contention Scope</a></li>
+            <li><a href="#pthread-scheduling">Pthread Scheduling</a></li>
+        <li class="main "><a href="#5-multi-processor-scheduling">5 Multi-Processor Scheduling</a></li>
+            <li><a href="#approaches-to-multiple-processor-scheduling">Approaches to Multiple-Processor Scheduling</a></li>
+            <li><a href="#multicore-processors">Multicore Processors</a></li>
+            <li><a href="#load-balancing">Load Balancing</a></li>
+            <li><a href="#processor-affinity">Processor Affinity</a></li>
+        <li class="main "><a href="#6-real-time-cpu-scheduling">6 Real-Time CPU Scheduling</a></li>
+            <li><a href="#minimizing-latency">Minimizing latency</a></li>
+            <li><a href="#rate-monotonic-scheduling">Rate-Monotonic Scheduling</a></li>
+        <li class="main "><a href="#7-linux-scheduling">7 Linux Scheduling</a></li>
+            <li><a href="#completely-fair-scheduler">Completely Fair Scheduler</a></li>
+            <li><a href="#load-balancing-on-numa-systems">Load Balancing on NUMA systems</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<h3 id="operating-system-concepts-5-cpu-scheduling"><strong>Operating System Concepts 5 - CPU Scheduling</strong><a class="headerlink" href="#operating-system-concepts-5-cpu-scheduling" title="Permanent link">&para;</a></h3>
+<p>On modern operating systems it is <strong>kernel-level threads</strong> —not processes—that are in fact being scheduled by the operating system. </p>
+<ul>
+<li>User-level threads are managed by a thread library, and the kernel is <em>unaware</em> of them.</li>
+<li>To run on a CPU, user-level threads must ultimately be mapped to an associated kernel-level thread, although this mapping may be indirect and may use a lightweight process (LWP).</li>
+</ul>
+<h3 id="1-basic-concepts">1 Basic Concepts<a class="headerlink" href="#1-basic-concepts" title="Permanent link">&para;</a></h3>
+<h4 id="cpu-io-burst-cycle">CPU-I/O Burst Cycle<a class="headerlink" href="#cpu-io-burst-cycle" title="Permanent link">&para;</a></h4>
+<p>Process execution consists of a <strong>cycle</strong> of CPU execution and I/O wait. 进程执行由CPU执行周期和I/O等待周期组成。</p>
+<ul>
+<li>Processes alternate between these two states. 进程在这两个状态之间切换。</li>
+<li>Process execution begins with a <strong>CPU burst</strong>, which is followed by an <strong>I/O burst</strong> and so on. 进程执行从CPU区间开始，在这之后是I/O区间。</li>
+</ul>
+<p>进程在CPU区间和I/O区间之间切换：</p>
+<p><img alt="alternating sequence of CPU and I:O bursts" src="../ch5/alternating%20sequence%20of%20CPU%20and%20I:O%20bursts.png" /></p>
+<p>The durations of CPU bursts tend to have a frequency curve similar to the figure below. </p>
+<ul>
+<li>The curve is generally characterized as <strong>exponential</strong> or hyperexpoential(超指数).</li>
+<li>A large number of short CPU bursts and a small number of long CPU burst.</li>
+<li>An I/O-bounded program typically has many short CPU bursts. I/O密集程序通常具有很多短CPU区间。</li>
+<li>A CPU-bound program might have a few long CPU bursts.CPU密集程序可能有少量的长CPU区间。</li>
+<li>The distribution can be important when implementing a CPU-scheduling algorithm. 分布有助于选择合适的CPU调度算法。</li>
+</ul>
+<p><img alt="Histogram of CPU-burst durations" src="../ch5/Histogram%20of%20CPU-burst%20durations.png" /></p>
+<h4 id="cpu-scheduler">CPU Scheduler<a class="headerlink" href="#cpu-scheduler" title="Permanent link">&para;</a></h4>
+<p>Whenever the CPU becomes idle, the operating system must select one of the processes in the <strong>ready queue</strong>(就绪队列) to be executed. 每当CPU空闲时，操作系统就必须从就绪队列中选择一个进程来执行。</p>
+<ul>
+<li>The selection process is carried out by the <strong>CPU scheduler</strong>(CPU调度程序).  进程选择由CPU调度程序执行。</li>
+<li>CPU scheduler selects a process from the processes in memory that are ready to execute and allocates the CPU to that process. 调度程序从内存中选择一个能够执行的进程，并为之分配CPU。</li>
+<li>A ready queue can be implemented as a FIFO queue, a priority queue, a tree, or simply an unordered linked list. 就绪队列可以是FIFO队列，优先队列、树或无序链表。</li>
+</ul>
+<h4 id="preemptive-and-nonpreemptive-scheduling">Preemptive and Nonpreemptive Scheduling<a class="headerlink" href="#preemptive-and-nonpreemptive-scheduling" title="Permanent link">&para;</a></h4>
+<p>CPU-scheduling decisions may take place under the following four circumstances: </p>
+<ol>
+<li>When a process switches from the running state to the waiting state (for example, as the result of an I/O request or an invocation of <code class="codehilite">wait()</code> for the termination of a child process) 当一个进程从运行状态切换到等待状态（如：I/O请求，或者调用wait等待一个子进程的终止） </li>
+<li>When a process switches from the running state to the ready state (for example, when an interrupt occurs) 当一个进程从运行状态切换到就绪状态（如：出现中断） </li>
+<li>When a process switches from the waiting state to the ready state (for example, at completion of I/O) 当一个进程从等待状态切换到就绪状态（如：I/O完成） </li>
+<li>When a process terminates 当一个进程终止时</li>
+</ol>
+<p>When scheduling takes place only under circumstances 1 and 4, the scheduling scheme is <strong>nonpreemptive</strong>(非抢占的) or <strong>cooperative</strong>(协作的). Otherwise, it is <strong>preemptive</strong>(抢占的).</p>
+<ul>
+<li>Under nonpreemptive scheduling, once the CPU has been allocated to a process, the process keeps the CPU until it releases it either by terminating or by switching to the waiting state.</li>
+<li>Virtually all modern Operating systems use preemptive scheduling algorithms. </li>
+</ul>
+<h4 id="dispatcher">Dispatcher<a class="headerlink" href="#dispatcher" title="Permanent link">&para;</a></h4>
+<p>The <strong>dispatcher</strong>(分派程序) is the module that gives control of the CPU's core to the process selected by the CPU scheduler. This function involves the following:</p>
+<ul>
+<li>Switching context from one process to another</li>
+<li>Switching to user mode</li>
+<li>Jumping to the proper location in the user program to resume that program</li>
+</ul>
+<p><strong>Dispatch latency</strong> (分派延迟) is the time it takes for the dispatcher to stop one process and start another running.</p>
+<p><img alt="the role of dispatcher" src="../ch5/the%20role%20of%20dispatcher.png" /></p>
+<h3 id="2-scheduling-criteria">2 Scheduling Criteria<a class="headerlink" href="#2-scheduling-criteria" title="Permanent link">&para;</a></h3>
+<p>Scheduling criteria（调度准则) include the following:</p>
+<ul>
+<li><strong>CPU utilization</strong>(CPU利用率)</li>
+<li><strong>Throughput</strong>(吞吐量): the number of processes that are completed per time unit.</li>
+<li><strong>Turnaround time</strong>(周转时间): the interval from the time of submission of a process to the time of completion.</li>
+<li><strong>Waiting time</strong>(等待时间): the sum of time spent waiting in the ready queue.</li>
+<li><strong>Response time</strong>(响应时间): the time from the submission of a request until the first response is produced.</li>
+</ul>
+<h3 id="3-scheduling-algorithms">3 Scheduling Algorithms<a class="headerlink" href="#3-scheduling-algorithms" title="Permanent link">&para;</a></h3>
+<h4 id="first-comefirst-serve-scheduling-fcfs">First-Come,First-Serve scheduling, FCFS<a class="headerlink" href="#first-comefirst-serve-scheduling-fcfs" title="Permanent link">&para;</a></h4>
+<p>By far the simplest CPU-scheduling algorithm is the <strong>first-come first serve scheduling</strong> (先到先服务调度, FCFS) algorithm.</p>
+<ul>
+<li>The implementation of FCFS policy is easily managed with a <strong>FIFO queue</strong>.</li>
+<li>The average <strong>waiting time</strong> under the FCFS policy is often quite <strong>long</strong>.</li>
+<li><strong>Convoy effect</strong>(护航效果) occurs when all the other processes wait for the one big process to get off the CPU. 所有其他进程都等待一个大进程释放CPU，这称之为护航效果。</li>
+<li>The FCFS scheduling algorithm is <strong>nonpreemptive</strong>. FCFS调度算法是非抢占的。</li>
+</ul>
+<h4 id="shortest-job-first-scheduling-sjf">Shortest-job-first scheduling, SJF<a class="headerlink" href="#shortest-job-first-scheduling-sjf" title="Permanent link">&para;</a></h4>
+<p>The <strong>shortest-job-first scheduling</strong> (最短作业优先调度, SJF) algorithm associates with each process the length of the process's next CPU burst.</p>
+<ul>
+<li>When the CPU is available, it is assigned to the process that has the smallest <strong>next</strong> CPU burst.</li>
+<li>It gives the <strong>minimum</strong> average waiting time for a given set of processes.</li>
+<li>The SJF algorithm can be either preemptive or nonpreemptive.<ul>
+<li>Preempt the currently executing process: when a new process arrives at the ready queue while a previous process is still executing. The next CPU burst of the newly arrived process may be shorter than what is left of the currently executing process. </li>
+</ul>
+</li>
+</ul>
+<p>The next CPU burst is generally predicted as an <strong>exponential average</strong> of the measured lengths of previous CPU bursts. Let <span><span class="MathJax_Preview">t_n</span><script type="math/tex">t_n</script></span> be the length of the <span><span class="MathJax_Preview">n</span><script type="math/tex">n</script></span>th CPU burst, and let <span><span class="MathJax_Preview">\tau_{n+1}</span><script type="math/tex">\tau_{n+1}</script></span> be predicted value for the next CPU burst:</p>
+<div>
+<div class="MathJax_Preview">\tau_{n+1}= \alpha t_n + (1-\alpha) \tau_n</div>
+<script type="math/tex; mode=display">\tau_{n+1}= \alpha t_n + (1-\alpha) \tau_n</script>
+</div>
+<p>where <span><span class="MathJax_Preview">0\le\alpha \le 1</span><script type="math/tex">0\le\alpha \le 1</script></span>, commonly <span><span class="MathJax_Preview">\alpha = 1/2</span><script type="math/tex">\alpha = 1/2</script></span>.</p>
+<h4 id="round-robin-scheduling-rr">Round-Robin scheduling, RR<a class="headerlink" href="#round-robin-scheduling-rr" title="Permanent link">&para;</a></h4>
+<p>The <strong>round-robin scheduling</strong>(轮转调度) algorithm is similar to FCFS scheduling, but switch occurs after 1 <strong>time quantum</strong> (时间片).</p>
+<ul>
+<li>Time quantum is a small unit of time, generally from 10 to 100 milliseconds in length.</li>
+<li>The ready queue is treated as a circular queue.</li>
+<li>If the process have a CPU burst of less than 1 time quantum, the  process itself will release the CPU voluntarily.</li>
+<li>otherwise, a context switch will be executed, and the process will be put at the tail of the ready queue.</li>
+</ul>
+<p>The performance of the RR algorithm depends heavily on the size of the time quantum.</p>
+<ul>
+<li>If extremely large, the RR policy is the same as the FCFS policy.</li>
+<li>If extremely small, it'll result in a large number of context switches.</li>
+</ul>
+<h4 id="priority-scheduling-algorithm">Priority scheduling algorithm<a class="headerlink" href="#priority-scheduling-algorithm" title="Permanent link">&para;</a></h4>
+<p>The <strong>priority-scheduling</strong>(优先级调度) algorithm associate each process a priority, and the CPU allocated to the process with the highest priority.</p>
+<ul>
+<li>FCFS: equal-priority</li>
+<li>SJF: the priority is the inverse of the next CPU burst.</li>
+</ul>
+<p>ISSUE: <important>Indefinite blocking</important>(无限阻塞), or <important>starvation</important>(饥饿) <big><u><I>occurs when some low-priority processes waiting indefinitely</I></u></big>.</p>
+<p>SOLUTION: <important>Aging</important>(老化) involves gradually increasing the priority of processes that wait in the system for a long time.</p>
+<h4 id="multilevel-queue-scheduling">Multilevel Queue Scheduling<a class="headerlink" href="#multilevel-queue-scheduling" title="Permanent link">&para;</a></h4>
+<p>For <strong>multilevel queue scheduling</strong>(多级队列调度), there are separate queues for each distinct priority, and priority scheduling simply schedules the process in the highest-priority queue.</p>
+<p>A multilevel queue scheduling algorithm can be used to partition processes into several separate queues based on the process type:</p>
+<p><img alt="multilevel-queue-scheduling" src="../ch5/multilevel-queue-scheduling.png" /></p>
+<p>In addition, there must be scheduling <em><em>among the queues</em></em> :</p>
+<ul>
+<li><strong>Fixed-priority preemptive scheduling</strong>(固定优先级抢占调度): Each queue has absolute priority over lower-priority queues<ul>
+<li>eg. no process in the batch queue, could run unless the queues for real-time processes, system processes, and interactive processes were all empty. </li>
+</ul>
+</li>
+<li><strong>Time-slice among queues</strong>(队列之间划分时间片): each queue gets a certain portion of the CPU time.<ul>
+<li>eg. the foreground queue can be given 80 percent of the CPU time for RR scheduling among its processes, while the background queue receives 20 percent of the CPU to give to its processes on an FCFS basis.</li>
+</ul>
+</li>
+</ul>
+<h4 id="multilevel-feedback-queue-scheduling">Multilevel Feedback-Queue Scheduling<a class="headerlink" href="#multilevel-feedback-queue-scheduling" title="Permanent link">&para;</a></h4>
+<p>The <strong>multilevel feedback queue scheduling</strong>(多级反馈队列调度) algorithm allows a process to move between queues.</p>
+<ul>
+<li>If a process uses too much CPU time, it will be moved to a lower-priority queue.<ul>
+<li>It leaves I/O-bound and interactive processes—which are typically characterized by short CPU bursts —in the higher-priority queues. </li>
+</ul>
+</li>
+<li>A process that waits too long in a lower-priority queue may be moved to a higher-priority queue.<ul>
+<li>This form of aging prevent starvation.</li>
+</ul>
+</li>
+</ul>
+<p>In general, a multilevel feedback queue scheduler is defined by the following parameters:</p>
+<ul>
+<li>The number of queues</li>
+<li>The scheduling algorithm for each queue</li>
+<li>The method used to determine when to upgrade a process to a higher priority queue</li>
+<li>The method used to determine when to demote a process to a lower priority queue</li>
+<li>The method used to determine which queue a process will enter when that process needs service</li>
+</ul>
+<h3 id="4-thread-scheduling">4 Thread Scheduling<a class="headerlink" href="#4-thread-scheduling" title="Permanent link">&para;</a></h3>
+<h4 id="contention-scope">Contention Scope<a class="headerlink" href="#contention-scope" title="Permanent link">&para;</a></h4>
+<p><strong>Process contention scope</strong>(PCS，进程竞争范围), specifies that competition for the CPU takes place among threads belonging to the same process.</p>
+<ul>
+<li>the thread library schedules user-level threads to run on an available LWP, on systems implementing the many-to-one and many-to-many models.</li>
+</ul>
+<p>To decide which kernel-level thread to schedule onto a CPU, the kernel uses <strong>system-contention scope</strong>(SCS, 系统竞争范围).</p>
+<ul>
+<li>Systems using the one-to-one model, such as Windows and Linux schedule threads using only SCS.</li>
+</ul>
+<h4 id="pthread-scheduling">Pthread Scheduling<a class="headerlink" href="#pthread-scheduling" title="Permanent link">&para;</a></h4>
+<p><strong>Pthreads</strong> identifies the following contention scope values:</p>
+<ul>
+<li><code class="codehilite">PTHREAD_SCOPE_PROCESS</code> schedules threads using PCS scheduling.</li>
+<li><code class="codehilite">PTHREAD_SCOPE_SYSTEM</code> schedules threads using SCS scheduling.</li>
+</ul>
+<p>The Pthread IPC (Interprocess Communication) provides two functions for setting—and getting—the contention scope policy:</p>
+<ul>
+<li><code class="codehilite">pthread_attr_setscope(pthread_attr_t *attr, int scope)</code></li>
+<li><code class="codehilite">pthread_attr_getscope(pthread_attr_t *attr, int *scope)</code></li>
+</ul>
+<p> <div class=codehilite><pre><span class=cp>#include</span> <span class=cpf>&lt;pthread.h&gt;</span><span class=cp></span>
+<span class=cp>#include</span> <span class=cpf>&lt;stdio.h&gt;</span><span class=cp></span>
+<span class=cp>#define NUM_THREADS 5</span>
+
+<span class=cm>/* the thread runs in this function */</span>
+<span class=kt>void</span> <span class=o>*</span><span class=nf>runner</span><span class=p>(</span><span class=kt>void</span> <span class=o>*</span><span class=n>param</span><span class=p>);</span> 
+
+<span class=kt>int</span> <span class=nf>main</span><span class=p>(</span><span class=kt>int</span> <span class=n>argc</span><span class=p>,</span> <span class=kt>char</span> <span class=o>*</span><span class=n>argv</span><span class=p>[])</span>
+<span class=p>{</span>
+    <span class=kt>int</span> <span class=n>i</span><span class=p>,</span> <span class=n>scope</span><span class=p>;</span>
+    <span class=n>pthread_t</span> <span class=n>tid</span><span class=p>[</span><span class=n>NUM_THREADS</span><span class=p>];</span>     <span class=cm>/* the thread identifier */</span>
+    <span class=n>pthread_attr_t</span> <span class=n>attr</span><span class=p>;</span>        <span class=cm>/* set of attributes for the thread */</span>
+
+    <span class=cm>/* get the default attributes */</span>
+    <span class=n>pthread_attr_init</span><span class=p>(</span><span class=o>&amp;</span><span class=n>attr</span><span class=p>);</span>
+
+    <span class=cm>/* first inquire on the current scope */</span>
+    <span class=k>if</span> <span class=p>(</span><span class=n>pthread_attr_getscope</span><span class=p>(</span><span class=o>&amp;</span><span class=n>attr</span><span class=p>,</span><span class=o>&amp;</span><span class=n>scope</span><span class=p>)</span> <span class=o>!=</span> <span class=mi>0</span><span class=p>)</span>
+        <span class=n>fprintf</span><span class=p>(</span><span class=n>stderr</span><span class=p>,</span> <span class=s>&quot;Unable to get scheduling scope.</span><span class=se>\n</span><span class=s>&quot;</span><span class=p>);</span>
+    <span class=k>else</span> <span class=p>{</span>
+        <span class=k>if</span> <span class=p>(</span><span class=n>scope</span> <span class=o>==</span> <span class=n>PTHREAD_SCOPE_PROCESS</span><span class=p>)</span>
+            <span class=n>printf</span><span class=p>(</span><span class=s>&quot;PTHREAD_SCOPE_PROCESS</span><span class=se>\n</span><span class=s>&quot;</span><span class=p>);</span>
+        <span class=k>else</span> <span class=k>if</span> <span class=p>(</span><span class=n>scope</span> <span class=o>==</span> <span class=n>PTHREAD_SCOPE_SYSTEM</span><span class=p>)</span>
+            <span class=n>printf</span><span class=p>(</span><span class=s>&quot;PTHREAD_SCOPE_SYSTEM</span><span class=se>\n</span><span class=s>&quot;</span><span class=p>);</span>
+        <span class=k>else</span> 
+            <span class=n>fprintf</span><span class=p>(</span><span class=n>stderr</span><span class=p>,</span><span class=s>&quot;Illegal scope value.</span><span class=se>\n</span><span class=s>&quot;</span><span class=p>);</span>
+    <span class=p>}</span>
+
+    <span class=cm>/* set the scheduling algorithm to PCS or SCS */</span>
+    <span class=k>if</span> <span class=p>(</span><span class=n>pthread_attr_setscope</span><span class=p>(</span><span class=o>&amp;</span><span class=n>attr</span><span class=p>,</span> <span class=n>PTHREAD_SCOPE_SYSTEM</span><span class=p>)</span> <span class=o>!=</span> <span class=mi>0</span><span class=p>)</span>
+        <span class=n>printf</span><span class=p>(</span><span class=s>&quot;unable to set scheduling policy.</span><span class=se>\n</span><span class=s>&quot;</span><span class=p>);</span>
+
+    <span class=cm>/* create the threads */</span>
+    <span class=k>for</span> <span class=p>(</span><span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>NUM_THREADS</span><span class=p>;</span> <span class=n>i</span><span class=o>++</span><span class=p>)</span> 
+        <span class=n>pthread_create</span><span class=p>(</span><span class=o>&amp;</span><span class=n>tid</span><span class=p>[</span><span class=n>i</span><span class=p>],</span><span class=o>&amp;</span><span class=n>attr</span><span class=p>,</span><span class=n>runner</span><span class=p>,</span><span class=nb>NULL</span><span class=p>);</span> 
+
+    <span class=cm>/**</span>
+<span class=cm>     * Now join on each thread</span>
+<span class=cm>     */</span>
+    <span class=k>for</span> <span class=p>(</span><span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>NUM_THREADS</span><span class=p>;</span> <span class=n>i</span><span class=o>++</span><span class=p>)</span> 
+        <span class=n>pthread_join</span><span class=p>(</span><span class=n>tid</span><span class=p>[</span><span class=n>i</span><span class=p>],</span> <span class=nb>NULL</span><span class=p>);</span>
+<span class=p>}</span>
+
+<span class=cm>/**</span>
+<span class=cm> * The thread will begin control in this function.</span>
+<span class=cm> */</span>
+<span class=kt>void</span> <span class=o>*</span><span class=nf>runner</span><span class=p>(</span><span class=kt>void</span> <span class=o>*</span><span class=n>param</span><span class=p>)</span> 
+<span class=p>{</span>
+    <span class=cm>/* do some work ... */</span>
+
+    <span class=n>pthread_exit</span><span class=p>(</span><span class=mi>0</span><span class=p>);</span>
+<span class=p>}</span>
+</pre></div></p>
+<h3 id="5-multi-processor-scheduling">5 Multi-Processor Scheduling<a class="headerlink" href="#5-multi-processor-scheduling" title="Permanent link">&para;</a></h3>
+<h4 id="approaches-to-multiple-processor-scheduling">Approaches to Multiple-Processor Scheduling<a class="headerlink" href="#approaches-to-multiple-processor-scheduling" title="Permanent link">&para;</a></h4>
+<p><strong>Asymmetric multiprocessing</strong> (AMP，非对称多处理)</p>
+<ul>
+<li>All scheduling decisions, I/O processing, and other system activities handled by a single processor -- the master server; the other processors execute only user code.</li>
+<li>It is simple because only one core accesses the system data structures, reducing the need for data sharing.</li>
+<li>The master server becomes a potential bottleneck where overall system performance may be reduced.</li>
+</ul>
+<p><strong>Symmetric multiprocessing</strong> (SMP， 对称多处理)</p>
+<ul>
+<li>Each processor is self-scheduling.</li>
+<li>It provides two possible strategies for organizing the threads eligible to be scheduled:<ul>
+<li>All threads may be in a <em>common ready queue</em>.<ul>
+<li>Use some form of locking to protect the common ready queue from race condition</li>
+<li>All accesses to the queue would require lock ownership, it would be a performance bottleneck.</li>
+</ul>
+</li>
+<li>Each processor may have its own <em>private queue</em> of threads.<ul>
+<li>Most common approach on systems supporting SMP</li>
+<li>More efficient use of cache memory.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><img alt="organization of ready queues" src="../ch5/organization%20of%20ready%20queues.png" /></p>
+<h4 id="multicore-processors">Multicore Processors<a class="headerlink" href="#multicore-processors" title="Permanent link">&para;</a></h4>
+<p><em>Issue</em> : memory stalls occurs when a processor accesses memory, it spends a significant amount of time waiting for the data to become available.</p>
+<ul>
+<li>Occurs primarily because modern processors operate at much faster speeds than memory</li>
+<li>Occur because of a cache miss as well</li>
+</ul>
+<p><img alt="memory stall" src="../ch5/memory%20stall.png" /></p>
+<p><em>Solution</em> : many recent hardware designs have implemented multithreaded processing cores in which two (or more) <strong>hardware threads</strong>(硬件线程) are assigned to each core.</p>
+<ul>
+<li>If one hardware thread stalls while waiting for memory, the core can switch to another thread.</li>
+<li>From an operating system perspective, each hardware thread maintains its architectural state, such as instruction pointer and register set, and thus appears as a logical CPU that is available to run a software thread. This technique is known as <strong>chip multithreading</strong> (CMT, 芯片多线程). Intel use the term <strong>hyper-threading</strong>(超线程).</li>
+<li><strong>NOTE</strong>: The resources of the physical core (such as caches and pipelines) are shared among its hardware threads, and a processing core can only execute <strong>one</strong> hardware thread at a time.</li>
+</ul>
+<p><img alt="Chip multithreading" src="../ch5/Chip%20multithreading.png" /></p>
+<p>Two levels of scheduling needed:</p>
+<ul>
+<li>It chooses which software thread to run on each hardware thread.<ul>
+<li>It may choose any scheduling algorithm. </li>
+</ul>
+</li>
+<li>It chooses which hardware thread to run on CPU.<ul>
+<li>Use a simple round-robin algorithm</li>
+<li>assigned to each hardware thread a dynamic urgency value ranging from 0 to 7, with 0 representing the lowest urgency and 7 the highest. </li>
+</ul>
+</li>
+</ul>
+<p><img alt="two levels of scheduling" src="../ch5/two%20levels%20of%20scheduling.png" /></p>
+<h4 id="load-balancing">Load Balancing<a class="headerlink" href="#load-balancing" title="Permanent link">&para;</a></h4>
+<p><strong>Load balancing</strong>(负载均衡) attempts to keep the workload evenly distributed across all processors in an SMP system.</p>
+<p>Two general approaches to load balancing:</p>
+<ul>
+<li><strong>Push migration</strong>: a specific task periodically checks the load on each processor and -- if it finds an imbalance -- evenly distributes the load by moving (or pushing) threads from overloaded to idle or less-busy processors.</li>
+<li><strong>Pull migration</strong>: an idle processor pulls a waiting task from a busy processor.</li>
+<li>They are not mutually exclusive and are, in fact, often implemented in parallel on load-balancing systems.</li>
+</ul>
+<h4 id="processor-affinity">Processor Affinity<a class="headerlink" href="#processor-affinity" title="Permanent link">&para;</a></h4>
+<p>Because of the high cost of invalidating and repopulating caches, most operating systems with SMP support try to <em>avoid migrating</em> a thread from one processor to another and instead attempt to keep a thread running on the same processor and take advantage of a warm cache. This is known as <strong>processor affinity</strong>(处理器亲和性)。</p>
+<p>Common ready queue and per-processor ready queue(section 5.1):</p>
+<ul>
+<li>If we adopt the approach of a common ready queue, a thread may be selected for execution by any processor. Thus, if a thread is scheduled on a new processor, that processor’s cache must be repopulated.</li>
+<li>With private, per-processor ready queues, a thread is always scheduled on the same processor and can therefore benefit from the contents of a warm cache.</li>
+</ul>
+<p>The main-memory architecture of a system can affect processor affinity issues as well. <strong>Non-uniform memory access</strong>(NUMA, 非一致性内存访问) where there are two physical processor chips each with their own CPU and local memory. A CPU has faster access to its local memory than to memory local to another CPU.</p>
+<p><img alt="numa and CPU scheduling" src="../ch5/numa%20and%20CPU%20scheduling.png" /></p>
+<p>Interestingly, load balancing often <strong>counteracts</strong> the benefits of processor affinity.</p>
+<h3 id="6-real-time-cpu-scheduling">6 Real-Time CPU Scheduling<a class="headerlink" href="#6-real-time-cpu-scheduling" title="Permanent link">&para;</a></h3>
+<p>Two kinds of real-time systems exist:</p>
+<ul>
+<li><strong>Soft real-time systems</strong>(软实时系统) provide no guarantee as to when a critical real-time process will be scheduled.</li>
+<li><strong>Hard real-time system</strong>(硬实时系统) have stricter requirements, A task must be serviced by its deadline; service after the deadline has expired is the same as no service at all.</li>
+</ul>
+<h4 id="minimizing-latency">Minimizing latency<a class="headerlink" href="#minimizing-latency" title="Permanent link">&para;</a></h4>
+<p>When an event occurs, the system must respond to and service it as quickly as possible. </p>
+<p><strong>Event latency</strong> is the amount of time that elapses from when an event occurs to when it is serviced.</p>
+<p><img alt="demo_of_event_latency" src="../figures/demo_of_event_latency.png" /></p>
+<p>Two types of latencies affect the performance of real-time systems:</p>
+<ul>
+<li><strong>Interrupt latency</strong>: the period of time from the arrival of an interrupt at the CPU to the start of the routine that services the interrupt<ul>
+<li>Fist, complete the instruction it is executing and determine the type of interrupt that occurred.</li>
+<li>Second, save the state of the current process before servicing the interrupt using the specific interrupt service routine</li>
+<li>One important factor contributing to interrupt latency is the amount of time interrupts may be disabled while kernel data structures are being updated. Real-time operating systems require that interrupts be disabled for only very short periods of time.</li>
+</ul>
+</li>
+<li><strong>Dispatch latency</strong>: the time required for the dispatcher to stop one process and start another is known as dispatch latency.</li>
+</ul>
+<p><img alt="demo_of_event_latency_dispatch_latency_interrupt_latency" src="../figures/demo_of_event_latency_dispatch_latency_interrupt_latency.png" /></p>
+<h4 id="rate-monotonic-scheduling">Rate-Monotonic Scheduling<a class="headerlink" href="#rate-monotonic-scheduling" title="Permanent link">&para;</a></h4>
+<p>The <strong>rate-monotonic scheduling</strong>(单调速率调度) algorithm schedules periodic tasks using a static priority policy with preemption. </p>
+<ul>
+<li>Upon entering the system, each periodic task is assigned a <em><em>priority inversely based on its period</em></em> . The shorter the period, the higher the priority; the longer the period, the lower the priority.</li>
+<li>It assumes that the processing time of a periodic process is the same for each CPU burst. That is, every time a process acquires the CPU, the duration of its CPU burst is the same.</li>
+</ul>
+<p>Before we proceed with the details, we must define certain characteristics of the processes that are to be scheduled.</p>
+<ul>
+<li>The processes are considered <strong>periodic</strong>.</li>
+<li>Once a periodic process has acquired the CPU, it has a fixed processing <strong>time</strong> <span><span class="MathJax_Preview">t</span><script type="math/tex">t</script></span>, a <strong>deadline</strong> <span><span class="MathJax_Preview">d</span><script type="math/tex">d</script></span> by which it must be serviced by the CPU, and a <strong>period</strong> <span><span class="MathJax_Preview">p</span><script type="math/tex">p</script></span>.</li>
+<li>The <strong>rate</strong> of a periodic task is <span><span class="MathJax_Preview">1/p</span><script type="math/tex">1/p</script></span>.
+<img alt="periodic_task" src="../figures/periodic_task.png" /></li>
+</ul>
+<p>Let's consider an example. We have two processes, <span><span class="MathJax_Preview">P_1</span><script type="math/tex">P_1</script></span> and <span><span class="MathJax_Preview">P_2</span><script type="math/tex">P_2</script></span>. </p>
+<ul>
+<li>The periods: - <span><span class="MathJax_Preview">P_1=50</span><script type="math/tex">P_1=50</script></span> and <span><span class="MathJax_Preview">P_2=100</span><script type="math/tex">P_2=100</script></span> </li>
+<li>The processing time: <span><span class="MathJax_Preview">t_1=20</span><script type="math/tex">t_1=20</script></span> and <span><span class="MathJax_Preview">t_2=35</span><script type="math/tex">t_2=35</script></span> </li>
+<li>The deadline requires that it complete its CPU burst by the start of its next period.</li>
+</ul>
+<p><img alt="an_example_of_rate_monotonic_scheduling" src="../figures/an_example_of_rate_monotonic_scheduling.png" /></p>
+<p>Now suppose we use rate-monotonic scheduling:</p>
+<ul>
+<li>We assign <span><span class="MathJax_Preview">P_1</span><script type="math/tex">P_1</script></span> a higher priority than <span><span class="MathJax_Preview">P_2</span><script type="math/tex">P_2</script></span> because the period of <span><span class="MathJax_Preview">P_1</span><script type="math/tex">P_1</script></span> is shorter than that of <span><span class="MathJax_Preview">P_2</span><script type="math/tex">P_2</script></span>. </li>
+<li><span><span class="MathJax_Preview">P_1</span><script type="math/tex">P_1</script></span> starts first and completes its CPU burst at time 20, thereby meeting its first deadline. </li>
+<li><span><span class="MathJax_Preview">P_2</span><script type="math/tex">P_2</script></span> starts running at this point and runs until time 50. At this time, it is preempted by <span><span class="MathJax_Preview">P_1</span><script type="math/tex">P_1</script></span> , although it still has 5 milliseconds remaining in its CPU burst. </li>
+<li><span><span class="MathJax_Preview">P_1</span><script type="math/tex">P_1</script></span> completes its CPU burst at time 70, at which point the scheduler resumes <span><span class="MathJax_Preview">P_2</span><script type="math/tex">P_2</script></span> . </li>
+<li><span><span class="MathJax_Preview">P_2</span><script type="math/tex">P_2</script></span> completes its CPU burst at time 75, also meeting its first deadline. </li>
+<li>The system is idle until time 100, when <span><span class="MathJax_Preview">P_1</span><script type="math/tex">P_1</script></span> is scheduled again.</li>
+</ul>
+<h3 id="7-linux-scheduling">7 Linux Scheduling<a class="headerlink" href="#7-linux-scheduling" title="Permanent link">&para;</a></h3>
+<h4 id="completely-fair-scheduler">Completely Fair Scheduler<a class="headerlink" href="#completely-fair-scheduler" title="Permanent link">&para;</a></h4>
+<p>The <strong><em>Completely Fair Scheduler</em></strong>(CFS，完全公平调度算法) is the default Linux scheduling algorithm after release 2.6.23 of the kernel.</p>
+<ul>
+<li>Each task has a <strong>virtual runtime</strong>(虚拟运行时) value, which is its actual runtime normalized to the number of ready tasks.</li>
+<li>Task priority is incorporated as a <strong>decay factor</strong> into this formula. <ul>
+<li>Lower-priority tasks have higher rates of decay than higher-priority tasks.</li>
+</ul>
+</li>
+<li>The CPU is allocated to the task with the <em>smallest</em> virtual runtime value.</li>
+</ul>
+<p>Standard Linux kernels implement two <strong>scheduling classes</strong>(调度类): </p>
+<ul>
+<li>a default scheduling class using the CFS scheduling algorithm </li>
+<li>a real-time scheduling class.</li>
+</ul>
+<p>Each runnable task is placed in a <strong>red-black tree</strong> - a balanced binary search tree whose key is based on the value of virtual runtime <code class="codehilite">vruntime</code>.</p>
+<ul>
+<li>discover the leftmost node will require <span><span class="MathJax_Preview">O(\log N)</span><script type="math/tex">O(\log N)</script></span> operations.</li>
+<li>Linux scheduler caches the leftmost node in the variable <code class="codehilite">rb_leftmost</code>, and requires only retrieving the cached value.</li>
+</ul>
+<p><img alt="" src="../ch5/15327413379278.gif" /></p>
+<h4 id="load-balancing-on-numa-systems">Load Balancing on NUMA systems<a class="headerlink" href="#load-balancing-on-numa-systems" title="Permanent link">&para;</a></h4>
+<p>Problem: On NUMA systems, migrating a thread may result in a memory access penalty due to either having to invalidate cache contents or, incurring longer memory access times.</p>
+<p>SOLUTION: Linux identifies a hierarchical system of <strong>scheduling domains</strong>(调度域) ——  a set of CPU cores that can be balanced against one another.</p>
+<p><img alt="NUMA-aware load balancing with Linux CFS schedule" src="../figures/NUMA-aware%20load%20balancing%20with%20Linux%20CFS%20scheduler.png" /></p>
+<p>The cores in each scheduling domain are grouped according to how they share the resources of the system.</p>
+<ul>
+<li>Pairs of cores share a level 2 (L2) cache and are thus organized into separate domain 0 and domain 1 .</li>
+<li>These two domains may share a level 3 (L3) cache, and are therefore organized into a processor-level domain (also known as a NUMA node).</li>
+</ul>
+<p>The general strategy behind CFS is <em>to balance loads within domains, beginning at the lowest level of the hierarchy</em>.</p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>var base_url = '../..';</script>
+        <script src="../../js/base.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+        <script src="../../extra_javascript/tabhack.js"></script>
+        <script src="../../search/require.js"></script>
+        <script src="../../search/search.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td><kbd>&larr;</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td><kbd>&rarr;</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    </body>
+</html>

@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <meta name="author" content="Zhenhua Wang">
+        <link rel="canonical" href="http://larryim.cc/note/hfdp/Appendix/">
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+        <title>Appendix: Design Pattern in Java Library - Zhenhua's Notes</title>
+        <link href="../../css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="../../css/font-awesome-4.5.0.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="../../css/highlight.css">
+        <link href="../../extra_css/custom.css" rel="stylesheet">
+        <link href="../../extra_css/custom.js" rel="stylesheet">
+        <link href="../../extra_css/friendly.css" rel="stylesheet">
+        <link href="../../extra_css/theme.css" rel="stylesheet">
+        <link href="../../extra_css/mkdocs/js/lunr-0.5.7.min.js" rel="stylesheet">
+        <link href="../../extra_css/mkdocs/js/mustache.min.js" rel="stylesheet">
+        <link href="../../extra_css/mkdocs/js/require.js" rel="stylesheet">
+        <link href="../../extra_css/mkdocs/js/search.js" rel="stylesheet">
+        <link href="../../extra_css/mkdocs/js/text.js" rel="stylesheet">
+        <link href="../../extra_css/code-tab.css" rel="stylesheet">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="../../js/jquery-1.10.2.min.js"></script>
+        <script src="../../js/bootstrap-3.0.3.min.js"></script>
+        <script src="../../js/highlight.pack.js"></script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="../..">Zhenhua's Notes</a>
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+                <!-- Main navigation -->
+                <ul class="nav navbar-nav">
+                    <li >
+                        <a href="../..">Home</a>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">OSC <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../../osc/">Contents</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch1/">Chapter 1: Introduction </a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch2/">Chapter 2: Operating System structures</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch3/">Chapter 3: Processes</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch4/">Chapter 4: Threads and Concurrency</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch5/">Chapter 5: CPU Scheduling</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch6/">Chapter 6: Synchronization Tools</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch7/">Chapter 7: Synchronization Examples</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch8/">Chapter 8: Deadlocks</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch9/">Chapter 9: Main Memory</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch10/">Chapter 10: Virtual Memory</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch11/">Chapter 11: Mass-Storage Structure</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch13/">Chapter 13: File-System Interfaces</a>
+</li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">CSAPP <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../../csapp/">Contents</a>
+</li>
+                            
+<li >
+    <a href="../../csapp/ch1/">Chapter 1: 计算机系统漫游</a>
+</li>
+                            
+<li >
+    <a href="../../csapp/ch2/">Chapter 2: 信息的表示和处理</a>
+</li>
+                            
+<li >
+    <a href="../../csapp/ch3/">Chapter 3: 程序的机器级表示</a>
+</li>
+                            
+<li >
+    <a href="../../csapp/ch4/">Chapter 4: 处理器体系结构</a>
+</li>
+                            
+<li >
+    <a href="../../csapp/ch5/">Chapter 5: 优化程序性能</a>
+</li>
+                            
+<li >
+    <a href="../../csapp/ch6/">Chapter 6: 存储器层次结构</a>
+</li>
+                            
+<li >
+    <a href="../../csapp/ch7/">Chapter 7: 链接</a>
+</li>
+                            
+<li >
+    <a href="../../csapp/ch8/">Chapter 8: 异常控制流</a>
+</li>
+                            
+<li >
+    <a href="../../csapp/ch9/">Chapter 9: 虚拟内存</a>
+</li>
+                            
+<li >
+    <a href="../../csapp/ch10/">Chapter 10: 系统级I/O</a>
+</li>
+                            
+<li >
+    <a href="../../csapp/ch11/">Chapter 11: 网络编程</a>
+</li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">HFJ <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../../hfj/">Contents</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch1/">Chapter 1: Dive in A Quick Dip</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch2/">Chapter 2: Classes and Objects</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch3/">Chapter 3: Primitives and References</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch4/">Chapter 4: Methods use Instance Variables</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch5/">Chapter 5: Writing a Program</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch6/">Chapter 6: Get to Know the Java API</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch7/">Chapter 7: Inheritance and Polymorphism</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch8/">Chapter 8: Interfaces and Abstract Classes</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch9/">Chapter 9: Constructors and Garbage Collection</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch10/">Chapter 10: Numbers and Statics</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch11/">Chapter 11: Exception Handling</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch12/">Chapter 12: Getting GUI</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch13/">Chapter 13: Using Swing</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch14/">Chapter 14: Serialization and File I/O</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch15/">Chapter 15: Networking and Threads</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch16/">Chapter 16: Collections and Generics</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch17/">Chapter 17: Packages, Jars and Deployment</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch18/">Chapter 18: Remote deploy with RMI</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/Appendix/">Appendix: The Top Ten Topics</a>
+</li>
+                        </ul>
+                    </li>
+                    <li class="dropdown active">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">HFDP <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../">Contents</a>
+</li>
+                            
+<li >
+    <a href="../ch1/">Chapter 1: Strategy Pattern </a>
+</li>
+                            
+<li >
+    <a href="../ch2/">Chapter 2: Observer Pattern</a>
+</li>
+                            
+<li >
+    <a href="../ch3/">Chapter 3: Decorator Pattern </a>
+</li>
+                            
+<li >
+    <a href="../ch4/">Chapter 4: Factory Pattern</a>
+</li>
+                            
+<li >
+    <a href="../ch5/">Chapter 5: Singleton Pattern</a>
+</li>
+                            
+<li >
+    <a href="../ch6/">Chapter 6: Command Pattern</a>
+</li>
+                            
+<li >
+    <a href="../ch7/">Chapter 7: Adapter and Facade Patterns</a>
+</li>
+                            
+<li >
+    <a href="../ch8/">Chapter 8: Template Method Pattern</a>
+</li>
+                            
+<li >
+    <a href="../ch9/">Chapter 9: Iterator and Composite Patterns</a>
+</li>
+                            
+<li >
+    <a href="../ch10/">Chapter 10: State Pattern</a>
+</li>
+                            
+<li >
+    <a href="../ch11/">Chapter 11: Proxy Pattern</a>
+</li>
+                            
+<li >
+    <a href="../ch12/">Chapter 12: Compound Pattern</a>
+</li>
+                            
+<li >
+    <a href="../ch13/">Chapter 13: Better Living with Patterns</a>
+</li>
+                            
+<li class="active">
+    <a href="./">Appendix: Design Pattern in Java Library</a>
+</li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">TIJ <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../../tij/">Contents</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch1/">Chapter 1: Introduction</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch2/">Chapter 2: Introduction to Objects</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch3/">Chapter 3: Everything is an Object</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch4/">Chapter 4: Opertors</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch5/">Chapter 5: Controlling Execution</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch6/">Chapter 6: Initialization & Cleanup</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch7/">Chapter 7: Access Control</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch8/">Chapter 8: Reusing Clases</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch9/">Chapter 9: Polymorphism</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch10/">Chapter 10: Interfaces</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch11/">Chapter 11: Inner Classes</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch12/">Chapter 12: Holding Your Objects</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch13/">Chapter 13: Error Handling with Exceptions</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch14/">Chapter 14: Strings</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch15/">Chapter 15: Type Information</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch16/">Chapter 16: Generics</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch17/">Chapter 17: Arrays</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch18/">Chapter 18: Containers in Depth</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch19/">Chapter 19: I/O</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch20/">Chapter 20: Enumerated Types</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch21/">Chapter 21: Annotations</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch22/">Chapter 22: Concurrency</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch23/">Chapter 23: Graphical User Interfaces</a>
+</li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">CPJ <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../../cpj/">Contents</a>
+</li>
+                            
+<li >
+    <a href="../../cpj/ch1/">Concurrent Programming in Java 1: Threads and Locks</a>
+</li>
+                            
+<li >
+    <a href="../../cpj/ch2/">Concurrent Programming in Java 2: Critical Sections and Isolation</a>
+</li>
+                            
+<li >
+    <a href="../../cpj/ch3/">Concurrent Programming in Java 3: Actors</a>
+</li>
+                            
+<li >
+    <a href="../../cpj/ch4/">Concurrent Programming in Java 4: Concurrent Data Structures</a>
+</li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">HADOOP <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../../hadoop/">Contents</a>
+</li>
+                            
+<li >
+    <a href="../../hadoop/ch1/">Chapter 1: Meet Hadoop</a>
+</li>
+                            
+<li >
+    <a href="../../hadoop/ch2/">Chapter 2: MapReduce</a>
+</li>
+                            
+<li >
+    <a href="../../hadoop/ch3/">Chapter 3: The Hadoop Distributed FileSystem</a>
+</li>
+                            
+<li >
+    <a href="../../hadoop/ch4/">Chapter 4: YARN</a>
+</li>
+                            
+<li >
+    <a href="../../hadoop/ch5/">Chapter 5: Hadoop I/O</a>
+</li>
+                            
+<li >
+    <a href="../../hadoop/ch6/">Chapter 6: Developing a MapReduce Application</a>
+</li>
+                            
+<li >
+    <a href="../../hadoop/ch7/">Chapter 7: How MapReduce Works</a>
+</li>
+                            
+<li >
+    <a href="../../hadoop/ch8/">Chapter 8: MapReduce Types and Formats</a>
+</li>
+                            
+<li >
+    <a href="../../hadoop/ch9/">Chapter 9: MapReduce Features</a>
+</li>
+                            
+<li >
+    <a href="../../hadoop/ch10/">Chapter 10: Setting Up a Hadoop Cluster</a>
+</li>
+                            
+<li >
+    <a href="../../hadoop/ch11/">Chapter 11: Adminstering Hadoop</a>
+</li>
+                            
+<li >
+    <a href="../../hadoop/ch12/">Chapter 12: Avro</a>
+</li>
+                            
+<li >
+    <a href="../../hadoop/ch13/">Chapter 13: Parquet</a>
+</li>
+                            
+<li >
+    <a href="../../hadoop/ch14/">Chapter 14: Flume</a>
+</li>
+                            
+<li >
+    <a href="../../hadoop/ch15/">Chapter 15: Sqoop</a>
+</li>
+                            
+<li >
+    <a href="../../hadoop/ch16/">Chapter 16: Pig</a>
+</li>
+                            
+<li >
+    <a href="../../hadoop/ch17/">Chapter 17: Hive</a>
+</li>
+                            
+<li >
+    <a href="../../hadoop/ch18/">Chapter 18: Crunch</a>
+</li>
+                            
+<li >
+    <a href="../../hadoop/ch19/">Chapter 19: Spark</a>
+</li>
+                            
+<li >
+    <a href="../../hadoop/ch20/">Chapter 20: HBase</a>
+</li>
+                            
+<li >
+    <a href="../../hadoop/ch21/">Chapter 21: ZooKeeper</a>
+</li>
+                            
+<li >
+    <a href="../../hadoop/ch22/">Chapter 22: Composable Data at Center</a>
+</li>
+                            
+<li >
+    <a href="../../hadoop/ch23/">Chapter 23: Biological Data Science: Saving Lives with Software</a>
+</li>
+                            
+<li >
+    <a href="../../hadoop/ch24/">Chapter 24: Cascading</a>
+</li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">UJVM <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../../ujvm/">Contents</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch1/">Chapter 1 : 走进Java</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch2/">Chapter 2 : Java内存区域与内存溢出正常</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch3/">Chapter 3 : 垃圾收集器与内存分配策略</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch4/">Chapter 4 : 虚拟机性能监控与故障处理工具</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch5/">Chapter 5 : 调优案例分析与实战</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch6/">Chapter 6 : 类文件结构</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch7/">Chapter 7 : 虚拟机类加载机制</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch8/">Chapter 8 : 虚拟机字节码执行引擎</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch9/">Chapter 9 : 类加载及执行子系统的案例与实战</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch10/">Chapter 10 : 早期(编译期)优化</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch11/">Chapter 11 : 晚期(运行期)优化</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch12/">Chapter 12 : Java内存模型与线程</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch13/">Chapter 13 : 线程安全与锁优化</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/AppendixC/">Appendix HotSpot虚拟机主要参数列表</a>
+</li>
+                        </ul>
+                    </li>
+                    <li >
+                        <a href="../../books/">Books</a>
+                    </li>
+                </ul>
+
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                        <i class="fa fa-search"></i> Search
+                    </a>
+                </li>
+                    <li >
+                        <a rel="next" href="../ch13/">
+                            <i class="fa fa-arrow-left"></i> Previous
+                        </a>
+                    </li>
+                    <li >
+                        <a rel="prev" href="../../tij/">
+                            Next <i class="fa fa-arrow-right"></i>
+                        </a>
+                    </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#appendix-design-pattern-in-java-library">Appendix - Design Pattern in Java Library</a></li>
+        <li class="main "><a href="#1-creational-patterns">1 Creational Patterns</a></li>
+            <li><a href="#abstract-factory">Abstract Factory</a></li>
+            <li><a href="#builder">Builder</a></li>
+            <li><a href="#factory-method">Factory Method</a></li>
+            <li><a href="#prototype">Prototype</a></li>
+            <li><a href="#singleton">Singleton</a></li>
+        <li class="main "><a href="#2-structural-patterns">2 Structural Patterns</a></li>
+            <li><a href="#adapter">Adapter</a></li>
+            <li><a href="#bridge">Bridge</a></li>
+            <li><a href="#composite">Composite</a></li>
+            <li><a href="#decorator">Decorator</a></li>
+            <li><a href="#facade">Facade</a></li>
+            <li><a href="#flyweight">Flyweight</a></li>
+            <li><a href="#proxy">Proxy</a></li>
+        <li class="main "><a href="#3-behavioral-patterns">3 Behavioral patterns</a></li>
+            <li><a href="#chain-of-responsibility">Chain of responsibility</a></li>
+            <li><a href="#command">Command</a></li>
+            <li><a href="#interpreter">Interpreter</a></li>
+            <li><a href="#iterator">Iterator</a></li>
+            <li><a href="#mediator">Mediator</a></li>
+            <li><a href="#memento">Memento</a></li>
+            <li><a href="#observer">Observer</a></li>
+            <li><a href="#state">State</a></li>
+            <li><a href="#strategy">Strategy</a></li>
+            <li><a href="#template-method">Template method</a></li>
+            <li><a href="#visitor">Visitor</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<h3 id="appendix-design-pattern-in-java-library">Appendix - Design Pattern in Java Library<a class="headerlink" href="#appendix-design-pattern-in-java-library" title="Permanent link">&para;</a></h3>
+<p><a href="https://stackoverflow.com/questions/1673841/examples-of-gof-design-patterns-in-javas-core-libraries?noredirect=1&amp;lq=1">From StackOverFlow</a></p>
+<p>Here sum design pattern up and try to assign as many pattern implementations as possible, found in both the Java SE and Java EE APIs.</p>
+<h3 id="1-creational-patterns">1 Creational Patterns<a class="headerlink" href="#1-creational-patterns" title="Permanent link">&para;</a></h3>
+<p><a href="http://en.wikipedia.org/wiki/Creational_pattern">Creational patterns</a></p>
+<h4 id="abstract-factory">Abstract Factory<a class="headerlink" href="#abstract-factory" title="Permanent link">&para;</a></h4>
+<p><a href="http://en.wikipedia.org/wiki/Abstract_factory_pattern">Abstract factory</a> (recognizeable by creational methods returning the factory itself which in turn can be used to create another abstract/interface type)</p>
+<ul>
+<li><a href="http://docs.oracle.com/javase/8/docs/api/javax/xml/parsers/DocumentBuilderFactory.html#newInstance--"><code class="codehilite">javax.xml.parsers.DocumentBuilderFactory#newInstance()</code></a></li>
+<li><a href="http://docs.oracle.com/javase/8/docs/api/javax/xml/transform/TransformerFactory.html#newInstance--"><code class="codehilite">javax.xml.transform.TransformerFactory#newInstance()</code></a></li>
+<li><a href="http://docs.oracle.com/javase/8/docs/api/javax/xml/xpath/XPathFactory.html#newInstance--"><code class="codehilite">javax.xml.xpath.XPathFactory#newInstance()</code></a></li>
+</ul>
+<h4 id="builder">Builder<a class="headerlink" href="#builder" title="Permanent link">&para;</a></h4>
+<p><a href="http://en.wikipedia.org/wiki/Builder_pattern">Builder</a> (recognizeable by creational methods returning the instance itself)</p>
+<ul>
+<li><a href="http://docs.oracle.com/javase/8/docs/api/java/lang/StringBuilder.html#append-boolean-"><code class="codehilite">java.lang.StringBuilder#append()</code></a> (unsynchronized)</li>
+<li><a href="http://docs.oracle.com/javase/8/docs/api/java/lang/StringBuffer.html#append-boolean-"><code class="codehilite">java.lang.StringBuffer#append()</code></a> (synchronized)</li>
+<li><a href="http://docs.oracle.com/javase/8/docs/api/java/nio/ByteBuffer.html#put-byte-"><code class="codehilite">java.nio.ByteBuffer#put()</code></a> (also on <a href="http://docs.oracle.com/javase/8/docs/api/java/nio/CharBuffer.html#put-char-"><code class="codehilite">CharBuffer</code></a>, <a href="http://docs.oracle.com/javase/8/docs/api/java/nio/ShortBuffer.html#put-short-"><code class="codehilite">ShortBuffer</code></a>, <a href="http://docs.oracle.com/javase/8/docs/api/java/nio/IntBuffer.html#put-int-"><code class="codehilite">IntBuffer</code></a>, <a href="http://docs.oracle.com/javase/8/docs/api/java/nio/LongBuffer.html#put-long-"><code class="codehilite">LongBuffer</code></a>, <a href="http://docs.oracle.com/javase/8/docs/api/java/nio/FloatBuffer.html#put-float-"><code class="codehilite">FloatBuffer</code></a> and <a href="http://docs.oracle.com/javase/8/docs/api/java/nio/DoubleBuffer.html#put-double-"><code class="codehilite">DoubleBuffer</code></a>)</li>
+<li><a href="http://docs.oracle.com/javase/8/docs/api/javax/swing/GroupLayout.Group.html#addComponent-java.awt.Component-"><code class="codehilite">javax.swing.GroupLayout.Group#addComponent()</code></a></li>
+<li>All implementations of <a href="http://docs.oracle.com/javase/8/docs/api/java/lang/Appendable.html"><code class="codehilite">java.lang.Appendable</code></a></li>
+<li><a href="https://docs.oracle.com/javase/9/docs/api/java/util/stream/Stream.Builder.html"><code class="codehilite">java.util.stream.Stream.Builder</code></a></li>
+</ul>
+<h4 id="factory-method">Factory Method<a class="headerlink" href="#factory-method" title="Permanent link">&para;</a></h4>
+<p><a href="http://en.wikipedia.org/wiki/Factory_method_pattern">Factory method</a> (recognizable by creational methods returning an implementation of an abstract/interface type)</p>
+<ul>
+<li><a href="http://docs.oracle.com/javase/8/docs/api/java/util/Calendar.html#getInstance--"><code class="codehilite">java.util.Calendar#getInstance()</code></a></li>
+<li><a href="http://docs.oracle.com/javase/8/docs/api/java/util/ResourceBundle.html#getBundle-java.lang.String-"><code class="codehilite">java.util.ResourceBundle#getBundle()</code></a></li>
+<li><a href="http://docs.oracle.com/javase/8/docs/api/java/text/NumberFormat.html#getInstance--"><code class="codehilite">java.text.NumberFormat#getInstance()</code></a></li>
+<li><a href="http://docs.oracle.com/javase/8/docs/api/java/nio/charset/Charset.html#forName-java.lang.String-"><code class="codehilite">java.nio.charset.Charset#forName()</code></a></li>
+<li><a href="http://docs.oracle.com/javase/8/docs/api/java/net/URLStreamHandlerFactory.html"><code class="codehilite">java.net.URLStreamHandlerFactory#createURLStreamHandler(String)</code></a> (Returns singleton object per protocol)</li>
+<li><a href="https://docs.oracle.com/javase/8/docs/api/java/util/EnumSet.html#of(E)"><code class="codehilite">java.util.EnumSet#of()</code></a></li>
+<li><a href="https://docs.oracle.com/javase/8/docs/api/javax/xml/bind/JAXBContext.html#createMarshaller--"><code class="codehilite">javax.xml.bind.JAXBContext#createMarshaller()</code></a> and other similar methods</li>
+</ul>
+<h4 id="prototype">Prototype<a class="headerlink" href="#prototype" title="Permanent link">&para;</a></h4>
+<p><a href="http://en.wikipedia.org/wiki/Prototype_pattern">Prototype</a> (recognizeable by creational methods returning a <em>different</em> instance of itself with the same properties)</p>
+<ul>
+<li><a href="http://docs.oracle.com/javase/8/docs/api/java/lang/Object.html#clone--"><code class="codehilite">java.lang.Object#clone()</code></a> (the class has to implement <a href="http://docs.oracle.com/javase/8/docs/api/java/lang/Cloneable.html"><code class="codehilite">java.lang.Cloneable</code></a>)</li>
+</ul>
+<h4 id="singleton">Singleton<a class="headerlink" href="#singleton" title="Permanent link">&para;</a></h4>
+<p><a href="http://en.wikipedia.org/wiki/Singleton_pattern">Singleton</a> (recognizeable by creational methods returning the <em>same</em> instance (usually of itself) everytime)</p>
+<ul>
+<li><a href="http://docs.oracle.com/javase/8/docs/api/java/lang/Runtime.html#getRuntime--"><code class="codehilite">java.lang.Runtime#getRuntime()</code></a></li>
+<li><a href="http://docs.oracle.com/javase/8/docs/api/java/awt/Desktop.html#getDesktop--"><code class="codehilite">java.awt.Desktop#getDesktop()</code></a></li>
+<li><a href="http://docs.oracle.com/javase/8/docs/api/java/lang/System.html#getSecurityManager--"><code class="codehilite">java.lang.System#getSecurityManager()</code></a></li>
+</ul>
+<h3 id="2-structural-patterns">2 Structural Patterns<a class="headerlink" href="#2-structural-patterns" title="Permanent link">&para;</a></h3>
+<p><a href="http://en.wikipedia.org/wiki/Structural_pattern">Structural patterns</a></p>
+<h4 id="adapter">Adapter<a class="headerlink" href="#adapter" title="Permanent link">&para;</a></h4>
+<p><a href="http://en.wikipedia.org/wiki/Adapter_pattern">Adapter</a> (recognizeable by creational methods taking an instance of <em>different</em> abstract/interface type and returning an implementation of own/another abstract/interface type which <em>decorates/overrides</em> the given instance)</p>
+<ul>
+<li><a href="http://docs.oracle.com/javase/8/docs/api/java/util/Arrays.html#asList-T...-"><code class="codehilite">java.util.Arrays#asList()</code></a></li>
+<li><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Collections.html#list-java.util.Enumeration-"><code class="codehilite">java.util.Collections#list()</code></a></li>
+<li><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Collections.html#enumeration-java.util.Collection-"><code class="codehilite">java.util.Collections#enumeration()</code></a></li>
+<li><a href="http://docs.oracle.com/javase/8/docs/api/java/io/InputStreamReader.html#InputStreamReader-java.io.InputStream-"><code class="codehilite">java.io.InputStreamReader(InputStream)</code></a> (returns a <code class="codehilite">Reader</code>)</li>
+<li><a href="http://docs.oracle.com/javase/8/docs/api/java/io/OutputStreamWriter.html#OutputStreamWriter-java.io.OutputStream-"><code class="codehilite">java.io.OutputStreamWriter(OutputStream)</code></a> (returns a <code class="codehilite">Writer</code>)</li>
+<li><a href="http://docs.oracle.com/javase/8/docs/api/javax/xml/bind/annotation/adapters/XmlAdapter.html#marshal-BoundType-"><code class="codehilite">javax.xml.bind.annotation.adapters.XmlAdapter#marshal()</code></a> and <a href="http://docs.oracle.com/javase/8/docs/api/javax/xml/bind/annotation/adapters/XmlAdapter.html#unmarshal-ValueType-"><code class="codehilite">#unmarshal()</code></a></li>
+</ul>
+<h4 id="bridge">Bridge<a class="headerlink" href="#bridge" title="Permanent link">&para;</a></h4>
+<p><a href="http://en.wikipedia.org/wiki/Bridge_pattern">Bridge</a> (recognizeable by creational methods taking an instance of <em>different</em> abstract/interface type and returning an implementation of own abstract/interface type which <em>delegates/uses</em> the given instance)</p>
+<ul>
+<li>None comes to mind yet. A fictive example would be <code class="codehilite">new LinkedHashMap(LinkedHashSet&lt;K&gt;, List&lt;V&gt;)</code> which returns an unmodifiable linked map which doesn't clone the items, but <em>uses</em> them. The <a href="http://docs.oracle.com/javase/8/docs/api/java/util/Collections.html#newSetFromMap-java.util.Map-"><code class="codehilite">java.util.Collections#newSetFromMap()</code></a> and <a href="http://docs.oracle.com/javase/8/docs/api/java/util/Collections.html#singleton-T-"><code class="codehilite">singletonXXX()</code></a> methods however comes close.</li>
+</ul>
+<h4 id="composite">Composite<a class="headerlink" href="#composite" title="Permanent link">&para;</a></h4>
+<p><a href="http://en.wikipedia.org/wiki/Composite_pattern">Composite</a> (recognizeable by behavioral methods taking an instance of <em>same</em> abstract/interface type into a tree structure)</p>
+<ul>
+<li><a href="http://docs.oracle.com/javase/8/docs/api/java/awt/Container.html#add-java.awt.Component-"><code class="codehilite">java.awt.Container#add(Component)</code></a> (practically all over Swing thus)</li>
+<li><a href="http://docs.oracle.com/javaee/7/api/javax/faces/component/UIComponent.html#getChildren--"><code class="codehilite">javax.faces.component.UIComponent#getChildren()</code></a> (practically all over JSF UI thus)</li>
+</ul>
+<h4 id="decorator">Decorator<a class="headerlink" href="#decorator" title="Permanent link">&para;</a></h4>
+<p><a href="http://en.wikipedia.org/wiki/Decorator_pattern">Decorator</a> (recognizeable by creational methods taking an instance of <em>same</em> abstract/interface type which adds additional behaviour)</p>
+<ul>
+<li>All subclasses of <a href="http://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html"><code class="codehilite">java.io.InputStream</code></a>, <a href="http://docs.oracle.com/javase/8/docs/api/java/io/OutputStream.html"><code class="codehilite">OutputStream</code></a>, <a href="http://docs.oracle.com/javase/8/docs/api/java/io/Reader.html"><code class="codehilite">Reader</code></a> and <a href="http://docs.oracle.com/javase/8/docs/api/java/io/Writer.html"><code class="codehilite">Writer</code></a> have a constructor taking an instance of same type.</li>
+<li><a href="http://docs.oracle.com/javase/8/docs/api/java/util/Collections.html"><code class="codehilite">java.util.Collections</code></a>, the <a href="http://docs.oracle.com/javase/8/docs/api/java/util/Collections.html#checkedCollection-java.util.Collection-java.lang.Class-"><code class="codehilite">checkedXXX()</code></a>, <a href="http://docs.oracle.com/javase/8/docs/api/java/util/Collections.html#synchronizedCollection-java.util.Collection-"><code class="codehilite">synchronizedXXX()</code></a> and <a href="http://docs.oracle.com/javase/8/docs/api/java/util/Collections.html#unmodifiableCollection-java.util.Collection-"><code class="codehilite">unmodifiableXXX()</code></a> methods.</li>
+<li><a href="http://docs.oracle.com/javaee/7/api/javax/servlet/http/HttpServletRequestWrapper.html"><code class="codehilite">javax.servlet.http.HttpServletRequestWrapper</code></a> and <a href="http://docs.oracle.com/javaee/7/api/javax/servlet/http/HttpServletResponseWrapper.html"><code class="codehilite">HttpServletResponseWrapper</code></a></li>
+<li><a href="https://docs.oracle.com/javase/7/docs/api/javax/swing/JScrollPane.html"><code class="codehilite">javax.swing.JScrollPane</code></a></li>
+</ul>
+<h4 id="facade">Facade<a class="headerlink" href="#facade" title="Permanent link">&para;</a></h4>
+<p><a href="http://en.wikipedia.org/wiki/Facade_pattern">Facade</a> (recognizeable by behavioral methods which internally uses instances of <em>different</em> independent abstract/interface types)</p>
+<ul>
+<li><a href="http://docs.oracle.com/javaee/7/api/javax/faces/context/FacesContext.html"><code class="codehilite">javax.faces.context.FacesContext</code></a>, it internally uses among others the abstract/interface types <a href="http://docs.oracle.com/javaee/7/api/javax/faces/lifecycle/Lifecycle.html"><code class="codehilite">LifeCycle</code></a>, <a href="http://docs.oracle.com/javaee/7/api/javax/faces/application/ViewHandler.html"><code class="codehilite">ViewHandler</code></a>, <a href="http://docs.oracle.com/javaee/7/api/javax/faces/application/NavigationHandler.html"><code class="codehilite">NavigationHandler</code></a> and many more without that the enduser has to worry about it (which are however overrideable by injection).</li>
+<li><a href="http://docs.oracle.com/javaee/7/api/javax/faces/context/ExternalContext.html"><code class="codehilite">javax.faces.context.ExternalContext</code></a>, which internally uses <a href="http://docs.oracle.com/javaee/7/api/javax/servlet/ServletContext.html"><code class="codehilite">ServletContext</code></a>, <a href="http://docs.oracle.com/javaee/7/api/javax/servlet/http/HttpSession.html"><code class="codehilite">HttpSession</code></a>, <a href="http://docs.oracle.com/javaee/7/api/javax/servlet/http/HttpServletRequest.html"><code class="codehilite">HttpServletRequest</code></a>, <a href="http://docs.oracle.com/javaee/7/api/javax/servlet/http/HttpServletResponse.html"><code class="codehilite">HttpServletResponse</code></a>, etc.</li>
+</ul>
+<h4 id="flyweight">Flyweight<a class="headerlink" href="#flyweight" title="Permanent link">&para;</a></h4>
+<p><a href="http://en.wikipedia.org/wiki/Flyweight_pattern">Flyweight</a> (recognizeable by creational methods returning a cached instance, a bit the "multiton" idea)</p>
+<ul>
+<li><a href="http://docs.oracle.com/javase/8/docs/api/java/lang/Integer.html#valueOf-int-"><code class="codehilite">java.lang.Integer#valueOf(int)</code></a> (also on <a href="http://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html#valueOf-boolean-"><code class="codehilite">Boolean</code></a>, <a href="http://docs.oracle.com/javase/8/docs/api/java/lang/Byte.html#valueOf-byte-"><code class="codehilite">Byte</code></a>, <a href="http://docs.oracle.com/javase/8/docs/api/java/lang/Character.html#valueOf-char-"><code class="codehilite">Character</code></a>, <a href="http://docs.oracle.com/javase/8/docs/api/java/lang/Short.html#valueOf-short-"><code class="codehilite">Short</code></a>, <a href="http://docs.oracle.com/javase/8/docs/api/java/lang/Long.html#valueOf-long-"><code class="codehilite">Long</code></a> and <a href="https://docs.oracle.com/javase/8/docs/api/java/math/BigDecimal.html#valueOf-long-int-"><code class="codehilite">BigDecimal</code></a>)</li>
+</ul>
+<h4 id="proxy">Proxy<a class="headerlink" href="#proxy" title="Permanent link">&para;</a></h4>
+<p><a href="http://en.wikipedia.org/wiki/Proxy_pattern">Proxy</a> (recognizeable by creational methods which returns an implementation of given abstract/interface type which in turn <em>delegates/uses</em> a <em>different</em> implementation of given abstract/interface type)</p>
+<ul>
+<li><a href="http://docs.oracle.com/javase/8/docs/api/java/lang/reflect/Proxy.html"><code class="codehilite">java.lang.reflect.Proxy</code></a></li>
+<li><a href="http://docs.oracle.com/javase/8/docs/api/java/rmi/package-summary.html"><code class="codehilite">java.rmi.*</code></a></li>
+<li><a href="http://docs.oracle.com/javaee/7/api/javax/ejb/EJB.html"><code class="codehilite">javax.ejb.EJB</code></a> (<a href="https://stackoverflow.com/questions/25514361/when-using-ejb-does-each-managed-bean-get-its-own-ejb-instance">explanation here</a>)</li>
+<li><a href="http://docs.oracle.com/javaee/7/api/javax/inject/Inject.html"><code class="codehilite">javax.inject.Inject</code></a> (<a href="https://stackoverflow.com/questions/29651008/field-getobj-returns-all-nulls-on-injected-cdi-managed-beans-while-manually-i/29672591#29672591">explanation here</a>)</li>
+<li><a href="http://docs.oracle.com/javaee/7/api/javax/persistence/PersistenceContext.html"><code class="codehilite">javax.persistence.PersistenceContext</code></a></li>
+</ul>
+<h3 id="3-behavioral-patterns">3 Behavioral patterns<a class="headerlink" href="#3-behavioral-patterns" title="Permanent link">&para;</a></h3>
+<p><a href="http://en.wikipedia.org/wiki/Behavioral_pattern">Behavioral patterns</a></p>
+<h4 id="chain-of-responsibility">Chain of responsibility<a class="headerlink" href="#chain-of-responsibility" title="Permanent link">&para;</a></h4>
+<p><a href="http://en.wikipedia.org/wiki/Chain_of_responsibility_pattern">Chain of responsibility</a> (recognizeable by behavioral methods which (indirectly) invokes the same method in <em>another</em> implementation of <em>same</em> abstract/interface type in a queue)</p>
+<ul>
+<li><a href="http://docs.oracle.com/javase/8/docs/api/java/util/logging/Logger.html#log-java.util.logging.Level-java.lang.String-"><code class="codehilite">java.util.logging.Logger#log()</code></a></li>
+<li><a href="http://docs.oracle.com/javaee/7/api/javax/servlet/Filter.html#doFilter-javax.servlet.ServletRequest-javax.servlet.ServletResponse-javax.servlet.FilterChain-"><code class="codehilite">javax.servlet.Filter#doFilter()</code></a></li>
+</ul>
+<h4 id="command">Command<a class="headerlink" href="#command" title="Permanent link">&para;</a></h4>
+<p><a href="http://en.wikipedia.org/wiki/Command_pattern">Command</a> (recognizeable by behavioral methods in an abstract/interface type which invokes a method in an implementation of a <em>different</em> abstract/interface type which has been <em>encapsulated</em> by the command implementation during its creation)</p>
+<ul>
+<li>All implementations of <a href="http://docs.oracle.com/javase/8/docs/api/java/lang/Runnable.html"><code class="codehilite">java.lang.Runnable</code></a></li>
+<li>All implementations of <a href="http://docs.oracle.com/javase/8/docs/api/javax/swing/Action.html"><code class="codehilite">javax.swing.Action</code></a></li>
+</ul>
+<h4 id="interpreter">Interpreter<a class="headerlink" href="#interpreter" title="Permanent link">&para;</a></h4>
+<p><a href="http://en.wikipedia.org/wiki/Interpreter_pattern">Interpreter</a> (recognizeable by behavioral methods returning a <em>structurally</em> different instance/type of the given instance/type; note that parsing/formatting is not part of the pattern, determining the pattern and how to apply it is)</p>
+<ul>
+<li><a href="http://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html"><code class="codehilite">java.util.Pattern</code></a></li>
+<li><a href="http://docs.oracle.com/javase/8/docs/api/java/text/Normalizer.html"><code class="codehilite">java.text.Normalizer</code></a></li>
+<li>All subclasses of <a href="http://docs.oracle.com/javase/8/docs/api/java/text/Format.html"><code class="codehilite">java.text.Format</code></a></li>
+<li>All subclasses of <a href="http://docs.oracle.com/javaee/7/api/javax/el/ELResolver.html"><code class="codehilite">javax.el.ELResolver</code></a></li>
+</ul>
+<h4 id="iterator">Iterator<a class="headerlink" href="#iterator" title="Permanent link">&para;</a></h4>
+<p><a href="http://en.wikipedia.org/wiki/Iterator_pattern">Iterator</a> (recognizable by behavioral methods sequentially returning instances of a <em>different</em> type from a queue)</p>
+<ul>
+<li>All implementations of <a href="http://docs.oracle.com/javase/8/docs/api/java/util/Iterator.html"><code class="codehilite">java.util.Iterator</code></a> (thus among others also <a href="http://docs.oracle.com/javase/8/docs/api/java/util/Scanner.html"><code class="codehilite">java.util.Scanner</code></a>!).</li>
+<li>All implementations of <a href="http://docs.oracle.com/javase/8/docs/api/java/util/Enumeration.html"><code class="codehilite">java.util.Enumeration</code></a></li>
+</ul>
+<h4 id="mediator">Mediator<a class="headerlink" href="#mediator" title="Permanent link">&para;</a></h4>
+<p><a href="http://en.wikipedia.org/wiki/Mediator_pattern">Mediator</a> (recognizable by behavioral methods taking an instance of different abstract/interface type (usually using the command pattern) which delegates/uses the given instance)</p>
+<ul>
+<li><a href="http://docs.oracle.com/javase/8/docs/api/java/util/Timer.html"><code class="codehilite">java.util.Timer</code></a> (all <code class="codehilite">scheduleXXX()</code> methods)</li>
+<li><a href="http://docs.oracle.com/javase/8/docs/api/java/util/concurrent/Executor.html#execute-java.lang.Runnable-"><code class="codehilite">java.util.concurrent.Executor#execute()</code></a></li>
+<li><a href="http://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ExecutorService.html"><code class="codehilite">java.util.concurrent.ExecutorService</code></a> (the <code class="codehilite">invokeXXX()</code> and <code class="codehilite">submit()</code> methods)</li>
+<li><a href="http://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ScheduledExecutorService.html"><code class="codehilite">java.util.concurrent.ScheduledExecutorService</code></a> (all <code class="codehilite">scheduleXXX()</code> methods)</li>
+<li><a href="http://docs.oracle.com/javase/8/docs/api/java/lang/reflect/Method.html#invoke-java.lang.Object-java.lang.Object...-"><code class="codehilite">java.lang.reflect.Method#invoke()</code></a></li>
+</ul>
+<h4 id="memento">Memento<a class="headerlink" href="#memento" title="Permanent link">&para;</a></h4>
+<p><a href="http://en.wikipedia.org/wiki/Memento_pattern">Memento</a> (recognizable by behavioral methods which internally changes the state of the <em>whole</em> instance)</p>
+<ul>
+<li><a href="http://docs.oracle.com/javase/8/docs/api/java/util/Date.html"><code class="codehilite">java.util.Date</code></a> (the setter methods do that, <code class="codehilite">Date</code> is internally represented by a <code class="codehilite">long</code> value)</li>
+<li>All implementations of <a href="http://docs.oracle.com/javase/8/docs/api/java/io/Serializable.html"><code class="codehilite">java.io.Serializable</code></a></li>
+<li>All implementations of <a href="http://docs.oracle.com/javaee/7/api/javax/faces/component/StateHolder.html"><code class="codehilite">javax.faces.component.StateHolder</code></a></li>
+</ul>
+<h4 id="observer">Observer<a class="headerlink" href="#observer" title="Permanent link">&para;</a></h4>
+<p><a href="http://en.wikipedia.org/wiki/Observer_pattern">Observer (or Publish/Subscribe)</a> (recognizeable by behavioral methods which invokes a method on an instance of <em>another</em> abstract/interface type, depending on own state)</p>
+<ul>
+<li><a href="http://docs.oracle.com/javase/8/docs/api/java/util/Observer.html"><code class="codehilite">java.util.Observer</code></a>/<a href="http://docs.oracle.com/javase/8/docs/api/java/util/Observable.html"><code class="codehilite">java.util.Observable</code></a> (rarely used in real world though)</li>
+<li>All implementations of <a href="http://docs.oracle.com/javase/8/docs/api/java/util/EventListener.html"><code class="codehilite">java.util.EventListener</code></a> (practically all over Swing thus)</li>
+<li><a href="http://docs.oracle.com/javaee/7/api/javax/servlet/http/HttpSessionBindingListener.html"><code class="codehilite">javax.servlet.http.HttpSessionBindingListener</code></a></li>
+<li><a href="http://docs.oracle.com/javaee/7/api/javax/servlet/http/HttpSessionAttributeListener.html"><code class="codehilite">javax.servlet.http.HttpSessionAttributeListener</code></a></li>
+<li><a href="http://docs.oracle.com/javaee/7/api/javax/faces/event/PhaseListener.html"><code class="codehilite">javax.faces.event.PhaseListener</code></a></li>
+</ul>
+<h4 id="state">State<a class="headerlink" href="#state" title="Permanent link">&para;</a></h4>
+<p><a href="http://en.wikipedia.org/wiki/State_pattern">State</a> (recognizeable by behavioral methods which changes its behaviour depending on the instance's state which can be controlled externally)</p>
+<ul>
+<li><a href="http://docs.oracle.com/javaee/7/api/javax/faces/lifecycle/Lifecycle.html#execute-javax.faces.context.FacesContext-"><code class="codehilite">javax.faces.lifecycle.LifeCycle#execute()</code></a> (controlled by <a href="http://docs.oracle.com/javaee/7/api/javax/faces/webapp/FacesServlet.html"><code class="codehilite">FacesServlet</code></a>, the behaviour is dependent on current phase (state) of JSF lifecycle)</li>
+</ul>
+<h4 id="strategy">Strategy<a class="headerlink" href="#strategy" title="Permanent link">&para;</a></h4>
+<p><a href="http://en.wikipedia.org/wiki/Strategy_pattern">Strategy</a> (recognizeable by behavioral methods in an abstract/interface type which invokes a method in an implementation of a <em>different</em> abstract/interface type which has been <em>passed-in</em> as method argument into the strategy implementation)</p>
+<ul>
+<li><a href="http://docs.oracle.com/javase/8/docs/api/java/util/Comparator.html#compare-T-T-"><code class="codehilite">java.util.Comparator#compare()</code></a>, executed by among others <code class="codehilite">Collections#sort()</code>.</li>
+<li><a href="http://docs.oracle.com/javaee/7/api/javax/servlet/http/HttpServlet.html"><code class="codehilite">javax.servlet.http.HttpServlet</code></a>, the <code class="codehilite">service()</code> and all <code class="codehilite">doXXX()</code> methods take <code class="codehilite">HttpServletRequest</code> and <code class="codehilite">HttpServletResponse</code> and the implementor has to process them (and not to get hold of them as instance variables!).</li>
+<li><a href="http://docs.oracle.com/javaee/7/api/javax/servlet/Filter.html#doFilter-javax.servlet.ServletRequest-javax.servlet.ServletResponse-javax.servlet.FilterChain-"><code class="codehilite">javax.servlet.Filter#doFilter()</code></a></li>
+</ul>
+<h4 id="template-method">Template method<a class="headerlink" href="#template-method" title="Permanent link">&para;</a></h4>
+<p><a href="http://en.wikipedia.org/wiki/Template_method_pattern">Template method</a> (recognizeable by behavioral methods which already have a "default" behaviour definied by an abstract type)</p>
+<ul>
+<li>All non-abstract methods of <a href="http://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html"><code class="codehilite">java.io.InputStream</code></a>, <a href="http://docs.oracle.com/javase/8/docs/api/java/io/OutputStream.html"><code class="codehilite">java.io.OutputStream</code></a>, <a href="http://docs.oracle.com/javase/8/docs/api/java/io/Reader.html"><code class="codehilite">java.io.Reader</code></a> and <a href="http://docs.oracle.com/javase/8/docs/api/java/io/Writer.html"><code class="codehilite">java.io.Writer</code></a>.</li>
+<li>All non-abstract methods of <a href="http://docs.oracle.com/javase/8/docs/api/java/util/AbstractList.html"><code class="codehilite">java.util.AbstractList</code></a>, <a href="http://docs.oracle.com/javase/8/docs/api/java/util/AbstractSet.html"><code class="codehilite">java.util.AbstractSet</code></a> and <a href="http://docs.oracle.com/javase/8/docs/api/java/util/AbstractMap.html"><code class="codehilite">java.util.AbstractMap</code></a>.</li>
+<li><a href="http://docs.oracle.com/javaee/7/api/javax/servlet/http/HttpServlet.html"><code class="codehilite">javax.servlet.http.HttpServlet</code></a>, all the <code class="codehilite">doXXX()</code> methods by default sends a HTTP 405 "Method Not Allowed" error to the response. You're free to implement none or any of them.</li>
+</ul>
+<h4 id="visitor">Visitor<a class="headerlink" href="#visitor" title="Permanent link">&para;</a></h4>
+<p><a href="http://en.wikipedia.org/wiki/Visitor_pattern">Visitor</a> (recognizeable by two <em>different</em> abstract/interface types which has methods definied which takes each the <em>other</em> abstract/interface type; the one actually calls the method of the other and the other executes the desired strategy on it)</p>
+<ul>
+<li><a href="http://docs.oracle.com/javase/8/docs/api/javax/lang/model/element/AnnotationValue.html"><code class="codehilite">javax.lang.model.element.AnnotationValue</code></a> and <a href="http://docs.oracle.com/javase/8/docs/api/javax/lang/model/element/AnnotationValueVisitor.html"><code class="codehilite">AnnotationValueVisitor</code></a></li>
+<li><a href="http://docs.oracle.com/javase/8/docs/api/javax/lang/model/element/Element.html"><code class="codehilite">javax.lang.model.element.Element</code></a> and <a href="http://docs.oracle.com/javase/8/docs/api/javax/lang/model/element/ElementVisitor.html"><code class="codehilite">ElementVisitor</code></a></li>
+<li><a href="http://docs.oracle.com/javase/8/docs/api/javax/lang/model/type/TypeMirror.html"><code class="codehilite">javax.lang.model.type.TypeMirror</code></a> and <a href="http://docs.oracle.com/javase/8/docs/api/javax/lang/model/type/TypeVisitor.html"><code class="codehilite">TypeVisitor</code></a></li>
+<li><a href="http://docs.oracle.com/javase/8/docs/api/java/nio/file/FileVisitor.html"><code class="codehilite">java.nio.file.FileVisitor</code></a> and <a href="http://docs.oracle.com/javase/8/docs/api/java/nio/file/SimpleFileVisitor.html"><code class="codehilite">SimpleFileVisitor</code></a></li>
+<li><a href="http://docs.oracle.com/javaee/7/api/javax/faces/component/visit/VisitContext.html"><code class="codehilite">javax.faces.component.visit.VisitContext</code></a> and <a href="http://docs.oracle.com/javaee/7/api/javax/faces/component/visit/VisitCallback.html"><code class="codehilite">VisitCallback</code></a></li>
+</ul></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>var base_url = '../..';</script>
+        <script src="../../js/base.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+        <script src="../../extra_javascript/tabhack.js"></script>
+        <script src="../../search/require.js"></script>
+        <script src="../../search/search.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td><kbd>&larr;</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td><kbd>&rarr;</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    </body>
+</html>
