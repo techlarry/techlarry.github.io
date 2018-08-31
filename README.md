@@ -1,4 +1,4 @@
-# note
+# Note
 Personal note website
 
-books note
+[books note](http://larryim.cc/note/)
