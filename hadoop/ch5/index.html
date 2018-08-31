@@ -653,6 +653,10 @@
             <li><a href="#compression-and-input-splits">Compression and Input Splits</a></li>
             <li><a href="#using-compression-in-mapreduce">Using Compression in MapReduce</a></li>
         <li class="main "><a href="#3-serialization">3 Serialization</a></li>
+            <li><a href="#the-writable-interface">The Writable Interface</a></li>
+            <li><a href="#writable-classes">Writable Classes</a></li>
+            <li><a href="#implementing-a-custom-writable">Implementing a Custom Writable</a></li>
+            <li><a href="#serialization-frameworks">Serialization Frameworks</a></li>
         <li class="main "><a href="#4-file-based-data-structures">4 File-Based Data Structures</a></li>
     </ul>
 </div></div>
@@ -776,7 +780,82 @@
 <p>If a compressed file using a format that does not support splitting, say gzip format, MapReduce will not try to split the gzipped file, at the expense of locality: a single map will process all blocks containing the file, most of which will not be local to the map.</p>
 <p>For an LZO file, in spite of not supporting splitting, it is possible to preprocess LZO files using an indexer tool that comes with the Hadoop LZO libraries. </p>
 <h4 id="using-compression-in-mapreduce">Using Compression in MapReduce<a class="headerlink" href="#using-compression-in-mapreduce" title="Permanent link">&para;</a></h4>
+<p>In order to compress the output of a MapReduce, job you can use the static convenience methods on <C>FileOutputFormat</C> to set properties.</p>
+<p>Application to run the maximum temperature job producing compressed output:</p>
+<div class=md-fenced-code-tabs id=tab-tab-group-3><input name=tab-group-3 type=radio id=tab-group-3-0_Java checked=checked class=code-tab data-lang=Java aria-controls=tab-group-3-0_Java-panel role=tab><label for=tab-group-3-0_Java class=code-tab-label data-lang=Java id=tab-group-3-0_Java-label>Maxtemperaturewithcompression</label><div class=code-tabpanel role=tabpanel data-lang=Java id=tab-group-3-0_Java-panel aria-labelledby=tab-group-3-0_Java-label><div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>MaxTemperatureWithCompression</span> <span class=o>{</span>
+    <span class=kd>public</span> <span class=kd>static</span> <span class=kt>void</span> <span class=nf>main</span><span class=o>(</span><span class=n>String</span><span class=o>[]</span> <span class=n>args</span><span class=o>)</span> <span class=kd>throws</span> <span class=n>Exception</span> <span class=o>{</span>
+        <span class=k>if</span> <span class=o>(</span><span class=n>args</span><span class=o>.</span><span class=na>length</span> <span class=o>!=</span> <span class=mi>2</span><span class=o>)</span> <span class=o>{</span>
+            <span class=n>System</span><span class=o>.</span><span class=na>err</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=s>&quot;Usage: MaxTemperatureWithCompression &lt;input path&gt; &quot;</span> <span class=o>+</span>
+                    <span class=s>&quot;&lt;output path&gt;&quot;</span><span class=o>);</span>
+            <span class=n>System</span><span class=o>.</span><span class=na>exit</span><span class=o>(-</span><span class=mi>1</span><span class=o>);</span>
+        <span class=o>}</span>
+
+        <span class=n>Job</span> <span class=n>job</span> <span class=o>=</span>  <span class=n>Job</span><span class=o>.</span><span class=na>getInstance</span><span class=o>();</span>
+        <span class=n>job</span><span class=o>.</span><span class=na>setJarByClass</span><span class=o>(</span><span class=n>com</span><span class=o>.</span><span class=na>definitivehadoop</span><span class=o>.</span><span class=na>weatherdata</span><span class=o>.</span><span class=na>MaxTemperature</span><span class=o>.</span><span class=na>class</span><span class=o>);</span>
+
+        <span class=n>FileInputFormat</span><span class=o>.</span><span class=na>addInputPath</span><span class=o>(</span><span class=n>job</span><span class=o>,</span> <span class=k>new</span> <span class=n>Path</span><span class=o>(</span><span class=n>args</span><span class=o>[</span><span class=mi>0</span><span class=o>]));</span>
+        <span class=n>FileOutputFormat</span><span class=o>.</span><span class=na>setOutputPath</span><span class=o>(</span><span class=n>job</span><span class=o>,</span> <span class=k>new</span> <span class=n>Path</span><span class=o>(</span><span class=n>args</span><span class=o>[</span><span class=mi>1</span><span class=o>]));</span>
+
+        <span class=n>job</span><span class=o>.</span><span class=na>setOutputKeyClass</span><span class=o>(</span><span class=n>Text</span><span class=o>.</span><span class=na>class</span><span class=o>);</span>
+        <span class=n>job</span><span class=o>.</span><span class=na>setOutputValueClass</span><span class=o>(</span><span class=n>IntWritable</span><span class=o>.</span><span class=na>class</span><span class=o>);</span>
+
+        <span class=cm>/*[*/</span>
+        <span class=n>FileOutputFormat</span><span class=o>.</span><span class=na>setCompressOutput</span><span class=o>(</span><span class=n>job</span><span class=o>,</span> <span class=kc>true</span><span class=o>);</span>
+        <span class=n>FileOutputFormat</span><span class=o>.</span><span class=na>setOutputCompressorClass</span><span class=o>(</span><span class=n>job</span><span class=o>,</span> <span class=n>GzipCodec</span><span class=o>.</span><span class=na>class</span><span class=o>);</span><span class=cm>/*]*/</span>
+
+<span class=n>job</span><span class=o>.</span><span class=na>setMapperClass</span><span class=o>(</span><span class=n>com</span><span class=o>.</span><span class=na>definitivehadoop</span><span class=o>.</span><span class=na>weatherdata</span><span class=o>.</span><span class=na>MaxTemperatureMapper</span><span class=o>.</span><span class=na>class</span><span class=o>);</span>
+<span class=n>job</span><span class=o>.</span><span class=na>setCombinerClass</span><span class=o>(</span><span class=n>com</span><span class=o>.</span><span class=na>definitivehadoop</span><span class=o>.</span><span class=na>weatherdata</span><span class=o>.</span><span class=na>MaxTemperatureReducer</span><span class=o>.</span><span class=na>class</span><span class=o>);</span>
+<span class=n>job</span><span class=o>.</span><span class=na>setReducerClass</span><span class=o>(</span><span class=n>com</span><span class=o>.</span><span class=na>definitivehadoop</span><span class=o>.</span><span class=na>weatherdata</span><span class=o>.</span><span class=na>MaxTemperatureReducer</span><span class=o>.</span><span class=na>class</span><span class=o>);</span>
+
+        <span class=n>System</span><span class=o>.</span><span class=na>exit</span><span class=o>(</span><span class=n>job</span><span class=o>.</span><span class=na>waitForCompletion</span><span class=o>(</span><span class=kc>true</span><span class=o>)</span> <span class=o>?</span> <span class=mi>0</span> <span class=o>:</span> <span class=mi>1</span><span class=o>);</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+<span class=c1>//^^ MaxTemperatureWithCompression</span>
+</pre></div></div><input name=tab-group-3 type=radio id=tab-group-3-1_bash class=code-tab data-lang=bash aria-controls=tab-group-3-1_bash-panel role=tab><label for=tab-group-3-1_bash class=code-tab-label data-lang=bash id=tab-group-3-1_bash-label>Usage</label><div class=code-tabpanel role=tabpanel data-lang=bash id=tab-group-3-1_bash-panel aria-labelledby=tab-group-3-1_bash-label><div class=codehilite><pre>$ <span class=nb>export</span> <span class=nv>HADOOP_CLASSPATH</span><span class=o>=</span>/Users/larry/JavaProject/out/artifacts/MaxTemperatureWithCompression/MaxTemperatureWithCompression.jar
+$ hadoop com.definitivehadoop.compression.MaxTemperatureWithCompression /Users/larry/JavaProject/resources/HadoopBook/ncdc/sample.txt output
+</pre></div></div></div>
+
 <h3 id="3-serialization">3 Serialization<a class="headerlink" href="#3-serialization" title="Permanent link">&para;</a></h3>
+<p>See concepts of serialization and deserialization in Head First Java <a href="../../hfj/ch14/">Chapter 14</a>.</p>
+<p>Serialization is used in two quite distinct areas of distributed data processing: for interprocess communication and for persistent storage.</p>
+<p>In Hadoop, interprocess communication between nodes in the system is implemented using remote procedure calls (RPCs). The RPC protocol uses serialization to render the message into a binary stream to be sent to the remote node, which then deserializes the binary stream into the original message. In general, four desirable properties are crucial for  an RPC serialization and persistent storage:</p>
+<table>
+<thead>
+<tr>
+<th>Properties</th>
+<th>PRC Serialization</th>
+<th>Persistent Storage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Compact</td>
+<td>makes the best use of network bandwidth</td>
+<td>make efficient use of storage space</td>
+</tr>
+<tr>
+<td>Fast</td>
+<td>little performance overhead</td>
+<td>little overhead in reading or writing</td>
+</tr>
+<tr>
+<td>Extensible</td>
+<td>meet new requirements</td>
+<td>transparently read data of older formats</td>
+</tr>
+<tr>
+<td>Interoperable</td>
+<td>support clients written in different languages</td>
+<td>read/write using different languages</td>
+</tr>
+</tbody>
+</table>
+<p>Hadoop uses its own serialization format, <C>Writables</C>, which is certainly compact and fast, but not so easy to extend or use from languages other than Java. Avro, a serialization system that was designed to overcome some of the limitations of <C>Writables</C>, is covered in <a href="../ch12/">Chapter 12</a>.</p>
+<h4 id="the-writable-interface">The Writable Interface<a class="headerlink" href="#the-writable-interface" title="Permanent link">&para;</a></h4>
+<h4 id="writable-classes">Writable Classes<a class="headerlink" href="#writable-classes" title="Permanent link">&para;</a></h4>
+<p><img alt="" src="../figures/WritableClassHierarchy.jpg" /></p>
+<h4 id="implementing-a-custom-writable">Implementing a Custom Writable<a class="headerlink" href="#implementing-a-custom-writable" title="Permanent link">&para;</a></h4>
+<h4 id="serialization-frameworks">Serialization Frameworks<a class="headerlink" href="#serialization-frameworks" title="Permanent link">&para;</a></h4>
 <h3 id="4-file-based-data-structures">4 File-Based Data Structures<a class="headerlink" href="#4-file-based-data-structures" title="Permanent link">&para;</a></h3></div>
         </div>
 
