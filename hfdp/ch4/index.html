@@ -312,6 +312,10 @@
 <li >
     <a href="../ch13/">Chapter 13: Better Living with Patterns</a>
 </li>
+                            
+<li >
+    <a href="../Appendix/">Appendix: Design Pattern in Java Library</a>
+</li>
                         </ul>
                     </li>
                     <li class="dropdown">
@@ -640,11 +644,265 @@
                 <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
         <li class="main active"><a href="#head-first-design-patterns-4-factory-pattern">Head First Design Patterns 4 - Factory Pattern</a></li>
+        <li class="main "><a href="#1-simple-factory">1 Simple Factory</a></li>
+            <li><a href="#encapsulating-object-creation">Encapsulating object creation</a></li>
+        <li class="main "><a href="#2-factory-method-pattern">2 Factory Method Pattern</a></li>
+            <li><a href="#dependency-inversion-principle">Dependency inversion principle</a></li>
+        <li class="main "><a href="#3-abstract-factory-pattern">3 Abstract Factory Pattern</a></li>
+            <li><a href="#factory-method-and-abstract-factory-compared">Factory Method and Abstract Factory compared</a></li>
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
 
-<h3 id="head-first-design-patterns-4-factory-pattern"><strong>Head First Design Patterns 4 - Factory Pattern</strong><a class="headerlink" href="#head-first-design-patterns-4-factory-pattern" title="Permanent link">&para;</a></h3></div>
+<h3 id="head-first-design-patterns-4-factory-pattern"><strong>Head First Design Patterns 4 - Factory Pattern</strong><a class="headerlink" href="#head-first-design-patterns-4-factory-pattern" title="Permanent link">&para;</a></h3>
+<h3 id="1-simple-factory">1 Simple Factory<a class="headerlink" href="#1-simple-factory" title="Permanent link">&para;</a></h3>
+<p>Let&rsquo;s say you have a pizza shop, and as a cutting-edge pizza store owner in Objectville you might end up writing some code like this:</p>
+<p> <div class=codehilite><pre><span class=n>Pizza</span> <span class=nf>orderPizza</span><span class=o>()</span> <span class=o>{</span> 
+    <span class=c1>// For flexibility, we really want this to be an  abstract class or interface,</span>
+    <span class=c1>// but we can&#39;t directly instantiate either of those.</span>
+    <span class=n>Pizza</span> <span class=n>pizza</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Pizza</span><span class=o>();</span>
+    <span class=n>pizza</span><span class=o>.</span><span class=na>prepare</span><span class=o>();</span> 
+    <span class=n>pizza</span><span class=o>.</span><span class=na>bake</span><span class=o>();</span> 
+    <span class=n>pizza</span><span class=o>.</span><span class=na>cut</span><span class=o>();</span> 
+    <span class=n>pizza</span><span class=o>.</span><span class=na>box</span><span class=o>();</span> 
+    <span class=k>return</span> <span class=n>pizza</span><span class=o>;</span>
+<span class=o>}</span>
+</pre></div></p>
+<p>But you need more than one type of pizza...</p>
+<p> <div class=codehilite><pre><span class=n>Pizza</span> <span class=nf>orderPizza</span><span class=o>(</span><span class=n>String</span> <span class=n>type</span><span class=o>)</span> <span class=o>{</span> 
+    <span class=n>Pizza</span> <span class=n>pizza</span><span class=o>;</span>
+
+    <span class=k>if</span> <span class=o>(</span><span class=n>type</span><span class=o>.</span><span class=na>equals</span><span class=o>(&amp;</span><span class=n>ldquo</span><span class=o>;</span><span class=n>cheese</span><span class=o>&amp;</span><span class=n>rdquo</span><span class=o>;))</span> <span class=o>{</span> 
+        <span class=n>pizza</span> <span class=o>=</span> <span class=k>new</span> <span class=n>CheesePizza</span><span class=o>();</span> <span class=o>}</span> 
+    <span class=k>else</span> <span class=k>if</span> <span class=o>(</span><span class=n>type</span><span class=o>.</span><span class=na>equals</span><span class=o>(&amp;</span><span class=n>ldquo</span><span class=o>;</span><span class=n>greek</span><span class=o>&amp;</span><span class=n>rdquo</span><span class=o>;)</span> <span class=o>{</span>
+        <span class=n>pizza</span> <span class=o>=</span> <span class=k>new</span> <span class=n>GreekPizza</span><span class=o>();</span> 
+    <span class=o>}</span> <span class=k>else</span> <span class=k>if</span> <span class=o>(</span><span class=n>type</span><span class=o>.</span><span class=na>equals</span><span class=o>(&amp;</span><span class=n>ldquo</span><span class=o>;</span><span class=n>pepperoni</span><span class=o>&amp;</span><span class=n>rdquo</span><span class=o>;)</span> <span class=o>{</span>
+        <span class=n>pizza</span> <span class=o>=</span> <span class=k>new</span> <span class=n>PepperoniPizza</span><span class=o>();</span> 
+    <span class=o>}</span>
+    <span class=c1>// Once we have a Pizza, we prepare it </span>
+    <span class=c1>// (you know, roll the dough, put on the sauce and add the toppings &amp; cheese), </span>
+    <span class=c1>// then we bake it, cut it and box it!</span>
+    <span class=n>pizza</span><span class=o>.</span><span class=na>prepare</span><span class=o>();</span> 
+    <span class=n>pizza</span><span class=o>.</span><span class=na>bake</span><span class=o>();</span> 
+    <span class=n>pizza</span><span class=o>.</span><span class=na>cut</span><span class=o>();</span> 
+    <span class=n>pizza</span><span class=o>.</span><span class=na>box</span><span class=o>();</span> 
+    <span class=k>return</span> <span class=n>pizza</span><span class=o>;</span>
+<span class=o>}</span>
+</pre></div></p>
+<p>But the pressure is on to add more pizza types...</p>
+<h4 id="encapsulating-object-creation">Encapsulating object creation<a class="headerlink" href="#encapsulating-object-creation" title="Permanent link">&para;</a></h4>
+<p>Factories handle the details of object creation. Once we have a <C>SimplePizzaFactory</C>, our <C>orderPizza()</C> method just becomes a client of that object.</p>
+<div class=md-fenced-code-tabs id=tab-tab-group-2><input name=tab-group-2 type=radio id=tab-group-2-0_Java checked=checked class=code-tab data-lang=Java aria-controls=tab-group-2-0_Java-panel role=tab><label for=tab-group-2-0_Java class=code-tab-label data-lang=Java id=tab-group-2-0_Java-label>Simplepizzafactory</label><div class=code-tabpanel role=tabpanel data-lang=Java id=tab-group-2-0_Java-panel aria-labelledby=tab-group-2-0_Java-label><div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>SimplePizzaFactory</span> <span class=o>{</span>
+    <span class=kd>public</span> <span class=n>Pizza</span> <span class=nf>createPizza</span><span class=o>(</span><span class=n>String</span> <span class=n>type</span><span class=o>)</span>
+    <span class=o>{</span>
+        <span class=n>Pizza</span> <span class=n>pizza</span> <span class=o>=</span> <span class=kc>null</span><span class=o>;</span>
+        <span class=k>if</span> <span class=o>(</span><span class=n>type</span><span class=o>.</span><span class=na>equals</span><span class=o>(&amp;</span><span class=n>ldquo</span><span class=o>;</span><span class=n>cheese</span><span class=o>&amp;</span><span class=n>rdquo</span><span class=o>;))</span> <span class=o>{</span> 
+            <span class=n>pizza</span> <span class=o>=</span> <span class=k>new</span> <span class=n>CheesePizza</span><span class=o>();</span> <span class=o>}</span> 
+        <span class=k>else</span> <span class=k>if</span> <span class=o>(</span><span class=n>type</span><span class=o>.</span><span class=na>equals</span><span class=o>(&amp;</span><span class=n>ldquo</span><span class=o>;</span><span class=n>pepperoni</span><span class=o>&amp;</span><span class=n>rdquo</span><span class=o>;))</span> <span class=o>{</span> 
+            <span class=n>pizza</span> <span class=o>=</span> <span class=k>new</span> <span class=n>PepperoniPizza</span><span class=o>();</span> 
+        <span class=o>}</span> <span class=k>else</span> <span class=k>if</span> <span class=o>(</span><span class=n>type</span><span class=o>.</span><span class=na>equals</span><span class=o>(&amp;</span><span class=n>ldquo</span><span class=o>;</span><span class=n>clam</span><span class=o>&amp;</span><span class=n>rdquo</span><span class=o>;))</span> <span class=o>{</span>
+            <span class=n>pizza</span> <span class=o>=</span> <span class=k>new</span> <span class=n>ClamPizza</span><span class=o>();</span> 
+        <span class=o>}</span> <span class=k>else</span> <span class=k>if</span> <span class=o>(</span><span class=n>type</span><span class=o>.</span><span class=na>equals</span><span class=o>(&amp;</span><span class=n>ldquo</span><span class=o>;</span><span class=n>veggie</span><span class=o>&amp;</span><span class=n>rdquo</span><span class=o>;))</span> <span class=o>{</span>
+            <span class=n>pizza</span> <span class=o>=</span> <span class=k>new</span> <span class=n>VeggiePizza</span><span class=o>();</span> 
+        <span class=o>}</span>  <span class=c1>// end if</span>
+        <span class=k>return</span> <span class=n>pizza</span><span class=o>;</span>   
+    <span class=o>}</span> <span class=c1>// end createPizza</span>
+<span class=o>}</span>
+</pre></div></div><input name=tab-group-2 type=radio id=tab-group-2-1_Java class=code-tab data-lang=Java aria-controls=tab-group-2-1_Java-panel role=tab><label for=tab-group-2-1_Java class=code-tab-label data-lang=Java id=tab-group-2-1_Java-label>Pizzastore</label><div class=code-tabpanel role=tabpanel data-lang=Java id=tab-group-2-1_Java-panel aria-labelledby=tab-group-2-1_Java-label><div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>PizzaStore</span> <span class=o>{</span>
+  <span class=c1>// Now we give PizzaStore a reference to a SimplePizzaFactory.</span>
+    <span class=n>SimplePizzaFactory</span> <span class=n>factory</span><span class=o>;</span>
+    <span class=c1>// PizzaStore gets the factory passes to it in the constructor.</span>
+    <span class=kd>public</span> <span class=nf>PizzaStore</span><span class=o>(</span><span class=n>SimplePizzaFactory</span> <span class=n>factory</span><span class=o>)</span> <span class=o>{</span>
+        <span class=k>this</span><span class=o>.</span><span class=na>factory</span> <span class=o>=</span> <span class=n>factory</span><span class=o>;</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=n>Pizza</span> <span class=nf>orderPizza</span><span class=o>(</span><span class=n>String</span> <span class=n>type</span><span class=o>)</span> <span class=o>{</span>
+        <span class=n>Pizza</span> <span class=n>pizza</span><span class=o>;</span>
+        <span class=n>pizza</span> <span class=o>=</span> <span class=n>factory</span><span class=o>.</span><span class=na>createPizza</span><span class=o>(</span><span class=n>type</span><span class=o>);</span>
+        <span class=n>pizza</span><span class=o>.</span><span class=na>prepare</span><span class=o>();</span>
+        <span class=n>pizza</span><span class=o>.</span><span class=na>bake</span><span class=o>();</span>
+        <span class=n>pizza</span><span class=o>.</span><span class=na>cut</span><span class=o>();</span>
+        <span class=n>pizza</span><span class=o>.</span><span class=na>box</span><span class=o>();</span>
+        <span class=k>return</span> <span class=n>pizza</span><span class=o>;</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></div></div>
+
+<p><img alt="SimplePizzaFactory" src="../figures/SImplePizzaFactory.png" /></p>
+<blockquote>
+<p>The Simple Factory is NOT actually a Design Pattern; it&rsquo;s more of a programming IDIOM. But it is commonly used.</p>
+</blockquote>
+<h3 id="2-factory-method-pattern">2 Factory Method Pattern<a class="headerlink" href="#2-factory-method-pattern" title="Permanent link">&para;</a></h3>
+<p>Your Objectville PizzaStore has done so well that you&rsquo;ve trounced the competition and now everyone wants a PizzaStore in their own neighborhood.</p>
+<p>And now each franchise might want to offer different styles of pizzas (New York, Chicago, and California, etc), depending on where the franchise store is located and the tastes of the local pizza connoisseurs.</p>
+<p><img alt="reginalDifferencesFranchiseStyle" src="../figures/reginalDifferencesFranchiseStyle.png" /></p>
+<div class=md-fenced-code-tabs id=tab-tab-group-3><input name=tab-group-3 type=radio id=tab-group-3-0_Java checked=checked class=code-tab data-lang=Java aria-controls=tab-group-3-0_Java-panel role=tab><label for=tab-group-3-0_Java class=code-tab-label data-lang=Java id=tab-group-3-0_Java-label>Pizzastore</label><div class=code-tabpanel role=tabpanel data-lang=Java id=tab-group-3-0_Java-panel aria-labelledby=tab-group-3-0_Java-label><div class=codehilite><pre><span class=kd>public</span> <span class=kd>abstract</span> <span class=kd>class</span> <span class=nc>PizzaStore</span> <span class=o>{</span>
+
+    <span class=kd>abstract</span> <span class=n>Pizza</span> <span class=nf>createPizza</span><span class=o>(</span><span class=n>String</span> <span class=n>item</span><span class=o>);</span>
+
+    <span class=kd>public</span> <span class=n>Pizza</span> <span class=nf>orderPizza</span><span class=o>(</span><span class=n>String</span> <span class=n>type</span><span class=o>)</span> <span class=o>{</span>
+        <span class=n>Pizza</span> <span class=n>pizza</span> <span class=o>=</span> <span class=n>createPizza</span><span class=o>(</span><span class=n>type</span><span class=o>);</span>
+        <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=s>&quot;--- Making a &quot;</span> <span class=o>+</span> <span class=n>pizza</span><span class=o>.</span><span class=na>getName</span><span class=o>()</span> <span class=o>+</span> <span class=s>&quot; ---&quot;</span><span class=o>);</span>
+        <span class=n>pizza</span><span class=o>.</span><span class=na>prepare</span><span class=o>();</span>
+        <span class=n>pizza</span><span class=o>.</span><span class=na>bake</span><span class=o>();</span>
+        <span class=n>pizza</span><span class=o>.</span><span class=na>cut</span><span class=o>();</span>
+        <span class=n>pizza</span><span class=o>.</span><span class=na>box</span><span class=o>();</span>
+        <span class=k>return</span> <span class=n>pizza</span><span class=o>;</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+
+<span class=kd>public</span> <span class=kd>class</span> <span class=nc>NYPizzaStore</span> <span class=kd>extends</span> <span class=n>PizzaStore</span> <span class=o>{</span>
+
+    <span class=n>Pizza</span> <span class=nf>createPizza</span><span class=o>(</span><span class=n>String</span> <span class=n>item</span><span class=o>)</span> <span class=o>{</span>
+        <span class=k>if</span> <span class=o>(</span><span class=n>item</span><span class=o>.</span><span class=na>equals</span><span class=o>(</span><span class=s>&quot;cheese&quot;</span><span class=o>))</span> <span class=o>{</span>
+            <span class=k>return</span> <span class=k>new</span> <span class=n>NYStyleCheesePizza</span><span class=o>();</span>
+        <span class=o>}</span> <span class=k>else</span> <span class=k>if</span> <span class=o>(</span><span class=n>item</span><span class=o>.</span><span class=na>equals</span><span class=o>(</span><span class=s>&quot;veggie&quot;</span><span class=o>))</span> <span class=o>{</span>
+            <span class=k>return</span> <span class=k>new</span> <span class=n>NYStyleVeggiePizza</span><span class=o>();</span>
+        <span class=o>}</span> <span class=k>else</span> <span class=k>if</span> <span class=o>(</span><span class=n>item</span><span class=o>.</span><span class=na>equals</span><span class=o>(</span><span class=s>&quot;clam&quot;</span><span class=o>))</span> <span class=o>{</span>
+            <span class=k>return</span> <span class=k>new</span> <span class=n>NYStyleClamPizza</span><span class=o>();</span>
+        <span class=o>}</span> <span class=k>else</span> <span class=k>if</span> <span class=o>(</span><span class=n>item</span><span class=o>.</span><span class=na>equals</span><span class=o>(</span><span class=s>&quot;pepperoni&quot;</span><span class=o>))</span> <span class=o>{</span>
+            <span class=k>return</span> <span class=k>new</span> <span class=n>NYStylePepperoniPizza</span><span class=o>();</span>
+        <span class=o>}</span> <span class=k>else</span> <span class=k>return</span> <span class=kc>null</span><span class=o>;</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+
+<span class=kd>public</span> <span class=kd>class</span> <span class=nc>NYPizzaStore</span> <span class=kd>extends</span> <span class=n>PizzaStore</span> <span class=o>{</span>
+
+    <span class=n>Pizza</span> <span class=nf>createPizza</span><span class=o>(</span><span class=n>String</span> <span class=n>item</span><span class=o>)</span> <span class=o>{</span>
+        <span class=k>if</span> <span class=o>(</span><span class=n>item</span><span class=o>.</span><span class=na>equals</span><span class=o>(</span><span class=s>&quot;cheese&quot;</span><span class=o>))</span> <span class=o>{</span>
+            <span class=k>return</span> <span class=k>new</span> <span class=n>NYStyleCheesePizza</span><span class=o>();</span>
+        <span class=o>}</span> <span class=k>else</span> <span class=k>if</span> <span class=o>(</span><span class=n>item</span><span class=o>.</span><span class=na>equals</span><span class=o>(</span><span class=s>&quot;veggie&quot;</span><span class=o>))</span> <span class=o>{</span>
+            <span class=k>return</span> <span class=k>new</span> <span class=n>NYStyleVeggiePizza</span><span class=o>();</span>
+        <span class=o>}</span> <span class=k>else</span> <span class=k>if</span> <span class=o>(</span><span class=n>item</span><span class=o>.</span><span class=na>equals</span><span class=o>(</span><span class=s>&quot;clam&quot;</span><span class=o>))</span> <span class=o>{</span>
+            <span class=k>return</span> <span class=k>new</span> <span class=n>NYStyleClamPizza</span><span class=o>();</span>
+        <span class=o>}</span> <span class=k>else</span> <span class=k>if</span> <span class=o>(</span><span class=n>item</span><span class=o>.</span><span class=na>equals</span><span class=o>(</span><span class=s>&quot;pepperoni&quot;</span><span class=o>))</span> <span class=o>{</span>
+            <span class=k>return</span> <span class=k>new</span> <span class=n>NYStylePepperoniPizza</span><span class=o>();</span>
+        <span class=o>}</span> <span class=k>else</span> <span class=k>return</span> <span class=kc>null</span><span class=o>;</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></div><input name=tab-group-3 type=radio id=tab-group-3-1_Java class=code-tab data-lang=Java aria-controls=tab-group-3-1_Java-panel role=tab><label for=tab-group-3-1_Java class=code-tab-label data-lang=Java id=tab-group-3-1_Java-label>Pizza</label><div class=code-tabpanel role=tabpanel data-lang=Java id=tab-group-3-1_Java-panel aria-labelledby=tab-group-3-1_Java-label><div class=codehilite><pre><span class=kd>public</span> <span class=kd>abstract</span> <span class=kd>class</span> <span class=nc>Pizza</span> <span class=o>{</span>
+    <span class=n>String</span> <span class=n>name</span><span class=o>;</span>
+    <span class=n>String</span> <span class=n>dough</span><span class=o>;</span>
+    <span class=n>String</span> <span class=n>sauce</span><span class=o>;</span>
+    <span class=n>ArrayList</span><span class=o>&lt;</span><span class=n>String</span><span class=o>&gt;</span> <span class=n>toppings</span> <span class=o>=</span> <span class=k>new</span> <span class=n>ArrayList</span><span class=o>&lt;</span><span class=n>String</span><span class=o>&gt;();</span>
+
+    <span class=kt>void</span> <span class=nf>prepare</span><span class=o>()</span> <span class=o>{</span>
+        <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=s>&quot;Prepare &quot;</span> <span class=o>+</span> <span class=n>name</span><span class=o>);</span>
+        <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=s>&quot;Tossing dough...&quot;</span><span class=o>);</span>
+        <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=s>&quot;Adding sauce...&quot;</span><span class=o>);</span>
+        <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=s>&quot;Adding toppings: &quot;</span><span class=o>);</span>
+        <span class=k>for</span> <span class=o>(</span><span class=n>String</span> <span class=n>topping</span> <span class=o>:</span> <span class=n>toppings</span><span class=o>)</span> <span class=o>{</span>
+            <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=s>&quot;   &quot;</span> <span class=o>+</span> <span class=n>topping</span><span class=o>);</span>
+        <span class=o>}</span>
+    <span class=o>}</span>
+
+    <span class=kt>void</span> <span class=nf>bake</span><span class=o>()</span> <span class=o>{</span>
+        <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=s>&quot;Bake for 25 minutes at 350&quot;</span><span class=o>);</span>
+    <span class=o>}</span>
+
+    <span class=kt>void</span> <span class=nf>cut</span><span class=o>()</span> <span class=o>{</span>
+        <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=s>&quot;Cut the pizza into diagonal slices&quot;</span><span class=o>);</span>
+    <span class=o>}</span>
+
+    <span class=kt>void</span> <span class=nf>box</span><span class=o>()</span> <span class=o>{</span>
+        <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=s>&quot;Place pizza in official PizzaStore box&quot;</span><span class=o>);</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=n>String</span> <span class=nf>getName</span><span class=o>()</span> <span class=o>{</span>
+        <span class=k>return</span> <span class=n>name</span><span class=o>;</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=n>String</span> <span class=nf>toString</span><span class=o>()</span> <span class=o>{</span>
+        <span class=n>StringBuffer</span> <span class=n>display</span> <span class=o>=</span> <span class=k>new</span> <span class=n>StringBuffer</span><span class=o>();</span>
+        <span class=n>display</span><span class=o>.</span><span class=na>append</span><span class=o>(</span><span class=s>&quot;---- &quot;</span> <span class=o>+</span> <span class=n>name</span> <span class=o>+</span> <span class=s>&quot; ----\n&quot;</span><span class=o>);</span>
+        <span class=n>display</span><span class=o>.</span><span class=na>append</span><span class=o>(</span><span class=n>dough</span> <span class=o>+</span> <span class=s>&quot;\n&quot;</span><span class=o>);</span>
+        <span class=n>display</span><span class=o>.</span><span class=na>append</span><span class=o>(</span><span class=n>sauce</span> <span class=o>+</span> <span class=s>&quot;\n&quot;</span><span class=o>);</span>
+        <span class=k>for</span> <span class=o>(</span><span class=n>String</span> <span class=n>topping</span> <span class=o>:</span> <span class=n>toppings</span><span class=o>)</span> <span class=o>{</span>
+            <span class=n>display</span><span class=o>.</span><span class=na>append</span><span class=o>(</span><span class=n>topping</span> <span class=o>+</span> <span class=s>&quot;\n&quot;</span><span class=o>);</span>
+        <span class=o>}</span>
+        <span class=k>return</span> <span class=n>display</span><span class=o>.</span><span class=na>toString</span><span class=o>();</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+
+<span class=kd>public</span> <span class=kd>class</span> <span class=nc>NYStyleCheesePizza</span> <span class=kd>extends</span> <span class=n>Pizza</span> <span class=o>{</span>
+
+    <span class=kd>public</span> <span class=nf>NYStyleCheesePizza</span><span class=o>()</span> <span class=o>{</span> 
+        <span class=n>name</span> <span class=o>=</span> <span class=s>&quot;NY Style Sauce and Cheese Pizza&quot;</span><span class=o>;</span>
+        <span class=n>dough</span> <span class=o>=</span> <span class=s>&quot;Thin Crust Dough&quot;</span><span class=o>;</span>
+        <span class=n>sauce</span> <span class=o>=</span> <span class=s>&quot;Marinara Sauce&quot;</span><span class=o>;</span>
+
+        <span class=n>toppings</span><span class=o>.</span><span class=na>add</span><span class=o>(</span><span class=s>&quot;Grated Reggiano Cheese&quot;</span><span class=o>);</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+
+<span class=kd>public</span> <span class=kd>class</span> <span class=nc>ChicagoStyleClamPizza</span> <span class=kd>extends</span> <span class=n>Pizza</span> <span class=o>{</span>
+    <span class=kd>public</span> <span class=nf>ChicagoStyleClamPizza</span><span class=o>()</span> <span class=o>{</span>
+        <span class=n>name</span> <span class=o>=</span> <span class=s>&quot;Chicago Style Clam Pizza&quot;</span><span class=o>;</span>
+        <span class=n>dough</span> <span class=o>=</span> <span class=s>&quot;Extra Thick Crust Dough&quot;</span><span class=o>;</span>
+        <span class=n>sauce</span> <span class=o>=</span> <span class=s>&quot;Plum Tomato Sauce&quot;</span><span class=o>;</span>
+
+        <span class=n>toppings</span><span class=o>.</span><span class=na>add</span><span class=o>(</span><span class=s>&quot;Shredded Mozzarella Cheese&quot;</span><span class=o>);</span>
+        <span class=n>toppings</span><span class=o>.</span><span class=na>add</span><span class=o>(</span><span class=s>&quot;Frozen Clams from Chesapeake Bay&quot;</span><span class=o>);</span>
+    <span class=o>}</span>
+
+    <span class=kt>void</span> <span class=nf>cut</span><span class=o>()</span> <span class=o>{</span>
+        <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=s>&quot;Cutting the pizza into square slices&quot;</span><span class=o>);</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></div><input name=tab-group-3 type=radio id=tab-group-3-2_Java class=code-tab data-lang=Java aria-controls=tab-group-3-2_Java-panel role=tab><label for=tab-group-3-2_Java class=code-tab-label data-lang=Java id=tab-group-3-2_Java-label>Pizzatestdrive</label><div class=code-tabpanel role=tabpanel data-lang=Java id=tab-group-3-2_Java-panel aria-labelledby=tab-group-3-2_Java-label><div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>PizzaTestDrive</span> <span class=o>{</span>
+
+    <span class=kd>public</span> <span class=kd>static</span> <span class=kt>void</span> <span class=nf>main</span><span class=o>(</span><span class=n>String</span><span class=o>[]</span> <span class=n>args</span><span class=o>)</span> <span class=o>{</span>
+        <span class=n>PizzaStore</span> <span class=n>nyStore</span> <span class=o>=</span> <span class=k>new</span> <span class=n>NYPizzaStore</span><span class=o>();</span>
+        <span class=n>PizzaStore</span> <span class=n>chicagoStore</span> <span class=o>=</span> <span class=k>new</span> <span class=n>ChicagoPizzaStore</span><span class=o>();</span>
+
+        <span class=n>Pizza</span> <span class=n>pizza</span> <span class=o>=</span> <span class=n>nyStore</span><span class=o>.</span><span class=na>orderPizza</span><span class=o>(</span><span class=s>&quot;cheese&quot;</span><span class=o>);</span>
+        <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=s>&quot;Ethan ordered a &quot;</span> <span class=o>+</span> <span class=n>pizza</span><span class=o>.</span><span class=na>getName</span><span class=o>()</span> <span class=o>+</span> <span class=s>&quot;\n&quot;</span><span class=o>);</span>
+
+        <span class=n>pizza</span> <span class=o>=</span> <span class=n>chicagoStore</span><span class=o>.</span><span class=na>orderPizza</span><span class=o>(</span><span class=s>&quot;cheese&quot;</span><span class=o>);</span>
+        <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=s>&quot;Joel ordered a &quot;</span> <span class=o>+</span> <span class=n>pizza</span><span class=o>.</span><span class=na>getName</span><span class=o>()</span> <span class=o>+</span> <span class=s>&quot;\n&quot;</span><span class=o>);</span>
+
+        <span class=n>pizza</span> <span class=o>=</span> <span class=n>nyStore</span><span class=o>.</span><span class=na>orderPizza</span><span class=o>(</span><span class=s>&quot;clam&quot;</span><span class=o>);</span>
+        <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=s>&quot;Ethan ordered a &quot;</span> <span class=o>+</span> <span class=n>pizza</span><span class=o>.</span><span class=na>getName</span><span class=o>()</span> <span class=o>+</span> <span class=s>&quot;\n&quot;</span><span class=o>);</span>
+
+        <span class=n>pizza</span> <span class=o>=</span> <span class=n>chicagoStore</span><span class=o>.</span><span class=na>orderPizza</span><span class=o>(</span><span class=s>&quot;clam&quot;</span><span class=o>);</span>
+        <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=s>&quot;Joel ordered a &quot;</span> <span class=o>+</span> <span class=n>pizza</span><span class=o>.</span><span class=na>getName</span><span class=o>()</span> <span class=o>+</span> <span class=s>&quot;\n&quot;</span><span class=o>);</span>
+
+        <span class=n>pizza</span> <span class=o>=</span> <span class=n>nyStore</span><span class=o>.</span><span class=na>orderPizza</span><span class=o>(</span><span class=s>&quot;pepperoni&quot;</span><span class=o>);</span>
+        <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=s>&quot;Ethan ordered a &quot;</span> <span class=o>+</span> <span class=n>pizza</span><span class=o>.</span><span class=na>getName</span><span class=o>()</span> <span class=o>+</span> <span class=s>&quot;\n&quot;</span><span class=o>);</span>
+
+        <span class=n>pizza</span> <span class=o>=</span> <span class=n>chicagoStore</span><span class=o>.</span><span class=na>orderPizza</span><span class=o>(</span><span class=s>&quot;pepperoni&quot;</span><span class=o>);</span>
+        <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=s>&quot;Joel ordered a &quot;</span> <span class=o>+</span> <span class=n>pizza</span><span class=o>.</span><span class=na>getName</span><span class=o>()</span> <span class=o>+</span> <span class=s>&quot;\n&quot;</span><span class=o>);</span>
+
+        <span class=n>pizza</span> <span class=o>=</span> <span class=n>nyStore</span><span class=o>.</span><span class=na>orderPizza</span><span class=o>(</span><span class=s>&quot;veggie&quot;</span><span class=o>);</span>
+        <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=s>&quot;Ethan ordered a &quot;</span> <span class=o>+</span> <span class=n>pizza</span><span class=o>.</span><span class=na>getName</span><span class=o>()</span> <span class=o>+</span> <span class=s>&quot;\n&quot;</span><span class=o>);</span>
+
+        <span class=n>pizza</span> <span class=o>=</span> <span class=n>chicagoStore</span><span class=o>.</span><span class=na>orderPizza</span><span class=o>(</span><span class=s>&quot;veggie&quot;</span><span class=o>);</span>
+        <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=s>&quot;Joel ordered a &quot;</span> <span class=o>+</span> <span class=n>pizza</span><span class=o>.</span><span class=na>getName</span><span class=o>()</span> <span class=o>+</span> <span class=s>&quot;\n&quot;</span><span class=o>);</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></div></div>
+
+<p><img alt="PizzaFactoryMethodUM" src="../figures/PizzaFactoryMethodUML.png" /></p>
+<blockquote>
+<p>The <strong>Factory Method</strong> Pattern defines an interface for creating an object, but lets subclasses decide which class to instantiate. Factory Method lets a class defer instantiation to subclasses.</p>
+</blockquote>
+<p><img alt="FactoryMethodUM" src="../figures/FactoryMethodUML.png" /></p>
+<h4 id="dependency-inversion-principle">Dependency inversion principle<a class="headerlink" href="#dependency-inversion-principle" title="Permanent link">&para;</a></h4>
+<blockquote>
+<p>The Dependency Inversion Principle: Depend upon abstractions. Do not depend upon concrete classes.</p>
+</blockquote>
+<p>A few guidelines to help you follow the Principle:</p>
+<ul>
+<li>No variable should hold a reference to a concrete class.</li>
+<li>No class should derive from a concrete class.</li>
+<li>No method should override an implemented method of any of its base classes.</li>
+</ul>
+<h3 id="3-abstract-factory-pattern">3 Abstract Factory Pattern<a class="headerlink" href="#3-abstract-factory-pattern" title="Permanent link">&para;</a></h3>
+<blockquote>
+<p>The <strong>Abstract Factory Pattern</strong> provides an interface for creating families of related or dependent objects without specifying their concrete classes.</p>
+</blockquote>
+<p><img alt="AbstractFactoryPattern" src="../figures/AbstractFactoryPattern.png" /></p>
+<h4 id="factory-method-and-abstract-factory-compared">Factory Method and Abstract Factory compared<a class="headerlink" href="#factory-method-and-abstract-factory-compared" title="Permanent link">&para;</a></h4></div>
         </div>
 
         <footer class="col-md-12">

@@ -312,6 +312,10 @@
 <li >
     <a href="../ch13/">Chapter 13: Better Living with Patterns</a>
 </li>
+                            
+<li >
+    <a href="../Appendix/">Appendix: Design Pattern in Java Library</a>
+</li>
                         </ul>
                     </li>
                     <li class="dropdown">
@@ -640,11 +644,157 @@
                 <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
         <li class="main active"><a href="#head-first-design-patterns-3-decorator-pattern">Head First Design Patterns 3 - Decorator Pattern</a></li>
+        <li class="main "><a href="#1-starbuzz-coffee">1 Starbuzz Coffee</a></li>
+            <li><a href="#the-open-closed-principle">The Open-Closed Principle</a></li>
+        <li class="main "><a href="#2-decorator-pattern">2 Decorator Pattern</a></li>
+            <li><a href="#class-diagram">Class Diagram</a></li>
+            <li><a href="#decorating-beverages">decorating beverages</a></li>
+        <li class="main "><a href="#3-decorators-in-java-io">3 Decorators in Java I/O</a></li>
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
 
-<h3 id="head-first-design-patterns-3-decorator-pattern"><strong>Head First Design Patterns 3 - Decorator Pattern</strong><a class="headerlink" href="#head-first-design-patterns-3-decorator-pattern" title="Permanent link">&para;</a></h3></div>
+<h3 id="head-first-design-patterns-3-decorator-pattern"><strong>Head First Design Patterns 3 - Decorator Pattern</strong><a class="headerlink" href="#head-first-design-patterns-3-decorator-pattern" title="Permanent link">&para;</a></h3>
+<h3 id="1-starbuzz-coffee">1 Starbuzz Coffee<a class="headerlink" href="#1-starbuzz-coffee" title="Permanent link">&para;</a></h3>
+<p>Starbuzz Coffee has made a name for itself as the fastest growing coffee shop around. Because they've grown so quickly, they're scrambling to update their ordering systems to match their beverage offerings. When they first went into business they designed their classes like this...</p>
+<p><img alt="FirstBeverageDesign" src="../figures/FirstBeverageDesign.png" /></p>
+<p>In addition to coffee, one can also ask for several condiments like steamed milk, soy, and mocha (otherwise known as chocolate), and have it all topped off with whipped milk.</p>
+<p>Here’s their first attempt...</p>
+<p><img alt="BeverageBadTry" src="../figures/BeverageBadTry.png" /></p>
+<h4 id="the-open-closed-principle">The Open-Closed Principle<a class="headerlink" href="#the-open-closed-principle" title="Permanent link">&para;</a></h4>
+<blockquote>
+<p><strong>Design Principle</strong>: Classes should be open for extension, but closed for modification.
+</p>
+</blockquote>
+<h3 id="2-decorator-pattern">2 Decorator Pattern<a class="headerlink" href="#2-decorator-pattern" title="Permanent link">&para;</a></h3>
+<blockquote>
+<p>The Decorator Pattern attaches additional responsibilities to an object dynamically. Decorators provide a flexible alternative to subclassing for extending functionality.</p>
+<p>装饰器模式动态地将额外的责任附加到对象上。装饰器提供了比继承功能更灵活的替代方案。 </p>
+</blockquote>
+<ul>
+<li>Think of decorator objects as "wrappers".</li>
+<li>Decorators have the same supertype as the objects they decorate.</li>
+<li>You can use one or more decorators to wrap an object.</li>
+<li>Given that the decorator has the same supertype as the object it decorates, we can pass around a decorated object in place of the original (wrapped) object.</li>
+<li>The decorator adds its own behavior either before and/or after delegating to the object it decorates to do the rest of the job.</li>
+<li>Objects can be decorated at any time, so we can decorate objects dynamically at runtime with as many decorators as we like.</li>
+</ul>
+<h4 id="class-diagram">Class Diagram<a class="headerlink" href="#class-diagram" title="Permanent link">&para;</a></h4>
+<p><img alt="DecoratorPatternUM" src="../figures/DecoratorPatternUML.png" /></p>
+<ul>
+<li>Each component can be used on its own, or wrapped by a decorator.</li>
+<li>The <C>ConcreteComponent</C> is the object we're going to dynamically add new behavior to. It extends <C>component</C>.</li>
+<li>Each decorator HAS-A (wraps) a component, which means the decorator has an instance variable that holds a reference to a component.</li>
+<li>Decorators implement the same interface or abstract class as the component they are going to decorate.</li>
+<li>The <C>ConcreteDecorator</C> has an instance variable for the thing it decorate (the <C>Component</C> the <C>Decorator</C> wraps).</li>
+<li>Decorators can add new methods; however, new behavior is typically added by doing computation before or after an existing method in the component.</li>
+</ul>
+<h4 id="decorating-beverages">decorating beverages<a class="headerlink" href="#decorating-beverages" title="Permanent link">&para;</a></h4>
+<p><img alt="DecoratingBeberages" src="../figures/DecoratingBeberages.png" /></p>
+<div class=md-fenced-code-tabs id=tab-tab-group-0><input name=tab-group-0 type=radio id=tab-group-0-0_Java checked=checked class=code-tab data-lang=Java aria-controls=tab-group-0-0_Java-panel role=tab><label for=tab-group-0-0_Java class=code-tab-label data-lang=Java id=tab-group-0-0_Java-label>Beverage</label><div class=code-tabpanel role=tabpanel data-lang=Java id=tab-group-0-0_Java-panel aria-labelledby=tab-group-0-0_Java-label><div class=codehilite><pre><span class=kd>public</span> <span class=kd>abstract</span> <span class=kd>class</span> <span class=nc>Beverage</span> <span class=o>{</span>
+    <span class=n>String</span> <span class=n>description</span> <span class=o>=</span> <span class=s>&quot;Unknown Beverage&quot;</span><span class=o>;</span>
+
+    <span class=kd>public</span> <span class=n>String</span> <span class=nf>getDescription</span><span class=o>()</span> <span class=o>{</span>
+        <span class=k>return</span> <span class=n>description</span><span class=o>;</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kd>abstract</span> <span class=kt>double</span> <span class=nf>cost</span><span class=o>();</span>
+<span class=o>}</span>
+
+<span class=kd>public</span> <span class=kd>class</span> <span class=nc>HouseBlend</span> <span class=kd>extends</span> <span class=n>Beverage</span> <span class=o>{</span>
+    <span class=kd>public</span> <span class=nf>HouseBlend</span><span class=o>()</span> <span class=o>{</span>
+        <span class=n>description</span> <span class=o>=</span> <span class=s>&quot;House Blend Coffee&quot;</span><span class=o>;</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kt>double</span> <span class=nf>cost</span><span class=o>()</span> <span class=o>{</span>
+        <span class=k>return</span> <span class=mf>.89</span><span class=o>;</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+
+<span class=kd>public</span> <span class=kd>class</span> <span class=nc>Espresso</span> <span class=kd>extends</span> <span class=n>Beverage</span> <span class=o>{</span>
+
+    <span class=kd>public</span> <span class=nf>Espresso</span><span class=o>()</span> <span class=o>{</span>
+        <span class=n>description</span> <span class=o>=</span> <span class=s>&quot;Espresso&quot;</span><span class=o>;</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kt>double</span> <span class=nf>cost</span><span class=o>()</span> <span class=o>{</span>
+        <span class=k>return</span> <span class=mf>1.99</span><span class=o>;</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+
+<span class=kd>public</span> <span class=kd>class</span> <span class=nc>Decaf</span> <span class=kd>extends</span> <span class=n>Beverage</span> <span class=o>{</span>
+    <span class=kd>public</span> <span class=nf>Decaf</span><span class=o>()</span> <span class=o>{</span>
+        <span class=n>description</span> <span class=o>=</span> <span class=s>&quot;Decaf Coffee&quot;</span><span class=o>;</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kt>double</span> <span class=nf>cost</span><span class=o>()</span> <span class=o>{</span>
+        <span class=k>return</span> <span class=mf>1.05</span><span class=o>;</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></div><input name=tab-group-0 type=radio id=tab-group-0-1_Java class=code-tab data-lang=Java aria-controls=tab-group-0-1_Java-panel role=tab><label for=tab-group-0-1_Java class=code-tab-label data-lang=Java id=tab-group-0-1_Java-label>Condimentdecorator</label><div class=code-tabpanel role=tabpanel data-lang=Java id=tab-group-0-1_Java-panel aria-labelledby=tab-group-0-1_Java-label><div class=codehilite><pre><span class=kd>public</span> <span class=kd>abstract</span> <span class=kd>class</span> <span class=nc>CondimentDecorator</span> <span class=kd>extends</span> <span class=n>Beverage</span> <span class=o>{</span>
+    <span class=kd>public</span> <span class=kd>abstract</span> <span class=n>String</span> <span class=nf>getDescription</span><span class=o>();</span>
+<span class=o>}</span>
+
+<span class=kd>public</span> <span class=kd>class</span> <span class=nc>Milk</span> <span class=kd>extends</span> <span class=n>CondimentDecorator</span> <span class=o>{</span>
+    <span class=n>Beverage</span> <span class=n>beverage</span><span class=o>;</span>
+
+    <span class=kd>public</span> <span class=nf>Milk</span><span class=o>(</span><span class=n>Beverage</span> <span class=n>beverage</span><span class=o>)</span> <span class=o>{</span>
+        <span class=k>this</span><span class=o>.</span><span class=na>beverage</span> <span class=o>=</span> <span class=n>beverage</span><span class=o>;</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=n>String</span> <span class=nf>getDescription</span><span class=o>()</span> <span class=o>{</span>
+        <span class=k>return</span> <span class=n>beverage</span><span class=o>.</span><span class=na>getDescription</span><span class=o>()</span> <span class=o>+</span> <span class=s>&quot;, Milk&quot;</span><span class=o>;</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kt>double</span> <span class=nf>cost</span><span class=o>()</span> <span class=o>{</span>
+        <span class=k>return</span> <span class=mf>.10</span> <span class=o>+</span> <span class=n>beverage</span><span class=o>.</span><span class=na>cost</span><span class=o>();</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+
+<span class=kd>public</span> <span class=kd>class</span> <span class=nc>Mocha</span> <span class=kd>extends</span> <span class=n>CondimentDecorator</span> <span class=o>{</span>
+    <span class=n>Beverage</span> <span class=n>beverage</span><span class=o>;</span>
+
+    <span class=kd>public</span> <span class=nf>Mocha</span><span class=o>(</span><span class=n>Beverage</span> <span class=n>beverage</span><span class=o>)</span> <span class=o>{</span>
+        <span class=k>this</span><span class=o>.</span><span class=na>beverage</span> <span class=o>=</span> <span class=n>beverage</span><span class=o>;</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=n>String</span> <span class=nf>getDescription</span><span class=o>()</span> <span class=o>{</span>
+        <span class=k>return</span> <span class=n>beverage</span><span class=o>.</span><span class=na>getDescription</span><span class=o>()</span> <span class=o>+</span> <span class=s>&quot;, Mocha&quot;</span><span class=o>;</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kt>double</span> <span class=nf>cost</span><span class=o>()</span> <span class=o>{</span>
+        <span class=k>return</span> <span class=mf>.20</span> <span class=o>+</span> <span class=n>beverage</span><span class=o>.</span><span class=na>cost</span><span class=o>();</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></div><input name=tab-group-0 type=radio id=tab-group-0-2_Java class=code-tab data-lang=Java aria-controls=tab-group-0-2_Java-panel role=tab><label for=tab-group-0-2_Java class=code-tab-label data-lang=Java id=tab-group-0-2_Java-label>Starbuzzcoffee</label><div class=code-tabpanel role=tabpanel data-lang=Java id=tab-group-0-2_Java-panel aria-labelledby=tab-group-0-2_Java-label><div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>StarbuzzCoffee</span> <span class=o>{</span>
+
+    <span class=kd>public</span> <span class=kd>static</span> <span class=kt>void</span> <span class=nf>main</span><span class=o>(</span><span class=n>String</span> <span class=n>args</span><span class=o>[])</span> <span class=o>{</span>
+        <span class=n>Beverage</span> <span class=n>beverage</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Espresso</span><span class=o>();</span>
+        <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=n>beverage</span><span class=o>.</span><span class=na>getDescription</span><span class=o>()</span> 
+                <span class=o>+</span> <span class=s>&quot; $&quot;</span> <span class=o>+</span> <span class=n>beverage</span><span class=o>.</span><span class=na>cost</span><span class=o>());</span>
+
+        <span class=n>Beverage</span> <span class=n>beverage2</span> <span class=o>=</span> <span class=k>new</span> <span class=n>DarkRoast</span><span class=o>();</span>
+        <span class=n>beverage2</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Mocha</span><span class=o>(</span><span class=n>beverage2</span><span class=o>);</span>
+        <span class=n>beverage2</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Mocha</span><span class=o>(</span><span class=n>beverage2</span><span class=o>);</span>
+        <span class=n>beverage2</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Whip</span><span class=o>(</span><span class=n>beverage2</span><span class=o>);</span>
+        <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=n>beverage2</span><span class=o>.</span><span class=na>getDescription</span><span class=o>()</span> 
+                <span class=o>+</span> <span class=s>&quot; $&quot;</span> <span class=o>+</span> <span class=n>beverage2</span><span class=o>.</span><span class=na>cost</span><span class=o>());</span>
+
+        <span class=n>Beverage</span> <span class=n>beverage3</span> <span class=o>=</span> <span class=k>new</span> <span class=n>HouseBlend</span><span class=o>();</span>
+        <span class=n>beverage3</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Soy</span><span class=o>(</span><span class=n>beverage3</span><span class=o>);</span>
+        <span class=n>beverage3</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Mocha</span><span class=o>(</span><span class=n>beverage3</span><span class=o>);</span>
+        <span class=n>beverage3</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Whip</span><span class=o>(</span><span class=n>beverage3</span><span class=o>);</span>
+        <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=n>beverage3</span><span class=o>.</span><span class=na>getDescription</span><span class=o>()</span> 
+                <span class=o>+</span> <span class=s>&quot; $&quot;</span> <span class=o>+</span> <span class=n>beverage3</span><span class=o>.</span><span class=na>cost</span><span class=o>());</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></div></div>
+
+<h3 id="3-decorators-in-java-io">3 Decorators in Java I/O<a class="headerlink" href="#3-decorators-in-java-io" title="Permanent link">&para;</a></h3>
+<p>The <C>java.io</C> package is largely based on decorator. Here’s a typical set of objects that use decorators to add functionality to reading data from a file:</p>
+<p><img alt="JavaIO" src="../figures/JavaIO.png" /></p>
+<p><img alt="JavaIOClassGraph" src="../figures/JavaIOClassGraph.png" /></p>
+<p>Java I/O also points out one of the <strong><em>downsides</em></strong> of the Decorator Pattern: designs using this pattern often result in a large number of small classes that can be overwhelming to a developer trying to use the Decorator-based API.</p></div>
         </div>
 
         <footer class="col-md-12">
