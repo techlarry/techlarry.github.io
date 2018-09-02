@@ -614,6 +614,47 @@
 </li>
                         </ul>
                     </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">GDM <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../../gdm/">Contents</a>
+</li>
+                            
+<li >
+    <a href="../../gdm/ch1/">Chapter 1: 简介</a>
+</li>
+                            
+<li >
+    <a href="../../gdm/ch2/">Chapter 2: 推荐系统入门</a>
+</li>
+                            
+<li >
+    <a href="../../gdm/ch3/">Chapter 3: 隐式评价和基于物品的过滤算法</a>
+</li>
+                            
+<li >
+    <a href="../../gdm/ch4/">Chapter 4: 分类</a>
+</li>
+                            
+<li >
+    <a href="../../gdm/ch5/">Chapter 5: 进一步探索分类</a>
+</li>
+                            
+<li >
+    <a href="../../gdm/ch6/">Chapter 6: 概率和朴素贝叶斯</a>
+</li>
+                            
+<li >
+    <a href="../../gdm/ch7/">Chapter 7: 朴素贝叶斯和文本数据</a>
+</li>
+                            
+<li >
+    <a href="../../gdm/ch8/">Chapter 8: 聚类</a>
+</li>
+                        </ul>
+                    </li>
                     <li >
                         <a href="../../books/">Books</a>
                     </li>
@@ -644,11 +685,87 @@
                 <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
         <li class="main active"><a href="#hadoop-the-definitive-guide-6-developing-a-mapreduce-application">Hadoop: The Definitive Guide 6 - Developing a MapReduce Application</a></li>
+        <li class="main "><a href="#1-the-configuration-api">1 The Configuration API</a></li>
+            <li><a href="#combining-resources">Combining Resources</a></li>
+            <li><a href="#variable-expansion">Variable Expansion</a></li>
+        <li class="main "><a href="#2-setting-up-the-development-environment">2 Setting Up the Development Environment</a></li>
+            <li><a href="#managing-configuration">Managing Configuration</a></li>
+        <li class="main "><a href="#3-writing-a-unit-test-with-mrunit">3 Writing a Unit Test with MRUnit</a></li>
+        <li class="main "><a href="#4-running-locally-on-test-data">4 Running Locally on Test Data</a></li>
+        <li class="main "><a href="#5-running-on-a-cluster">5 Running on a Cluster</a></li>
+        <li class="main "><a href="#6-tuning-a-job">6 Tuning a Job</a></li>
+        <li class="main "><a href="#7-mapreduce-workflows">7 MapReduce Workflows</a></li>
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
 
-<h3 id="hadoop-the-definitive-guide-6-developing-a-mapreduce-application"><strong>Hadoop: The Definitive Guide 6 - Developing a MapReduce Application</strong><a class="headerlink" href="#hadoop-the-definitive-guide-6-developing-a-mapreduce-application" title="Permanent link">&para;</a></h3></div>
+<h3 id="hadoop-the-definitive-guide-6-developing-a-mapreduce-application"><strong>Hadoop: The Definitive Guide 6 - Developing a MapReduce Application</strong><a class="headerlink" href="#hadoop-the-definitive-guide-6-developing-a-mapreduce-application" title="Permanent link">&para;</a></h3>
+<h3 id="1-the-configuration-api">1 The Configuration API<a class="headerlink" href="#1-the-configuration-api" title="Permanent link">&para;</a></h3>
+<p>Components in Hadoop are configured using Hadoop’s own configuration API. An instance of the <C>org.apache.hadoop.conf.Configuration</C> represents a collection of configuration properties and their values.</p>
+<p><C>Configuration</C>s read their properties from  XML files, which have a simple structure for defining name-value pairs.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>XML(E<strong>x</strong>tensible <strong>M</strong>arkup <strong>L</strong>anguage, 可扩展标记语言), is a markup language that defines a set of rules for encoding documents in a format that is both human-readable and machine-readable. </p>
+</div>
+<h4 id="combining-resources">Combining Resources<a class="headerlink" href="#combining-resources" title="Permanent link">&para;</a></h4>
+<p>When more than one resource is used to define a <C>Configuration</C>, properties added later override the earlier definitions. However, properties that are marked as <C>final</C> cannot be overridden in later definitions.</p>
+<div class=md-fenced-code-tabs id=tab-tab-group-0><input name=tab-group-0 type=radio id=tab-group-0-0_Java checked=checked class=code-tab data-lang=Java aria-controls=tab-group-0-0_Java-panel role=tab><label for=tab-group-0-0_Java class=code-tab-label data-lang=Java id=tab-group-0-0_Java-label>Java</label><div class=code-tabpanel role=tabpanel data-lang=Java id=tab-group-0-0_Java-panel aria-labelledby=tab-group-0-0_Java-label><div class=codehilite><pre><span class=n>Configuration</span> <span class=n>conf</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Configuration</span><span class=o>();</span>
+<span class=n>conf</span><span class=o>.</span><span class=na>addResource</span><span class=o>(</span><span class=s>&quot;configuration-1.xml&quot;</span><span class=o>);</span>
+<span class=n>conf</span><span class=o>.</span><span class=na>addResource</span><span class=o>(</span><span class=s>&quot;configuration-2.xml&quot;</span><span class=o>);</span>
+<span class=n>assertThat</span><span class=o>(</span><span class=n>conf</span><span class=o>.</span><span class=na>getInt</span><span class=o>(</span><span class=s>&quot;size&quot;</span><span class=o>,</span> <span class=mi>0</span><span class=o>),</span> <span class=n>is</span><span class=o>(</span><span class=mi>12</span><span class=o>));</span>
+<span class=n>assertThat</span><span class=o>(</span><span class=n>conf</span><span class=o>.</span><span class=na>get</span><span class=o>(</span><span class=s>&quot;weight&quot;</span><span class=o>),</span> <span class=n>is</span><span class=o>(</span><span class=s>&quot;heavy&quot;</span><span class=o>));</span>
+</pre></div></div><input name=tab-group-0 type=radio id=tab-group-0-1_xml class=code-tab data-lang=xml aria-controls=tab-group-0-1_xml-panel role=tab><label for=tab-group-0-1_xml class=code-tab-label data-lang=xml id=tab-group-0-1_xml-label>Configuration-1.xml</label><div class=code-tabpanel role=tabpanel data-lang=xml id=tab-group-0-1_xml-panel aria-labelledby=tab-group-0-1_xml-label><div class=codehilite><pre><span class=cp>&lt;?xml version=&quot;1.0&quot;?&gt;</span> 
+<span class=nt>&lt;configuration&gt;</span>
+    <span class=nt>&lt;property&gt;</span> 
+        <span class=nt>&lt;name&gt;</span>color<span class=nt>&lt;/name&gt;</span> 
+        <span class=nt>&lt;value&gt;</span>yellow<span class=nt>&lt;/value&gt;</span> 
+        <span class=nt>&lt;description&gt;</span>Color<span class=nt>&lt;/description&gt;</span> 
+    <span class=nt>&lt;/property&gt;</span>
+
+    <span class=nt>&lt;property&gt;</span> 
+        <span class=nt>&lt;name&gt;</span>size<span class=nt>&lt;/name&gt;</span> 
+        <span class=nt>&lt;value&gt;</span>10<span class=nt>&lt;/value&gt;</span> 
+        <span class=nt>&lt;description&gt;</span>Size<span class=nt>&lt;/description&gt;</span> 
+    <span class=nt>&lt;/property&gt;</span>
+
+    <span class=nt>&lt;property&gt;</span> 
+        <span class=nt>&lt;name&gt;</span>weight<span class=nt>&lt;/name&gt;</span> 
+        <span class=nt>&lt;value&gt;</span>heavy<span class=nt>&lt;/value&gt;</span> 
+        <span class=nt>&lt;final&gt;</span>true<span class=nt>&lt;/final&gt;</span> 
+        <span class=nt>&lt;description&gt;</span>Weight<span class=nt>&lt;/description&gt;</span> 
+    <span class=nt>&lt;/property&gt;</span>
+
+    <span class=nt>&lt;property&gt;</span> 
+        <span class=nt>&lt;name&gt;</span>size-weight<span class=nt>&lt;/name&gt;</span> 
+        <span class=nt>&lt;value&gt;</span>${size},${weight}<span class=nt>&lt;/value&gt;</span> 
+        <span class=nt>&lt;description&gt;</span>Size and weight<span class=nt>&lt;/description&gt;</span> 
+    <span class=nt>&lt;/property&gt;</span> 
+<span class=nt>&lt;/configuration&gt;</span>
+</pre></div></div><input name=tab-group-0 type=radio id=tab-group-0-2_xml class=code-tab data-lang=xml aria-controls=tab-group-0-2_xml-panel role=tab><label for=tab-group-0-2_xml class=code-tab-label data-lang=xml id=tab-group-0-2_xml-label>Configuration-2.xml</label><div class=code-tabpanel role=tabpanel data-lang=xml id=tab-group-0-2_xml-panel aria-labelledby=tab-group-0-2_xml-label><div class=codehilite><pre><span class=cp>&lt;?xml version=&quot;1.0&quot;?&gt;</span> 
+<span class=nt>&lt;configuration&gt;</span>
+    <span class=nt>&lt;property&gt;</span> 
+        <span class=nt>&lt;name&gt;</span>size<span class=nt>&lt;/name&gt;</span> 
+        <span class=nt>&lt;value&gt;</span>12<span class=nt>&lt;/value&gt;</span> 
+    <span class=nt>&lt;/property&gt;</span>
+
+    <span class=nt>&lt;property&gt;</span> 
+        <span class=nt>&lt;name&gt;</span>weight<span class=nt>&lt;/name&gt;</span> 
+        <span class=nt>&lt;value&gt;</span>light<span class=nt>&lt;/value&gt;</span> 
+    <span class=nt>&lt;/property&gt;</span> 
+<span class=nt>&lt;/configuration&gt;</span>
+</pre></div></div></div>
+
+<h4 id="variable-expansion">Variable Expansion<a class="headerlink" href="#variable-expansion" title="Permanent link">&para;</a></h4>
+<p>Configuration properties can be defined in terms of other properties, or system properties. For example, the property <C>size-weight</C> in <code class="codehilite">configuration-1.xml</code> file is defined as <code class="codehilite"><span class="nv">$text</span>{size}$, <span class="cp">${</span><span class="n">weight</span><span class="cp">}</span>$</code>.</p>
+<h3 id="2-setting-up-the-development-environment">2 Setting Up the Development Environment<a class="headerlink" href="#2-setting-up-the-development-environment" title="Permanent link">&para;</a></h3>
+<p>The first step is to create a project so you can build MapReduce programs and run them in local (standalone) mode from the command line or within your IDE.</p>
+<h4 id="managing-configuration">Managing Configuration<a class="headerlink" href="#managing-configuration" title="Permanent link">&para;</a></h4>
+<h3 id="3-writing-a-unit-test-with-mrunit">3 Writing a Unit Test with MRUnit<a class="headerlink" href="#3-writing-a-unit-test-with-mrunit" title="Permanent link">&para;</a></h3>
+<p><C>MRUnit</C> is a testing library that makes it easy to pass known inputs to a mapper or a reducer and check that the outputs are as expected.  However, MRUnit is <strong>DEPRECATED</strong>!!!</p>
+<h3 id="4-running-locally-on-test-data">4 Running Locally on Test Data<a class="headerlink" href="#4-running-locally-on-test-data" title="Permanent link">&para;</a></h3>
+<h3 id="5-running-on-a-cluster">5 Running on a Cluster<a class="headerlink" href="#5-running-on-a-cluster" title="Permanent link">&para;</a></h3>
+<h3 id="6-tuning-a-job">6 Tuning a Job<a class="headerlink" href="#6-tuning-a-job" title="Permanent link">&para;</a></h3>
+<h3 id="7-mapreduce-workflows">7 MapReduce Workflows<a class="headerlink" href="#7-mapreduce-workflows" title="Permanent link">&para;</a></h3></div>
         </div>
 
         <footer class="col-md-12">
