@@ -312,10 +312,6 @@
 <li >
     <a href="../ch13/">Chapter 13: Better Living with Patterns</a>
 </li>
-                            
-<li >
-    <a href="../Appendix/">Appendix: Design Pattern in Java Library</a>
-</li>
                         </ul>
                     </li>
                     <li class="dropdown">
@@ -535,26 +531,223 @@
                 <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
         <li class="main active"><a href="#head-first-design-patterns-7-adapter-and-facade-pattern">Head First Design Patterns 7 - Adapter and Facade Pattern</a></li>
-            <li><a href="#adapter-pattern-defined">Adapter Pattern defined</a></li>
-            <li><a href="#facade-pattern-defined">Facade Pattern defined</a></li>
+        <li class="main "><a href="#1-adapter-pattern">1 Adapter Pattern</a></li>
+            <li><a href="#the-adapter-pattern-explained">The Adapter Pattern explained</a></li>
+            <li><a href="#adapter-pattern-defined">Adapter Pattern Defined</a></li>
+            <li><a href="#class-diagram">Class Diagram</a></li>
+            <li><a href="#example-collectionsenumeration">Example - Collections.enumeration()</a></li>
+            <li><a href="#example-arraysaslist">Example - Arrays.asList()</a></li>
+        <li class="main "><a href="#2-facade-pattern">2 Facade Pattern</a></li>
+            <li><a href="#facade-pattern-defined">Facade Pattern Defined</a></li>
+            <li><a href="#facade-pattern-class-diagram">Facade Pattern Class Diagram</a></li>
             <li><a href="#the-principle-of-least-knowledge">The Principle of Least Knowledge</a></li>
+            <li><a href="#example-home-theater">Example - Home Theater</a></li>
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
 
 <h3 id="head-first-design-patterns-7-adapter-and-facade-pattern"><strong>Head First Design Patterns 7 - Adapter and Facade Pattern</strong><a class="headerlink" href="#head-first-design-patterns-7-adapter-and-facade-pattern" title="Permanent link">&para;</a></h3>
-<h4 id="adapter-pattern-defined">Adapter Pattern defined<a class="headerlink" href="#adapter-pattern-defined" title="Permanent link">&para;</a></h4>
+<h3 id="1-adapter-pattern">1 Adapter Pattern<a class="headerlink" href="#1-adapter-pattern" title="Permanent link">&para;</a></h3>
+<h4 id="the-adapter-pattern-explained">The Adapter Pattern explained<a class="headerlink" href="#the-adapter-pattern-explained" title="Permanent link">&para;</a></h4>
+<p>Here's an example: Have you ever needed to use an US-made laptop in a European country? Then you’ve probably needed an AC power adapter...</p>
+<p><img alt="TheAdapterPatternExplained" src="../figures/TheAdapterPatternExplained.png" /></p>
+<p>You can write a class that adapts the new vendor interface into the one you’re expecting.</p>
+<p><img alt="TheAdapterPatternExplained2" src="../figures/TheAdapterPatternExplained2.png" /></p>
+<h4 id="adapter-pattern-defined">Adapter Pattern Defined<a class="headerlink" href="#adapter-pattern-defined" title="Permanent link">&para;</a></h4>
 <blockquote>
-<p>The Adapter Pattern converts the interface of a class into another interface the clients expect. Adapter lets classes work together that couldn’t otherwise because of incompatible interfaces.</p>
+<p>The Adapter Pattern(适配器模式) converts the interface of a class into another interface the clients expect. Adapter lets classes work together that couldn’t otherwise because of incompatible interfaces.</p>
 </blockquote>
-<h4 id="facade-pattern-defined">Facade Pattern defined<a class="headerlink" href="#facade-pattern-defined" title="Permanent link">&para;</a></h4>
+<p>It acts to decouple the client from the implemented interface, and if we expect the interface to change over time, the adapter encapsulates that change so that the client doesn’t have to be modiﬁed each time it needs to operate against a different interface.</p>
+<h4 id="class-diagram">Class Diagram<a class="headerlink" href="#class-diagram" title="Permanent link">&para;</a></h4>
+<p><img alt="Adapter Pattern Class Diagram" src="../figures/ApapterPatternClassDiagram.png" /></p>
+<h4 id="example-collectionsenumeration">Example - Collections.enumeration()<a class="headerlink" href="#example-collectionsenumeration" title="Permanent link">&para;</a></h4>
+<p><C>enumeration()</C> returns an enumeration over the specified collection.  This provides interoperability with legacy APIs that require an enumeration as input.</p>
+<p> <div class=codehilite><pre><span class=c1>//java.utils.Collections</span>
+<span class=kd>public</span> <span class=kd>static</span> <span class=o>&lt;</span><span class=n>T</span><span class=o>&gt;</span> <span class=n>Enumeration</span><span class=o>&lt;</span><span class=n>T</span><span class=o>&gt;</span> <span class=nf>enumeration</span><span class=o>(</span><span class=kd>final</span> <span class=n>Collection</span><span class=o>&lt;</span><span class=n>T</span><span class=o>&gt;</span> <span class=n>c</span><span class=o>)</span> <span class=o>{</span>
+        <span class=k>return</span> <span class=k>new</span> <span class=n>Enumeration</span><span class=o>&lt;</span><span class=n>T</span><span class=o>&gt;()</span> <span class=o>{</span>
+            <span class=kd>private</span> <span class=kd>final</span> <span class=n>Iterator</span><span class=o>&lt;</span><span class=n>T</span><span class=o>&gt;</span> <span class=n>i</span> <span class=o>=</span> <span class=n>c</span><span class=o>.</span><span class=na>iterator</span><span class=o>();</span>
+            <span class=kd>public</span> <span class=kt>boolean</span> <span class=nf>hasMoreElements</span><span class=o>()</span> <span class=o>{</span>
+                <span class=k>return</span> <span class=n>i</span><span class=o>.</span><span class=na>hasNext</span><span class=o>();</span>
+            <span class=o>}</span>
+            <span class=kd>public</span> <span class=n>T</span> <span class=nf>nextElement</span><span class=o>()</span> <span class=o>{</span>
+                <span class=k>return</span> <span class=n>i</span><span class=o>.</span><span class=na>next</span><span class=o>();</span>
+            <span class=o>}</span>
+        <span class=o>};</span>
+    <span class=o>}</span>
+</pre></div></p>
+<p>The <C>Enumeration</C> interface is defined as follows:</p>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>interface</span> <span class=nc>Enumeration</span><span class=o>&lt;</span><span class=n>E</span><span class=o>&gt;</span> <span class=o>{</span>
+        <span class=kt>boolean</span> <span class=nf>hasMoreElements</span><span class=o>();</span>
+        <span class=n>E</span> <span class=nf>nextElement</span><span class=o>();</span>
+        <span class=k>default</span> <span class=n>Iterator</span><span class=o>&lt;</span><span class=n>E</span><span class=o>&gt;</span> <span class=nf>asIterator</span><span class=o>()</span> <span class=o>{...</span>
+        <span class=o>};</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></p>
+<h4 id="example-arraysaslist">Example - Arrays.asList()<a class="headerlink" href="#example-arraysaslist" title="Permanent link">&para;</a></h4>
+<p><C>Arrays.asList()</C> returns a fixed-size list backed by the specified array. This method acts as bridge between array-based and collection-based APIs, in combination with <C>Collection.toArray</C>.</p>
+<p> <div class=codehilite><pre><span class=c1>// &lt;T&gt;, the class of the objects in the array</span>
+<span class=c1>// a, the array by which the list will be backed</span>
+<span class=c1>// return a list view of the specified array</span>
+<span class=kd>public</span> <span class=kd>static</span> <span class=o>&lt;</span><span class=n>T</span><span class=o>&gt;</span> <span class=n>List</span><span class=o>&lt;</span><span class=n>T</span><span class=o>&gt;</span> <span class=nf>asList</span><span class=o>(</span><span class=n>T</span><span class=o>...</span> <span class=n>a</span><span class=o>)</span> <span class=o>{</span>
+        <span class=k>return</span> <span class=k>new</span> <span class=n>ArrayList</span><span class=o>&lt;&gt;(</span><span class=n>a</span><span class=o>);</span>
+<span class=o>}</span>
+</pre></div></p>
+<h3 id="2-facade-pattern">2 Facade Pattern<a class="headerlink" href="#2-facade-pattern" title="Permanent link">&para;</a></h3>
+<h4 id="facade-pattern-defined">Facade Pattern Defined<a class="headerlink" href="#facade-pattern-defined" title="Permanent link">&para;</a></h4>
 <blockquote>
-<p>The Facade Pattern provides a uniﬁed interface to a set of interfaces in a subsystem. Facade defines a higher-level interface that makes the subsystem easier to use.</p>
+<p>The Facade Pattern(外观模式) provides a unified interface to a set of interfaces in a subsystem. Facade defines a higher-level interface that makes the subsystem easier to use.</p>
 </blockquote>
+<ul>
+<li>Facades don’t “encapsulate” the subsystem classes; they merely provide a simplified interface to their functionality. The subsystem classes still remain available for direct use by clients that need to use more specific interfaces.</li>
+</ul>
+<p>Adapter Pattern v.s. Facade Pattern</p>
+<ul>
+<li>The Adapter Pattern changes the interface of one or more classes into one interface that a client is expecting.  Likewise, a Facade may provide a simplified interface to a single class with a very complex interface.</li>
+<li>The intent of the Adapter Pattern is to <strong>alter</strong> an interface so that it <strong>matches</strong> one a client is expecting. The intent of the Facade Pattern is to <strong>provide</strong> a <strong>simplified</strong> interface to a subsystem.</li>
+</ul>
+<h4 id="facade-pattern-class-diagram">Facade Pattern Class Diagram<a class="headerlink" href="#facade-pattern-class-diagram" title="Permanent link">&para;</a></h4>
+<p><img alt="Facade Pattern Class Diagram" src="../figures/FacadePatternClassDiagram.png" /></p>
 <h4 id="the-principle-of-least-knowledge">The Principle of Least Knowledge<a class="headerlink" href="#the-principle-of-least-knowledge" title="Permanent link">&para;</a></h4>
 <blockquote>
-<p>Principle of Least Knowledge talk only to your immediate friends.</p>
-</blockquote></div>
+<p>Principle of Least Knowledge: talk only to your immediate friends.</p>
+</blockquote>
+<p>It means when you are designing a system, for any object, be careful of the number of classes it interacts with and also how it comes to interact with those classes.</p>
+<p>This principle prevents us from creating designs that have a large number of classes coupled together so that changes in one part of the system cascade to other parts. When you build a lot of dependencies between many classes, you are building a fragile system that will be costly to maintain and complex for others to understand.</p>
+<h4 id="example-home-theater">Example - Home Theater<a class="headerlink" href="#example-home-theater" title="Permanent link">&para;</a></h4>
+<p>You want to build your own home theater. Check out all the components you’ve put together:</p>
+<p><img alt="HomeTheaterComponents" src="../figures/HomeTheaterComponents.png" /></p>
+<p><strong>If you want a movie</strong> (the hard way)</p>
+<p>Pick out a DVD, relax, and get ready for movie magic. Oh, there’s just one thing – to watch the movie, you need to perform a few tasks:</p>
+<ul>
+<li>Turn on the popcorn popper </li>
+<li>Start the popper popping </li>
+<li>Dim the lights </li>
+<li>Put the screen down </li>
+<li>Turn the projector on </li>
+<li>Set the projector input to DVD </li>
+<li>Put the projector on wide-screen mode </li>
+<li>Turn the sound amplifier on </li>
+<li>Set the amplifier to DVD input </li>
+<li>Set the amplifier to surround sound </li>
+<li>Set the amplifier volume to medium </li>
+<li>Turn the DVD Player on </li>
+<li>Start the DVD Player playing</li>
+</ul>
+<p>OK, time to create a Facade for the home theater system. To do this we create a new class <C>HomeTheatherFacade</C>, which exposes a few simple methods such as <C>watchMovie()</C>.</p>
+<p><img alt="Facade Home Theater" src="../figures/FacadeHomeTheater.png" /></p>
+<div class=md-fenced-code-tabs id=tab-tab-group-3><input name=tab-group-3 type=radio id=tab-group-3-0_Java checked=checked class=code-tab data-lang=Java aria-controls=tab-group-3-0_Java-panel role=tab><label for=tab-group-3-0_Java class=code-tab-label data-lang=Java id=tab-group-3-0_Java-label>Hometheaterfacade</label><div class=code-tabpanel role=tabpanel data-lang=Java id=tab-group-3-0_Java-panel aria-labelledby=tab-group-3-0_Java-label><div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>HomeTheaterFacade</span> <span class=o>{</span>
+    <span class=n>Amplifier</span> <span class=n>amp</span><span class=o>;</span>
+    <span class=n>Tuner</span> <span class=n>tuner</span><span class=o>;</span>
+    <span class=n>DvdPlayer</span> <span class=n>dvd</span><span class=o>;</span>
+    <span class=n>CdPlayer</span> <span class=n>cd</span><span class=o>;</span>
+    <span class=n>Projector</span> <span class=n>projector</span><span class=o>;</span>
+    <span class=n>TheaterLights</span> <span class=n>lights</span><span class=o>;</span>
+    <span class=n>Screen</span> <span class=n>screen</span><span class=o>;</span>
+    <span class=n>PopcornPopper</span> <span class=n>popper</span><span class=o>;</span>
+
+    <span class=kd>public</span> <span class=nf>HomeTheaterFacade</span><span class=o>(</span><span class=n>Amplifier</span> <span class=n>amp</span><span class=o>,</span> 
+                 <span class=n>Tuner</span> <span class=n>tuner</span><span class=o>,</span> 
+                 <span class=n>DvdPlayer</span> <span class=n>dvd</span><span class=o>,</span> 
+                 <span class=n>CdPlayer</span> <span class=n>cd</span><span class=o>,</span> 
+                 <span class=n>Projector</span> <span class=n>projector</span><span class=o>,</span> 
+                 <span class=n>Screen</span> <span class=n>screen</span><span class=o>,</span>
+                 <span class=n>TheaterLights</span> <span class=n>lights</span><span class=o>,</span>
+                 <span class=n>PopcornPopper</span> <span class=n>popper</span><span class=o>)</span> <span class=o>{</span>
+
+        <span class=k>this</span><span class=o>.</span><span class=na>amp</span> <span class=o>=</span> <span class=n>amp</span><span class=o>;</span>
+        <span class=k>this</span><span class=o>.</span><span class=na>tuner</span> <span class=o>=</span> <span class=n>tuner</span><span class=o>;</span>
+        <span class=k>this</span><span class=o>.</span><span class=na>dvd</span> <span class=o>=</span> <span class=n>dvd</span><span class=o>;</span>
+        <span class=k>this</span><span class=o>.</span><span class=na>cd</span> <span class=o>=</span> <span class=n>cd</span><span class=o>;</span>
+        <span class=k>this</span><span class=o>.</span><span class=na>projector</span> <span class=o>=</span> <span class=n>projector</span><span class=o>;</span>
+        <span class=k>this</span><span class=o>.</span><span class=na>screen</span> <span class=o>=</span> <span class=n>screen</span><span class=o>;</span>
+        <span class=k>this</span><span class=o>.</span><span class=na>lights</span> <span class=o>=</span> <span class=n>lights</span><span class=o>;</span>
+        <span class=k>this</span><span class=o>.</span><span class=na>popper</span> <span class=o>=</span> <span class=n>popper</span><span class=o>;</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>watchMovie</span><span class=o>(</span><span class=n>String</span> <span class=n>movie</span><span class=o>)</span> <span class=o>{</span>
+        <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=s>&quot;Get ready to watch a movie...&quot;</span><span class=o>);</span>
+        <span class=n>popper</span><span class=o>.</span><span class=na>on</span><span class=o>();</span>
+        <span class=n>popper</span><span class=o>.</span><span class=na>pop</span><span class=o>();</span>
+        <span class=n>lights</span><span class=o>.</span><span class=na>dim</span><span class=o>(</span><span class=mi>10</span><span class=o>);</span>
+        <span class=n>screen</span><span class=o>.</span><span class=na>down</span><span class=o>();</span>
+        <span class=n>projector</span><span class=o>.</span><span class=na>on</span><span class=o>();</span>
+        <span class=n>projector</span><span class=o>.</span><span class=na>wideScreenMode</span><span class=o>();</span>
+        <span class=n>amp</span><span class=o>.</span><span class=na>on</span><span class=o>();</span>
+        <span class=n>amp</span><span class=o>.</span><span class=na>setDvd</span><span class=o>(</span><span class=n>dvd</span><span class=o>);</span>
+        <span class=n>amp</span><span class=o>.</span><span class=na>setSurroundSound</span><span class=o>();</span>
+        <span class=n>amp</span><span class=o>.</span><span class=na>setVolume</span><span class=o>(</span><span class=mi>5</span><span class=o>);</span>
+        <span class=n>dvd</span><span class=o>.</span><span class=na>on</span><span class=o>();</span>
+        <span class=n>dvd</span><span class=o>.</span><span class=na>play</span><span class=o>(</span><span class=n>movie</span><span class=o>);</span>
+    <span class=o>}</span>
+
+
+    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>endMovie</span><span class=o>()</span> <span class=o>{</span>
+        <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=s>&quot;Shutting movie theater down...&quot;</span><span class=o>);</span>
+        <span class=n>popper</span><span class=o>.</span><span class=na>off</span><span class=o>();</span>
+        <span class=n>lights</span><span class=o>.</span><span class=na>on</span><span class=o>();</span>
+        <span class=n>screen</span><span class=o>.</span><span class=na>up</span><span class=o>();</span>
+        <span class=n>projector</span><span class=o>.</span><span class=na>off</span><span class=o>();</span>
+        <span class=n>amp</span><span class=o>.</span><span class=na>off</span><span class=o>();</span>
+        <span class=n>dvd</span><span class=o>.</span><span class=na>stop</span><span class=o>();</span>
+        <span class=n>dvd</span><span class=o>.</span><span class=na>eject</span><span class=o>();</span>
+        <span class=n>dvd</span><span class=o>.</span><span class=na>off</span><span class=o>();</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>listenToCd</span><span class=o>(</span><span class=n>String</span> <span class=n>cdTitle</span><span class=o>)</span> <span class=o>{</span>
+        <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=s>&quot;Get ready for an audiopile experence...&quot;</span><span class=o>);</span>
+        <span class=n>lights</span><span class=o>.</span><span class=na>on</span><span class=o>();</span>
+        <span class=n>amp</span><span class=o>.</span><span class=na>on</span><span class=o>();</span>
+        <span class=n>amp</span><span class=o>.</span><span class=na>setVolume</span><span class=o>(</span><span class=mi>5</span><span class=o>);</span>
+        <span class=n>amp</span><span class=o>.</span><span class=na>setCd</span><span class=o>(</span><span class=n>cd</span><span class=o>);</span>
+        <span class=n>amp</span><span class=o>.</span><span class=na>setStereoSound</span><span class=o>();</span>
+        <span class=n>cd</span><span class=o>.</span><span class=na>on</span><span class=o>();</span>
+        <span class=n>cd</span><span class=o>.</span><span class=na>play</span><span class=o>(</span><span class=n>cdTitle</span><span class=o>);</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>endCd</span><span class=o>()</span> <span class=o>{</span>
+        <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=s>&quot;Shutting down CD...&quot;</span><span class=o>);</span>
+        <span class=n>amp</span><span class=o>.</span><span class=na>off</span><span class=o>();</span>
+        <span class=n>amp</span><span class=o>.</span><span class=na>setCd</span><span class=o>(</span><span class=n>cd</span><span class=o>);</span>
+        <span class=n>cd</span><span class=o>.</span><span class=na>eject</span><span class=o>();</span>
+        <span class=n>cd</span><span class=o>.</span><span class=na>off</span><span class=o>();</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>listenToRadio</span><span class=o>(</span><span class=kt>double</span> <span class=n>frequency</span><span class=o>)</span> <span class=o>{</span>
+        <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=s>&quot;Tuning in the airwaves...&quot;</span><span class=o>);</span>
+        <span class=n>tuner</span><span class=o>.</span><span class=na>on</span><span class=o>();</span>
+        <span class=n>tuner</span><span class=o>.</span><span class=na>setFrequency</span><span class=o>(</span><span class=n>frequency</span><span class=o>);</span>
+        <span class=n>amp</span><span class=o>.</span><span class=na>on</span><span class=o>();</span>
+        <span class=n>amp</span><span class=o>.</span><span class=na>setVolume</span><span class=o>(</span><span class=mi>5</span><span class=o>);</span>
+        <span class=n>amp</span><span class=o>.</span><span class=na>setTuner</span><span class=o>(</span><span class=n>tuner</span><span class=o>);</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>endRadio</span><span class=o>()</span> <span class=o>{</span>
+        <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=s>&quot;Shutting down the tuner...&quot;</span><span class=o>);</span>
+        <span class=n>tuner</span><span class=o>.</span><span class=na>off</span><span class=o>();</span>
+        <span class=n>amp</span><span class=o>.</span><span class=na>off</span><span class=o>();</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></div><input name=tab-group-3 type=radio id=tab-group-3-1_Java class=code-tab data-lang=Java aria-controls=tab-group-3-1_Java-panel role=tab><label for=tab-group-3-1_Java class=code-tab-label data-lang=Java id=tab-group-3-1_Java-label>Hometheatertestdrive</label><div class=code-tabpanel role=tabpanel data-lang=Java id=tab-group-3-1_Java-panel aria-labelledby=tab-group-3-1_Java-label><div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>HomeTheaterTestDrive</span> <span class=o>{</span>
+    <span class=kd>public</span> <span class=kd>static</span> <span class=kt>void</span> <span class=nf>main</span><span class=o>(</span><span class=n>String</span><span class=o>[]</span> <span class=n>args</span><span class=o>)</span> <span class=o>{</span>
+        <span class=n>Amplifier</span> <span class=n>amp</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Amplifier</span><span class=o>(</span><span class=s>&quot;Top-O-Line Amplifier&quot;</span><span class=o>);</span>
+        <span class=n>Tuner</span> <span class=n>tuner</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Tuner</span><span class=o>(</span><span class=s>&quot;Top-O-Line AM/FM Tuner&quot;</span><span class=o>,</span> <span class=n>amp</span><span class=o>);</span>
+        <span class=n>DvdPlayer</span> <span class=n>dvd</span> <span class=o>=</span> <span class=k>new</span> <span class=n>DvdPlayer</span><span class=o>(</span><span class=s>&quot;Top-O-Line DVD Player&quot;</span><span class=o>,</span> <span class=n>amp</span><span class=o>);</span>
+        <span class=n>CdPlayer</span> <span class=n>cd</span> <span class=o>=</span> <span class=k>new</span> <span class=n>CdPlayer</span><span class=o>(</span><span class=s>&quot;Top-O-Line CD Player&quot;</span><span class=o>,</span> <span class=n>amp</span><span class=o>);</span>
+        <span class=n>Projector</span> <span class=n>projector</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Projector</span><span class=o>(</span><span class=s>&quot;Top-O-Line Projector&quot;</span><span class=o>,</span> <span class=n>dvd</span><span class=o>);</span>
+        <span class=n>TheaterLights</span> <span class=n>lights</span> <span class=o>=</span> <span class=k>new</span> <span class=n>TheaterLights</span><span class=o>(</span><span class=s>&quot;Theater Ceiling Lights&quot;</span><span class=o>);</span>
+        <span class=n>Screen</span> <span class=n>screen</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Screen</span><span class=o>(</span><span class=s>&quot;Theater Screen&quot;</span><span class=o>);</span>
+        <span class=n>PopcornPopper</span> <span class=n>popper</span> <span class=o>=</span> <span class=k>new</span> <span class=n>PopcornPopper</span><span class=o>(</span><span class=s>&quot;Popcorn Popper&quot;</span><span class=o>);</span>
+
+        <span class=n>HomeTheaterFacade</span> <span class=n>homeTheater</span> <span class=o>=</span> 
+                <span class=k>new</span> <span class=n>HomeTheaterFacade</span><span class=o>(</span><span class=n>amp</span><span class=o>,</span> <span class=n>tuner</span><span class=o>,</span> <span class=n>dvd</span><span class=o>,</span> <span class=n>cd</span><span class=o>,</span> 
+                        <span class=n>projector</span><span class=o>,</span> <span class=n>screen</span><span class=o>,</span> <span class=n>lights</span><span class=o>,</span> <span class=n>popper</span><span class=o>);</span>
+
+        <span class=n>homeTheater</span><span class=o>.</span><span class=na>watchMovie</span><span class=o>(</span><span class=s>&quot;Raiders of the Lost Ark&quot;</span><span class=o>);</span>
+        <span class=n>homeTheater</span><span class=o>.</span><span class=na>endMovie</span><span class=o>();</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></div></div></div>
         </div>
 
         <footer class="col-md-12">

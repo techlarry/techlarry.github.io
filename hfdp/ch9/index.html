@@ -312,10 +312,6 @@
 <li >
     <a href="../ch13/">Chapter 13: Better Living with Patterns</a>
 </li>
-                            
-<li >
-    <a href="../Appendix/">Appendix: Design Pattern in Java Library</a>
-</li>
                         </ul>
                     </li>
                     <li class="dropdown">
@@ -535,11 +531,419 @@
                 <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
         <li class="main active"><a href="#head-first-design-patterns-9-iterator-and-composite-pattern">Head First Design Patterns 9 - Iterator and Composite Pattern</a></li>
+        <li class="main "><a href="#1-iterator-pattern">1 Iterator Pattern</a></li>
+            <li><a href="#iterator-pattern-defined">Iterator Pattern Defined</a></li>
+            <li><a href="#iterator-pattern-class-diagram">Iterator Pattern Class Diagram</a></li>
+            <li><a href="#design-principle-single-responsibility">Design Principle - Single Responsibility</a></li>
+            <li><a href="#example-cafe-menu">Example - Café Menu</a></li>
+            <li><a href="#iterators-and-collections">Iterators and Collections</a></li>
+        <li class="main "><a href="#2-composite-pattern">2 Composite Pattern</a></li>
+            <li><a href="#composite-pattern-defined">Composite Pattern Defined</a></li>
+            <li><a href="#composite-pattern-class-diagram">Composite Pattern Class Diagram</a></li>
+            <li><a href="#example-menus">Example - Menus</a></li>
+            <li><a href="#example-javaawtcontainer">Example - java.awt.Container</a></li>
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
 
-<h3 id="head-first-design-patterns-9-iterator-and-composite-pattern"><strong>Head First Design Patterns 9 - Iterator and Composite Pattern</strong><a class="headerlink" href="#head-first-design-patterns-9-iterator-and-composite-pattern" title="Permanent link">&para;</a></h3></div>
+<h3 id="head-first-design-patterns-9-iterator-and-composite-pattern"><strong>Head First Design Patterns 9 - Iterator and Composite Pattern</strong><a class="headerlink" href="#head-first-design-patterns-9-iterator-and-composite-pattern" title="Permanent link">&para;</a></h3>
+<h3 id="1-iterator-pattern">1 Iterator Pattern<a class="headerlink" href="#1-iterator-pattern" title="Permanent link">&para;</a></h3>
+<h4 id="iterator-pattern-defined">Iterator Pattern Defined<a class="headerlink" href="#iterator-pattern-defined" title="Permanent link">&para;</a></h4>
+<blockquote>
+<p>The Iterator Pattern(迭代器模式) provides a way to access the elements of an aggregate object sequentially without exposing its underlying representation.</p>
+</blockquote>
+<p>Iterator Pattern takes the responsibility of traversing elements and gives that responsibility to the iterator object, not the aggregate object.</p>
+<h4 id="iterator-pattern-class-diagram">Iterator Pattern Class Diagram<a class="headerlink" href="#iterator-pattern-class-diagram" title="Permanent link">&para;</a></h4>
+<p><img alt="Iterator Pattern Class Diagram " src="../figures/IteratorPatternClassDiagram.png" /></p>
+<ul>
+<li>The <C>ConcreteAggregate</C> has  a collection of objects and implements the method that returns an <C>Iterator</C> for its collection.</li>
+<li>The <C>Iterator</C> interface provides the interface that all iterators must implement, and a set of methods for traversing over elements of a collection.</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Java’s Collection Framework provides another type of iterator interface called <C>java.util.ListIterator</C>. This iterator adds <C>previous()</C> and a few other methods to the standard <C>java.util.Iterator</C> interface. It is supported by any <C>Collection</C> that implements the <C>List</C> interface.</p>
+</div>
+<h4 id="design-principle-single-responsibility">Design Principle - Single Responsibility<a class="headerlink" href="#design-principle-single-responsibility" title="Permanent link">&para;</a></h4>
+<blockquote>
+<p>Design Principle - Single Responsibility : A class should have only one reason to change.</p>
+</blockquote>
+<p>Every responsibility of a class is an area of potential change. More than one responsibility means more than one area of change.</p>
+<h4 id="example-cafe-menu">Example - Café Menu<a class="headerlink" href="#example-cafe-menu" title="Permanent link">&para;</a></h4>
+<div class=md-fenced-code-tabs id=tab-tab-group-0><input name=tab-group-0 type=radio id=tab-group-0-0_Java checked=checked class=code-tab data-lang=Java aria-controls=tab-group-0-0_Java-panel role=tab><label for=tab-group-0-0_Java class=code-tab-label data-lang=Java id=tab-group-0-0_Java-label>Cafemenu</label><div class=code-tabpanel role=tabpanel data-lang=Java id=tab-group-0-0_Java-panel aria-labelledby=tab-group-0-0_Java-label><div class=codehilite><pre><span class=kd>public</span> <span class=kd>interface</span> <span class=nc>Menu</span> <span class=o>{</span>
+    <span class=kd>public</span> <span class=n>Iterator</span><span class=o>&lt;</span><span class=n>MenuItem</span><span class=o>&gt;</span> <span class=nf>createIterator</span><span class=o>();</span>
+<span class=o>}</span>
+
+
+<span class=kd>public</span> <span class=kd>class</span> <span class=nc>CafeMenu</span> <span class=kd>implements</span> <span class=n>Menu</span> <span class=o>{</span>
+    <span class=n>HashMap</span><span class=o>&lt;</span><span class=n>String</span><span class=o>,</span> <span class=n>MenuItem</span><span class=o>&gt;</span> <span class=n>menuItems</span> <span class=o>=</span> <span class=k>new</span> <span class=n>HashMap</span><span class=o>&lt;</span><span class=n>String</span><span class=o>,</span> <span class=n>MenuItem</span><span class=o>&gt;();</span>
+
+    <span class=kd>public</span> <span class=nf>CafeMenu</span><span class=o>()</span> <span class=o>{</span>
+        <span class=n>addItem</span><span class=o>(</span><span class=s>&quot;Veggie Burger and Air Fries&quot;</span><span class=o>,</span>
+            <span class=s>&quot;Veggie burger on a whole wheat bun, lettuce, tomato, and fries&quot;</span><span class=o>,</span>
+            <span class=kc>true</span><span class=o>,</span> <span class=mf>3.99</span><span class=o>);</span>
+        <span class=n>addItem</span><span class=o>(</span><span class=s>&quot;Soup of the day&quot;</span><span class=o>,</span>
+            <span class=s>&quot;A cup of the soup of the day, with a side salad&quot;</span><span class=o>,</span>
+            <span class=kc>false</span><span class=o>,</span> <span class=mf>3.69</span><span class=o>);</span>
+        <span class=n>addItem</span><span class=o>(</span><span class=s>&quot;Burrito&quot;</span><span class=o>,</span>
+            <span class=s>&quot;A large burrito, with whole pinto beans, salsa, guacamole&quot;</span><span class=o>,</span>
+            <span class=kc>true</span><span class=o>,</span> <span class=mf>4.29</span><span class=o>);</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>addItem</span><span class=o>(</span><span class=n>String</span> <span class=n>name</span><span class=o>,</span> <span class=n>String</span> <span class=n>description</span><span class=o>,</span> 
+                         <span class=kt>boolean</span> <span class=n>vegetarian</span><span class=o>,</span> <span class=kt>double</span> <span class=n>price</span><span class=o>)</span> 
+    <span class=o>{</span>
+        <span class=n>MenuItem</span> <span class=n>menuItem</span> <span class=o>=</span> <span class=k>new</span> <span class=n>MenuItem</span><span class=o>(</span><span class=n>name</span><span class=o>,</span> <span class=n>description</span><span class=o>,</span> <span class=n>vegetarian</span><span class=o>,</span> <span class=n>price</span><span class=o>);</span>
+        <span class=n>menuItems</span><span class=o>.</span><span class=na>put</span><span class=o>(</span><span class=n>menuItem</span><span class=o>.</span><span class=na>getName</span><span class=o>(),</span> <span class=n>menuItem</span><span class=o>);</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=n>Map</span><span class=o>&lt;</span><span class=n>String</span><span class=o>,</span> <span class=n>MenuItem</span><span class=o>&gt;</span> <span class=nf>getItems</span><span class=o>()</span> <span class=o>{</span>
+        <span class=k>return</span> <span class=n>menuItems</span><span class=o>;</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=n>Iterator</span><span class=o>&lt;</span><span class=n>MenuItem</span><span class=o>&gt;</span> <span class=nf>createIterator</span><span class=o>()</span> <span class=o>{</span>
+        <span class=k>return</span> <span class=n>menuItems</span><span class=o>.</span><span class=na>values</span><span class=o>().</span><span class=na>iterator</span><span class=o>();</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></div><input name=tab-group-0 type=radio id=tab-group-0-1_Java class=code-tab data-lang=Java aria-controls=tab-group-0-1_Java-panel role=tab><label for=tab-group-0-1_Java class=code-tab-label data-lang=Java id=tab-group-0-1_Java-label>Waitress</label><div class=code-tabpanel role=tabpanel data-lang=Java id=tab-group-0-1_Java-panel aria-labelledby=tab-group-0-1_Java-label><div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>Waitress</span> <span class=o>{</span>
+    <span class=n>Menu</span> <span class=n>cafeMenu</span><span class=o>;</span>
+
+    <span class=kd>public</span> <span class=nf>Waitress</span><span class=o>(</span><span class=n>Menu</span> <span class=n>cafeMenu</span><span class=o>)</span> <span class=o>{</span>
+        <span class=k>this</span><span class=o>.</span><span class=na>cafeMenu</span> <span class=o>=</span> <span class=n>cafeMenu</span><span class=o>;</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>printMenu</span><span class=o>()</span> <span class=o>{</span>
+        <span class=n>Iterator</span><span class=o>&lt;</span><span class=n>MenuItem</span><span class=o>&gt;</span> <span class=n>cafeIterator</span> <span class=o>=</span> <span class=n>cafeMenu</span><span class=o>.</span><span class=na>createIterator</span><span class=o>();</span>
+        <span class=n>printMenu</span><span class=o>(</span><span class=n>cafeIterator</span><span class=o>);</span>
+    <span class=o>}</span>
+
+    <span class=kd>private</span> <span class=kt>void</span> <span class=nf>printMenu</span><span class=o>(</span><span class=n>Iterator</span><span class=o>&lt;</span><span class=n>MenuItem</span><span class=o>&gt;</span> <span class=n>iterator</span><span class=o>)</span> <span class=o>{</span>
+        <span class=k>while</span> <span class=o>(</span><span class=n>iterator</span><span class=o>.</span><span class=na>hasNext</span><span class=o>())</span> <span class=o>{</span>
+            <span class=n>MenuItem</span> <span class=n>menuItem</span> <span class=o>=</span> <span class=n>iterator</span><span class=o>.</span><span class=na>next</span><span class=o>();</span>
+            <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>print</span><span class=o>(</span><span class=n>menuItem</span><span class=o>.</span><span class=na>getName</span><span class=o>()</span> <span class=o>+</span> <span class=s>&quot;, &quot;</span><span class=o>);</span>
+            <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>print</span><span class=o>(</span><span class=n>menuItem</span><span class=o>.</span><span class=na>getPrice</span><span class=o>()</span> <span class=o>+</span> <span class=s>&quot; -- &quot;</span><span class=o>);</span>
+            <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=n>menuItem</span><span class=o>.</span><span class=na>getDescription</span><span class=o>());</span>
+        <span class=o>}</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></div><input name=tab-group-0 type=radio id=tab-group-0-2_Java class=code-tab data-lang=Java aria-controls=tab-group-0-2_Java-panel role=tab><label for=tab-group-0-2_Java class=code-tab-label data-lang=Java id=tab-group-0-2_Java-label>Testdrive</label><div class=code-tabpanel role=tabpanel data-lang=Java id=tab-group-0-2_Java-panel aria-labelledby=tab-group-0-2_Java-label><div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>MenuTestDrive</span> <span class=o>{</span>
+    <span class=kd>public</span> <span class=kd>static</span> <span class=kt>void</span> <span class=nf>main</span><span class=o>(</span><span class=n>String</span> <span class=n>args</span><span class=o>[])</span> <span class=o>{</span>
+        <span class=n>CafeMenu</span> <span class=n>cafeMenu</span> <span class=o>=</span> <span class=k>new</span> <span class=n>CafeMenu</span><span class=o>();</span>
+        <span class=n>Waitress</span> <span class=n>waitress</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Waitress</span><span class=o>(</span><span class=n>pancakeHouseMenu</span><span class=o>,</span> <span class=n>dinerMenu</span><span class=o>,</span> <span class=n>cafeMenu</span><span class=o>);</span>
+        <span class=n>waitress</span><span class=o>.</span><span class=na>printMenu</span><span class=o>();</span>
+        <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></div></div>
+
+<h4 id="iterators-and-collections">Iterators and Collections<a class="headerlink" href="#iterators-and-collections" title="Permanent link">&para;</a></h4>
+<p>Each <C>Collection</C> object knows how to create its own <C>Iterator</C>.</p>
+<p><img alt="CollectionInterface" src="../figures/CollectionInterface.png" /></p>
+<p>Java 5 includes a new form of the for statement, called <C>for/in</C>, that lets you iterate over a collection or an array without creating an iterator explicitly.</p>
+<p>To use for/in, you use a for statement that looks like:</p>
+<p> <div class=codehilite><pre><span class=k>for</span> <span class=o>(</span><span class=n>Object</span> <span class=n>obj</span><span class=o>:</span> <span class=n>collection</span><span class=o>)</span> <span class=o>{</span>
+    <span class=o>...</span>
+<span class=o>}</span>
+</pre></div></p>
+<ul>
+<li>Iterates over each object in the Collection</li>
+<li><C>obj<C> is assigned to the next element in the collection each time through the loop.</li>
+</ul>
+<h3 id="2-composite-pattern">2 Composite Pattern<a class="headerlink" href="#2-composite-pattern" title="Permanent link">&para;</a></h3>
+<h4 id="composite-pattern-defined">Composite Pattern Defined<a class="headerlink" href="#composite-pattern-defined" title="Permanent link">&para;</a></h4>
+<blockquote>
+<p>The Composite Pattern(组合模式) allows you to compose objects into tree structures to represent part-whole hierarchies. Composite lets clients treat individual objects and compositions of objects uniformly.</p>
+</blockquote>
+<p>The Composite Pattern create a part-whole hierarchy; that is, a tree of objects that is made of parts (e.g. menus and menu items) but that can be treated as a whole. (i.e. treat “individual objects and compositions uniformly.”)</p>
+<p><strong>Cohesion</strong> is a term you’ll hear used as a measure of how closely a class or a module supports a single purpose or responsibility. We say that a module or class has high cohesion when it is designed around a set of related functions, and we say it has low cohesion when it is designed around a set of unrelated functions.</p>
+<h4 id="composite-pattern-class-diagram">Composite Pattern Class Diagram<a class="headerlink" href="#composite-pattern-class-diagram" title="Permanent link">&para;</a></h4>
+<p><img alt="Composite Pattern Class Diagram" src="../figures/CompositePatternClassDiagram.png" /></p>
+<h4 id="example-menus">Example - Menus<a class="headerlink" href="#example-menus" title="Permanent link">&para;</a></h4>
+<p>We try to design a menu that support menus with menus. For example, we want to make the dessert menu an element of the DinerMenu collection.</p>
+<p><img alt="MenuClassDemo" src="../figures/MenuClassDemo.png" /></p>
+<p>Composite pattern gives us a way to create a tree structure that can handle a nested group of menus and menu items in the same structure.</p>
+<p><img alt="MenuCLassDiagram" src="../figures/MenuCLassDiagram.png" /></p>
+<ul>
+<li>The <C>Waitress</C> is going to use the <C>MenuComponent</C> interface to access both <C>Menus</C> and <C>MenuItems</C>.</li>
+<li><C>MenuComponent</C> represents the interface for both <C>MenuItem</C> and <C>Menu</C>. We've used an abstract class here because we want to provide default implementations for these methods.</li>
+</ul>
+<div class=md-fenced-code-tabs id=tab-tab-group-2><input name=tab-group-2 type=radio id=tab-group-2-0_Java checked=checked class=code-tab data-lang=Java aria-controls=tab-group-2-0_Java-panel role=tab><label for=tab-group-2-0_Java class=code-tab-label data-lang=Java id=tab-group-2-0_Java-label>Menucomponent</label><div class=code-tabpanel role=tabpanel data-lang=Java id=tab-group-2-0_Java-panel aria-labelledby=tab-group-2-0_Java-label><div class=codehilite><pre><span class=cm>/** MenuComponent provides default implementation for every method.</span>
+<span class=cm> *</span>
+<span class=cm> */</span>
+<span class=kd>public</span> <span class=kd>abstract</span> <span class=kd>class</span> <span class=nc>MenuComponent</span> <span class=o>{</span>
+
+    <span class=kd>public</span> <span class=n>String</span> <span class=nf>getName</span><span class=o>(){</span>
+        <span class=k>throw</span> <span class=k>new</span> <span class=n>UnsupportedOperationException</span><span class=o>();</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=n>String</span> <span class=nf>getDescription</span><span class=o>(){</span>
+        <span class=k>throw</span> <span class=k>new</span> <span class=n>UnsupportedOperationException</span><span class=o>();</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kt>double</span> <span class=nf>getPrice</span><span class=o>()</span> <span class=o>{</span>
+        <span class=k>throw</span> <span class=k>new</span> <span class=n>UnsupportedOperationException</span><span class=o>();</span>
+    <span class=o>}</span>
+
+
+    <span class=kd>public</span> <span class=kt>boolean</span> <span class=nf>isVegetarian</span><span class=o>()</span> <span class=o>{</span>
+        <span class=k>throw</span> <span class=k>new</span> <span class=n>UnsupportedOperationException</span><span class=o>();</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>print</span><span class=o>()</span> <span class=o>{</span>
+        <span class=k>throw</span> <span class=k>new</span> <span class=n>UnsupportedOperationException</span><span class=o>();</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>add</span><span class=o>(</span><span class=n>MenuComponent</span> <span class=n>menuComponent</span><span class=o>)</span> <span class=o>{</span>
+        <span class=k>throw</span> <span class=k>new</span> <span class=n>UnsupportedOperationException</span><span class=o>();</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>remove</span><span class=o>(</span><span class=n>MenuComponent</span> <span class=n>menuComponent</span><span class=o>)</span> <span class=o>{</span>
+        <span class=k>throw</span> <span class=k>new</span> <span class=n>UnsupportedOperationException</span><span class=o>();</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=n>MenuComponent</span> <span class=nf>getChild</span><span class=o>(</span><span class=kt>int</span> <span class=n>index</span><span class=o>)</span> <span class=o>{</span>
+        <span class=k>throw</span> <span class=k>new</span> <span class=n>UnsupportedOperationException</span><span class=o>();</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></div><input name=tab-group-2 type=radio id=tab-group-2-1_Java class=code-tab data-lang=Java aria-controls=tab-group-2-1_Java-panel role=tab><label for=tab-group-2-1_Java class=code-tab-label data-lang=Java id=tab-group-2-1_Java-label>Menuitem</label><div class=code-tabpanel role=tabpanel data-lang=Java id=tab-group-2-1_Java-panel aria-labelledby=tab-group-2-1_Java-label><div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>MenuItem</span> <span class=kd>extends</span> <span class=n>MenuComponent</span> <span class=o>{</span>
+    <span class=n>String</span> <span class=n>name</span><span class=o>;</span>
+    <span class=n>String</span> <span class=n>description</span><span class=o>;</span>
+    <span class=kt>boolean</span> <span class=n>isVegetarian</span><span class=o>;</span>
+    <span class=kt>double</span> <span class=n>price</span><span class=o>;</span>
+
+    <span class=kd>public</span> <span class=nf>MenuItem</span><span class=o>(</span><span class=n>String</span> <span class=n>name</span><span class=o>,</span> <span class=n>String</span> <span class=n>description</span><span class=o>,</span> <span class=kt>boolean</span> <span class=n>vegetarian</span><span class=o>,</span> <span class=kt>double</span> <span class=n>price</span><span class=o>)</span> <span class=o>{</span>
+        <span class=k>this</span><span class=o>.</span><span class=na>name</span> <span class=o>=</span> <span class=n>name</span><span class=o>;</span>
+        <span class=k>this</span><span class=o>.</span><span class=na>description</span> <span class=o>=</span> <span class=n>description</span><span class=o>;</span>
+        <span class=k>this</span><span class=o>.</span><span class=na>isVegetarian</span> <span class=o>=</span> <span class=n>vegetarian</span><span class=o>;</span>
+        <span class=k>this</span><span class=o>.</span><span class=na>price</span> <span class=o>=</span> <span class=n>price</span><span class=o>;</span>
+    <span class=o>}</span>
+
+
+    <span class=nd>@Override</span>
+    <span class=kd>public</span> <span class=n>String</span> <span class=nf>getName</span><span class=o>()</span> <span class=o>{</span>
+        <span class=k>return</span> <span class=n>name</span><span class=o>;</span>
+    <span class=o>}</span>
+
+
+    <span class=nd>@Override</span>
+    <span class=kd>public</span> <span class=n>String</span> <span class=nf>getDescription</span><span class=o>()</span> <span class=o>{</span>
+        <span class=k>return</span> <span class=n>description</span><span class=o>;</span>
+    <span class=o>}</span>
+
+
+    <span class=nd>@Override</span>
+    <span class=kd>public</span> <span class=kt>boolean</span> <span class=nf>isVegetarian</span><span class=o>()</span> <span class=o>{</span>
+        <span class=k>return</span> <span class=n>isVegetarian</span><span class=o>;</span>
+    <span class=o>}</span>
+
+    <span class=nd>@Override</span>
+    <span class=kd>public</span> <span class=kt>double</span> <span class=nf>getPrice</span><span class=o>()</span> <span class=o>{</span>
+        <span class=k>return</span> <span class=n>price</span><span class=o>;</span>
+    <span class=o>}</span>
+
+    <span class=nd>@Override</span>
+    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>print</span><span class=o>()</span> <span class=o>{</span>
+        <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>print</span><span class=o>(</span><span class=s>&quot; &quot;</span> <span class=o>+</span> <span class=n>getName</span><span class=o>());</span>
+        <span class=k>if</span> <span class=o>(</span><span class=n>isVegetarian</span><span class=o>())</span> <span class=o>{</span>
+            <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>print</span><span class=o>(</span><span class=s>&quot;(v)&quot;</span><span class=o>);</span>
+        <span class=o>}</span>
+        <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=s>&quot;, &quot;</span> <span class=o>+</span> <span class=n>getPrice</span><span class=o>());</span>
+        <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=s>&quot; -- &quot;</span> <span class=o>+</span> <span class=n>getDescription</span><span class=o>());</span>
+    <span class=o>}</span> <span class=c1>// END PRINT</span>
+<span class=o>}</span>
+</pre></div></div><input name=tab-group-2 type=radio id=tab-group-2-2_Java class=code-tab data-lang=Java aria-controls=tab-group-2-2_Java-panel role=tab><label for=tab-group-2-2_Java class=code-tab-label data-lang=Java id=tab-group-2-2_Java-label>Menu</label><div class=code-tabpanel role=tabpanel data-lang=Java id=tab-group-2-2_Java-panel aria-labelledby=tab-group-2-2_Java-label><div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>Menu</span> <span class=kd>extends</span>  <span class=n>MenuComponent</span> <span class=o>{</span>
+    <span class=kd>private</span> <span class=n>String</span> <span class=n>name</span><span class=o>;</span>
+    <span class=kd>private</span> <span class=n>String</span> <span class=n>description</span><span class=o>;</span>
+
+    <span class=kd>private</span> <span class=n>ArrayList</span><span class=o>&lt;</span><span class=n>MenuComponent</span><span class=o>&gt;</span> <span class=n>menuComponents</span> <span class=o>=</span> <span class=k>new</span> <span class=n>ArrayList</span><span class=o>&lt;&gt;();</span>
+
+    <span class=kd>public</span> <span class=nf>Menu</span><span class=o>(</span><span class=n>String</span> <span class=n>name</span><span class=o>,</span> <span class=n>String</span> <span class=n>description</span><span class=o>)</span> <span class=o>{</span>
+        <span class=k>this</span><span class=o>.</span><span class=na>name</span> <span class=o>=</span> <span class=n>name</span><span class=o>;</span>
+        <span class=k>this</span><span class=o>.</span><span class=na>description</span> <span class=o>=</span> <span class=n>description</span><span class=o>;</span>
+    <span class=o>}</span>
+
+
+    <span class=nd>@Override</span>
+    <span class=kd>public</span> <span class=n>String</span> <span class=nf>getName</span><span class=o>()</span> <span class=o>{</span>
+        <span class=k>return</span> <span class=n>name</span><span class=o>;</span>
+    <span class=o>}</span>
+
+    <span class=nd>@Override</span>
+    <span class=kd>public</span> <span class=n>String</span> <span class=nf>getDescription</span><span class=o>()</span> <span class=o>{</span>
+        <span class=k>return</span> <span class=n>description</span><span class=o>;</span>
+    <span class=o>}</span>
+
+
+    <span class=nd>@Override</span>
+    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>add</span><span class=o>(</span><span class=n>MenuComponent</span> <span class=n>menuComponent</span><span class=o>)</span> <span class=o>{</span>
+        <span class=n>menuComponents</span><span class=o>.</span><span class=na>add</span><span class=o>(</span><span class=n>menuComponent</span><span class=o>);</span>
+    <span class=o>}</span>
+
+    <span class=nd>@Override</span>
+    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>remove</span><span class=o>(</span><span class=n>MenuComponent</span> <span class=n>menuComponent</span><span class=o>)</span> <span class=o>{</span>
+        <span class=n>menuComponents</span><span class=o>.</span><span class=na>remove</span><span class=o>(</span><span class=n>menuComponent</span><span class=o>);</span>
+    <span class=o>}</span>
+
+    <span class=nd>@Override</span>
+    <span class=kd>public</span> <span class=n>MenuComponent</span> <span class=nf>getChild</span><span class=o>(</span><span class=kt>int</span> <span class=n>index</span><span class=o>)</span> <span class=o>{</span>
+        <span class=k>return</span> <span class=n>menuComponents</span><span class=o>.</span><span class=na>get</span><span class=o>(</span><span class=n>index</span><span class=o>);</span>
+    <span class=o>}</span>
+
+
+    <span class=nd>@Override</span>
+    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>print</span><span class=o>()</span> <span class=o>{</span>
+        <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>print</span><span class=o>(</span><span class=s>&quot;\n&quot;</span> <span class=o>+</span> <span class=n>getName</span><span class=o>());</span>
+        <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=s>&quot;,&quot;</span>  <span class=o>+</span> <span class=n>getDescription</span><span class=o>());</span>
+        <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=s>&quot;---------------------&quot;</span><span class=o>);</span>
+        <span class=n>Iterator</span><span class=o>&lt;</span><span class=n>MenuComponent</span><span class=o>&gt;</span> <span class=n>iterator</span> <span class=o>=</span> <span class=n>menuComponents</span><span class=o>.</span><span class=na>iterator</span><span class=o>();</span>
+
+        <span class=k>while</span><span class=o>(</span><span class=n>iterator</span><span class=o>.</span><span class=na>hasNext</span><span class=o>())</span> <span class=o>{</span>
+            <span class=n>MenuComponent</span> <span class=n>nextMenuComponent</span> <span class=o>=</span> <span class=n>iterator</span><span class=o>.</span><span class=na>next</span><span class=o>();</span>
+            <span class=n>nextMenuComponent</span><span class=o>.</span><span class=na>print</span><span class=o>();</span>
+        <span class=o>}</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></div><input name=tab-group-2 type=radio id=tab-group-2-3_Java class=code-tab data-lang=Java aria-controls=tab-group-2-3_Java-panel role=tab><label for=tab-group-2-3_Java class=code-tab-label data-lang=Java id=tab-group-2-3_Java-label>Menutestdrive</label><div class=code-tabpanel role=tabpanel data-lang=Java id=tab-group-2-3_Java-panel aria-labelledby=tab-group-2-3_Java-label><div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>MenuTestDrive</span> <span class=o>{</span>
+    <span class=kd>public</span> <span class=kd>static</span> <span class=kt>void</span> <span class=nf>main</span><span class=o>(</span><span class=n>String</span> <span class=n>args</span><span class=o>[])</span> <span class=o>{</span>
+        <span class=n>MenuComponent</span> <span class=n>pancakeHouseMenu</span> <span class=o>=</span>
+                <span class=k>new</span> <span class=n>Menu</span><span class=o>(</span><span class=s>&quot;PANCAKE HOUSE MENU&quot;</span><span class=o>,</span> <span class=s>&quot;Breakfast&quot;</span><span class=o>);</span>
+        <span class=n>MenuComponent</span> <span class=n>dinerMenu</span> <span class=o>=</span>
+                <span class=k>new</span> <span class=n>Menu</span><span class=o>(</span><span class=s>&quot;DINER MENU&quot;</span><span class=o>,</span> <span class=s>&quot;Lunch&quot;</span><span class=o>);</span>
+        <span class=n>MenuComponent</span> <span class=n>cafeMenu</span> <span class=o>=</span>
+                <span class=k>new</span> <span class=n>Menu</span><span class=o>(</span><span class=s>&quot;CAFE MENU&quot;</span><span class=o>,</span> <span class=s>&quot;Dinner&quot;</span><span class=o>);</span>
+        <span class=n>MenuComponent</span> <span class=n>dessertMenu</span> <span class=o>=</span>
+                <span class=k>new</span> <span class=n>Menu</span><span class=o>(</span><span class=s>&quot;DESSERT MENU&quot;</span><span class=o>,</span> <span class=s>&quot;Dessert of course!&quot;</span><span class=o>);</span>
+        <span class=n>MenuComponent</span> <span class=n>coffeeMenu</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Menu</span><span class=o>(</span><span class=s>&quot;COFFEE MENU&quot;</span><span class=o>,</span> <span class=s>&quot;Stuff to go with your afternoon coffee&quot;</span><span class=o>);</span>
+
+        <span class=n>MenuComponent</span> <span class=n>allMenus</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Menu</span><span class=o>(</span><span class=s>&quot;ALL MENUS&quot;</span><span class=o>,</span> <span class=s>&quot;All menus combined&quot;</span><span class=o>);</span>
+
+        <span class=n>allMenus</span><span class=o>.</span><span class=na>add</span><span class=o>(</span><span class=n>pancakeHouseMenu</span><span class=o>);</span>
+        <span class=n>allMenus</span><span class=o>.</span><span class=na>add</span><span class=o>(</span><span class=n>dinerMenu</span><span class=o>);</span>
+        <span class=n>allMenus</span><span class=o>.</span><span class=na>add</span><span class=o>(</span><span class=n>cafeMenu</span><span class=o>);</span>
+
+        <span class=n>pancakeHouseMenu</span><span class=o>.</span><span class=na>add</span><span class=o>(</span><span class=k>new</span> <span class=n>MenuItem</span><span class=o>(</span>
+                <span class=s>&quot;K&amp;B&#39;s Pancake Breakfast&quot;</span><span class=o>,</span>
+                <span class=s>&quot;Pancakes with scrambled eggs, and toast&quot;</span><span class=o>,</span>
+                <span class=kc>true</span><span class=o>,</span>
+                <span class=mf>2.99</span><span class=o>));</span>
+        <span class=n>pancakeHouseMenu</span><span class=o>.</span><span class=na>add</span><span class=o>(</span><span class=k>new</span> <span class=n>MenuItem</span><span class=o>(</span>
+                <span class=s>&quot;Regular Pancake Breakfast&quot;</span><span class=o>,</span>
+                <span class=s>&quot;Pancakes with fried eggs, sausage&quot;</span><span class=o>,</span>
+                <span class=kc>false</span><span class=o>,</span>
+                <span class=mf>2.99</span><span class=o>));</span>
+        <span class=n>pancakeHouseMenu</span><span class=o>.</span><span class=na>add</span><span class=o>(</span><span class=k>new</span> <span class=n>MenuItem</span><span class=o>(</span>
+                <span class=s>&quot;Blueberry Pancakes&quot;</span><span class=o>,</span>
+                <span class=s>&quot;Pancakes made with fresh blueberries, and blueberry syrup&quot;</span><span class=o>,</span>
+                <span class=kc>true</span><span class=o>,</span>
+                <span class=mf>3.49</span><span class=o>));</span>
+        <span class=n>pancakeHouseMenu</span><span class=o>.</span><span class=na>add</span><span class=o>(</span><span class=k>new</span> <span class=n>MenuItem</span><span class=o>(</span>
+                <span class=s>&quot;Waffles&quot;</span><span class=o>,</span>
+                <span class=s>&quot;Waffles, with your choice of blueberries or strawberries&quot;</span><span class=o>,</span>
+                <span class=kc>true</span><span class=o>,</span>
+                <span class=mf>3.59</span><span class=o>));</span>
+
+        <span class=n>dinerMenu</span><span class=o>.</span><span class=na>add</span><span class=o>(</span><span class=k>new</span> <span class=n>MenuItem</span><span class=o>(</span>
+                <span class=s>&quot;Vegetarian BLT&quot;</span><span class=o>,</span>
+                <span class=s>&quot;(Fakin&#39;) Bacon with lettuce &amp; tomato on whole wheat&quot;</span><span class=o>,</span>
+                <span class=kc>true</span><span class=o>,</span>
+                <span class=mf>2.99</span><span class=o>));</span>
+        <span class=n>dinerMenu</span><span class=o>.</span><span class=na>add</span><span class=o>(</span><span class=k>new</span> <span class=n>MenuItem</span><span class=o>(</span>
+                <span class=s>&quot;BLT&quot;</span><span class=o>,</span>
+                <span class=s>&quot;Bacon with lettuce &amp; tomato on whole wheat&quot;</span><span class=o>,</span>
+                <span class=kc>false</span><span class=o>,</span>
+                <span class=mf>2.99</span><span class=o>));</span>
+        <span class=n>dinerMenu</span><span class=o>.</span><span class=na>add</span><span class=o>(</span><span class=k>new</span> <span class=n>MenuItem</span><span class=o>(</span>
+                <span class=s>&quot;Soup of the day&quot;</span><span class=o>,</span>
+                <span class=s>&quot;A bowl of the soup of the day, with a side of potato salad&quot;</span><span class=o>,</span>
+                <span class=kc>false</span><span class=o>,</span>
+                <span class=mf>3.29</span><span class=o>));</span>
+        <span class=n>dinerMenu</span><span class=o>.</span><span class=na>add</span><span class=o>(</span><span class=k>new</span> <span class=n>MenuItem</span><span class=o>(</span>
+                <span class=s>&quot;Hotdog&quot;</span><span class=o>,</span>
+                <span class=s>&quot;A hot dog, with saurkraut, relish, onions, topped with cheese&quot;</span><span class=o>,</span>
+                <span class=kc>false</span><span class=o>,</span>
+                <span class=mf>3.05</span><span class=o>));</span>
+        <span class=n>dinerMenu</span><span class=o>.</span><span class=na>add</span><span class=o>(</span><span class=k>new</span> <span class=n>MenuItem</span><span class=o>(</span>
+                <span class=s>&quot;Steamed Veggies and Brown Rice&quot;</span><span class=o>,</span>
+                <span class=s>&quot;Steamed vegetables over brown rice&quot;</span><span class=o>,</span>
+                <span class=kc>true</span><span class=o>,</span>
+                <span class=mf>3.99</span><span class=o>));</span>
+
+        <span class=n>dinerMenu</span><span class=o>.</span><span class=na>add</span><span class=o>(</span><span class=k>new</span> <span class=n>MenuItem</span><span class=o>(</span>
+                <span class=s>&quot;Pasta&quot;</span><span class=o>,</span>
+                <span class=s>&quot;Spaghetti with Marinara Sauce, and a slice of sourdough bread&quot;</span><span class=o>,</span>
+                <span class=kc>true</span><span class=o>,</span>
+                <span class=mf>3.89</span><span class=o>));</span>
+
+        <span class=n>dinerMenu</span><span class=o>.</span><span class=na>add</span><span class=o>(</span><span class=n>dessertMenu</span><span class=o>);</span>
+
+        <span class=n>dessertMenu</span><span class=o>.</span><span class=na>add</span><span class=o>(</span><span class=k>new</span> <span class=n>MenuItem</span><span class=o>(</span>
+                <span class=s>&quot;Apple Pie&quot;</span><span class=o>,</span>
+                <span class=s>&quot;Apple pie with a flakey crust, topped with vanilla icecream&quot;</span><span class=o>,</span>
+                <span class=kc>true</span><span class=o>,</span>
+                <span class=mf>1.59</span><span class=o>));</span>
+
+        <span class=n>dessertMenu</span><span class=o>.</span><span class=na>add</span><span class=o>(</span><span class=k>new</span> <span class=n>MenuItem</span><span class=o>(</span>
+                <span class=s>&quot;Cheesecake&quot;</span><span class=o>,</span>
+                <span class=s>&quot;Creamy New York cheesecake, with a chocolate graham crust&quot;</span><span class=o>,</span>
+                <span class=kc>true</span><span class=o>,</span>
+                <span class=mf>1.99</span><span class=o>));</span>
+        <span class=n>dessertMenu</span><span class=o>.</span><span class=na>add</span><span class=o>(</span><span class=k>new</span> <span class=n>MenuItem</span><span class=o>(</span>
+                <span class=s>&quot;Sorbet&quot;</span><span class=o>,</span>
+                <span class=s>&quot;A scoop of raspberry and a scoop of lime&quot;</span><span class=o>,</span>
+                <span class=kc>true</span><span class=o>,</span>
+                <span class=mf>1.89</span><span class=o>));</span>
+
+        <span class=n>cafeMenu</span><span class=o>.</span><span class=na>add</span><span class=o>(</span><span class=k>new</span> <span class=n>MenuItem</span><span class=o>(</span>
+                <span class=s>&quot;Veggie Burger and Air Fries&quot;</span><span class=o>,</span>
+                <span class=s>&quot;Veggie burger on a whole wheat bun, lettuce, tomato, and fries&quot;</span><span class=o>,</span>
+                <span class=kc>true</span><span class=o>,</span>
+                <span class=mf>3.99</span><span class=o>));</span>
+        <span class=n>cafeMenu</span><span class=o>.</span><span class=na>add</span><span class=o>(</span><span class=k>new</span> <span class=n>MenuItem</span><span class=o>(</span>
+                <span class=s>&quot;Soup of the day&quot;</span><span class=o>,</span>
+                <span class=s>&quot;A cup of the soup of the day, with a side salad&quot;</span><span class=o>,</span>
+                <span class=kc>false</span><span class=o>,</span>
+                <span class=mf>3.69</span><span class=o>));</span>
+        <span class=n>cafeMenu</span><span class=o>.</span><span class=na>add</span><span class=o>(</span><span class=k>new</span> <span class=n>MenuItem</span><span class=o>(</span>
+                <span class=s>&quot;Burrito&quot;</span><span class=o>,</span>
+                <span class=s>&quot;A large burrito, with whole pinto beans, salsa, guacamole&quot;</span><span class=o>,</span>
+                <span class=kc>true</span><span class=o>,</span>
+                <span class=mf>4.29</span><span class=o>));</span>
+
+        <span class=n>cafeMenu</span><span class=o>.</span><span class=na>add</span><span class=o>(</span><span class=n>coffeeMenu</span><span class=o>);</span>
+
+        <span class=n>coffeeMenu</span><span class=o>.</span><span class=na>add</span><span class=o>(</span><span class=k>new</span> <span class=n>MenuItem</span><span class=o>(</span>
+                <span class=s>&quot;Coffee Cake&quot;</span><span class=o>,</span>
+                <span class=s>&quot;Crumbly cake topped with cinnamon and walnuts&quot;</span><span class=o>,</span>
+                <span class=kc>true</span><span class=o>,</span>
+                <span class=mf>1.59</span><span class=o>));</span>
+        <span class=n>coffeeMenu</span><span class=o>.</span><span class=na>add</span><span class=o>(</span><span class=k>new</span> <span class=n>MenuItem</span><span class=o>(</span>
+                <span class=s>&quot;Bagel&quot;</span><span class=o>,</span>
+                <span class=s>&quot;Flavors include sesame, poppyseed, cinnamon raisin, pumpkin&quot;</span><span class=o>,</span>
+                <span class=kc>false</span><span class=o>,</span>
+                <span class=mf>0.69</span><span class=o>));</span>
+        <span class=n>coffeeMenu</span><span class=o>.</span><span class=na>add</span><span class=o>(</span><span class=k>new</span> <span class=n>MenuItem</span><span class=o>(</span>
+                <span class=s>&quot;Biscotti&quot;</span><span class=o>,</span>
+                <span class=s>&quot;Three almond or hazelnut biscotti cookies&quot;</span><span class=o>,</span>
+                <span class=kc>true</span><span class=o>,</span>
+                <span class=mf>0.89</span><span class=o>));</span>
+
+        <span class=n>Waitress</span> <span class=n>waitress</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Waitress</span><span class=o>(</span><span class=n>allMenus</span><span class=o>);</span>
+
+        <span class=n>waitress</span><span class=o>.</span><span class=na>printMenu</span><span class=o>();</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></div></div>
+
+<h4 id="example-javaawtcontainer">Example - java.awt.Container<a class="headerlink" href="#example-javaawtcontainer" title="Permanent link">&para;</a></h4>
+<ul>
+<li>component: <C>Component</C></li>
+<li>leaf: <C>Checkbox</C>, <C>Button</C>, <C>Label</C>...</li>
+<li>composite: <C>Container</C></li>
+</ul>
+<p><img alt="java.awt.Container" src="../figures/java.awt.container.png" /></p>
+<p><C>java.awt.Container.add()</C> add a <C>Component</C> to a <C>Container</C>.</p>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>Container</span> <span class=kd>extends</span> <span class=n>Component</span> <span class=o>{</span>
+    <span class=kd>public</span> <span class=n>Component</span> <span class=nf>add</span><span class=o>(</span><span class=n>Component</span> <span class=n>comp</span><span class=o>)</span> <span class=o>{...}</span>
+    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>remove</span><span class=o>(</span><span class=n>Component</span> <span class=n>comp</span><span class=o>)</span> <span class=o>{...}</span>
+</pre></div></p></div>
         </div>
 
         <footer class="col-md-12">
