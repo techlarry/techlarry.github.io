@@ -260,16 +260,19 @@
             <li><a href="#flume">Flume概述</a></li>
             <li><a href="#flume_1">Flume架构及核心组件</a></li>
             <li><a href="#flume_2">Flume实战</a></li>
+        <li class="main "><a href="#3-kafka">3 分布式消息队列Kafka</a></li>
+            <li><a href="#kafka">Kafka部署及使用</a></li>
+            <li><a href="#kafka_1">Kafka容错性测试</a></li>
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
 
 <h3 id="spark-streaming"><strong>Spark Streaming实时流处理项目</strong><a class="headerlink" href="#spark-streaming" title="Permanent link">&para;</a></h3>
-<p>项目概述</p>
+<p>该项目从实时数据产生和流向的不同环节出发，通过集成主流的分布式日志收集框架Flume、分布式消息队列Kafka、分布式列式数据库HBase、以及Spark Streaming实现实时流处理。</p>
 <h3 id="1">1 初识实时流处理<a class="headerlink" href="#1" title="Permanent link">&para;</a></h3>
 <h4 id="_1">业务现状分析<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h4>
-<p>需求：统计主站每个（指定）课程访问的客户端、地域信息分布
-==&gt; 如上两个操作：采用离线（spark/mapreduce）的方式进行统计</p>
+<p>需求：统计主站每个（指定）课程访问的客户端、地域信息分布</p>
+<p>==&gt; 如上两个操作：采用离线（spark/mapreduce）的方式进行统计</p>
 <p>实现步骤：</p>
 <ul>
 <li>课程编号，ip信息，user-agent</li>
@@ -526,7 +529,7 @@ a2.sources.avro-source.channels = memory-channel
 a2.sinks.logger-sink.channel = memory-channel
 </pre></div></div></div>
 
-<p>启动flum， 注意两个agent的启动顺序</p>
+<p>启动flume， 注意两个agent的启动顺序</p>
 <p> <div class=codehilite><pre>$ flume-ng agent <span class=se>\</span>
 --name a2 <span class=se>\</span>
 --conf <span class=nv>$F</span>LUME-HOME/conf <span class=se>\</span>
@@ -542,7 +545,55 @@ $ flume-ng agent <span class=se>\</span>
 <p>将内容输入到<code class="codehilite">/tmp/data.log</code>文件中：</p>
 <p> <div class=codehilite><pre>$ <span class=nb>echo</span> <span class=s2>&quot;welcome&quot;</span> &gt; data.log
 $ <span class=nb>echo</span> <span class=s2>&quot;welcome&quot;</span> &gt; data.log
-</pre></div></p></div>
+</pre></div></p>
+<h3 id="3-kafka">3 分布式消息队列Kafka<a class="headerlink" href="#3-kafka" title="Permanent link">&para;</a></h3>
+<p>First a few concepts:</p>
+<ul>
+<li>Kafka is run as a cluster on one or more servers that can span multiple datacenters.</li>
+<li>The Kafka cluster stores streams of <em>records</em> in categories called <strong><em>topic</em></strong>s.</li>
+<li>Each record consists of a key, a value, and a timestamp.</li>
+<li><strong><em>Broker</em></strong>s are the Kafka processes that manage topics and partitions and serve producer and consumer request.</li>
+</ul>
+<p><img alt="" src="../figures/kafkademo.jpg" /></p>
+<h4 id="kafka">Kafka部署及使用<a class="headerlink" href="#kafka" title="Permanent link">&para;</a></h4>
+<p><hh>单节点单Broker部署及使用</hh></p>
+<p> <div class=codehilite><pre><span class=c1># 启动Zookeep</span>
+$ zkServer.sh start
+<span class=c1># 启动kafka</span>
+$ kafka-server-start.sh $KAFAKA_HOME/config/server.properties
+<span class=c1># 创建名为test的topic(single partition and only one replica)</span>
+$ kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor <span class=m>1</span> --partitions <span class=m>1</span> --topic <span class=nb>test</span>
+<span class=c1># 查看topic</span>
+$ kafka-topics.sh --list --zookeeper localhost:2181
+<span class=c1>### 启动生产者, 9092是server监听端口</span>
+$ kafka-console-producer.sh --broker-list localhost:9092 --topic <span class=nb>test</span>
+&gt; This is a message
+&gt; This is another message
+<span class=c1>### 启动消费者 --from-beginning从头开始接收消息</span>
+$ kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic <span class=nb>test</span> --from-beginning
+This is a message
+This is another message
+<span class=c1>### 查看所有topics的详细信息</span>
+$ kafka-topics.sh --describe --zookeeper localhost:2181
+<span class=c1>### 查看指定topic的详细信息</span>
+$ kafka-topics.sh --describe --zookeeper localhost:2181 --topic <span class=nb>test</span>
+</pre></div></p>
+<p><hh>单节点多Broker部署及使用</hh></p>
+<p> <div class=codehilite><pre>cp $KAFKA_HOME/config/server.properties config/server-1.properties
+cp config/server.properties $KAFKA_HOME/config/server-2.properties
+</pre></div></p>
+<p>修改配置文件如下</p>
+<p>```
+config/server-1.properties:
+    broker.id=1
+    listeners=PLAINTEXT://:9093
+    log.dirs=/tmp/kafka-logs-1</p>
+<p>config/server-2.properties:
+    broker.id=2
+    listeners=PLAINTEXT://:9094
+    log.dirs=/tmp/kafka-logs-2
+    ```</p>
+<h4 id="kafka_1">Kafka容错性测试<a class="headerlink" href="#kafka_1" title="Permanent link">&para;</a></h4></div>
         </div>
 
         <footer class="col-md-12">
