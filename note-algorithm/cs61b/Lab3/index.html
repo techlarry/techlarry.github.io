@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <meta name="author" content="Zhenhua Wang">
+        <link rel="canonical" href="http://larryim.cc/note/cs61b/Lab3/">
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+        <title>Lab3: Unit Testing with JUnit, Debugging - Zhenhua's Notes - Algorithm</title>
+        <link href="../../css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="../../css/font-awesome-4.5.0.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="../../css/highlight.css">
+        <link href="../../extra_css/custom.css" rel="stylesheet">
+        <link href="../../extra_css/custom.js" rel="stylesheet">
+        <link href="../../extra_css/friendly.css" rel="stylesheet">
+        <link href="../../extra_css/theme.css" rel="stylesheet">
+        <link href="../../extra_css/mkdocs/js/lunr-0.5.7.min.js" rel="stylesheet">
+        <link href="../../extra_css/mkdocs/js/mustache.min.js" rel="stylesheet">
+        <link href="../../extra_css/mkdocs/js/require.js" rel="stylesheet">
+        <link href="../../extra_css/mkdocs/js/search.js" rel="stylesheet">
+        <link href="../../extra_css/mkdocs/js/text.js" rel="stylesheet">
+        <link href="../../extra_css/code-tab.css" rel="stylesheet">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="../../js/jquery-1.10.2.min.js"></script>
+        <script src="../../js/bootstrap-3.0.3.min.js"></script>
+        <script src="../../js/highlight.pack.js"></script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="../..">Zhenhua's Notes - Algorithm</a>
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+                <!-- Main navigation -->
+                <ul class="nav navbar-nav">
+                    <li >
+                        <a href="../..">Home</a>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Algorithm <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../../algorithm/">Contents</a>
+</li>
+                            
+<li >
+    <a href="../../algorithm/ch1/">Chapter 1: Fundamentals </a>
+</li>
+                            
+<li >
+    <a href="../../algorithm/ch2/">Chapter 2: Sorting</a>
+</li>
+                            
+<li >
+    <a href="../../algorithm/ch3/">Chapter 3: Searching</a>
+</li>
+                            
+<li >
+    <a href="../../algorithm/ch4/">Chapter 4: Graphs</a>
+</li>
+                            
+<li >
+    <a href="../../algorithm/ch5/">Chapter 5: Strings</a>
+</li>
+                            
+<li >
+    <a href="../../algorithm/ch6/">Chapter 6: Context</a>
+</li>
+                        </ul>
+                    </li>
+                    <li class="dropdown active">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">CS61B <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../">Contents</a>
+</li>
+                            
+<li >
+    <a href="../Lab1/">Lab1: javac, java, git</a>
+</li>
+                            
+<li >
+    <a href="../Lab2/">Lab2: Unit Testing with JUnit and IntLists</a>
+</li>
+                            
+<li class="active">
+    <a href="./">Lab3: Unit Testing with JUnit, Debugging</a>
+</li>
+                        </ul>
+                    </li>
+                    <li >
+                        <a href="../../books/">Books</a>
+                    </li>
+                </ul>
+
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                        <i class="fa fa-search"></i> Search
+                    </a>
+                </li>
+                    <li >
+                        <a rel="next" href="../Lab2/">
+                            <i class="fa fa-arrow-left"></i> Previous
+                        </a>
+                    </li>
+                    <li >
+                        <a rel="prev" href="../../books/">
+                            Next <i class="fa fa-arrow-right"></i>
+                        </a>
+                    </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#lab-3-unit-testing-with-junit-debugging">Lab 3: Unit Testing with JUnit, Debugging</a></li>
+        <li class="main "><a href="#1-introduction">1 Introduction</a></li>
+            <li><a href="#junit-syntax">JUnit Syntax</a></li>
+            <li><a href="#running-junit-tests-in-intellij">Running JUnit Tests in IntelliJ</a></li>
+            <li><a href="#a-debugging-mystery">A Debugging Mystery</a></li>
+        <li class="main "><a href="#running-the-61b-style-checker">Running the 61B Style Checker</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<h3 id="lab-3-unit-testing-with-junit-debugging"><strong>Lab 3: Unit Testing with JUnit, Debugging</strong><a class="headerlink" href="#lab-3-unit-testing-with-junit-debugging" title="Permanent link">&para;</a></h3>
+<h3 id="1-introduction">1 Introduction<a class="headerlink" href="#1-introduction" title="Permanent link">&para;</a></h3>
+<p>JUnit is a Unit Testing Framework for Java.</p>
+<p>Unit Testing is a great way to rigorously test each method of your code and ultimately ensure that you have a working project.</p>
+<p>The “Unit” part of Unit Testing comes from the idea that you can break your program down into units, or the smallest testable part of an application. Therefore, Unit Testing enforces good code structure (each method should only do “One Thing”), and allows you to consider all of the edge cases for each method and test for them individually.</p>
+<h4 id="junit-syntax">JUnit Syntax<a class="headerlink" href="#junit-syntax" title="Permanent link">&para;</a></h4>
+<p><C>assertEquals</C> is a common method used in JUnit tests. It tests if a variable’s actual value is equivalent to its expected value.</p>
+<p> <div class=codehilite><pre><span class=nd>@Test</span>
+<span class=kd>public</span> <span class=kt>void</span> <span class=nf>testMethod</span><span class=o>()</span> <span class=o>{</span>
+    <span class=n>assertEquals</span><span class=o>(&lt;</span><span class=n>expected</span><span class=o>&gt;,</span> <span class=o>&lt;</span><span class=n>actual</span><span class=o>&gt;);</span>
+<span class=o>}</span>
+</pre></div></p>
+<p>When you create JUnit test files, you should precede each test method with a <C>@Test</C> annotation, and can have one or more <C>assertEquals</C> or <C>assertTrue</C> methods (provided by the JUnit library). <strong>All tests must be non-static.</strong> </p>
+<h4 id="running-junit-tests-in-intellij">Running JUnit Tests in IntelliJ<a class="headerlink" href="#running-junit-tests-in-intellij" title="Permanent link">&para;</a></h4>
+<p>Even though methods includes many assert statements, only one failure is shown. This is because JUnit tests are short-circuiting – as soon as one of the asserts in a method fails, it will output the failure and move on to the next test.</p>
+<ul>
+<li>Write a test BEFORE we write a method.</li>
+<li>Don’t fill in the code for the actual method yet, just make it return null.</li>
+<li>Write a method, and rerun the tests until it passes.</li>
+</ul>
+<p>Pro tip: If you want to have your tests timeout after a certain amount of time (to prevent inﬁnite loops), you can declare your test like this: <code class="codehilite"><span class="nd">@Test</span><span class="o">(</span><span class="n">timeout</span> <span class="o">=</span> <span class="mi">1000</span><span class="o">)</span></code></p>
+<h4 id="a-debugging-mystery">A Debugging Mystery<a class="headerlink" href="#a-debugging-mystery" title="Permanent link">&para;</a></h4>
+<p>Another important skill to learn is how to exhaustively debug. When done properly, debugging should allow you to rapidly narrow down where a bug might be located, even when you are debugging code you don’t fully understand.</p>
+<p>Using any combination of the following techniques, figure out whether the bug is in Horrible Steve’s code or in Flik enterprise’s library:</p>
+<ul>
+<li>Writing JUnit tests for the Flik library.</li>
+<li>Using the IntelliJ debugger, especially conditional breakpoints.</li>
+<li>Using print statements.</li>
+<li>Refactoring Horrible Steve’s code. Refactoring means changing the syntax without changing the functionality. This may be hard to do since HS’s code uses lots of weird stuff.</li>
+</ul>
+<p>We do not expect you to ﬁx the bug or even understand why it’s happening once you have found it. Instead, your job is simply to find the bug.</p>
+<p>Tip: JUnit provides methods <C>assertTrue(boolean)</C> and <C>assertTrue(String, boolean)</C> that you might find helpful.</p>
+<h3 id="running-the-61b-style-checker">Running the 61B Style Checker<a class="headerlink" href="#running-the-61b-style-checker" title="Permanent link">&para;</a></h3>
+<p>We will be using the CS 61B IntelliJ Plugin to check for style. <a href="https://sp18.datastructur.es/materials/guides/style-guide">official 61B style guide</a></p>
+<p>My common mistake:</p>
+<ul>
+<li>',' is followed by whitespace.</li>
+<li>Using trailing comments.</li>
+</ul></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>var base_url = '../..';</script>
+        <script src="../../js/base.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+        <script src="../../extra_javascript/tabhack.js"></script>
+        <script src="../../search/require.js"></script>
+        <script src="../../search/search.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td><kbd>&larr;</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td><kbd>&rarr;</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    </body>
+</html>
