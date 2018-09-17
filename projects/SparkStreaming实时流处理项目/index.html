@@ -204,6 +204,19 @@
 </li>
                         </ul>
                     </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">DataMining <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../../datamining/">Contents</a>
+</li>
+                            
+<li >
+    <a href="../../datamining/guideToDataMining/">面向程序员的数据挖掘指南</a>
+</li>
+                        </ul>
+                    </li>
                     <li class="dropdown active">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Projects <b class="caret"></b></a>
                         <ul class="dropdown-menu">
@@ -263,6 +276,7 @@
         <li class="main "><a href="#3-kafka">3 分布式消息队列Kafka</a></li>
             <li><a href="#kafka">Kafka部署及使用</a></li>
             <li><a href="#kafka-java">Kafka Java 编程</a></li>
+            <li><a href="#flumekafka">整合Flume和Kafka完成实时数据采集</a></li>
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
@@ -476,7 +490,7 @@ $ <span class=nb>echo</span> <span class=s2>&quot;hello&quot;</span> &gt; data.l
 <li>avro sink把新产生的日志输出到对应的avro source指定的hostname和port上。</li>
 <li>通过avro对应的agent将我们的日志输出到控制台。</li>
 </ul>
-<p><img alt="" src="../figures/avroSink.jpg" /></p>
+<p><img alt="" src="../figures/UsingAvroSink.png" /></p>
 <blockquote>
 <p><CB>avro sink</CB>: forms one half of Flume’s tiered collection support. Flume events sent to this sink are turned into Avro events and sent to the configured hostname / port pair. [<a href="http://flume.apache.org/FlumeUserGuide.html#avro-sink">Avro sink</a>]</p>
 </blockquote>
@@ -594,29 +608,29 @@ config/server-2.properties:
     log.dirs=/tmp/kafka-logs-2
 </pre></div></p>
 <p>启动kafka</p>
-<p> <div class=codehilite><pre><span class=err>#</span><span class=x> 启动ZooKeep</span>
-<span class=p>$</span><span class=x> zkServer.sh start</span>
-<span class=err>#</span><span class=x> 启动kafka server</span>
-<span class=p>$</span><span class=x> kafka-server-start.sh </span><span class=p>$</span><span class=nv>KAFAKA_HOME</span><span class=x>/config/server.properties &amp;</span>
-<span class=p>$</span><span class=x> kafka-server-start.sh </span><span class=p>$</span><span class=nv>KAFKA_HOME</span><span class=x>/config/server-1.properties &amp;</span>
-<span class=p>$</span><span class=x> kafka-server-start.sh </span><span class=p>$</span><span class=nv>KAFKA_HOME</span><span class=x>/config/server-2.properties &amp;</span>
-<span class=err>#</span><span class=x> 创建topic, 1个分区，三个副本</span>
-<span class=p>$</span><span class=x> kafka-topics.sh --create --zookeeper localhost:2181 \</span>
-<span class=x>    --replication-factor 3 --partitions 1 --topic my-replicated-topic</span>
-<span class=err>#</span><span class=x> 查看topic信息</span>
-<span class=p>$</span><span class=x> kafka-topics.sh --describe --zookeeper localhost:2181 --topic my-replicated-topic</span>
-<span class=x>Topic:my-replicated-topic   PartitionCount:1    ReplicationFactor:3 Configs:</span>
-<span class=x>    Topic: my-replicated-topic  Partition: 0    Leader: 2   Replicas: 2,0,1 Isr: 2,0,1</span>
-<span class=err>#</span><span class=x> 启动生产者</span>
-<span class=p>$</span><span class=x> kafka-console-producer.sh --broker-list localhost:9092, localhost:9093, localhost:9094 --topic my-replicated-topic</span>
-<span class=err>#</span><span class=x> 启动消费者</span>
-<span class=p>$</span><span class=x> kafka-console-consumer.sh --bootstrap-server localhost:9092 --from-beginning --topic my-replicated-topic</span>
+<p> <div class=codehilite><pre><span class=c1># 启动ZooKeep</span>
+$ zkServer.sh start
+<span class=c1># 启动kafka server</span>
+$ kafka-server-start.sh $KAFKA_HOME/config/server.properties <span class=p>&amp;</span>
+$ kafka-server-start.sh $KAFKA_HOME/config/server-1.properties <span class=p>&amp;</span>
+$ kafka-server-start.sh $KAFKA_HOME/config/server-2.properties <span class=p>&amp;</span>
+<span class=c1># 创建topic, 1个分区，三个副本</span>
+$ kafka-topics.sh --create --zookeeper localhost:2181 <span class=se>\</span>
+    --replication-factor <span class=m>3</span> --partitions <span class=m>1</span> --topic my-replicated-topic
+<span class=c1># 查看topic信息</span>
+$ kafka-topics.sh --describe --zookeeper localhost:2181 --topic my-replicated-topic
+Topic:my-replicated-topic   PartitionCount:1    ReplicationFactor:3 Configs:
+    Topic: my-replicated-topic  Partition: <span class=m>0</span>    Leader: <span class=m>2</span>   Replicas: 2,0,1 Isr: 2,0,1
+<span class=c1># 启动生产者</span>
+$ kafka-console-producer.sh --broker-list localhost:9092, localhost:9093, localhost:9094 --topic my-replicated-topic
+<span class=c1># 启动消费者</span>
+$ kafka-console-consumer.sh --bootstrap-server localhost:9092 --from-beginning --topic my-replicated-topic
 </pre></div></p>
 <h4 id="kafka-java">Kafka Java 编程<a class="headerlink" href="#kafka-java" title="Permanent link">&para;</a></h4>
+<p>使用命令行总是不方便的，下面我们尝试着使用Kafka Java API编程，实际内容和上一节是一摸一样的，所以直接附上代码了。注意这里使用的API是0.8.2版本以后的，之前版本与之后版本的API相差非常大。</p>
 <div class=md-fenced-code-tabs id=tab-tab-group-11><input name=tab-group-11 type=radio id=tab-group-11-0_java checked=checked class=code-tab data-lang=java aria-controls=tab-group-11-0_java-panel role=tab><label for=tab-group-11-0_java class=code-tab-label data-lang=java id=tab-group-11-0_java-label>Producer</label><div class=code-tabpanel role=tabpanel data-lang=java id=tab-group-11-0_java-panel aria-labelledby=tab-group-11-0_java-label><div class=codehilite><pre><span class=kn>import</span> <span class=nn>org.apache.kafka.clients.producer.KafkaProducer</span><span class=o>;</span>
 <span class=kn>import</span> <span class=nn>org.apache.kafka.clients.producer.ProducerRecord</span><span class=o>;</span>
 <span class=kn>import</span> <span class=nn>java.util.Properties</span><span class=o>;</span>
-
 <span class=cm>/**</span>
 <span class=cm> * Kafka生产者</span>
 <span class=cm> * 见官方文档</span>
@@ -637,23 +651,18 @@ config/server-2.properties:
     <span class=o>}</span>
 
     <span class=kd>public</span> <span class=kt>void</span> <span class=nf>run</span><span class=o>()</span> <span class=o>{</span>
-
         <span class=kt>int</span> <span class=n>messageNumber</span> <span class=o>=</span> <span class=mi>1</span><span class=o>;</span>
         <span class=k>while</span> <span class=o>(</span><span class=kc>true</span><span class=o>)</span> <span class=o>{</span>
             <span class=n>String</span> <span class=n>message</span> <span class=o>=</span> <span class=s>&quot;message&quot;</span> <span class=o>+</span> <span class=n>messageNumber</span><span class=o>;</span>
             <span class=n>producer</span><span class=o>.</span><span class=na>send</span><span class=o>(</span><span class=k>new</span> <span class=n>ProducerRecord</span><span class=o>&lt;</span><span class=n>String</span><span class=o>,</span> <span class=n>String</span><span class=o>&gt;(</span><span class=n>topic</span><span class=o>,</span> <span class=n>message</span><span class=o>));</span>
             <span class=n>messageNumber</span><span class=o>++;</span>
-
             <span class=k>try</span><span class=o>{</span>
                 <span class=n>Thread</span><span class=o>.</span><span class=na>sleep</span><span class=o>(</span><span class=mi>5000</span><span class=o>);</span>
             <span class=o>}</span> <span class=k>catch</span> <span class=o>(</span><span class=n>Exception</span> <span class=n>ex</span><span class=o>)</span> <span class=o>{</span>
                 <span class=n>ex</span><span class=o>.</span><span class=na>printStackTrace</span><span class=o>();</span>
             <span class=o>}</span>
         <span class=o>}</span>
-
     <span class=o>}</span>
-
-
 <span class=o>}</span>
 </pre></div></div><input name=tab-group-11 type=radio id=tab-group-11-1_java class=code-tab data-lang=java aria-controls=tab-group-11-1_java-panel role=tab><label for=tab-group-11-1_java class=code-tab-label data-lang=java id=tab-group-11-1_java-label>Consumer</label><div class=code-tabpanel role=tabpanel data-lang=java id=tab-group-11-1_java-panel aria-labelledby=tab-group-11-1_java-label><div class=codehilite><pre><span class=kn>import</span> <span class=nn>org.apache.kafka.clients.consumer.ConsumerRecord</span><span class=o>;</span>
 <span class=kn>import</span> <span class=nn>org.apache.kafka.clients.consumer.ConsumerRecords</span><span class=o>;</span>
@@ -725,7 +734,60 @@ config/server-2.properties:
         <span class=n>job2</span><span class=o>.</span><span class=na>start</span><span class=o>();</span>
     <span class=o>}</span>
 <span class=o>}</span>
-</pre></div></div></div></div>
+</pre></div></div></div>
+
+<h4 id="flumekafka">整合Flume和Kafka完成实时数据采集<a class="headerlink" href="#flumekafka" title="Permanent link">&para;</a></h4>
+<p>为了将Flume的输出到Kafka，可以将agent2的logger sink替换成Kafka Sink。然后启动一个Kafka consumer从Kafka sink订阅消息。</p>
+<p><img alt="" src="../figures/FlumeKafkaCombined.png" /></p>
+<blockquote>
+<p><CB>kafka sink</CB> can publish data to a Kafka topic. One of the objective is to integrate Flume with Kafka so that pull based processing systems can process the data coming through various Flume sources. [<a href="http://flume.apache.org/FlumeUserGuide.html#kafka-sink">Kafka Sink</a>]</p>
+</blockquote>
+<p>下面是agent2对应的Kafka配置文件，在这里agent2改名为<code class="codehilite">avro-memory-kafka</code>。</p>
+<p> <div class=codehilite><pre># filename: avro-memeory-kafka.conf
+
+# Name the components on this agent
+avro-memory-kafka.sources = avro-source
+avro-memory-kafka.sinks = kafka-sink
+avro-memory-kafka.channels = memory-channel
+
+# Describe/configure the source
+avro-memory-kafka.sources.avro-source.type = avro
+avro-memory-kafka.sources.avro-source.bind = localhost
+avro-memory-kafka.sources.avro-source.port = 44444
+
+# Describe the sink
+avro-memory-kafka.sinks.kafka-sink.type = org.apache.flume.sink.kafka.KafkaSink
+avro-memory-kafka.sinks.kafka-sink.kafka.bootstrap.servers = localhost:9092
+avro-memory-kafka.sinks.kafka-sink.kafka.topic = test
+
+
+# Use a channel which buffers events in memory
+avro-memory-kafka.channels.memory-channel.type = memory
+avro-memory-kafka.channels.memory-channel.capacity = 1000
+avro-memory-kafka.channels.memory-channel.transactionCapacity = 100
+
+# Bind the source and sink to the channel
+avro-memory-kafka.sources.avro-source.channels = memory-channel
+avro-memory-kafka.sinks.kafka-sink.channel = memory-channel
+</pre></div></p>
+<p>下面是具体的操作流程，同样需要注意两个agent的启动顺序：</p>
+<p> <div class=codehilite><pre><span class=c1>## 启动zookeeper, kafka，省略</span>
+<span class=c1>## 启动agent</span>
+$ flume-ng agent <span class=se>\</span>
+--name avro-memory-kafka <span class=se>\</span>
+--conf <span class=nv>$F</span>LUME-HOME/conf <span class=se>\</span>
+--conf-file avro-memory-kafka.conf <span class=se>\</span>
+-Dflume.root.logger<span class=o>=</span>INFO,console
+
+$ flume-ng agent <span class=se>\</span>
+--name a1 <span class=se>\</span>
+--conf <span class=nv>$F</span>LUME-HOME/conf <span class=se>\</span>
+--conf-file exec-memory-avro.conf <span class=se>\</span>
+-Dflume.root.logger<span class=o>=</span>INFO,console
+
+<span class=c1>## 启动消费者 </span>
+$ kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic <span class=nb>test</span>
+</pre></div></p></div>
         </div>
 
         <footer class="col-md-12">
