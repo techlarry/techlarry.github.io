@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <meta name="author" content="Zhenhua Wang">
+        <link rel="canonical" href="http://larryim.cc/note/osc/ch6/">
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+        <title>Chapter 6: Synchronization Tools - Zhenhua's Notes</title>
+        <link href="../../css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="../../css/font-awesome-4.5.0.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="../../css/highlight.css">
+        <link href="../../extra_css/custom.css" rel="stylesheet">
+        <link href="../../extra_css/custom.js" rel="stylesheet">
+        <link href="../../extra_css/friendly.css" rel="stylesheet">
+        <link href="../../extra_css/theme.css" rel="stylesheet">
+        <link href="../../extra_css/mkdocs/js/lunr-0.5.7.min.js" rel="stylesheet">
+        <link href="../../extra_css/mkdocs/js/mustache.min.js" rel="stylesheet">
+        <link href="../../extra_css/mkdocs/js/require.js" rel="stylesheet">
+        <link href="../../extra_css/mkdocs/js/search.js" rel="stylesheet">
+        <link href="../../extra_css/mkdocs/js/text.js" rel="stylesheet">
+        <link href="../../extra_css/code-tab.css" rel="stylesheet">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="../../js/jquery-1.10.2.min.js"></script>
+        <script src="../../js/bootstrap-3.0.3.min.js"></script>
+        <script src="../../js/highlight.pack.js"></script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="../..">Zhenhua's Notes</a>
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+                <!-- Main navigation -->
+                <ul class="nav navbar-nav">
+                    <li >
+                        <a href="../..">Home</a>
+                    </li>
+                    <li class="dropdown active">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">OSC <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../">Contents</a>
+</li>
+                            
+<li >
+    <a href="../ch1/">Chapter 1: Introduction </a>
+</li>
+                            
+<li >
+    <a href="../ch2/">Chapter 2: Operating System structures</a>
+</li>
+                            
+<li >
+    <a href="../ch3/">Chapter 3: Processes</a>
+</li>
+                            
+<li >
+    <a href="../ch4/">Chapter 4: Threads and Concurrency</a>
+</li>
+                            
+<li >
+    <a href="../ch5/">Chapter 5: CPU Scheduling</a>
+</li>
+                            
+<li class="active">
+    <a href="./">Chapter 6: Synchronization Tools</a>
+</li>
+                            
+<li >
+    <a href="../ch7/">Chapter 7: Synchronization Examples</a>
+</li>
+                            
+<li >
+    <a href="../ch8/">Chapter 8: Deadlocks</a>
+</li>
+                            
+<li >
+    <a href="../ch9/">Chapter 9: Main Memory</a>
+</li>
+                            
+<li >
+    <a href="../ch10/">Chapter 10: Virtual Memory</a>
+</li>
+                            
+<li >
+    <a href="../ch11/">Chapter 11: Mass-Storage Structure</a>
+</li>
+                            
+<li >
+    <a href="../ch13/">Chapter 13: File-System Interfaces</a>
+</li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">CSAPP <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../../csapp/">Contents</a>
+</li>
+                            
+<li >
+    <a href="../../csapp/ch1/">Chapter 1: 计算机系统漫游</a>
+</li>
+                            
+<li >
+    <a href="../../csapp/ch2/">Chapter 2: 信息的表示和处理</a>
+</li>
+                            
+<li >
+    <a href="../../csapp/ch3/">Chapter 3: 程序的机器级表示</a>
+</li>
+                            
+<li >
+    <a href="../../csapp/ch4/">Chapter 4: 处理器体系结构</a>
+</li>
+                            
+<li >
+    <a href="../../csapp/ch5/">Chapter 5: 优化程序性能</a>
+</li>
+                            
+<li >
+    <a href="../../csapp/ch6/">Chapter 6: 存储器层次结构</a>
+</li>
+                            
+<li >
+    <a href="../../csapp/ch7/">Chapter 7: 链接</a>
+</li>
+                            
+<li >
+    <a href="../../csapp/ch8/">Chapter 8: 异常控制流</a>
+</li>
+                            
+<li >
+    <a href="../../csapp/ch9/">Chapter 9: 虚拟内存</a>
+</li>
+                            
+<li >
+    <a href="../../csapp/ch10/">Chapter 10: 系统级I/O</a>
+</li>
+                            
+<li >
+    <a href="../../csapp/ch11/">Chapter 11: 网络编程</a>
+</li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">HFJ <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../../hfj/">Contents</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch1/">Chapter 1: Dive in A Quick Dip</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch2/">Chapter 2: Classes and Objects</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch3/">Chapter 3: Primitives and References</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch4/">Chapter 4: Methods use Instance Variables</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch5/">Chapter 5: Writing a Program</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch6/">Chapter 6: Get to Know the Java API</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch7/">Chapter 7: Inheritance and Polymorphism</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch8/">Chapter 8: Interfaces and Abstract Classes</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch9/">Chapter 9: Constructors and Garbage Collection</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch10/">Chapter 10: Numbers and Statics</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch11/">Chapter 11: Exception Handling</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch12/">Chapter 12: Getting GUI</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch13/">Chapter 13: Using Swing</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch14/">Chapter 14: Serialization and File I/O</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch15/">Chapter 15: Networking and Threads</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch16/">Chapter 16: Collections and Generics</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch17/">Chapter 17: Packages, Jars and Deployment</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch18/">Chapter 18: Remote deploy with RMI</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/Appendix/">Appendix: The Top Ten Topics</a>
+</li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">HFDP <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../../hfdp/">Contents</a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch1/">Chapter 1: Strategy Pattern </a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch2/">Chapter 2: Observer Pattern</a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch3/">Chapter 3: Decorator Pattern </a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch4/">Chapter 4: Factory Pattern</a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch5/">Chapter 5: Singleton Pattern</a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch6/">Chapter 6: Command Pattern</a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch7/">Chapter 7: Adapter and Facade Patterns</a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch8/">Chapter 8: Template Method Pattern</a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch9/">Chapter 9: Iterator and Composite Patterns</a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch10/">Chapter 10: State Pattern</a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch11/">Chapter 11: Proxy Pattern</a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch12/">Chapter 12: Compound Pattern</a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch13/">Chapter 13: Better Living with Patterns</a>
+</li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">TIJ <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../../tij/">Contents</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch1/">Chapter 1: Introduction</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch2/">Chapter 2: Introduction to Objects</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch3/">Chapter 3: Everything is an Object</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch4/">Chapter 4: Opertors</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch5/">Chapter 5: Controlling Execution</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch6/">Chapter 6: Initialization & Cleanup</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch7/">Chapter 7: Access Control</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch8/">Chapter 8: Reusing Clases</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch9/">Chapter 9: Polymorphism</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch10/">Chapter 10: Interfaces</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch11/">Chapter 11: Inner Classes</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch12/">Chapter 12: Holding Your Objects</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch13/">Chapter 13: Error Handling with Exceptions</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch14/">Chapter 14: Strings</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch15/">Chapter 15: Type Information</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch16/">Chapter 16: Generics</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch17/">Chapter 17: Arrays</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch18/">Chapter 18: Containers in Depth</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch19/">Chapter 19: I/O</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch20/">Chapter 20: Enumerated Types</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch21/">Chapter 21: Annotations</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch22/">Chapter 22: Concurrency</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch23/">Chapter 23: Graphical User Interfaces</a>
+</li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">UJVM <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../../ujvm/">Contents</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch1/">Chapter 1 : 走进Java</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch2/">Chapter 2 : Java内存区域与内存溢出正常</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch3/">Chapter 3 : 垃圾收集器与内存分配策略</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch4/">Chapter 4 : 虚拟机性能监控与故障处理工具</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch5/">Chapter 5 : 调优案例分析与实战</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch6/">Chapter 6 : 类文件结构</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch7/">Chapter 7 : 虚拟机类加载机制</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch8/">Chapter 8 : 虚拟机字节码执行引擎</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch9/">Chapter 9 : 类加载及执行子系统的案例与实战</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch10/">Chapter 10 : 早期(编译期)优化</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch11/">Chapter 11 : 晚期(运行期)优化</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch12/">Chapter 12 : Java内存模型与线程</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch13/">Chapter 13 : 线程安全与锁优化</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/AppendixC/">Appendix HotSpot虚拟机主要参数列表</a>
+</li>
+                        </ul>
+                    </li>
+                    <li >
+                        <a href="../../books/">Books</a>
+                    </li>
+                </ul>
+
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                        <i class="fa fa-search"></i> Search
+                    </a>
+                </li>
+                    <li >
+                        <a rel="next" href="../ch5/">
+                            <i class="fa fa-arrow-left"></i> Previous
+                        </a>
+                    </li>
+                    <li >
+                        <a rel="prev" href="../ch7/">
+                            Next <i class="fa fa-arrow-right"></i>
+                        </a>
+                    </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#operating-system-concepts-6-synchronization-tools">Operating System Concepts 6 - Synchronization Tools</a></li>
+        <li class="main "><a href="#1-background">1 Background</a></li>
+        <li class="main "><a href="#2-the-critical-section-problem">2 The Critical-Section problem</a></li>
+        <li class="main "><a href="#3-petersons-solution">3 Peterson's Solution</a></li>
+        <li class="main "><a href="#4-hardware-support-for-synchronization">4 Hardware support for Synchronization</a></li>
+            <li><a href="#memory-barriers">Memory barriers</a></li>
+            <li><a href="#hardware-instructions">Hardware instructions</a></li>
+            <li><a href="#atomic-variables">Atomic variables</a></li>
+        <li class="main "><a href="#5-mutex-locks">5 Mutex locks</a></li>
+        <li class="main "><a href="#6-semaphores">6 Semaphores</a></li>
+        <li class="main "><a href="#7-monitors">7 Monitors</a></li>
+            <li><a href="#monitor-usage">Monitor Usage</a></li>
+            <li><a href="#implementing-a-monitor-using-semaphores">Implementing a Monitor Using Semaphores</a></li>
+        <li class="main "><a href="#8-liveness">8 Liveness</a></li>
+            <li><a href="#deadlock">Deadlock</a></li>
+            <li><a href="#priority-inversion">Priority Inversion</a></li>
+        <li class="main "><a href="#9-evaluation">9 Evaluation</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<h3 id="operating-system-concepts-6-synchronization-tools"><strong>Operating System Concepts 6 - Synchronization Tools</strong><a class="headerlink" href="#operating-system-concepts-6-synchronization-tools" title="Permanent link">&para;</a></h3>
+<h3 id="1-background">1 Background<a class="headerlink" href="#1-background" title="Permanent link">&para;</a></h3>
+<p>A <b><mark class="critic">race condition</mark></b>(竞争条件) occurs when several processes access and <strong>manipulate the same data concurrently</strong> and the outcome of the execution <strong>depends on the particular order</strong> in which the access takes place.</p>
+<p>多个进程并发访问和操作同一数据，且执行结果与访问发生的特定顺序有关，称之为竞争条件。</p>
+<h3 id="2-the-critical-section-problem">2 The Critical-Section problem<a class="headerlink" href="#2-the-critical-section-problem" title="Permanent link">&para;</a></h3>
+<p>A <strong>critical section</strong>(临界区) is a section of code, in which the process may be accessing and updating data that is shared with at least one other process.</p>
+<ul>
+<li>When one process is executing in its critical section, no other process is allowed to execute in its critical section.</li>
+</ul>
+<p>The <strong>critical-section problem</strong>(临界区问题) is to design a protocol that the processes can use to synchronize their activity so as to cooperatively share data.</p>
+<ul>
+<li>Each process must request permission to enter its critical section.</li>
+<li>The section of code implementing this request is the <strong>entry section</strong>(进入区)</li>
+<li>The critical section may be followed by an <strong>exit section</strong>(退出区)。</li>
+<li>The remaining code is the <strong>remainder section</strong>(剩余区)。</li>
+</ul>
+<p><img alt="the_critical_section_problems" src="../figures/the_critical_section_problems.png" /></p>
+<p>A solution to the critical-section problem must satisfy the following three requirements:</p>
+<ol>
+<li><strong>Mutual exclusion</strong> (互斥): If process <span><span class="MathJax_Preview">P_i</span><script type="math/tex">P_i</script></span> is executing in its critical section, then no other processes can be executing in their critical sections. 如果进程<span><span class="MathJax_Preview">P_i</span><script type="math/tex">P_i</script></span>在其临界区内执行，那么其他进程都不能在其临界区内执行；</li>
+<li><strong>Progress</strong> (前进): If no process is executing in its critical section and some processes wish to enter their critical sections, then only those processes that are not executing in their remainder sections can participate in deciding which will enter its critical section next, and this selection cannot be postponed indefinitely. 如果没有进程在其临界区内执行且有进程需进入临界区，那么只有那么不在剩余区内执行的进程可参加选择，以确定谁能下一个进入临界区，且这种选择不能无限推迟；</li>
+<li><strong>Bounded waiting</strong> (有限等待): There exists a bound, or limit, on the number of times that other processes are allowed to enter their critical sections after a process has made a request to enter its critical section and before that request is granted. 从一个进程做出进入临界区的请求，直到该请求允许为止，其他进程允许进入其临界区内的次数有上限。</li>
+</ol>
+<p>Two general approaches are used to handle critical sections in operating systems: <strong>preemptive kernels</strong>（抢占内核） and <strong>nonpreemptive kernels</strong>（非抢占内核）.</p>
+<ul>
+<li>A preemptive kernel allows a process to be preempted while it is running in kernel mode. 抢占内核允许处于内核模式的进程被抢占。</li>
+<li>A nonpreemptive kernel does not allow a process running in kernel mode to be preempted.A kernel-model process will run until it exists kernel mode, blocks, or voluntarily yields control of the CPU.非抢占内核不允许内核模式的进程被抢占。</li>
+<li>A nonpreemptive kernel is essentially free from race conditions on kernel data structures, as only on process is active in the kernel at at time. 非抢占内核的内核从根本上不会导致竞争条件，因为在内核中一次只有一个进程是活跃的。</li>
+<li>Preemptive kernels must be carefully designed to ensure that shared kernel data are free from race conditions. 对于抢占内核需要认真设计以确保共享内和数据免于竞争条件。</li>
+<li>A preemptive kernel may be more responsive, since there is less risk that a kernel-model process will run for an arbitrarily long period before relinquishing the processor to waiting process. 抢占内核的响应更快，因为处于内核模式的进程在释放CPU之前不会运行过久。</li>
+<li>A preemptive kernel is more suitable for real-time programming, as it will allow a real-time process to preemptive a process currently running in the kernel. 抢占内核更适合实时编程，因为它能允许实时进程抢占处于内核模式运行的其他进程。</li>
+</ul>
+<h3 id="3-petersons-solution">3 Peterson's Solution<a class="headerlink" href="#3-petersons-solution" title="Permanent link">&para;</a></h3>
+<p><strong>Peterson’s solution</strong>(Peterson 算法) is restricted to two processes that alternate execution between their critical sections and remainder sections. The processes are numbered <span><span class="MathJax_Preview">P_0</span><script type="math/tex">P_0</script></span> and <span><span class="MathJax_Preview">P_1</span><script type="math/tex">P_1</script></span>. For convenience, when presenting <span><span class="MathJax_Preview">P_i</span><script type="math/tex">P_i</script></span>, we use <span><span class="MathJax_Preview">P_j</span><script type="math/tex">P_j</script></span> to denote the other process; that is <span><span class="MathJax_Preview">j</span><script type="math/tex">j</script></span> equals <span><span class="MathJax_Preview">1-i</span><script type="math/tex">1-i</script></span>.</p>
+<p>Peterson's solution requires the two processes to share two data items:</p>
+<p> <div class=codehilite><pre><span class=kt>int</span> <span class=n>turn</span><span class=p>;</span>
+<span class=n>boolean</span> <span class=n>flag</span><span class=p>[</span><span class=mi>2</span><span class=p>];</span>
+</pre></div></p>
+<p>The structure of process <span><span class="MathJax_Preview">P_i</span><script type="math/tex">P_i</script></span> in Peterson's solution.</p>
+<p> <div class=codehilite><pre><span class=k>while</span> <span class=p>(</span><span class=nb>true</span><span class=p>)</span> <span class=p>{</span>
+    <span class=n>flag</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>=</span> <span class=nb>true</span><span class=p>;</span> 
+    <span class=n>turn</span> <span class=o>=</span> <span class=n>j</span><span class=p>;</span> 
+    <span class=k>while</span> <span class=p>(</span><span class=n>flag</span><span class=p>[</span><span class=n>j</span><span class=p>]</span> <span class=o>&amp;&amp;</span> <span class=n>turn</span> <span class=o>==</span> <span class=n>j</span><span class=p>)</span> 
+        <span class=p>;</span>
+    <span class=cm>/* critical section */</span>
+    <span class=n>flag</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>=</span> <span class=nb>false</span><span class=p>;</span>
+    <span class=cm>/*remainder section */</span>
+<span class=p>}</span>
+</pre></div></p>
+<ul>
+<li>The variable <code class="codehilite">turn</code> indicates whose turn it is to enter its critical section.</li>
+<li>The <code class="codehilite">flag</code> array is used to indicate if a process is ready to enter its critical section.</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Peterson’s solution is <strong>not guaranteed</strong> to work on modern computer architectures for the primary reason that, to improve system performance, <strong>processors and/or compilers may reorder read and write operations that have no dependencies</strong>.</p>
+</div>
+<p>If the assignments of the first two statements that appear in the entry section of Peterson's solution are reordered. It is possible that both threads may be active in their critical sections at the same time.</p>
+<p><img alt="the effects of instruction reordering in Peterson's solution" src="../ch6/the%20effects%20of%20instruction%20reordering%20in%20Peterson's%20solution.png" /></p>
+<h3 id="4-hardware-support-for-synchronization">4 Hardware support for Synchronization<a class="headerlink" href="#4-hardware-support-for-synchronization" title="Permanent link">&para;</a></h3>
+<p>Hardware support for the critical-section problem includes:</p>
+<ul>
+<li>Memory barriers</li>
+<li>Hardware instructions</li>
+<li>Atomic variables</li>
+</ul>
+<h4 id="memory-barriers">Memory barriers<a class="headerlink" href="#memory-barriers" title="Permanent link">&para;</a></h4>
+<p>How a computer architecture determines what memory guarantees it will provide to an application program is known as its <strong>memory model</strong>(内存模型). In general, a memory model falls into one of two categories:</p>
+<ol>
+<li><strong>Strongly ordered</strong>, where a memory modification on one processor is immediately visible to all other processors.</li>
+<li><strong>Weakly ordered</strong>, where modifications to memory on one processor may not be immediately visible to other processors.</li>
+</ol>
+<p>Computer architectures provide instructions that can <em>force</em> any changes in memory to be propagated to all other processors, thereby ensuring that memory modifications are visible to threads running on other processors. Such instruction are known as <strong>memory barriers</strong>(内存屏障).</p>
+<ul>
+<li>When a memory barrier instruction is performed, the system ensures that all loads and stores are completed before any subsequent load or store operations are performed.</li>
+</ul>
+<h4 id="hardware-instructions">Hardware instructions<a class="headerlink" href="#hardware-instructions" title="Permanent link">&para;</a></h4>
+<p>Many modern computer systems provide special hardware instructions that allow either to test and modify the content of a word or to swap the contents of two words atomically - that is, one uninterruptible unit.</p>
+<p>The definition of the atomic <code class="codehilite">test_and_set()</code> instruction:</p>
+<p> <div class=codehilite><pre><span class=n>boolean</span> <span class=nf>test_and_set</span><span class=p>(</span><span class=n>boolean</span> <span class=o>*</span><span class=n>target</span><span class=p>)</span> <span class=p>{</span> 
+    <span class=n>boolean</span> <span class=n>rv</span> <span class=o>=</span> <span class=o>*</span><span class=n>target</span><span class=p>;</span> 
+    <span class=o>*</span><span class=n>target</span> <span class=o>=</span> <span class=nb>true</span><span class=p>;</span>
+    <span class=k>return</span> <span class=n>rv</span><span class=p>;</span>
+<span class=p>}</span>
+</pre></div></p>
+<p>Mutual-exclusion implementation with <code class="codehilite">test_and_set()</code>:</p>
+<p> <div class=codehilite><pre><span class=k>do</span> <span class=p>{</span>
+    <span class=k>while</span> <span class=p>(</span><span class=n>test_and_set</span><span class=p>(</span><span class=o>&amp;</span><span class=n>lock</span><span class=p>))</span> 
+        <span class=p>;</span> <span class=cm>/* do nothing */</span>
+    <span class=cm>/* critical section */</span>
+    <span class=n>lock</span> <span class=o>=</span> <span class=nb>false</span><span class=p>;</span>
+    <span class=cm>/* remainder section */</span> <span class=p>}</span> 
+<span class=k>while</span> <span class=p>(</span><span class=nb>true</span><span class=p>);</span>
+</pre></div></p>
+<p>The definition of the atomic <code class="codehilite">compare_and_swap()</code>（CAS， 比较并交换）instruction:</p>
+<p> <div class=codehilite><pre><span class=kt>int</span> <span class=nf>compare_and_swap</span><span class=p>(</span><span class=kt>int</span> <span class=o>*</span><span class=n>value</span><span class=p>,</span> <span class=kt>int</span> <span class=n>expected</span><span class=p>,</span> <span class=kt>int</span> <span class=n>new</span> <span class=n>value</span><span class=p>)</span> <span class=p>{</span> 
+    <span class=kt>int</span> <span class=n>temp</span> <span class=o>=</span> <span class=o>*</span><span class=n>value</span><span class=p>;</span>
+    <span class=k>if</span> <span class=p>(</span><span class=o>*</span><span class=n>value</span> <span class=o>==</span> <span class=n>expected</span><span class=p>)</span> 
+        <span class=o>*</span><span class=n>value</span> <span class=o>=</span> <span class=n>new</span> <span class=n>value</span><span class=p>;</span>
+    <span class=k>return</span> <span class=n>temp</span><span class=p>;</span>
+<span class=p>}</span>
+</pre></div></p>
+<p>Mutual exclusion with the <code class="codehilite">compare_and_swap()</code> instruction:</p>
+<p> <div class=codehilite><pre><span class=k>while</span> <span class=p>(</span><span class=nb>true</span><span class=p>)</span> <span class=p>{</span>
+    <span class=k>while</span> <span class=p>(</span><span class=n>compare_and_swap</span><span class=p>(</span><span class=o>&amp;</span><span class=n>lock</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=mi>1</span><span class=p>)</span> <span class=o>!=</span> <span class=mi>0</span><span class=p>)</span> 
+        <span class=p>;</span> <span class=cm>/* do nothing */</span>
+    <span class=cm>/* critical section */</span>
+    <span class=n>lock</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+    <span class=cm>/* remainder section */</span>
+<span class=p>}</span>
+</pre></div></p>
+<h4 id="atomic-variables">Atomic variables<a class="headerlink" href="#atomic-variables" title="Permanent link">&para;</a></h4>
+<p><strong>Atomic variables</strong>(原子变量) provides atomic operations on basic data types such as integers and booleans. Their use is often <strong>limited to single updates of shared data such as counters and sequence generators</strong>.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>It is important to note that although atomic variables provide atomic updates, they do not entirely solve race conditions in all circumstances.</p>
+</div>
+<p> <div class=codehilite><pre><span class=n>increment</span><span class=p>(</span><span class=o>&amp;</span><span class=n>sequence</span><span class=p>);</span>
+<span class=kt>void</span> <span class=nf>increment</span><span class=p>(</span><span class=n>atomic</span> <span class=kt>int</span> <span class=o>*</span><span class=n>v</span><span class=p>)</span> <span class=p>{</span> 
+    <span class=kt>int</span> <span class=n>temp</span><span class=p>;</span>   
+    <span class=k>do</span> <span class=p>{</span> 
+        <span class=n>temp</span> <span class=o>=</span> <span class=o>*</span><span class=n>v</span><span class=p>;</span> 
+    <span class=p>}</span> 
+    <span class=k>while</span> <span class=p>(</span><span class=n>temp</span> <span class=o>!=</span> <span class=n>compare_and_swap</span><span class=p>(</span><span class=n>v</span><span class=p>,</span> <span class=n>temp</span><span class=p>,</span> <span class=n>temp</span><span class=o>+</span><span class=mi>1</span><span class=p>));</span> <span class=p>}</span>
+</pre></div></p>
+<h3 id="5-mutex-locks">5 Mutex locks<a class="headerlink" href="#5-mutex-locks" title="Permanent link">&para;</a></h3>
+<p>ISSUE: The hardware-based solutions are complicated as well as generally inaccessible to application programmers.</p>
+<p>SOLUTION: Operating-system designers build higher-level software tools. The simplest of these tools is the <strong>mutex lock</strong>(互斥锁)。</p>
+<ul>
+<li>A process must <strong>acquire</strong> the lock before entering a critical section; </li>
+<li>A process <strong>releases</strong> the lock when it exists the critical section.</li>
+<li>A mutex lock has a boolean variable <strong>available</strong>, whose value indicates if the lock is available or not.</li>
+<li>Calls to either <code class="codehilite">acquire()</code> or <code class="codehilite">release()</code> must be performed atomically. Thus mutex locks can be implemented using the CAS operation.</li>
+</ul>
+<p>Solution to the critical-section problem using mutex locks:</p>
+<p> <div class=codehilite><pre><span class=k>while</span> <span class=p>(</span><span class=nb>true</span><span class=p>)</span> <span class=p>{</span>
+    <span class=cm>/* acquire lock */</span>
+
+    <span class=cm>/* critical section */</span>
+
+    <span class=cm>/* release lock */</span>
+
+    <span class=cm>/* remainder section */</span>
+<span class=p>}</span>
+</pre></div></p>
+<p>The definition of <code class="codehilite">acquire()</code> is as follows:</p>
+<p> <div class=codehilite><pre><span class=n>acquire</span><span class=p>()</span> <span class=p>{</span> 
+    <span class=k>while</span> <span class=p>(</span><span class=o>!</span><span class=n>available</span><span class=p>)</span> <span class=p>;</span>
+        <span class=cm>/* busy wait */</span> 
+    <span class=n>available</span> <span class=o>=</span> <span class=nb>false</span><span class=p>;</span> 
+<span class=p>}</span>
+</pre></div></p>
+<p>The definition of <code class="codehilite">release()</code> is as follows:</p>
+<p> <div class=codehilite><pre><span class=n>release</span><span class=p>(){</span>
+    <span class=n>available</span> <span class=o>=</span> <span class=nb>true</span><span class=p>;</span>
+<span class=p>}</span>
+</pre></div></p>
+<p>The main disadvantage of the implementation is that it requires <strong>busy waiting</strong>(忙等待).</p>
+<ul>
+<li>While  a process is in its critical section, any other process that tries enter its critical section must loop continuously in the call to <code class="codehilite">acquire()</code>.</li>
+<li>It wastes CPU cycles.</li>
+</ul>
+<p>Because the process "spins" while waiting for the lock to become available, this type of mutex lock is also called a <code class="codehilite">spinlock</code>（自旋锁）。</p>
+<ul>
+<li>Advantage: no context switch is required</li>
+</ul>
+<p>Spinlocks are not appropriate for single-processor systems yet are often used in multiprocessor systems.</p>
+<p><a href="../ch7/#posix-spinlocks">POSIX API for Spinlocks</a></p>
+<h3 id="6-semaphores">6 Semaphores<a class="headerlink" href="#6-semaphores" title="Permanent link">&para;</a></h3>
+<p>A <strong>semaphore</strong>(信号量) S is an integer variable that, apart from initialization, is accessed only through two standard atomic operations: <C>wait()</C> and <C>signal()</C>. 信号量S是个整数变量，除了初始化外，它只能通过两个标准原子操作：<C>wait()</C>和<C>signal()</C>来访问。</p>
+<p>The definition of <C>wait()</C> is as follows:</p>
+<p> <div class=codehilite><pre><span class=n>wait</span><span class=p>(</span><span class=n>S</span><span class=p>){</span>
+    <span class=k>while</span> <span class=p>(</span><span class=n>S</span> <span class=o>&lt;=</span> <span class=mi>0</span><span class=p>)</span>
+        <span class=p>;</span><span class=c1>// busy wait</span>
+    <span class=n>S</span><span class=o>--</span><span class=p>;</span>
+<span class=p>{</span>
+</pre></div></p>
+<p>The definition of <C>signal()</C> is as follows:</p>
+<p> <div class=codehilite><pre><span class=n>signal</span><span class=p>(</span><span class=n>S</span><span class=p>){</span>
+    <span class=n>S</span><span class=o>++</span><span class=p>;</span>
+<span class=p>}</span>
+</pre></div></p>
+<p>All modifications to the integer value of the semaphore in the <C>wait()</C> and <C>signal()</C> operations must be executed atomically.  在<C>wait()</C>和<C>signal()</C>操作中，对信号量整型值的修改必须不可分地执行。</p>
+<p>Operating systems often distinguish between counting and binary semaphores.通常操作系统区分计数信号量和二进制信号量。</p>
+<ul>
+<li>The value of a <strong>counting semaphore</strong>(计数信号量) can range over an unrestricted domain.计数信号量的值域不受限制。</li>
+<li>The value of a <strong>binary semaphore</strong>(二进制信号量) can range only between 0 and 1. 二进制信号量的值只能为0或1。</li>
+</ul>
+<p>Counting semaphores can be used to control access to  a given resource consisting of a finite number of instances.</p>
+<ul>
+<li>The semaphore is initialized to the number of resources available. </li>
+<li>Each process that wishes to use a resource performs a <code class="codehilite">wait()</code>operation on the semaphore (thereby decrementing the count). </li>
+<li>When a process releases a resource, it performs a <C>signal()</C> operation (incrementing the count). </li>
+<li>When the count for the semaphore goes to 0, all resources are being used. After that, processes that wish to use a resource will block until the count becomes greater than 0.</li>
+</ul>
+<p><a href="../ch7/#posix-semaphores">POSIX API for Semaphores</a>
+<a href="../ch7/#semaphores">Java API for Semaphores</a></p>
+<h3 id="7-monitors">7 Monitors<a class="headerlink" href="#7-monitors" title="Permanent link">&para;</a></h3>
+<h4 id="monitor-usage">Monitor Usage<a class="headerlink" href="#monitor-usage" title="Permanent link">&para;</a></h4>
+<p>Issues: various types of errors can be generated easily when programmers use semaphores or mutex locks incorrectly to solve the critical-section problem.</p>
+<ul>
+<li>interchanges the order of <C>wait()</C> and <C>signal()</C></li>
+<li>replaces <C>signal()</C> with <C>wait()</C></li>
+<li>omits <C>wait()</C> or <C>signal()</C></li>
+</ul>
+<p>Solution: An abstract data type, <strong>monitor</strong>(管程), includes a set of programmer-defined operation related to mutual exclusion within the monitor. The monitor construct ensures that only one process at a time is active within the monitor.</p>
+<p>Pseudocode syntax of a monitor:</p>
+<p> <div class=codehilite><pre><span class=n>monitor</span> <span class=n>monitor</span> <span class=n>name</span> <span class=p>{</span> <span class=cm>/* shared variable declarations */</span>
+    <span class=n>function</span> <span class=n>P1</span> <span class=p>(</span> <span class=p>.</span> <span class=p>.</span> <span class=p>.</span> <span class=p>)</span> <span class=p>{</span> <span class=p>.</span> <span class=p>.</span> <span class=p>.}</span>
+    <span class=n>function</span> <span class=n>P2</span> <span class=p>(</span> <span class=p>.</span> <span class=p>.</span> <span class=p>.</span> <span class=p>)</span> <span class=p>{</span> <span class=p>.</span> <span class=p>.</span> <span class=p>.}</span>
+        <span class=p>.</span>
+        <span class=p>.</span>
+    <span class=n>function</span> <span class=n>Pn</span> <span class=p>(</span> <span class=p>.</span> <span class=p>.</span> <span class=p>.</span> <span class=p>)</span> <span class=p>{</span> <span class=p>.</span> <span class=p>.</span> <span class=p>.}</span>
+    <span class=n>initialization</span> <span class=n>code</span> <span class=p>(</span> <span class=p>.</span> <span class=p>.</span> <span class=p>.</span> <span class=p>)</span> <span class=p>{</span> <span class=p>.</span> <span class=p>.</span> <span class=p>.}</span>
+<span class=p>}</span>
+</pre></div></p>
+<p>A monitor uses <strong>condition variables</strong> that allow processes to wait for certain conditions to become true and to signal one another when conditions have been set to true:</p>
+<div>
+<div class="MathJax_Preview">\text{condition x, y;}</div>
+<script type="math/tex; mode=display">\text{condition x, y;}</script>
+</div>
+<p>The only operations that can be invoked on a condition variable are <C>wait()</C> and <C>signal()</C>.</p>
+<p><img alt="monitor_with_condition_variables" src="../figures/monitor_with_condition_variables.png" /></p>
+<h4 id="implementing-a-monitor-using-semaphores">Implementing a Monitor Using Semaphores<a class="headerlink" href="#implementing-a-monitor-using-semaphores" title="Permanent link">&para;</a></h4>
+<ul>
+<li>binary semaphore <code class="codehilite">next</code>: the signaling processes use it to suspend themselves.</li>
+<li>integer variable <code class="codehilite">next_count</code>: to count the number of processes suspended on <code class="codehilite">next</code>.</li>
+<li>condition <code class="codehilite">x</code>, binary semaphore <code class="codehilite">x_sem</code>, and integer variable <code class="codehilite">x_count</code> </li>
+</ul>
+<p> <div class=codehilite><pre><span class=n>monitor</span> <span class=n>ResourceAllocator</span> <span class=p>{</span>
+
+    <span class=n>boolean</span> <span class=n>busy</span><span class=p>;</span> 
+    <span class=n>condition</span> <span class=n>x</span><span class=p>;</span>
+
+    <span class=kt>void</span> <span class=nf>acquire</span><span class=p>(</span><span class=kt>int</span> <span class=n>time</span><span class=p>)</span> <span class=p>{</span> 
+        <span class=k>if</span> <span class=p>(</span><span class=n>busy</span><span class=p>)</span> 
+            <span class=n>x</span><span class=p>.</span><span class=n>wait</span><span class=p>(</span><span class=n>time</span><span class=p>);</span> 
+        <span class=n>busy</span> <span class=o>=</span> <span class=nb>true</span><span class=p>;</span> 
+    <span class=p>}</span>
+
+    <span class=kt>void</span> <span class=nf>release</span><span class=p>()</span> <span class=p>{</span> 
+        <span class=n>busy</span> <span class=o>=</span> <span class=nb>false</span><span class=p>;</span> 
+        <span class=n>x</span><span class=p>.</span><span class=n>signal</span><span class=p>();</span> 
+    <span class=p>}</span>
+
+    <span class=n>initialization</span> <span class=nf>code</span><span class=p>()</span> <span class=p>{</span> 
+        <span class=n>busy</span> <span class=o>=</span> <span class=nb>false</span><span class=p>;</span> 
+    <span class=p>}</span>
+
+    <span class=n>signal</span><span class=p>()</span> <span class=p>{</span>
+        <span class=k>if</span> <span class=p>(</span><span class=n>x_count</span> <span class=o>&gt;</span> <span class=mi>0</span><span class=p>)</span> <span class=p>{</span> 
+            <span class=n>next_count</span><span class=o>++</span><span class=p>;</span> 
+            <span class=n>signal</span><span class=p>(</span><span class=n>x_sem</span><span class=p>);</span> 
+            <span class=n>wait</span><span class=p>(</span><span class=n>next</span><span class=p>);</span> 
+            <span class=n>next_count</span><span class=o>--</span><span class=p>;</span> 
+        <span class=p>}</span>
+    <span class=p>}</span>
+
+    <span class=n>wait</span><span class=p>()</span> <span class=p>{</span> 
+        <span class=n>x_count</span><span class=o>++</span><span class=p>;</span> 
+        <span class=k>if</span> <span class=p>(</span><span class=n>next_count</span> <span class=o>&gt;</span> <span class=mi>0</span><span class=p>)</span>
+            <span class=n>signal</span><span class=p>(</span><span class=n>next</span><span class=p>);</span> 
+        <span class=k>else</span>
+            <span class=nf>signal</span><span class=p>(</span><span class=n>mutex</span><span class=p>);</span> 
+        <span class=n>wait</span><span class=p>(</span><span class=n>x_sem</span><span class=p>);</span> 
+        <span class=n>x</span> <span class=n>count</span><span class=o>--</span><span class=p>;</span>
+    <span class=p>}</span>
+<span class=p>}</span>
+</pre></div></p>
+<p><a href="../ch7/#java-monitors">Monitor in Java</a></p>
+<h3 id="8-liveness">8 Liveness<a class="headerlink" href="#8-liveness" title="Permanent link">&para;</a></h3>
+<h4 id="deadlock">Deadlock<a class="headerlink" href="#deadlock" title="Permanent link">&para;</a></h4>
+<p>Consider two threads A and B that both need <strong>simultaneous</strong> access to resources 1 and 2:</p>
+<ol>
+<li><strong>Thread A</strong> runs, grabs the lock for <strong>Resource 1</strong>.</li>
+<li>→ CONTEXT SWITCH ←</li>
+<li><strong>Thread B</strong> runs, grabs the lock for <strong>Resource 2</strong>.</li>
+<li>→ CONTEXT SWITCH ←</li>
+<li><strong>Thread A</strong> runs, tries to acquire the lock for <strong>Resource 2</strong>.</li>
+<li>→ THREAD A SLEEPS ←</li>
+<li><strong>Thread B</strong> runs, tries to acquire the lock for <strong>Resource 1</strong>.</li>
+<li>→ THREAD B SLEEPS ←</li>
+</ol>
+<p><strong>Deadlocked</strong>(死锁): <em><em>two or more processes are waiting indefinitely for an event</em></em>.</p>
+<p>A set of processes is in a deadlocked state when every process in the set is waiting for an event that can be caused only by another process in the set.</p>
+<h4 id="priority-inversion">Priority Inversion<a class="headerlink" href="#priority-inversion" title="Permanent link">&para;</a></h4>
+<p>A scheduling challenge arises when a higher-priority process needs to read or modify kernel data that are currently being accessed by a lower-priority process—or a chain of lower-priority processes. </p>
+<ul>
+<li>Since kernel data are typically protected with a lock, the higher-priority process will have to wait for a lower-priority one to finish with the resource. </li>
+<li>The situation becomes more complicated if the lower-priority process is preempted in favor of another process with a higher priority.</li>
+</ul>
+<p>As an example, assume we have three processes—<span><span class="MathJax_Preview">L</span><script type="math/tex">L</script></span>, <span><span class="MathJax_Preview">M</span><script type="math/tex">M</script></span>, and <span><span class="MathJax_Preview">H</span><script type="math/tex">H</script></span>—whose priorities follow the order <span><span class="MathJax_Preview">L &lt; M &lt; H</span><script type="math/tex">L < M < H</script></span>. </p>
+<ul>
+<li>Assume that process <span><span class="MathJax_Preview">H</span><script type="math/tex">H</script></span> requires a semaphore <span><span class="MathJax_Preview">S</span><script type="math/tex">S</script></span>, which is currently being accessed by process <span><span class="MathJax_Preview">L</span><script type="math/tex">L</script></span>. </li>
+<li>Ordinarily, process <span><span class="MathJax_Preview">H</span><script type="math/tex">H</script></span> would wait for <span><span class="MathJax_Preview">L</span><script type="math/tex">L</script></span> to finish using resource S. </li>
+<li>However, now suppose that process <span><span class="MathJax_Preview">M</span><script type="math/tex">M</script></span> becomes runnable, thereby preempting process <span><span class="MathJax_Preview">L</span><script type="math/tex">L</script></span>. </li>
+<li>Indirectly, a process with a lower priority—process <span><span class="MathJax_Preview">M</span><script type="math/tex">M</script></span>—has affected how long process <span><span class="MathJax_Preview">H</span><script type="math/tex">H</script></span> must wait for <span><span class="MathJax_Preview">L</span><script type="math/tex">L</script></span> to relinquish resource <span><span class="MathJax_Preview">S</span><script type="math/tex">S</script></span>.</li>
+</ul>
+<p><img alt="priority_inversion" src="../figures/priority_inversion.jpg" /></p>
+<p>This liveness problem is known as <strong>priority inversion</strong>(优先级反转), and it can occur only in systems with more than two priorities. </p>
+<p>Solution：<strong>priority-inheritance protocol</strong>(优先级继承协议)：</p>
+<ul>
+<li>All processes that are accessing resources needed by a higher-priority process inherit the higher priority until they are finished with the resources. </li>
+<li>When they are finished, priorities revert to original values.</li>
+</ul>
+<h3 id="9-evaluation">9 Evaluation<a class="headerlink" href="#9-evaluation" title="Permanent link">&para;</a></h3>
+<p>Performance differences between CAS-based synchronization and traditional synchronization (such as mutex locks and semaphores) under varying contention loads:</p>
+<ul>
+<li><strong>Uncontended</strong>：Although both options are generally fast, CAS protection will be somewhat faster than traditional synchronization.</li>
+<li><strong>Moderate contention</strong>：CAS protection will be faster—possibly much faster —than traditional synchronization.</li>
+<li><strong>High contention</strong>：Under very highly contended loads, traditional synchronization will ultimately be faster than CAS-based synchronization.</li>
+</ul>
+<p>Higher-level tools such as monitors and condition variables may have significant overhead, and may be less likely to scale in highly contended situations.</p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>var base_url = '../..';</script>
+        <script src="../../js/base.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+        <script src="../../extra_javascript/tabhack.js"></script>
+        <script src="../../search/require.js"></script>
+        <script src="../../search/search.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td><kbd>&larr;</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td><kbd>&rarr;</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    </body>
+</html>

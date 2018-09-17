@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <meta name="author" content="Zhenhua Wang">
+        <link rel="canonical" href="http://larryim.cc/note/csapp/ch2/">
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+        <title>Chapter 2: 信息的表示和处理 - Zhenhua's Notes</title>
+        <link href="../../css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="../../css/font-awesome-4.5.0.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="../../css/highlight.css">
+        <link href="../../extra_css/custom.css" rel="stylesheet">
+        <link href="../../extra_css/custom.js" rel="stylesheet">
+        <link href="../../extra_css/friendly.css" rel="stylesheet">
+        <link href="../../extra_css/theme.css" rel="stylesheet">
+        <link href="../../extra_css/mkdocs/js/lunr-0.5.7.min.js" rel="stylesheet">
+        <link href="../../extra_css/mkdocs/js/mustache.min.js" rel="stylesheet">
+        <link href="../../extra_css/mkdocs/js/require.js" rel="stylesheet">
+        <link href="../../extra_css/mkdocs/js/search.js" rel="stylesheet">
+        <link href="../../extra_css/mkdocs/js/text.js" rel="stylesheet">
+        <link href="../../extra_css/code-tab.css" rel="stylesheet">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="../../js/jquery-1.10.2.min.js"></script>
+        <script src="../../js/bootstrap-3.0.3.min.js"></script>
+        <script src="../../js/highlight.pack.js"></script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="../..">Zhenhua's Notes</a>
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+                <!-- Main navigation -->
+                <ul class="nav navbar-nav">
+                    <li >
+                        <a href="../..">Home</a>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">OSC <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../../osc/">Contents</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch1/">Chapter 1: Introduction </a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch2/">Chapter 2: Operating System structures</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch3/">Chapter 3: Processes</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch4/">Chapter 4: Threads and Concurrency</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch5/">Chapter 5: CPU Scheduling</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch6/">Chapter 6: Synchronization Tools</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch7/">Chapter 7: Synchronization Examples</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch8/">Chapter 8: Deadlocks</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch9/">Chapter 9: Main Memory</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch10/">Chapter 10: Virtual Memory</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch11/">Chapter 11: Mass-Storage Structure</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch13/">Chapter 13: File-System Interfaces</a>
+</li>
+                        </ul>
+                    </li>
+                    <li class="dropdown active">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">CSAPP <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../">Contents</a>
+</li>
+                            
+<li >
+    <a href="../ch1/">Chapter 1: 计算机系统漫游</a>
+</li>
+                            
+<li class="active">
+    <a href="./">Chapter 2: 信息的表示和处理</a>
+</li>
+                            
+<li >
+    <a href="../ch3/">Chapter 3: 程序的机器级表示</a>
+</li>
+                            
+<li >
+    <a href="../ch4/">Chapter 4: 处理器体系结构</a>
+</li>
+                            
+<li >
+    <a href="../ch5/">Chapter 5: 优化程序性能</a>
+</li>
+                            
+<li >
+    <a href="../ch6/">Chapter 6: 存储器层次结构</a>
+</li>
+                            
+<li >
+    <a href="../ch7/">Chapter 7: 链接</a>
+</li>
+                            
+<li >
+    <a href="../ch8/">Chapter 8: 异常控制流</a>
+</li>
+                            
+<li >
+    <a href="../ch9/">Chapter 9: 虚拟内存</a>
+</li>
+                            
+<li >
+    <a href="../ch10/">Chapter 10: 系统级I/O</a>
+</li>
+                            
+<li >
+    <a href="../ch11/">Chapter 11: 网络编程</a>
+</li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">HFJ <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../../hfj/">Contents</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch1/">Chapter 1: Dive in A Quick Dip</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch2/">Chapter 2: Classes and Objects</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch3/">Chapter 3: Primitives and References</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch4/">Chapter 4: Methods use Instance Variables</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch5/">Chapter 5: Writing a Program</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch6/">Chapter 6: Get to Know the Java API</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch7/">Chapter 7: Inheritance and Polymorphism</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch8/">Chapter 8: Interfaces and Abstract Classes</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch9/">Chapter 9: Constructors and Garbage Collection</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch10/">Chapter 10: Numbers and Statics</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch11/">Chapter 11: Exception Handling</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch12/">Chapter 12: Getting GUI</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch13/">Chapter 13: Using Swing</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch14/">Chapter 14: Serialization and File I/O</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch15/">Chapter 15: Networking and Threads</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch16/">Chapter 16: Collections and Generics</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch17/">Chapter 17: Packages, Jars and Deployment</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/ch18/">Chapter 18: Remote deploy with RMI</a>
+</li>
+                            
+<li >
+    <a href="../../hfj/Appendix/">Appendix: The Top Ten Topics</a>
+</li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">HFDP <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../../hfdp/">Contents</a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch1/">Chapter 1: Strategy Pattern </a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch2/">Chapter 2: Observer Pattern</a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch3/">Chapter 3: Decorator Pattern </a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch4/">Chapter 4: Factory Pattern</a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch5/">Chapter 5: Singleton Pattern</a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch6/">Chapter 6: Command Pattern</a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch7/">Chapter 7: Adapter and Facade Patterns</a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch8/">Chapter 8: Template Method Pattern</a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch9/">Chapter 9: Iterator and Composite Patterns</a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch10/">Chapter 10: State Pattern</a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch11/">Chapter 11: Proxy Pattern</a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch12/">Chapter 12: Compound Pattern</a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch13/">Chapter 13: Better Living with Patterns</a>
+</li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">TIJ <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../../tij/">Contents</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch1/">Chapter 1: Introduction</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch2/">Chapter 2: Introduction to Objects</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch3/">Chapter 3: Everything is an Object</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch4/">Chapter 4: Opertors</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch5/">Chapter 5: Controlling Execution</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch6/">Chapter 6: Initialization & Cleanup</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch7/">Chapter 7: Access Control</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch8/">Chapter 8: Reusing Clases</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch9/">Chapter 9: Polymorphism</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch10/">Chapter 10: Interfaces</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch11/">Chapter 11: Inner Classes</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch12/">Chapter 12: Holding Your Objects</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch13/">Chapter 13: Error Handling with Exceptions</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch14/">Chapter 14: Strings</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch15/">Chapter 15: Type Information</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch16/">Chapter 16: Generics</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch17/">Chapter 17: Arrays</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch18/">Chapter 18: Containers in Depth</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch19/">Chapter 19: I/O</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch20/">Chapter 20: Enumerated Types</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch21/">Chapter 21: Annotations</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch22/">Chapter 22: Concurrency</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch23/">Chapter 23: Graphical User Interfaces</a>
+</li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">UJVM <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../../ujvm/">Contents</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch1/">Chapter 1 : 走进Java</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch2/">Chapter 2 : Java内存区域与内存溢出正常</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch3/">Chapter 3 : 垃圾收集器与内存分配策略</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch4/">Chapter 4 : 虚拟机性能监控与故障处理工具</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch5/">Chapter 5 : 调优案例分析与实战</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch6/">Chapter 6 : 类文件结构</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch7/">Chapter 7 : 虚拟机类加载机制</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch8/">Chapter 8 : 虚拟机字节码执行引擎</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch9/">Chapter 9 : 类加载及执行子系统的案例与实战</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch10/">Chapter 10 : 早期(编译期)优化</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch11/">Chapter 11 : 晚期(运行期)优化</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch12/">Chapter 12 : Java内存模型与线程</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch13/">Chapter 13 : 线程安全与锁优化</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/AppendixC/">Appendix HotSpot虚拟机主要参数列表</a>
+</li>
+                        </ul>
+                    </li>
+                    <li >
+                        <a href="../../books/">Books</a>
+                    </li>
+                </ul>
+
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                        <i class="fa fa-search"></i> Search
+                    </a>
+                </li>
+                    <li >
+                        <a rel="next" href="../ch1/">
+                            <i class="fa fa-arrow-left"></i> Previous
+                        </a>
+                    </li>
+                    <li >
+                        <a rel="prev" href="../ch3/">
+                            Next <i class="fa fa-arrow-right"></i>
+                        </a>
+                    </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#chapter-2">Chapter 2 信息的表示和处理</a></li>
+        <li class="main "><a href="#1">1 信息存储</a></li>
+            <li><a href="#_1">十六进制表示法</a></li>
+            <li><a href="#_2">字和数据大小</a></li>
+            <li><a href="#_3">寻址和字节顺序</a></li>
+        <li class="main "><a href="#2">2 整数表示</a></li>
+            <li><a href="#_4">整数数据类型</a></li>
+            <li><a href="#_5">无符号数的编码</a></li>
+            <li><a href="#_6">补码</a></li>
+            <li><a href="#_7">有符号数和无符号数之间的转换</a></li>
+            <li><a href="#c">C语⾔中的有符号数和⽆符号数</a></li>
+        <li class="main "><a href="#3">3 浮点数</a></li>
+            <li><a href="#ieee">IEEE浮点表示</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<h3 id="chapter-2"><strong>Chapter 2 信息的表示和处理</strong><a class="headerlink" href="#chapter-2" title="Permanent link">&para;</a></h3>
+<h3 id="1">1 信息存储<a class="headerlink" href="#1" title="Permanent link">&para;</a></h3>
+<p>大多数计算机使用8位的块，或者字节(byte),作为<em>最小的可寻址的内存单位</em>，而不是访问内存中单独的位。内存的每个字节都有一个唯一的数字来标识，称为它的<strong>地址</strong>(address)。</p>
+<h4 id="_1">十六进制表示法<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h4>
+<p>一个字节由8位组成。在二进制表示法中，它的值域是<span><span class="MathJax_Preview">00000000_2\sim 11111111_2</span><script type="math/tex">00000000_2\sim 11111111_2</script></span>。如果看成十进制数，它的值域是<span><span class="MathJax_Preview">0_{10}\sim 255_{10}</span><script type="math/tex">0_{10}\sim 255_{10}</script></span>。</p>
+<p>这两种符号表述法对于描述位模式来说都不是非常方便。</p>
+<ul>
+<li>二进制表示法太冗长；</li>
+<li>十进制表示法与位模式的相互转化很麻烦。</li>
+</ul>
+<p>替代的方法是，以16基数，以十六进制(hexiademical)数来表示位模式。</p>
+<p><img alt="Hexadecimal notation" src="../figures/Hexadecimal%20notation.png" /></p>
+<h4 id="_2">字和数据大小<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h4>
+<p>每台计算机都有⼀个<strong>字⻓</strong>(word size)，标明指针数据的<strong>标称大小</strong>(norminal size)。字⻓决定的最重要的系统参数就是虚拟空间的⼤⼩。对于⼀个字⻓为<span><span class="MathJax_Preview">w</span><script type="math/tex">w</script></span>位的机器⽽⾔，虚拟地址的范围为<span><span class="MathJax_Preview">0\sim 2^w−1</span><script type="math/tex">0\sim 2^w−1</script></span>。</p>
+<p>C语言支持整数和浮点数的多种数据格式。下表为C语言各种数据类型分配的字节数。</p>
+<p><img alt="Sizes -in bytes- of C numeric data types" src="../figures/Sizes%20-in%20bytes-%20of%20C%20numeric%20data%20types.png" /></p>
+<h4 id="_3">寻址和字节顺序<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h4>
+<p>考虑一个<span><span class="MathJax_Preview">w</span><script type="math/tex">w</script></span>位的整数，其位表示为<span><span class="MathJax_Preview">[x_{w-1}, x_{w-2}, x_1, x_0]</span><script type="math/tex">[x_{w-1}, x_{w-2}, x_1, x_0]</script></span>，其中<span><span class="MathJax_Preview">x_{w-1}</span><script type="math/tex">x_{w-1}</script></span>是<strong>最高有效位</strong>(the most significant bit)，而<span><span class="MathJax_Preview">x_0</span><script type="math/tex">x_0</script></span>是<strong>最低有效位</strong>(the least significant bit).</p>
+<p>假设<span><span class="MathJax_Preview">w</span><script type="math/tex">w</script></span>是8的倍数，这些位就能被分组成字节，其中<strong>最高有效字节</strong>(the most significant byte)包含位<span><span class="MathJax_Preview">[x_{w-1}, x_{w-2},..., x_{w-8}]</span><script type="math/tex">[x_{w-1}, x_{w-2},..., x_{w-8}]</script></span>，而<strong>最低有效字节</strong>(the least significant byte)包含位<span><span class="MathJax_Preview">[x_7, x_6,..., x_0]</span><script type="math/tex">[x_7, x_6,..., x_0]</script></span>，其他字节包含中间的位。</p>
+<p>有些机器选在在内存中按照从最低有效字节到最高有效字节的顺序存储对象，这种方式称为<strong>小端法</strong>(little endian)。 最高有效字节在前面的方式，称为<strong>大端法</strong>(big endian).</p>
+<p><img alt="little-endian-AND-big-endian" src="../figures/little-endian-AND-big-endian.png" /></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>大多数Intel兼容机都只用小端模式。</p>
+</div>
+<h3 id="2">2 整数表示<a class="headerlink" href="#2" title="Permanent link">&para;</a></h3>
+<h4 id="_4">整数数据类型<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h4>
+<p>C语言支持多种整数数据类型。下图给出了典型的64位机器的取值范围。每种类型用关键字来制定大小，这些关键字包括<C>char</C>，<C>short</C>，<C>long</C>，同时还可以指示被表示的数是非负数(<C>unsigned</C>)，或者可能是负数(默认)。</p>
+<p><img alt="Typical ranges for C integral data types on a 64-bit machine" src="../figures/Typical%20ranges%20for%20C%20integral%20data%20types%20on%20a%2064-bit%20machine.png" /></p>
+<h4 id="_5">无符号数的编码<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h4>
+<p>假设有一个整数数据类型有<span><span class="MathJax_Preview">w</span><script type="math/tex">w</script></span>位。我们可以将位向量写成<span><span class="MathJax_Preview">\vec{x}</span><script type="math/tex">\vec{x}</script></span>，表示整个向量，或者写成<span><span class="MathJax_Preview">[x_{w-1}, x_{w-2},..., x_0]</span><script type="math/tex">[x_{w-1}, x_{w-2},..., x_0]</script></span>，表示向量中的每一位。把<span><span class="MathJax_Preview">\vec{x}</span><script type="math/tex">\vec{x}</script></span>看作一个二进制表示的数，就获得了<span><span class="MathJax_Preview">\vec{x}</span><script type="math/tex">\vec{x}</script></span>的无符号表示。用函数<span><span class="MathJax_Preview">B2U_w</span><script type="math/tex">B2U_w</script></span>(Binary to Unsigned，长度为<span><span class="MathJax_Preview">w</span><script type="math/tex">w</script></span>)来表示：</p>
+<div>
+<div class="MathJax_Preview">B2U_w(\vec{x})=\sum ^{w-1}_{i=0}x_i2^i</div>
+<script type="math/tex; mode=display">B2U_w(\vec{x})=\sum ^{w-1}_{i=0}x_i2^i</script>
+</div>
+<h4 id="_6">补码<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h4>
+<p>最常见的有符号数的计算机表示方式是<strong>补码</strong>(two's complement)。它将字的最高有效位解释为负权(negative weight)。用函数<span><span class="MathJax_Preview">B2T_w</span><script type="math/tex">B2T_w</script></span>(Binary to Two's complement，长度为<span><span class="MathJax_Preview">w</span><script type="math/tex">w</script></span>)来表示：</p>
+<div>
+<div class="MathJax_Preview">B2T_w(\vec{x})=-x_{w-1}2^{w-1}+\sum ^{w-2}_{i=0}x_i2^i</div>
+<script type="math/tex; mode=display">B2T_w(\vec{x})=-x_{w-1}2^{w-1}+\sum ^{w-2}_{i=0}x_i2^i</script>
+</div>
+<p>最高有效位<span><span class="MathJax_Preview">x_{w-1}</span><script type="math/tex">x_{w-1}</script></span>也称为符号位，它的权重是<span><span class="MathJax_Preview">-2^{w-1}</span><script type="math/tex">-2^{w-1}</script></span>。</p>
+<p>补码的范围是不对称的: <span><span class="MathJax_Preview">|TMin| = |TMax| + 1</span><script type="math/tex">|TMin| = |TMax| + 1</script></span></p>
+<h4 id="_7">有符号数和无符号数之间的转换<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h4>
+<p><img alt="补码转换为无符号" src="../figures/%E8%A1%A5%E7%A0%81%E8%BD%AC%E6%8D%A2%E4%B8%BA%E6%97%A0%E7%AC%A6%E5%8F%B7.png" /></p>
+<p>补码转换为无符号数：对满足 <span><span class="MathJax_Preview">TMin_w \le x \le TMax_w</span><script type="math/tex">TMin_w \le x \le TMax_w</script></span>的<span><span class="MathJax_Preview">x</span><script type="math/tex">x</script></span>有：</p>
+<div>
+<div class="MathJax_Preview">
+T2U_w(x)=
+\begin{cases}
+x+2^w&amp; x&lt;0\\
+x&amp; x\ge 0
+\end{cases}
+</div>
+<script type="math/tex; mode=display">
+T2U_w(x)=
+\begin{cases}
+x+2^w& x<0\\
+x& x\ge 0
+\end{cases}
+</script>
+</div>
+<p><img alt="无符号数转换为补码" src="../figures/%E6%97%A0%E7%AC%A6%E5%8F%B7%E6%95%B0%E8%BD%AC%E6%8D%A2%E4%B8%BA%E8%A1%A5%E7%A0%81.png" /></p>
+<p>无符号数转换为补码：对满足 <span><span class="MathJax_Preview">0 \le u \le UMax_w</span><script type="math/tex">0 \le u \le UMax_w</script></span>的<span><span class="MathJax_Preview">u</span><script type="math/tex">u</script></span>有：</p>
+<div>
+<div class="MathJax_Preview">
+U2T_w(u)=
+\begin{cases}
+u&amp; u\le TMax_w\\
+u-2^w&amp; u&gt; TMax_w
+\end{cases}
+</div>
+<script type="math/tex; mode=display">
+U2T_w(u)=
+\begin{cases}
+u& u\le TMax_w\\
+u-2^w& u> TMax_w
+\end{cases}
+</script>
+</div>
+<h4 id="c">C语⾔中的有符号数和⽆符号数<a class="headerlink" href="#c" title="Permanent link">&para;</a></h4>
+<p>如果⼀个运算的⼀个运算数是⽆符号的⽽另外⼀个是有符号的,C 语⾔会会 隐式的将有符号数转换为⽆符号数。</p>
+<p><img alt="C语言升级规则的效果" src="../figures/C%E8%AF%AD%E8%A8%80%E5%8D%87%E7%BA%A7%E8%A7%84%E5%88%99%E7%9A%84%E6%95%88%E6%9E%9C.png" /></p>
+<h3 id="3">3 浮点数<a class="headerlink" href="#3" title="Permanent link">&para;</a></h3>
+<h4 id="ieee">IEEE浮点表示<a class="headerlink" href="#ieee" title="Permanent link">&para;</a></h4>
+<p>IEEE浮点标准⽤<span><span class="MathJax_Preview">V=(−1)^s\times  2^E\times M</span><script type="math/tex">V=(−1)^s\times  2^E\times M</script></span>的⽅法来表⽰浮点数</p>
+<ul>
+<li>符号(sign) <span><span class="MathJax_Preview">s</span><script type="math/tex">s</script></span>: <span><span class="MathJax_Preview">s</span><script type="math/tex">s</script></span>决定这数是负数(<span><span class="MathJax_Preview">s=1</span><script type="math/tex">s=1</script></span>)还是正数<span><span class="MathJax_Preview">s=0</span><script type="math/tex">s=0</script></span>，而对于数值0的符号位解释作为特殊情况处理。</li>
+<li>阶码(exponent) <span><span class="MathJax_Preview">E</span><script type="math/tex">E</script></span>: <span><span class="MathJax_Preview">E</span><script type="math/tex">E</script></span>的作用是对浮点数加权，这个权重是2的E次幂。</li>
+<li>尾数(significand) <span><span class="MathJax_Preview">M</span><script type="math/tex">M</script></span>: <span><span class="MathJax_Preview">M</span><script type="math/tex">M</script></span>是一个二进制小数，它的范围是<span><span class="MathJax_Preview">1\sim 2-\varepsilon</span><script type="math/tex">1\sim 2-\varepsilon</script></span>，或者是 <span><span class="MathJax_Preview">0\sim 1-\varepsilon</span><script type="math/tex">0\sim 1-\varepsilon</script></span></li>
+</ul>
+<p>将浮点数的位表示划分为三个字端，分别对这些值进行编码：</p>
+<ul>
+<li>一个单独的符号位<span><span class="MathJax_Preview">s</span><script type="math/tex">s</script></span>直接编码符号<span><span class="MathJax_Preview">s</span><script type="math/tex">s</script></span></li>
+<li><span><span class="MathJax_Preview">k</span><script type="math/tex">k</script></span>位的阶码字段<span><span class="MathJax_Preview">\text{exp} = e_{k-1}\cdot\cdot\cdot e_1e_0</span><script type="math/tex">\text{exp} = e_{k-1}\cdot\cdot\cdot e_1e_0</script></span>编码阶码<span><span class="MathJax_Preview">E</span><script type="math/tex">E</script></span>。</li>
+<li><span><span class="MathJax_Preview">n</span><script type="math/tex">n</script></span>位的小数字段<span><span class="MathJax_Preview">\text{frac} = f_{n-1}\cdot\cdot\cdot f_1f_0</span><script type="math/tex">\text{frac} = f_{n-1}\cdot\cdot\cdot f_1f_0</script></span>编码尾数<span><span class="MathJax_Preview">M</span><script type="math/tex">M</script></span>。</li>
+</ul>
+<p><img alt="Standard ﬂoating-point formats" src="../figures/Standard%20%EF%AC%82oating-point%20formats.png" /></p>
+<p>根据<span><span class="MathJax_Preview">exp</span><script type="math/tex">exp</script></span>的值，被编码的值可以分成三种不同的情况。下图对应的是单精度格式的情况：</p>
+<p><img alt="Categories of single-precision, ﬂoating-point value" src="../figures/Categories%20of%20single-precision,%20%EF%AC%82oating-point%20value.png" /></p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>var base_url = '../..';</script>
+        <script src="../../js/base.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+        <script src="../../extra_javascript/tabhack.js"></script>
+        <script src="../../search/require.js"></script>
+        <script src="../../search/search.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td><kbd>&larr;</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td><kbd>&rarr;</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    </body>
+</html>

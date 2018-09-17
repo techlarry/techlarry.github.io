@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <meta name="author" content="Zhenhua Wang">
+        <link rel="canonical" href="http://larryim.cc/note/hfj/ch16/">
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+        <title>Chapter 16: Collections and Generics - Zhenhua's Notes</title>
+        <link href="../../css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="../../css/font-awesome-4.5.0.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="../../css/highlight.css">
+        <link href="../../extra_css/custom.css" rel="stylesheet">
+        <link href="../../extra_css/custom.js" rel="stylesheet">
+        <link href="../../extra_css/friendly.css" rel="stylesheet">
+        <link href="../../extra_css/theme.css" rel="stylesheet">
+        <link href="../../extra_css/mkdocs/js/lunr-0.5.7.min.js" rel="stylesheet">
+        <link href="../../extra_css/mkdocs/js/mustache.min.js" rel="stylesheet">
+        <link href="../../extra_css/mkdocs/js/require.js" rel="stylesheet">
+        <link href="../../extra_css/mkdocs/js/search.js" rel="stylesheet">
+        <link href="../../extra_css/mkdocs/js/text.js" rel="stylesheet">
+        <link href="../../extra_css/code-tab.css" rel="stylesheet">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="../../js/jquery-1.10.2.min.js"></script>
+        <script src="../../js/bootstrap-3.0.3.min.js"></script>
+        <script src="../../js/highlight.pack.js"></script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="../..">Zhenhua's Notes</a>
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+                <!-- Main navigation -->
+                <ul class="nav navbar-nav">
+                    <li >
+                        <a href="../..">Home</a>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">OSC <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../../osc/">Contents</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch1/">Chapter 1: Introduction </a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch2/">Chapter 2: Operating System structures</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch3/">Chapter 3: Processes</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch4/">Chapter 4: Threads and Concurrency</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch5/">Chapter 5: CPU Scheduling</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch6/">Chapter 6: Synchronization Tools</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch7/">Chapter 7: Synchronization Examples</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch8/">Chapter 8: Deadlocks</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch9/">Chapter 9: Main Memory</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch10/">Chapter 10: Virtual Memory</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch11/">Chapter 11: Mass-Storage Structure</a>
+</li>
+                            
+<li >
+    <a href="../../osc/ch13/">Chapter 13: File-System Interfaces</a>
+</li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">CSAPP <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../../csapp/">Contents</a>
+</li>
+                            
+<li >
+    <a href="../../csapp/ch1/">Chapter 1: 计算机系统漫游</a>
+</li>
+                            
+<li >
+    <a href="../../csapp/ch2/">Chapter 2: 信息的表示和处理</a>
+</li>
+                            
+<li >
+    <a href="../../csapp/ch3/">Chapter 3: 程序的机器级表示</a>
+</li>
+                            
+<li >
+    <a href="../../csapp/ch4/">Chapter 4: 处理器体系结构</a>
+</li>
+                            
+<li >
+    <a href="../../csapp/ch5/">Chapter 5: 优化程序性能</a>
+</li>
+                            
+<li >
+    <a href="../../csapp/ch6/">Chapter 6: 存储器层次结构</a>
+</li>
+                            
+<li >
+    <a href="../../csapp/ch7/">Chapter 7: 链接</a>
+</li>
+                            
+<li >
+    <a href="../../csapp/ch8/">Chapter 8: 异常控制流</a>
+</li>
+                            
+<li >
+    <a href="../../csapp/ch9/">Chapter 9: 虚拟内存</a>
+</li>
+                            
+<li >
+    <a href="../../csapp/ch10/">Chapter 10: 系统级I/O</a>
+</li>
+                            
+<li >
+    <a href="../../csapp/ch11/">Chapter 11: 网络编程</a>
+</li>
+                        </ul>
+                    </li>
+                    <li class="dropdown active">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">HFJ <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../">Contents</a>
+</li>
+                            
+<li >
+    <a href="../ch1/">Chapter 1: Dive in A Quick Dip</a>
+</li>
+                            
+<li >
+    <a href="../ch2/">Chapter 2: Classes and Objects</a>
+</li>
+                            
+<li >
+    <a href="../ch3/">Chapter 3: Primitives and References</a>
+</li>
+                            
+<li >
+    <a href="../ch4/">Chapter 4: Methods use Instance Variables</a>
+</li>
+                            
+<li >
+    <a href="../ch5/">Chapter 5: Writing a Program</a>
+</li>
+                            
+<li >
+    <a href="../ch6/">Chapter 6: Get to Know the Java API</a>
+</li>
+                            
+<li >
+    <a href="../ch7/">Chapter 7: Inheritance and Polymorphism</a>
+</li>
+                            
+<li >
+    <a href="../ch8/">Chapter 8: Interfaces and Abstract Classes</a>
+</li>
+                            
+<li >
+    <a href="../ch9/">Chapter 9: Constructors and Garbage Collection</a>
+</li>
+                            
+<li >
+    <a href="../ch10/">Chapter 10: Numbers and Statics</a>
+</li>
+                            
+<li >
+    <a href="../ch11/">Chapter 11: Exception Handling</a>
+</li>
+                            
+<li >
+    <a href="../ch12/">Chapter 12: Getting GUI</a>
+</li>
+                            
+<li >
+    <a href="../ch13/">Chapter 13: Using Swing</a>
+</li>
+                            
+<li >
+    <a href="../ch14/">Chapter 14: Serialization and File I/O</a>
+</li>
+                            
+<li >
+    <a href="../ch15/">Chapter 15: Networking and Threads</a>
+</li>
+                            
+<li class="active">
+    <a href="./">Chapter 16: Collections and Generics</a>
+</li>
+                            
+<li >
+    <a href="../ch17/">Chapter 17: Packages, Jars and Deployment</a>
+</li>
+                            
+<li >
+    <a href="../ch18/">Chapter 18: Remote deploy with RMI</a>
+</li>
+                            
+<li >
+    <a href="../Appendix/">Appendix: The Top Ten Topics</a>
+</li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">HFDP <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../../hfdp/">Contents</a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch1/">Chapter 1: Strategy Pattern </a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch2/">Chapter 2: Observer Pattern</a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch3/">Chapter 3: Decorator Pattern </a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch4/">Chapter 4: Factory Pattern</a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch5/">Chapter 5: Singleton Pattern</a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch6/">Chapter 6: Command Pattern</a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch7/">Chapter 7: Adapter and Facade Patterns</a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch8/">Chapter 8: Template Method Pattern</a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch9/">Chapter 9: Iterator and Composite Patterns</a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch10/">Chapter 10: State Pattern</a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch11/">Chapter 11: Proxy Pattern</a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch12/">Chapter 12: Compound Pattern</a>
+</li>
+                            
+<li >
+    <a href="../../hfdp/ch13/">Chapter 13: Better Living with Patterns</a>
+</li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">TIJ <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../../tij/">Contents</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch1/">Chapter 1: Introduction</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch2/">Chapter 2: Introduction to Objects</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch3/">Chapter 3: Everything is an Object</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch4/">Chapter 4: Opertors</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch5/">Chapter 5: Controlling Execution</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch6/">Chapter 6: Initialization & Cleanup</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch7/">Chapter 7: Access Control</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch8/">Chapter 8: Reusing Clases</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch9/">Chapter 9: Polymorphism</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch10/">Chapter 10: Interfaces</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch11/">Chapter 11: Inner Classes</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch12/">Chapter 12: Holding Your Objects</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch13/">Chapter 13: Error Handling with Exceptions</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch14/">Chapter 14: Strings</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch15/">Chapter 15: Type Information</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch16/">Chapter 16: Generics</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch17/">Chapter 17: Arrays</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch18/">Chapter 18: Containers in Depth</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch19/">Chapter 19: I/O</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch20/">Chapter 20: Enumerated Types</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch21/">Chapter 21: Annotations</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch22/">Chapter 22: Concurrency</a>
+</li>
+                            
+<li >
+    <a href="../../tij/ch23/">Chapter 23: Graphical User Interfaces</a>
+</li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">UJVM <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li >
+    <a href="../../ujvm/">Contents</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch1/">Chapter 1 : 走进Java</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch2/">Chapter 2 : Java内存区域与内存溢出正常</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch3/">Chapter 3 : 垃圾收集器与内存分配策略</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch4/">Chapter 4 : 虚拟机性能监控与故障处理工具</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch5/">Chapter 5 : 调优案例分析与实战</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch6/">Chapter 6 : 类文件结构</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch7/">Chapter 7 : 虚拟机类加载机制</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch8/">Chapter 8 : 虚拟机字节码执行引擎</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch9/">Chapter 9 : 类加载及执行子系统的案例与实战</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch10/">Chapter 10 : 早期(编译期)优化</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch11/">Chapter 11 : 晚期(运行期)优化</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch12/">Chapter 12 : Java内存模型与线程</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/ch13/">Chapter 13 : 线程安全与锁优化</a>
+</li>
+                            
+<li >
+    <a href="../../ujvm/AppendixC/">Appendix HotSpot虚拟机主要参数列表</a>
+</li>
+                        </ul>
+                    </li>
+                    <li >
+                        <a href="../../books/">Books</a>
+                    </li>
+                </ul>
+
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                        <i class="fa fa-search"></i> Search
+                    </a>
+                </li>
+                    <li >
+                        <a rel="next" href="../ch15/">
+                            <i class="fa fa-arrow-left"></i> Previous
+                        </a>
+                    </li>
+                    <li >
+                        <a rel="prev" href="../ch17/">
+                            Next <i class="fa fa-arrow-right"></i>
+                        </a>
+                    </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#chapter-16-collections-and-generics">Chapter 16 Collections and Generics</a></li>
+            <li><a href="#collectionssort">Collections.sort()</a></li>
+            <li><a href="#sorting-objects">Sorting objects</a></li>
+            <li><a href="#generics-types">Generics types</a></li>
+            <li><a href="#learning-generics">Learning generics</a></li>
+            <li><a href="#generic-methods">Generic methods</a></li>
+            <li><a href="#extends">Extends</a></li>
+            <li><a href="#comparable-interface">Comparable interface</a></li>
+            <li><a href="#comparator-interface">Comparator interface</a></li>
+            <li><a href="#an-example-sortmountain">An Example: SortMountain</a></li>
+        <li class="main "><a href="#collection">Collection</a></li>
+            <li><a href="#the-collection-api">The Collection API</a></li>
+            <li><a href="#object-equality">Object equality</a></li>
+            <li><a href="#how-treesets-sort">How TreeSets sort</a></li>
+        <li class="main "><a href="#polymorphism-and-generics">Polymorphism and Generics</a></li>
+            <li><a href="#a-problem-with-polymorphism">A problem with polymorphism</a></li>
+            <li><a href="#generic-wildcards">Generic wildcards</a></li>
+            <li><a href="#generic-array">Generic array</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<h3 id="chapter-16-collections-and-generics"><strong>Chapter 16 Collections and Generics</strong><a class="headerlink" href="#chapter-16-collections-and-generics" title="Permanent link">&para;</a></h3>
+<h4 id="collectionssort">Collections.sort()<a class="headerlink" href="#collectionssort" title="Permanent link">&para;</a></h4>
+<p>Problem: <C>ArrayList</C> class does NOT have a <C>sort()</C> method</p>
+<p>Solution: you could use the <C>Collections.sort()</C> method</p>
+<p>Example: sort a list of songs by song title.</p>
+<p> <div class=codehilite><pre><span class=n>ArrayList</span><span class=o>&lt;</span><span class=n>String</span><span class=o>&gt;</span> <span class=n>songList</span> <span class=o>=</span> <span class=k>new</span> <span class=n>ArrayList</span><span class=o>&lt;&gt;();</span>
+<span class=n>getSongs</span><span class=o>();</span>
+<span class=n>Collections</span><span class=o>.</span><span class=na>sort</span><span class=o>(</span><span class=n>songList</span><span class=o>);</span>
+</pre></div></p>
+<h4 id="sorting-objects">Sorting objects<a class="headerlink" href="#sorting-objects" title="Permanent link">&para;</a></h4>
+<p>Question: What if you need <Song> objects, not just simple <C>Strings</C>.</p>
+<p>Try: We override <C>toString()</C> method in class <Object>.</p>
+<p> <div class=codehilite><pre><span class=c1>// We override toString(), because when you do a System.out.println(aSongObject),</span>
+<span class=c1>// we want to see the title.</span>
+<span class=c1>// When you do a System.out.println(aListOfSongs),</span>
+<span class=c1>// it calls the toString() method of EACH element in the list.</span>
+<span class=kd>public</span> <span class=n>String</span> <span class=nf>toString</span><span class=o>()</span> <span class=o>{</span>
+    <span class=k>return</span> <span class=n>title</span><span class=o>;</span>
+<span class=o>}</span>
+</pre></div></p>
+<p>Result: However, it won’t compile!</p>
+<p>That's see the signature of <C>Collection.sort()</C> from Java Doc:</p>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>static</span> <span class=o>&lt;</span><span class=n>T</span> <span class=kd>extends</span> <span class=n>Comparable</span><span class=o>&lt;?</span> <span class=kd>super</span> <span class=n>T</span><span class=o>&gt;&gt;</span> <span class=kt>void</span> <span class=n>sort</span><span class=err>​</span><span class=o>(</span><span class=n>List</span><span class=o>&lt;</span><span class=n>T</span><span class=o>&gt;</span> <span class=n>list</span><span class=o>)</span>
+</pre></div></p>
+<p>The <C>sort</C> method (along with other things in the whole collection framework in Java) makes heavy use of <strong><em>generics</em></strong>. Anytime you see something with angle brackets&lt;&gt; in Java source code or documentation, it means generics.</p>
+<h4 id="generics-types">Generics types<a class="headerlink" href="#generics-types" title="Permanent link">&para;</a></h4>
+<p><strong>Generics means more type safety.</strong></p>
+<p>Virtually all of the code you write that deals with generics will be collection-related code. The main point of generics is let you write type-safe collections. (e.g. the compiler stop you from putting a <C>Dog</C> into a list of Ducks).</p>
+<p>Before generics (which means before Java 5.0), the compiler could not care less what you put into a collection, because all collection implementations were declared to hold type <C>Object</C>. You could put <em>anything</em> in any <C>ArrayList</C>; it was like all <C>ArrayList</C> were declared as <C>ArrayList</C>&lt;<C>Object</C>&gt;.</p>
+<h4 id="learning-generics">Learning generics<a class="headerlink" href="#learning-generics" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Creating instances of generified <em>classes</em>(like <C>ArrayList</C>)<ul>
+<li><code class="codehilite"><span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Song</span><span class="o">&gt;()</span></code></li>
+</ul>
+</li>
+<li>Declaring and assigning <em>variables</em> of generic types<ul>
+<li><code class="codehilite"><span class="n">List</span><span class="o">&lt;</span><span class="n">Song</span><span class="o">&gt;</span> <span class="n">songList</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Song</span><span class="o">&gt;()</span></code></li>
+</ul>
+</li>
+<li>Declaring (and invoking) <em>methods</em> that take generic types<ul>
+<li><code class="codehilite"><span class="kt">void</span> <span class="nf">foo</span><span class="o">(</span><span class="n">List</span><span class="o">&lt;</span><span class="n">Song</span><span class="o">&gt;</span> <span class="n">List</span><span class="o">)</span></code></li>
+<li><code class="codehilite"><span class="n">x</span><span class="o">.</span><span class="na">foo</span><span class="o">(</span><span class="n">songList</span><span class="o">)</span></code> </li>
+</ul>
+</li>
+</ul>
+<p><img alt="ArrayListDocumentation" src="../figures/ArrayListDocumentation.png" /></p>
+<p>Think of E" as a stand-in for "the type of element you want this collection to hold and return." (E is for Element.) </p>
+<h4 id="generic-methods">Generic methods<a class="headerlink" href="#generic-methods" title="Permanent link">&para;</a></h4>
+<p>A generic <em>class</em> means that the <em>class declaration</em> includes a type parameter. A generic <em>method</em> means that the method declaration uses a type parameter in its signature.</p>
+<p>You can use type parameters in a method in several different ways:</p>
+<ul>
+<li>Using a type parameter defined in the class declaration</li>
+</ul>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>ArrayList</span><span class=o>&lt;</span><span class=n>E</span><span class=o>&gt;</span> <span class=kd>extends</span> <span class=n>AbstractList</span><span class=o>&lt;</span><span class=n>E</span><span class=o>&gt;</span> <span class=o>...</span> <span class=o>{</span>
+    <span class=c1>// You can use the &quot;E&quot; here ONLY because</span>
+    <span class=c1>// it&#39;s already defined as part of the class</span>
+    <span class=kd>public</span> <span class=kt>boolean</span> <span class=nf>add</span><span class=o>(</span><span class=n>E</span> <span class=n>o</span><span class=o>)</span>
+</pre></div></p>
+<ul>
+<li>Using a type parameter that was NOT defined in the class declaration</li>
+</ul>
+<p> <div class=codehilite><pre><span class=c1>//Here we can use &lt;T&gt; because we declared &quot;T&quot; earlier in the method declaration</span>
+<span class=kd>public</span> <span class=o>&lt;</span><span class=n>T</span> <span class=kd>extends</span> <span class=n>Animals</span><span class=o>&gt;</span> <span class=kt>void</span> <span class=n>takeThing</span><span class=o>&lt;</span><span class=n>ArrayList</span><span class=o>&lt;</span><span class=n>T</span><span class=o>&gt;</span> <span class=n>list</span><span class=o>)</span>
+</pre></div></p>
+<p>If the class itself doesn't use a type parameter, you can still specify one for a method, by declaring it in a really unusual space -- <em>before the return type</em>. This method says that T can be "any type of Animal".</p>
+<p>This:</p>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=o>&lt;</span><span class=n>T</span> <span class=kd>extends</span> <span class=n>Animals</span><span class=o>&gt;</span> <span class=kt>void</span> <span class=n>takeThing</span><span class=o>&lt;</span><span class=n>ArrayList</span><span class=o>&lt;</span><span class=n>T</span><span class=o>&gt;</span> <span class=n>list</span><span class=o>)</span>
+</pre></div></p>
+<p><strong><em>Is NOT</em></strong> the same as this:</p>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kt>void</span> <span class=nf>takeThing</span><span class=o>(</span><span class=n>ArrayList</span><span class=o>&lt;</span><span class=n>Animal</span><span class=o>&gt;</span> <span class=n>list</span><span class=o>)</span>
+</pre></div></p>
+<p>The first one, means that any <C>ArrayList</C> declared of a type that is <C>Animal</C> or one of <C>Animal</C>'s subtypes, is legal. So you could invoke the top method using an <C>ArrayList<Dog></C>, <C>ArrayList<Cat></C> or <C>ArrayList<Animal></C>.</p>
+<p>But.. the one on the bottom, means that <strong><em>only</em></strong> an <C>ArrayList<Animal></C> is legal.</p>
+<p><strong>The <C>Collections.sort()</C> method</strong></p>
+<p>The <C>Collections.sort()</C> method can take only lists of <C>Comparable</C> objects.</p>
+<p><C>Song</C> is NOT a subtype of <C>Comparable</C>, so you cannot <C>sort()</C> the list of Songs.</p>
+<h4 id="extends">Extends<a class="headerlink" href="#extends" title="Permanent link">&para;</a></h4>
+<p>In generics, the keyword "extends" really means "is-a", and works for BOTH classes and interfaces.</p>
+<p><img alt="extends_in_generics" src="../figures/extends_in_generics.png" /></p>
+<h4 id="comparable-interface">Comparable interface<a class="headerlink" href="#comparable-interface" title="Permanent link">&para;</a></h4>
+<p><C>Comparable</C> is an interface.</p>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>interface</span> <span class=nc>Comparable</span><span class=o>&lt;</span><span class=n>T</span><span class=o>&gt;</span> <span class=o>{</span>
+    <span class=kd>public</span> <span class=kt>int</span> <span class=nf>compareTo</span><span class=o>(</span><span class=n>T</span> <span class=n>o</span><span class=o>);</span>
+<span class=o>}</span>
+</pre></div></p>
+<p><big><b>The new, improved, comparable <C>Song</C> class</b></big></p>
+<p>We decide we want to sort by title, so we implement the <C>compareTo()</C> method to compare the title of the <C>Song</C> passed to the method against the title of the song on which the <C>compareTo()</C> method was invoked.</p>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>Song</span> <span class=kd>implements</span> <span class=n>Comparable</span> <span class=o>&lt;</span><span class=n>Song</span><span class=o>&gt;</span>
+<span class=o>{</span>
+    <span class=n>String</span> <span class=n>title</span><span class=o>;</span>
+    <span class=n>String</span> <span class=n>artist</span><span class=o>;</span>
+    <span class=n>String</span> <span class=n>rating</span><span class=o>;</span>
+    <span class=n>String</span> <span class=n>bpm</span><span class=o>;</span>
+
+
+    <span class=kd>public</span> <span class=nf>Song</span><span class=o>(</span><span class=n>String</span> <span class=n>t</span><span class=o>,</span> <span class=n>String</span> <span class=n>a</span><span class=o>,</span> <span class=n>String</span> <span class=n>r</span><span class=o>,</span> <span class=n>String</span> <span class=n>b</span><span class=o>)</span> <span class=o>{</span>
+        <span class=n>title</span> <span class=o>=</span> <span class=n>t</span><span class=o>;</span>
+        <span class=n>artist</span> <span class=o>=</span> <span class=n>a</span><span class=o>;</span>
+        <span class=n>rating</span> <span class=o>=</span> <span class=n>r</span><span class=o>;</span>
+        <span class=n>bpm</span> <span class=o>=</span> <span class=n>b</span><span class=o>;</span>
+    <span class=o>}</span>
+
+    <span class=c1>// The sort() method sends a Song to compareTo()</span>
+    <span class=c1>// to see how that Song compares to the Song on which the method was invoked.</span>
+    <span class=kd>public</span> <span class=kt>int</span> <span class=nf>compareTo</span><span class=o>(</span><span class=n>Song</span> <span class=n>s</span><span class=o>)</span>
+    <span class=o>{</span>
+        <span class=c1>// Strings have a compareTo() method</span>
+        <span class=k>return</span> <span class=n>title</span><span class=o>.</span><span class=na>compareTo</span><span class=o>(</span><span class=n>s</span><span class=o>.</span><span class=na>getTitle</span><span class=o>());</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></p>
+<h4 id="comparator-interface">Comparator interface<a class="headerlink" href="#comparator-interface" title="Permanent link">&para;</a></h4>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>interface</span> <span class=nc>Comparator</span><span class=o>&lt;</span><span class=n>T</span><span class=o>&gt;</span> <span class=o>{</span>
+<span class=o>...</span>
+</pre></div></p>
+<p><C>Comparator</C> v.s. <C>Comparable</C></p>
+<ul>
+<li>Invoking the one-argument <C>sort(List o)</C> method means the list element’s <C>compareTo()</C> method determines the order. So the elements in the list MUST implement the <C>Comparable</C> interface.</li>
+<li>Invoking <C>sort(List o, Comparator c)</C> means the list element’s <C>compareTo()</C> method will NOT be called, and the <C>Comparator</C>’s <C>compare()</C> method will be used instead. That means the elements in the list do NOT need to implement the <C>Comparable</C> interface.</li>
+</ul>
+<p> <div class=codehilite><pre><span class=c1>// Create a class that implements Comparator</span>
+<span class=c1>// its type parameter matches the type we&#39;re going to compare - in this case Song objects.</span>
+<span class=kd>class</span> <span class=nc>ArtistCompare</span> <span class=kd>implements</span> <span class=n>Comparator</span><span class=o>&lt;</span><span class=n>Song</span><span class=o>&gt;</span> <span class=o>{</span>
+    <span class=kd>public</span> <span class=kt>int</span> <span class=nf>compare</span><span class=o>(</span><span class=n>Song</span> <span class=n>one</span><span class=o>,</span> <span class=n>Song</span> <span class=n>two</span><span class=o>)</span> <span class=o>{</span>
+        <span class=c1>// We&#39;re letting the String variables (for artist) do the actual comparison.</span>
+        <span class=c1>// since Strings already know how to alphabetize themselves.</span>
+        <span class=k>return</span> <span class=n>one</span><span class=o>.</span><span class=na>getArtist</span><span class=o>().</span><span class=na>compareTo</span><span class=o>(</span><span class=n>two</span><span class=o>.</span><span class=na>getArtist</span><span class=o>());</span>
+<span class=o>}</span>
+<span class=o>}</span>
+
+<span class=c1>// Make an instance of the Comparator</span>
+<span class=n>ArtistCompare</span> <span class=n>artistCompare</span> <span class=o>=</span> <span class=k>new</span> <span class=n>ArtistCompare</span><span class=o>();</span>
+<span class=c1>// Invoke sort(), passing it the list and a reference to the new custom Comparator object.</span>
+<span class=n>Collections</span><span class=o>.</span><span class=na>sort</span><span class=o>(</span><span class=n>songList</span><span class=o>,</span> <span class=n>artistCompare</span><span class=o>);</span>
+</pre></div></p>
+<p>Uh-oh. The sorting all works, but now we have duplicates... We need a <C>Set</C> instead of a <C>List</C>.</p>
+<h4 id="an-example-sortmountain">An Example: SortMountain<a class="headerlink" href="#an-example-sortmountain" title="Permanent link">&para;</a></h4>
+<p> <div class=codehilite><pre><span class=kn>import</span> <span class=nn>java.util.Collections</span><span class=o>;</span>
+<span class=kn>import</span> <span class=nn>java.util.Comparator</span><span class=o>;</span>
+<span class=kn>import</span> <span class=nn>java.util.LinkedList</span><span class=o>;</span>
+
+<span class=kd>public</span> <span class=kd>class</span> <span class=nc>SortMountains</span> <span class=o>{</span>
+
+    <span class=n>LinkedList</span><span class=o>&lt;</span><span class=n>Mountain</span><span class=o>&gt;</span> <span class=n>mtn</span> <span class=o>=</span> <span class=k>new</span> <span class=n>LinkedList</span><span class=o>&lt;</span><span class=n>Mountain</span><span class=o>&gt;();</span>
+
+
+    <span class=kd>public</span> <span class=kd>static</span> <span class=kt>void</span> <span class=nf>main</span><span class=o>(</span><span class=n>String</span><span class=o>[]</span> <span class=n>agrs</span><span class=o>)</span> <span class=o>{</span>
+        <span class=k>new</span> <span class=n>SortMountains</span><span class=o>().</span><span class=na>go</span><span class=o>();</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>go</span><span class=o>()</span> <span class=o>{</span>
+        <span class=n>mtn</span><span class=o>.</span><span class=na>add</span><span class=o>(</span><span class=k>new</span> <span class=n>Mountain</span><span class=o>(</span><span class=s>&quot;Longs&quot;</span><span class=o>,</span> <span class=mi>14255</span><span class=o>));</span>
+        <span class=n>mtn</span><span class=o>.</span><span class=na>add</span><span class=o>(</span><span class=k>new</span> <span class=n>Mountain</span><span class=o>(</span><span class=s>&quot;Elbert&quot;</span><span class=o>,</span> <span class=mi>14433</span><span class=o>));</span>
+        <span class=n>mtn</span><span class=o>.</span><span class=na>add</span><span class=o>(</span><span class=k>new</span> <span class=n>Mountain</span><span class=o>(</span><span class=s>&quot;Maroon&quot;</span><span class=o>,</span> <span class=mi>14156</span><span class=o>));</span>
+        <span class=n>mtn</span><span class=o>.</span><span class=na>add</span><span class=o>(</span><span class=k>new</span> <span class=n>Mountain</span><span class=o>(</span><span class=s>&quot;Castle&quot;</span><span class=o>,</span> <span class=mi>14265</span><span class=o>));</span>
+        <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=s>&quot;as entered:\n&quot;</span><span class=o>+</span><span class=n>mtn</span><span class=o>);</span>
+        <span class=n>NameCompare</span> <span class=n>nc</span> <span class=o>=</span> <span class=k>new</span> <span class=n>NameCompare</span><span class=o>();</span>
+        <span class=n>Collections</span><span class=o>.</span><span class=na>sort</span><span class=o>(</span><span class=n>mtn</span><span class=o>,</span> <span class=n>nc</span><span class=o>);</span>
+        <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=s>&quot;by name:\n &quot;</span> <span class=o>+</span> <span class=n>mtn</span><span class=o>);</span>
+        <span class=n>HeightCompare</span> <span class=n>hc</span> <span class=o>=</span> <span class=k>new</span> <span class=n>HeightCompare</span><span class=o>();</span>
+        <span class=n>Collections</span><span class=o>.</span><span class=na>sort</span><span class=o>(</span><span class=n>mtn</span><span class=o>,</span> <span class=n>hc</span><span class=o>);</span>
+        <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=s>&quot;by height:\n&quot;</span> <span class=o>+</span> <span class=n>mtn</span><span class=o>);</span>
+    <span class=o>}</span>
+
+    <span class=kd>class</span> <span class=nc>NameCompare</span> <span class=kd>implements</span> <span class=n>Comparator</span><span class=o>&lt;</span><span class=n>Mountain</span><span class=o>&gt;</span> <span class=o>{</span>
+
+        <span class=nd>@Override</span>
+        <span class=kd>public</span> <span class=kt>int</span> <span class=nf>compare</span><span class=o>(</span><span class=n>Mountain</span> <span class=n>one</span><span class=o>,</span> <span class=n>Mountain</span> <span class=n>two</span><span class=o>)</span> <span class=o>{</span>
+            <span class=k>return</span> <span class=n>one</span><span class=o>.</span><span class=na>getName</span><span class=o>().</span><span class=na>compareTo</span><span class=o>(</span><span class=n>two</span><span class=o>.</span><span class=na>getName</span><span class=o>());</span>
+        <span class=o>}</span>
+    <span class=o>}</span>
+
+    <span class=kd>class</span> <span class=nc>HeightCompare</span> <span class=kd>implements</span> <span class=n>Comparator</span><span class=o>&lt;</span><span class=n>Mountain</span><span class=o>&gt;</span> <span class=o>{</span>
+        <span class=nd>@Override</span>
+        <span class=kd>public</span> <span class=kt>int</span> <span class=nf>compare</span><span class=o>(</span><span class=n>Mountain</span> <span class=n>one</span><span class=o>,</span> <span class=n>Mountain</span> <span class=n>two</span><span class=o>)</span> <span class=o>{</span>
+            <span class=k>return</span> <span class=n>one</span><span class=o>.</span><span class=na>getHeight</span><span class=o>()</span> <span class=o>-</span> <span class=n>two</span><span class=o>.</span><span class=na>getHeight</span><span class=o>();</span>
+        <span class=o>}</span>
+    <span class=o>}</span>
+
+<span class=o>}</span>
+
+<span class=kd>class</span> <span class=nc>Mountain</span> <span class=o>{</span>
+    <span class=kd>private</span> <span class=n>String</span> <span class=n>name</span><span class=o>;</span>
+    <span class=kd>private</span> <span class=kt>int</span> <span class=n>height</span><span class=o>;</span>
+
+    <span class=kd>public</span> <span class=kt>int</span> <span class=nf>getHeight</span><span class=o>()</span> <span class=o>{</span>
+        <span class=k>return</span> <span class=k>this</span><span class=o>.</span><span class=na>height</span><span class=o>;</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=n>String</span> <span class=nf>getName</span><span class=o>()</span> <span class=o>{</span>
+        <span class=k>return</span> <span class=k>this</span><span class=o>.</span><span class=na>name</span><span class=o>;</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=nf>Mountain</span><span class=o>(</span><span class=n>String</span> <span class=n>name</span><span class=o>,</span> <span class=kt>int</span> <span class=n>height</span><span class=o>)</span> <span class=o>{</span>
+        <span class=k>this</span><span class=o>.</span><span class=na>name</span> <span class=o>=</span> <span class=n>name</span><span class=o>;</span>
+        <span class=k>this</span><span class=o>.</span><span class=na>height</span> <span class=o>=</span> <span class=n>height</span><span class=o>;</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=n>String</span> <span class=nf>toString</span> <span class=o>()</span> <span class=o>{</span>
+        <span class=k>return</span> <span class=n>name</span> <span class=o>+</span> <span class=s>&quot; &quot;</span> <span class=o>+</span><span class=n>Integer</span><span class=o>.</span><span class=na>toString</span><span class=o>(</span><span class=n>height</span><span class=o>);</span>
+    <span class=o>}</span>
+
+
+<span class=o>}</span>
+</pre></div></p>
+<h3 id="collection">Collection<a class="headerlink" href="#collection" title="Permanent link">&para;</a></h3>
+<h4 id="the-collection-api">The Collection API<a class="headerlink" href="#the-collection-api" title="Permanent link">&para;</a></h4>
+<p>Note that the <C>Map</C> interface doesn't actually extend the <Collection> interface, but <C>Map</C> is still considered part of the "Collection Framework" (集合框架，also known as the "Collection API").</p>
+<p><img alt="TheCollectionAPI" src="../figures/TheCollectionAPI.png" /></p>
+<h4 id="object-equality">Object equality<a class="headerlink" href="#object-equality" title="Permanent link">&para;</a></h4>
+<p>What makes two objects equal?</p>
+<p><strong><em>reference</em></strong> equality v.s. <strong><em>object</em></strong> equality.</p>
+<p><strong>Reference equality</strong>: Two references that refer to the same object on the heap are equal. If you want to know if two references are really referring to the same object, use the == operator, which (remember) compares the bits in the variables. If both references point to the same object, the bits will be identical.</p>
+<p><strong>Object equality</strong>: Two references, two objects on the heap, but the objects are considered <em>meaningfully equivalent</em>. If you want to treat two different objects as equal, you must override both the <C>hashCode()</C> and <C>equals()</C> methods inherited from class <C>Object</C>.</p>
+<p>Question: How a <C>HashSet</C> checks for duplicates: <C>hashCode()</C> and <C>equals()</C>?</p>
+<p>When you put an object into a <C>HashSet</C>, it uses the object's hashcode value to determine where to put the object in the <C>Set</C>. But it also compares the object's hashcode to the hashcode of all the other objects of the <C>HashSet</C>, and if there's no matching hashcode, the <C>HashSet</C> assumes that this new object is not a duplicate. If the <C>HashSet</C> finds a matching hashcode for two objects, the <C>HashSet</C> will then call one of the object's <C>equals()</C> methods to see if these hashcode-matched objects really <em>are</em> equal.</p>
+<p>The <C>Song</C> class with overriden <C>hashcode</C> and <C>equals()</C>.</p>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>Song</span> <span class=kd>implements</span> <span class=n>Comparable</span> <span class=o>&lt;</span><span class=n>Song</span><span class=o>&gt;</span>
+<span class=o>{</span>
+<span class=o>...</span>
+    <span class=kd>public</span> <span class=kt>boolean</span> <span class=nf>equals</span><span class=o>(</span><span class=n>Object</span> <span class=n>aSong</span><span class=o>)</span> <span class=o>{</span>
+        <span class=n>Song</span> <span class=n>s</span> <span class=o>=</span> <span class=o>(</span><span class=n>Song</span><span class=o>)</span> <span class=n>aSong</span><span class=o>;</span>
+        <span class=c1>// Strings have an overriden equals() method.</span>
+        <span class=k>return</span> <span class=n>getTitle</span><span class=o>().</span><span class=na>equals</span><span class=o>(</span><span class=n>s</span><span class=o>.</span><span class=na>getTitle</span><span class=o>());</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kt>int</span> <span class=nf>hashCode</span><span class=o>()</span> <span class=o>{</span>
+        <span class=c1>//The String class has an overriden hashCode() method, so you can just return the result of calling hashCode() on the title.</span>
+        <span class=k>return</span> <span class=n>title</span><span class=o>.</span><span class=na>hashCode</span><span class=o>();</span>
+    <span class=o>}</span>
+<span class=o>...</span>
+<span class=o>}</span>
+
+<span class=c1>// Instantiate a TreeSet </span>
+<span class=n>TreeSet</span><span class=o>&lt;</span><span class=n>Song</span><span class=o>&gt;</span> <span class=n>songSet</span> <span class=o>=</span> <span class=k>new</span> <span class=n>TreeSet</span><span class=o>&lt;</span><span class=n>Song</span><span class=o>&gt;();</span>
+<span class=c1>// We can add all the songs from the HashSet using addAll().</span>
+<span class=n>songSet</span><span class=o>.</span><span class=na>addAll</span><span class=o>(</span><span class=n>songList</span><span class=o>);</span> 
+</pre></div></p>
+<p><strong>Java Object Law For <C>HashCode()</C> and <C>equals()</C></strong>:</p>
+<p>The API docs for class <C>Object</C> state the rules you MUST follow:</p>
+<ul>
+<li>If two objects are equal, they MUST have matching hashcodes.</li>
+<li>If two objects are equal, calling <C>equals()</C> on either object MUST return true. In other words, if (a.equals(b)) then (b.equals(a)).</li>
+<li>If two objects have the same hashcode value, they are NOT required to be equal. But if they’re equal, they MUST have the same hashcode value.</li>
+<li>So, if you override <C>equals()</C>, you MUST override <C>hashCode()</C>.</li>
+<li>The default behavior of <C>hashCode()</C> is to generate a unique integer for each object on the heap. So if you don’t override <C>hashCode()</C> in a class, no two objects of that type can EVER be considered equal.</li>
+<li>The default behavior of <C>equals()</C> is to do an == comparison. In other words, to test whether the two references refer to a single object on the heap. So if you don’t override <C>equals()</C> in a class, no two objects can EVER be considered equal since references to two different objects will always contain a different bit pattern.<ul>
+<li><C>a.equals(b)</C> must also mean that <C>a.hashCode() == b.hashCode()</C></li>
+<li>But <C>a.hashCode() == b.hashCode(</C>) does NOT have to mean <C>a.equals(b)</C></li>
+</ul>
+</li>
+</ul>
+<h4 id="how-treesets-sort">How TreeSets sort<a class="headerlink" href="#how-treesets-sort" title="Permanent link">&para;</a></h4>
+<p>To use a <C>TreeSet</C>, one of these things must be true:</p>
+<ul>
+<li>The elements in the list must be of a type that implements <C>Comparable</C>.</li>
+<li>You use the <C>TreeSet</C>’s overloaded constructor that takes a <C>Comparator</C>.</li>
+</ul>
+<p> <div class=codehilite><pre><span class=kn>import</span> <span class=nn>java.util.Comparator</span><span class=o>;</span>
+<span class=kn>import</span> <span class=nn>java.util.TreeSet</span><span class=o>;</span>
+
+<span class=kd>class</span> <span class=nc>BookCompare</span> <span class=kd>implements</span> <span class=n>Comparator</span><span class=o>&lt;</span><span class=n>Book</span><span class=o>&gt;</span> <span class=o>{</span>
+    <span class=kd>public</span> <span class=kt>int</span> <span class=nf>compare</span><span class=o>(</span><span class=n>Book</span> <span class=n>one</span><span class=o>,</span> <span class=n>Book</span> <span class=n>two</span><span class=o>)</span> <span class=o>{</span>
+        <span class=k>return</span> <span class=o>(</span><span class=n>one</span><span class=o>.</span><span class=na>title</span><span class=o>.</span><span class=na>compareTo</span><span class=o>(</span><span class=n>two</span><span class=o>.</span><span class=na>title</span><span class=o>));</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+
+
+<span class=kd>public</span> <span class=kd>class</span> <span class=nc>Book</span> <span class=kd>implements</span> <span class=n>Comparable</span> <span class=o>{</span>
+
+    <span class=n>String</span> <span class=n>title</span><span class=o>;</span>
+
+    <span class=kd>public</span> <span class=nf>Book</span><span class=o>(</span><span class=n>String</span> <span class=n>t</span><span class=o>)</span> <span class=o>{</span>
+        <span class=n>title</span> <span class=o>=</span> <span class=n>t</span><span class=o>;</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kt>int</span> <span class=nf>compareTo</span><span class=o>(</span><span class=n>Object</span> <span class=n>b</span><span class=o>)</span> <span class=o>{</span>
+        <span class=n>Book</span> <span class=n>book</span> <span class=o>=</span> <span class=o>(</span><span class=n>Book</span><span class=o>)</span> <span class=n>b</span><span class=o>;</span>
+        <span class=k>return</span> <span class=o>(</span><span class=n>title</span><span class=o>.</span><span class=na>compareTo</span><span class=o>(</span><span class=n>book</span><span class=o>.</span><span class=na>title</span><span class=o>));</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=n>String</span> <span class=nf>toString</span><span class=o>()</span> <span class=o>{</span>
+        <span class=k>return</span> <span class=n>title</span><span class=o>;</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kd>static</span> <span class=kt>void</span> <span class=nf>main</span><span class=o>(</span><span class=n>String</span><span class=o>[]</span> <span class=n>args</span><span class=o>)</span> <span class=o>{</span>
+        <span class=n>Book</span> <span class=n>b1</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Book</span><span class=o>(</span><span class=s>&quot;How Cats Work&quot;</span><span class=o>);</span>
+        <span class=n>Book</span> <span class=n>b2</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Book</span><span class=o>(</span><span class=s>&quot;Remix your Body&quot;</span><span class=o>);</span>
+        <span class=n>Book</span> <span class=n>b3</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Book</span><span class=o>(</span><span class=s>&quot;Finding Emo&quot;</span><span class=o>);</span>
+        <span class=n>BookCompare</span> <span class=n>bCompare</span> <span class=o>=</span> <span class=k>new</span> <span class=n>BookCompare</span><span class=o>();</span>
+        <span class=n>TreeSet</span><span class=o>&lt;</span><span class=n>Book</span><span class=o>&gt;</span> <span class=n>tree</span> <span class=o>=</span> <span class=k>new</span> <span class=n>TreeSet</span><span class=o>&lt;</span><span class=n>Book</span><span class=o>&gt;(</span><span class=n>bCompare</span><span class=o>);</span>
+        <span class=n>tree</span><span class=o>.</span><span class=na>add</span><span class=o>(</span><span class=k>new</span> <span class=n>Book</span><span class=o>(</span><span class=s>&quot;How Cats Work&quot;</span><span class=o>));</span>
+        <span class=n>tree</span><span class=o>.</span><span class=na>add</span><span class=o>(</span><span class=k>new</span> <span class=n>Book</span><span class=o>(</span><span class=s>&quot;Finding Emo&quot;</span><span class=o>));</span>
+        <span class=n>tree</span><span class=o>.</span><span class=na>add</span><span class=o>(</span><span class=k>new</span> <span class=n>Book</span><span class=o>(</span><span class=s>&quot;Remix your Body&quot;</span><span class=o>));</span>
+        <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=n>tree</span><span class=o>);</span>
+    <span class=o>}</span> <span class=c1>// end main</span>
+<span class=o>}</span>
+</pre></div></p>
+<h3 id="polymorphism-and-generics">Polymorphism and Generics<a class="headerlink" href="#polymorphism-and-generics" title="Permanent link">&para;</a></h3>
+<h4 id="a-problem-with-polymorphism">A problem with polymorphism<a class="headerlink" href="#a-problem-with-polymorphism" title="Permanent link">&para;</a></h4>
+<p><C>TestGenerics1</C> shows how polymorphism works with regular arrays. Because of polymorphism, the compiler let us pass a <C>Dog</C> array to a method with an <C>Animal</C> array argument. However, the <C>ArrayList</C>&lt;<C>Animal</C>&gt; argument WILL NOT accept an <C>ArrayList</C>&lt;<C>Dog</C>&gt;, as <C>TestGenerics3</C> shows .</p>
+<div class=md-fenced-code-tabs id=tab-tab-group-14><input name=tab-group-14 type=radio id=tab-group-14-0_Java checked=checked class=code-tab data-lang=Java aria-controls=tab-group-14-0_Java-panel role=tab><label for=tab-group-14-0_Java class=code-tab-label data-lang=Java id=tab-group-14-0_Java-label>Testgenerics1</label><div class=code-tabpanel role=tabpanel data-lang=Java id=tab-group-14-0_Java-panel aria-labelledby=tab-group-14-0_Java-label><div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>TestGenerics1</span> <span class=o>{</span>
+
+    <span class=c1>//If a method argument is an array of Animals, it will also take an array of any Animal subtype.</span>
+    <span class=c1>//In other words, if a method is declared as: void foo(Animal[] a) { }</span>
+    <span class=c1>// Assuming Dog extends Animal, you are free to call both: foo(anAnimalArray); foo(aDogArray);</span>
+
+    <span class=kd>public</span> <span class=kd>static</span> <span class=kt>void</span> <span class=nf>main</span><span class=o>(</span><span class=n>String</span><span class=o>[]</span> <span class=n>args</span><span class=o>)</span> <span class=o>{</span>
+        <span class=k>new</span> <span class=n>TestGenerics1</span><span class=o>().</span><span class=na>go</span><span class=o>();</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>go</span><span class=o>()</span> <span class=o>{</span>
+        <span class=c1>// Declare and create an Animal array, that holds both dogs and cats.</span>
+        <span class=n>Animal</span><span class=o>[]</span> <span class=n>animals</span> <span class=o>=</span> <span class=o>{</span><span class=k>new</span> <span class=n>Dog</span><span class=o>(),</span> <span class=k>new</span> <span class=n>Cat</span><span class=o>(),</span> <span class=k>new</span> <span class=n>Dog</span><span class=o>()};</span>
+        <span class=c1>// Declare and create a Dog array, that holds only Dogs</span>
+        <span class=c1>// (the compiler won’t let you put a Cat in).</span>
+        <span class=n>Dog</span><span class=o>[]</span> <span class=n>dogs</span> <span class=o>=</span> <span class=o>{</span><span class=k>new</span> <span class=n>Dog</span><span class=o>(),</span> <span class=k>new</span> <span class=n>Dog</span><span class=o>(),</span> <span class=k>new</span> <span class=n>Dog</span><span class=o>()};</span>
+        <span class=n>takeAnimals</span><span class=o>(</span><span class=n>animals</span><span class=o>);</span>
+        <span class=n>takeAnimals</span><span class=o>(</span><span class=n>dogs</span><span class=o>);</span> <span class=c1>//</span>
+    <span class=o>}</span>
+
+    <span class=c1>// The crucial point is that the takeAnimals() method can take an Animal[] or a Dog[]</span>
+    <span class=c1>// Since Dog IS-A Animal.</span>
+    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>takeAnimals</span> <span class=o>(</span><span class=n>Animal</span><span class=o>[]</span> <span class=n>animals</span><span class=o>){</span>
+        <span class=k>for</span> <span class=o>(</span><span class=n>Animal</span> <span class=n>a</span> <span class=o>:</span> <span class=n>animals</span><span class=o>)</span> <span class=o>{</span>
+            <span class=n>a</span><span class=o>.</span><span class=na>eat</span><span class=o>();</span>
+        <span class=o>}</span> <span class=c1>// end for</span>
+    <span class=o>}</span> <span class=c1>// end takeAnimals</span>
+
+<span class=o>}</span> <span class=c1>// end class</span>
+</pre></div></div><input name=tab-group-14 type=radio id=tab-group-14-1_Java class=code-tab data-lang=Java aria-controls=tab-group-14-1_Java-panel role=tab><label for=tab-group-14-1_Java class=code-tab-label data-lang=Java id=tab-group-14-1_Java-label>Testgenerics3</label><div class=code-tabpanel role=tabpanel data-lang=Java id=tab-group-14-1_Java-panel aria-labelledby=tab-group-14-1_Java-label><div class=codehilite><pre><span class=kn>import</span> <span class=nn>java.util.ArrayList</span><span class=o>;</span>
+
+<span class=kd>public</span> <span class=kd>class</span> <span class=nc>TestGenerics3</span> <span class=kd>extends</span> <span class=n>TestGenerics1</span> <span class=o>{</span>
+
+    <span class=nd>@Override</span>
+    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>go</span><span class=o>()</span> <span class=o>{</span>
+        <span class=n>ArrayList</span><span class=o>&lt;</span><span class=n>Animal</span><span class=o>&gt;</span> <span class=n>animals</span> <span class=o>=</span> <span class=k>new</span> <span class=n>ArrayList</span><span class=o>&lt;</span><span class=n>Animal</span><span class=o>&gt;();</span>
+        <span class=n>animals</span><span class=o>.</span><span class=na>add</span><span class=o>(</span><span class=k>new</span> <span class=n>Dog</span><span class=o>());</span>
+        <span class=n>animals</span><span class=o>.</span><span class=na>add</span><span class=o>(</span><span class=k>new</span> <span class=n>Cat</span><span class=o>());</span>
+        <span class=n>animals</span><span class=o>.</span><span class=na>add</span><span class=o>(</span><span class=k>new</span> <span class=n>Dog</span><span class=o>());</span>
+        <span class=n>takeAnimals</span><span class=o>(</span><span class=n>animals</span><span class=o>);</span> <span class=c1>// we know this works fine</span>
+
+        <span class=c1>// Make a Dog ArrayList, and put a couple Dog in.</span>
+        <span class=n>ArrayList</span><span class=o>&lt;</span><span class=n>Dog</span><span class=o>&gt;</span> <span class=n>dogs</span> <span class=o>=</span> <span class=k>new</span> <span class=n>ArrayList</span><span class=o>&lt;</span><span class=n>Dog</span><span class=o>&gt;();</span>
+        <span class=n>dogs</span><span class=o>.</span><span class=na>add</span><span class=o>(</span><span class=k>new</span> <span class=n>Dog</span><span class=o>());</span>
+        <span class=n>dogs</span><span class=o>.</span><span class=na>add</span><span class=o>(</span><span class=k>new</span> <span class=n>Dog</span><span class=o>());</span>
+
+        <span class=c1>// Will this work now that we change from Animal[] to ArrayList&lt;Animal&gt;</span>
+        <span class=n>takeAnimals</span><span class=o>(</span><span class=n>dogs</span><span class=o>);</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>takeAnimals</span><span class=o>(</span><span class=n>ArrayList</span><span class=o>&lt;</span><span class=n>Animal</span><span class=o>&gt;</span> <span class=n>animals</span><span class=o>)</span> <span class=o>{</span>
+        <span class=k>for</span> <span class=o>(</span><span class=n>Animal</span> <span class=n>a</span> <span class=o>:</span> <span class=n>animals</span><span class=o>)</span> <span class=o>{</span>
+            <span class=n>a</span><span class=o>.</span><span class=na>eat</span><span class=o>();</span>
+        <span class=o>}</span>
+    <span class=o>}</span> <span class=c1>// end method</span>
+<span class=o>}</span>
+</pre></div></div></div>
+
+<p>... blank line ...</p>
+<p>If you declare a method to take <C>ArrayList</C>&lt;<C>Animal</C>&gt;, it can take ONLY an <C>ArrayList</C>&lt;<C>Animal</C>&gt;, not ArrayList<Dog> or <C>ArrayList</C>&lt;<C>Cat</C>&gt;.</p>
+<p>Question: why they won’t let you pass a <C>ArrayList</C>&lt;<C>Dog</C>&gt; into a method that takes an <C>ArrayList</C>&lt;<C>Animal</C>&gt;?</p>
+<p>The reason is to stop you from possibly putting a <C>Cat</C> in what was actually a <C>Dog</C> list.</p>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kt>void</span> <span class=nf>takeAnimals</span><span class=o>(</span><span class=n>ArrayList</span><span class=o>&lt;</span><span class=n>Animal</span><span class=o>&gt;</span> <span class=n>animals</span><span class=o>)</span> <span class=o>{</span>
+    <span class=c1>//Yikes!! We just stuck a Cat in what might be Dogs-only ArrayList.</span>
+    <span class=n>animals</span><span class=o>.</span><span class=na>add</span><span class=o>(</span><span class=k>new</span> <span class=n>Cat</span><span class=o>());</span>
+<span class=o>}</span>
+</pre></div></p>
+<p>Question: Why does it work with arrays??</p>
+<p>Because <strong>array types are checked again at runtime, but collection type checks happen only when you compile.</strong></p>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kt>void</span> <span class=nf>go</span><span class=o>()</span> <span class=o>{</span> 
+    <span class=n>Dog</span><span class=o>[]</span> <span class=n>dogs</span> <span class=o>=</span> <span class=o>{</span><span class=k>new</span> <span class=n>Dog</span><span class=o>(),</span> <span class=k>new</span> <span class=n>Dog</span><span class=o>(),</span> <span class=k>new</span> <span class=n>Dog</span><span class=o>()};</span> 
+    <span class=n>takeAnimals</span><span class=o>(</span><span class=n>dogs</span><span class=o>);</span> 
+<span class=o>}</span>
+<span class=kd>public</span> <span class=kt>void</span> <span class=nf>takeAnimals</span><span class=o>(</span><span class=n>Animal</span><span class=o>[]</span> <span class=n>animals</span><span class=o>)</span> <span class=o>{</span> 
+    <span class=c1>// We put a new Cat into a Dog array.</span>
+    <span class=c1>// The compiler allowed i.</span>
+    <span class=c1>// But, JVM stopped it, throw an Exception during run.</span>
+    <span class=n>animals</span><span class=o>[</span><span class=mi>0</span><span class=o>]</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Cat</span><span class=o>();</span> 
+<span class=o>}</span>
+</pre></div></p>
+<h4 id="generic-wildcards">Generic wildcards<a class="headerlink" href="#generic-wildcards" title="Permanent link">&para;</a></h4>
+<p>QUESTION: Wouldn’t it be dreamy if there were a way to still use polymorphic collection types as method arguments, so that my veterinary program could take <C>Dog</C> lists and <C>Cat</C> lists?</p>
+<p>There is a way to create a method argument that can accept an <C>ArrayList</C> of any <C>Animal</C> subtype. The simplest way is to use a <strong>wildcard</strong>.</p>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kt>void</span> <span class=nf>takeAnimals</span><span class=o>(</span><span class=n>ArrayList</span><span class=o>&lt;?</span> <span class=kd>extends</span> <span class=n>Animal</span><span class=o>&gt;</span> <span class=n>animals</span><span class=o>)</span> <span class=o>{</span> 
+    <span class=k>for</span><span class=o>(</span><span class=n>Animal</span> <span class=n>a</span><span class=o>:</span> <span class=n>animals</span><span class=o>)</span> <span class=o>{</span>
+        <span class=n>a</span><span class=o>.</span><span class=na>eat</span><span class=o>();</span>
+<span class=o>}</span>
+</pre></div></p>
+<p>When you use a wildcard in your method argument, the compiler will STOP you from doing anything that could hurt the list referenced by the method parameter:</p>
+<p><strong>You can still invoke methods on the elements in the list, but you cannot add elements to the list.</strong></p>
+<p>In other words, you can do things with the list elements, but you can’t put new things in the list. So you’re safe at runtime, because the compiler won’t let you do anything that might be horrible at runtime.</p>
+<p>So, this is OK inside <C>takeAnimals()</C>:</p>
+<p> <div class=codehilite><pre><span class=k>for</span><span class=o>(</span><span class=n>Animal</span> <span class=n>a</span><span class=o>:</span> <span class=n>animals</span><span class=o>)</span> <span class=o>{</span> <span class=n>a</span><span class=o>.</span><span class=na>eat</span><span class=o>();</span> <span class=o>}</span>
+</pre></div></p>
+<p>But THIS would not compile:</p>
+<p> <div class=codehilite><pre><span class=n>animals</span><span class=o>.</span><span class=na>add</span><span class=o>(</span><span class=k>new</span> <span class=n>Cat</span><span class=o>());</span>
+</pre></div></p>
+<p>Two syntax for wildcard:</p>
+<p> <div class=codehilite><pre><span class=c1>// the results are the same</span>
+<span class=kd>public</span> <span class=o>&lt;</span><span class=n>T</span> <span class=kd>extends</span> <span class=n>Animal</span><span class=o>&gt;</span> <span class=kt>void</span> <span class=nf>takeThing</span><span class=o>(</span><span class=n>ArrayList</span><span class=o>&lt;</span><span class=n>T</span><span class=o>&gt;</span> <span class=n>list</span><span class=o>)</span>
+<span class=kd>public</span> <span class=kt>void</span> <span class=nf>takeThing</span><span class=o>(</span><span class=n>ArrayList</span><span class=o>&lt;?</span> <span class=kd>extends</span> <span class=n>Animal</span><span class=o>&gt;</span> <span class=n>list</span><span class=o>)</span>
+</pre></div></p>
+<p><strong>Bounded Wildcards: &lt;? super/extends T&gt;</strong>:</p>
+<p>The syntax &lt;? <C>super T</C>&gt; denotes an unknown type that is a supertype of T (or T itself; remember that the supertype relation is reflexive). </p>
+<p>The syntax &lt;? <C>extends T</C>&gt; denotes an unknown type that is a subtype of T.</p>
+<h4 id="generic-array">Generic array<a class="headerlink" href="#generic-array" title="Permanent link">&para;</a></h4>
+<p>For historical and technical reasons, <em>generic array creation is disallowed in Java</em>. Instead, we need to use a cast:</p>
+<p> <div class=codehilite><pre><span class=n>a</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Item</span><span class=o>[</span><span class=n>cap</span><span class=o>]</span> <span class=c1>// error</span>
+<span class=n>a</span> <span class=o>=</span> <span class=o>(</span><span class=n>Item</span><span class=o>[])</span> <span class=k>new</span> <span class=n>Object</span><span class=o>[</span><span class=n>cap</span><span class=o>]</span> <span class=c1>// use a cast</span>
+</pre></div></p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>var base_url = '../..';</script>
+        <script src="../../js/base.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+        <script src="../../extra_javascript/tabhack.js"></script>
+        <script src="../../search/require.js"></script>
+        <script src="../../search/search.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td><kbd>&larr;</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td><kbd>&rarr;</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    </body>
+</html>
