@@ -141,12 +141,220 @@
         <div class="container">
                 <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
-        <li class="main active"><a href="#chapter-1-fundamentals">Chapter 1: Fundamentals</a></li>
+        <li class="main active"><a href="#chapter-1-union-find">Chapter 1: Union Find</a></li>
+        <li class="main "><a href="#1-dynamic-connectivity">1 Dynamic Connectivity</a></li>
+            <li><a href="#union-find-data-type-api">Union-Find data type (API)</a></li>
+            <li><a href="#dynamic-connectivity-client">Dynamic-connectivity client</a></li>
+        <li class="main "><a href="#2-quick-find">2 Quick-Find</a></li>
+            <li><a href="#analysis">Analysis</a></li>
+        <li class="main "><a href="#3-quick-union">3 Quick-Union</a></li>
+            <li><a href="#analysis_1">Analysis</a></li>
+        <li class="main "><a href="#4-improvement-1-weighting">4 Improvement 1: weighting</a></li>
+            <li><a href="#analysis_2">Analysis</a></li>
+        <li class="main "><a href="#5-improvement-2-path-compression">5 Improvement 2: path compression</a></li>
+            <li><a href="#amortized-analysis">Amortized Analysis</a></li>
+        <li class="main "><a href="#application-percolation">Application - Percolation</a></li>
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
 
-<h3 id="chapter-1-fundamentals"><strong>Chapter 1: Fundamentals</strong><a class="headerlink" href="#chapter-1-fundamentals" title="Permanent link">&para;</a></h3></div>
+<h3 id="chapter-1-union-find"><strong>Chapter 1: Union Find</strong><a class="headerlink" href="#chapter-1-union-find" title="Permanent link">&para;</a></h3>
+<h3 id="1-dynamic-connectivity">1 Dynamic Connectivity<a class="headerlink" href="#1-dynamic-connectivity" title="Permanent link">&para;</a></h3>
+<p>Dynamic connectivity is a data structure that dynamically maintains information about the connected components of a graph.</p>
+<p><strong>Connected components</strong>:  Maximal set of objects that are mutually connected.</p>
+<p><img alt="ConnectedComponents" src="../figures/ConnectedComponents.png" /></p>
+<h4 id="union-find-data-type-api">Union-Find data type (API)<a class="headerlink" href="#union-find-data-type-api" title="Permanent link">&para;</a></h4>
+<p>Union-Find API:</p>
+<ul>
+<li>the <C>union()</C> operation merges two components if the two sites are in different components.</li>
+<li>the <C>find()</C> operation returns an integer component identifier for a given site.</li>
+<li>the <C>connected()</C> operation determines whether two sites are in the same component.</li>
+<li>the <C>count()</C> method returns the number of components.</li>
+</ul>
+<p><img alt="UnionFindAPI" src="../figures/UnionFindAPI.png" /></p>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>QuickFind</span> <span class=o>{</span>
+    <span class=kd>private</span> <span class=kt>int</span><span class=o>[]</span> <span class=n>id</span><span class=o>;</span>
+    <span class=kd>private</span> <span class=kt>int</span> <span class=n>count</span><span class=o>;</span>
+
+    <span class=kd>public</span> <span class=nf>QuickFind</span><span class=o>(</span><span class=kt>int</span> <span class=n>N</span><span class=o>)</span> <span class=o>{</span>
+        <span class=n>count</span> <span class=o>=</span> <span class=n>N</span><span class=o>;</span>
+        <span class=n>id</span> <span class=o>=</span> <span class=k>new</span> <span class=kt>int</span><span class=o>[</span><span class=n>N</span><span class=o>];</span>
+        <span class=k>for</span> <span class=o>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=o>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>N</span><span class=o>;</span> <span class=n>i</span><span class=o>++)</span> <span class=n>id</span><span class=o>[</span><span class=n>i</span><span class=o>]</span> <span class=o>=</span> <span class=n>i</span><span class=o>;</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kt>boolean</span> <span class=nf>connected</span><span class=o>(</span><span class=kt>int</span> <span class=n>p</span><span class=o>,</span> <span class=kt>int</span> <span class=n>q</span><span class=o>)</span> <span class=o>{</span>
+        <span class=k>return</span> <span class=n>id</span><span class=o>[</span><span class=n>p</span><span class=o>]</span> <span class=o>==</span> <span class=n>id</span><span class=o>[</span><span class=n>q</span><span class=o>];</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kt>int</span> <span class=nf>find</span><span class=o>(</span><span class=kt>int</span> <span class=n>p</span><span class=o>)</span> <span class=o>{</span>
+        <span class=k>return</span> <span class=n>id</span><span class=o>[</span><span class=n>p</span><span class=o>];</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>union</span><span class=o>(</span><span class=kt>int</span> <span class=n>p</span><span class=o>,</span> <span class=kt>int</span> <span class=n>q</span><span class=o>)</span> <span class=o>{</span>
+        <span class=c1>// Put p and q into the same component.</span>
+        <span class=kt>int</span> <span class=n>pid</span> <span class=o>=</span> <span class=n>find</span><span class=o>(</span><span class=n>p</span><span class=o>);</span>
+        <span class=kt>int</span> <span class=n>qid</span> <span class=o>=</span> <span class=n>find</span><span class=o>(</span><span class=n>q</span><span class=o>);</span>
+        <span class=c1>// Nothing to do if p and q are already in the same component.</span>
+        <span class=k>if</span> <span class=o>(</span><span class=n>pid</span> <span class=o>==</span> <span class=n>qid</span><span class=o>)</span> <span class=k>return</span><span class=o>;</span>
+
+        <span class=c1>// Rename p’s component to q’s name.</span>
+        <span class=k>for</span> <span class=o>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=o>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>id</span><span class=o>.</span><span class=na>length</span><span class=o>;</span> <span class=n>i</span><span class=o>++)</span>
+            <span class=k>if</span> <span class=o>(</span><span class=n>id</span><span class=o>[</span><span class=n>i</span><span class=o>]</span> <span class=o>==</span> <span class=n>pid</span><span class=o>)</span>
+                <span class=n>id</span><span class=o>[</span><span class=n>i</span><span class=o>]</span> <span class=o>=</span> <span class=n>qid</span><span class=o>;</span>
+        <span class=n>count</span><span class=o>--;</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></p>
+<h4 id="dynamic-connectivity-client">Dynamic-connectivity client<a class="headerlink" href="#dynamic-connectivity-client" title="Permanent link">&para;</a></h4>
+<p>Read in number of objects <span><span class="MathJax_Preview">N</span><script type="math/tex">N</script></span> from standard input. Repeat:</p>
+<ul>
+<li>read in pair of integers from standard input</li>
+<li>if they are not yet connected, connect them and print out pair</li>
+</ul>
+<p>We shall consider several different implementations, all based on using the site-indexed id[] array, to determine whether two sites are in the same connected component.</p>
+<h3 id="2-quick-find">2 Quick-Find<a class="headerlink" href="#2-quick-find" title="Permanent link">&para;</a></h3>
+<p>Quick-find idea: all sites in a component must have the same value in id[]. </p>
+<p>This method is called quick-find because <C>find(p)</C> just returns id[p], which immediately implies that <C>connected(p, q)</C> reduces to just the test id[p] == id[q] and returns <C>true</C>, if and only if p and q are in the same component.</p>
+<p><C>Union()</C>: To combine the two components into one, we have to make all of the id[] entries corresponding to both sets of sites the same value. To do so, we go through the array, changing all the entries with values equal to id[p] to the value id[q].</p>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>QuickFind</span> <span class=o>{</span>
+    <span class=kd>private</span> <span class=kt>int</span><span class=o>[]</span> <span class=n>id</span><span class=o>;</span>
+
+    <span class=kd>public</span> <span class=nf>QuickFind</span><span class=o>(</span><span class=kt>int</span> <span class=n>N</span><span class=o>)</span> <span class=o>{</span>
+        <span class=n>id</span> <span class=o>=</span> <span class=k>new</span> <span class=kt>int</span><span class=o>[</span><span class=n>N</span><span class=o>];</span>
+        <span class=k>for</span> <span class=o>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=o>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>N</span><span class=o>;</span> <span class=n>i</span><span class=o>++)</span> <span class=n>id</span><span class=o>[</span><span class=n>i</span><span class=o>]</span> <span class=o>=</span> <span class=n>i</span><span class=o>;</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kt>boolean</span> <span class=nf>connected</span><span class=o>(</span><span class=kt>int</span> <span class=n>p</span><span class=o>,</span> <span class=kt>int</span> <span class=n>q</span><span class=o>)</span> <span class=o>{</span>
+        <span class=k>return</span> <span class=n>id</span><span class=o>[</span><span class=n>p</span><span class=o>]</span> <span class=o>==</span> <span class=n>id</span><span class=o>[</span><span class=n>q</span><span class=o>];</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>union</span><span class=o>(</span><span class=kt>int</span> <span class=n>p</span><span class=o>,</span> <span class=kt>int</span> <span class=n>q</span><span class=o>)</span> <span class=o>{</span>
+        <span class=kt>int</span> <span class=n>pid</span> <span class=o>=</span> <span class=n>id</span><span class=o>[</span><span class=n>p</span><span class=o>];</span>
+        <span class=kt>int</span> <span class=n>qid</span> <span class=o>=</span> <span class=n>id</span><span class=o>[</span><span class=n>q</span><span class=o>];</span>
+        <span class=k>for</span> <span class=o>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=o>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>id</span><span class=o>.</span><span class=na>length</span><span class=o>;</span> <span class=n>i</span><span class=o>++)</span> <span class=k>if</span> <span class=o>(</span><span class=n>id</span><span class=o>[</span><span class=n>i</span><span class=o>]</span> <span class=o>==</span> <span class=n>pid</span><span class=o>)</span> <span class=n>id</span><span class=o>[</span><span class=n>i</span><span class=o>]</span> <span class=o>=</span> <span class=n>qid</span><span class=o>;</span>
+    <span class=o>}</span>
+
+<span class=o>}</span>
+</pre></div></p>
+<h4 id="analysis">Analysis<a class="headerlink" href="#analysis" title="Permanent link">&para;</a></h4>
+<p>The quick-find algorithm uses one array access for each call to <C>find()</C> and between <span><span class="MathJax_Preview">N + 3</span><script type="math/tex">N + 3</script></span> and <span><span class="MathJax_Preview">2N + 1</span><script type="math/tex">2N + 1</script></span> array accesses for each call to <C>union()</C> that combines two components.</p>
+<p>WORST CASE: suppose we wind up with a single component. This requires at least <span><span class="MathJax_Preview">N-1</span><script type="math/tex">N-1</script></span> calls to <C>union()</C>, and, consequently, at least <span><span class="MathJax_Preview">(N+3)(N-1) \sim N^2</span><script type="math/tex">(N+3)(N-1) \sim N^2</script></span> array accesses—we are led immediately to the hypothesis that dynamic connectivity with quick-find can be a quadratic-time process.</p>
+<h3 id="3-quick-union">3 Quick-Union<a class="headerlink" href="#3-quick-union" title="Permanent link">&para;</a></h3>
+<p>Data structure:</p>
+<ul>
+<li>Interpretation: id[i] is parent of i. </li>
+<li>Root of i is id[id[id[...id[i]...]]] (keep going until it doesn’t change)</li>
+</ul>
+<p>Specifically, the id[] entry, for each site is the name of another site in the same component (possibly itself)—we refer to this connection as a link. To implement <C>find()</C>, we start at the given site, follow its link to another site, follow that site’s link to yet another site, and so forth, following links until reaching a root, a site that has a link to itself. Two sites are in the same component if and only if this process leads them to the same root.</p>
+<p><C>union(p, q)</C>: we follow links to finds the roots associated with p and q, then rename one of the components by linking one of these roots to the other; hence the name quick-union.</p>
+<p><img alt="UnionOfQuickUnion" src="../figures/UnionOfQuickUnion.png" /></p>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>QuickUnion</span> <span class=o>{</span>
+    <span class=kd>private</span> <span class=kt>int</span><span class=o>[]</span> <span class=n>id</span><span class=o>;</span>
+    <span class=kd>private</span> <span class=kt>int</span> <span class=n>count</span><span class=o>;</span>
+
+    <span class=kd>public</span> <span class=nf>QuickUnion</span><span class=o>(</span><span class=kt>int</span> <span class=n>N</span><span class=o>)</span> <span class=o>{</span>
+        <span class=n>count</span> <span class=o>=</span> <span class=n>N</span><span class=o>;</span>
+        <span class=n>id</span> <span class=o>=</span> <span class=k>new</span> <span class=kt>int</span><span class=o>[</span><span class=n>N</span><span class=o>];</span>
+        <span class=c1>// set id of each object to itself (N array accesses)</span>
+        <span class=k>for</span> <span class=o>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=o>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>N</span><span class=o>;</span> <span class=n>i</span><span class=o>++)</span> <span class=n>id</span><span class=o>[</span><span class=n>i</span><span class=o>]</span> <span class=o>=</span> <span class=n>i</span><span class=o>;</span>
+    <span class=o>}</span>
+
+    <span class=kd>private</span> <span class=kt>int</span> <span class=nf>find</span><span class=o>(</span><span class=kt>int</span> <span class=n>p</span><span class=o>)</span> <span class=o>{</span>
+        <span class=c1>// chase parent pointers until reach root</span>
+        <span class=k>while</span> <span class=o>(</span><span class=n>p</span> <span class=o>!=</span> <span class=n>id</span><span class=o>[</span><span class=n>p</span><span class=o>])</span> <span class=n>p</span> <span class=o>=</span> <span class=n>id</span><span class=o>[</span><span class=n>p</span><span class=o>];</span>
+        <span class=k>return</span> <span class=n>p</span><span class=o>;</span>
+
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kt>boolean</span> <span class=nf>connected</span><span class=o>(</span><span class=kt>int</span> <span class=n>p</span><span class=o>,</span> <span class=kt>int</span> <span class=n>q</span><span class=o>)</span> <span class=o>{</span>
+        <span class=c1>//check if p and q have same root</span>
+        <span class=k>return</span> <span class=n>find</span><span class=o>(</span><span class=n>p</span><span class=o>)</span> <span class=o>==</span> <span class=n>find</span><span class=o>(</span><span class=n>q</span><span class=o>);</span>
+
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>union</span><span class=o>(</span><span class=kt>int</span> <span class=n>p</span><span class=o>,</span> <span class=kt>int</span> <span class=n>q</span><span class=o>)</span> <span class=o>{</span>
+        <span class=c1>// change root of p to point to root of q</span>
+        <span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=n>find</span><span class=o>(</span><span class=n>p</span><span class=o>);</span>
+        <span class=kt>int</span> <span class=n>j</span> <span class=o>=</span> <span class=n>find</span><span class=o>(</span><span class=n>q</span><span class=o>);</span>
+        <span class=n>id</span><span class=o>[</span><span class=n>i</span><span class=o>]</span> <span class=o>=</span> <span class=n>j</span><span class=o>;</span>
+        <span class=n>count</span><span class=o>--;</span>
+    <span class=o>}</span>
+
+<span class=o>}</span>
+</pre></div></p>
+<h4 id="analysis_1">Analysis<a class="headerlink" href="#analysis_1" title="Permanent link">&para;</a></h4>
+<p>The number of array accesses used by <C>find()</C> in quick-union is 1 plus the twice the depth of the node corresponding to the given site. The number of array accesses used by <C>union()</C> and <C>connected()</C> is the cost of the two <C>find()</C> operations (plus 1 for <C>union()</C> if the given sites are in different trees).</p>
+<p>WORST CASE: suppose we wind up with a single component, the running time is quadratic</p>
+<h3 id="4-improvement-1-weighting">4 Improvement 1: weighting<a class="headerlink" href="#4-improvement-1-weighting" title="Permanent link">&para;</a></h3>
+<p><strong>Weighted quick-union</strong>: Rather than arbitrarily connecting the second tree to the first for <C>union()</C>, we keep track of the size of each tree and always c<em>onnect the smaller tree to the larger</em>. This change needs another array to hold the node counts.</p>
+<p><img alt="Weighted quick-union" src="../figures/Weighted%20quick-union.png" /></p>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>WeightedQuickUnion</span> <span class=o>{</span>
+
+    <span class=kd>private</span> <span class=kt>int</span><span class=o>[]</span> <span class=n>id</span><span class=o>;</span> <span class=c1>// parent link (site indexed)</span>
+    <span class=kd>private</span> <span class=kt>int</span><span class=o>[]</span> <span class=n>sz</span><span class=o>;</span> <span class=c1>// size of component for roots (site indexed)</span>
+    <span class=kd>private</span> <span class=kt>int</span> <span class=n>count</span><span class=o>;</span> <span class=c1>// number of components</span>
+
+    <span class=kd>public</span> <span class=nf>WeightedQuickUnion</span><span class=o>(</span><span class=kt>int</span> <span class=n>N</span><span class=o>)</span> <span class=o>{</span>
+        <span class=n>count</span> <span class=o>=</span> <span class=n>N</span><span class=o>;</span>
+        <span class=n>id</span> <span class=o>=</span> <span class=k>new</span> <span class=kt>int</span><span class=o>[</span><span class=n>N</span><span class=o>];</span>
+        <span class=k>for</span> <span class=o>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=o>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>N</span><span class=o>;</span> <span class=n>i</span><span class=o>++)</span> <span class=n>id</span><span class=o>[</span><span class=n>i</span><span class=o>]</span> <span class=o>=</span> <span class=n>i</span><span class=o>;</span>
+        <span class=n>sz</span> <span class=o>=</span> <span class=k>new</span> <span class=kt>int</span><span class=o>[</span><span class=n>N</span><span class=o>];</span>
+        <span class=k>for</span> <span class=o>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=o>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>N</span><span class=o>;</span> <span class=n>i</span><span class=o>++)</span> <span class=n>sz</span><span class=o>[</span><span class=n>i</span><span class=o>]</span> <span class=o>=</span> <span class=mi>1</span><span class=o>;</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kt>int</span> <span class=nf>count</span><span class=o>()</span> <span class=o>{</span>
+        <span class=k>return</span> <span class=n>count</span><span class=o>;</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kt>boolean</span> <span class=nf>connected</span><span class=o>(</span><span class=kt>int</span> <span class=n>p</span><span class=o>,</span> <span class=kt>int</span> <span class=n>q</span><span class=o>)</span> <span class=o>{</span>
+        <span class=k>return</span> <span class=n>find</span><span class=o>(</span><span class=n>p</span><span class=o>)</span> <span class=o>==</span> <span class=n>find</span><span class=o>(</span><span class=n>q</span><span class=o>);</span>
+    <span class=o>}</span>
+
+    <span class=kd>private</span> <span class=kt>int</span> <span class=nf>find</span><span class=o>(</span><span class=kt>int</span> <span class=n>p</span><span class=o>)</span> <span class=o>{</span> <span class=c1>// Follow links to find a root.</span>
+
+        <span class=k>while</span> <span class=o>(</span><span class=n>p</span> <span class=o>!=</span> <span class=n>id</span><span class=o>[</span><span class=n>p</span><span class=o>])</span> <span class=n>p</span> <span class=o>=</span> <span class=n>id</span><span class=o>[</span><span class=n>p</span><span class=o>];</span>
+        <span class=k>return</span> <span class=n>p</span><span class=o>;</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>union</span><span class=o>(</span><span class=kt>int</span> <span class=n>p</span><span class=o>,</span> <span class=kt>int</span> <span class=n>q</span><span class=o>)</span> <span class=o>{</span>
+        <span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=n>find</span><span class=o>(</span><span class=n>p</span><span class=o>);</span>
+        <span class=kt>int</span> <span class=n>j</span> <span class=o>=</span> <span class=n>find</span><span class=o>(</span><span class=n>q</span><span class=o>);</span>
+        <span class=k>if</span> <span class=o>(</span><span class=n>i</span> <span class=o>==</span> <span class=n>j</span><span class=o>)</span> <span class=k>return</span><span class=o>;</span>
+        <span class=c1>// Make smaller root point to larger one.</span>
+        <span class=k>if</span> <span class=o>(</span><span class=n>sz</span><span class=o>[</span><span class=n>i</span><span class=o>]</span> <span class=o>&lt;</span> <span class=n>sz</span><span class=o>[</span><span class=n>j</span><span class=o>])</span> <span class=o>{</span>
+            <span class=n>id</span><span class=o>[</span><span class=n>i</span><span class=o>]</span> <span class=o>=</span> <span class=n>j</span><span class=o>;</span>
+            <span class=n>sz</span><span class=o>[</span><span class=n>j</span><span class=o>]</span> <span class=o>+=</span> <span class=n>sz</span><span class=o>[</span><span class=n>i</span><span class=o>];</span>
+        <span class=o>}</span> <span class=k>else</span> <span class=o>{</span>
+            <span class=n>id</span><span class=o>[</span><span class=n>j</span><span class=o>]</span> <span class=o>=</span> <span class=n>i</span><span class=o>;</span>
+            <span class=n>sz</span><span class=o>[</span><span class=n>i</span><span class=o>]</span> <span class=o>+=</span> <span class=n>sz</span><span class=o>[</span><span class=n>j</span><span class=o>];</span>
+        <span class=o>}</span>
+        <span class=n>count</span><span class=o>--;</span>
+    <span class=o>}</span>
+
+<span class=o>}</span>
+</pre></div></p>
+<h4 id="analysis_2">Analysis<a class="headerlink" href="#analysis_2" title="Permanent link">&para;</a></h4>
+<p>The depth of any node in a forest built by weighted quick-union for <span><span class="MathJax_Preview">N</span><script type="math/tex">N</script></span> sites is at most <span><span class="MathJax_Preview">\log N</span><script type="math/tex">\log N</script></span>.</p>
+<p>The worst case for weighted quick union is when the sizes of the trees to be merged by <C>union()</C> are always equal (and a power of 2). And they have the simple property that the height of a tree of <span><span class="MathJax_Preview">2^n</span><script type="math/tex">2^n</script></span> nodes is <span><span class="MathJax_Preview">n</span><script type="math/tex">n</script></span>.</p>
+<p><img alt="worstCaseWeightedQuickUnion" src="../figures/worstCaseWeightedQuickUnion.png" /></p>
+<p>For weighted quick-union with <span><span class="MathJax_Preview">N</span><script type="math/tex">N</script></span> sites, the worst-case order of growth of the cost of <C>find()</C>, <C>connected()</C>, and <C>union()</C> is <span><span class="MathJax_Preview">\log N</span><script type="math/tex">\log N</script></span>.</p>
+<p>Specifically, the weighted quick-union algorithm uses at most <span><span class="MathJax_Preview">cM\log N</span><script type="math/tex">cM\log N</script></span> array accesses to process <span><span class="MathJax_Preview">M</span><script type="math/tex">M</script></span> connections among <span><span class="MathJax_Preview">N</span><script type="math/tex">N</script></span> sites for a small constant <span><span class="MathJax_Preview">c</span><script type="math/tex">c</script></span>.</p>
+<h3 id="5-improvement-2-path-compression">5 Improvement 2: path compression<a class="headerlink" href="#5-improvement-2-path-compression" title="Permanent link">&para;</a></h3>
+<p>IDEA: Just after computing the root of p, set the id of each examined node to point to that root.</p>
+<p>Two-pass implementation: add second loop to <C>find()</C> to set the id[] of each examined node to the root.</p>
+<p>Simpler one-pass variant: Make every other node in path point to its grandparent (thereby halving path length).</p>
+<p> <div class=codehilite><pre><span class=kd>private</span> <span class=kt>int</span> <span class=nf>find</span><span class=o>(</span><span class=kt>int</span> <span class=n>p</span><span class=o>)</span> <span class=o>{</span> <span class=c1>// Follow links to find a root.</span>
+    <span class=k>while</span> <span class=o>(</span><span class=n>p</span> <span class=o>!=</span> <span class=n>id</span><span class=o>[</span><span class=n>p</span><span class=o>])</span> <span class=o>{</span>
+        <span class=c1>// only one extra line of code !</span>
+        <span class=n>id</span><span class=o>[</span><span class=n>p</span><span class=o>]</span> <span class=o>=</span> <span class=n>id</span><span class=o>[</span><span class=n>id</span><span class=o>[</span><span class=n>p</span><span class=o>]];</span>
+        <span class=n>p</span> <span class=o>=</span> <span class=n>id</span><span class=o>[</span><span class=n>p</span><span class=o>];</span>
+    <span class=o>}</span>
+    <span class=k>return</span> <span class=n>p</span><span class=o>;</span>
+<span class=o>}</span>
+</pre></div></p>
+<h4 id="amortized-analysis">Amortized Analysis<a class="headerlink" href="#amortized-analysis" title="Permanent link">&para;</a></h4>
+<p>Starting from an empty data structure, any sequence of <span><span class="MathJax_Preview">M</span><script type="math/tex">M</script></span> union-find ops on <span><span class="MathJax_Preview">N</span><script type="math/tex">N</script></span> objects makes <span><span class="MathJax_Preview">\le c ( N + M \lg^*N )</span><script type="math/tex">\le c ( N + M \lg^*N )</script></span> array accesses, where <span><span class="MathJax_Preview">lg^*</span><script type="math/tex">lg^*</script></span> is iterated logarithm[<a href="https://en.wikipedia.org/wiki/Iterated_logarithm">wiki</a>]. (<span><span class="MathJax_Preview">lg^*N</span><script type="math/tex">lg^*N</script></span>表示将<span><span class="MathJax_Preview">N</span><script type="math/tex">N</script></span>变为小于1需要的<span><span class="MathJax_Preview">\log</span><script type="math/tex">\log</script></span>迭代次数)</p>
+<h3 id="application-percolation">Application - Percolation<a class="headerlink" href="#application-percolation" title="Permanent link">&para;</a></h3></div>
         </div>
 
         <footer class="col-md-12">
