@@ -303,6 +303,7 @@
         <li class="main "><a href="#slope-one">Slope One算法</a></li>
             <li><a href="#_5">计算差值</a></li>
             <li><a href="#slope-one_1">使用加权的Slope One算法进行预测</a></li>
+            <li><a href="#pythonslope-one">使用Python实现Slope One算法</a></li>
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
@@ -350,29 +351,33 @@
 </div>
 <p>其中<span><span class="MathJax_Preview">p(u,i)</span><script type="math/tex">p(u,i)</script></span>表示预测的用户<span><span class="MathJax_Preview">u</span><script type="math/tex">u</script></span>对物品<span><span class="MathJax_Preview">i</span><script type="math/tex">i</script></span>的评分，<span><span class="MathJax_Preview">S_{i,N}</span><script type="math/tex">S_{i,N}</script></span>表示物品<span><span class="MathJax_Preview">i</span><script type="math/tex">i</script></span>和<span><span class="MathJax_Preview">N</span><script type="math/tex">N</script></span>的相似度，<span><span class="MathJax_Preview">R_{u,N}</span><script type="math/tex">R_{u,N}</script></span>表示用户<span><span class="MathJax_Preview">u</span><script type="math/tex">u</script></span>对物品<span><span class="MathJax_Preview">N</span><script type="math/tex">N</script></span>的评分。<span><span class="MathJax_Preview">N</span><script type="math/tex">N</script></span>是一个物品的集合，有如下特性:用户<span><span class="MathJax_Preview">u</span><script type="math/tex">u</script></span>对集合中的物品打过分，物品<span><span class="MathJax_Preview">i</span><script type="math/tex">i</script></span>和集合中的物品有相似度数据。</p>
 <h3 id="slope-one">Slope One算法<a class="headerlink" href="#slope-one" title="Permanent link">&para;</a></h3>
-<p>Slope One是另一种比较流行的基于物品的协同过滤算法。它最大的优势是简单，因此易于实现。Slope One算法是在一篇名为《<a href="https://arxiv.org/abs/cs/0702144">Slope One：基于在线评分系统的协同过滤算法</a>》的论文中提出的，由Lemire和Machlachlan合著。这篇论文非常值得一读。</p>
-<p>我们用一个简单的例子来了解这个算法。假设A给Item I打了1分，Item J打了1.5分；B给Item I打了2分。我们要预测B会给Item J打几分。我们可以用以下逻辑来预测B对Item J的评分：由于A给Item J打的分数要比Item I的高0.5分，所以我们预测B也会给高0.5分。</p>
+<p>Slope One是另一种比较流行的基于物品的协同过滤算法。它最大的优势是简单，易于实现。Slope One算法是在一篇名为《<a href="https://arxiv.org/abs/cs/0702144">Slope One Predictors for Online Rating-Based Collaborative Filtering</a>》的论文中提出的，由Lemire和Machlachlan合著。这篇论文非常值得一读。</p>
+<p>我们用一个简单的例子来了解这个算法。假设A给Item I打了1分，给Item J打了1.5分；B给Item I打了2分。我们可以用以下逻辑来预测B对Item J的评分：由于A给Item J打的分数要比Item I的高0.5分，所以我们预测B也会给高0.5分，即2.5分。</p>
 <p><img alt="BasisofSLOPEONEscheme" src="../figures/BasisofSLOPEONEscheme.png" /></p>
 <p>可以将Slope One分为两个步骤： </p>
 <ul>
-<li>首先需要计算出两两物品之间的差值（可以在夜间批量计算）。</li>
-<li>第二步则是进行预测，比如一个新用户Ben来到了我们网站，他从未听过Whitney Houston的歌曲，我们想要预测他是否喜欢这位歌手。</li>
+<li>计算出物品之间的两两差值(可以在夜间批量计算)</li>
+<li>进行预测，可以使用加权的Slope One算法</li>
 </ul>
 <h4 id="_5">计算差值<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h4>
-<p>物品<span><span class="MathJax_Preview">i</span><script type="math/tex">i</script></span>与物品<span><span class="MathJax_Preview">j</span><script type="math/tex">j</script></span>之间的平均差异是：</p>
+<p>物品<span><span class="MathJax_Preview">i</span><script type="math/tex">i</script></span>与物品<span><span class="MathJax_Preview">j</span><script type="math/tex">j</script></span>之间的平均差异为：</p>
 <div>
 <div class="MathJax_Preview">\text{dev}_{i,j}=\sum_{u\in S_{i,j}(X)}\frac{u_i-u_j}{\text{card}(S_{i,j}(X))}</div>
 <script type="math/tex; mode=display">\text{dev}_{i,j}=\sum_{u\in S_{i,j}(X)}\frac{u_i-u_j}{\text{card}(S_{i,j}(X))}</script>
 </div>
-<p>其中<span><span class="MathJax_Preview">S_{i,j}(X)</span><script type="math/tex">S_{i,j}(X)</script></span>表示包含同时评价过<span><span class="MathJax_Preview">i,j</span><script type="math/tex">i,j</script></span>的用户，<span><span class="MathJax_Preview">\text{card}(S)</span><script type="math/tex">\text{card}(S)</script></span>表示<span><span class="MathJax_Preview">S</span><script type="math/tex">S</script></span>中有多少个元素，<span><span class="MathJax_Preview">X</span><script type="math/tex">X</script></span>表示所有评分值的集合；</p>
+<p>其中<span><span class="MathJax_Preview">S_{i,j}(X)</span><script type="math/tex">S_{i,j}(X)</script></span>表示同时评价过<span><span class="MathJax_Preview">i,j</span><script type="math/tex">i,j</script></span>的用户集合，<span><span class="MathJax_Preview">\text{card}(S)</span><script type="math/tex">\text{card}(S)</script></span>表示<span><span class="MathJax_Preview">S</span><script type="math/tex">S</script></span>中有多少个元素，<span><span class="MathJax_Preview">X</span><script type="math/tex">X</script></span>表示所有评分值的集合，<span><span class="MathJax_Preview">\text{card}(S_{j,i}(X))</span><script type="math/tex">\text{card}(S_{j,i}(X))</script></span>则表示同时评价过物品<span><span class="MathJax_Preview">i</span><script type="math/tex">i</script></span>和<span><span class="MathJax_Preview">j</span><script type="math/tex">j</script></span>的用户数，<span><span class="MathJax_Preview">u_i</span><script type="math/tex">u_i</script></span>表示用户<span><span class="MathJax_Preview">u</span><script type="math/tex">u</script></span>对物品<span><span class="MathJax_Preview">i</span><script type="math/tex">i</script></span>的评分。</p>
+<div class="admonition question">
+<p class="admonition-title">Question</p>
 <p>如果有一个新进的用户对10个歌手做了评价，我们是否需要重新计算20万×20万的差异数据，或是有其他更简单的方法？ 答案是你不需要计算整个数据集，这正是Slope One的美妙之处。对于两个物品，我们只需记录同时评价过这对物品的用户数就可以了。</p>
+</div>
 <h4 id="slope-one_1">使用加权的Slope One算法进行预测<a class="headerlink" href="#slope-one_1" title="Permanent link">&para;</a></h4>
-<p>使用加权的Slope One算法来进行预测，用<span><span class="MathJax_Preview">P^{WS1}</span><script type="math/tex">P^{WS1}</script></span> 来表示，公式为：</p>
+<p>使用加权的Slope One算法来进行预测，用<span><span class="MathJax_Preview">P^{WS1}</span><script type="math/tex">P^{WS1}</script></span>来表示预测用户<span><span class="MathJax_Preview">u</span><script type="math/tex">u</script></span>对物品<span><span class="MathJax_Preview">j</span><script type="math/tex">j</script></span>的评分：</p>
 <div>
 <div class="MathJax_Preview">P^{wS1}(u)_j=\frac{\sum_{i\in S(u) - \{j\}}(\text{dev}_{i,j}+u_i)c_{j,i}}{\sum_{i\in S(u) - \{j\}} c_{j,i}}</div>
 <script type="math/tex; mode=display">P^{wS1}(u)_j=\frac{\sum_{i\in S(u) - \{j\}}(\text{dev}_{i,j}+u_i)c_{j,i}}{\sum_{i\in S(u) - \{j\}} c_{j,i}}</script>
 </div>
-<p>其中：<span><span class="MathJax_Preview">c_{j,i}=\text{card}(S_{j,i}(\chi))</span><script type="math/tex">c_{j,i}=\text{card}(S_{j,i}(\chi))</script></span></p></div>
+<p>其中：<span><span class="MathJax_Preview">c_{j,i}=\text{card}(S_{j,i}(\chi))</span><script type="math/tex">c_{j,i}=\text{card}(S_{j,i}(\chi))</script></span>。式中<span><span class="MathJax_Preview">\sum_{i\in S(u) - \{j\}}</span><script type="math/tex">\sum_{i\in S(u) - \{j\}}</script></span>表示用户<span><span class="MathJax_Preview">u</span><script type="math/tex">u</script></span>评价的除<span><span class="MathJax_Preview">j</span><script type="math/tex">j</script></span>除外的物品，其他符号与上一节的含义相同。这个公式其实很好理解，<span><span class="MathJax_Preview">\text{dev}_{i,j}+u_i</span><script type="math/tex">\text{dev}_{i,j}+u_i</script></span>表示根据物品<span><span class="MathJax_Preview">i</span><script type="math/tex">i</script></span>预测得到的用户<span><span class="MathJax_Preview">u</span><script type="math/tex">u</script></span>对物品<span><span class="MathJax_Preview">j</span><script type="math/tex">j</script></span>的评分，在此基础上进行了加权平均就得到<span><span class="MathJax_Preview">P^{WS1}</span><script type="math/tex">P^{WS1}</script></span>。</p>
+<h4 id="pythonslope-one">使用Python实现Slope One算法<a class="headerlink" href="#pythonslope-one" title="Permanent link">&para;</a></h4></div>
         </div>
 
         <footer class="col-md-12">
