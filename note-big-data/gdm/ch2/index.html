@@ -8,7 +8,7 @@
         <meta name="author" content="Zhenhua Wang">
         <link rel="canonical" href="http://larryim.cc/note-big-data/gdm/ch2/">
         <link rel="shortcut icon" href="../../img/favicon.ico">
-        <title>Chapter 2: 推荐系统入门 - Zhenhua's Notes - Big Data</title>
+        <title>Chapter 2: 隐式评价和基于物品的过滤算法 - Zhenhua's Notes - Big Data</title>
         <link href="../../css/bootstrap-custom.min.css" rel="stylesheet">
         <link href="../../css/font-awesome-4.5.0.css" rel="stylesheet">
         <link href="../../css/base.css" rel="stylesheet">
@@ -225,48 +225,31 @@
 </li>
                             
 <li >
-    <a href="../ch1/">Chapter 1: 简介</a>
+    <a href="../ch1/">Chapter 1: 推荐系统入门</a>
 </li>
                             
 <li class="active">
-    <a href="./">Chapter 2: 推荐系统入门</a>
+    <a href="./">Chapter 2: 隐式评价和基于物品的过滤算法</a>
 </li>
                             
 <li >
-    <a href="../ch3/">Chapter 3: 隐式评价和基于物品的过滤算法</a>
+    <a href="../ch3/">Chapter 3: 分类</a>
 </li>
                             
 <li >
-    <a href="../ch4/">Chapter 4: 分类</a>
+    <a href="../ch4/">Chapter 4: 进一步探索分类</a>
 </li>
                             
 <li >
-    <a href="../ch5/">Chapter 5: 进一步探索分类</a>
+    <a href="../ch5/">Chapter 5: 概率和朴素贝叶斯</a>
 </li>
                             
 <li >
-    <a href="../ch6/">Chapter 6: 概率和朴素贝叶斯</a>
+    <a href="../ch6/">Chapter 6: 朴素贝叶斯和文本数据</a>
 </li>
                             
 <li >
-    <a href="../ch7/">Chapter 7: 朴素贝叶斯和文本数据</a>
-</li>
-                            
-<li >
-    <a href="../ch8/">Chapter 8: 聚类</a>
-</li>
-                        </ul>
-                    </li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">DataMining <b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                            
-<li >
-    <a href="../../datamining/">Contents</a>
-</li>
-                            
-<li >
-    <a href="../../datamining/guideToDataMining/">面向程序员的数据挖掘指南</a>
+    <a href="../ch7/">Chapter 7: 聚类</a>
 </li>
                         </ul>
                     </li>
@@ -312,11 +295,84 @@
         <div class="container">
                 <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#-2">面向程序员的数据挖掘指南 - 2 隐式评价和基于物品的过滤算法</a></li>
+        <li class="main "><a href="#_1">隐式评价</a></li>
+        <li class="main "><a href="#_2">基于物品的过滤算法</a></li>
+            <li><a href="#_3">修正的余弦相似度</a></li>
+            <li><a href="#_4">预测</a></li>
+        <li class="main "><a href="#slope-one">Slope One算法</a></li>
+            <li><a href="#_5">计算差值</a></li>
+            <li><a href="#slope-one_1">使用加权的Slope One算法进行预测</a></li>
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
 
-<p><strong><em>Chapter 2: 推荐系统入门</em></strong>*</p></div>
+<h3 id="-2"><strong>面向程序员的数据挖掘指南 - 2 隐式评价和基于物品的过滤算法</strong><a class="headerlink" href="#-2" title="Permanent link">&para;</a></h3>
+<h3 id="_1">隐式评价<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h3>
+<p>用户的评价类型可以分为显式评价和隐式评价。<strong>显式评价</strong>指的是用户明确地给出对物品的评价。最常见的例子是YouTube上的“喜欢”和“不喜欢”按钮，以及亚马逊的星级评价系统。</p>
+<p><strong>隐式评价</strong>，就是我们不让用户明确给出对物品的评价，而是通过观察他们的行为来获得偏好信息。示例之一是记录用户在纽约时报网上的点击记录，亚马逊上用户的实际购买记录。</p>
+<p>我们可以收集到哪些隐式评价呢？ e.g. 网页方面：页面点击、停留时间、重复访问次数、引用率、Hulu上观看视频的次数；音乐播放器：播放的曲目、跳过的曲目、播放次数；</p>
+<h3 id="_2">基于物品的过滤算法<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h3>
+<p>目前为止我们描述的都是基于用户的协同过滤算法：将一个用户和其他<em>所有</em>用户进行对比，找到相似的人。这种算法有两个弊端：</p>
+<ol>
+<li><strong>扩展性</strong>：随着用户数量的增加，其计算量也会增加。这种算法在只有几千个用户的情况下能够工作得很好，但达到一百万个用户时就会出现瓶颈。</li>
+<li><strong>稀疏性</strong>：大多数推荐系统中，用户仅仅对一小部分物品进行了评价，这就造成了数据的稀疏性。比如亚马逊有上百万本书，但用户只评论了很少一部分，于是就很难找到两个相似的用户了。</li>
+</ol>
+<h4 id="_3">修正的余弦相似度<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h4>
+<p>使用余弦相似度来计算两个物品的距离。由于“分数膨胀”现象，需要从用户的评价中减去他所有评价的均值，这就是修正的余弦相似度(Adjusted Cosine Similarity)。这个公式来自于一篇影响深远的论文《<a href="http://files.grouplens.org/papers/www10_sarwar.pdf">基于物品的协同过滤算法</a>》。</p>
+<div>
+<div class="MathJax_Preview">s(i,j) =\frac{\sum_{u\in U}(R_{u.i}-\bar R_u)(R_{u,j}-\bar R_u)}{\sqrt{\sum_{u\in U}(R_{u,i}-\bar R_u)^2}\sqrt{\sum_{u\in U}(R_{u,j}-\bar R_u)^2}}</div>
+<script type="math/tex; mode=display">s(i,j) =\frac{\sum_{u\in U}(R_{u.i}-\bar R_u)(R_{u,j}-\bar R_u)}{\sqrt{\sum_{u\in U}(R_{u,i}-\bar R_u)^2}\sqrt{\sum_{u\in U}(R_{u,j}-\bar R_u)^2}}</script>
+</div>
+<p><span><span class="MathJax_Preview">U</span><script type="math/tex">U</script></span>表示同时评价过物品<span><span class="MathJax_Preview">i</span><script type="math/tex">i</script></span>和<span><span class="MathJax_Preview">j</span><script type="math/tex">j</script></span>的用户集合， <span><span class="MathJax_Preview">\bar R_u</span><script type="math/tex">\bar R_u</script></span>表示用户<span><span class="MathJax_Preview">u</span><script type="math/tex">u</script></span>对所有物品的评价均值，<span><span class="MathJax_Preview">s(i,j)</span><script type="math/tex">s(i,j)</script></span>表示物品i和j的相似度。</p>
+<p><img alt="Relative performance of different similarity measures" src="../figures/Relative%20performance%20of%20different%20similarity%20measures.png" /></p>
+<p> <div class=codehilite><pre><span class=k>def</span> <span class=nf>cosinesimilarity</span><span class=p>(</span><span class=n>item1</span><span class=p>,</span> <span class=n>item2</span><span class=p>,</span> <span class=n>userRatings</span><span class=p>):</span>
+    <span class=n>averages</span> <span class=o>=</span> <span class=p>{}</span>
+    <span class=k>for</span> <span class=n>item</span><span class=p>,</span> <span class=n>ratings</span> <span class=ow>in</span> <span class=n>userRatings</span><span class=o>.</span><span class=n>items</span><span class=p>():</span>
+        <span class=n>averages</span><span class=p>[</span><span class=n>item</span><span class=p>]</span> <span class=o>=</span> <span class=p>(</span><span class=nb>float</span><span class=p>(</span><span class=nb>sum</span><span class=p>(</span><span class=n>ratings</span><span class=o>.</span><span class=n>values</span><span class=p>()))</span> <span class=o>/</span> <span class=nb>len</span><span class=p>(</span><span class=n>ratings</span><span class=o>.</span><span class=n>values</span><span class=p>()))</span>
+
+    <span class=n>num</span> <span class=o>=</span> <span class=mi>0</span>    <span class=c1># 分子</span>
+    <span class=n>dem1</span> <span class=o>=</span> <span class=mi>0</span>   <span class=c1># 分母的第一部分</span>
+    <span class=n>dem2</span> <span class=o>=</span> <span class=mi>0</span>
+    <span class=k>for</span> <span class=p>(</span><span class=n>user</span><span class=p>,</span> <span class=n>ratings</span><span class=p>)</span> <span class=ow>in</span> <span class=n>userRatings</span><span class=o>.</span><span class=n>items</span><span class=p>():</span>
+        <span class=k>if</span> <span class=n>item1</span> <span class=ow>in</span> <span class=n>ratings</span> <span class=ow>and</span> <span class=n>item2</span> <span class=ow>in</span> <span class=n>ratings</span><span class=p>:</span>
+            <span class=n>avg</span> <span class=o>=</span> <span class=n>averages</span><span class=p>[</span><span class=n>user</span><span class=p>]</span>
+            <span class=n>num</span> <span class=o>+=</span> <span class=p>(</span><span class=n>ratings</span><span class=p>[</span><span class=n>item1</span><span class=p>]</span> <span class=o>-</span> <span class=n>avg</span><span class=p>)</span> <span class=o>*</span> <span class=p>(</span><span class=n>ratings</span><span class=p>[</span><span class=n>item2</span><span class=p>]</span> <span class=o>-</span> <span class=n>avg</span><span class=p>)</span>
+            <span class=n>dem1</span> <span class=o>+=</span> <span class=p>(</span><span class=n>ratings</span><span class=p>[</span><span class=n>item1</span><span class=p>]</span> <span class=o>-</span> <span class=n>avg</span><span class=p>)</span> <span class=o>**</span> <span class=mi>2</span>
+            <span class=n>dem2</span> <span class=o>+=</span> <span class=p>(</span><span class=n>ratings</span><span class=p>[</span><span class=n>item1</span><span class=p>]</span> <span class=o>-</span> <span class=n>avg</span><span class=p>)</span> <span class=o>**</span> <span class=mi>2</span>
+    <span class=k>return</span> <span class=n>num</span> <span class=o>/</span> <span class=p>(</span><span class=n>math</span><span class=o>.</span><span class=n>sqrt</span><span class=p>(</span><span class=n>dem1</span><span class=p>)</span> <span class=o>*</span> <span class=n>math</span><span class=o>.</span><span class=n>sqrt</span><span class=p>(</span><span class=n>dem2</span><span class=p>))</span>
+</pre></div></p>
+<h4 id="_4">预测<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h4>
+<p>那下面该如何使用它来做预测呢？比如我想知道David有多喜欢Kacey Musgraves？</p>
+<div>
+<div class="MathJax_Preview">p(u,i) = \frac{{\sum_{N\in \text{similarTo}(i)}(S_{i,N}\times R_{u,N})}}{\sum_{N\in \text{similarTo}(i)}|S_{i,N}|}</div>
+<script type="math/tex; mode=display">p(u,i) = \frac{{\sum_{N\in \text{similarTo}(i)}(S_{i,N}\times R_{u,N})}}{\sum_{N\in \text{similarTo}(i)}|S_{i,N}|}</script>
+</div>
+<p>其中<span><span class="MathJax_Preview">p(u,i)</span><script type="math/tex">p(u,i)</script></span>表示预测的用户<span><span class="MathJax_Preview">u</span><script type="math/tex">u</script></span>对物品<span><span class="MathJax_Preview">i</span><script type="math/tex">i</script></span>的评分，<span><span class="MathJax_Preview">S_{i,N}</span><script type="math/tex">S_{i,N}</script></span>表示物品<span><span class="MathJax_Preview">i</span><script type="math/tex">i</script></span>和<span><span class="MathJax_Preview">N</span><script type="math/tex">N</script></span>的相似度，<span><span class="MathJax_Preview">R_{u,N}</span><script type="math/tex">R_{u,N}</script></span>表示用户<span><span class="MathJax_Preview">u</span><script type="math/tex">u</script></span>对物品<span><span class="MathJax_Preview">N</span><script type="math/tex">N</script></span>的评分。<span><span class="MathJax_Preview">N</span><script type="math/tex">N</script></span>是一个物品的集合，有如下特性:用户<span><span class="MathJax_Preview">u</span><script type="math/tex">u</script></span>对集合中的物品打过分，物品<span><span class="MathJax_Preview">i</span><script type="math/tex">i</script></span>和集合中的物品有相似度数据。</p>
+<h3 id="slope-one">Slope One算法<a class="headerlink" href="#slope-one" title="Permanent link">&para;</a></h3>
+<p>Slope One是另一种比较流行的基于物品的协同过滤算法。它最大的优势是简单，因此易于实现。Slope One算法是在一篇名为《<a href="https://arxiv.org/abs/cs/0702144">Slope One：基于在线评分系统的协同过滤算法</a>》的论文中提出的，由Lemire和Machlachlan合著。这篇论文非常值得一读。</p>
+<p>我们用一个简单的例子来了解这个算法。假设A给Item I打了1分，Item J打了1.5分；B给Item I打了2分。我们要预测B会给Item J打几分。我们可以用以下逻辑来预测B对Item J的评分：由于A给Item J打的分数要比Item I的高0.5分，所以我们预测B也会给高0.5分。</p>
+<p><img alt="BasisofSLOPEONEscheme" src="../figures/BasisofSLOPEONEscheme.png" /></p>
+<p>可以将Slope One分为两个步骤： </p>
+<ul>
+<li>首先需要计算出两两物品之间的差值（可以在夜间批量计算）。</li>
+<li>第二步则是进行预测，比如一个新用户Ben来到了我们网站，他从未听过Whitney Houston的歌曲，我们想要预测他是否喜欢这位歌手。</li>
+</ul>
+<h4 id="_5">计算差值<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h4>
+<p>物品<span><span class="MathJax_Preview">i</span><script type="math/tex">i</script></span>与物品<span><span class="MathJax_Preview">j</span><script type="math/tex">j</script></span>之间的平均差异是：</p>
+<div>
+<div class="MathJax_Preview">\text{dev}_{i,j}=\sum_{u\in S_{i,j}(X)}\frac{u_i-u_j}{\text{card}(S_{i,j}(X))}</div>
+<script type="math/tex; mode=display">\text{dev}_{i,j}=\sum_{u\in S_{i,j}(X)}\frac{u_i-u_j}{\text{card}(S_{i,j}(X))}</script>
+</div>
+<p>其中<span><span class="MathJax_Preview">S_{i,j}(X)</span><script type="math/tex">S_{i,j}(X)</script></span>表示包含同时评价过<span><span class="MathJax_Preview">i,j</span><script type="math/tex">i,j</script></span>的用户，<span><span class="MathJax_Preview">\text{card}(S)</span><script type="math/tex">\text{card}(S)</script></span>表示<span><span class="MathJax_Preview">S</span><script type="math/tex">S</script></span>中有多少个元素，<span><span class="MathJax_Preview">X</span><script type="math/tex">X</script></span>表示所有评分值的集合；</p>
+<p>如果有一个新进的用户对10个歌手做了评价，我们是否需要重新计算20万×20万的差异数据，或是有其他更简单的方法？ 答案是你不需要计算整个数据集，这正是Slope One的美妙之处。对于两个物品，我们只需记录同时评价过这对物品的用户数就可以了。</p>
+<h4 id="slope-one_1">使用加权的Slope One算法进行预测<a class="headerlink" href="#slope-one_1" title="Permanent link">&para;</a></h4>
+<p>使用加权的Slope One算法来进行预测，用<span><span class="MathJax_Preview">P^{WS1}</span><script type="math/tex">P^{WS1}</script></span> 来表示，公式为：</p>
+<div>
+<div class="MathJax_Preview">P^{wS1}(u)_j=\frac{\sum_{i\in S(u) - \{j\}}(\text{dev}_{i,j}+u_i)c_{j,i}}{\sum_{i\in S(u) - \{j\}} c_{j,i}}</div>
+<script type="math/tex; mode=display">P^{wS1}(u)_j=\frac{\sum_{i\in S(u) - \{j\}}(\text{dev}_{i,j}+u_i)c_{j,i}}{\sum_{i\in S(u) - \{j\}} c_{j,i}}</script>
+</div>
+<p>其中：<span><span class="MathJax_Preview">c_{j,i}=\text{card}(S_{j,i}(\chi))</span><script type="math/tex">c_{j,i}=\text{card}(S_{j,i}(\chi))</script></span></p></div>
         </div>
 
         <footer class="col-md-12">
