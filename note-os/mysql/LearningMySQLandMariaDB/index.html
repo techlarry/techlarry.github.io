@@ -510,9 +510,11 @@
         <li class="main "><a href="#1-introduction">1 Introduction</a></li>
         <li class="main "><a href="#2-installing-mysql">2 Installing MySQL</a></li>
             <li><a href="#setting-initial-password-for-root">Setting Initial Password for root</a></li>
-        <li class="main "><a href="#3-the-basics-and-the-mysql-client">3 The Basics and the mysql Client**</a></li>
+        <li class="main "><a href="#3-the-basics-and-the-mysql-client">3 The Basics and the mysql Client</a></li>
             <li><a href="#the-mysql-client">The mysql Client</a></li>
             <li><a href="#connecting-to-the-server">Connecting to the Server</a></li>
+        <li class="main "><a href="#4-creating-databases-and-tables">4 Creating Databases and Tables</a></li>
+            <li><a href="#creating-a-database">Creating a Database</a></li>
         <li class="main "><a href="#13-backing-up-and-restoring-databases">13 Backing Up and Restoring Databases</a></li>
             <li><a href="#making-backups">Making Backups</a></li>
             <li><a href="#restoring-backups">Restoring Backups</a></li>
@@ -531,17 +533,36 @@
 <p>You can change the password for the root user in MySQL in a few ways. One way is to use the administration utility, <C>mysqladmin</C>. Enter the following from the command line:</p>
 <p> <div class=codehilite><pre>mysqladmin -u root -p flush-privileges password &quot;new_pwd&quot;
 </pre></div></p>
-<h3 id="3-the-basics-and-the-mysql-client">3 The Basics and the mysql Client**<a class="headerlink" href="#3-the-basics-and-the-mysql-client" title="Permanent link">&para;</a></h3>
+<h3 id="3-the-basics-and-the-mysql-client">3 The Basics and the mysql Client<a class="headerlink" href="#3-the-basics-and-the-mysql-client" title="Permanent link">&para;</a></h3>
 <h4 id="the-mysql-client">The mysql Client<a class="headerlink" href="#the-mysql-client" title="Permanent link">&para;</a></h4>
 <p>With the <C>mysql</C> client, you may interact with the MySQL or MariaDB server from the command line.</p>
 <h4 id="connecting-to-the-server">Connecting to the Server<a class="headerlink" href="#connecting-to-the-server" title="Permanent link">&para;</a></h4>
 <p>Once you know your MySQL username and password, you can connect to the MySQL server with the <C>mysql</C> client.</p>
 <p> <div class=codehilite><pre>mysql -u root -p
 </pre></div></p>
+<h3 id="4-creating-databases-and-tables">4 Creating Databases and Tables<a class="headerlink" href="#4-creating-databases-and-tables" title="Permanent link">&para;</a></h3>
+<h4 id="creating-a-database">Creating a Database<a class="headerlink" href="#creating-a-database" title="Permanent link">&para;</a></h4>
+<p>Use the SQL statement CREATE DATABASE.</p>
+<p> <div class=codehilite><pre><span class=k>create</span> <span class=k>database</span> <span class=k>database</span><span class=o>-</span><span class=n>name</span><span class=p>;</span>
+</pre></div></p>
+<p>To validate your creation of the database, </p>
+<p> <div class=codehilite><pre><span class=k>show</span> <span class=n>databases</span><span class=p>;</span>
+</pre></div></p>
+<p>To delete a database, using the SQL statement DROP DATABASE</p>
+<p> <div class=codehilite><pre><span class=k>drop</span> <span class=k>database</span> <span class=k>database</span><span class=o>-</span><span class=n>name</span><span class=p>;</span>
+</pre></div></p>
 <h3 id="13-backing-up-and-restoring-databases">13 Backing Up and Restoring Databases<a class="headerlink" href="#13-backing-up-and-restoring-databases" title="Permanent link">&para;</a></h3>
 <h4 id="making-backups">Making Backups<a class="headerlink" href="#making-backups" title="Permanent link">&para;</a></h4>
+<p>If you have shell or telnet access to your web server, you can backup your MySQL data by using the <C>mysqldump</C> command. </p>
+<p> <div class=codehilite><pre>$ mysqldump --opt -u <span class=o>[</span>uname<span class=o>]</span> -p<span class=o>[</span>pass<span class=o>]</span> <span class=o>[</span>dbname<span class=o>]</span> &gt; <span class=o>[</span>backupfile.sql<span class=o>]</span>
+</pre></div></p>
+<p>If you want to back up all the databases in the server at one time you should use the <C>--all-databases</C> option. It tells MySQL to dump all the databases it has in storage.</p>
+<p> <div class=codehilite><pre>$ mysqldump -u root -p --all-databases &gt; alldb_backup.sql
+</pre></div></p>
 <h4 id="restoring-backups">Restoring Backups<a class="headerlink" href="#restoring-backups" title="Permanent link">&para;</a></h4>
-<p>If data is lost in MySQL, but you&rsquo;ve been using <C>mysqldump</C> to make regular backups of the data, you can use the dump files to restore the data.</p></div>
+<p>If data is lost in MySQL, but you&rsquo;ve been using <C>mysqldump</C> to make regular backups of the data, you can use the dump files to restore the data.</p>
+<p> <div class=codehilite><pre><span class=n>mysql</span> <span class=o>-</span><span class=n>u</span> <span class=o>[</span><span class=n>uname</span><span class=o>]</span> <span class=o>-</span><span class=n>p</span><span class=o>[</span><span class=n>pass</span><span class=o>]</span> <span class=o>[</span><span class=n>db_to_restore</span><span class=o>]</span> <span class=o>&lt;</span> <span class=o>[</span><span class=n>backupfile</span><span class=o>.</span><span class=na>sql</span><span class=o>]</span>
+</pre></div></p></div>
         </div>
 
         <footer class="col-md-12">

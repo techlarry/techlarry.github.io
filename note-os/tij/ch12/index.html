@@ -507,11 +507,154 @@
                 <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
         <li class="main active"><a href="#thinking-in-java-12-holding-your-objects">Thinking in Java 12 - Holding Your Objects</a></li>
+            <li><a href="#generics-and-type-safe-containers">Generics and type-safe containers</a></li>
+            <li><a href="#basic-concepts">Basic concepts</a></li>
+            <li><a href="#adding-groups-of-elements">Adding groups of elements</a></li>
+            <li><a href="#printing-containers">Printing containers</a></li>
+            <li><a href="#list">List</a></li>
+            <li><a href="#listiterator">ListIterator</a></li>
+            <li><a href="#set">Set</a></li>
+            <li><a href="#map">Map</a></li>
+            <li><a href="#priorityqueue">PriorityQueue</a></li>
+            <li><a href="#foreach-and-iterators">Foreach and iterators</a></li>
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
 
-<h3 id="thinking-in-java-12-holding-your-objects"><strong>Thinking in Java 12 - Holding Your Objects</strong><a class="headerlink" href="#thinking-in-java-12-holding-your-objects" title="Permanent link">&para;</a></h3></div>
+<h3 id="thinking-in-java-12-holding-your-objects"><strong>Thinking in Java 12 - Holding Your Objects</strong><a class="headerlink" href="#thinking-in-java-12-holding-your-objects" title="Permanent link">&para;</a></h3>
+<p>The <C>java.util</C> library has a reasonably complete set of container classes, the basic types of which are <C>List</C>, <C>Set</C>, <C>Queue</C>, and <C>Map</C>.</p>
+<h4 id="generics-and-type-safe-containers">Generics and type-safe containers<a class="headerlink" href="#generics-and-type-safe-containers" title="Permanent link">&para;</a></h4>
+<p>One of the problems of using pre-Java SE5 containers was that the compiler allowed you to insert an incorrect type into a container.</p>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>ApplesAndOrangesWithoutGenerics</span> <span class=o>{</span>
+  <span class=nd>@SuppressWarnings</span><span class=o>(</span><span class=s>&quot;unchecked&quot;</span><span class=o>)</span>
+  <span class=kd>public</span> <span class=kd>static</span> <span class=kt>void</span> <span class=nf>main</span><span class=o>(</span><span class=n>String</span><span class=o>[]</span> <span class=n>args</span><span class=o>)</span> <span class=o>{</span>
+    <span class=n>ArrayList</span> <span class=n>apples</span> <span class=o>=</span> <span class=k>new</span> <span class=n>ArrayList</span><span class=o>();</span>
+    <span class=k>for</span><span class=o>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=o>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=mi>3</span><span class=o>;</span> <span class=n>i</span><span class=o>++)</span>
+      <span class=n>apples</span><span class=o>.</span><span class=na>add</span><span class=o>(</span><span class=k>new</span> <span class=n>Apple</span><span class=o>());</span>
+    <span class=c1>// Not prevented from adding an Orange to apples:</span>
+    <span class=n>apples</span><span class=o>.</span><span class=na>add</span><span class=o>(</span><span class=k>new</span> <span class=n>Orange</span><span class=o>());</span>
+    <span class=k>for</span><span class=o>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=o>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>apples</span><span class=o>.</span><span class=na>size</span><span class=o>();</span> <span class=n>i</span><span class=o>++)</span>
+      <span class=o>((</span><span class=n>Apple</span><span class=o>)</span><span class=n>apples</span><span class=o>.</span><span class=na>get</span><span class=o>(</span><span class=n>i</span><span class=o>)).</span><span class=na>id</span><span class=o>();</span>
+      <span class=c1>// Orange is detected only at run time</span>
+  <span class=o>}</span>
+<span class=o>}</span>
+
+<span class=c1>//output: Exception in thread &quot;main&quot; </span>
+<span class=n>java</span><span class=o>.</span><span class=na>lang</span><span class=o>.</span><span class=na>ClassCastException</span><span class=o>:</span> <span class=n>holding</span><span class=o>.</span><span class=na>Orange</span> <span class=n>cannot</span> <span class=n>be</span> <span class=n>cast</span> <span class=n>to</span> <span class=n>holding</span><span class=o>.</span><span class=na>Apple</span>
+</pre></div></p>
+<p>With generics, you're prevented, at <strong>compile</strong> time, from putting the wrong type of object into a container. Now the compiler will prevent you from putting an Orange into apples, so it becomes a compile-time error rather than a runtime error.</p>
+<h4 id="basic-concepts">Basic concepts<a class="headerlink" href="#basic-concepts" title="Permanent link">&para;</a></h4>
+<p>The Java container library takes the idea of "holding your objects" and divides it into two distinct concepts, expressed as the basic interfaces of the library:</p>
+<ul>
+<li><C>Collection</C>: a sequence of individual elements with one or more rules applied to them.<ul>
+<li><C>List</C>, <C>Set</C>, <C>Queue</C></li>
+<li>The <C>Collection</C> interface generalizes the idea of a <em>sequence</em>—a way of holding a group of objects. </li>
+</ul>
+</li>
+<li><C>Map</C>: a group of key-value object pairs, allowing you to look up a value using a key.</li>
+</ul>
+<h4 id="adding-groups-of-elements">Adding groups of elements<a class="headerlink" href="#adding-groups-of-elements" title="Permanent link">&para;</a></h4>
+<ul>
+<li><C>Arrays.asList()</C> takes either an array or a comma-separated list of elements (using varargs) and turns it into a <C>List</C> object. </li>
+<li><C>Collections.addAll()</C> takes a <C>Collection</C> object and either an array or a comma-separated list and adds the elements to the <C>Collection</C>.</li>
+</ul>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>Arrays</span> <span class=o>{</span> 
+<span class=o>...</span>
+    <span class=kd>public</span> <span class=kd>static</span> <span class=o>&lt;</span><span class=n>T</span><span class=o>&gt;</span> <span class=n>List</span><span class=o>&lt;</span><span class=n>T</span><span class=o>&gt;</span> <span class=nf>asList</span><span class=o>(</span><span class=n>T</span><span class=o>...</span> <span class=n>a</span><span class=o>)</span> <span class=o>{</span>
+        <span class=k>return</span> <span class=k>new</span> <span class=n>ArrayList</span><span class=o>&lt;&gt;(</span><span class=n>a</span><span class=o>);</span>
+    <span class=o>}</span>
+<span class=o>...</span>
+</pre></div></p>
+<h4 id="printing-containers">Printing containers<a class="headerlink" href="#printing-containers" title="Permanent link">&para;</a></h4>
+<p>You must use <C>Arrays.toString()</C> to produce a printable representation of an array, but the containers print nicely without any help.</p>
+<h4 id="list">List<a class="headerlink" href="#list" title="Permanent link">&para;</a></h4>
+<p>Lists promise to maintain elements in a particular sequence. The <C>List</C> interface adds a number of methods to <C>Collection</C> that allow insertion and removal of elements in the middle of a <C>List</C>.</p>
+<p>There are two types of <C>List</C>:</p>
+<ul>
+<li>The basic <C>ArrayList</C>, which excels at randomly accessing elements, but is slower when inserting and removing elements in the middle of a List.</li>
+<li>The <C>LinkedList</C>, which provides optimal sequential access, with inexpensive insertions and deletions from the middle of the List. A <C>LinkedList</C> is relatively slow for random access, but it has a larger feature set than the <C>ArrayList</C>.</li>
+</ul>
+<h4 id="listiterator">ListIterator<a class="headerlink" href="#listiterator" title="Permanent link">&para;</a></h4>
+<p>The <C>ListIterator</C> is a more powerful subtype of <C>Iterator</C> that is produced only by <C>List</C> classes. While <C>Iterator</C> can only move forward, <C>ListIterator</C> is bidirectional.</p>
+<p><img alt="listIterator" src="../figures/listIterator.png" /></p>
+<p>A <C>ListIterator</C> has no current element; its <I>cursor position</I> always lies between the element that would be returned by a call to <C>previous()</C> and the element that would be returned by a call to <C>next()</C>. An iterator for a list of length n has n+1 possible
+cursor positions, as illustrated by the carets (^ ) below:</p>
+<p> <div class=codehilite><pre>                     Element(0)   Element(1)   Element(2)   ... Element(n-1)
+cursor positions:  ^            ^            ^            ^      
+</pre></div></p>
+<p>An example:</p>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>ListIteration</span> <span class=o>{</span>
+  <span class=kd>public</span> <span class=kd>static</span> <span class=kt>void</span> <span class=nf>main</span><span class=o>(</span><span class=n>String</span><span class=o>[]</span> <span class=n>args</span><span class=o>)</span> <span class=o>{</span>
+    <span class=n>List</span><span class=o>&lt;</span><span class=n>Pet</span><span class=o>&gt;</span> <span class=n>pets</span> <span class=o>=</span> <span class=n>Pets</span><span class=o>.</span><span class=na>arrayList</span><span class=o>(</span><span class=mi>8</span><span class=o>);</span>
+    <span class=n>ListIterator</span><span class=o>&lt;</span><span class=n>Pet</span><span class=o>&gt;</span> <span class=n>it</span> <span class=o>=</span> <span class=n>pets</span><span class=o>.</span><span class=na>listIterator</span><span class=o>();</span>
+    <span class=k>while</span><span class=o>(</span><span class=n>it</span><span class=o>.</span><span class=na>hasNext</span><span class=o>())</span>
+      <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>print</span><span class=o>(</span><span class=n>it</span><span class=o>.</span><span class=na>next</span><span class=o>()</span> <span class=o>+</span> <span class=s>&quot;, &quot;</span> <span class=o>+</span> <span class=n>it</span><span class=o>.</span><span class=na>nextIndex</span><span class=o>()</span> <span class=o>+</span>
+        <span class=s>&quot;, &quot;</span> <span class=o>+</span> <span class=n>it</span><span class=o>.</span><span class=na>previousIndex</span><span class=o>()</span> <span class=o>+</span> <span class=s>&quot;; &quot;</span><span class=o>);</span>
+    <span class=o>}</span>
+  <span class=o>}</span>
+<span class=o>}</span> 
+<span class=c1>// Output:</span>
+<span class=c1>// Rat, 1, 0; Manx, 2, 1; Cymric, 3, 2; Mutt, 4, 3; Pug, 5, 4; </span>
+<span class=c1>// Cymric, 6, 5; Pug, 7, 6; Manx, 8, 7;</span>
+</pre></div></p>
+<h4 id="set">Set<a class="headerlink" href="#set" title="Permanent link">&para;</a></h4>
+<ul>
+<li><C>TreeSet</C> keeps elements sorted into a red-black tree data structure.</li>
+<li><C>HashSet</C> uses the hashing function.</li>
+<li><C>LinkedHashSet</C> also uses hashing for lookup speed, but appears to maintain elements in insertion order using a linked list.</li>
+</ul>
+<p>If you want the results to be sorted, one approach is to use a <C>TreeSet</C> instead of a <C>HashSet</C>.</p>
+<h4 id="map">Map<a class="headerlink" href="#map" title="Permanent link">&para;</a></h4>
+<p><C>LinkedList</C> has methods to support queue behavior and it implements the <C>Queue</C> interface, so a <C>LinkedList</C> can be used as a <C>Queue</C> implementation by upcasting a <C>LinkedList</C> to a <C>Queue</C>.</p>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>LinkedList</span><span class=o>&lt;</span><span class=n>E</span><span class=o>&gt;</span>
+    <span class=kd>extends</span> <span class=n>AbstractSequentialList</span><span class=o>&lt;</span><span class=n>E</span><span class=o>&gt;</span>
+    <span class=kd>implements</span> <span class=n>List</span><span class=o>&lt;</span><span class=n>E</span><span class=o>&gt;,</span> <span class=n>Deque</span><span class=o>&lt;</span><span class=n>E</span><span class=o>&gt;,</span> <span class=n>Cloneable</span><span class=o>,</span> <span class=n>java</span><span class=o>.</span><span class=na>io</span><span class=o>.</span><span class=na>Serializable</span>
+</pre></div></p>
+<p>Interface <C>Queue</C>:</p>
+<p><img alt="InterfaceQueue" src="../figures/InterfaceQueue.png" /></p>
+<p><C>offer()</C> inserts an element at the tail of the queue if it can, or returns false. Both <C>peek()</C> and <C>element()</C> return the head of the queue without removing it, but <C>peek()</C> returns null if the queue is empty and <C>element()</C> throws <C>NoSuchElementException</C>. Both <C>poll()</C> and <C>remove()</C> remove and return the head of the queue, but <C>poll()</C> returns null if the queue is empty, while <C>remove()</C>throws<C>NoSuchElementException</C>.</p>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>QueueDemo</span> <span class=o>{</span>
+  <span class=kd>public</span> <span class=kd>static</span> <span class=kt>void</span> <span class=nf>printQ</span><span class=o>(</span><span class=n>Queue</span> <span class=n>queue</span><span class=o>)</span> <span class=o>{</span>
+    <span class=k>while</span><span class=o>(</span><span class=n>queue</span><span class=o>.</span><span class=na>peek</span><span class=o>()</span> <span class=o>!=</span> <span class=kc>null</span><span class=o>)</span>
+      <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>print</span><span class=o>(</span><span class=n>queue</span><span class=o>.</span><span class=na>remove</span><span class=o>()</span> <span class=o>+</span> <span class=s>&quot; &quot;</span><span class=o>);</span>
+    <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>();</span>
+  <span class=o>}</span>
+  <span class=kd>public</span> <span class=kd>static</span> <span class=kt>void</span> <span class=nf>main</span><span class=o>(</span><span class=n>String</span><span class=o>[]</span> <span class=n>args</span><span class=o>)</span> <span class=o>{</span>
+    <span class=n>Queue</span><span class=o>&lt;</span><span class=n>Integer</span><span class=o>&gt;</span> <span class=n>queue</span> <span class=o>=</span> <span class=k>new</span> <span class=n>LinkedList</span><span class=o>&lt;</span><span class=n>Integer</span><span class=o>&gt;();</span>
+    <span class=n>Random</span> <span class=n>rand</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Random</span><span class=o>(</span><span class=mi>47</span><span class=o>);</span>
+    <span class=k>for</span><span class=o>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=o>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=mi>10</span><span class=o>;</span> <span class=n>i</span><span class=o>++)</span>
+      <span class=n>queue</span><span class=o>.</span><span class=na>offer</span><span class=o>(</span><span class=n>rand</span><span class=o>.</span><span class=na>nextInt</span><span class=o>(</span><span class=n>i</span> <span class=o>+</span> <span class=mi>10</span><span class=o>));</span>
+    <span class=n>printQ</span><span class=o>(</span><span class=n>queue</span><span class=o>);</span>
+    <span class=n>Queue</span><span class=o>&lt;</span><span class=n>Character</span><span class=o>&gt;</span> <span class=n>qc</span> <span class=o>=</span> <span class=k>new</span> <span class=n>LinkedList</span><span class=o>&lt;</span><span class=n>Character</span><span class=o>&gt;();</span>
+    <span class=k>for</span><span class=o>(</span><span class=kt>char</span> <span class=n>c</span> <span class=o>:</span> <span class=s>&quot;Brontosaurus&quot;</span><span class=o>.</span><span class=na>toCharArray</span><span class=o>())</span>
+      <span class=n>qc</span><span class=o>.</span><span class=na>offer</span><span class=o>(</span><span class=n>c</span><span class=o>);</span>
+    <span class=n>printQ</span><span class=o>(</span><span class=n>qc</span><span class=o>);</span>
+  <span class=o>}</span>
+<span class=o>}</span> <span class=cm>/* Output:</span>
+<span class=cm>8 1 1 1 5 14 3 1 0 1</span>
+<span class=cm>B r o n t o s a u r u s</span>
+<span class=cm>*/</span><span class=c1>//:~</span>
+</pre></div></p>
+<h4 id="priorityqueue">PriorityQueue<a class="headerlink" href="#priorityqueue" title="Permanent link">&para;</a></h4>
+<p>The elements of the priority queue are ordered according to their <C>Comparable</C> natural ordering, or by a <C>Comparator</C> provided at queue construction time, depending on which constructor is used. </p>
+<p> <div class=codehilite><pre><span class=c1>// natural order</span>
+<span class=n>PriorityQueue</span><span class=o>&lt;</span><span class=n>Integer</span><span class=o>&gt;</span> <span class=n>priorityQueue</span> <span class=o>=</span> <span class=k>new</span> <span class=n>PriorityQueue</span><span class=o>&lt;</span><span class=n>Integer</span><span class=o>&gt;();</span>
+<span class=c1>// reverse natural order</span>
+<span class=n>priorityQueue</span> <span class=o>=</span> <span class=k>new</span> <span class=n>PriorityQueue</span><span class=o>&lt;</span><span class=n>Integer</span><span class=o>&gt;(</span><span class=n>ints</span><span class=o>.</span><span class=na>size</span><span class=o>(),</span> <span class=n>Collections</span><span class=o>.</span><span class=na>reverseOrder</span><span class=o>());</span>
+</pre></div></p>
+<h4 id="foreach-and-iterators">Foreach and iterators<a class="headerlink" href="#foreach-and-iterators" title="Permanent link">&para;</a></h4>
+<p>Java SE5 introduced a new interface called <C>Iterable</C> which contains an <C>iterator()</C> method to produce an <C>Iterator</C>, and the <C>Iterable</C> interface is what foreach uses to move through a sequence. So if you create any class that implements <C>Iterable</C>, you can use it in a foreach statement.</p>
+<p>From Java SE5, a number of classes have been made <C>Iterable</C>, primarily all <C>Collection</C> classes (but not <C>Maps</C>).</p>
+<p><C>Map.entrySet()</C> produces a <C>Set</C> of <C>Map.Entry</C> elements, and a <C>Set</C> is <C>Iterable</C> so it can be used in a foreach loop.</p>
+<p> <div class=codehilite><pre><span class=n>HashMap</span><span class=o>&lt;</span><span class=n>String</span><span class=o>,</span> <span class=n>HashMap</span><span class=o>&gt;</span> <span class=n>selects</span> <span class=o>=</span> <span class=k>new</span> <span class=n>HashMap</span><span class=o>&lt;</span><span class=n>String</span><span class=o>,</span> <span class=n>HashMap</span><span class=o>&gt;();</span>
+<span class=k>for</span><span class=o>(</span><span class=n>Map</span><span class=o>.</span><span class=na>Entry</span><span class=o>&lt;</span><span class=n>String</span><span class=o>,</span> <span class=n>HashMap</span><span class=o>&gt;</span> <span class=n>entry</span> <span class=o>:</span> <span class=n>selects</span><span class=o>.</span><span class=na>entrySet</span><span class=o>())</span> <span class=o>{</span>
+    <span class=n>String</span> <span class=n>key</span> <span class=o>=</span> <span class=n>entry</span><span class=o>.</span><span class=na>getKey</span><span class=o>();</span>
+    <span class=n>HashMap</span> <span class=n>value</span> <span class=o>=</span> <span class=n>entry</span><span class=o>.</span><span class=na>getValue</span><span class=o>();</span>
+
+    <span class=c1>// do what you have to do here</span>
+    <span class=c1>// In your case, another loop.</span>
+<span class=o>}</span>
+</pre></div></p></div>
         </div>
 
         <footer class="col-md-12">

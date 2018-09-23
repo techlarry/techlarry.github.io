@@ -742,7 +742,10 @@
 <p><strong><em>reference</em></strong> equality v.s. <strong><em>object</em></strong> equality.</p>
 <p><strong>Reference equality</strong>: Two references that refer to the same object on the heap are equal. If you want to know if two references are really referring to the same object, use the == operator, which (remember) compares the bits in the variables. If both references point to the same object, the bits will be identical.</p>
 <p><strong>Object equality</strong>: Two references, two objects on the heap, but the objects are considered <em>meaningfully equivalent</em>. If you want to treat two different objects as equal, you must override both the <C>hashCode()</C> and <C>equals()</C> methods inherited from class <C>Object</C>.</p>
-<p>Question: How a <C>HashSet</C> checks for duplicates: <C>hashCode()</C> and <C>equals()</C>?</p>
+<div class="admonition question">
+<p class="admonition-title">Question</p>
+<p>How a <C>HashSet</C> checks for duplicates: <C>hashCode()</C> and <C>equals()</C>?</p>
+</div>
 <p>When you put an object into a <C>HashSet</C>, it uses the object's hashcode value to determine where to put the object in the <C>Set</C>. But it also compares the object's hashcode to the hashcode of all the other objects of the <C>HashSet</C>, and if there's no matching hashcode, the <C>HashSet</C> assumes that this new object is not a duplicate. If the <C>HashSet</C> finds a matching hashcode for two objects, the <C>HashSet</C> will then call one of the object's <C>equals()</C> methods to see if these hashcode-matched objects really <em>are</em> equal.</p>
 <p>The <C>Song</C> class with overriden <C>hashcode</C> and <C>equals()</C>.</p>
 <p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>Song</span> <span class=kd>implements</span> <span class=n>Comparable</span> <span class=o>&lt;</span><span class=n>Song</span><span class=o>&gt;</span>
@@ -766,17 +769,17 @@
 <span class=c1>// We can add all the songs from the HashSet using addAll().</span>
 <span class=n>songSet</span><span class=o>.</span><span class=na>addAll</span><span class=o>(</span><span class=n>songList</span><span class=o>);</span> 
 </pre></div></p>
-<p><strong>Java Object Law For <C>HashCode()</C> and <C>equals()</C></strong>:</p>
+<p><hh>Java Object Law For <C>HashCode()</C> and <C>equals()</C><hh>:</p>
 <p>The API docs for class <C>Object</C> state the rules you MUST follow:</p>
 <ul>
 <li>If two objects are equal, they MUST have matching hashcodes.</li>
-<li>If two objects are equal, calling <C>equals()</C> on either object MUST return true. In other words, if (a.equals(b)) then (b.equals(a)).</li>
+<li>If two objects are equal, calling <C>equals()</C> on either object MUST return true. In other words, <code class="codehilite"><span class="k">if</span> <span class="o">(</span><span class="n">a</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">b</span><span class="o">))</span> <span class="n">then</span> <span class="o">(</span><span class="n">b</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">a</span><span class="o">))</span></code>.</li>
 <li>If two objects have the same hashcode value, they are NOT required to be equal. But if they’re equal, they MUST have the same hashcode value.</li>
 <li>So, if you override <C>equals()</C>, you MUST override <C>hashCode()</C>.</li>
 <li>The default behavior of <C>hashCode()</C> is to generate a unique integer for each object on the heap. So if you don’t override <C>hashCode()</C> in a class, no two objects of that type can EVER be considered equal.</li>
 <li>The default behavior of <C>equals()</C> is to do an == comparison. In other words, to test whether the two references refer to a single object on the heap. So if you don’t override <C>equals()</C> in a class, no two objects can EVER be considered equal since references to two different objects will always contain a different bit pattern.<ul>
 <li><C>a.equals(b)</C> must also mean that <C>a.hashCode() == b.hashCode()</C></li>
-<li>But <C>a.hashCode() == b.hashCode(</C>) does NOT have to mean <C>a.equals(b)</C></li>
+<li>But <C>a.hashCode() == b.hashCode()</C> does NOT have to mean <C>a.equals(b)</C></li>
 </ul>
 </li>
 </ul>

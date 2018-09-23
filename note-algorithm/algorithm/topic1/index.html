@@ -6,9 +6,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         
         <meta name="author" content="Zhenhua Wang">
-        <link rel="canonical" href="http://larryim.cc/note/algorithm/ch1/">
+        <link rel="canonical" href="http://larryim.cc/note/algorithm/topic1/">
         <link rel="shortcut icon" href="../../img/favicon.ico">
-        <title>Chapter 1: Fundamentals  - Zhenhua's Notes - Algorithm</title>
+        <title>Topic 1: UnionFind  - Zhenhua's Notes - Algorithm</title>
         <link href="../../css/bootstrap-custom.min.css" rel="stylesheet">
         <link href="../../css/font-awesome-4.5.0.css" rel="stylesheet">
         <link href="../../css/base.css" rel="stylesheet">
@@ -67,27 +67,11 @@
 </li>
                             
 <li class="active">
-    <a href="./">Chapter 1: Fundamentals </a>
+    <a href="./">Topic 1: UnionFind </a>
 </li>
                             
 <li >
-    <a href="../ch2/">Chapter 2: Sorting</a>
-</li>
-                            
-<li >
-    <a href="../ch3/">Chapter 3: Searching</a>
-</li>
-                            
-<li >
-    <a href="../ch4/">Chapter 4: Graphs</a>
-</li>
-                            
-<li >
-    <a href="../ch5/">Chapter 5: Strings</a>
-</li>
-                            
-<li >
-    <a href="../ch6/">Chapter 6: Context</a>
+    <a href="../topic2/">Topic 2: StackQueue</a>
 </li>
                         </ul>
                     </li>
@@ -129,7 +113,7 @@
                         </a>
                     </li>
                     <li >
-                        <a rel="prev" href="../ch2/">
+                        <a rel="prev" href="../topic2/">
                             Next <i class="fa fa-arrow-right"></i>
                         </a>
                     </li>
@@ -160,7 +144,7 @@
 
 <h3 id="chapter-1-union-find"><strong>Chapter 1: Union Find</strong><a class="headerlink" href="#chapter-1-union-find" title="Permanent link">&para;</a></h3>
 <h3 id="1-dynamic-connectivity">1 Dynamic Connectivity<a class="headerlink" href="#1-dynamic-connectivity" title="Permanent link">&para;</a></h3>
-<p>Dynamic connectivity is a data structure that dynamically maintains information about the connected components of a graph.</p>
+<p>The graph connectivity problem is the following: Given an <strong>undirected</strong> graph G, preprocess the graph so that queries of the form “are nodes u and v connected?”</p>
 <p><strong>Connected components</strong>:  Maximal set of objects that are mutually connected.</p>
 <p><img alt="ConnectedComponents" src="../figures/ConnectedComponents.png" /></p>
 <h4 id="union-find-data-type-api">Union-Find data type (API)<a class="headerlink" href="#union-find-data-type-api" title="Permanent link">&para;</a></h4>
@@ -183,25 +167,13 @@
     <span class=o>}</span>
 
     <span class=kd>public</span> <span class=kt>boolean</span> <span class=nf>connected</span><span class=o>(</span><span class=kt>int</span> <span class=n>p</span><span class=o>,</span> <span class=kt>int</span> <span class=n>q</span><span class=o>)</span> <span class=o>{</span>
-        <span class=k>return</span> <span class=n>id</span><span class=o>[</span><span class=n>p</span><span class=o>]</span> <span class=o>==</span> <span class=n>id</span><span class=o>[</span><span class=n>q</span><span class=o>];</span>
+        <span class=k>return</span> <span class=n>find</span><span class=o>(</span><span class=n>p</span><span class=o>)</span> <span class=o>==</span> <span class=n>find</span><span class=o>(</span><span class=n>q</span><span class=o>);</span>
     <span class=o>}</span>
 
     <span class=kd>public</span> <span class=kt>int</span> <span class=nf>find</span><span class=o>(</span><span class=kt>int</span> <span class=n>p</span><span class=o>)</span> <span class=o>{</span>
-        <span class=k>return</span> <span class=n>id</span><span class=o>[</span><span class=n>p</span><span class=o>];</span>
-    <span class=o>}</span>
+     <span class=o>}</span>
 
     <span class=kd>public</span> <span class=kt>void</span> <span class=nf>union</span><span class=o>(</span><span class=kt>int</span> <span class=n>p</span><span class=o>,</span> <span class=kt>int</span> <span class=n>q</span><span class=o>)</span> <span class=o>{</span>
-        <span class=c1>// Put p and q into the same component.</span>
-        <span class=kt>int</span> <span class=n>pid</span> <span class=o>=</span> <span class=n>find</span><span class=o>(</span><span class=n>p</span><span class=o>);</span>
-        <span class=kt>int</span> <span class=n>qid</span> <span class=o>=</span> <span class=n>find</span><span class=o>(</span><span class=n>q</span><span class=o>);</span>
-        <span class=c1>// Nothing to do if p and q are already in the same component.</span>
-        <span class=k>if</span> <span class=o>(</span><span class=n>pid</span> <span class=o>==</span> <span class=n>qid</span><span class=o>)</span> <span class=k>return</span><span class=o>;</span>
-
-        <span class=c1>// Rename p’s component to q’s name.</span>
-        <span class=k>for</span> <span class=o>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=o>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>id</span><span class=o>.</span><span class=na>length</span><span class=o>;</span> <span class=n>i</span><span class=o>++)</span>
-            <span class=k>if</span> <span class=o>(</span><span class=n>id</span><span class=o>[</span><span class=n>i</span><span class=o>]</span> <span class=o>==</span> <span class=n>pid</span><span class=o>)</span>
-                <span class=n>id</span><span class=o>[</span><span class=n>i</span><span class=o>]</span> <span class=o>=</span> <span class=n>qid</span><span class=o>;</span>
-        <span class=n>count</span><span class=o>--;</span>
     <span class=o>}</span>
 <span class=o>}</span>
 </pre></div></p>
