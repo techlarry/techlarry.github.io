@@ -301,8 +301,11 @@
             <li><a href="#variable-expansion">Variable Expansion</a></li>
         <li class="main "><a href="#2-setting-up-the-development-environment">2 Setting Up the Development Environment</a></li>
             <li><a href="#managing-configuration">Managing Configuration</a></li>
+            <li><a href="#genericoptionsparser-tool-and-toolrunner">GenericOptionsParser, Tool, and ToolRunner</a></li>
         <li class="main "><a href="#3-writing-a-unit-test-with-mrunit">3 Writing a Unit Test with MRUnit</a></li>
         <li class="main "><a href="#4-running-locally-on-test-data">4 Running Locally on Test Data</a></li>
+            <li><a href="#running-a-job-in-a-local-job-runner">Running a Job in a Local Job Runner</a></li>
+            <li><a href="#testing-the-driver">Testing the Driver</a></li>
         <li class="main "><a href="#5-running-on-a-cluster">5 Running on a Cluster</a></li>
         <li class="main "><a href="#6-tuning-a-job">6 Tuning a Job</a></li>
         <li class="main "><a href="#7-mapreduce-workflows">7 MapReduce Workflows</a></li>
@@ -369,11 +372,28 @@
 <h4 id="variable-expansion">Variable Expansion<a class="headerlink" href="#variable-expansion" title="Permanent link">&para;</a></h4>
 <p>Configuration properties can be defined in terms of other properties, or system properties. For example, the property <C>size-weight</C> in <code class="codehilite">configuration-1.xml</code> file is defined as <code class="codehilite"><span class="nv">$text</span>{size}$, <span class="cp">${</span><span class="n">weight</span><span class="cp">}</span>$</code>.</p>
 <h3 id="2-setting-up-the-development-environment">2 Setting Up the Development Environment<a class="headerlink" href="#2-setting-up-the-development-environment" title="Permanent link">&para;</a></h3>
-<p>The first step is to create a project so you can build MapReduce programs and run them in local (standalone) mode from the command line or within your IDE.</p>
+<p>The first step is to create a project so you can build MapReduce programs and run them in local (standalone) mode from the command line or within your IDE. </p>
+<p>Using the Maven POM to manage your project is an easy way to start. Specifically, for building MapReduce jobs, you only need to have the <C>hadoop-client</C> dependency, which contains all the Hadoop client-side classes needed to interact with HDFS and MapReduce. For running unit tests, use <C>junit</C>, and for writing MapReduce tests, use <C>mrunit</C>. The <C>hadoop-minicluster</C> library contains the “mini-” clusters that are useful for testing with Hadoop clusters running in a single JVM.</p>
 <h4 id="managing-configuration">Managing Configuration<a class="headerlink" href="#managing-configuration" title="Permanent link">&para;</a></h4>
+<p>When developing Hadoop applications, it is common to switch between running the application locally and running it on a cluster.</p>
+<p>One way to accommodate these variations is to have different versions of Hadoop configuration files and use them with the <C>-conf</C> command-line switch.</p>
+<p>For example, the following command shows a directory listing on the HDFS server running in pseudodistributed mode on localhost:</p>
+<p> <div class=codehilite><pre>$ hadoop fs -conf conf/hadoop-localhost.xml -ls
+</pre></div></p>
+<p>Another way of managing configuration settings is to copy the etc/hadoop directory from your Hadoop installation to another location, place the <code class="codehilite">*-site.xml</code> configuration files there (with appropriate settings), and set the <C>HADOOP_CONF_DIR </C>environment variable to the alternative location. The main advantage of this approach is that you don’t need to specify <C>-conf</C> for every command.</p>
+<h4 id="genericoptionsparser-tool-and-toolrunner">GenericOptionsParser, Tool, and ToolRunner<a class="headerlink" href="#genericoptionsparser-tool-and-toolrunner" title="Permanent link">&para;</a></h4>
+<p>It’s more convenient to implement the <C>Tool</C> interface and run your application with the <C>ToolRunner</C>. <C>ToolRunner</C> uses <C>GenericOptionsParser</C> internally, which interprets common Hadoop command-line options and sets them on a <C>Configuration</C> object for your application to use as desired.</p>
+<p> <div class=codehilite><pre><span class=c1>//  A tool interface that supports handling of generic command-line options.</span>
+<span class=kd>public</span> <span class=kd>interface</span> <span class=nc>Tool</span> <span class=kd>extends</span> <span class=n>Configurable</span> <span class=o>{</span> 
+    <span class=kt>int</span> <span class=nf>run</span><span class=o>(</span><span class=n>String</span> <span class=o>[]</span> <span class=n>args</span><span class=o>)</span> <span class=kd>throws</span> <span class=n>Exception</span><span class=o>;</span> 
+<span class=o>}</span>
+</pre></div></p>
+<p>Detailed examples, are "Application to find the maximum temperature"[<a href="../ch6/#running-a-job-in-a-local-job-runner">code</a>], "MapReduce program to find the maximum temperature, creating Avro output"[<a href="../ch12/#avro-mapreduce">code</a>].</p>
 <h3 id="3-writing-a-unit-test-with-mrunit">3 Writing a Unit Test with MRUnit<a class="headerlink" href="#3-writing-a-unit-test-with-mrunit" title="Permanent link">&para;</a></h3>
 <p><C>MRUnit</C> is a testing library that makes it easy to pass known inputs to a mapper or a reducer and check that the outputs are as expected.  However, MRUnit is <strong>DEPRECATED</strong>!!!</p>
 <h3 id="4-running-locally-on-test-data">4 Running Locally on Test Data<a class="headerlink" href="#4-running-locally-on-test-data" title="Permanent link">&para;</a></h3>
+<h4 id="running-a-job-in-a-local-job-runner">Running a Job in a Local Job Runner<a class="headerlink" href="#running-a-job-in-a-local-job-runner" title="Permanent link">&para;</a></h4>
+<h4 id="testing-the-driver">Testing the Driver<a class="headerlink" href="#testing-the-driver" title="Permanent link">&para;</a></h4>
 <h3 id="5-running-on-a-cluster">5 Running on a Cluster<a class="headerlink" href="#5-running-on-a-cluster" title="Permanent link">&para;</a></h3>
 <h3 id="6-tuning-a-job">6 Tuning a Job<a class="headerlink" href="#6-tuning-a-job" title="Permanent link">&para;</a></h3>
 <h3 id="7-mapreduce-workflows">7 MapReduce Workflows<a class="headerlink" href="#7-mapreduce-workflows" title="Permanent link">&para;</a></h3></div>
