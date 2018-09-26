@@ -304,6 +304,8 @@
             <li><a href="#_5">计算差值</a></li>
             <li><a href="#slope-one_1">使用加权的Slope One算法进行预测</a></li>
             <li><a href="#pythonslope-one">使用Python实现Slope One算法</a></li>
+        <li class="main "><a href="#example-movielens">Example: MovieLens</a></li>
+        <li class="main "><a href="#_6">进一步阅读</a></li>
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
@@ -322,10 +324,10 @@
 <h4 id="_3">修正的余弦相似度<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h4>
 <p>使用余弦相似度来计算两个物品的距离。由于“分数膨胀”现象，需要从用户的评价中减去他所有评价的均值，这就是修正的余弦相似度(Adjusted Cosine Similarity)。这个公式来自于一篇影响深远的论文《<a href="http://files.grouplens.org/papers/www10_sarwar.pdf">基于物品的协同过滤算法</a>》。</p>
 <div>
-<div class="MathJax_Preview">s(i,j) =\frac{\sum_{u\in U}(R_{u.i}-\bar R_u)(R_{u,j}-\bar R_u)}{\sqrt{\sum_{u\in U}(R_{u,i}-\bar R_u)^2}\sqrt{\sum_{u\in U}(R_{u,j}-\bar R_u)^2}}</div>
-<script type="math/tex; mode=display">s(i,j) =\frac{\sum_{u\in U}(R_{u.i}-\bar R_u)(R_{u,j}-\bar R_u)}{\sqrt{\sum_{u\in U}(R_{u,i}-\bar R_u)^2}\sqrt{\sum_{u\in U}(R_{u,j}-\bar R_u)^2}}</script>
+<div class="MathJax_Preview">s(i,j) =\frac{\sum_{u\in U}(R_{u,i}-\bar R_u)(R_{u,j}-\bar R_u)}{\sqrt{\sum_{u\in U}(R_{u,i}-\bar R_u)^2}\sqrt{\sum_{u\in U}(R_{u,j}-\bar R_u)^2}}</div>
+<script type="math/tex; mode=display">s(i,j) =\frac{\sum_{u\in U}(R_{u,i}-\bar R_u)(R_{u,j}-\bar R_u)}{\sqrt{\sum_{u\in U}(R_{u,i}-\bar R_u)^2}\sqrt{\sum_{u\in U}(R_{u,j}-\bar R_u)^2}}</script>
 </div>
-<p><span><span class="MathJax_Preview">U</span><script type="math/tex">U</script></span>表示同时评价过物品<span><span class="MathJax_Preview">i</span><script type="math/tex">i</script></span>和<span><span class="MathJax_Preview">j</span><script type="math/tex">j</script></span>的用户集合， <span><span class="MathJax_Preview">\bar R_u</span><script type="math/tex">\bar R_u</script></span>表示用户<span><span class="MathJax_Preview">u</span><script type="math/tex">u</script></span>对所有物品的评价均值，<span><span class="MathJax_Preview">s(i,j)</span><script type="math/tex">s(i,j)</script></span>表示物品i和j的相似度。</p>
+<p><span><span class="MathJax_Preview">U</span><script type="math/tex">U</script></span>表示同时评价过物品<span><span class="MathJax_Preview">i</span><script type="math/tex">i</script></span>和<span><span class="MathJax_Preview">j</span><script type="math/tex">j</script></span>的用户集合， <span><span class="MathJax_Preview">\bar R_u</span><script type="math/tex">\bar R_u</script></span>表示用户<span><span class="MathJax_Preview">u</span><script type="math/tex">u</script></span>对所有物品的评价均值，<span><span class="MathJax_Preview">s(i,j)</span><script type="math/tex">s(i,j)</script></span>表示物品<span><span class="MathJax_Preview">i</span><script type="math/tex">i</script></span>和<span><span class="MathJax_Preview">j</span><script type="math/tex">j</script></span>的相似度。</p>
 <p><img alt="Relative performance of different similarity measures" src="../figures/Relative%20performance%20of%20different%20similarity%20measures.png" /></p>
 <p> <div class=codehilite><pre><span class=k>def</span> <span class=nf>cosinesimilarity</span><span class=p>(</span><span class=n>item1</span><span class=p>,</span> <span class=n>item2</span><span class=p>,</span> <span class=n>userRatings</span><span class=p>):</span>
     <span class=n>averages</span> <span class=o>=</span> <span class=p>{}</span>
@@ -377,7 +379,122 @@
 <script type="math/tex; mode=display">P^{WS1}(u)_j=\frac{\sum_{i\in S(u) - \{j\}}(\text{dev}_{i,j}+u_i)c_{j,i}}{\sum_{i\in S(u) - \{j\}} c_{j,i}}</script>
 </div>
 <p>其中：<span><span class="MathJax_Preview">c_{j,i}=\text{card}(S_{j,i}(\chi))</span><script type="math/tex">c_{j,i}=\text{card}(S_{j,i}(\chi))</script></span>。式中<span><span class="MathJax_Preview">\sum_{i\in S(u) - \{j\}}</span><script type="math/tex">\sum_{i\in S(u) - \{j\}}</script></span>表示用户<span><span class="MathJax_Preview">u</span><script type="math/tex">u</script></span>评价的除<span><span class="MathJax_Preview">j</span><script type="math/tex">j</script></span>除外的物品，其他符号与上一节的含义相同。这个公式其实很好理解，<span><span class="MathJax_Preview">\text{dev}_{i,j}+u_i</span><script type="math/tex">\text{dev}_{i,j}+u_i</script></span>表示根据物品<span><span class="MathJax_Preview">i</span><script type="math/tex">i</script></span>预测得到的用户<span><span class="MathJax_Preview">u</span><script type="math/tex">u</script></span>对物品<span><span class="MathJax_Preview">j</span><script type="math/tex">j</script></span>的评分，在此基础上进行了加权平均就得到<span><span class="MathJax_Preview">P^{WS1}</span><script type="math/tex">P^{WS1}</script></span>。</p>
-<h4 id="pythonslope-one">使用Python实现Slope One算法<a class="headerlink" href="#pythonslope-one" title="Permanent link">&para;</a></h4></div>
+<h4 id="pythonslope-one">使用Python实现Slope One算法<a class="headerlink" href="#pythonslope-one" title="Permanent link">&para;</a></h4>
+<p>其实代码整体思路比较简单，把公式转化为代码就可以了，没有什么特殊的技巧。唯一需要注意的是尽可能的测试该程序，保证其正确性。由于网上有不少SlopeOne代码，我自己写完以后和他们的结果比对，发现完全一致。</p>
+<p> <div class=codehilite><pre><span class=k>class</span> <span class=nc>SlopeOne</span><span class=p>:</span>
+
+    <span class=k>def</span> <span class=nf>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>data</span><span class=p>):</span>
+        <span class=sd>&quot;&quot;&quot;</span>
+<span class=sd>        initialize</span>
+<span class=sd>        :param data: a dictionary, whose key is an item, and value is  a rating.</span>
+<span class=sd>        &quot;&quot;&quot;</span>
+        <span class=bp>self</span><span class=o>.</span><span class=n>data</span> <span class=o>=</span> <span class=n>data</span>
+        <span class=c1># frequencies, a dictionary, whose key is an item,</span>
+        <span class=c1>#   and value is a dictionary of (item, frequency)</span>
+        <span class=bp>self</span><span class=o>.</span><span class=n>frequencies</span> <span class=o>=</span> <span class=p>{}</span>
+        <span class=c1># deviations, a dictionary, whose key is an item,</span>
+        <span class=c1>#   and value is a dictionary of (item, deviation)</span>
+        <span class=bp>self</span><span class=o>.</span><span class=n>deviations</span> <span class=o>=</span> <span class=p>{}</span>
+
+    <span class=k>def</span> <span class=nf>computeDeviations</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
+        <span class=sd>&quot;&quot;&quot;</span>
+<span class=sd>        compute deviations between items</span>
+<span class=sd>        :return:</span>
+<span class=sd>        &quot;&quot;&quot;</span>
+        <span class=c1># 获取每位用户的评分数据ratings</span>
+        <span class=k>for</span> <span class=n>ratings</span> <span class=ow>in</span> <span class=bp>self</span><span class=o>.</span><span class=n>data</span><span class=o>.</span><span class=n>values</span><span class=p>():</span>
+            <span class=c1># 对于该用户的每个评分项(歌手、分数)</span>
+            <span class=k>for</span> <span class=p>(</span><span class=n>item1</span><span class=p>,</span> <span class=n>rating1</span><span class=p>)</span> <span class=ow>in</span> <span class=n>ratings</span><span class=o>.</span><span class=n>items</span><span class=p>():</span>
+                <span class=bp>self</span><span class=o>.</span><span class=n>frequencies</span><span class=o>.</span><span class=n>setdefault</span><span class=p>(</span><span class=n>item1</span><span class=p>,</span> <span class=p>{})</span>
+                <span class=bp>self</span><span class=o>.</span><span class=n>deviations</span><span class=o>.</span><span class=n>setdefault</span><span class=p>(</span><span class=n>item1</span><span class=p>,</span> <span class=p>{})</span>
+                <span class=c1># 再次遍历该用户的每个评分项</span>
+                <span class=k>for</span> <span class=p>(</span><span class=n>item2</span><span class=p>,</span> <span class=n>rating2</span><span class=p>)</span> <span class=ow>in</span> <span class=n>ratings</span><span class=o>.</span><span class=n>items</span><span class=p>():</span>
+                    <span class=k>if</span> <span class=n>item1</span> <span class=o>!=</span> <span class=n>item2</span><span class=p>:</span>
+                        <span class=c1># 将评分的差异保存到变量中</span>
+                        <span class=bp>self</span><span class=o>.</span><span class=n>frequencies</span><span class=p>[</span><span class=n>item1</span><span class=p>]</span><span class=o>.</span><span class=n>setdefault</span><span class=p>(</span><span class=n>item2</span><span class=p>,</span> <span class=mi>0</span><span class=p>)</span>
+                        <span class=bp>self</span><span class=o>.</span><span class=n>deviations</span><span class=p>[</span><span class=n>item1</span><span class=p>]</span><span class=o>.</span><span class=n>setdefault</span><span class=p>(</span><span class=n>item2</span><span class=p>,</span> <span class=mf>0.0</span><span class=p>)</span>
+                        <span class=bp>self</span><span class=o>.</span><span class=n>frequencies</span><span class=p>[</span><span class=n>item1</span><span class=p>][</span><span class=n>item2</span><span class=p>]</span> <span class=o>+=</span> <span class=mi>1</span>
+                        <span class=bp>self</span><span class=o>.</span><span class=n>deviations</span><span class=p>[</span><span class=n>item1</span><span class=p>][</span><span class=n>item2</span><span class=p>]</span> <span class=o>+=</span> <span class=p>(</span><span class=n>rating1</span> <span class=o>-</span> <span class=n>rating2</span><span class=p>)</span>
+
+        <span class=c1># 计算deviations</span>
+        <span class=k>for</span> <span class=n>item1</span><span class=p>,</span> <span class=n>deviations</span> <span class=ow>in</span> <span class=bp>self</span><span class=o>.</span><span class=n>deviations</span><span class=o>.</span><span class=n>items</span><span class=p>():</span>
+            <span class=k>for</span> <span class=n>item2</span> <span class=ow>in</span> <span class=n>deviations</span><span class=p>:</span>
+                <span class=n>deviations</span><span class=p>[</span><span class=n>item2</span><span class=p>]</span> <span class=o>/=</span> <span class=bp>self</span><span class=o>.</span><span class=n>frequencies</span><span class=p>[</span><span class=n>item1</span><span class=p>][</span><span class=n>item2</span><span class=p>]</span>
+
+    <span class=k>def</span> <span class=nf>predict</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>user</span><span class=p>,</span> <span class=n>item</span><span class=p>):</span>
+
+        <span class=sd>&quot;&quot;&quot;</span>
+<span class=sd>        predict the ratings of the user regard to the item</span>
+<span class=sd>        Using Weighted Slope One (WSO)</span>
+<span class=sd>        :param user: an user</span>
+<span class=sd>        :param item: an item</span>
+<span class=sd>        :return: a prediction, double</span>
+<span class=sd>        &quot;&quot;&quot;</span>
+
+        <span class=k>if</span> <span class=n>user</span> <span class=ow>not</span> <span class=ow>in</span> <span class=bp>self</span><span class=o>.</span><span class=n>data</span><span class=p>:</span>
+            <span class=k>raise</span> <span class=ne>Exception</span>
+
+        <span class=c1># predictions</span>
+        <span class=n>predictions</span> <span class=o>=</span> <span class=mi>0</span>
+        <span class=n>frequency</span> <span class=o>=</span> <span class=mi>0</span>
+
+        <span class=c1># 用户user 评价的除 item 除外的物品</span>
+        <span class=k>for</span> <span class=n>diff_item</span><span class=p>,</span> <span class=n>ratings</span> <span class=ow>in</span> <span class=bp>self</span><span class=o>.</span><span class=n>data</span><span class=p>[</span><span class=n>user</span><span class=p>]</span><span class=o>.</span><span class=n>items</span><span class=p>():</span>
+            <span class=k>if</span> <span class=p>(</span><span class=n>item</span> <span class=o>==</span> <span class=n>diff_item</span><span class=p>)</span> <span class=ow>or</span> <span class=p>(</span><span class=n>diff_item</span> <span class=ow>not</span> <span class=ow>in</span> <span class=bp>self</span><span class=o>.</span><span class=n>deviations</span><span class=p>[</span><span class=n>item</span><span class=p>]):</span>
+                <span class=k>continue</span>
+            <span class=n>predictions</span> <span class=o>+=</span> <span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>deviations</span><span class=p>[</span><span class=n>item</span><span class=p>][</span><span class=n>diff_item</span><span class=p>]</span> <span class=o>+</span> <span class=bp>self</span><span class=o>.</span><span class=n>data</span><span class=p>[</span><span class=n>user</span><span class=p>][</span><span class=n>diff_item</span><span class=p>])</span> \
+                <span class=o>*</span> <span class=bp>self</span><span class=o>.</span><span class=n>frequencies</span><span class=p>[</span><span class=n>item</span><span class=p>][</span><span class=n>diff_item</span><span class=p>]</span>
+            <span class=n>frequency</span> <span class=o>+=</span> <span class=bp>self</span><span class=o>.</span><span class=n>frequencies</span><span class=p>[</span><span class=n>item</span><span class=p>][</span><span class=n>diff_item</span><span class=p>]</span>
+
+        <span class=n>predictions</span> <span class=o>/=</span> <span class=n>frequency</span>
+
+        <span class=k>return</span> <span class=n>predictions</span>
+
+    <span class=k>def</span> <span class=nf>recommendation</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>user</span><span class=p>):</span>
+        <span class=sd>&quot;&quot;&quot;</span>
+<span class=sd>        recommend items to user</span>
+<span class=sd>        :param user: an user</span>
+<span class=sd>        :return: a list of items recommended</span>
+<span class=sd>        &quot;&quot;&quot;</span>
+        <span class=k>if</span> <span class=n>user</span> <span class=ow>not</span> <span class=ow>in</span> <span class=bp>self</span><span class=o>.</span><span class=n>data</span><span class=p>:</span>
+            <span class=k>raise</span> <span class=ne>Exception</span>
+
+        <span class=k>if</span> <span class=bp>self</span><span class=o>.</span><span class=n>deviations</span> <span class=o>==</span> <span class=p>{}:</span>
+            <span class=bp>self</span><span class=o>.</span><span class=n>computeDeviations</span><span class=p>()</span>
+
+        <span class=n>recommendations</span> <span class=o>=</span> <span class=p>[]</span>
+        <span class=c1># 所有的item</span>
+        <span class=k>for</span> <span class=n>item</span> <span class=ow>in</span> <span class=bp>self</span><span class=o>.</span><span class=n>deviations</span><span class=o>.</span><span class=n>keys</span><span class=p>():</span>
+            <span class=c1># 用户未评价过的item</span>
+            <span class=k>if</span> <span class=n>item</span> <span class=ow>not</span> <span class=ow>in</span> <span class=bp>self</span><span class=o>.</span><span class=n>data</span><span class=p>[</span><span class=n>user</span><span class=p>]:</span>
+                <span class=n>recommendations</span><span class=o>.</span><span class=n>append</span><span class=p>((</span><span class=n>item</span><span class=p>,</span> <span class=bp>self</span><span class=o>.</span><span class=n>predict</span><span class=p>(</span><span class=n>user</span><span class=p>,</span> <span class=n>item</span><span class=p>)))</span>
+
+        <span class=n>recommendations</span><span class=o>.</span><span class=n>sort</span><span class=p>(</span><span class=n>key</span><span class=o>=</span><span class=k>lambda</span> <span class=n>x</span><span class=p>:</span> <span class=n>x</span><span class=p>[</span><span class=mi>1</span><span class=p>],</span> <span class=n>reverse</span><span class=o>=</span><span class=bp>True</span><span class=p>)</span>
+        <span class=k>return</span> <span class=nb>list</span><span class=p>(</span><span class=nb>map</span><span class=p>(</span><span class=k>lambda</span> <span class=n>x</span><span class=p>:</span> <span class=n>x</span><span class=p>[</span><span class=mi>0</span><span class=p>],</span> <span class=n>recommendations</span><span class=p>))</span>
+</pre></div></p>
+<h3 id="example-movielens">Example: MovieLens<a class="headerlink" href="#example-movielens" title="Permanent link">&para;</a></h3>
+<p>MovieLens数据集是由明尼苏达州大学的GroupLens研究项目收集的，是用户对电影的评分。 这个数据集可以在<a href="../www.grouplens.org">www.grouplens.org</a>下载。其中100K数据集包含了943位用户对1682部电影的评价，约10万条记录。</p>
+<p>使用MovieLens 100K数据集处理的过程如下：</p>
+<ul>
+<li>根据README中描述的文件格式，将电影、用户、评分数据导入并转化为合适的数据格式</li>
+<li>利用SlopeOne进行推荐</li>
+<li>将推荐结果展示</li>
+</ul>
+<p>代码整体非常简洁的，因为可以直接继承上面写的SlopeOne算法。</p>
+<p> <div class=codehilite><pre><span class=k>class</span> <span class=nc>MovieRecommendation</span><span class=p>(</span><span class=n>SlopeOne</span><span class=p>):</span>
+    <span class=k>def</span> <span class=nf>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>data</span><span class=p>,</span> <span class=n>movie</span><span class=p>):</span>
+        <span class=nb>super</span><span class=p>(</span><span class=n>MovieRecommendation</span><span class=p>,</span> <span class=bp>self</span><span class=p>)</span><span class=o>.</span><span class=n>__init__</span><span class=p>(</span><span class=n>data</span><span class=p>)</span>
+        <span class=bp>self</span><span class=o>.</span><span class=n>movie</span> <span class=o>=</span> <span class=n>movie</span>
+
+
+    <span class=k>def</span> <span class=nf>recommend_movie</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>user</span><span class=p>):</span>
+        <span class=n>movies</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>recommendation</span><span class=p>(</span><span class=n>user</span><span class=p>)[:</span><span class=mi>10</span><span class=p>]</span>
+        <span class=k>return</span> <span class=nb>list</span><span class=p>(</span><span class=nb>map</span><span class=p>(</span><span class=k>lambda</span> <span class=n>x</span><span class=p>:</span> <span class=bp>self</span><span class=o>.</span><span class=n>movie</span><span class=p>[</span><span class=n>x</span><span class=p>][</span><span class=s2>&quot;title&quot;</span><span class=p>],</span> <span class=n>movies</span><span class=p>))</span>
+</pre></div></p>
+<h3 id="_6">进一步阅读<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h3>
+<p>http://www.diva-portal.se/smash/get/diva2:811049/FULLTEXT01.pdf
+https://dzone.com/articles/slope-one-recommender
+https://www.slideshare.net/irecsys/slope-one-recommender-on-hadoop-15199798?from_action=save#</p></div>
         </div>
 
         <footer class="col-md-12">

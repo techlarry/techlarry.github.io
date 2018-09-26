@@ -296,11 +296,55 @@
                 <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
         <li class="main active"><a href="#-5">面向程序员的数据挖掘指南 - 5 朴素贝叶斯</a></li>
+        <li class="main "><a href="#_1">朴素贝叶斯</a></li>
+            <li><a href="#_2">概率</a></li>
+        <li class="main "><a href="#_3">贝叶斯法则</a></li>
+        <li class="main "><a href="#python">使用Python编写朴素贝叶斯分类器</a></li>
+        <li class="main "><a href="#_4">共和党还是民主党</a></li>
+        <li class="main "><a href="#_5">数值型数据</a></li>
+        <li class="main "><a href="#python_1">使用Python实现</a></li>
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
 
-<h3 id="-5"><strong>面向程序员的数据挖掘指南 - 5 朴素贝叶斯</strong><a class="headerlink" href="#-5" title="Permanent link">&para;</a></h3></div>
+<h3 id="-5"><strong>面向程序员的数据挖掘指南 - 5 朴素贝叶斯</strong><a class="headerlink" href="#-5" title="Permanent link">&para;</a></h3>
+<h3 id="_1">朴素贝叶斯<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h3>
+<p>使用近邻算法时，我们很难对分类结果的置信度进行量化。但如果使用的是基于概率的分类算法——贝叶斯算法——那就可以给出分类结果的可能性了：这名运动员有80%的几率是篮球运动员。</p>
+<p>近邻算法又称为<strong>被动学习算法</strong>。这种算法只是将训练集的数据保存起来，在收到测试数据时才会进行计算。如果我们有10万首音乐，那每进行一次分类，都需要遍历这10万条记录才行。</p>
+<p>贝叶斯算法则是一种<strong>主动学习算法</strong>。它会根据训练集构建起一个模型，并用这个模型来对新的记录进行分类，因此速度会快很多。</p>
+<p>贝叶斯算法的两个优点即：</p>
+<ul>
+<li>能够给出分类结果的置信度；</li>
+<li>它是一种主动学习算法。</li>
+</ul>
+<h4 id="_2">概率<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h4>
+<p>我们用<span><span class="MathJax_Preview">P(h|D)</span><script type="math/tex">P(h|D)</script></span>来表示<span><span class="MathJax_Preview">D</span><script type="math/tex">D</script></span>条件下事件<span><span class="MathJax_Preview">h</span><script type="math/tex">h</script></span>发生的概率。<span><span class="MathJax_Preview">P(h)</span><script type="math/tex">P(h)</script></span>表示事件<span><span class="MathJax_Preview">h</span><script type="math/tex">h</script></span>发生的概率，称为h的先验概率。<span><span class="MathJax_Preview">P(h|d)</span><script type="math/tex">P(h|d)</script></span>称为后验概率，表示在观察了数据集<span><span class="MathJax_Preview">d</span><script type="math/tex">d</script></span>之后，<span><span class="MathJax_Preview">h</span><script type="math/tex">h</script></span>事件发生的概率是多少。后验概率又称为条件概率。</p>
+<h3 id="_3">贝叶斯法则<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h3>
+<p>贝叶斯法则描述了<span><span class="MathJax_Preview">P(h)</span><script type="math/tex">P(h)</script></span>、<span><span class="MathJax_Preview">P(h|D)</span><script type="math/tex">P(h|D)</script></span>、<span><span class="MathJax_Preview">P(D)</span><script type="math/tex">P(D)</script></span>、以及<span><span class="MathJax_Preview">P(D|h)</span><script type="math/tex">P(D|h)</script></span>这四个概率之间的关系：</p>
+<div>
+<div class="MathJax_Preview">P(h|D) = \frac{P(D|h)P(h)}{P(D)}</div>
+<script type="math/tex; mode=display">P(h|D) = \frac{P(D|h)P(h)}{P(D)}</script>
+</div>
+<p>如果我们有<span><span class="MathJax_Preview">h_1, h_2,...h_n</span><script type="math/tex">h_1, h_2,...h_n</script></span>等事件。计算不同事件发生的概率，</p>
+<div>
+<div class="MathJax_Preview">P(h_i|D) = \frac{P(D|h_i)P(h_i)}{P(D)}</div>
+<script type="math/tex; mode=display">P(h_i|D) = \frac{P(D|h_i)P(h_i)}{P(D)}</script>
+</div>
+<p>选取最大的概率，就能用作分类了。这种方法叫最大后验估计，记为<span><span class="MathJax_Preview">h_{MAP}</span><script type="math/tex">h_{MAP}</script></span>：</p>
+<div>
+<div class="MathJax_Preview">h_{MAP} = \arg \max_{h\in H} P(h|D) =  \arg \max_{h\in H} \frac{P(D|h)P(h)}{P(D)}</div>
+<script type="math/tex; mode=display">h_{MAP} = \arg \max_{h\in H} P(h|D) =  \arg \max_{h\in H} \frac{P(D|h)P(h)}{P(D)}</script>
+</div>
+<p>H表示所有的事件，所以h∈H表示“对于集合中的每一个事件”。整个公式的含义就是：对于集合中的每一个事件，计算出<span><span class="MathJax_Preview">P(h|D)</span><script type="math/tex">P(h|D)</script></span>的值，并取最大的结果。</p>
+<p>可以发现对于所有的事件，公式中的分母都是<span><span class="MathJax_Preview">P(D)</span><script type="math/tex">P(D)</script></span>，因此即便只计算<span><span class="MathJax_Preview">P(D|h)P(h)</span><script type="math/tex">P(D|h)P(h)</script></span>，也可以判断出最大的结果。那么这个公式就可以简化为：</p>
+<div>
+<div class="MathJax_Preview">h_{MAP} = \arg \max_{h\in H} P(D|h)P(h)</div>
+<script type="math/tex; mode=display">h_{MAP} = \arg \max_{h\in H} P(D|h)P(h)</script>
+</div>
+<h3 id="python">使用Python编写朴素贝叶斯分类器<a class="headerlink" href="#python" title="Permanent link">&para;</a></h3>
+<h3 id="_4">共和党还是民主党<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h3>
+<h3 id="_5">数值型数据<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h3>
+<h3 id="python_1">使用Python实现<a class="headerlink" href="#python_1" title="Permanent link">&para;</a></h3></div>
         </div>
 
         <footer class="col-md-12">
