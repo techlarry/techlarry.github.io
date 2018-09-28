@@ -255,15 +255,63 @@
                                 </ul>
                             </li>
                             <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">MLA <b class="caret"></b></a>
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">MLIA <b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     
 <li >
-    <a href="../../mla/index.md">Contents</a>
+    <a href="../../mlia/">Contents</a>
 </li>
                                     
 <li >
-    <a href="../../mla/ch1.md">Chapter 1: 机器学习基础</a>
+    <a href="../../mlia/ch1/">Chapter 1: 机器学习基础</a>
+</li>
+                                    
+<li >
+    <a href="../../mlia/ch2/">Chapter 2: k-近邻算法</a>
+</li>
+                                    
+<li >
+    <a href="../../mlia/ch3/">Chapter 3: 决策树</a>
+</li>
+                                    
+<li >
+    <a href="../../mlia/ch4/">Chapter 4: 基于概率论的分类方法：朴素贝叶斯</a>
+</li>
+                                    
+<li >
+    <a href="../../mlia/ch5/">Chapter 5: Logistic回归</a>
+</li>
+                                    
+<li >
+    <a href="../../mlia/ch6/">Chapter 6: 支持向量机</a>
+</li>
+                                    
+<li >
+    <a href="../../mlia/ch7/">Chapter 7: 利用AdaBoost元算法提高分类性能</a>
+</li>
+                                    
+<li >
+    <a href="../../mlia/ch8/">Chapter 8: 预测数值型数据：回归</a>
+</li>
+                                    
+<li >
+    <a href="../../mlia/ch9/">Chapter 9: 树回归</a>
+</li>
+                                    
+<li >
+    <a href="../../mlia/ch10/">Chapter 10: 利用Ｋ-均值聚类算法对未标注数据分组</a>
+</li>
+                                    
+<li >
+    <a href="../../mlia/ch11/">Chapter 11: 使用Apriori算法进行关联分析</a>
+</li>
+                                    
+<li >
+    <a href="../../mlia/ch11/">Chapter 12: 使用FP-growth算法来高效发现频繁项集</a>
+</li>
+                                    
+<li >
+    <a href="../../mlia/ch13/">Chapter 13: 利用PCA来简化数据</a>
 </li>
                                 </ul>
                             </li>
@@ -326,14 +374,13 @@
         <li class="main "><a href="#1">1 朴素贝叶斯</a></li>
             <li><a href="#_1">概率</a></li>
             <li><a href="#_2">贝叶斯法则</a></li>
-        <li class="main "><a href="#2-example">2 Example: 手环推荐</a></li>
-            <li><a href="#_3">训练</a></li>
-        <li class="main "><a href="#3-example">3 Example: 美国国会投票数据</a></li>
-            <li><a href="#0">概率值为0</a></li>
-        <li class="main "><a href="#_4">数值型数据</a></li>
-            <li><a href="#_5">区分类别</a></li>
-            <li><a href="#_6">高斯分布</a></li>
-        <li class="main "><a href="#python">使用Python实现</a></li>
+            <li><a href="#example">Example: 手环推荐</a></li>
+            <li><a href="#example_1">Example: 美国国会投票数据</a></li>
+        <li class="main "><a href="#2">2 数值型数据</a></li>
+            <li><a href="#_3">区分类别</a></li>
+            <li><a href="#_4">高斯分布</a></li>
+            <li><a href="#example_2">Example: 比马印第安人糖尿病</a></li>
+            <li><a href="#_5">为什么要叫“朴素贝叶斯”呢？</a></li>
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
@@ -372,12 +419,12 @@
 <div class="MathJax_Preview">h_{MAP} = \arg \max_{h\in H} P(D|h)P(h)</div>
 <script type="math/tex; mode=display">h_{MAP} = \arg \max_{h\in H} P(D|h)P(h)</script>
 </div>
-<h3 id="2-example">2 Example: 手环推荐<a class="headerlink" href="#2-example" title="Permanent link">&para;</a></h3>
+<h4 id="example">Example: 手环推荐<a class="headerlink" href="#example" title="Permanent link">&para;</a></h4>
 <p>现在我们要为iHealth公司发一套推荐系统。iHealth新出产了两件商品：i100和i500。为了收集数据，让购买的用户填写调查问卷，每个问题都对应一个特征：</p>
 <p><img alt="" src="../figures/iHealth.jpg" /></p>
 <p>已知一位客户的运动目的、当前运动水平、对健身的热情、是否适应高科技产品，请用朴素贝叶斯来推荐手环型号。</p>
 <p>朴素贝叶斯分类器包含两个部分：训练和分类。</p>
-<h4 id="_3">训练<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h4>
+<p><hh>训练</hh></p>
 <p>训练的输出结果应该是：</p>
 <ul>
 <li>先验概率，如<span><span class="MathJax_Preview">P(i100) = 0.4</span><script type="math/tex">P(i100) = 0.4</script></span></li>
@@ -403,17 +450,18 @@
 <p>1、2、3、4表示第几列，所以第一行可以解释为购买i500的顾客中运动目的是外表的概率是 0.333。</p>
 <p>为了计算概率，要进行计数，可以用字典来统计每个型号的次数。</p>
 <p>以下是训练用的Python代码：</p>
-<p> <div class=codehilite><pre><span class=k>class</span> <span class=nc>WristBandBayes</span><span class=p>:</span>
+<p> <div class=codehilite><pre><span class=k>class</span> <span class=nc>NavieBayes</span><span class=p>:</span>
     <span class=sd>&quot;&quot;&quot;</span>
-<span class=sd>    Recoommand Writeband Using naive bayes</span>
+<span class=sd>    Classification Using naive bayes</span>
 <span class=sd>    &quot;&quot;&quot;</span>
 
-    <span class=k>def</span> <span class=nf>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>bucketPrefix</span><span class=p>,</span> <span class=n>testBucketNumber</span><span class=p>,</span> <span class=n>dataFormat</span><span class=p>):</span>
+    <span class=k>def</span> <span class=nf>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>bucketPrefix</span><span class=p>,</span> <span class=n>testBucketNumber</span><span class=p>,</span> <span class=n>dataFormat</span><span class=p>,</span> <span class=n>separator</span><span class=o>=</span><span class=s1>&#39;</span><span class=se>\t</span><span class=s1>&#39;</span><span class=p>):</span>
         <span class=sd>&quot;&quot;&quot;</span>
-
+<span class=sd>        initialize data</span>
 <span class=sd>        :param bucketPrefix: 分桶数据集文件前缀</span>
 <span class=sd>        :param testBucketNumber: 测试桶的编号</span>
 <span class=sd>        :param dataFormat: 数据格式，形如attr attr attr attr class</span>
+<span class=sd>        :param separator: 文件分隔符</span>
 <span class=sd>        &quot;&quot;&quot;</span>
         <span class=c1># 总条数</span>
         <span class=n>total</span> <span class=o>=</span> <span class=mi>0</span>
@@ -423,7 +471,7 @@
         <span class=n>counts</span> <span class=o>=</span> <span class=p>{}</span>
 
         <span class=c1># 从文件中读取数据</span>
-        <span class=bp>self</span><span class=o>.</span><span class=n>format</span> <span class=o>=</span> <span class=n>dataFormat</span><span class=o>.</span><span class=n>strip</span><span class=p>()</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>&#39;</span><span class=se>\t</span><span class=s1>&#39;</span><span class=p>)</span>
+        <span class=bp>self</span><span class=o>.</span><span class=n>format</span> <span class=o>=</span> <span class=n>dataFormat</span><span class=o>.</span><span class=n>strip</span><span class=p>()</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=n>separator</span><span class=p>)</span>
         <span class=c1># 先验概率</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>prior</span> <span class=o>=</span> <span class=p>{}</span>
         <span class=c1># 条件概率</span>
@@ -500,10 +548,10 @@
         <span class=k>return</span> <span class=nb>max</span><span class=p>(</span><span class=n>results</span><span class=p>)[</span><span class=mi>1</span><span class=p>]</span>
 
 <span class=k>if</span> <span class=n>__name__</span> <span class=o>==</span> <span class=s2>&quot;__main__&quot;</span><span class=p>:</span>
-    <span class=n>c</span> <span class=o>=</span> <span class=n>WristBandBayes</span><span class=p>(</span><span class=s1>&#39;/Users/larry/datamining/DataminingGuideBook-Codes/chapter-6/iHealth/i&#39;</span><span class=p>,</span> <span class=mi>10</span><span class=p>,</span> <span class=s1>&#39;attr</span><span class=se>\t</span><span class=s1>attr</span><span class=se>\t</span><span class=s1>attr</span><span class=se>\t</span><span class=s1>attr</span><span class=se>\t</span><span class=s1>class&#39;</span><span class=p>)</span>
+    <span class=n>c</span> <span class=o>=</span> <span class=n>NavieBayes</span><span class=p>(</span><span class=s1>&#39;iHealth/i&#39;</span><span class=p>,</span> <span class=mi>10</span><span class=p>,</span> <span class=s1>&#39;attr</span><span class=se>\t</span><span class=s1>attr</span><span class=se>\t</span><span class=s1>attr</span><span class=se>\t</span><span class=s1>attr</span><span class=se>\t</span><span class=s1>class&#39;</span><span class=p>)</span>
     <span class=k>print</span><span class=p>(</span><span class=n>c</span><span class=o>.</span><span class=n>classify</span><span class=p>([</span><span class=s1>&#39;health&#39;</span> <span class=s1>&#39;moderate&#39;</span><span class=p>,</span> <span class=s1>&#39;moderate&#39;</span><span class=p>,</span> <span class=s1>&#39;yes&#39;</span><span class=p>]))</span>
 </pre></div></p>
-<h3 id="3-example">3 Example: 美国国会投票数据<a class="headerlink" href="#3-example" title="Permanent link">&para;</a></h3>
+<h4 id="example_1">Example: 美国国会投票数据<a class="headerlink" href="#example_1" title="Permanent link">&para;</a></h4>
 <p><a href="https://archive.ics.uci.edu/ml/datasets/congressional+voting+records">美国国会投票数据</a>，其中每条记录代表一个选民，第一列是分类名称（democrat, republican），之后是16条法案，用y和n表示该人是否支持。</p>
 <p>文件格式如下：</p>
 <p> <div class=codehilite><pre>democrat
@@ -517,21 +565,24 @@ y y n y y y n n n y n y y y n n
 <p> <div class=codehilite><pre>&quot;class\tattr\tattr\tattr\tattr\tattr\tattr\tattr\tattr\tattr\tattr\tattr\tattr\tattr\t
 attr\tattr\tattr&quot;
 </pre></div></p>
-<h4 id="0">概率值为0<a class="headerlink" href="#0" title="Permanent link">&para;</a></h4>
-<p>但是，这个方法有一些问题。</p>
+<p><hh>概率值为0</hh></p>
+<p>但是，上面的代码在一些特殊情况下会有一些问题。</p>
 <p>使用朴素贝叶斯计算得到的概率其实是真实概率的一种估计，而真实概率是对全量数据做统计得到的。比如说，我们需要对所有人都做血液测试，才能得到健康人返回阴性结果的真实概率。显然，对全量数据做统计是不现实的，所以我们会选取一个样本，如1000人，对他们进行测试并计算概率。大部分情况下，这种估计都是接近于真实概率的。但当真实概率非常小时，这种抽样统计的做法就会有问题了。比如说，民主党对网络非法传播法案的否决率是0.03，即<span><span class="MathJax_Preview">P(S=no|民主党) = 0.03</span><script type="math/tex">P(S=no|民主党) = 0.03</script></span>。如果我们 分别选取十个民主党和共和党人，看他们对该法案的投票情况，你觉得得到的概率会是什么？答案很可能是0。</p>
 <p>在朴素贝叶斯中，概率为0的影响是很大的。如果其中⼀个概率值为0，那么最后的乘积也为0。</p>
-<p>为了表示方便，我们采用以下公式：
-<span><span class="MathJax_Preview"><span><span class="MathJax_Preview">P(x|y)=\frac{n_c}{n}</span><script type="math/tex">P(x|y)=\frac{n_c}{n}</script></span></span><script type="math/tex"><span><span class="MathJax_Preview">P(x|y)=\frac{n_c}{n}</span><script type="math/tex">P(x|y)=\frac{n_c}{n}</script></span></script></span></p>
+<p>为了表示方便，我们采用以下公式：</p>
+<div>
+<div class="MathJax_Preview">P(x|y)=\frac{n_c}{n}</div>
+<script type="math/tex; mode=display">P(x|y)=\frac{n_c}{n}</script>
+</div>
 <p>其中,<span><span class="MathJax_Preview">n</span><script type="math/tex">n</script></span>表示训练集中y类别的记录数；<span><span class="MathJax_Preview">n_c</span><script type="math/tex">n_c</script></span>表示<span><span class="MathJax_Preview">y</span><script type="math/tex">y</script></span>类别中值为<span><span class="MathJax_Preview">x</span><script type="math/tex">x</script></span>的记录数。我们的问题是<span><span class="MathJax_Preview">n_c</span><script type="math/tex">n_c</script></span>可能为0。解决方法是将公示变为以下形式：</p>
 <div>
 <div class="MathJax_Preview">P(x|y)=\frac{n_c+mp}{n+m}</div>
 <script type="math/tex; mode=display">P(x|y)=\frac{n_c+mp}{n+m}</script>
 </div>
 <p><span><span class="MathJax_Preview">m</span><script type="math/tex">m</script></span>是一个常数，表示等效样本大小。决定常数<span><span class="MathJax_Preview">m</span><script type="math/tex">m</script></span>的方法有很多，我们这里使用值的类别数目来作为<span><span class="MathJax_Preview">m</span><script type="math/tex">m</script></span>，比如投票有赞成和否决两种类别，所以<span><span class="MathJax_Preview">m</span><script type="math/tex">m</script></span>就为2。<span><span class="MathJax_Preview">p</span><script type="math/tex">p</script></span>则是相应的先验概率，比如说赞成和否决的概率分别是0.5，那<span><span class="MathJax_Preview">p</span><script type="math/tex">p</script></span>就是0.5。</p>
-<h3 id="_4">数值型数据<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h3>
-<p>在贝叶斯方法中，之前我们对事物进行了计数，这种计数则是可以度量的。对于数值型的数据要 如何计数呢？通常有两种做法：区分类别和高斯分布</p>
-<h4 id="_5">区分类别<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h4>
+<h3 id="2">2 数值型数据<a class="headerlink" href="#2" title="Permanent link">&para;</a></h3>
+<p>在贝叶斯方法中，之前我们对事物进行了计数，这种计数则是可以度量的。对于数值型的数据要如何计数呢？通常有两种做法：区分类别和高斯分布。</p>
+<h4 id="_3">区分类别<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h4>
 <p>我们可以划定几个范围作为分类，如：</p>
 <ul>
 <li>年龄<ul>
@@ -552,25 +603,281 @@ attr\tattr\tattr&quot;
 </li>
 </ul>
 <p>划分类别后，就可以应用朴素贝叶斯方法了。</p>
-<h4 id="_6">高斯分布<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h4>
+<h4 id="_4">高斯分布<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h4>
 <p>属于类别<span><span class="MathJax_Preview">y_i</span><script type="math/tex">y_i</script></span>的特征<span><span class="MathJax_Preview">x_i</span><script type="math/tex">x_i</script></span>的概率为</p>
 <div>
-<div class="MathJax_Preview">P(x_i|y_i) = \frac{1}{\sqrt{2\pi}\sigma_{ij}}e^{-\frac{(x_i-u_{ij})^2}{2\sigma^2_{ij}}}</div>
-<script type="math/tex; mode=display">P(x_i|y_i) = \frac{1}{\sqrt{2\pi}\sigma_{ij}}e^{-\frac{(x_i-u_{ij})^2}{2\sigma^2_{ij}}}</script>
+<div class="MathJax_Preview">P(x_i|y_i) = \frac{1}{\sqrt{2\pi}\sigma_{ij}} e^{\LARGE -\frac{(x_i-u_{ij})^2}{2\sigma^2_{ij}}}</div>
+<script type="math/tex; mode=display">P(x_i|y_i) = \frac{1}{\sqrt{2\pi}\sigma_{ij}} e^{\LARGE -\frac{(x_i-u_{ij})^2}{2\sigma^2_{ij}}}</script>
 </div>
-<p>为了举例，我们为上面讲述的手环的例子增加一列收入属性。假设我们要计算<span><span class="MathJax_Preview">P(100k|i500)</span><script type="math/tex">P(100k|i500)</script></span>的概率，即购买i500的用户中收入是100,000美元的概率。那么<span><span class="MathJax_Preview">u_{ij}, \sigma_{ij}</span><script type="math/tex">u_{ij}, \sigma_{ij}</script></span>分别是购买i500的用户的平均收入和收入的标准差。</p>
+<p>为了举例，我们为上面讲述的手环的例子增加一列收入属性。假设我们要计算<span><span class="MathJax_Preview">P(100k|i500)</span><script type="math/tex">P(100k|i500)</script></span>的概率，即购买i500的用户中收入是100,000美元的概率。那么这里<span><span class="MathJax_Preview">u_{ij}, \sigma_{ij}</span><script type="math/tex">u_{ij}, \sigma_{ij}</script></span>分别对应的是购买i500的用户的平均收入和收入的标准差。</p>
 <p>样本标准差的计算公式是：</p>
 <div>
-<div class="MathJax_Preview">\sigma = \sqrt{\frac{\sum_i(x_i-\bar x)^2}{card(x)-1}}</div>
-<script type="math/tex; mode=display">\sigma = \sqrt{\frac{\sum_i(x_i-\bar x)^2}{card(x)-1}}</script>
+<div class="MathJax_Preview">\sigma = \sqrt{\frac{\sum_i(x_i-\bar x)^2}{\text{card}(x)-1}}</div>
+<script type="math/tex; mode=display">\sigma = \sqrt{\frac{\sum_i(x_i-\bar x)^2}{\text{card}(x)-1}}</script>
 </div>
+<p>注意分母中的是<span><span class="MathJax_Preview">\text{card}(x)-1</span><script type="math/tex">\text{card}(x)-1</script></span>不是<span><span class="MathJax_Preview">\text{card}(x)</span><script type="math/tex">\text{card}(x)</script></span>。</p>
 <p>在训练朴素贝叶斯分类器时，可以将所有属性的平均值和样本标准差计算出来，而分类阶段使用平均值和样本标准差计算概率密度分布：</p>
 <p> <div class=codehilite><pre><span class=k>def</span> <span class=nf>pdf</span><span class=p>(</span><span class=n>mean</span><span class=p>,</span> <span class=n>ssd</span><span class=p>,</span> <span class=n>x</span><span class=p>):</span>
     <span class=sd>&quot;&quot;&quot;概率密度函数，计算P(x|y)&quot;&quot;&quot;</span>
     <span class=n>ePart</span> <span class=o>=</span> <span class=n>math</span><span class=o>.</span><span class=n>pow</span><span class=p>(</span><span class=n>math</span><span class=o>.</span><span class=n>e</span><span class=p>,</span> <span class=o>-</span><span class=p>(</span><span class=n>x</span> <span class=o>-</span> <span class=n>mean</span><span class=p>)</span> <span class=o>**</span> <span class=mi>2</span> <span class=o>/</span> <span class=p>(</span><span class=mi>2</span> <span class=o>*</span> <span class=n>ssd</span> <span class=o>**</span> <span class=mi>2</span><span class=p>))</span>
     <span class=k>return</span> <span class=p>(</span><span class=mf>1.0</span> <span class=o>/</span> <span class=p>(</span><span class=n>math</span><span class=o>.</span><span class=n>sqrt</span><span class=p>(</span><span class=mi>2</span> <span class=o>*</span> <span class=n>math</span><span class=o>.</span><span class=n>pi</span><span class=p>)</span> <span class=o>*</span> <span class=n>ssd</span><span class=p>))</span> <span class=o>*</span> <span class=n>ePart</span>
 </pre></div></p>
-<h3 id="python">使用Python实现<a class="headerlink" href="#python" title="Permanent link">&para;</a></h3></div>
+<h4 id="example_2">Example: 比马印第安人糖尿病<a class="headerlink" href="#example_2" title="Permanent link">&para;</a></h4>
+<p>比马印第安人糖尿病数据集在<a href="../ch4">前一章</a>已经进行了详细描述。该数据集包含了数值型特征，不能直接用上一节代码。也就是说不能直接用计数的方法来计算某个具体特征的值出现的概率，而是要用高斯分布的概率密度函数计算。</p>
+<p> <div class=codehilite><pre><span class=kn>import</span> <span class=nn>math</span>
+<span class=kn>import</span> <span class=nn>numpy</span> <span class=kn>as</span> <span class=nn>np</span>
+
+
+<span class=k>class</span> <span class=nc>NaiveBayes</span><span class=p>:</span>
+    <span class=sd>&quot;&quot;&quot;</span>
+<span class=sd>    Classification Using naive bayes</span>
+<span class=sd>    &quot;&quot;&quot;</span>
+
+    <span class=k>def</span> <span class=nf>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>bucketPrefix</span><span class=p>,</span> <span class=n>testBucketNumber</span><span class=p>,</span> <span class=n>dataFormat</span><span class=p>,</span> <span class=n>separator</span><span class=o>=</span><span class=s1>&#39;</span><span class=se>\t</span><span class=s1>&#39;</span><span class=p>):</span>
+        <span class=sd>&quot;&quot;&quot;</span>
+<span class=sd>        initialize data</span>
+<span class=sd>        :param bucketPrefix: 分桶数据集文件前缀</span>
+<span class=sd>        :param testBucketNumber: 测试桶的编号</span>
+<span class=sd>        :param dataFormat: 数据格式，形如attr attr attr attr class</span>
+<span class=sd>        :param separator: 文件分隔符</span>
+<span class=sd>        &quot;&quot;&quot;</span>
+        <span class=c1># 对数值型数据进行求和</span>
+        <span class=n>totals</span> <span class=o>=</span> <span class=p>{}</span>
+        <span class=n>numericValues</span> <span class=o>=</span> <span class=p>{}</span>
+
+        <span class=c1># 对分类型数据进行计数</span>
+        <span class=n>total</span> <span class=o>=</span> <span class=mi>0</span>
+        <span class=c1># 先验概率计数</span>
+        <span class=n>classes</span> <span class=o>=</span> <span class=p>{}</span>
+        <span class=c1># 后验概率计数</span>
+        <span class=n>counts</span> <span class=o>=</span> <span class=p>{}</span>
+
+        <span class=c1># 从文件中读取数据</span>
+        <span class=bp>self</span><span class=o>.</span><span class=n>format</span> <span class=o>=</span> <span class=n>dataFormat</span><span class=o>.</span><span class=n>strip</span><span class=p>()</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=n>separator</span><span class=p>)</span>
+        <span class=c1># 先验概率</span>
+        <span class=bp>self</span><span class=o>.</span><span class=n>prior</span> <span class=o>=</span> <span class=p>{}</span>
+        <span class=c1># 条件概率</span>
+        <span class=bp>self</span><span class=o>.</span><span class=n>conditional</span> <span class=o>=</span> <span class=p>{}</span>
+
+        <span class=c1># 遍历十个桶， 十折交叉验证</span>
+        <span class=k>for</span> <span class=n>i</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=mi>1</span><span class=p>,</span> <span class=mi>11</span><span class=p>):</span>
+            <span class=c1># 跳过测试桶</span>
+            <span class=k>if</span> <span class=n>i</span> <span class=o>!=</span> <span class=n>testBucketNumber</span><span class=p>:</span>
+                <span class=n>filename</span> <span class=o>=</span> <span class=s2>&quot;</span><span class=si>%s</span><span class=s2>-</span><span class=si>%02i</span><span class=s2>&quot;</span> <span class=o>%</span> <span class=p>(</span><span class=n>bucketPrefix</span><span class=p>,</span> <span class=n>i</span><span class=p>)</span>
+                <span class=n>f</span> <span class=o>=</span> <span class=nb>open</span><span class=p>(</span><span class=n>filename</span><span class=p>)</span>
+                <span class=n>lines</span> <span class=o>=</span> <span class=n>f</span><span class=o>.</span><span class=n>readlines</span><span class=p>()</span>
+                <span class=n>f</span><span class=o>.</span><span class=n>close</span><span class=p>()</span>
+                <span class=k>for</span> <span class=n>line</span> <span class=ow>in</span> <span class=n>lines</span><span class=p>:</span>
+                    <span class=n>fields</span> <span class=o>=</span> <span class=n>line</span><span class=o>.</span><span class=n>strip</span><span class=p>()</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>&#39;</span><span class=se>\t</span><span class=s1>&#39;</span><span class=p>)</span>
+                    <span class=n>ignore</span> <span class=o>=</span> <span class=p>[]</span>
+                    <span class=n>vector</span> <span class=o>=</span> <span class=p>[]</span>
+                    <span class=n>nums</span> <span class=o>=</span> <span class=p>[]</span>
+                    <span class=k>if</span> <span class=nb>len</span><span class=p>(</span><span class=n>fields</span><span class=p>)</span> <span class=o>&gt;</span> <span class=nb>len</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>format</span><span class=p>):</span>
+                        <span class=k>print</span><span class=p>(</span><span class=n>fields</span><span class=p>,</span> <span class=n>filename</span><span class=p>,</span> <span class=n>line</span><span class=p>)</span>
+                        <span class=k>raise</span> <span class=ne>Exception</span><span class=p>(</span><span class=s2>&quot;INPUT ERROR&quot;</span><span class=p>)</span>
+                    <span class=k>for</span> <span class=n>i</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=nb>len</span><span class=p>(</span><span class=n>fields</span><span class=p>)):</span>
+                        <span class=k>if</span> <span class=bp>self</span><span class=o>.</span><span class=n>format</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>==</span> <span class=s1>&#39;num&#39;</span><span class=p>:</span>
+                            <span class=n>nums</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=nb>float</span><span class=p>(</span><span class=n>fields</span><span class=p>[</span><span class=n>i</span><span class=p>]))</span>
+                        <span class=k>elif</span> <span class=bp>self</span><span class=o>.</span><span class=n>format</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>==</span> <span class=s1>&#39;attr&#39;</span><span class=p>:</span>
+                            <span class=n>vector</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>fields</span><span class=p>[</span><span class=n>i</span><span class=p>])</span>
+                        <span class=k>elif</span> <span class=bp>self</span><span class=o>.</span><span class=n>format</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>==</span> <span class=s1>&#39;comment&#39;</span><span class=p>:</span>
+                            <span class=n>ignore</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>fields</span><span class=p>[</span><span class=n>i</span><span class=p>])</span>
+                        <span class=k>elif</span> <span class=bp>self</span><span class=o>.</span><span class=n>format</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>==</span> <span class=s1>&#39;class&#39;</span><span class=p>:</span>
+                            <span class=n>category</span> <span class=o>=</span> <span class=n>fields</span><span class=p>[</span><span class=n>i</span><span class=p>]</span>
+
+                    <span class=c1># 处理分类型数据</span>
+                    <span class=c1># 处理该条记录</span>
+                    <span class=n>total</span> <span class=o>+=</span> <span class=mi>1</span>
+                    <span class=n>classes</span><span class=o>.</span><span class=n>setdefault</span><span class=p>(</span><span class=n>category</span><span class=p>,</span> <span class=mi>0</span><span class=p>)</span>
+                    <span class=n>counts</span><span class=o>.</span><span class=n>setdefault</span><span class=p>(</span><span class=n>category</span><span class=p>,</span> <span class=p>{})</span>
+                    <span class=n>classes</span><span class=p>[</span><span class=n>category</span><span class=p>]</span> <span class=o>+=</span> <span class=mi>1</span>
+                    <span class=c1># 处理各个属性</span>
+                    <span class=n>col</span> <span class=o>=</span> <span class=mi>0</span>
+                    <span class=k>for</span> <span class=n>columnValue</span> <span class=ow>in</span> <span class=n>vector</span><span class=p>:</span>
+                        <span class=n>col</span> <span class=o>+=</span> <span class=mi>1</span>
+                        <span class=n>counts</span><span class=p>[</span><span class=n>category</span><span class=p>]</span><span class=o>.</span><span class=n>setdefault</span><span class=p>(</span><span class=n>col</span><span class=p>,</span> <span class=p>{})</span>
+                        <span class=n>counts</span><span class=p>[</span><span class=n>category</span><span class=p>][</span><span class=n>col</span><span class=p>]</span><span class=o>.</span><span class=n>setdefault</span><span class=p>(</span><span class=n>columnValue</span><span class=p>,</span> <span class=mi>0</span><span class=p>)</span>
+                        <span class=n>counts</span><span class=p>[</span><span class=n>category</span><span class=p>][</span><span class=n>col</span><span class=p>][</span><span class=n>columnValue</span><span class=p>]</span> <span class=o>+=</span> <span class=mi>1</span>
+
+                    <span class=c1># 处理数值型数据</span>
+                    <span class=n>col</span> <span class=o>=</span> <span class=mi>0</span>  <span class=c1># column number</span>
+                    <span class=n>totals</span><span class=o>.</span><span class=n>setdefault</span><span class=p>(</span><span class=n>category</span><span class=p>,</span> <span class=p>{})</span>
+                    <span class=n>numericValues</span><span class=o>.</span><span class=n>setdefault</span><span class=p>(</span><span class=n>category</span><span class=p>,</span> <span class=p>{})</span>
+                    <span class=k>for</span> <span class=n>columnValue</span> <span class=ow>in</span> <span class=n>nums</span><span class=p>:</span>
+                        <span class=n>col</span> <span class=o>+=</span> <span class=mi>1</span>
+                        <span class=n>totals</span><span class=p>[</span><span class=n>category</span><span class=p>]</span><span class=o>.</span><span class=n>setdefault</span><span class=p>(</span><span class=n>col</span><span class=p>,</span> <span class=mi>0</span><span class=p>)</span>
+                        <span class=n>totals</span><span class=p>[</span><span class=n>category</span><span class=p>][</span><span class=n>col</span><span class=p>]</span> <span class=o>+=</span> <span class=n>columnValue</span>
+                        <span class=n>numericValues</span><span class=p>[</span><span class=n>category</span><span class=p>]</span><span class=o>.</span><span class=n>setdefault</span><span class=p>(</span><span class=n>col</span><span class=p>,</span> <span class=p>[])</span>
+                        <span class=n>numericValues</span><span class=p>[</span><span class=n>category</span><span class=p>][</span><span class=n>col</span><span class=p>]</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>columnValue</span><span class=p>)</span>
+
+        <span class=c1># 计数结束，开始计算概率</span>
+
+        <span class=c1># 计算先验概率P(h)</span>
+        <span class=k>for</span> <span class=p>(</span><span class=n>category</span><span class=p>,</span> <span class=n>count</span><span class=p>)</span> <span class=ow>in</span> <span class=n>classes</span><span class=o>.</span><span class=n>items</span><span class=p>():</span>
+            <span class=bp>self</span><span class=o>.</span><span class=n>prior</span><span class=p>[</span><span class=n>category</span><span class=p>]</span> <span class=o>=</span> <span class=n>count</span> <span class=o>/</span> <span class=n>total</span>
+
+        <span class=c1># 计算条件概率P(h|D)</span>
+        <span class=k>for</span> <span class=p>(</span><span class=n>category</span><span class=p>,</span> <span class=n>columns</span><span class=p>)</span> <span class=ow>in</span> <span class=n>counts</span><span class=o>.</span><span class=n>items</span><span class=p>():</span>
+            <span class=bp>self</span><span class=o>.</span><span class=n>conditional</span><span class=o>.</span><span class=n>setdefault</span><span class=p>(</span><span class=n>category</span><span class=p>,</span> <span class=p>{})</span>
+            <span class=k>for</span> <span class=p>(</span><span class=n>col_id</span><span class=p>,</span> <span class=n>valueCounts</span><span class=p>)</span> <span class=ow>in</span> <span class=n>columns</span><span class=o>.</span><span class=n>items</span><span class=p>():</span>
+                <span class=bp>self</span><span class=o>.</span><span class=n>conditional</span><span class=p>[</span><span class=n>category</span><span class=p>]</span><span class=o>.</span><span class=n>setdefault</span><span class=p>(</span><span class=n>col_id</span><span class=p>,</span> <span class=p>{})</span>
+                <span class=k>for</span> <span class=p>(</span><span class=n>attrValue</span><span class=p>,</span> <span class=n>count</span><span class=p>)</span> <span class=ow>in</span> <span class=n>valueCounts</span><span class=o>.</span><span class=n>items</span><span class=p>():</span>
+                    <span class=bp>self</span><span class=o>.</span><span class=n>conditional</span><span class=p>[</span><span class=n>category</span><span class=p>][</span><span class=n>col_id</span><span class=p>][</span><span class=n>attrValue</span><span class=p>]</span> <span class=o>=</span> <span class=p>(</span>
+                            <span class=n>count</span> <span class=o>/</span> <span class=n>classes</span><span class=p>[</span><span class=n>category</span><span class=p>])</span>
+
+        <span class=c1># 计算平均数和样本标准差</span>
+        <span class=bp>self</span><span class=o>.</span><span class=n>means</span> <span class=o>=</span> <span class=p>{}</span>
+        <span class=bp>self</span><span class=o>.</span><span class=n>standard_deviation</span> <span class=o>=</span> <span class=p>{}</span>
+        <span class=k>for</span> <span class=n>category</span><span class=p>,</span> <span class=n>columns</span> <span class=ow>in</span> <span class=n>totals</span><span class=o>.</span><span class=n>items</span><span class=p>():</span>
+            <span class=bp>self</span><span class=o>.</span><span class=n>means</span><span class=o>.</span><span class=n>setdefault</span><span class=p>(</span><span class=n>category</span><span class=p>,</span> <span class=p>{})</span>
+            <span class=bp>self</span><span class=o>.</span><span class=n>standard_deviation</span><span class=o>.</span><span class=n>setdefault</span><span class=p>(</span><span class=n>category</span><span class=p>,</span> <span class=p>{})</span>
+            <span class=k>for</span> <span class=n>col</span><span class=p>,</span> <span class=n>sums</span> <span class=ow>in</span> <span class=n>columns</span><span class=o>.</span><span class=n>items</span><span class=p>():</span>
+                <span class=bp>self</span><span class=o>.</span><span class=n>means</span><span class=p>[</span><span class=n>category</span><span class=p>][</span><span class=n>col</span><span class=p>]</span> <span class=o>=</span> 
+                    <span class=n>sums</span><span class=o>/</span><span class=nb>len</span><span class=p>(</span><span class=n>numericValues</span><span class=p>[</span><span class=n>category</span><span class=p>][</span><span class=n>col</span><span class=p>])</span>
+                <span class=bp>self</span><span class=o>.</span><span class=n>standard_deviation</span><span class=p>[</span><span class=n>category</span><span class=p>][</span><span class=n>col</span><span class=p>]</span> <span class=o>=</span> <span class=n>np</span><span class=o>.</span><span class=n>sqrt</span><span class=p>(</span><span class=n>np</span><span class=o>.</span><span class=n>sum</span><span class=p>(</span><span class=n>np</span><span class=o>.</span><span class=n>power</span><span class=p>(</span>
+                    <span class=p>(</span><span class=n>np</span><span class=o>.</span><span class=n>array</span><span class=p>(</span><span class=n>numericValues</span><span class=p>[</span><span class=n>category</span><span class=p>][</span><span class=n>col</span><span class=p>])</span> <span class=o>-</span>
+                    <span class=bp>self</span><span class=o>.</span><span class=n>means</span><span class=p>[</span><span class=n>category</span><span class=p>][</span><span class=n>col</span><span class=p>]),</span> <span class=mi>2</span><span class=p>))</span><span class=o>/</span>
+                    <span class=p>(</span><span class=nb>len</span><span class=p>(</span><span class=n>numericValues</span><span class=p>[</span><span class=n>category</span><span class=p>][</span><span class=n>col</span><span class=p>])</span> <span class=o>-</span> <span class=mf>1.0</span><span class=p>))</span>
+
+    <span class=k>def</span> <span class=nf>pdf</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>mean</span><span class=p>,</span> <span class=n>ssd</span><span class=p>,</span> <span class=n>x</span><span class=p>):</span>
+        <span class=sd>&quot;&quot;&quot;概率密度函数，计算P(x|y)&quot;&quot;&quot;</span>
+        <span class=n>ePart</span> <span class=o>=</span> <span class=n>math</span><span class=o>.</span><span class=n>pow</span><span class=p>(</span><span class=n>math</span><span class=o>.</span><span class=n>e</span><span class=p>,</span> <span class=o>-</span><span class=p>(</span><span class=n>x</span> <span class=o>-</span> <span class=n>mean</span><span class=p>)</span> <span class=o>**</span> <span class=mi>2</span> <span class=o>/</span> <span class=p>(</span><span class=mi>2</span> <span class=o>*</span> <span class=n>ssd</span> <span class=o>**</span> <span class=mi>2</span><span class=p>))</span>
+        <span class=k>return</span> <span class=p>(</span><span class=mf>1.0</span> <span class=o>/</span> <span class=p>(</span><span class=n>math</span><span class=o>.</span><span class=n>sqrt</span><span class=p>(</span><span class=mi>2</span> <span class=o>*</span> <span class=n>math</span><span class=o>.</span><span class=n>pi</span><span class=p>)</span> <span class=o>*</span> <span class=n>ssd</span><span class=p>))</span> <span class=o>*</span> <span class=n>ePart</span>
+
+    <span class=k>def</span> <span class=nf>classify</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>itemVector</span><span class=p>,</span> <span class=n>numVector</span><span class=p>):</span>
+        <span class=sd>&quot;&quot;&quot;</span>
+<span class=sd>        根据itemVector和numVector进行分类</span>
+<span class=sd>        &quot;&quot;&quot;</span>
+        <span class=n>results</span> <span class=o>=</span> <span class=p>[]</span>
+
+        <span class=k>for</span> <span class=p>(</span><span class=n>category</span><span class=p>,</span> <span class=n>prior</span><span class=p>)</span> <span class=ow>in</span> <span class=bp>self</span><span class=o>.</span><span class=n>prior</span><span class=o>.</span><span class=n>items</span><span class=p>():</span>
+            <span class=n>prob</span> <span class=o>=</span> <span class=n>prior</span>
+            <span class=n>col</span> <span class=o>=</span> <span class=mi>1</span>
+            <span class=k>for</span> <span class=n>attrValue</span> <span class=ow>in</span> <span class=n>itemVector</span><span class=p>:</span>
+                <span class=k>if</span> <span class=n>attrValue</span> <span class=ow>not</span> <span class=ow>in</span> <span class=bp>self</span><span class=o>.</span><span class=n>conditional</span><span class=p>[</span><span class=n>category</span><span class=p>][</span><span class=n>col</span><span class=p>]:</span>
+                    <span class=c1># 属性不存在，返回0概率</span>
+                    <span class=n>prob</span> <span class=o>=</span> <span class=mi>0</span>
+                <span class=k>else</span><span class=p>:</span>
+                    <span class=n>prob</span> <span class=o>*=</span> <span class=bp>self</span><span class=o>.</span><span class=n>conditional</span><span class=p>[</span><span class=n>category</span><span class=p>][</span><span class=n>col</span><span class=p>][</span><span class=n>attrValue</span><span class=p>]</span>
+                <span class=n>col</span> <span class=o>+=</span> <span class=mi>1</span>
+            <span class=n>col</span> <span class=o>=</span> <span class=mi>1</span>
+            <span class=k>for</span> <span class=n>numValue</span> <span class=ow>in</span> <span class=n>numVector</span><span class=p>:</span>
+                <span class=c1>#高斯概率密度分布</span>
+                <span class=n>prob</span> <span class=o>*=</span> <span class=bp>self</span><span class=o>.</span><span class=n>pdf</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>means</span><span class=p>[</span><span class=n>category</span><span class=p>][</span><span class=n>col</span><span class=p>],</span> <span class=bp>self</span><span class=o>.</span><span class=n>standard_deviation</span><span class=p>[</span><span class=n>category</span><span class=p>][</span><span class=n>col</span><span class=p>],</span> <span class=n>numValue</span><span class=p>)</span>
+                <span class=n>col</span> <span class=o>+=</span> <span class=mi>1</span>
+            <span class=n>results</span><span class=o>.</span><span class=n>append</span><span class=p>((</span><span class=n>prob</span><span class=p>,</span> <span class=n>category</span><span class=p>))</span>
+        <span class=c1># 返回概率最高的结果</span>
+        <span class=k>return</span> <span class=nb>max</span><span class=p>(</span><span class=n>results</span><span class=p>)[</span><span class=mi>1</span><span class=p>]</span>
+
+    <span class=k>def</span> <span class=nf>testBucket</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>bucketPrefix</span><span class=p>,</span> <span class=n>i</span><span class=p>):</span>
+        <span class=sd>&quot;&quot;&quot;</span>
+<span class=sd>        测试</span>
+<span class=sd>        :param bucketPrefix: 分桶数据集文件前缀</span>
+<span class=sd>        :param i: 编号</span>
+<span class=sd>        :return: 测试结果</span>
+<span class=sd>        &quot;&quot;&quot;</span>
+        <span class=n>filename</span> <span class=o>=</span> <span class=s2>&quot;</span><span class=si>%s</span><span class=s2>-</span><span class=si>%02i</span><span class=s2>&quot;</span> <span class=o>%</span> <span class=p>(</span><span class=n>bucketPrefix</span><span class=p>,</span> <span class=n>i</span><span class=p>)</span>
+        <span class=n>f</span> <span class=o>=</span> <span class=nb>open</span><span class=p>(</span><span class=n>filename</span><span class=p>)</span>
+        <span class=n>lines</span> <span class=o>=</span> <span class=n>f</span><span class=o>.</span><span class=n>readlines</span><span class=p>()</span>
+        <span class=n>f</span><span class=o>.</span><span class=n>close</span><span class=p>()</span>
+        <span class=n>results</span> <span class=o>=</span> <span class=p>{}</span>
+        <span class=k>for</span> <span class=n>line</span> <span class=ow>in</span> <span class=n>lines</span><span class=p>:</span>
+            <span class=n>fields</span> <span class=o>=</span> <span class=n>line</span><span class=o>.</span><span class=n>strip</span><span class=p>()</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>&#39;</span><span class=se>\t</span><span class=s1>&#39;</span><span class=p>)</span>
+            <span class=n>ignore</span> <span class=o>=</span> <span class=p>[]</span>
+            <span class=n>vector</span> <span class=o>=</span> <span class=p>[]</span>
+            <span class=n>nums</span> <span class=o>=</span> <span class=p>[]</span>
+            <span class=k>if</span> <span class=nb>len</span><span class=p>(</span><span class=n>fields</span><span class=p>)</span> <span class=o>&gt;</span> <span class=nb>len</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>format</span><span class=p>):</span>
+                <span class=k>print</span><span class=p>(</span><span class=n>fields</span><span class=p>,</span> <span class=n>filename</span><span class=p>,</span> <span class=n>line</span><span class=p>)</span>
+                <span class=k>raise</span> <span class=ne>Exception</span><span class=p>(</span><span class=s2>&quot;INPUT ERROR&quot;</span><span class=p>)</span>
+            <span class=k>for</span> <span class=n>i</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=nb>len</span><span class=p>(</span><span class=n>fields</span><span class=p>)):</span>
+                <span class=k>if</span> <span class=bp>self</span><span class=o>.</span><span class=n>format</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>==</span> <span class=s1>&#39;num&#39;</span><span class=p>:</span>
+                    <span class=n>nums</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=nb>float</span><span class=p>(</span><span class=n>fields</span><span class=p>[</span><span class=n>i</span><span class=p>]))</span>
+                <span class=k>elif</span> <span class=bp>self</span><span class=o>.</span><span class=n>format</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>==</span> <span class=s1>&#39;attr&#39;</span><span class=p>:</span>
+                    <span class=n>vector</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>fields</span><span class=p>[</span><span class=n>i</span><span class=p>])</span>
+                <span class=k>elif</span> <span class=bp>self</span><span class=o>.</span><span class=n>format</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>==</span> <span class=s1>&#39;comment&#39;</span><span class=p>:</span>
+                    <span class=n>ignore</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>fields</span><span class=p>[</span><span class=n>i</span><span class=p>])</span>
+                <span class=k>elif</span> <span class=bp>self</span><span class=o>.</span><span class=n>format</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>==</span> <span class=s1>&#39;class&#39;</span><span class=p>:</span>
+                    <span class=n>category</span> <span class=o>=</span> <span class=n>fields</span><span class=p>[</span><span class=n>i</span><span class=p>]</span>
+            <span class=n>test_result</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>classify</span><span class=p>(</span><span class=n>vector</span><span class=p>,</span> <span class=n>nums</span><span class=p>)</span>
+            <span class=n>results</span><span class=o>.</span><span class=n>setdefault</span><span class=p>(</span><span class=n>category</span><span class=p>,</span> <span class=p>{})</span>
+            <span class=n>results</span><span class=p>[</span><span class=n>category</span><span class=p>]</span><span class=o>.</span><span class=n>setdefault</span><span class=p>(</span><span class=n>test_result</span><span class=p>,</span> <span class=mi>0</span><span class=p>)</span>
+            <span class=n>results</span><span class=p>[</span><span class=n>category</span><span class=p>][</span><span class=n>test_result</span><span class=p>]</span> <span class=o>+=</span> <span class=mi>1</span>
+        <span class=k>return</span> <span class=n>results</span>
+
+
+
+
+
+<span class=k>def</span> <span class=nf>tenfold</span><span class=p>(</span><span class=n>bucketPrefix</span><span class=p>,</span> <span class=n>dataFormat</span><span class=p>):</span>
+    <span class=n>results</span> <span class=o>=</span> <span class=p>{}</span>
+    <span class=k>for</span> <span class=n>i</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=mi>1</span><span class=p>,</span> <span class=mi>11</span><span class=p>):</span>
+        <span class=n>c</span> <span class=o>=</span> <span class=n>NaiveBayes</span><span class=p>(</span><span class=n>bucketPrefix</span><span class=p>,</span> <span class=n>i</span><span class=p>,</span> <span class=n>dataFormat</span><span class=p>)</span>
+        <span class=n>t</span> <span class=o>=</span> <span class=n>c</span><span class=o>.</span><span class=n>testBucket</span><span class=p>(</span><span class=n>bucketPrefix</span><span class=p>,</span> <span class=n>i</span><span class=p>)</span>
+        <span class=k>for</span> <span class=p>(</span><span class=n>key</span><span class=p>,</span> <span class=n>value</span><span class=p>)</span> <span class=ow>in</span> <span class=n>t</span><span class=o>.</span><span class=n>items</span><span class=p>():</span>
+            <span class=n>results</span><span class=o>.</span><span class=n>setdefault</span><span class=p>(</span><span class=n>key</span><span class=p>,</span> <span class=p>{})</span>
+            <span class=k>for</span> <span class=p>(</span><span class=n>ckey</span><span class=p>,</span> <span class=n>cvalue</span><span class=p>)</span> <span class=ow>in</span> <span class=n>value</span><span class=o>.</span><span class=n>items</span><span class=p>():</span>
+                <span class=n>results</span><span class=p>[</span><span class=n>key</span><span class=p>]</span><span class=o>.</span><span class=n>setdefault</span><span class=p>(</span><span class=n>ckey</span><span class=p>,</span> <span class=mi>0</span><span class=p>)</span>
+                <span class=n>results</span><span class=p>[</span><span class=n>key</span><span class=p>][</span><span class=n>ckey</span><span class=p>]</span> <span class=o>+=</span> <span class=n>cvalue</span>
+
+    <span class=c1># now print results</span>
+    <span class=n>categories</span> <span class=o>=</span> <span class=nb>list</span><span class=p>(</span><span class=n>results</span><span class=o>.</span><span class=n>keys</span><span class=p>())</span>
+    <span class=n>categories</span><span class=o>.</span><span class=n>sort</span><span class=p>()</span>
+    <span class=k>print</span><span class=p>(</span><span class=s2>&quot;</span><span class=se>\n</span><span class=s2>       Classified as: &quot;</span><span class=p>)</span>
+    <span class=n>header</span> <span class=o>=</span> <span class=s2>&quot;        &quot;</span>
+    <span class=n>subheader</span> <span class=o>=</span> <span class=s2>&quot;      +&quot;</span>
+    <span class=k>for</span> <span class=n>category</span> <span class=ow>in</span> <span class=n>categories</span><span class=p>:</span>
+        <span class=n>header</span> <span class=o>+=</span> <span class=s2>&quot;</span><span class=si>% 2s</span><span class=s2>   &quot;</span> <span class=o>%</span> <span class=n>category</span>
+        <span class=n>subheader</span> <span class=o>+=</span> <span class=s2>&quot;-----+&quot;</span>
+    <span class=k>print</span><span class=p>(</span><span class=n>header</span><span class=p>)</span>
+    <span class=k>print</span><span class=p>(</span><span class=n>subheader</span><span class=p>)</span>
+    <span class=n>total</span> <span class=o>=</span> <span class=mf>0.0</span>
+    <span class=n>correct</span> <span class=o>=</span> <span class=mf>0.0</span>
+    <span class=k>for</span> <span class=n>category</span> <span class=ow>in</span> <span class=n>categories</span><span class=p>:</span>
+        <span class=n>row</span> <span class=o>=</span> <span class=s2>&quot; </span><span class=si>%s</span><span class=s2>    |&quot;</span> <span class=o>%</span> <span class=n>category</span>
+        <span class=k>for</span> <span class=n>c2</span> <span class=ow>in</span> <span class=n>categories</span><span class=p>:</span>
+            <span class=k>if</span> <span class=n>c2</span> <span class=ow>in</span> <span class=n>results</span><span class=p>[</span><span class=n>category</span><span class=p>]:</span>
+                <span class=n>count</span> <span class=o>=</span> <span class=n>results</span><span class=p>[</span><span class=n>category</span><span class=p>][</span><span class=n>c2</span><span class=p>]</span>
+            <span class=k>else</span><span class=p>:</span>
+                <span class=n>count</span> <span class=o>=</span> <span class=mi>0</span>
+            <span class=n>row</span> <span class=o>+=</span> <span class=s2>&quot; </span><span class=si>%3i</span><span class=s2> |&quot;</span> <span class=o>%</span> <span class=n>count</span>
+            <span class=n>total</span> <span class=o>+=</span> <span class=n>count</span>
+            <span class=k>if</span> <span class=n>c2</span> <span class=o>==</span> <span class=n>category</span><span class=p>:</span>
+                <span class=n>correct</span> <span class=o>+=</span> <span class=n>count</span>
+        <span class=k>print</span><span class=p>(</span><span class=n>row</span><span class=p>)</span>
+    <span class=k>print</span><span class=p>(</span><span class=n>subheader</span><span class=p>)</span>
+    <span class=k>print</span><span class=p>(</span><span class=s2>&quot;</span><span class=se>\n</span><span class=si>%5.3f</span><span class=s2> percent correct&quot;</span> <span class=o>%</span> <span class=p>((</span><span class=n>correct</span> <span class=o>*</span> <span class=mi>100</span><span class=p>)</span> <span class=o>/</span> <span class=n>total</span><span class=p>))</span>
+    <span class=k>print</span><span class=p>(</span><span class=s2>&quot;total of </span><span class=si>%i</span><span class=s2> instances&quot;</span> <span class=o>%</span> <span class=n>total</span><span class=p>)</span>
+
+
+
+<span class=k>if</span> <span class=n>__name__</span> <span class=o>==</span> <span class=s2>&quot;__main__&quot;</span><span class=p>:</span>
+    <span class=n>tenfold</span><span class=p>(</span><span class=s2>&quot;pimaSmall/pimaSmall&quot;</span><span class=p>,</span>
+            <span class=s2>&quot;num</span><span class=se>\t</span><span class=s2>num</span><span class=se>\t</span><span class=s2>num</span><span class=se>\t</span><span class=s2>num</span><span class=se>\t</span><span class=s2>num</span><span class=se>\t</span><span class=s2>num</span><span class=se>\t</span><span class=s2>num</span><span class=se>\t</span><span class=s2>num</span><span class=se>\t</span><span class=s2>class&quot;</span><span class=p>)</span>
+</pre></div></p>
+<p>输出结果如下：</p>
+<p> <div class=codehilite><pre>       Classified as: 
+         0    1   
+      +-----+-----+
+ 0    |  46 |  13 |
+ 1    |  15 |  26 |
+      +-----+-----+
+
+72.000 percent correct
+total of 100 instances
+</pre></div></p>
+<p>与kNN相比，朴素贝叶斯准确率更好，而且计算更快。</p>
+<h4 id="_5">为什么要叫“朴素贝叶斯”呢？<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h4>
+<p>我们之所以能将多个概率进行相乘是因为这些概率都是具有独立性的。关于贝叶斯准则，可以参见<a href="http://larryim.cc/note-big-data/prob/ch1/">概率导论</a>。</p>
+<blockquote>
+<p>In simple terms, a naive Bayes classifier assumes that the presence (or absence) of a particular feature of a class is unrelated to the presence (or absence) of any other feature, given the class variable. For example, a fruit may be considered to be an apple if it is red, round, and about 4" in diameter. Even if these features depend on each other or upon the existence of the other features, a naive Bayes classifier considers all of these properties to independently contribute to the probability that this fruit is an apple. [<a href="https://stackoverflow.com/questions/10614754/what-is-naive-in-a-naive-bayes-classifier">ref</a>]</p>
+</blockquote>
+<p>但是在现实数据挖掘场景中，这种特征变量之间往往不相互独立。</p>
+<ul>
+<li>运动员例子中，身高和体重不是互相独立的，因为高的人体重也会较高。 </li>
+<li>地区邮编、收入、年龄，这些特征也不完全独立，一些地区的房屋都很昂贵，一些地区则只有房车：加州帕罗奥图大多是20岁的年轻人，而亚利桑那州则多是退休人员。</li>
+<li>在音乐基因工程中，很多特征也是不独立的，如果音乐中有很多变音吉他，那小提琴的 概率就降低了。 血液检验的结果中，T4和TSH这两个指标通常是呈反比的。</li>
+</ul>
+<p>所以，在使用贝叶斯方法时，我们需要互相独立的特征，但现实生活中很难找到这样的应用，因此我们只能假设他们是独立的了！我们完全忽略了这个问题，因此才称为“朴素的”（天真的）贝叶斯方法。不过事实证明朴素贝叶斯的效果还是很不错的。</p></div>
         </div>
 
         <footer class="col-md-12">
