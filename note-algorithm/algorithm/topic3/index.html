@@ -6,9 +6,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         
         <meta name="author" content="Zhenhua Wang">
-        <link rel="canonical" href="http://larryim.cc/note/algorithm/ch4/">
+        <link rel="canonical" href="http://larryim.cc/note/algorithm/topic3/">
         <link rel="shortcut icon" href="../../img/favicon.ico">
-        <title>Ch4 - Zhenhua's Notes - Algorithm</title>
+        <title>Topic 3: Sort  - Zhenhua's Notes - Algorithm</title>
         <link href="../../css/bootstrap-custom.min.css" rel="stylesheet">
         <link href="../../css/font-awesome.min.css" rel="stylesheet">
         <link href="../../css/base.css" rel="stylesheet">
@@ -59,7 +59,7 @@
                             <li >
                                 <a href="../..">Home</a>
                             </li>
-                            <li class="dropdown">
+                            <li class="dropdown active">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Algorithm <b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     
@@ -73,6 +73,14 @@
                                     
 <li >
     <a href="../topic2/">Topic 2: StackQueue</a>
+</li>
+                                    
+<li class="active">
+    <a href="./">Topic 3: Sort </a>
+</li>
+                                    
+<li >
+    <a href="../topic4/">Topic 4: PriorityQueues</a>
 </li>
                                 </ul>
                             </li>
@@ -108,6 +116,16 @@
                                 <i class="fa fa-search"></i> Search
                             </a>
                         </li>
+                            <li >
+                                <a rel="next" href="../topic2/">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li >
+                                <a rel="prev" href="../topic4/">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
                     </ul>
                 </div>
             </div>
@@ -116,12 +134,54 @@
         <div class="container">
                 <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
-        <li class="main active"><a href="#chapter-4-graphs">Chapter 4: Graphs</a></li>
+        <li class="main active"><a href="#chapter-2-sorting">Chapter 2: Sorting</a></li>
+        <li class="main "><a href="#selection-sort">Selection Sort</a></li>
+            <li><a href="#analysis">Analysis</a></li>
+        <li class="main "><a href="#insertion-sort">Insertion Sort</a></li>
+        <li class="main "><a href="#shell-sort">Shell Sort</a></li>
+        <li class="main "><a href="#shuffling">Shuffling</a></li>
+        <li class="main "><a href="#merge-sort">Merge Sort</a></li>
+            <li><a href="#java-implementation">Java Implementation</a></li>
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
 
-<h3 id="chapter-4-graphs"><strong>Chapter 4: Graphs</strong><a class="headerlink" href="#chapter-4-graphs" title="Permanent link">&para;</a></h3></div>
+<h3 id="chapter-2-sorting"><strong>Chapter 2: Sorting</strong><a class="headerlink" href="#chapter-2-sorting" title="Permanent link">&para;</a></h3>
+<h3 id="selection-sort">Selection Sort<a class="headerlink" href="#selection-sort" title="Permanent link">&para;</a></h3>
+<ul>
+<li>In iteration <span><span class="MathJax_Preview">i</span><script type="math/tex">i</script></span>, find index <span><span class="MathJax_Preview">min</span><script type="math/tex">min</script></span> of smallest remaining entry. </li>
+<li>Swap <span><span class="MathJax_Preview">a[i]</span><script type="math/tex">a[i]</script></span> and <span><span class="MathJax_Preview">a[min]</span><script type="math/tex">a[min]</script></span>.</li>
+</ul>
+<p>Animation:</p>
+<p><img class="sorting_algorithms_table-image" data-animated="{&quot;20&quot;:&quot;https://assets.toptal.io/assets/front/static/public/blocks/sorting_algorithms/animations/20/random-initial-order/selection-sort_c041bf.gif&quot;,&quot;30&quot;:&quot;https://assets.toptal.io/assets/front/static/public/blocks/sorting_algorithms/animations/30/random-initial-order/selection-sort_0ba73d.gif&quot;,&quot;40&quot;:&quot;https://assets.toptal.io/assets/front/static/public/blocks/sorting_algorithms/animations/40/random-initial-order/selection-sort_d24b13.gif&quot;,&quot;50&quot;:&quot;https://assets.toptal.io/assets/front/static/public/blocks/sorting_algorithms/animations/50/random-initial-order/selection-sort_f03ab6.gif&quot;}" data-role="sorting_example" data-static="{&quot;20&quot;:&quot;https://assets.toptal.io/assets/front/static/public/blocks/sorting_algorithms/animations/20/random-initial-order/selection-sort-0_dc86a8.gif&quot;,&quot;30&quot;:&quot;https://assets.toptal.io/assets/front/static/public/blocks/sorting_algorithms/animations/30/random-initial-order/selection-sort-0_436051.gif&quot;,&quot;40&quot;:&quot;https://assets.toptal.io/assets/front/static/public/blocks/sorting_algorithms/animations/40/random-initial-order/selection-sort-0_65e37a.gif&quot;,&quot;50&quot;:&quot;https://assets.toptal.io/assets/front/static/public/blocks/sorting_algorithms/animations/50/random-initial-order/selection-sort-0_f83472.gif&quot;}" src="https://assets.toptal.io/assets/front/static/public/blocks/sorting_algorithms/animations/20/random-initial-order/selection-sort_c041bf.gif"></p>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>Selection</span> <span class=o>{</span>
+    <span class=kd>public</span> <span class=kd>static</span> <span class=kt>void</span> <span class=nf>sort</span><span class=o>(</span><span class=n>Comparable</span><span class=o>[]</span> <span class=n>a</span><span class=o>)</span> <span class=o>{</span>
+        <span class=kt>int</span> <span class=n>N</span> <span class=o>=</span> <span class=n>a</span><span class=o>.</span><span class=na>length</span><span class=o>;</span>
+        <span class=k>for</span> <span class=o>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=o>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>N</span><span class=o>;</span> <span class=n>i</span><span class=o>++)</span> <span class=o>{</span>
+            <span class=kt>int</span> <span class=n>min</span> <span class=o>=</span> <span class=n>i</span><span class=o>;</span>
+
+            <span class=k>for</span> <span class=o>(</span><span class=kt>int</span> <span class=n>j</span> <span class=o>=</span> <span class=n>i</span> <span class=o>+</span> <span class=mi>1</span><span class=o>;</span> <span class=n>j</span> <span class=o>&lt;</span> <span class=n>N</span><span class=o>;</span> <span class=n>j</span><span class=o>++)</span>
+                <span class=k>if</span> <span class=o>(</span><span class=n>less</span><span class=o>(</span><span class=n>a</span><span class=o>[</span><span class=n>j</span><span class=o>],</span> <span class=n>a</span><span class=o>[</span><span class=n>min</span><span class=o>]))</span> <span class=n>min</span> <span class=o>=</span> <span class=n>j</span><span class=o>;</span>
+            <span class=n>exch</span><span class=o>(</span><span class=n>a</span><span class=o>,</span> <span class=n>i</span><span class=o>,</span> <span class=n>min</span><span class=o>);</span>
+        <span class=o>}</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></p>
+<h4 id="analysis">Analysis<a class="headerlink" href="#analysis" title="Permanent link">&para;</a></h4>
+<p>Selection sort uses <span><span class="MathJax_Preview">(N-1)+(N-2)+...+1\sim N^2/2</span><script type="math/tex">(N-1)+(N-2)+...+1\sim N^2/2</script></span> compares and <span><span class="MathJax_Preview">N</span><script type="math/tex">N</script></span> exchanges.</p>
+<h3 id="insertion-sort">Insertion Sort<a class="headerlink" href="#insertion-sort" title="Permanent link">&para;</a></h3>
+<h3 id="shell-sort">Shell Sort<a class="headerlink" href="#shell-sort" title="Permanent link">&para;</a></h3>
+<h3 id="shuffling">Shuffling<a class="headerlink" href="#shuffling" title="Permanent link">&para;</a></h3>
+<h3 id="merge-sort">Merge Sort<a class="headerlink" href="#merge-sort" title="Permanent link">&para;</a></h3>
+<p>Basic plan:</p>
+<ul>
+<li>Divide array into two halves</li>
+<li>Recursively sort each half</li>
+<li>Merge two halves</li>
+</ul>
+<p>Goal. Given two sorted subarrays a[lo] to a[mid] and a[mid+1] to a[hi], replace with sorted subarray a[lo] to a[hi]</p>
+<p><img alt="mergeDemo" src="../figures/mergeDemo.png" /></p>
+<h4 id="java-implementation">Java Implementation<a class="headerlink" href="#java-implementation" title="Permanent link">&para;</a></h4></div>
         </div>
 
         <footer class="col-md-12">
