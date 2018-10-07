@@ -10,9 +10,9 @@
         <link rel="shortcut icon" href="../../img/favicon.ico">
         <title>Chapter 9: 虚拟内存 - Zhenhua's Notes</title>
         <link href="../../css/bootstrap-custom.min.css" rel="stylesheet">
-        <link href="../../css/font-awesome-4.5.0.css" rel="stylesheet">
+        <link href="../../css/font-awesome.min.css" rel="stylesheet">
         <link href="../../css/base.css" rel="stylesheet">
-        <link rel="stylesheet" href="../../css/highlight.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/docco.min.css">
         <link href="../../extra_css/custom.css" rel="stylesheet">
         <link href="../../extra_css/custom.js" rel="stylesheet">
         <link href="../../extra_css/friendly.css" rel="stylesheet">
@@ -26,482 +26,483 @@
         <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!--[if lt IE 9]>
             <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
         <![endif]-->
 
-        <script src="../../js/jquery-1.10.2.min.js"></script>
-        <script src="../../js/bootstrap-3.0.3.min.js"></script>
-        <script src="../../js/highlight.pack.js"></script> 
+        <script src="../../js/jquery-1.10.2.min.js" defer></script>
+        <script src="../../js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
     </head>
 
     <body>
 
         <div class="navbar navbar-default navbar-fixed-top" role="navigation">
-    <div class="container">
+            <div class="container">
 
-        <!-- Collapsed navigation -->
-        <div class="navbar-header">
-            <!-- Expander button -->
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="../..">Zhenhua's Notes</a>
-        </div>
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="../..">Zhenhua's Notes</a>
+                </div>
 
-        <!-- Expanded navigation -->
-        <div class="navbar-collapse collapse">
-                <!-- Main navigation -->
-                <ul class="nav navbar-nav">
-                    <li >
-                        <a href="../..">Home</a>
-                    </li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">OSC <b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                            
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="../..">Home</a>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">OSC <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
 <li >
     <a href="../../osc/">Contents</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../osc/ch1/">Chapter 1: Introduction </a>
 </li>
-                            
+                                    
 <li >
     <a href="../../osc/ch2/">Chapter 2: Operating System structures</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../osc/ch3/">Chapter 3: Processes</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../osc/ch4/">Chapter 4: Threads and Concurrency</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../osc/ch5/">Chapter 5: CPU Scheduling</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../osc/ch6/">Chapter 6: Synchronization Tools</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../osc/ch7/">Chapter 7: Synchronization Examples</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../osc/ch8/">Chapter 8: Deadlocks</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../osc/ch9/">Chapter 9: Main Memory</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../osc/ch10/">Chapter 10: Virtual Memory</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../osc/ch11/">Chapter 11: Mass-Storage Structure</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../osc/ch13/">Chapter 13: File-System Interfaces</a>
 </li>
-                        </ul>
-                    </li>
-                    <li class="dropdown active">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">CSAPP <b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                            
+                                </ul>
+                            </li>
+                            <li class="dropdown active">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">CSAPP <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
 <li >
     <a href="../">Contents</a>
 </li>
-                            
+                                    
 <li >
     <a href="../ch1/">Chapter 1: 计算机系统漫游</a>
 </li>
-                            
+                                    
 <li >
     <a href="../ch2/">Chapter 2: 信息的表示和处理</a>
 </li>
-                            
+                                    
 <li >
     <a href="../ch3/">Chapter 3: 程序的机器级表示</a>
 </li>
-                            
+                                    
 <li >
     <a href="../ch4/">Chapter 4: 处理器体系结构</a>
 </li>
-                            
+                                    
 <li >
     <a href="../ch5/">Chapter 5: 优化程序性能</a>
 </li>
-                            
+                                    
 <li >
     <a href="../ch6/">Chapter 6: 存储器层次结构</a>
 </li>
-                            
+                                    
 <li >
     <a href="../ch7/">Chapter 7: 链接</a>
 </li>
-                            
+                                    
 <li >
     <a href="../ch8/">Chapter 8: 异常控制流</a>
 </li>
-                            
+                                    
 <li class="active">
     <a href="./">Chapter 9: 虚拟内存</a>
 </li>
-                            
+                                    
 <li >
     <a href="../ch10/">Chapter 10: 系统级I/O</a>
 </li>
-                            
+                                    
 <li >
     <a href="../ch11/">Chapter 11: 网络编程</a>
 </li>
-                        </ul>
-                    </li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">MySql <b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                            
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">MySql <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
 <li >
     <a href="../../mysql/">Contents</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../mysql/LearningMySQLandMariaDB/">Chapter Learning MySQL and MariaDB</a>
 </li>
-                        </ul>
-                    </li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">HFJ <b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                            
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">HFJ <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
 <li >
     <a href="../../hfj/">Contents</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../hfj/ch1/">Chapter 1: Dive in A Quick Dip</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../hfj/ch2/">Chapter 2: Classes and Objects</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../hfj/ch3/">Chapter 3: Primitives and References</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../hfj/ch4/">Chapter 4: Methods use Instance Variables</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../hfj/ch5/">Chapter 5: Writing a Program</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../hfj/ch6/">Chapter 6: Get to Know the Java API</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../hfj/ch7/">Chapter 7: Inheritance and Polymorphism</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../hfj/ch8/">Chapter 8: Interfaces and Abstract Classes</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../hfj/ch9/">Chapter 9: Constructors and Garbage Collection</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../hfj/ch10/">Chapter 10: Numbers and Statics</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../hfj/ch11/">Chapter 11: Exception Handling</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../hfj/ch12/">Chapter 12: Getting GUI</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../hfj/ch13/">Chapter 13: Using Swing</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../hfj/ch14/">Chapter 14: Serialization and File I/O</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../hfj/ch15/">Chapter 15: Networking and Threads</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../hfj/ch16/">Chapter 16: Collections and Generics</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../hfj/ch17/">Chapter 17: Packages, Jars and Deployment</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../hfj/ch18/">Chapter 18: Remote deploy with RMI</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../hfj/Appendix/">Appendix: The Top Ten Topics</a>
 </li>
-                        </ul>
-                    </li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">HFDP <b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                            
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">HFDP <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
 <li >
     <a href="../../hfdp/">Contents</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../hfdp/ch1/">Chapter 1: Strategy Pattern </a>
 </li>
-                            
+                                    
 <li >
     <a href="../../hfdp/ch2/">Chapter 2: Observer Pattern</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../hfdp/ch3/">Chapter 3: Decorator Pattern </a>
 </li>
-                            
+                                    
 <li >
     <a href="../../hfdp/ch4/">Chapter 4: Factory Pattern</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../hfdp/ch5/">Chapter 5: Singleton Pattern</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../hfdp/ch6/">Chapter 6: Command Pattern</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../hfdp/ch7/">Chapter 7: Adapter and Facade Patterns</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../hfdp/ch8/">Chapter 8: Template Method Pattern</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../hfdp/ch9/">Chapter 9: Iterator and Composite Patterns</a>
 </li>
-                        </ul>
-                    </li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">TIJ <b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                            
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">TIJ <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
 <li >
     <a href="../../tij/">Contents</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../tij/ch1/">Chapter 1: Introduction</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../tij/ch2/">Chapter 2: Introduction to Objects</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../tij/ch3/">Chapter 3: Everything is an Object</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../tij/ch4/">Chapter 4: Opertors</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../tij/ch5/">Chapter 5: Controlling Execution</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../tij/ch6/">Chapter 6: Initialization & Cleanup</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../tij/ch7/">Chapter 7: Access Control</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../tij/ch8/">Chapter 8: Reusing Clases</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../tij/ch9/">Chapter 9: Polymorphism</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../tij/ch10/">Chapter 10: Interfaces</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../tij/ch11/">Chapter 11: Inner Classes</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../tij/ch12/">Chapter 12: Holding Your Objects</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../tij/ch13/">Chapter 13: Error Handling with Exceptions</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../tij/ch14/">Chapter 14: Strings</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../tij/ch15/">Chapter 15: Type Information</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../tij/ch16/">Chapter 16: Generics</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../tij/ch17/">Chapter 17: Arrays</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../tij/ch18/">Chapter 18: Containers in Depth</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../tij/ch19/">Chapter 19: I/O</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../tij/ch20/">Chapter 20: Enumerated Types</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../tij/ch21/">Chapter 21: Annotations</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../tij/ch22/">Chapter 22: Concurrency</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../tij/ch23/">Chapter 23: Graphical User Interfaces</a>
 </li>
-                        </ul>
-                    </li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">UJVM <b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                            
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">UJVM <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
 <li >
     <a href="../../ujvm/">Contents</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../ujvm/ch1/">Chapter 1 : 走进Java</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../ujvm/ch2/">Chapter 2 : Java内存区域与内存溢出正常</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../ujvm/ch3/">Chapter 3 : 垃圾收集器与内存分配策略</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../ujvm/ch4/">Chapter 4 : 虚拟机性能监控与故障处理工具</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../ujvm/ch5/">Chapter 5 : 调优案例分析与实战</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../ujvm/ch6/">Chapter 6 : 类文件结构</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../ujvm/ch7/">Chapter 7 : 虚拟机类加载机制</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../ujvm/ch8/">Chapter 8 : 虚拟机字节码执行引擎</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../ujvm/ch9/">Chapter 9 : 类加载及执行子系统的案例与实战</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../ujvm/ch10/">Chapter 10 : 早期(编译期)优化</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../ujvm/ch11/">Chapter 11 : 晚期(运行期)优化</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../ujvm/ch12/">Chapter 12 : Java内存模型与线程</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../ujvm/ch13/">Chapter 13 : 线程安全与锁优化</a>
 </li>
-                            
+                                    
 <li >
     <a href="../../ujvm/AppendixC/">Appendix HotSpot虚拟机主要参数列表</a>
 </li>
+                                </ul>
+                            </li>
+                            <li >
+                                <a href="../../books/">Books</a>
+                            </li>
                         </ul>
-                    </li>
-                    <li >
-                        <a href="../../books/">Books</a>
-                    </li>
-                </ul>
 
-            <ul class="nav navbar-nav navbar-right">
-                <li>
-                    <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
-                        <i class="fa fa-search"></i> Search
-                    </a>
-                </li>
-                    <li >
-                        <a rel="next" href="../ch8/">
-                            <i class="fa fa-arrow-left"></i> Previous
-                        </a>
-                    </li>
-                    <li >
-                        <a rel="prev" href="../ch10/">
-                            Next <i class="fa fa-arrow-right"></i>
-                        </a>
-                    </li>
-            </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li >
+                                <a rel="next" href="../ch8/">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li >
+                                <a rel="prev" href="../ch10/">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
         </div>
-    </div>
-</div>
 
         <div class="container">
                 <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
@@ -600,7 +601,7 @@
 <li><span><span class="MathJax_Preview">m</span><script type="math/tex">m</script></span>位的物理地址包含两个部分：一个<span><span class="MathJax_Preview">p</span><script type="math/tex">p</script></span>位的<strong>物理页面偏移</strong>(Physical Page Offset, PPO)和一个<span><span class="MathJax_Preview">m-p</span><script type="math/tex">m-p</script></span>位的<strong>物理页号</strong>(Physical Page Number, PPN)。</li>
 <li>物理页面偏移和虚拟页面偏移是相通的。</li>
 </ul>
-<p><img alt="Address Translation With a Page Table" src="../figures/Address%20Translation%20With%20a%20Page%20Table.png" /></p>
+<p><img alt="Address Translation With a Page Table" src="figures/Address%20Translation%20With%20a%20Page%20Table.png" /></p>
 <h4 id="tlb">利用TLB加速地址翻译<a class="headerlink" href="#tlb" title="Permanent link">&para;</a></h4>
 <p>每次CPU产生一个虚拟地址，MMU就必须查阅一个PTE。为了试图消除这种开销，在MMU中包含了一个关于PTE的缓存，称为<strong>转译后备缓冲器</strong>(Translation Lookaside Buffer, TLB)</p>
 <p><img alt="TLB" src="../figures/TLB.png" /></p>
@@ -612,11 +613,11 @@
 <li>第<span><span class="MathJax_Preview">j</span><script type="math/tex">j</script></span>级页表中的每个PTE都指向第<span><span class="MathJax_Preview">j+1</span><script type="math/tex">j+1</script></span>级的某个页表的基址。</li>
 <li>第<span><span class="MathJax_Preview">k</span><script type="math/tex">k</script></span>级页表中的每个PTE包含某个物理页面的PPN。</li>
 </ul>
-<p><img alt="Translation with a k-­level Page Table" src="../figures/Translation%20with%20a%20k-%C2%ADlevel%20Page%20Table.png" /></p>
+<p><img alt="Translation with a k-­level Page Table" src="figures/Translation%20with%20a%20k-%C2%ADlevel%20Page%20Table.png" /></p>
 <h3 id="4-core-i7">4 core i7内存系统<a class="headerlink" href="#4-core-i7" title="Permanent link">&para;</a></h3>
 <h4 id="core-i7">Core i7简介<a class="headerlink" href="#core-i7" title="Permanent link">&para;</a></h4>
 <p>Core i7在2008年冬季发布，基于全新Nehalem(/nəˈheɪləm/)架构，它的芯片结构如下所示：</p>
-<p><img alt="Intel Core i7 processor internal die photograph" src="../figures/Intel%20Core%20i7%20processor%20internal%20die%20photograph.png" /></p>
+<p><img alt="Intel Core i7 processor internal die photograph" src="figures/Intel%20Core%20i7%20processor%20internal%20die%20photograph.png" /></p>
 <p>现在的Core i7支持48位(256TB)虚拟地址空间和52位(4PB)物理地址空间。</p>
 <p>下图给出了Core i7内存系统的重要部分。处理器封装(Processor package)包括四个核、一个大的所有核共享的L3高速缓存，以及一个DDR3内存控制器。 每一个核包含一个层次结构的TLB、一个层次结构的数据核指令高速缓存，以及一组快速的点到点链路(基于QuickPath技术)。</p>
 <ul>
@@ -624,12 +625,12 @@
 <li>L1、L2、L3高速缓存，块大小为64字节。</li>
 <li>L1、L2是8路组相联的，L3是16组相联的。</li>
 </ul>
-<p><img alt="Intel Core i7 Memory System" src="../figures/Intel%20Core%20i7%20Memory%20System.png" /></p>
+<p><img alt="Intel Core i7 Memory System" src="figures/Intel%20Core%20i7%20Memory%20System.png" /></p>
 <h4 id="core-i7_1">Core i7地址翻译<a class="headerlink" href="#core-i7_1" title="Permanent link">&para;</a></h4>
 <p>Core i7采用四级页表层次结构。每个进程都有它自己私有的页表层次结构。CR3控制寄存器指向第一级页表(L1)的起始位置。</p>
-<p><img alt="Core i7 Address Translation" src="../figures/Core%20i7%20Address%20Translation.png" /></p>
+<p><img alt="Core i7 Address Translation" src="figures/Core%20i7%20Address%20Translation.png" /></p>
 <p>Core i7第1-3级页表条目格式：</p>
-<p><img alt="Core i7 Level 1-­‐3 Page Table Entries" src="../figures/Core%20i7%20Level%201-%C2%AD%E2%80%903%20Page%20Table%20Entries.png" /></p>
+<p><img alt="Core i7 Level 1-­‐3 Page Table Entries" src="figures/Core%20i7%20Level%201-%C2%AD%E2%80%903%20Page%20Table%20Entries.png" /></p>
 <p>Each entry references a 4K child page table. <strong>Significant fields</strong>:</p>
 <ul>
 <li><strong>P</strong>: Child page table present in physical memory (1) or not (0).</li>
@@ -642,13 +643,13 @@
 <li><strong>XD</strong>: Disable or enable instruction fetches from all pages reachable from this PTE.</li>
 </ul>
 <p>Core i7第4级页表条目格式：</p>
-<p><img alt="Core i7 Level 4 Page Table Entries" src="../figures/Core%20i7%20Level%204%20Page%20Table%20Entries.png" /></p>
+<p><img alt="Core i7 Level 4 Page Table Entries" src="figures/Core%20i7%20Level%204%20Page%20Table%20Entries.png" /></p>
 <ul>
 <li><strong>Page physical base address</strong>: 40 <em>most significant bits</em> of physical page address (forces pages to be 4KB aligned)</li>
 <li><strong>D</strong>: <em>Dirty bit</em> (脏位, or modify bit，set by MMU on <em>writes</em>, cleared by software)</li>
 </ul>
 <p>下图给出了Core i7 MMU如何使用四级页表将虚拟地址翻译成物理地址。36位VPN被划分为四个9位的片，每个片被用作一个页表的偏移量。VPN1提供到一个L1 PET的偏移量，这个PTE包含L2页表的基地址。VPN2提供到一个L2 PET的偏移量，以此类推。</p>
-<p><img alt="Core i7 Page Table Translation" src="../figures/Core%20i7%20Page%20Table%20Translation.png" /></p>
+<p><img alt="Core i7 Page Table Translation" src="figures/Core%20i7%20Page%20Table%20Translation.png" /></p>
 <h3 id="5-linux">5 Linux虚拟内存系统<a class="headerlink" href="#5-linux" title="Permanent link">&para;</a></h3>
 <p>Linux为每个进程维护了一个单独的虚拟地址空间。Linux将虚拟内存组织成一些<strong>区域</strong>的集合。一个区域就是已分配的虚拟内存的连续片。</p>
 <p>Linux虚拟地址空间由如下几个区域组成：</p>
@@ -661,7 +662,7 @@
 <li>栈（<code class="codehilite">Stack</code>）: 函数中的局部变量以及在函数调用过程中产生的临时变量都保存在此段中，具体见下面一节。</li>
 <li>内核虚拟内存：包含内核中的代码和数据结构。</li>
 </ul>
-<p><img alt="Virtual Address Space of a Linux Process" src="../figures/Virtual%20Address%20Space%20of%20a%20Linux%20Process.png" /></p>
+<p><img alt="Virtual Address Space of a Linux Process" src="figures/Virtual%20Address%20Space%20of%20a%20Linux%20Process.png" /></p>
 <p>下面是程序示意：</p>
 <p> <div class=codehilite><pre> <span class=cp>#include</span><span class=cpf>&lt;stdio.h&gt;    </span><span class=cp></span>
  <span class=cp>#include</span> <span class=cpf>&lt;malloc.h&gt;    </span><span class=cp></span>
@@ -725,7 +726,7 @@
 <li>虚拟地址A是合法的吗？-&gt; 段错误(segment fault)</li>
 <li>试图进行的内存访问是合法的吗？ -&gt; 保护异常(也引发段错误)</li>
 </ul>
-<p><img alt="Linux Page Fault Handling " src="../figures/Linux%20Page%20Fault%20Handling%20.png" /></p>
+<p><img alt="Linux Page Fault Handling " src="figures/Linux%20Page%20Fault%20Handling%20.png" /></p>
 <h3 id="6">6 内存映射<a class="headerlink" href="#6" title="Permanent link">&para;</a></h3>
 <p>Linux 通过将一个虚拟内区域与一个磁盘上的<em>对象</em>(object)关联起来，以初始化这个虚拟内存区域的内容，这个过程称为<strong>内存映射</strong>(memory mapping).</p>
 <p>一旦一个虚拟页面被初始化了，它就在一个由内核维护的专门的<strong>交换文件</strong>(swap file)之间换来换去。交换文件也叫做<strong>交换空间</strong>(swap space)或交换区域(swap area)。</p>
@@ -821,7 +822,7 @@
 <h4 id="733">7.3.3 分离式空闲列表<a class="headerlink" href="#733" title="Permanent link">&para;</a></h4>
 <h3 id="8">8 垃圾收集<a class="headerlink" href="#8" title="Permanent link">&para;</a></h3>
 <p><strong>垃圾收集器</strong>(garbage collector)是一种动态内存分配器，它自动释放程序不再需要的已分配块。这些块被称作<em>垃圾</em>(garbage)。自动回收存储的过程叫做<em>垃圾收集</em>(garbage collection)。</p>
-<p><a href="../../hfj/ch9/#object-lifecycle">Java Garbage Collection</a></p>
+<p><a href="../hfj/ch9/#object-lifecycle">Java Garbage Collection</a></p>
 <p>垃圾收集器将内存视为一张有向<em>可达图</em>(reachability graph)。</p>
 <ul>
 <li>图的节点被分成一组<em>根节点</em>(root node)和一组<em>堆节点</em>(heap node). </li>
@@ -830,7 +831,7 @@
 <li>当存在一条从任意根节点出发并到达<span><span class="MathJax_Preview">p</span><script type="math/tex">p</script></span>的有向路径时，节点<span><span class="MathJax_Preview">p</span><script type="math/tex">p</script></span>是<em>可达</em>的。</li>
 <li>垃圾收集器维护可达图的某种表示，并释放不可达节点。</li>
 </ul>
-<p><img alt="A garbage collector’s view of memory as a directed graph." src="../figures/A%20garbage%20collector%E2%80%99s%20view%20of%20memory%20as%20a%20directed%20graph..png" /></p>
+<p><img alt="A garbage collector’s view of memory as a directed graph." src="figures/A%20garbage%20collector%E2%80%99s%20view%20of%20memory%20as%20a%20directed%20graph..png" /></p>
 <h3 id="9-c">9 C程序中常见的与内存有关的错误<a class="headerlink" href="#9-c" title="Permanent link">&para;</a></h3>
 <h4 id="_4">间接引用坏指针<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h4>
 <p>这是非常常见的例子，没有引用对应的地址，少了 &amp;</p>
@@ -909,14 +910,16 @@
 
         <footer class="col-md-12">
             <hr>
-            <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a>.</p>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
         </footer>
-        <script>var base_url = '../..';</script>
-        <script src="../../js/base.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
-        <script src="../../extra_javascript/tabhack.js"></script>
-        <script src="../../search/require.js"></script>
-        <script src="../../search/search.js"></script>
+        <script>
+            var base_url = "../..",
+                shortcuts = {"search": 83, "next": 78, "help": 191, "previous": 80};
+        </script>
+        <script src="../../js/base.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" defer></script>
+        <script src="../../extra_javascript/tabhack.js" defer></script>
+        <script src="../../search/main.js" defer></script>
 
         <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
     <div class="modal-dialog">
@@ -932,7 +935,7 @@
                 </p>
                 <form role="form">
                     <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
                     </div>
                 </form>
                 <div id="mkdocs-search-results"></div>
@@ -958,19 +961,19 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td><kbd>?</kbd></td>
+                    <td class="help shortcut"><kbd>?</kbd></td>
                     <td>Open this help</td>
                   </tr>
                   <tr>
-                    <td><kbd>&larr;</kbd></td>
-                    <td>Previous page</td>
-                  </tr>
-                  <tr>
-                    <td><kbd>&rarr;</kbd></td>
+                    <td class="next shortcut"><kbd>n</kbd></td>
                     <td>Next page</td>
                   </tr>
                   <tr>
-                    <td><kbd>s</kbd></td>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
                     <td>Search</td>
                   </tr>
                 </tbody>
@@ -981,7 +984,6 @@
         </div>
     </div>
 </div>
-
 
     </body>
 </html>

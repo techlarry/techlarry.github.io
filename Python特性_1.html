@@ -103,8 +103,6 @@
         
             <li><a href="%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html">机器学习</a></li>
         
-            <li><a href="Python%E7%A7%91%E5%AD%A6%E8%AE%A1%E7%AE%97%E4%B8%89%E7%BB%B4%E5%8F%AF%E8%A7%86%E5%8C%96.html">Python科学计算三维可视化</a></li>
-        
             <li><a href="English.html">English</a></li>
         
             <li><a href="Computer%20System.html">Computer System</a></li>
@@ -143,121 +141,6 @@
 	<div class="large-8 medium-8 columns">
 		<div class="markdown-body home-categories">
 		
-			<div class="article">
-                <a class="clearlink" href="15035712266178.html">
-                
-                  <h1>Python `set`, `tuple`</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h2 id="toc_0"><code>set</code></h2>
-
-<p>A <code>set</code> is an unordered collection with no duplicate elements. Basic uses include membership testing and eliminating duplicate entries. Set objects also support mathematical operations like <code>union</code>, intersection, difference, and symmetric difference.</p>
-
-<p>Curly braces or the <code>set()</code> function can be used to create sets. Note: to create an empty set you have to use <code>set()</code>, not {}; the latter creates an empty dictionary, a data structure that we discuss in the next section.</p>
-
-<pre><code class="language-python">&gt;&gt;&gt; basket = {&#39;apple&#39;, &#39;orange&#39;, &#39;apple&#39;, &#39;pear&#39;, &#39;orange&#39;, &#39;banana&#39;}
-&gt;&gt;&gt; print(basket)                      # show that duplicates have been removed
-{&#39;orange&#39;, &#39;banana&#39;, &#39;pear&#39;, &#39;apple&#39;}
-&gt;&gt;&gt; &#39;orange&#39; in basket                 # fast membership testing
-True
-&gt;&gt;&gt; &#39;crabgrass&#39; in basket
-False
-
-&gt;&gt;&gt; # Demonstrate set operations on unique letters from two words
-...
-&gt;&gt;&gt; a = set(&#39;abracadabra&#39;)
-&gt;&gt;&gt; b = set(&#39;alacazam&#39;)
-&gt;&gt;&gt; a                                  # unique letters in a
-{&#39;a&#39;, &#39;r&#39;, &#39;b&#39;, &#39;c&#39;, &#39;d&#39;}
-&gt;&gt;&gt; a - b                              # letters in a but not in b
-{&#39;r&#39;, &#39;d&#39;, &#39;b&#39;}
-&gt;&gt;&gt; a | b                              # letters in either a or b
-{&#39;a&#39;, &#39;c&#39;, &#39;r&#39;, &#39;d&#39;, &#39;b&#39;, &#39;m&#39;, &#39;z&#39;, &#39;l&#39;}
-&gt;&gt;&gt; a &amp; b                              # letters in both a and b
-{&#39;a&#39;, &#39;c&#39;}
-&gt;&gt;&gt; a ^ b                              # letters in a or b but not both
-{&#39;r&#39;, &#39;d&#39;, &#39;b&#39;, &#39;m&#39;, &#39;z&#39;, &#39;l&#39;}
-</code></pre>
-
-<h2 id="toc_1"><code>tuple</code></h2>
-
-<p>A <code>tuple</code> is an (<code>immutable</code>) ordered list of values. A <code>tuple</code> is in many ways similar to a list; one of the most important differences is that <code>tuple</code> can be used as keys in dictionaries and as elements of sets, while <code>list</code> cannot. Here is a trivial example:</p>
-
-<pre><code class="language-python">d = {(x, x + 1): x for x in range(10)}  # Create a dictionary with tuple keys
-t = (5, 6)        # Create a tuple
-print(type(t))    # Prints &quot;&lt;class &#39;tuple&#39;&gt;&quot;
-print(d[t])       # Prints &quot;5&quot;
-print(d[(1, 2)])  # Prints &quot;1&quot;
-</code></pre>
-
-<p>A special problem is the construction of tuples containing 0 or 1 items: the syntax has some extra quirks to accommodate these. Empty tuples are constructed by an empty pair of parentheses; a tuple with one item is constructed by following a value with a comma (it is not sufficient to enclose a single value in parentheses). Ugly, but effective. For example:</p>
-
-<pre><code class="language-python">&gt;&gt;&gt; empty = ()
-&gt;&gt;&gt; singleton = &#39;hello&#39;,    # &lt;-- note trailing comma
-&gt;&gt;&gt; len(empty)
-0
-&gt;&gt;&gt; len(singleton)
-1
-&gt;&gt;&gt; singleton
-(&#39;hello&#39;,)
-</code></pre>
-
-<p>The tuple syntax is simple, if you separate some values with commas, you automatically have a tuple(called <code>tuple packing</code>),</p>
-
-<pre><code class="language-text">&gt;&gt;&gt; 1,2,3
-(1, 2, 3)
-</code></pre>
-
-<h3 id="toc_2"><code>tuple</code> function</h3>
-
-<p>The <code>tuple</code> function works in pretty much the same way as <code>list</code>: it takes one sequence argument and converts it to a <code>tuple</code>.</p>
-
-<pre><code class="language-text">&gt;&gt;&gt; tuple([1,2,3])
-(1, 2, 3)
-</code></pre>
-
-<h3 id="toc_3">Performance</h3>
-
-<p>Instantiation is almost an order of magnitude faster for the tuple, but item access is actually somewhat faster for the list! So if you&#39;re creating a few tuples and accessing them many many times, it may actually be faster to use lists instead.</p>
-
-<pre><code class="language-python">$ python -m timeit &quot;x=(1,2,3,4,5,6,7,8)&quot;
-10000000 loops, best of 3: 0.0388 usec per loop
-
-$ python -m timeit &quot;x=[1,2,3,4,5,6,7,8]&quot;
-1000000 loops, best of 3: 0.363 usec per loop
-
-$ python -m timeit -s &quot;x=(1,2,3,4,5,6,7,8)&quot; &quot;y=x[3]&quot;
-10000000 loops, best of 3: 0.0938 usec per loop
-
-$ python -m timeit -s &quot;x=[1,2,3,4,5,6,7,8]&quot; &quot;y=x[3]&quot;
-10000000 loops, best of 3: 0.0649 usec per loop
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/8/24</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
 			<div class="article">
                 <a class="clearlink" href="python_GIL_global_interpreter_lock.html">
                 
@@ -836,6 +719,118 @@ if __name__ == &quot;__main__&quot;:
                 </div>
               </div><!-- article -->
         
+			<div class="article">
+                <a class="clearlink" href="magic_method_item_access.html">
+                
+                  <h1>Magic Methods: Item Access</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>Useful magic methods allows you to create objects that behave like sequences or mappings.</p>
+
+<h2 id="toc_0">Sequence and Mapping Protocol</h2>
+
+<p><code>protocol</code> in Python usually describe the rules governing some form of behavior. The <code>protocol</code> states which methods you should implement and what those methods should do. So, to be a sequence means,  to follow the sequence protocol.</p>
+
+<ul>
+<li><code>__len__(self)</code>: This method should return the number of items contained in the collection. For a sequence, this would simply be the number of elements. For a mapping, it would be the number of key-value pairs. If <code>__len__</code> returns zero (and you don’t implement <code>__nonzero__</code>, which overrides this behavior), the object is treated as false in a Boolean context (as with empty lists, tuples, strings, and dictionaries).</li>
+<li><code>__getitem__(self, key)</code>: This should return the value corresponding to the given key. For a sequence, the key should be an integer from \(0\) to \(n–1\) (or, it could be negative, as noted later), where \(n\) is the length of the sequence. For a mapping, you could really have any kind of keys.</li>
+<li><code>__setitem__(self, key, value)</code>: This should store value in a manner associated with key, so it can later be retrieved with <code>__getitem__</code>. Of course, you define this method only for mutable objects.</li>
+<li><code>__delitem__(self, key)</code>: This is called when someone uses the <code>del</code> statement on a part of the object, and should delete the element associated with key. Again, only mutable objects (and not all of them—only those for which you want to let items be removed) should define this method.</li>
+</ul>
+
+<h2 id="toc_1">Example</h2>
+
+<pre><code class="language-python">def checkIndex(key):
+    &quot;&quot;&quot;
+    Is the given key an acceptable index?
+    To be acceptable, the key should be a non-negative integer. If it
+    is not an integer, a TypeError is raised; if it is negative, an
+    IndexError is raised (since the sequence is of infinite length).
+    &quot;&quot;&quot;
+    if not isinstance(key, int):
+        raise TypeError
+    if key &lt; 0:
+        raise IndexError
+
+
+class ArithmeticSequence:
+    def __init__(self, start=0, step=1):
+        &quot;&quot;&quot;
+        Initialize the arithmetic sequence.
+        start   - the first value in the sequence
+        step    - the difference between two adjacent values
+        changed - a dictionary of values that have been modified by the user
+        &quot;&quot;&quot;
+        self.start = start
+        self.step = step
+        self.changed = {}
+
+    def __getitem__(self, key):
+        &quot;&quot;&quot;
+        Get an item from the arithmetic sequence.
+        &quot;&quot;&quot;
+        checkIndex(key)
+        try:
+            return self.changed[key]
+        except KeyError:
+            return self.start + key*self.step
+    # Store the start value
+    # Store the step value
+    # No items have been modified
+    # Modified?
+    # otherwise...
+    # ...calculate the value
+
+    def __setitem__(self, key, value):
+        &quot;&quot;&quot;
+        Change an item in the arithmetic sequence.
+        &quot;&quot;&quot;
+        checkIndex(key)
+        self.changed[key] = value                 # Store the changed value
+
+    def __delitem__(self, key):
+        &quot;&quot;&quot;
+        Delete the key provided from sequence
+        &quot;&quot;&quot;
+        checkIndex(key)
+        del self.changed[key]
+
+
+
+if __name__ == &quot;__main__&quot;:
+    s = ArithmeticSequence(1, 2)
+    print(s[4])
+    s[4]=3
+    print(s[4])
+    del s[4]
+    print(s[4])
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/7/18</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
               
 
 
@@ -900,8 +895,6 @@ if __name__ == &quot;__main__&quot;:
         
             <a href="%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html"><strong>机器学习</strong></a>
         
-            <a href="Python%E7%A7%91%E5%AD%A6%E8%AE%A1%E7%AE%97%E4%B8%89%E7%BB%B4%E5%8F%AF%E8%A7%86%E5%8C%96.html"><strong>Python科学计算三维可视化</strong></a>
-        
             <a href="English.html"><strong>English</strong></a>
         
             <a href="Computer%20System.html"><strong>Computer System</strong></a>
@@ -935,7 +928,7 @@ if __name__ == &quot;__main__&quot;:
 	      
 		      
 			      <li class="post">
-			        <a href="head-first_java_note.html">Head first Java</a>
+			        <a href="15046649572570.html">Pandas</a>
 			      </li>
 		     
 		  

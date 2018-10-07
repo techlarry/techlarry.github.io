@@ -103,8 +103,6 @@
         
             <li><a href="%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html">机器学习</a></li>
         
-            <li><a href="Python%E7%A7%91%E5%AD%A6%E8%AE%A1%E7%AE%97%E4%B8%89%E7%BB%B4%E5%8F%AF%E8%A7%86%E5%8C%96.html">Python科学计算三维可视化</a></li>
-        
             <li><a href="English.html">English</a></li>
         
             <li><a href="Computer%20System.html">Computer System</a></li>
@@ -143,495 +141,6 @@
 	<div class="large-8 medium-8 columns">
 		<div class="markdown-body home-categories">
 		
-			<div class="article">
-                <a class="clearlink" href="neural_networks.html">
-                
-                  <h1>Machine Learning (5): Neural Networks</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<ul>
-<li>
-<a href="#toc_0">Why Neural Networks</a>
-</li>
-<li>
-<a href="#toc_1">Background of Neural Networks</a>
-</li>
-<li>
-<a href="#toc_2">Model Representation</a>
-</li>
-<li>
-<a href="#toc_3">Examples and Intuitions</a>
-</li>
-<li>
-<a href="#toc_4">Multiclass Classification</a>
-</li>
-<li>
-<a href="#toc_5">Cost Function</a>
-</li>
-<li>
-<a href="#toc_6">Backpropagation Algorithm</a>
-</li>
-<li>
-<a href="#toc_7">Gradient Checking</a>
-</li>
-<li>
-<a href="#toc_8">Putting it Together</a>
-</li>
-</ul>
-
-
-<h2 id="toc_0">Why Neural Networks</h2>
-
-<p>The number of quadratic features closes to \(\frac{n^2}{2}\), it is computationally expensive.</p>
-
-<p>The number of cubic features closes to \(O(n^3)\), it is more computationally expensive.</p>
-
-<p>Computer vision problem looks at matrixes. Because dimensions of pixel images often large (e.g. n= 7500 for 50\(\times\)50 pixel images(RGB)), the number of quadratic features for the problem are 3 million.</p>
-
-<h2 id="toc_1">Background of Neural Networks</h2>
-
-<p><strong>Origins</strong>: Algorithms that try to mimic the brain. It was very widely used in 80s and early 90s; popularity diminished in late 90s. It is now a state of the art technique for many application, because its expensive computation can be meet.</p>
-
-<h2 id="toc_2">Model Representation</h2>
-
-<p>At a very simple level, neurons are basically computational units that take inputs (<code>dendrites</code>) as electrical inputs (<code>spikes</code>) that are channeled to outputs (<code>axons</code>).</p>
-
-<ul>
-<li>Input: <code>Dendrite</code>（树突）</li>
-<li>Output: <code>Axon</code>（轴突）</li>
-</ul>
-
-<p><img src="media/14987831190581/Blausen_0657_MultipolarNeuron.png" alt="illustration of neuron "/></p>
-
-<p>In neural networks, dendrites are like the input features \(x_1⋯x_n\), and the output is the result of our hypothesis function. \(x_0\) input node is sometimes called the <code>bias unit</code>. It is always equal to 1. In neural networks, we use the same logistic function as in classification, \(\frac{1}{1+e^{-\theta^Tx}}\), yet we sometimes call it a sigmoid (logistic) activation function. In this situation, our &quot;theta&quot; parameters are sometimes called <code>weights</code>.</p>
-
-<p><strong>Visually, a simplistic representation looks like:</strong><br/>
-\[\begin{bmatrix}x_0 \newline x_1 \newline x_2 \newline \end{bmatrix}\rightarrow\begin{bmatrix}\ \ \ \newline \end{bmatrix}\rightarrow h_\theta(x)\]</p>
-
-<p>Input nodes (layer 1), also known as the <code>input layer</code>, go into another node (layer 2), which finally outputs the hypothesis function, known as the <code>output layer</code>.</p>
-
-<p>We can have intermediate layers of nodes between the input and output layers called the <code>hidden layers</code>.</p>
-
-<p>In this example, we label these intermediate or hidden layer nodes \(a^2_0⋯a^2_n\) and call them <code>activation units</code>.</p>
-
-<p>\[\begin{align*}&amp; a_i^{(j)} = \text{&quot;activation&quot; of unit $i$ in layer $j$} \newline&amp; \Theta^{(j)} = \text{matrix of weights controlling function mapping from layer $j$ to $j+1$}\end{align*}\\<br/>
-\text{ will be of dimension }s_{j+1}\times(s_{j+1})\]</p>
-
-<p>The values for each of the &quot;activation&quot; nodes is obtained as follows:</p>
-
-<p>\[\begin{align*} a_1^{(2)} = g(\Theta_{10}^{(1)}x_0 + \Theta_{11}^{(1)}x_1 + \Theta_{12}^{(1)}x_2 + \Theta_{13}^{(1)}x_3) \newline a_2^{(2)} = g(\Theta_{20}^{(1)}x_0 + \Theta_{21}^{(1)}x_1 + \Theta_{22}^{(1)}x_2 + \Theta_{23}^{(1)}x_3) \newline a_3^{(2)} = g(\Theta_{30}^{(1)}x_0 + \Theta_{31}^{(1)}x_1 + \Theta_{32}^{(1)}x_2 + \Theta_{33}^{(1)}x_3) \newline h_\Theta(x) = a_1^{(3)} = g(\Theta_{10}^{(2)}a_0^{(2)} + \Theta_{11}^{(2)}a_1^{(2)} + \Theta_{12}^{(2)}a_2^{(2)} + \Theta_{13}^{(2)}a_3^{(2)}) \newline \end{align*}\]</p>
-
-<p>If network has \(s_j\) units in layer \(j\) and \(s_{j+1}\) units in layer \(j+1\), then \(\Theta^{(j)}\) will be of dimension \(s_{j+1}×(s_j+1)\). The \(+1\) comes from the addition in \(\Theta^{(j)}\) of the <code>bias nodes</code>, \(x_0\) and \(\Theta^{(j)}_0\). In other words the output nodes will not include the bias nodes while the inputs will. </p>
-
-<p>We&#39;re going to define a new variable \(z^{(j)}_k\) that encompasses the parameters inside our \(g\) function. In our previous example if we replaced by the variable \(z\) for all the parameters we would get:</p>
-
-<p>\[\begin{align*}a_1^{(2)} = g(z_1^{(2)}) \newline a_2^{(2)} = g(z_2^{(2)}) \newline a_3^{(2)} = g(z_3^{(2)}) \newline \end{align*}\]</p>
-
-<p>In other words, for layer \(j=2\) and node \(k\), the variable \(z\) will be:</p>
-
-<p>\[z_k^{(2)} = \Theta_{k,0}^{(1)}x_0 + \Theta_{k,1}^{(1)}x_1 + \cdots + \Theta_{k,n}^{(1)}x_n\]</p>
-
-<p>The vector representation of \(x\) and \(z_j\) is:</p>
-
-<p>\[\begin{align*}x = \begin{bmatrix}x_0 \newline x_1 \newline\cdots \newline x_n\end{bmatrix} &amp;z^{(j)} = \begin{bmatrix}z_1^{(j)} \newline z_2^{(j)} \newline\cdots \newline z_n^{(j)}\end{bmatrix}\end{align*}\]</p>
-
-<p>Setting \(x=a^{(1)}\), we can rewrite the equation as:</p>
-
-<p>\[z^{(j)} = \Theta^{(j-1)}a^{(j-1)}\]</p>
-
-<p>Now we can get a vector of our activation nodes for layer \(j\) as follows:</p>
-
-<p>\[a^{(j)} = g(z^{(j)})\]</p>
-
-<p>Last Step:<br/>
-\[h_\Theta(x) = a^{(j+1)} = g(z^{(j+1)})\]</p>
-
-<h2 id="toc_3">Examples and Intuitions</h2>
-
-<p>The \(\Theta^{(1)}\) matrices for AND, NOR, and OR are:</p>
-
-<p>\[\begin{align*}AND:\newline\Theta^{(1)} &amp;=\begin{bmatrix}-30 &amp; 20 &amp; 20\end{bmatrix} \newline NOR:\newline\Theta^{(1)} &amp;= \begin{bmatrix}10 &amp; -20 &amp; -20\end{bmatrix} \newline OR:\newline\Theta^{(1)} &amp;= \begin{bmatrix}-10 &amp; 20 &amp; 20\end{bmatrix} \newline\end{align*}\]</p>
-
-<p>We can combine these to get the \(XNOR\) logical operator (which gives 1 if \(x_1\) and \(x_2\) are both 0 or both 1).</p>
-
-<p>\[\begin{align*}\begin{bmatrix}x_0 \newline x_1 \newline x_2\end{bmatrix} \rightarrow\begin{bmatrix}a_1^{(2)} \newline a_2^{(2)} \end{bmatrix} \rightarrow\begin{bmatrix}a^{(3)}\end{bmatrix} \rightarrow h_\Theta(x)\end{align*}\]</p>
-
-<p>For the transition between the first and second layer, we&#39;ll use a \(\Theta^{(1)}\) matrix that combines the values for AND and NOR:</p>
-
-<p>\[\Theta^{(1)} =\begin{bmatrix}-30 &amp; 20 &amp; 20 \newline 10 &amp; -20 &amp; -20\end{bmatrix}\]</p>
-
-<p>For the transition between the second and third layer, we&#39;ll use a \(\Theta^{(2)}\) matrix that uses the value for OR:</p>
-
-<p>\[\Theta^{(2)} =\begin{bmatrix}-10 &amp; 20 &amp; 20\end{bmatrix}\]</p>
-
-<p>Let&#39;s write out the values for all our nodes:</p>
-
-<p>\[\begin{align*}&amp; a^{(2)} = g(\Theta^{(1)} \cdot x) \newline&amp; a^{(3)} = g(\Theta^{(2)} \cdot a^{(2)}) \newline&amp; h_\Theta(x) = a^{(3)}\end{align*}\]</p>
-
-<h2 id="toc_4">Multiclass Classification</h2>
-
-<p>To classify data into multiple classes, we let our hypothesis function return a vector of values. Say we wanted to classify our data into one of four categories. We will use the following example to see how this classification is done. This algorithm takes as input an image and classifies it accordingly:</p>
-
-<p><img src="media/14987831190581/one-vs-all%20neural%20network.png" alt="one-vs-all neural network"/></p>
-
-<p>We can define our set of resulting classes as \(y\):</p>
-
-<p><img src="media/14987831190581/14987930862309.png" alt=""/></p>
-
-<p>Each \(y(i)\) represents a different image corresponding to either a car, pedestrian, truck, or motorcycle. The inner layers, each provide us with some new information which leads to our final hypothesis function. The setup looks like:</p>
-
-<p><img src="media/14987831190581/14987931059100.png" alt=""/></p>
-
-<p>Our resulting hypothesis for one set of inputs may look like:</p>
-
-<p>\[h_\Theta(x) =\begin{bmatrix}0 \newline 0 \newline 1 \newline 0 \newline\end{bmatrix}\]</p>
-
-<p>In which case our resulting class is the third one down, or \(h_\Theta(x)_3\), which represents the motorcycle.</p>
-
-<h2 id="toc_5">Cost Function</h2>
-
-<p>Let&#39;s first define a few variables that we will need to use:</p>
-
-<ul>
-<li>\(L\) = total number of layers in the network</li>
-<li>\(s_l\) = number of units (not counting bias unit) in layer \(l\)</li>
-<li>\(K\) = number of output units/classes</li>
-</ul>
-
-<p>Recall that in neural networks, we may have many output nodes. We denote \(h_\Theta(x)^k\) as being a hypothesis that results in the \(k\)th output. Our cost function for neural networks is going to be a generalization of the one we used for logistic regression. Recall that the cost function for regularized logistic regression was:</p>
-
-<p>\[J(\theta) = - \frac{1}{m} \sum_{i=1}^m [ y^{(i)}\ \log (h_\theta (x^{(i)})) + (1 - y^{(i)})\ \log (1 - h_\theta(x^{(i)}))] + \frac{\lambda}{2m}\sum_{j=1}^n \theta_j^2\]</p>
-
-<p>For neural networks, it is going to be slightly more complicated:</p>
-
-<p>\[\begin{gather*} J(\Theta) = - \frac{1}{m} \sum_{i=1}^m \sum_{k=1}^K \left[y^{(i)}_k \log ((h_\Theta (x^{(i)}))_k) + (1 - y^{(i)}_k)\log (1 - (h_\Theta(x^{(i)}))_k)\right] + \\\frac{\lambda}{2m}\sum_{l=1}^{L-1} \sum_{i=1}^{s_l} \sum_{j=1}^{s_{l+1}} ( \Theta_{j,i}^{(l)})^2\end{gather*}\]</p>
-
-<p>We have added a few nested summations to account for our multiple output nodes. In the first part of the equation, before the square brackets, we have an additional nested summation that loops through the number of output nodes.</p>
-
-<p>In the regularization part, after the square brackets, we must account for multiple \(\Theta\) matrices. The number of columns in our current theta matrix is equal to the number of nodes in our current layer (including the bias unit). The number of rows in our current \(\Theta\) matrix is equal to the number of nodes in the next layer (excluding the bias unit). As before with logistic regression, we square every term.</p>
-
-<p>Note:</p>
-
-<ul>
-<li>the double sum simply adds up the logistic regression costs calculated for each cell in the output layer</li>
-<li>the triple sum simply adds up the squares of all the individual \(\Theta\)s in the entire network.</li>
-<li>the \(i\) in the triple sum does not refer to training example \(i\)</li>
-</ul>
-
-<h2 id="toc_6">Backpropagation Algorithm</h2>
-
-<p><code>Backpropagation</code> is neural-network terminology for minimizing cost function, similar to <code>gradient descent</code> in logistic and linear regression. Our goal is to realize:</p>
-
-<p>\[\min_\Theta J(\Theta)\]</p>
-
-<p>That is, we want to minimize cost function \(J\) using an optimal set of parameters in \(\Theta\). The algorithm to minimize the cost function is as follows:</p>
-
-<p><strong>Backpropagation algorithm</strong>:</p>
-
-<ol>
-<li>Training set \(\{(x^{(1)},y^{(1)}),...,(x^{(m)},y^{(m)})\}\)</li>
-<li>Set \(\Delta_{ij}^{(l)}=0\) (for all \(l,i,j\))</li>
-<li>For \(i=1\) to \(m\)
-<ul>
-<li>Set \(a^{(1)}=x^{(i)}\)</li>
-<li>Perform forward propagation to compute \(a^{(l)}\) for \(l=2,3,...,L\)</li>
-<li>Using \(y^{(i)}\), compute \(\delta^{(L)}=a^{(L)}-y^{(i)}\)</li>
-<li>Compute \(\delta^{(L-1)},...,\delta^{(2)}\)</li>
-<li>\(\Delta^{(l)}_{ij}:=\Delta^{(l)}_{ij} +a_{ij}\delta_i^{(l+1)}\)</li>
-</ul></li>
-<li>\(D_{ij}^{(l)}=\frac{1}{m}\Delta_{ij}^{(l)}+\lambda\Theta_{ij}^{(l)}\) if \(j\ne0\)</li>
-<li>\(D_{ij}^{(l)}=\frac{1}{m}\Delta_{ij}^{(l)}\) if \(j=0\)</li>
-</ol>
-
-<h2 id="toc_7">Gradient Checking</h2>
-
-<p>Gradient checking will assure that our backpropagation works as intended. We can approximate the derivative of our cost function with:<br/>
-\[\dfrac{\partial}{\partial\Theta}J(\Theta) \approx \dfrac{J(\Theta + \epsilon) - J(\Theta - \epsilon)}{2\epsilon}\]</p>
-
-<p>With multiple theta matrices, we can approximate the derivative with respect to \(Θ_j\) as follows:<br/>
-\[\dfrac{\partial}{\partial\Theta_j}J(\Theta) \approx \dfrac{J(\Theta_1, \dots, \Theta_j + \epsilon, \dots, \Theta_n) - J(\Theta_1, \dots, \Theta_j - \epsilon, \dots, \Theta_n)}{2\epsilon}\]</p>
-
-<p>A small value for \(\epsilon\) such as \(\epsilon=10^{-4}\), guarantees that the math works out properly. If the value for \(\epsilon\) is too small, we can end up with numerical problems.</p>
-
-<p>Once we compute <code>numerical gradient</code>, we can check that it&#39;s approximate to <code>analytical gradient</code>. We don&#39;t use numerical grads, because it is very slow.</p>
-
-<h2 id="toc_8">Putting it Together</h2>
-
-<p><strong>Training a Neural Network</strong>:</p>
-
-<ul>
-<li>Randomly initialize the weights</li>
-<li>Implement forward propagation</li>
-<li>Implement the cost function</li>
-<li>Implement backpropagation to compute partial derivatives</li>
-<li>Use gradient checking to confirm that your backpropagation works. Then disable gradient checking.</li>
-<li>Use gradient descent or a built-in optimization function to minimize the cost function with the weights in theta.</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/6/30</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html'>机器学习</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="unsupervised_learning.html">
-                
-                  <h1>Machine Learning(8): Unsupervised Learning</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<ul>
-<li>
-<a href="#toc_0">K-means Clustering</a>
-<ul>
-<li>
-<a href="#toc_1">Explaination</a>
-</li>
-<li>
-<a href="#toc_2">Choosing the Number of Clusters</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_3">Principal Component Analysis</a>
-<ul>
-<li>
-<a href="#toc_4">Choosing the Number of Principal Components</a>
-</li>
-<li>
-<a href="#toc_5">Advice for Applying PCA</a>
-</li>
-</ul>
-</li>
-</ul>
-
-
-<h2 id="toc_0">K-means Clustering</h2>
-
-<p>The K-Means Algorithm is the most popular and widely used algorithm for automatically grouping data into coherent subsets.</p>
-
-<ol>
-<li><p>Randomly initialize two points in the dataset called the <u>cluster centroids</u> .</p></li>
-<li><p>_Cluster assignment_: assign all examples into one of two groups based on which cluster centroid the example is closest to.</p></li>
-<li><p>_Move centroid_: compute the averages for all the points inside each of the two cluster centroid groups, then move the cluster centroid points to those averages.</p></li>
-<li><p>Re-run (2) and (3) until we have found our clusters.</p></li>
-</ol>
-
-<p>Main variables are:</p>
-
-<ul>
-<li><p>K (number of clusters)</p></li>
-<li><p>Training set \({x^{(1)}, x^{(2)}, \dots,x^{(m)}}\)</p></li>
-<li><p>Where \(x^{(i)} \in \mathbb{R}^n\)</p></li>
-</ul>
-
-<p><strong>The algorithm:</strong></p>
-
-<pre><code class="language-text">Randomly initialize K cluster centroids mu(1), mu(2), ..., mu(K)
-Repeat:
-   for i = 1 to m:
-      c(i):= index (from 1 to K) of cluster centroid closest to x(i)
-   for k = 1 to K:
-      mu(k):= average (mean) of points assigned to cluster k
-</code></pre>
-
-<h3 id="toc_1">Explaination</h3>
-
-<p>The <strong>first for-loop</strong> is the <u>Cluster Assignment</u> step. We make a vector <u>c</u> where <u>c(i)</u> represents the centroid assigned to example <u>x(i)</u> .</p>
-
-<p>We can write the operation of the Cluster Assignment step more mathematically as follows:</p>
-
-<p>\(c^{(i)} = \arg \min_k\ ||x^{(i)} - \mu_k||^2\)</p>
-
-<p>That is, each \(c^{(i)}\) contains the index of the centroid that has minimal distance to \(x^{(i)}\).</p>
-
-<p>By convention, we square the right-hand-side, which makes the function we are trying to minimize more sharply increasing. It is mostly just a convention. But a convention that helps reduce the computation load because the Euclidean distance requires a square root but it is canceled.</p>
-
-<p>Without the square:</p>
-
-<p>\(||x^{(i)} - \mu_k|| = ||\quad\sqrt{(x_1^i - \mu_{1(k)})^2 + (x_2^i - \mu_{2(k)})^2 + (x_3^i - \mu_{3(k)})^2 + ...}\quad||\)</p>
-
-<p>With the square:</p>
-
-<p>\(||x^{(i)} - \mu_k||^2 = ||\quad(x_1^i - \mu_{1(k)})^2 + (x_2^i - \mu_{2(k)})^2 + (x_3^i - \mu_{3(k)})^2 + ...\quad||\)</p>
-
-<p>...so the square convention serves two purposes, minimize more sharply and less computation.</p>
-
-<p>The <strong>second for-loop</strong> is the &#39;Move Centroid&#39; step where we move each centroid to the average of its group.</p>
-
-<p>More formally, the equation for this loop is as follows:</p>
-
-<p>\(\mu_k = \dfrac{1}{n}[x^{(k_1)} + x^{(k_2)} + \dots + x^{(k_n)}] \in \mathbb{R}^n\)</p>
-
-<p>Where each of \(x^{(k_1)}, x^{(k_2)}, \dots, x^{(k_n)}\) are the training examples assigned to group \(mμ_k\).</p>
-
-<p>If you have a cluster centroid with <strong>0 points</strong> assigned to it, you can randomly <strong>re-initialize</strong> that centroid to a new point. You can also simply <strong>eliminate</strong> that cluster group.</p>
-
-<p>After a number of iterations the algorithm will <u><strong>converge</strong></u> , where new iterations do not affect the clusters.</p>
-
-<p>Note on non-separated clusters: some datasets have no real inner separation or natural structure. K-means can still evenly segment your data into K subsets, so can still be useful in this case.</p>
-
-<h3 id="toc_2">Choosing the Number of Clusters</h3>
-
-<p>Choosing K can be quite arbitrary and ambiguous.</p>
-
-<p><strong>The elbow method</strong>: plot the cost J and the number of clusters K. The cost function should reduce as we increase the number of clusters, and then flatten out. Choose K at the point where the cost function starts to flatten out.</p>
-
-<p>However, fairly often, the curve is <strong>very gradual</strong> , so there&#39;s no clear elbow.</p>
-
-<p><strong>Note:</strong> J will <strong>always</strong> decrease as K is increased. The one exception is if k-means gets stuck at a bad local optimum.</p>
-
-<p>Another way to choose K is to observe how well k-means performs on a <strong>downstream purpose</strong> . In other words, you choose K that proves to be most useful for some goal you&#39;re trying to achieve from using these clusters.</p>
-
-<p><img src="media/15101207367271/elbow%20method.png" alt="elbow method"/></p>
-
-<h2 id="toc_3">Principal Component Analysis</h2>
-
-<p>The most popular dimensionality reduction algorithm is <u>Principal Component Analysis</u> (PCA)</p>
-
-<p>Before applying PCA, there is a data pre-processing step we must perform:</p>
-
-<p><strong>Data preprocessing</strong></p>
-
-<ul>
-<li>  Given training set: \(x(1),x(2),…,x(m)\)</li>
-<li><p>Preprocess (feature scaling/mean normalization): \(\mu_j = \dfrac{1}{m}\sum^m_{i=1}x_j^{(i)}\)</p></li>
-<li><p>Replace each \(x_j^{(i)}\) with \(x_j^{(i)} - \mu_j\)</p></li>
-<li><p>If different features on different scales (e.g., \(x_1\) = size of house, \(x_2\) = number of bedrooms), scale features to have comparable range of values.</p></li>
-</ul>
-
-<p>Above, we first subtract the mean of each feature from the original feature. Then we scale all the features \(x_j^{(i)} = \dfrac{x_j^{(i)} - \mu_j}{s_j}\).</p>
-
-<p>We can define specifically what it means to reduce from 2d to 1d data as follows:</p>
-
-<p>\(\Sigma = \dfrac{1}{m}\sum^m_{i=1}(x^{(i)})(x^{(i)})^T\)</p>
-
-<p>The z values are all real numbers and are the projections of our features onto \(u^{(1)}\).</p>
-
-<p>So, PCA has two tasks: figure out \(u^{(1)},\dots,u^{(k)}\) and also to find \(z_1, z_2, \dots, z_m\).</p>
-
-<p>The mathematical proof for the following procedure is complicated and beyond the scope of this course.</p>
-
-<p><strong>1. Compute &quot;covariance matrix&quot;</strong></p>
-
-<p>\(\Sigma = \dfrac{1}{m}\sum^m_{i=1}(x^{(i)})(x^{(i)})^T\)</p>
-
-<p>This can be vectorized in Octave as:</p>
-
-<p>\[Sigma = (1/m) * X&#39; * X;\]</p>
-
-<p>We denote the covariance matrix with a capital sigma (which happens to be the same symbol for summation, confusingly---they represent entirely different things).</p>
-
-<p>Note that \(x^{(i)}\) is an n×1 vector, \((x^{(i)})^T\) is an 1×n vector and X is a m×n matrix (row-wise stored examples). The product of those will be an n×n matrix, which are the dimensions of Σ.</p>
-
-<p><strong>2. Compute &quot;eigenvectors&quot; of covariance matrix Σ</strong></p>
-
-<pre><code class="language-octave">[U,S,V] = svd(Sigma);
-</code></pre>
-
-<p>svd() is the &#39;singular value decomposition&#39;, a built-in Octave function.</p>
-
-<p>What we actually want out of svd() is the &#39;U&#39; matrix of the Sigma covariance matrix: \(U \in \mathbb{R}^{n \times n}\). U contains \(u^{(1)},\dots,u^{(n)}\), which is exactly what we want.</p>
-
-<p><strong>3. Take the first k columns of the U matrix and compute z</strong></p>
-
-<p>We&#39;ll assign the first k columns of U to a variable called <code>Ureduce</code>. This will be an n×k matrix. We compute z with:</p>
-
-<p>\(z^{(i)} = \text{Ureduce}^T \cdot x^{(i)}\)</p>
-
-<p>\(\text{Ureduce}Z^T\) will have dimensions k×n while x(i) will have dimensions n×1. The product \(\text{Ureduce}^T \cdot x^{(i)}\) will have dimensions k×1.</p>
-
-<p>To summarize, the whole algorithm in <code>octave</code> is roughly:</p>
-
-<pre><code class="language-octave">Sigma = (1/m) * X&#39; * X; % compute the covariance matrix
-[U,S,V] = svd(Sigma);   % compute our projected directions
-Ureduce = U(:,1:k);     % take the first k directions
-Z = X * Ureduce;        % compute the projected data points
-</code></pre>
-
-<h3 id="toc_4">Choosing the Number of Principal Components</h3>
-
-<p>How do we choose <u>number of principal components</u> \(k\)? </p>
-
-<p>One way to choose k is by using the following formula:</p>
-
-<ul>
-<li><p>Given the average squared projection error: \(\dfrac{1}{m}\sum^m_{i=1}||x^{(i)} - x_{approx}^{(i)}||^2\)</p></li>
-<li><p>Also given the total variation in the data: \(\dfrac{1}{m}\sum^m_{i=1}||x^{(i)}||^2\)</p></li>
-<li><p>Choose k to be the smallest value such that: \(\dfrac{\dfrac{1}{m}\sum^m_{i=1}||x^{(i)} - x_{approx}^{(i)}||^2}{\dfrac{1}{m}\sum^m_{i=1}||x^{(i)}||^2} \leq 0.01\)</p></li>
-</ul>
-
-<p>In other words, the squared projection error divided by the total variation should be less than one percent, so that <strong>99% of the variance is retained</strong> .</p>
-
-<p><strong>Algorithm for choosing k</strong></p>
-
-<ol>
-<li><p>Try PCA with k=1,2,…</p></li>
-<li><p>Compute \(U_{reduce}, z, x\)</p></li>
-<li><p>Check the formula given above that _99% of the variance is retained_. If not, go to step one and increase k.</p></li>
-</ol>
-
-<p>This procedure would actually be horribly inefficient. In Octave, we will call svd:</p>
-
-<pre>[U,S,V] = svd(Sigma)
-</pre>
-
-<p>Which gives us a matrix S. We can actually check for 99% of retained variance using the S matrix as follows:</p>
-
-<p>\(\dfrac{\sum_{i=1}^kS_{ii}}{\sum_{i=1}^nS_{ii}} \geq 0.99\)</p>
-
-<h3 id="toc_5">Advice for Applying PCA</h3>
-
-<p>The most common use of PCA is to speed up supervised learning.</p>
-
-<p>Given a training set with a large number of features (e.g. \(x^{(1)},\dots,x^{(m)} \in \mathbb{R}^{10000}\) ) we can use PCA to reduce the number of features in each example of the training set (e.g. \(z^{(1)},\dots,z^{(m)} \in \mathbb{R}^{1000}\)).</p>
-
-<p>Note that we should define the PCA reduction from \(x^{(i)}\) to \(z^{(i)}\) only on the training set and not on the cross-validation or test sets. You can apply the mapping z(i) to your cross-validation and test sets after it is defined on the training set.</p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/9/8</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html'>机器学习</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
 			<div class="article">
                 <a class="clearlink" href="support-vector-machine.html">
                 
@@ -1535,6 +1044,126 @@ also called <code>sigmoid</code> (/&#39;sɪgmɔɪd/) function<br/>
                 </div>
               </div><!-- article -->
         
+			<div class="article">
+                <a class="clearlink" href="15025903235887.html">
+                
+                  <h1>Latex 技巧</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h2 id="toc_0">Latex 查询</h2>
+
+<p>可以在<code>Dash</code>中下载Latex Cheat Sheet以便随时查询。</p>
+
+<h2 id="toc_1">Latex 如何将下标放在正上方／正下方</h2>
+
+<p>在 <code>\sum</code>，<code>\max</code>等之后添加<code>\limits^{upper}_{lower}</code>：\(\sum\limits^{upper}_{lower}\)</p>
+
+<p>例如：</p>
+
+<pre><code class="language-latex">c(i,j) = \sum\limits^{j}_{k=i}f[k] + \min\limits_{r=i}^j \prod\limits^{m}_np(x^i)
+</code></pre>
+
+<p>\(c(i,j) = \sum \limits^{j}_{k=i}f[k] + \min \limits_{r=i}^j \prod \limits^{m}_np(x^i)\)</p>
+
+<h2 id="toc_2">字体</h2>
+
+<p>花式字体<code>math calligraphy</code>，常用于随机变量，例如: \(\mathcal{X, Y}\)</p>
+
+<pre><code class="language-latex">\mathcal{X, Y}
+</code></pre>
+
+<p>空心加粗字体<code>blackboard bold</code>，常用于实数集R: \(\mathbb{R}\)</p>
+
+<pre><code class="language-text">\mathbb{R}
+</code></pre>
+
+<h2 id="toc_3">上下</h2>
+
+<p>使用<code>\stackrel{}{}</code>，效果如下：</p>
+
+<p>\(x \stackrel{i.i.d}{\backsim} P(x), y \stackrel{p}{apple} P(y|x)\)</p>
+
+<pre><code class="language-latex">x \stackrel{i.i.d}{\backsim} P(x), y \stackrel{p}{apple} P(y|x)
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/8/13</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Tools.html'>Tools</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="introdution_to_big_data.html">
+                
+                  <h1>Introduction to big data</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h2 id="toc_0">Characteristics of Big data</h2>
+
+<p>3 V: Volume, Variety, Velocity</p>
+
+<p>Most now agree with the characterization of big data using the 3 V’s coined by Doug Laney of Gartner:</p>
+
+<p>·<code>Volume</code>: This refers to the vast amounts of data that is generated every second/minute/hour/day in our digitized world.</p>
+
+<p>· <code>Velocity</code>: This refers to the speed at which data is being generated and the pace at which data moves from one point to the next.</p>
+
+<p>· <code>Variety</code>: This refers to the ever-increasing different forms that data can come in, e.g., text, images, voice, geospatial.</p>
+
+<p>A fourth V is now also sometimes added:</p>
+
+<p>· <code>Veracity</code>: This refers to the quality of the data, which can vary greatly.</p>
+
+<p>There are many other V&#39;s that gets added to these depending on the context. For our specialization, we will add:</p>
+
+<p>· <code>Valence</code>: This refers to how big data can bond with each other, forming connections between otherwise disparate datasets.</p>
+
+<p>The above V’s are the dimensions that characterize big data, and also embody its challenges: We have huge amounts of data, in different formats and varying quality, that must be processed quickly.</p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/10/31</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Big%20Data.html'>Big Data</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
               
 
 
@@ -1599,8 +1228,6 @@ also called <code>sigmoid</code> (/&#39;sɪgmɔɪd/) function<br/>
         
             <a href="%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html"><strong>机器学习</strong></a>
         
-            <a href="Python%E7%A7%91%E5%AD%A6%E8%AE%A1%E7%AE%97%E4%B8%89%E7%BB%B4%E5%8F%AF%E8%A7%86%E5%8C%96.html"><strong>Python科学计算三维可视化</strong></a>
-        
             <a href="English.html"><strong>English</strong></a>
         
             <a href="Computer%20System.html"><strong>Computer System</strong></a>
@@ -1634,7 +1261,7 @@ also called <code>sigmoid</code> (/&#39;sɪgmɔɪd/) function<br/>
 	      
 		      
 			      <li class="post">
-			        <a href="head-first_java_note.html">Head first Java</a>
+			        <a href="15046649572570.html">Pandas</a>
 			      </li>
 		     
 		  
