@@ -82,6 +82,10 @@
 <li class="active">
     <a href="./">Topic 4: PriorityQueues</a>
 </li>
+                                    
+<li >
+    <a href="../topic5/">Topic 5: Symbol Tables</a>
+</li>
                                 </ul>
                             </li>
                             <li class="dropdown">
@@ -122,7 +126,7 @@
                                 </a>
                             </li>
                             <li >
-                                <a rel="prev" href="../../cs61b/">
+                                <a rel="prev" href="../topic5/">
                                     Next <i class="fa fa-arrow-right"></i>
                                 </a>
                             </li>
@@ -199,19 +203,20 @@
     <span class=o>}</span>
 
     <span class=kd>private</span> <span class=kt>void</span> <span class=nf>exch</span><span class=o>(</span><span class=kt>int</span> <span class=n>i</span><span class=o>,</span> <span class=kt>int</span> <span class=n>j</span><span class=o>)</span> <span class=o>{</span>
-        <span class=n>Key</span> <span class=n>swap</span> <span class=o>=</span> <span class=n>pq</span><span class=o>[</span><span class=n>i</span> <span class=o>-</span> <span class=mi>1</span><span class=o>];</span>
-        <span class=n>pq</span><span class=o>[</span><span class=n>i</span> <span class=o>-</span> <span class=mi>1</span><span class=o>]</span> <span class=o>=</span> <span class=n>pq</span><span class=o>[</span><span class=n>j</span> <span class=o>-</span> <span class=mi>1</span><span class=o>];</span>
-        <span class=n>pq</span><span class=o>[</span><span class=n>j</span> <span class=o>-</span> <span class=mi>1</span><span class=o>]</span> <span class=o>=</span> <span class=n>swap</span><span class=o>;</span>
+        <span class=n>Key</span> <span class=n>swap</span> <span class=o>=</span> <span class=n>pq</span><span class=o>[</span><span class=n>i</span><span class=o>];</span>
+        <span class=n>pq</span><span class=o>[</span><span class=n>i</span><span class=o>]</span> <span class=o>=</span> <span class=n>pq</span><span class=o>[</span><span class=n>j</span><span class=o>];</span>
+        <span class=n>pq</span><span class=o>[</span><span class=n>j</span><span class=o>]</span> <span class=o>=</span> <span class=n>swap</span><span class=o>;</span>
     <span class=o>}</span>
 
     <span class=kd>private</span> <span class=kt>boolean</span> <span class=nf>less</span><span class=o>(</span><span class=kt>int</span> <span class=n>i</span><span class=o>,</span> <span class=kt>int</span> <span class=n>j</span><span class=o>)</span> <span class=o>{</span>
-        <span class=k>return</span> <span class=n>pq</span><span class=o>[</span><span class=n>i</span> <span class=o>-</span> <span class=mi>1</span><span class=o>].</span><span class=na>compareTo</span><span class=o>(</span><span class=n>pq</span><span class=o>[</span><span class=n>j</span> <span class=o>-</span> <span class=mi>1</span><span class=o>])</span> <span class=o>&lt;</span> <span class=mi>0</span><span class=o>;</span>
-    <span class=o>}</span> 
+        <span class=k>return</span> <span class=n>pq</span><span class=o>[</span><span class=n>i</span><span class=o>].</span><span class=na>compareTo</span><span class=o>(</span><span class=n>pq</span><span class=o>[</span><span class=n>j</span><span class=o>])</span> <span class=o>&lt;</span> <span class=mi>0</span><span class=o>;</span>
+    <span class=o>}</span>
+
 <span class=o>}</span>
 </pre></div></p>
 <p></details></p>
 <p><hh>Array representation (ordered).</hh></p>
-<p>Another approach for insert  is to move larger entries one position to the right, thus keeping the keys in the array in order (as in insertion sort). Thus, the largest element is always at the end, and the code for remove the maximum in the priority queue is the same as for pop in the stack.</p>
+<p>Another approach for <C>insert</C>  is to move larger entries one position to the right, thus keeping the keys in the array in order (as in insertion sort). Thus, the largest element is always at the end, and the code for remove the maximum in the priority queue is the same as for <C>pop</C> in the stack.</p>
 <h4 id="analysis">Analysis<a class="headerlink" href="#analysis" title="Permanent link">&para;</a></h4>
 <p>Order of growth of worst-case running time for priority-queue implementations：</p>
 <p><img alt="Order of growth of worst-case running time for priority-queue implementations" src="../figures/priorityQueueComplexity.png" /></p>
@@ -223,8 +228,8 @@
 <p><img alt="HeapRepresentations" src="../figures/HeapRepresentations.png" /></p>
 <ul>
 <li>In a heap, the parent of the node in position <span><span class="MathJax_Preview">k</span><script type="math/tex">k</script></span> is in position ⎣<span><span class="MathJax_Preview">k/2</span><script type="math/tex">k/2</script></span>⎦ and, conversely, the two children of the node in position <span><span class="MathJax_Preview">k</span><script type="math/tex">k</script></span> are in positions <span><span class="MathJax_Preview">2k</span><script type="math/tex">2k</script></span> and <span><span class="MathJax_Preview">2k + 1</span><script type="math/tex">2k + 1</script></span>.</li>
-<li>we can travel up and down by doing simple arithmetic on array indices: to move up the tree from <span><span class="MathJax_Preview">a[k]</span><script type="math/tex">a[k]</script></span> we set <span><span class="MathJax_Preview">k</span><script type="math/tex">k</script></span> to <span><span class="MathJax_Preview">k/2</span><script type="math/tex">k/2</script></span>; to move down the tree we set k to <span><span class="MathJax_Preview">2*k</span><script type="math/tex">2*k</script></span> or <span><span class="MathJax_Preview">2*k+1</span><script type="math/tex">2*k+1</script></span>.</li>
-<li>The height of a complete binary tree of size N is ⎣ <span><span class="MathJax_Preview">\lg N</span><script type="math/tex">\lg N</script></span> ⎦ .</li>
+<li>we can travel up and down by doing simple arithmetic on array indices: to move up the tree from <span><span class="MathJax_Preview">a[k]</span><script type="math/tex">a[k]</script></span> we set <span><span class="MathJax_Preview">k</span><script type="math/tex">k</script></span> to <span><span class="MathJax_Preview">k/2</span><script type="math/tex">k/2</script></span>; to move down the tree we set k to <span><span class="MathJax_Preview">2k</span><script type="math/tex">2k</script></span> or <span><span class="MathJax_Preview">2k+1</span><script type="math/tex">2k+1</script></span>.</li>
+<li>The height of a complete binary tree of size <span><span class="MathJax_Preview">N</span><script type="math/tex">N</script></span> is ⎣ <span><span class="MathJax_Preview">\lg N</span><script type="math/tex">\lg N</script></span> ⎦ .</li>
 </ul>
 <div class="admonition question">
 <p class="admonition-title">Question</p>
@@ -232,7 +237,7 @@
 <p>A. Doing so simplifies the arithmetic a bit.</p>
 </div>
 <h4 id="promotion-in-a-heap">Promotion in a heap<a class="headerlink" href="#promotion-in-a-heap" title="Permanent link">&para;</a></h4>
-<p>Scenario. Child's key becomes larger key than its parent's key.</p>
+<p>Scenario: Child's key becomes larger key than its parent's key.</p>
 <p><img alt="PromotionInAHeap" src="../figures/PromotionInAHeap.png" /></p>
 <p>To eliminate the violation:</p>
 <ul>
@@ -258,10 +263,10 @@
 <span class=o>}</span>
 </pre></div></p>
 <h4 id="demotion-in-a-heap">Demotion in a heap<a class="headerlink" href="#demotion-in-a-heap" title="Permanent link">&para;</a></h4>
-<p>Scenario. Parent's key becomes smaller than one (or both) of its children's.</p>
+<p>Scenario: Parent's key becomes smaller than one (or both) of its children's.</p>
 <p>To eliminate the violation:</p>
 <ul>
-<li>Exchange key in parent with key in larger child. </li>
+<li>Exchange key in parent with key in <strong>larger</strong> child. </li>
 <li>Repeat until heap order restored.</li>
 </ul>
 <p><img alt="DemotionInAHeap" src="../figures/DemotionInAHeap.png" /></p>
@@ -291,13 +296,13 @@
 <p><img alt="RemoveTheMaximum" src="../figures/RemoveTheMaximum.png" /></p>
 <p><hh>Complete Java Code</hh></p>
 <p><details><summary>Click Here</summary></p>
-<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>HeapPQ</span><span class=o>&lt;</span><span class=n>Key</span> <span class=kd>extends</span> <span class=n>Comparable</span><span class=o>&lt;</span><span class=n>Key</span><span class=o>&gt;&gt;</span> <span class=o>{</span>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>MaxPQ</span><span class=o>&lt;</span><span class=n>Key</span> <span class=kd>extends</span> <span class=n>Comparable</span><span class=o>&lt;</span><span class=n>Key</span><span class=o>&gt;&gt;</span> <span class=o>{</span>
 
     <span class=kd>private</span> <span class=n>Key</span><span class=o>[]</span> <span class=n>pq</span><span class=o>;</span> <span class=c1>// pq[i] = ith element on pq</span>
     <span class=kd>private</span> <span class=kt>int</span> <span class=n>N</span><span class=o>;</span> <span class=c1>// number of elements on pq</span>
 
     <span class=nd>@SuppressWarnings</span><span class=o>(</span><span class=s>&quot;unchecked&quot;</span><span class=o>)</span>
-    <span class=kd>public</span> <span class=nf>HeapPQ</span><span class=o>(</span><span class=kt>int</span> <span class=n>capacity</span><span class=o>)</span> <span class=o>{</span>
+    <span class=kd>public</span> <span class=nf>MaxPQ</span><span class=o>(</span><span class=kt>int</span> <span class=n>capacity</span><span class=o>)</span> <span class=o>{</span>
         <span class=n>pq</span> <span class=o>=</span> <span class=o>(</span><span class=n>Key</span><span class=o>[])</span> <span class=k>new</span> <span class=n>Comparable</span><span class=o>[</span><span class=n>capacity</span> <span class=o>+</span> <span class=mi>1</span><span class=o>];</span>
     <span class=o>}</span>
 
@@ -313,6 +318,10 @@
         <span class=n>sink</span><span class=o>(</span><span class=mi>1</span><span class=o>);</span>
         <span class=n>pq</span><span class=o>[</span><span class=n>N</span> <span class=o>+</span> <span class=mi>1</span><span class=o>]</span> <span class=o>=</span> <span class=kc>null</span><span class=o>;</span>
         <span class=k>return</span> <span class=n>max</span><span class=o>;</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kt>boolean</span> <span class=nf>isEmpty</span><span class=o>()</span> <span class=o>{</span>
+        <span class=k>return</span> <span class=n>N</span> <span class=o>==</span> <span class=mi>0</span><span class=o>;</span>
     <span class=o>}</span>
 
     <span class=kd>private</span> <span class=kt>void</span> <span class=nf>swim</span><span class=o>(</span><span class=kt>int</span> <span class=n>k</span><span class=o>)</span> <span class=o>{</span>
@@ -335,14 +344,15 @@
 
 
     <span class=kd>private</span> <span class=kt>void</span> <span class=nf>exch</span><span class=o>(</span><span class=kt>int</span> <span class=n>i</span><span class=o>,</span> <span class=kt>int</span> <span class=n>j</span><span class=o>)</span> <span class=o>{</span>
-        <span class=n>Key</span> <span class=n>swap</span> <span class=o>=</span> <span class=n>pq</span><span class=o>[</span><span class=n>i</span> <span class=o>-</span> <span class=mi>1</span><span class=o>];</span>
-        <span class=n>pq</span><span class=o>[</span><span class=n>i</span> <span class=o>-</span> <span class=mi>1</span><span class=o>]</span> <span class=o>=</span> <span class=n>pq</span><span class=o>[</span><span class=n>j</span> <span class=o>-</span> <span class=mi>1</span><span class=o>];</span>
-        <span class=n>pq</span><span class=o>[</span><span class=n>j</span> <span class=o>-</span> <span class=mi>1</span><span class=o>]</span> <span class=o>=</span> <span class=n>swap</span><span class=o>;</span>
+        <span class=n>Key</span> <span class=n>swap</span> <span class=o>=</span> <span class=n>pq</span><span class=o>[</span><span class=n>i</span><span class=o>];</span>
+        <span class=n>pq</span><span class=o>[</span><span class=n>i</span><span class=o>]</span> <span class=o>=</span> <span class=n>pq</span><span class=o>[</span><span class=n>j</span><span class=o>];</span>
+        <span class=n>pq</span><span class=o>[</span><span class=n>j</span><span class=o>]</span> <span class=o>=</span> <span class=n>swap</span><span class=o>;</span>
     <span class=o>}</span>
 
     <span class=kd>private</span> <span class=kt>boolean</span> <span class=nf>less</span><span class=o>(</span><span class=kt>int</span> <span class=n>i</span><span class=o>,</span> <span class=kt>int</span> <span class=n>j</span><span class=o>)</span> <span class=o>{</span>
-        <span class=k>return</span> <span class=n>pq</span><span class=o>[</span><span class=n>i</span> <span class=o>-</span> <span class=mi>1</span><span class=o>].</span><span class=na>compareTo</span><span class=o>(</span><span class=n>pq</span><span class=o>[</span><span class=n>j</span> <span class=o>-</span> <span class=mi>1</span><span class=o>])</span> <span class=o>&lt;</span> <span class=mi>0</span><span class=o>;</span>
+        <span class=k>return</span> <span class=n>pq</span><span class=o>[</span><span class=n>i</span><span class=o>].</span><span class=na>compareTo</span><span class=o>(</span><span class=n>pq</span><span class=o>[</span><span class=n>j</span><span class=o>])</span> <span class=o>&lt;</span> <span class=mi>0</span><span class=o>;</span>
     <span class=o>}</span>
+
 <span class=o>}</span>
 </pre></div></p>
 <p></details></p>
@@ -357,8 +367,8 @@
 <h4 id="heap-construction">Heap construction<a class="headerlink" href="#heap-construction" title="Permanent link">&para;</a></h4>
 <p>Build heap using bottom-up method:</p>
 <ul>
-<li>sorts <span><span class="MathJax_Preview">a[1]</span><script type="math/tex">a[1]</script></span> through <span><span class="MathJax_Preview">a[N]</span><script type="math/tex">a[N]</script></span> using the <C>sink()</C> method. </li>
-<li>The <C>for</C> loop constructs the heap.</li>
+<li>proceed from bottom to top, using <C>sink()</C> to make subheaps.</li>
+<li>The scan starts halfway, and ends at position 1.</li>
 </ul>
 <p> <div class=codehilite><pre><span class=kt>int</span> <span class=n>N</span> <span class=o>=</span> <span class=n>a</span><span class=o>.</span><span class=na>length</span><span class=o>;</span>
 <span class=k>for</span> <span class=o>(</span><span class=kt>int</span> <span class=n>k</span> <span class=o>=</span> <span class=n>N</span><span class=o>/</span><span class=mi>2</span><span class=o>;</span> <span class=n>k</span> <span class=o>&gt;=</span> <span class=mi>1</span><span class=o>;</span> <span class=n>k</span><span class=o>--)</span>
@@ -399,6 +409,7 @@
         <script src="../../js/base.js" defer></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" defer></script>
         <script src="../../extra_javascript/tabhack.js" defer></script>
+        <script src="../../extra_javascript/baidu.js" defer></script>
         <script src="../../search/main.js" defer></script>
 
         <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">

@@ -508,11 +508,132 @@
                 <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
         <li class="main active"><a href="#thinking-in-java-20-enumerated-types">Thinking in Java 20 - Enumerated Types</a></li>
+            <li><a href="#using-static-imports-with-enums">Using static imports with enums</a></li>
+            <li><a href="#adding-methods-to-an-enum">Adding methods to an enum</a></li>
+            <li><a href="#the-mystery-of-values">The mystery of values()</a></li>
+            <li><a href="#implements-not-inherits">Implements, not inherits</a></li>
+            <li><a href="#using-enumset-instead-of-flags">Using EnumSet instead of flags</a></li>
+            <li><a href="#using-enummap">Using EnumMap</a></li>
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
 
-<h3 id="thinking-in-java-20-enumerated-types"><strong>Thinking in Java 20 - Enumerated Types</strong><a class="headerlink" href="#thinking-in-java-20-enumerated-types" title="Permanent link">&para;</a></h3></div>
+<h3 id="thinking-in-java-20-enumerated-types"><strong>Thinking in Java 20 - Enumerated Types</strong><a class="headerlink" href="#thinking-in-java-20-enumerated-types" title="Permanent link">&para;</a></h3>
+<p>When you create an <C>enum</C>, an associated class is produced for you by the compiler. This class is automatically <strong>inherited</strong> from <C>java.lang.Enum</C>.</p>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>abstract</span> <span class=kd>class</span> <span class=nc>Enum</span><span class=o>&lt;</span><span class=n>E</span> <span class=kd>extends</span> <span class=n>Enum</span><span class=o>&lt;</span><span class=n>E</span><span class=o>&gt;&gt;</span>
+        <span class=kd>implements</span> <span class=n>Comparable</span><span class=o>&lt;</span><span class=n>E</span><span class=o>&gt;,</span> <span class=n>Serializable</span> 
+</pre></div></p>
+<p>The definition means that the type argument for <C>enum</C> has to derive from an <C>enum</C> which itself has the same type argument.  So if I've got an <C>enum</C> called StatusCode, it would be equivalent to [<a href="https://stackoverflow.com/questions/211143/java-enum-definition">ref</a>]:</p>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>StatusCode</span> <span class=kd>extends</span> <span class=n>Enum</span><span class=o>&lt;</span><span class=n>StatusCode</span><span class=o>&gt;</span>
+</pre></div></p>
+<h4 id="using-static-imports-with-enums">Using static imports with enums<a class="headerlink" href="#using-static-imports-with-enums" title="Permanent link">&para;</a></h4>
+<p>The <C>static</C> import brings all the <C>enum</C> instance identifiers into the local namespace, so they don’t need to be qualified.</p>
+<p> <div class=codehilite><pre><span class=c1>// Spiciness.java</span>
+<span class=kd>public</span> <span class=kd>enum</span> <span class=n>Spiciness</span> <span class=o>{</span>
+  <span class=n>NOT</span><span class=o>,</span> <span class=n>MILD</span><span class=o>,</span> <span class=n>MEDIUM</span><span class=o>,</span> <span class=n>HOT</span><span class=o>,</span> <span class=n>FLAMING</span>
+<span class=o>}</span>
+<span class=c1>// Burrito.java</span>
+<span class=kn>import</span> <span class=nn>static</span> <span class=n>Spiciness</span><span class=o>.*;</span>
+<span class=kd>public</span> <span class=kd>class</span> <span class=nc>Burrito</span> <span class=o>{</span>
+  <span class=n>Spiciness</span> <span class=n>degree</span><span class=o>;</span>
+  <span class=kd>public</span> <span class=nf>Burrito</span><span class=o>(</span><span class=n>Spiciness</span> <span class=n>degree</span><span class=o>)</span> <span class=o>{</span> <span class=k>this</span><span class=o>.</span><span class=na>degree</span> <span class=o>=</span> <span class=n>degree</span><span class=o>;}</span>
+  <span class=kd>public</span> <span class=n>String</span> <span class=nf>toString</span><span class=o>()</span> <span class=o>{</span> <span class=k>return</span> <span class=s>&quot;Burrito is &quot;</span><span class=o>+</span> <span class=n>degree</span><span class=o>;}</span>
+  <span class=kd>public</span> <span class=kd>static</span> <span class=kt>void</span> <span class=nf>main</span><span class=o>(</span><span class=n>String</span><span class=o>[]</span> <span class=n>args</span><span class=o>)</span> <span class=o>{</span>
+    <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=k>new</span> <span class=n>Burrito</span><span class=o>(</span><span class=n>NOT</span><span class=o>));</span>
+    <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=k>new</span> <span class=n>Burrito</span><span class=o>(</span><span class=n>HOT</span><span class=o>));</span>
+  <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></p>
+<h4 id="adding-methods-to-an-enum">Adding methods to an enum<a class="headerlink" href="#adding-methods-to-an-enum" title="Permanent link">&para;</a></h4>
+<p>Except for the fact that you can’t inherit from it, an <C>enum</C> can be treated much like a regular class. This means that you can add methods to an  <C>enum</C> . It’s even possible for an  <C>enum</C>  to have a <C>main()</C>. Notice that if you are going to define methods you must end the sequence of  <C>enum</C> instances with a semicolon.</p>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>enum</span> <span class=n>OzWitch</span> <span class=o>{</span>
+  <span class=c1>// Instances must be defined first, before methods:</span>
+  <span class=n>WEST</span><span class=o>(</span><span class=s>&quot;Miss Gulch, aka the Wicked Witch of the West&quot;</span><span class=o>),</span>
+  <span class=n>SOUTH</span><span class=o>(</span><span class=s>&quot;Good by inference, but missing&quot;</span><span class=o>);</span>
+  <span class=kd>private</span> <span class=n>String</span> <span class=n>description</span><span class=o>;</span>
+  <span class=c1>// Constructor must be package or private access:</span>
+  <span class=kd>private</span> <span class=nf>OzWitch</span><span class=o>(</span><span class=n>String</span> <span class=n>description</span><span class=o>)</span> <span class=o>{</span>
+    <span class=k>this</span><span class=o>.</span><span class=na>description</span> <span class=o>=</span> <span class=n>description</span><span class=o>;</span>
+  <span class=o>}</span>
+  <span class=kd>public</span> <span class=n>String</span> <span class=nf>getDescription</span><span class=o>()</span> <span class=o>{</span> <span class=k>return</span> <span class=n>description</span><span class=o>;</span> <span class=o>}</span>
+  <span class=kd>public</span> <span class=kd>static</span> <span class=kt>void</span> <span class=nf>main</span><span class=o>(</span><span class=n>String</span><span class=o>[]</span> <span class=n>args</span><span class=o>)</span> <span class=o>{</span>
+    <span class=k>for</span><span class=o>(</span><span class=n>OzWitch</span> <span class=n>witch</span> <span class=o>:</span> <span class=n>OzWitch</span><span class=o>.</span><span class=na>values</span><span class=o>())</span>
+      <span class=n>print</span><span class=o>(</span><span class=n>witch</span> <span class=o>+</span> <span class=s>&quot;: &quot;</span> <span class=o>+</span> <span class=n>witch</span><span class=o>.</span><span class=na>getDescription</span><span class=o>());</span>
+  <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></p>
+<p>Also you can overriding <C>enum</C> methods.</p>
+<h4 id="the-mystery-of-values">The mystery of values()<a class="headerlink" href="#the-mystery-of-values" title="Permanent link">&para;</a></h4>
+<p>The method <C>values()</C> is a static method that is added by the compiler.</p>
+<blockquote>
+<p>The compiler automatically adds some special methods when it creates an enum. For example, they have a static values method that returns an array containing all of the values of the enum in the order they are declared. This method is commonly used in combination with the for-each construct to iterate over the values of an enum type. [<a href="https://docs.oracle.com/javase/tutorial/java/javaOO/enum.html">Java Tutorials - Enum Type</a>]</p>
+</blockquote>
+<h4 id="implements-not-inherits">Implements, not inherits<a class="headerlink" href="#implements-not-inherits" title="Permanent link">&para;</a></h4>
+<p>All <C>enum</C>s extend <C>java.lang.Enum</C>. Since Java does not support multiple inheritance, this means that you cannot create an <C>enum</C> via inheritance. However, it is possible to create an <C>enum</C> that implements one or more interfaces.</p>
+<h4 id="using-enumset-instead-of-flags">Using EnumSet instead of flags<a class="headerlink" href="#using-enumset-instead-of-flags" title="Permanent link">&para;</a></h4>
+<p>The <C>EnumSet</C> was added to Java SE5 to work in concert with <C>enum</C>s to create a replacement for traditional int-based "bit flags." The <C>EnumSet</C> is designed for speed, because it must compete effectively with bit flags. Internally, it is represented by (if possible) a <strong>single</strong> <C>long</C> that is treated as a bit-vector, so it’s extremely fast and efficient.</p>
+<p> <div class=codehilite><pre><span class=kn>package</span> <span class=nn>java.util</span><span class=o>;</span>
+<span class=kd>public</span> <span class=kd>abstract</span> <span class=kd>class</span> <span class=nc>EnumSet</span><span class=o>&lt;</span><span class=n>E</span> <span class=kd>extends</span> <span class=n>Enum</span><span class=o>&lt;</span><span class=n>E</span><span class=o>&gt;&gt;</span> <span class=kd>extends</span> <span class=n>AbstractSet</span><span class=o>&lt;</span><span class=n>E</span><span class=o>&gt;</span>
+    <span class=kd>implements</span> <span class=n>Cloneable</span><span class=o>,</span> <span class=n>java</span><span class=o>.</span><span class=na>io</span><span class=o>.</span><span class=na>Serializable</span>
+</pre></div></p>
+<p><C>EnumSet</C>s are built on top of <C>long</C>s, a <C>long</C> is 64 bits, and each <C>enum</C> instance requires one bit to indicate presence or absence. This means you can have an <C>EnumSet</C>  for an <C>enum</C> of up to 64 elements without going beyond the use of a single <C>long</C>.</p>
+<p><C>EnumSet</C>是一个抽象类，不能直接通过<C>new</C>新建，不过提供了若干静态工厂方法(<C>noneof</C>, <C>allof</C>等)。</p>
+<p>当<C>EnumSet</C>大于64个时，采用<C>JumboEnumSet</C>，否则采用<C>RegularEnumSet</C>:</p>
+<p> <div class=codehilite><pre><span class=c1>// The class of all the elements of this set.</span>
+<span class=kd>final</span> <span class=n>Class</span><span class=o>&lt;</span><span class=n>E</span><span class=o>&gt;</span> <span class=n>elementType</span><span class=o>;</span>
+<span class=c1>// All of the values comprising T.  (Cached for performance.)</span>
+<span class=kd>final</span> <span class=n>Enum</span><span class=o>&lt;?&gt;[]</span> <span class=n>universe</span><span class=o>;</span>
+<span class=c1>// Creates an empty enum set with the specified element type.</span>
+<span class=kd>public</span> <span class=kd>static</span> <span class=o>&lt;</span><span class=n>E</span> <span class=kd>extends</span> <span class=n>Enum</span><span class=o>&lt;</span><span class=n>E</span><span class=o>&gt;&gt;</span> <span class=n>EnumSet</span><span class=o>&lt;</span><span class=n>E</span><span class=o>&gt;</span> <span class=nf>noneOf</span><span class=o>(</span><span class=n>Class</span><span class=o>&lt;</span><span class=n>E</span><span class=o>&gt;</span> <span class=n>elementType</span><span class=o>)</span> <span class=o>{</span>
+    <span class=n>Enum</span><span class=o>&lt;?&gt;[]</span> <span class=n>universe</span> <span class=o>=</span> <span class=n>getUniverse</span><span class=o>(</span><span class=n>elementType</span><span class=o>);</span>
+    <span class=k>if</span> <span class=o>(</span><span class=n>universe</span> <span class=o>==</span> <span class=kc>null</span><span class=o>)</span>
+        <span class=k>throw</span> <span class=k>new</span> <span class=n>ClassCastException</span><span class=o>(</span><span class=n>elementType</span> <span class=o>+</span> <span class=s>&quot; not an enum&quot;</span><span class=o>);</span>
+
+    <span class=k>if</span> <span class=o>(</span><span class=n>universe</span><span class=o>.</span><span class=na>length</span> <span class=o>&lt;=</span> <span class=mi>64</span><span class=o>)</span>
+        <span class=k>return</span> <span class=k>new</span> <span class=n>RegularEnumSet</span><span class=o>&lt;&gt;(</span><span class=n>elementType</span><span class=o>,</span> <span class=n>universe</span><span class=o>);</span>
+    <span class=k>else</span>
+        <span class=k>return</span> <span class=k>new</span> <span class=n>JumboEnumSet</span><span class=o>&lt;&gt;(</span><span class=n>elementType</span><span class=o>,</span> <span class=n>universe</span><span class=o>);</span>
+<span class=o>}</span>
+</pre></div></p>
+<p><img alt="EnumSet" src="../figures/EnumSet.png" /></p>
+<p>对于<C>RegularEnumSet</C>，它用一个<C>long</C>类型表示位向量;对于<C>JumboEnumSet</C>，它用一个<C>long</C>数组表示。</p>
+<p> <div class=codehilite><pre><span class=c1>// RegularEnumSet.java</span>
+<span class=c1>// Bit vector representation of this set.  </span>
+<span class=c1>// The 2^k bit indicates the presence of universe[k] in this set.</span>
+<span class=kd>private</span> <span class=kt>long</span> <span class=n>elements</span> <span class=o>=</span> <span class=mi>0</span><span class=n>L</span><span class=o>;</span>
+
+
+<span class=c1>// JumboEnumSet.java</span>
+<span class=c1>// Bit vector representation of this set.  The ith bit of the jth</span>
+<span class=c1>// element of this array represents the  presence of universe[64*j +i]</span>
+<span class=c1>// in this set.</span>
+<span class=kd>private</span> <span class=kt>long</span> <span class=n>elements</span><span class=o>[];</span>
+</pre></div></p>
+<h4 id="using-enummap">Using EnumMap<a class="headerlink" href="#using-enummap" title="Permanent link">&para;</a></h4>
+<p>An <C>EnumMap</C> is a specialized <C>Map</C> that requires that its keys be from a single <C>enum</C>. Because of the constraints on an <C>enum</C>, an <C>EnumMap</C> can be implemented internally as an array. Thus they are extremely fast, so you can freely use <C>EnumMaps</C> for enum-based lookups.</p>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>EnumMap</span><span class=o>&lt;</span><span class=n>K</span> <span class=kd>extends</span> <span class=n>Enum</span><span class=o>&lt;</span><span class=n>K</span><span class=o>&gt;,</span> <span class=n>V</span><span class=o>&gt;</span> <span class=kd>extends</span> <span class=n>AbstractMap</span><span class=o>&lt;</span><span class=n>K</span><span class=o>,</span> <span class=n>V</span><span class=o>&gt;</span>
+    <span class=kd>implements</span> <span class=n>java</span><span class=o>.</span><span class=na>io</span><span class=o>.</span><span class=na>Serializable</span><span class=o>,</span> <span class=n>Cloneable</span>
+<span class=kd>private</span> <span class=kd>final</span> <span class=n>Class</span><span class=o>&lt;</span><span class=n>K</span><span class=o>&gt;</span> <span class=n>keyType</span><span class=o>;</span>
+<span class=c1>// Array representation of this map.</span>
+<span class=kd>private</span> <span class=kd>transient</span> <span class=n>Object</span><span class=o>[]</span> <span class=n>vals</span><span class=o>;</span>
+</pre></div></p>
+<p><C>key</C>其实就是<C>Enum.ordinal()</C>，所以实际上<C>EnumMaps</C>就是一个数组，如果要查询某个<C>key</C>是否存在：</p>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kt>boolean</span> <span class=nf>containsKey</span><span class=o>(</span><span class=n>Object</span> <span class=n>key</span><span class=o>)</span> <span class=o>{</span>
+    <span class=k>return</span> <span class=n>isValidKey</span><span class=o>(</span><span class=n>key</span><span class=o>)</span> <span class=o>&amp;&amp;</span> <span class=n>vals</span><span class=o>[((</span><span class=n>Enum</span><span class=o>&lt;?&gt;)</span><span class=n>key</span><span class=o>).</span><span class=na>ordinal</span><span class=o>()]</span> <span class=o>!=</span> <span class=kc>null</span><span class=o>;</span>
+<span class=o>}</span>
+</pre></div></p>
+<p>再来看看<C>put()</C>方法：</p>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=n>V</span> <span class=nf>put</span><span class=o>(</span><span class=n>K</span> <span class=n>key</span><span class=o>,</span> <span class=n>V</span> <span class=n>value</span><span class=o>)</span> <span class=o>{</span>
+    <span class=n>typeCheck</span><span class=o>(</span><span class=n>key</span><span class=o>);</span>
+
+    <span class=kt>int</span> <span class=n>index</span> <span class=o>=</span> <span class=n>key</span><span class=o>.</span><span class=na>ordinal</span><span class=o>();</span>
+    <span class=n>Object</span> <span class=n>oldValue</span> <span class=o>=</span> <span class=n>vals</span><span class=o>[</span><span class=n>index</span><span class=o>];</span>
+    <span class=n>vals</span><span class=o>[</span><span class=n>index</span><span class=o>]</span> <span class=o>=</span> <span class=n>maskNull</span><span class=o>(</span><span class=n>value</span><span class=o>);</span>
+    <span class=k>if</span> <span class=o>(</span><span class=n>oldValue</span> <span class=o>==</span> <span class=kc>null</span><span class=o>)</span>
+        <span class=n>size</span><span class=o>++;</span>
+    <span class=k>return</span> <span class=n>unmaskNull</span><span class=o>(</span><span class=n>oldValue</span><span class=o>);</span>
+<span class=o>}</span>
+</pre></div></p></div>
         </div>
 
         <footer class="col-md-12">
