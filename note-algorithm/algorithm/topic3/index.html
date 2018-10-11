@@ -142,8 +142,14 @@
         <li class="main "><a href="#selection-sort">Selection Sort</a></li>
             <li><a href="#analysis">Analysis</a></li>
         <li class="main "><a href="#insertion-sort">Insertion Sort</a></li>
+            <li><a href="#analysis_1">Analysis</a></li>
         <li class="main "><a href="#shell-sort">Shell Sort</a></li>
         <li class="main "><a href="#shuffling">Shuffling</a></li>
+            <li><a href="#shuffle-sort">Shuffle sort</a></li>
+            <li><a href="#knuth-shuffle">Knuth shuffle</a></li>
+        <li class="main "><a href="#quick-sort">Quick Sort</a></li>
+            <li><a href="#partitioning">Partitioning</a></li>
+            <li><a href="#analysis_2">Analysis</a></li>
         <li class="main "><a href="#merge-sort">Merge Sort</a></li>
             <li><a href="#java-implementation">Java Implementation</a></li>
     </ul>
@@ -157,7 +163,7 @@
 <li>Swap <span><span class="MathJax_Preview">a[i]</span><script type="math/tex">a[i]</script></span> and <span><span class="MathJax_Preview">a[min]</span><script type="math/tex">a[min]</script></span>.</li>
 </ul>
 <p>Animation:</p>
-<p><img class="sorting_algorithms_table-image" data-animated="{&quot;20&quot;:&quot;https://assets.toptal.io/assets/front/static/public/blocks/sorting_algorithms/animations/20/random-initial-order/selection-sort_c041bf.gif&quot;,&quot;30&quot;:&quot;https://assets.toptal.io/assets/front/static/public/blocks/sorting_algorithms/animations/30/random-initial-order/selection-sort_0ba73d.gif&quot;,&quot;40&quot;:&quot;https://assets.toptal.io/assets/front/static/public/blocks/sorting_algorithms/animations/40/random-initial-order/selection-sort_d24b13.gif&quot;,&quot;50&quot;:&quot;https://assets.toptal.io/assets/front/static/public/blocks/sorting_algorithms/animations/50/random-initial-order/selection-sort_f03ab6.gif&quot;}" data-role="sorting_example" data-static="{&quot;20&quot;:&quot;https://assets.toptal.io/assets/front/static/public/blocks/sorting_algorithms/animations/20/random-initial-order/selection-sort-0_dc86a8.gif&quot;,&quot;30&quot;:&quot;https://assets.toptal.io/assets/front/static/public/blocks/sorting_algorithms/animations/30/random-initial-order/selection-sort-0_436051.gif&quot;,&quot;40&quot;:&quot;https://assets.toptal.io/assets/front/static/public/blocks/sorting_algorithms/animations/40/random-initial-order/selection-sort-0_65e37a.gif&quot;,&quot;50&quot;:&quot;https://assets.toptal.io/assets/front/static/public/blocks/sorting_algorithms/animations/50/random-initial-order/selection-sort-0_f83472.gif&quot;}" src="https://assets.toptal.io/assets/front/static/public/blocks/sorting_algorithms/animations/20/random-initial-order/selection-sort_c041bf.gif"></p>
+<p><img alt="" src="https://assets.toptal.io/assets/front/static/public/blocks/sorting_algorithms/animations/20/random-initial-order/selection-sort_c041bf.gif" /></p>
 <p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>Selection</span> <span class=o>{</span>
     <span class=kd>public</span> <span class=kd>static</span> <span class=kt>void</span> <span class=nf>sort</span><span class=o>(</span><span class=n>Comparable</span><span class=o>[]</span> <span class=n>a</span><span class=o>)</span> <span class=o>{</span>
         <span class=kt>int</span> <span class=n>N</span> <span class=o>=</span> <span class=n>a</span><span class=o>.</span><span class=na>length</span><span class=o>;</span>
@@ -174,8 +180,140 @@
 <h4 id="analysis">Analysis<a class="headerlink" href="#analysis" title="Permanent link">&para;</a></h4>
 <p>Selection sort uses <span><span class="MathJax_Preview">(N-1)+(N-2)+...+1\sim N^2/2</span><script type="math/tex">(N-1)+(N-2)+...+1\sim N^2/2</script></span> compares and <span><span class="MathJax_Preview">N</span><script type="math/tex">N</script></span> exchanges.</p>
 <h3 id="insertion-sort">Insertion Sort<a class="headerlink" href="#insertion-sort" title="Permanent link">&para;</a></h3>
+<p>Animation:</p>
+<p><img alt="" src="https://assets.toptal.io/assets/front/static/public/blocks/sorting_algorithms/animations/20/random-initial-order/insertion-sort_e8e408.gif" /></p>
+<ul>
+<li>In iteration <span><span class="MathJax_Preview">i</span><script type="math/tex">i</script></span>, swap <span><span class="MathJax_Preview">a[i]</span><script type="math/tex">a[i]</script></span> with each larger entry to its left.</li>
+</ul>
+<p>Invariants.</p>
+<ul>
+<li>↑ scans from left to right.</li>
+<li>Entries to the left of ↑ (including ↑) are in ascending order.</li>
+<li>Entries to the right of ↑ have not yet been seen.</li>
+</ul>
+<p><img alt="" src="../figures/InsertionSortScan.png" /></p>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>Insertion</span> <span class=o>{</span>
+    <span class=kd>public</span> <span class=kd>static</span> <span class=kt>void</span> <span class=nf>sort</span><span class=o>(</span><span class=n>Comparable</span><span class=o>[]</span> <span class=n>a</span><span class=o>)</span> <span class=o>{</span>
+        <span class=k>for</span> <span class=o>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>1</span><span class=o>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>a</span><span class=o>.</span><span class=na>length</span><span class=o>;</span> <span class=n>i</span><span class=o>++)</span> <span class=o>{</span>
+            <span class=kt>int</span> <span class=n>j</span> <span class=o>=</span> <span class=n>i</span><span class=o>;</span>
+            <span class=k>while</span> <span class=o>(</span><span class=n>j</span> <span class=o>&gt;</span> <span class=mi>0</span> <span class=o>&amp;&amp;</span> <span class=n>less</span><span class=o>(</span><span class=n>a</span><span class=o>[</span><span class=n>j</span><span class=o>],</span> <span class=n>a</span><span class=o>[</span><span class=n>j</span><span class=o>-</span><span class=mi>1</span><span class=o>]))</span> <span class=o>{</span>
+                <span class=n>exch</span><span class=o>(</span><span class=n>a</span><span class=o>,</span> <span class=n>j</span><span class=o>,</span> <span class=n>j</span> <span class=o>-</span><span class=mi>1</span><span class=o>);</span>
+                <span class=n>j</span><span class=o>--;</span>
+            <span class=o>}</span>
+        <span class=o>}</span>
+    <span class=o>}</span>
+
+    <span class=nd>@SuppressWarnings</span><span class=o>(</span><span class=s>&quot;unchecked&quot;</span><span class=o>)</span>
+    <span class=kd>private</span> <span class=kd>static</span> <span class=kt>boolean</span> <span class=nf>less</span><span class=o>(</span><span class=n>Comparable</span> <span class=n>a</span><span class=o>,</span> <span class=n>Comparable</span> <span class=n>b</span><span class=o>)</span> <span class=o>{</span>
+        <span class=k>return</span> <span class=n>a</span><span class=o>.</span><span class=na>compareTo</span><span class=o>(</span><span class=n>b</span><span class=o>)</span> <span class=o>&lt;</span> <span class=mi>0</span><span class=o>;</span>
+    <span class=o>}</span>
+
+    <span class=kd>private</span> <span class=kd>static</span> <span class=kt>void</span> <span class=nf>exch</span><span class=o>(</span><span class=n>Comparable</span><span class=o>[]</span> <span class=n>a</span><span class=o>,</span> <span class=kt>int</span> <span class=n>i</span><span class=o>,</span> <span class=kt>int</span> <span class=n>j</span><span class=o>)</span> <span class=o>{</span>
+        <span class=n>Comparable</span> <span class=n>temp</span> <span class=o>=</span> <span class=n>a</span><span class=o>[</span><span class=n>i</span><span class=o>];</span>
+        <span class=n>a</span><span class=o>[</span><span class=n>i</span><span class=o>]</span> <span class=o>=</span> <span class=n>a</span><span class=o>[</span><span class=n>j</span><span class=o>];</span>
+        <span class=n>a</span><span class=o>[</span><span class=n>j</span><span class=o>]</span> <span class=o>=</span> <span class=n>temp</span><span class=o>;</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></p>
+<h4 id="analysis_1">Analysis<a class="headerlink" href="#analysis_1" title="Permanent link">&para;</a></h4>
+<p>Insertion sort uses <span><span class="MathJax_Preview">\sim N^2/4</span><script type="math/tex">\sim N^2/4</script></span> compares and <span><span class="MathJax_Preview">\sim N^2/4</span><script type="math/tex">\sim N^2/4</script></span> exchanges to sort a randomly ordered array of length <span><span class="MathJax_Preview">N</span><script type="math/tex">N</script></span> with distinct keys, on the average. The worst case is <span><span class="MathJax_Preview">\sim N^2/2</span><script type="math/tex">\sim N^2/2</script></span> compares and <span><span class="MathJax_Preview">\sim N ^2/2</span><script type="math/tex">\sim N ^2/2</script></span> exchanges and the best case is <span><span class="MathJax_Preview">N-1</span><script type="math/tex">N-1</script></span> compares and 0 exchanges.</p>
 <h3 id="shell-sort">Shell Sort<a class="headerlink" href="#shell-sort" title="Permanent link">&para;</a></h3>
 <h3 id="shuffling">Shuffling<a class="headerlink" href="#shuffling" title="Permanent link">&para;</a></h3>
+<p>Our goal is to rearrange array so that result is a <strong>uniformly random</strong> permutation.</p>
+<h4 id="shuffle-sort">Shuffle sort<a class="headerlink" href="#shuffle-sort" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Generate a random real number for each array entry.</li>
+<li>Sort the array based on generated random numbers.</li>
+</ul>
+<p><img alt="ShuffleSort" src="../figures/ShuffleSort.png" /></p>
+<h4 id="knuth-shuffle">Knuth shuffle<a class="headerlink" href="#knuth-shuffle" title="Permanent link">&para;</a></h4>
+<ul>
+<li>In iteration <span><span class="MathJax_Preview">i</span><script type="math/tex">i</script></span>, pick integer <span><span class="MathJax_Preview">r</span><script type="math/tex">r</script></span> between 0 and <span><span class="MathJax_Preview">i</span><script type="math/tex">i</script></span> uniformly at random. </li>
+<li>Swap <span><span class="MathJax_Preview">a[i]</span><script type="math/tex">a[i]</script></span> and <span><span class="MathJax_Preview">a[r]</span><script type="math/tex">a[r]</script></span>.</li>
+</ul>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>KnuthShuffle</span> <span class=o>{</span>
+    <span class=kd>public</span> <span class=kd>static</span> <span class=kt>void</span> <span class=nf>shuffle</span><span class=o>(</span><span class=n>Object</span><span class=o>[]</span> <span class=n>a</span><span class=o>)</span> <span class=o>{</span>
+        <span class=n>Random</span> <span class=n>random</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Random</span><span class=o>();</span>
+        <span class=k>for</span> <span class=o>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=o>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>a</span><span class=o>.</span><span class=na>length</span><span class=o>;</span> <span class=n>i</span><span class=o>++)</span> <span class=o>{</span>
+            <span class=c1>//In iteration i, pick integer r between 0 and i uniformly at random.</span>
+            <span class=kt>int</span> <span class=n>r</span> <span class=o>=</span> <span class=n>random</span><span class=o>.</span><span class=na>nextInt</span><span class=o>(</span><span class=n>i</span> <span class=o>+</span> <span class=mi>1</span><span class=o>);</span>
+            <span class=c1>// Swap a[i] and a[r].</span>
+            <span class=n>exch</span><span class=o>(</span><span class=n>a</span><span class=o>,</span> <span class=n>i</span><span class=o>,</span> <span class=n>r</span><span class=o>);</span>
+        <span class=o>}</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></p>
+<p>Knuth shuffling algorithm produces a uniformly random permutation of the input array in <strong>linear</strong> time.</p>
+<h3 id="quick-sort">Quick Sort<a class="headerlink" href="#quick-sort" title="Permanent link">&para;</a></h3>
+<p>Quicksort honored as one of top 10 algorithms of 20th century in science and engineering. Quicksort is the default Java sort for primitive types.</p>
+<p>Basic plan.</p>
+<ul>
+<li><font color="red">Shuffle</font> the array.</li>
+<li><font color="red">Partition</font> so that, for some <span><span class="MathJax_Preview">j</span><script type="math/tex">j</script></span><ul>
+<li>entry <span><span class="MathJax_Preview">a[j]</span><script type="math/tex">a[j]</script></span> is in place</li>
+<li>no larger entry to the left of <span><span class="MathJax_Preview">j</span><script type="math/tex">j</script></span></li>
+<li>no smaller entry to the right of <span><span class="MathJax_Preview">j</span><script type="math/tex">j</script></span> </li>
+</ul>
+</li>
+<li><font color="red">Sort</font> each piece recursively.</li>
+</ul>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>Quick</span> <span class=o>{</span>
+    <span class=kd>public</span> <span class=kd>static</span> <span class=kt>void</span> <span class=nf>sort</span><span class=o>(</span><span class=n>Comparable</span><span class=o>[]</span> <span class=n>a</span><span class=o>)</span> <span class=o>{</span>
+        <span class=c1>// shuffle needed for performance guarantee</span>
+        <span class=n>StdRandom</span><span class=o>.</span><span class=na>shuffle</span><span class=o>(</span><span class=n>a</span><span class=o>);</span>
+        <span class=n>sort</span><span class=o>(</span><span class=n>a</span><span class=o>,</span> <span class=mi>0</span><span class=o>,</span> <span class=n>a</span><span class=o>.</span><span class=na>length</span> <span class=o>-</span> <span class=mi>1</span><span class=o>);</span>
+    <span class=o>}</span>
+
+    <span class=kd>private</span> <span class=kd>static</span> <span class=kt>void</span> <span class=nf>sort</span><span class=o>(</span><span class=n>Comparable</span><span class=o>[]</span> <span class=n>a</span><span class=o>,</span> <span class=kt>int</span> <span class=n>lo</span><span class=o>,</span> <span class=kt>int</span> <span class=n>hi</span><span class=o>)</span> <span class=o>{</span>
+        <span class=k>if</span> <span class=o>(</span><span class=n>hi</span> <span class=o>&lt;=</span> <span class=n>lo</span><span class=o>)</span> <span class=k>return</span><span class=o>;</span>
+        <span class=kt>int</span> <span class=n>j</span> <span class=o>=</span> <span class=n>partition</span><span class=o>(</span><span class=n>a</span><span class=o>,</span> <span class=n>lo</span><span class=o>,</span> <span class=n>hi</span><span class=o>);</span>
+        <span class=n>sort</span><span class=o>(</span><span class=n>a</span><span class=o>,</span> <span class=n>lo</span><span class=o>,</span> <span class=n>j</span><span class=o>-</span><span class=mi>1</span><span class=o>);</span>
+        <span class=n>sort</span><span class=o>(</span><span class=n>a</span><span class=o>,</span> <span class=n>j</span><span class=o>+</span><span class=mi>1</span><span class=o>,</span> <span class=n>hi</span><span class=o>);</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></p>
+<p>ANIMATION:</p>
+<p><img alt="" src="https://upload.wikimedia.org/wikipedia/commons/9/9c/Quicksort-example.gif" /></p>
+<h4 id="partitioning">Partitioning<a class="headerlink" href="#partitioning" title="Permanent link">&para;</a></h4>
+<p>The crux of the quick sort is the partitioning process, which rearranges the array to make the following three conditions hold:</p>
+<ul>
+<li>The entry <span><span class="MathJax_Preview">a[j]</span><script type="math/tex">a[j]</script></span> is in its final place in the array, for some <span><span class="MathJax_Preview">j</span><script type="math/tex">j</script></span>.</li>
+<li>No entry in <span><span class="MathJax_Preview">a[lo]</span><script type="math/tex">a[lo]</script></span> through <span><span class="MathJax_Preview">a[j-1]</span><script type="math/tex">a[j-1]</script></span> is greater than <span><span class="MathJax_Preview">a[j]</span><script type="math/tex">a[j]</script></span>. </li>
+<li>No entry in <span><span class="MathJax_Preview">a[j+1]</span><script type="math/tex">a[j+1]</script></span> through <span><span class="MathJax_Preview">a[hi]</span><script type="math/tex">a[hi]</script></span> is less than <span><span class="MathJax_Preview">a[j]</span><script type="math/tex">a[j]</script></span>.</li>
+</ul>
+<p><img alt="QuickSortPartition" src="../figures/QuickSortPartition.png" /></p>
+<p>First, we arbitrarily choose <span><span class="MathJax_Preview">a[lo]</span><script type="math/tex">a[lo]</script></span> to be the partitioning item—the one that will go into its final position. Next, we scan from the left end of the array until we find an entry greater than (or equal to) the partitioning item, and we scan from the right end of the array until we find an entry less than (or equal to) the partitioning item. The two items that stopped the scans are out of place in the final partitioned array, so we exchange them.</p>
+<p>Continuing in this way, when the scan indices cross, all that we need to do is to exchange the partitioning item <span><span class="MathJax_Preview">a[lo]</span><script type="math/tex">a[lo]</script></span> with the rightmost entry of the left subarray (<span><span class="MathJax_Preview">a[j]</span><script type="math/tex">a[j]</script></span>) and return its index <span><span class="MathJax_Preview">j</span><script type="math/tex">j</script></span>.</p>
+<p> <div class=codehilite><pre><span class=kd>private</span> <span class=kd>static</span> <span class=kt>int</span> <span class=nf>partition</span><span class=o>(</span><span class=n>Comparable</span> <span class=n>a</span><span class=o>[],</span> <span class=kt>int</span> <span class=n>lo</span><span class=o>,</span> <span class=kt>int</span> <span class=n>hi</span><span class=o>)</span> <span class=o>{</span>
+    <span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=n>lo</span><span class=o>,</span> <span class=n>j</span> <span class=o>=</span> <span class=n>hi</span> <span class=o>+</span> <span class=mi>1</span><span class=o>;</span>
+    <span class=k>while</span> <span class=o>(</span><span class=kc>true</span><span class=o>)</span> <span class=o>{</span>
+        <span class=c1>// find item on left to swap</span>
+        <span class=k>while</span> <span class=o>(</span><span class=n>less</span><span class=o>(</span><span class=n>a</span><span class=o>[++</span><span class=n>i</span><span class=o>],</span> <span class=n>a</span><span class=o>[</span><span class=n>lo</span><span class=o>]))</span>
+            <span class=k>if</span> <span class=o>(</span><span class=n>i</span> <span class=o>==</span> <span class=n>hi</span><span class=o>)</span> <span class=k>break</span><span class=o>;</span>
+        <span class=c1>// find item on right to swap</span>
+        <span class=k>while</span> <span class=o>(</span><span class=n>less</span><span class=o>(</span><span class=n>a</span><span class=o>[</span><span class=n>lo</span><span class=o>],</span> <span class=n>a</span><span class=o>[--</span><span class=n>j</span><span class=o>]))</span>
+            <span class=k>if</span> <span class=o>(</span><span class=n>j</span> <span class=o>==</span> <span class=n>lo</span><span class=o>)</span> <span class=k>break</span><span class=o>;</span>
+
+        <span class=c1>// check if pointers cross</span>
+        <span class=k>if</span> <span class=o>(</span><span class=n>i</span> <span class=o>&gt;=</span> <span class=n>j</span><span class=o>)</span> <span class=k>break</span><span class=o>;</span>
+
+        <span class=c1>// swap</span>
+        <span class=n>exch</span><span class=o>(</span><span class=n>a</span><span class=o>,</span> <span class=n>i</span><span class=o>,</span> <span class=n>j</span><span class=o>);</span>
+    <span class=o>}</span>
+
+    <span class=c1>// swap with partitioning item</span>
+    <span class=n>exch</span><span class=o>(</span><span class=n>a</span><span class=o>,</span> <span class=n>lo</span><span class=o>,</span> <span class=n>j</span><span class=o>);</span>
+    <span class=c1>// return index of item now known to be in place.</span>
+    <span class=k>return</span> <span class=n>j</span><span class=o>;</span>
+<span class=o>}</span>
+</pre></div></p>
+<h4 id="analysis_2">Analysis<a class="headerlink" href="#analysis_2" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Best case. Number of compares is <span><span class="MathJax_Preview">\sim N \lg N</span><script type="math/tex">\sim N \lg N</script></span>.</li>
+<li>Worst case. Number of compares is <span><span class="MathJax_Preview">\sim \frac{1}{2} N^2</span><script type="math/tex">\sim \frac{1}{2} N^2</script></span>.</li>
+<li>The average number of compares <span><span class="MathJax_Preview">C_N</span><script type="math/tex">C_N</script></span> to quicksort an array of <span><span class="MathJax_Preview">N</span><script type="math/tex">N</script></span> distinct keys is ~ <span><span class="MathJax_Preview">2N\ln N</span><script type="math/tex">2N\ln N</script></span> (and the number of exchanges is <span><span class="MathJax_Preview">\sim\frac{1}{3}N \ln N</span><script type="math/tex">\sim\frac{1}{3}N \ln N</script></span>).</li>
+</ul>
+<p>Quicksort is an <strong>in-place</strong> sorting algorithm, but is <strong>not stable</strong>.</p>
 <h3 id="merge-sort">Merge Sort<a class="headerlink" href="#merge-sort" title="Permanent link">&para;</a></h3>
 <p>Basic plan:</p>
 <ul>
