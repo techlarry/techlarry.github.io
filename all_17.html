@@ -152,6 +152,222 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="what_is_a_tensorflow_session.html">
+                
+                  <h1>TensorFlow(3):What is a tensorflow session?</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>by <a href="http://danijar.com/what-is-a-tensorflow-session/">Danijar Hafner</a>, modified by <a href="http://larryim.cc">larry</a></p>
+
+<p>I’ve seen a lot of confusion over the rules of <code>tf.Graph</code> and <code>tf.Session</code> in TensorFlow. It’s simple:</p>
+
+<ul>
+<li>A <code>graph</code> defines the computation. It doesn’t compute anything, it doesn’t hold any values, it just defines the operations that you specified in your code.</li>
+<li>A <code>session</code> allows you to execute graphs or part of graphs. It allocates resources (on one or more machines) for that and holds the actual values of intermediate results and variables.</li>
+</ul>
+
+<p>Let’s look at an example.</p>
+
+<h3 id="toc_0">Defining the Graph</h3>
+
+<p>We define a graph with a variable and three operations: <code>x</code> returns the current value of our variable. <code>init</code> assigns the initial value of 42 to that variable. <code>x_assign</code> assigns the new value of 13 to that variable.</p>
+
+<pre><code class="language-python">import tensorflow as tf
+graph = tf.Graph()
+with graph.as_default():
+  x = tf.Variable(42, name=&#39;foo&#39;)
+  init = tf.global_variables_initializer()
+  x_assign = x.assign(13)
+</code></pre>
+
+<p>On a side note: TensorFlow creates a default graph for you, so we don’t need the first two lines of the code above. The default graph is also what the sessions in the next section use when not manually specifying a graph.</p>
+
+<h3 id="toc_1">Running Computations in a Session</h3>
+
+<p>To run any of the three defined operations, we need to create a session for that graph. The session will also allocate memory to store the current value of the variable.</p>
+
+<pre><code class="language-python">with tf.Session(graph=graph) as sess:
+  sess.run(init)
+  sess.run(x_assign)
+  print(sess.run(x))
+</code></pre>
+
+<pre><code class="language-text">13
+</code></pre>
+
+<p>As you can see, the value of our variable is only valid within one session. If we try to query the value afterwards in a second session, TensorFlow will raise an error because the variable is not initialized there.</p>
+
+<pre><code class="language-python">with tf.Session(graph=graph) as sess:
+  print(sess.run(x))
+# Error: Attempting to use uninitialized value foo
+
+</code></pre>
+
+<p>Of course, we can use the graph in more than one session, we just have to initialize the variables again. The values in the new session will be completely independent from the first one:</p>
+
+<pre><code class="language-python">with tf.Session(graph=graph) as sess:
+  sess.run(init)
+  print(sess.run(x))
+</code></pre>
+
+<pre><code class="language-text">42
+</code></pre>
+
+<p>Hopefully this short workthrough helped you to better understand <code>tf.Session</code>. </p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/8/18</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Tensorflow.html'>Tensorflow</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="TensorFlow_introduction.html">
+                
+                  <h1>TensorFlow(1): Tensorflow Introduction</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<ul>
+<li>
+<a href="#toc_0">Install</a>
+</li>
+<li>
+<a href="#toc_1">TensorFlow Python docset</a>
+</li>
+<li>
+<a href="#toc_2">Basics</a>
+<ul>
+<li>
+<ul>
+<li>
+<a href="#toc_3">Graph and Operation</a>
+</li>
+<li>
+<a href="#toc_4">Session</a>
+</li>
+<li>
+<a href="#toc_5">Steps</a>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_6">Learning Resources</a>
+</li>
+</ul>
+
+
+<p><a href="https://www.tensorflow.org">Tensorflow</a> is an open-source software library for Machine Intelligence.</p>
+
+<h2 id="toc_0">Install</h2>
+
+<p>Using <code>conda</code> tool under <code>Anaconda</code> to install tensorflow is a very convenient and direct way.</p>
+
+<h2 id="toc_1">TensorFlow Python docset</h2>
+
+<p>Build TensorFlow Python docset is complex, many dependent utilities and procedures are needed. Fortunately,  a feed for TensorFlow Python docset has been built for us.</p>
+
+<p>Add feed below to Dash/Zeal, and install docset. (<a href="https://github.com/ppwwyyxx/dash-docset-tensorflow">Project site</a>)</p>
+
+<pre><code class="language-text">https://raw.githubusercontent.com/ppwwyyxx/dash-docset-tensorflow/master/TensorFlow.xml
+</code></pre>
+
+<h2 id="toc_2">Basics</h2>
+
+<h4 id="toc_3">Graph and Operation</h4>
+
+<p>A data flow <code>graph</code> representing a TensorFlow computation. It can be viewed via <code>TensorBoard</code>.</p>
+
+<p>An <code>Operation</code> is a node in a TensorFlow <code>Graph</code> that takes zero or more <code>Tensor</code> object as input, and produces zero or more <code>Tensor</code> objects as output.</p>
+
+<p>For example <code>c = tf.matmul(a, b)</code> creates an Operation of type <code>MatMul</code> that takes tensors \(a\) and \(b\) as input, and produces \(c\) as output.</p>
+
+<h4 id="toc_4">Session</h4>
+
+<p>If you are not using an <code>InteractiveSession</code>, then you should build the entire computation graph before starting a session and launching the graph.</p>
+
+<p>Note that there are two typical ways to create and use sessions in tensorflow:</p>
+
+<p><strong>Method 1</strong>:</p>
+
+<pre><code class="language-python">sess = tf.Session()
+# Run the variables initialization (if needed), run the operations
+result = sess.run(..., feed_dict = {...})
+sess.close() # Close the session
+</code></pre>
+
+<p><strong>Method 2</strong>:</p>
+
+<pre><code class="language-python">with tf.Session() as sess: 
+    # run the variables initialization (if needed), run the operations
+    result = sess.run(..., feed_dict = {...})
+    # This takes care of closing the session for you :)
+</code></pre>
+
+<h4 id="toc_5">Steps</h4>
+
+<p>Writing and running programs in TensorFlow has the following steps:</p>
+
+<ul>
+<li>Create Tensors (variables) that are not yet executed/evaluated.</li>
+<li>Write operations between those Tensors.</li>
+<li>Initialize your Tensors.</li>
+<li>Create a Session.</li>
+<li>Run the Session. This will run the operations you&#39;d written above.</li>
+</ul>
+
+<h2 id="toc_6">Learning Resources</h2>
+
+<ol>
+<li><a href="https://web.stanford.edu/class/cs20si/">CS 20SI: Tensorflow for Deep Learning Research</a></li>
+</ol>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/8/12</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Tensorflow.html'>Tensorflow</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="getting_started_with_tensorflow.html">
                 
                   <h1>TensorFlow(2): Getting started with TensorFlow</h1>
@@ -667,152 +883,6 @@ eval metrics: {&#39;average_loss&#39;: 0.0025475256, &#39;loss&#39;: 0.010190102
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="cross-validation.html">
-                
-                  <h1>Cross-Validation</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p><code>cross-validation</code> splits the training set into complementary subsets, and each model is trained against a different combination of these subsets and validates against the remaining parts. Once the model type and hyperparameters on the full training set, and the generalized error is measured on the test set.</p>
-
-<p><img src="media/15038841395536/15042349862270.jpg" alt="demo of cross-validation"/></p>
-
-<p>A great convenient is to use Scikit-Learn&#39;s <code>cross-validation</code> feature. The following code performs <code>K-fold cross-validation</code>: it randomly splits the training set into 10 distinct subsets called <code>folds</code>, then it trains and evaluates the Decision Tree model 10 times, picking a different fold for evaluation every time and training on the other 9 folds.</p>
-
-<pre><code class="language-python">from sklearn.model_selection import cross_val_score
-scores = cross_val_score(tree_reg, housing_prepared, housing_labels,
-                             scoring=&quot;neg_mean_squared_error&quot;, cv=10)
-    rmse_scores = np.sqrt(-scores)
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/8/28</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html'>机器学习</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15025954300059.html">
-                
-                  <h1>CS231n:</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p><code>score function</code> that maps the raw data to class scores. For visual recognition, score function maps the pixel values of an image to confidence scores for each class.</p>
-
-<p><code>loss function</code> that quantifies the agreement between the predicated scores and the ground truth labels.</p>
-
-<p><strong>Linear classifier.</strong> We will start out with arguably the simplest possible function( a <code>score function</code>), a linear mapping:</p>
-
-<p>\[<br/>
-f(x_i, W, b) =  W x_i + b<br/>
-\]</p>
-
-<p>Convolutional Neural Networks will map image pixels to scores exactly as shown above, but the mapping ( \(f \)) will be more complex and will contain more parameters.</p>
-
-<p><strong>Bias trick</strong>: A commonly used trick is to combine the two sets of parameters (\(W, b\)) into a single matrix that holds both of them by extending the vector \(x_i\) with one additional dimension that always holds the constant \(1\) - a default <em>bias dimension</em>. With the extra dimension, the new <code>score function</code> will simplify to a single matrix multiply:</p>
-
-<p>\[<br/>
-f(x_i, W) =  W x_i<br/>
-\]</p>
-
-<p><img src="media/15025954300059/15041865704757.jpg" alt=""/></p>
-
-<p><strong>Loss Function</strong>: We want to set parameters W so that the predicted class scores are consistent with the ground truth labels in the training data. We are going to measure our unhappiness with outcomes with a <code>loss function</code> (or sometimes also referred to as the <code>cost function</code> or the <code>objective</code>). Intuitively, the loss will be high if we’re doing a poor job of classifying the training data, and it will be low if we’re doing well.</p>
-
-<ul>
-<li><code>Multiclass Support Vector Machine</code> (SVM): The <code>score function</code> computes the vector \(f(x_i, W)\) of class scores, which we will abbreviate to \(s\) (short for scores). For example, the score for the j-th class is the j-th element: \(s_j=f(x_i,W)_j\). The Multiclass SVM loss for the i-th example is then formalized as follows:</li>
-</ul>
-
-<p>\[<br/>
-L_i = \sum_{j\neq y_i} \max(0, s_j - s_{y_i} + \Delta)<br/>
-\]</p>
-
-<p>The SVM loss function wants the score of the correct class \(y_i\) to be larger than the incorrect class scores by at least by \(\Delta\) (delta). If this is not the case, we will accumulate loss.  Hyperparameter \(\Delta\) can safely be set to \(\Delta=1.0\) in all cases</p>
-
-<p><strong><code>hinge loss</code></strong>: The function <code>max(0,1-t)$ is called the</code>hinge loss` function.</p>
-
-<p><img src="media/15025954300059/Hinge%20Loss%20Function.png" alt="Hinge Loss Function"/></p>
-
-<p><strong>Regularization</strong>:</p>
-
-<p>Including the regularization penalty completes the full Multiclass Support Vector Machine loss, which is made up of two components: the <strong>data loss</strong> (which is the average loss \(L_i\) over all examples) and the <strong>regularization loss</strong>. That is, the full Multiclass SVM loss becomes:</p>
-
-<p>\[<br/>
-L =  \underbrace{ \frac{1}{N} \sum_i L_i }_\text{data loss} + \underbrace{ \lambda R(W) }_\text{regularization loss} \\\\<br/>
-\]<br/>
-Or expanding this out in its full form:</p>
-
-<p>\[<br/>
-L = \frac{1}{N} \sum_i \sum_{j\neq y_i} \left[ \max(0, f(x_i; W)_j - f(x_i; W)_{y_i} + \Delta) \right] + \lambda \sum_k\sum_l W_{k,l}^2<br/>
-\]</p>
-
-<p>Where \(N\) is the number of training examples.</p>
-
-<p>Code. Here is the loss function (without regularization) implemented in Python, in both unvectorized and half-vectorized form:</p>
-
-<p><strong>Softmax classifier</strong>: Another commonly seen classifiers besides <code>SVM classifier</code> is the <code>Softmax classifier</code>, which has a <code>cross-entropy loss</code>:</p>
-
-<p>\[<br/>
-L_i = -\log\left(\frac{e^{f_{y_i}}}{ \sum_j e^{f_j} }\right) \hspace{0.5in} \text{or equivalently} \hspace{0.5in} L_i = -f_{y_i} + \log\sum_j e^{f_j}<br/>
-\]</p>
-
-<p>where we are using the notation \(f_j\) to mean the j-th element of the vector of class scores \(f\). As before, the full loss for the dataset is the mean of \(L_i\) over all training examples together with a regularization term \(R(W)\). The function \(f_j(z) = \frac{e^{z_j}}{\sum_k e^{z_k}} \) is called the <strong>softmax function</strong>: It takes a vector of arbitrary real-valued scores (in \(z\)) and squashes it to a vector of values between zero and one that sum to one.</p>
-
-<p>The difference between <code>SVM classifiers</code> and <code>Soft-max classifiers</code>:</p>
-
-<p><img src="media/15025954300059/15041909839867.png" alt=""/></p>
-
-<h2 id="toc_0">Reference</h2>
-
-<ul>
-<li>CS231n Convolutional Neural Network</li>
-<li>Aurelien Geron. Hands-On Machine Learning with Scikit-Learn &amp; TensorFlow</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/8/13</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Deep%20Learning.html'>Deep Learning</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -910,6 +980,18 @@ L_i = -\log\left(\frac{e^{f_{y_i}}}{ \sum_j e^{f_j} }\right) \hspace{0.5in} \tex
 	      
 		      
 			      <li class="post">
+			        <a href="15400989593148.html">Scrapy爬取MovieLens</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="scrapy_top100.html">Scrapy爬取猫眼TOP100榜</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15046649572570.html">Pandas</a>
 			      </li>
 		     
@@ -923,18 +1005,6 @@ L_i = -\log\left(\frac{e^{f_{y_i}}}{ \sum_j e^{f_j} }\right) \hspace{0.5in} \tex
 		      
 			      <li class="post">
 			        <a href="introduction_to_computer_system_CMU.html">CMU 15-213 Introduction to Computer Systems</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="os-concepts-os-structures.html">Operating System Concepts 2 - Operating System structures</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="os-concets-processes.html">Operating System Concepts 3 - Processes</a>
 			      </li>
 		     
 		  

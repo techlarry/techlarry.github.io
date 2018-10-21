@@ -152,6 +152,210 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="greedy_algorithm_introduction.html">
+                
+                  <h1>Greedy algorithm (1): Introduction</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<ul>
+<li>
+<a href="#toc_0">Definition</a>
+</li>
+<li>
+<a href="#toc_1">Contrast with Divide &amp; Conquer</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_2">Examples</a>
+<ul>
+<li>
+<a href="#toc_3">The Optimal Caching Algorithm</a>
+</li>
+<li>
+<a href="#toc_4">A Scheduling Problem</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_5">Reference</a>
+
+
+<h3 id="toc_0">Definition</h3>
+
+<p>A <code>greedy algorithm</code> always makes the choice that looks best at the moment. That is, it makes a locally optimal choice in the hope that this choice will lead to a globally optimal solution. (Cormen et al., 2009)</p>
+
+<h3 id="toc_1">Contrast with Divide &amp; Conquer</h3>
+
+<ol>
+<li>Easy to propose multiple greedy algorithms for many problems. </li>
+<li>Easy running time analysis. (Contrast with Master method etc.)</li>
+<li>Hard to establish correctness.<br/>
+(Contrast with straightforward inductive correctness proofs.)</li>
+</ol>
+
+<p><strong>DANGER: Most greedy algorithms are NOT correct. (Even if your intuition says otherwise!)</strong></p>
+
+<h2 id="toc_2">Examples</h2>
+
+<h3 id="toc_3">The Optimal Caching Algorithm</h3>
+
+<p>Theorem: [Bélády&#39;s 1960s] <code>Farthest-in-Future</code> is the optimal algorithm that minimizes the number of cache misses.</p>
+
+<p><code>Bélády&#39;s Algorithm</code>:</p>
+
+<p>When \(d_i\) is requested but not in the cache,<br/>
+evict the cache item that will next be used farthest into the future.</p>
+
+<h3 id="toc_4">A Scheduling Problem</h3>
+
+<p>Assume: Each job has a:</p>
+
+<ul>
+<li>weight \(w_j\) (“priority”) </li>
+<li>length \(l_j\)</li>
+</ul>
+
+<p>The completion time \(C_j\) of job \(j\) = Sum of job lengths up to and including \(j\).</p>
+
+<p>Goal: Minimize the weighted sum of completion times: \(\min \sum ^n_j= w_jC_j\)</p>
+
+<h2 id="toc_5">Reference</h2>
+
+<ol>
+<li>Cormen, Leiserson, Rivest, and Stein. 2009. Introduction to Algorithms (3rd edition)</li>
+</ol>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/7/31</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Greedy.html'>Greedy</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="python_generator.html">
+                
+                  <h1>Generator</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>Any function that contains a <code>yield</code> statement is called a <code>generator</code>.</p>
+
+<h3 id="toc_0">yield statement</h3>
+
+<p>Each time a value is yielded (with <code>yield</code>), the function freezes; that is, it stops its execution at exactly that point and waits to be reawakened.</p>
+
+<h3 id="toc_1">generator comprehension</h3>
+
+<p><code>Generator comprehension</code> works in the same way as <code>list comprehension</code>, except that a list isn&#39;t constructed. Instead, a <code>generator</code> is returned.</p>
+
+<pre><code class="language-python">&gt;&gt;&gt; h = (i for i in range(10))
+&gt;&gt;&gt; h
+&lt;generator object &lt;genexpr&gt; at 0x104d76ba0&gt;
+&gt;&gt;&gt; list(h)
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+</code></pre>
+
+<p>When using <code>generator comprehension</code>, if there already exists parentheses, you don&#39;t need to add another pair.</p>
+
+<pre><code class="language-python">&gt;&gt;&gt; sorted(100-i for i in range(10))
+[91, 92, 93, 94, 95, 96, 97, 98, 99, 100]
+</code></pre>
+
+<h3 id="toc_2">Recursive generator</h3>
+
+<p><code>generators</code> are ideal for complex recursive algorithms that gradually build a result. </p>
+
+<p>A <code>recursive generator</code> could be used to flatten a nested list.</p>
+
+<pre><code class="language-python">def flatten(nested):
+    &quot;&quot;&quot;
+    When flatten is called, you have two possibilites: the base case and the recursive case.
+
+    In the base case, the function is told to flatten a single element.
+    In the recursive case, flatten it.
+
+    &gt;&gt;&gt; list(flatten([[[1], 2], 3, 4, [5, [6, 7]], 8]))
+    [1, 2, 3, 4, 5, 6, 7, 8]
+    &gt;&gt;&gt; list(flatten([&#39;foo&#39;, [&#39;bar&#39;, [&#39;baz&#39;]]]))
+    [&#39;foo&#39;, &#39;bar&#39;, &#39;baz&#39;]
+    &quot;&quot;&quot;
+    try:
+        try:
+            nested + &#39; &#39;
+        except TypeError:
+            pass
+        else:
+            raise TypeError
+        
+        for sublist in nested:
+            for element in flatten(sublist):
+                yield element
+
+    except TypeError:
+        yield nested
+
+
+if __name__ == &quot;__main__&quot;:
+    import doctest
+    doctest.testmod(verbose=True)
+</code></pre>
+
+<p>An <code>inorder traversal</code> (also <code>postoder traversal</code> and <code>preorder traversal</code>) of a <code>binary search tree</code> might use the <code>recursive generator</code>, detailed code here <a href="http://larryim.cc/binary_search_tree.html">Binary Search Tree</a></p>
+
+<h3 id="toc_3">Generator methods</h3>
+
+<p>We may supply generators with values after they have started running, by using a communications channel between the <code>generator</code> and the “outside world,” with the following two end points:</p>
+
+<ul>
+<li><p>The outside world has access to a method on the generator called <code>send</code>, which works just like <code>next</code>, except that it takes a single argument (the “message” to send—an arbitrary object).</p></li>
+<li><p>Inside the suspended generator, <strong><code>yield</code> may now be used as an <code>expression</code>, rather than a <code>statement</code></strong>. In other words, when the generator is resumed, yield returns a value—the value sent from the outside through <code>send</code>. If <code>next</code> was used, <code>yield</code> returns <code>None</code>.</p></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/7/23</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="python_iterator.html">
                 
                   <h1>Iterators</h1>
@@ -673,496 +877,6 @@ if __name__ == &#39;__main__&#39;:
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="binary_search_tree.html">
-                
-                  <h1>Python树(三)：Binary Search Tree</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>A <code>binary search tree</code>  is a tree that keys that are less than the parent are found in the left subtree, and keys that are greater than the parent are found in the right subtree.</p>
-
-<p>Let \(x\) be a node in a binary search tree. If \(y\) is a node in the left subtree of \(x\), then \(y.key\le x.key\). If \(y\) is a node in the right subtree of \(x\), then \(y.key\le x.key\).</p>
-
-<h2 id="toc_0">Implementation</h2>
-
-<ul>
-<li><code>Map()</code> Create a new, empty map.</li>
-<li><code>put(key,val)</code> Add a new key-value pair to the map. If the key is already in the map then replace the old value with the new value.</li>
-<li><code>get(key)</code> Given a key, return the value stored in the map or <code>None</code> otherwise.</li>
-<li><code>del</code> Delete the key-value pair from the map using a statement of the form <code>del map[key]</code>.</li>
-<li><code>len()</code> Return the number of key-value pairs stored in the map.</li>
-<li><code>in</code> Return <code>True</code> for a statement of the form <code>key in map</code>, if the given key is in the map.</li>
-</ul>
-
-<p>To implement the binary search tree,  the method of <code>the nodes and references approached</code> similar to <code>binary tree</code>(<a href="http://larryim.cc/tree_2.html">Link</a>) The <code>BinarySearchTree</code> class has a reference to the <code>TreeNode</code> that is the root of the binary search tree. </p>
-
-<h3 id="toc_1"><code>delete</code> method</h3>
-
-<p>Once we’ve found the node containing the key we want to delete, there are three cases that we must consider:</p>
-
-<ul>
-<li>The node to be deleted has no children.</li>
-<li>The node to be deleted has only one child.</li>
-<li>The node to be deleted has two children.</li>
-</ul>
-
-<p>The first case is straightforward. If the current node has no children all we need to do is delete the node and remove the reference to this node in the parent. The code for this case is shown in here.</p>
-
-<p>The second case is only slightly more complicated. If a node has only a single child, then we can simply promote the child to take the place of its parent. The code for this case is shown in the next listing. As you look at this code you will see that there are six cases to consider. Since the cases are symmetric with respect to either having a left or right child we will just discuss the case where the current node has a left child. The decision proceeds as follows:</p>
-
-<ul>
-<li>If the current node is a left child then we only need to update the parent reference of the left child to point to the parent of the current node, and then update the left child reference of the parent to point to the current node’s left child.</li>
-<li>If the current node is a right child then we only need to update the parent reference of the left child to point to the parent of the current node, and then update the right child reference of the parent to point to the current node’s left child.</li>
-<li>If the current node has no parent, it must be the root. In this case we will just replace the key, payload, leftChild, and rightChild data by calling the <code>replaceNodeData</code> method on the root.</li>
-</ul>
-
-<p>The third case is the most difficult case to handle. If a node has two children, then it is unlikely that we can simply promote one of them to take the node’s place. We can, however, search the tree for a node that can be used to replace the one scheduled for deletion. What we need is a node that will preserve the binary search tree relationships for both of the existing left and right subtrees. The node that will do this is the node that has the next-largest key in the tree. We call this node the <code>successor</code>, and we will look at a way to find the successor shortly. The successor is guaranteed to have no more than one child, so we know how to remove it using the two cases for deletion that we have already implemented. Once the successor has been removed, we simply put it in the tree in place of the node to be deleted.</p>
-
-<h3 id="toc_2"><code>successor</code> Method</h3>
-
-<p>The code to find the successor is a method of the <code>TreeNode</code> class. This code makes use of the same properties of binary search trees that cause an <code>inorder traversal</code> to print out the nodes in the tree from smallest to largest. There are three cases to consider when looking for the successor:</p>
-
-<ul>
-<li>If the node has a right child, then the successor is the smallest key in the right subtree.</li>
-<li>If the node has no right child and is the left child of its parent, then the parent is the successor.</li>
-<li>If the node is the right child of its parent, and itself has no right child, then the successor to this node is the successor of its parent, excluding this node.</li>
-</ul>
-
-<pre><code class="language-python">
-class BinarySearchTree(object):
-
-    def __init__(self):
-        self.root = None
-        self.size = 0
-
-    def put(self, key, val):
-        if self.root:
-            self._put(key, val, self.root)
-        else:
-            self.root = TreeNode(key, val)
-        self.size = self.size + 1
-
-    def _put(self, key, val, currentNode):
-        if key &lt; currentNode.key:
-            if currentNode.hasLeftChild():
-                self._put(key, val, currentNode.leftChild)
-            else:
-                currentNode.leftChild = TreeNode(key, val, parent=currentNode)
-        else:
-            if currentNode.hasRightChild():
-                self._put(key, val, currentNode.rightChild)
-            else:
-                currentNode.rightChild = TreeNode(key, val, parent=currentNode)
-
-    def __setitem__(self, k, v):
-        self.put(k, v)
-
-    def get(self, key):
-        if self.root:
-            res = self._get(key, self.root)
-            if res:
-                return res.payload
-            else:
-                return None
-        else:
-            return None
-
-    def _get(self, key, currentNode):
-        if not currentNode:
-            return None
-        elif currentNode.key == key:
-            return currentNode
-        elif key &lt; currentNode.key:
-            return self._get(key, currentNode.leftChild)
-        else:
-            return self._get(key, currentNode.rightChild)
-
-    def __getitem__(self, key):
-        res = self.get(key)
-        if res:
-            return res
-        else:
-            raise KeyError(&#39;Error, key not in tree&#39;)
-
-    def __contains__(self, key):
-        if self._get(key, self.root):
-            return True
-        else:
-            return False
-
-    def length(self):
-        return self.size
-
-    def __len__(self):
-        return self.size
-
-    def __iter__(self):
-        return self.root.__iter__()
-
-    def delete(self, key):
-        if self.size &gt; 1:
-            nodeToRemove = self._get(key, self.root)
-            if nodeToRemove:
-                self.remove(nodeToRemove)
-                self.size = self.size - 1
-            else:
-                raise KeyError(&#39;Error, key not in tree&#39;)
-        elif self.size == 1 and self.root.key == key:
-            self.root = None
-            self.size = self.size - 1
-        else:
-            raise KeyError(&#39;Error, key not in tree&#39;)
-
-    def __delitem__(self, key):
-        self.delete(key)
-
-    def remove(self, currentNode):
-        if currentNode.isLeaf():  # leaf
-            if currentNode == currentNode.parent.leftChild:
-                currentNode.parent.leftChild = None
-            else:
-                currentNode.parent.rightChild = None
-        elif currentNode.hasBothChildren():  # interior
-            succ = currentNode.findSuccessor()
-            succ.spliceOut()
-            currentNode.key = succ.key
-            currentNode.payload = succ.payload
-        else:  # this node has one child
-            if currentNode.hasLeftChild():
-                if currentNode.isLeftChild():
-                    currentNode.leftChild.parent = currentNode.parent
-                    currentNode.parent.leftChild = currentNode.leftChild
-                elif currentNode.isRightChild():
-                    currentNode.leftChild.parent = currentNode.parent
-                    currentNode.parent.rightChild = currentNode.leftChild
-                else:
-                    currentNode.replaceNodeData(currentNode.leftChild.key,
-                                                currentNode.leftChild.payload,
-                                                currentNode.leftChild.leftChild,
-                                                currentNode.leftChild.rightChild)
-            else:
-                if currentNode.isLeftChild():
-                    currentNode.rightChild.parent = currentNode.parent
-                    currentNode.parent.leftChild = currentNode.rightChild
-                elif currentNode.isRightChild():
-                    currentNode.rightChild.parent = currentNode.parent
-                    currentNode.parent.rightChild = currentNode.rightChild
-                else:
-                    currentNode.replaceNodeData(currentNode.rightChild.key,
-                                                currentNode.rightChild.payload,
-                                                currentNode.rightChild.leftChild,
-                                                currentNode.rightChild.rightChild)
-
-    def inorder(self):
-        self._inorder(self.root)
-
-    def _inorder(self, tree):
-        if tree != None:
-            self._inorder(tree.leftChild)
-            print(tree.key)
-            self._inorder(tree.rightChild)
-
-    def postorder(self):
-        self._postorder(self.root)
-
-    def _postorder(self, tree):
-        if tree:
-            self._postorder(tree.rightChild)
-            self._postorder(tree.leftChild)
-            print(tree.key)
-
-    def preorder(self):
-        self._preorder(self, self.root)
-
-    def _preorder(self, tree):
-        if tree:
-            print(tree.key)
-            self._preorder(tree.leftChild)
-            self._preorder(tree.rightChild)
-
-
-class TreeNode:
-    def __init__(self, key, val, left=None, right=None, parent=None):
-        self.key = key
-        self.payload = val
-        self.leftChild = left
-        self.rightChild = right
-        self.parent = parent
-        self.balanceFactor = 0
-
-    def hasLeftChild(self):
-        return self.leftChild
-
-    def hasRightChild(self):
-        return self.rightChild
-
-    def isLeftChild(self):
-        return self.parent and self.parent.leftChild == self
-
-    def isRightChild(self):
-        return self.parent and self.parent.rightChild == self
-
-    def isRoot(self):
-        return not self.parent
-
-    def isLeaf(self):
-        return not (self.rightChild or self.leftChild)
-
-    def hasAnyChildren(self):
-        return self.rightChild or self.leftChild
-
-    def hasBothChildren(self):
-        return self.rightChild and self.leftChild
-
-    def replaceNodeData(self, key, value, lc, rc):
-        self.key = key
-        self.payload = value
-        self.leftChild = lc
-        self.rightChild = rc
-        if self.hasLeftChild():
-            self.leftChild.parent = self
-        if self.hasRightChild():
-            self.rightChild.parent = self
-
-    def findSuccessor(self):
-        succ = None
-        if self.hasRightChild():
-            succ = self.rightChild.findMin()
-        else:
-            if self.parent:
-                if self.isLeftChild():
-                    succ = self.parent
-                else:
-                    self.parent.rightChild = None
-                    succ = self.parent.findSuccessor()
-                    self.parent.rightChild = self
-        return succ
-
-    def spliceOut(self):
-        if self.isLeaf():
-            if self.isLeftChild():
-                self.parent.leftChild = None
-            else:
-                self.parent.rightChild = None
-        elif self.hasAnyChildren():
-            if self.hasLeftChild():
-                if self.isLeftChild():
-                    self.parent.leftChild = self.leftChild
-                else:
-                    self.parent.rightChild = self.leftChild
-                self.leftChild.parent = self.parent
-            else:
-                if self.isLeftChild():
-                    self.parent.leftChild = self.rightChild
-                else:
-                    self.parent.rightChild = self.rightChild
-                self.rightChild.parent = self.parent
-
-    def findMin(self):
-        current = self
-        while current.hasLeftChild():
-            current = current.leftChild
-        return current
-
-    def __iter__(self):
-        &quot;&quot;&quot;The standard inorder traversal of a binary tree.&quot;&quot;&quot;
-        if self:
-            if self.hasLeftChild():
-                for elem in self.leftChild:
-                    yield elem
-            yield self.key
-            if self.hasRightChild():
-                for elem in self.rightChild:
-                    yield elem
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/7/19</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Tree.html'>Tree</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="tree_1.html">
-                
-                  <h1>Python树(一)：介绍</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<ul>
-<li>
-<a href="#toc_0">定义</a>
-</li>
-<li>
-<a href="#toc_1">树的应用</a>
-</li>
-<li>
-<a href="#toc_2">树的术语</a>
-</li>
-<li>
-<a href="#toc_3">树的种类</a>
-<ul>
-<li>
-<a href="#toc_4">Full, Complete, and Perfect Binary Tree</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_5">树的存储</a>
-</li>
-</ul>
-
-
-<p>树(tree)是一种抽象数据类型（ADT），用来模拟具有树状结构性质的数据集合。它是由\(n\)个有限节点组成一个具有层次关系的集合。树在计算机科学里应用广泛，包括操作系统，图形学，数据库和计算机网络。树和真正的树有许多相似的地方，也包括根、树枝和叶子，它们的不同在于计算机中的树的根在顶层而它的叶子在底部。它具有以下的特点：</p>
-
-<ul>
-<li>树是分级的，即树的顶层部分更加宽泛，而底部更加具体</li>
-<li>一个节点（node）的所有子节点（children）和另一个节点的子节点是完全独立的</li>
-<li>每个它的叶节点（leaf）都是不同的</li>
-</ul>
-
-<h2 id="toc_0">定义</h2>
-
-<p>每个树或者为空，或者包含一个根节点和 0 个或多个子树，其中每个子树也符合这样的定义。每个子树的根节点和其父树的根节点之间通过边相连。</p>
-
-<p>A tree is either empty or consists of a root and zeros or more subtrees, each of which is also a tree. The root of each subtree is connected to the root of the parent tree by an edge.</p>
-
-<h2 id="toc_1">树的应用</h2>
-
-<ul>
-<li><p><strong>文件系统</strong>。在文件系统中，磁盘的分支或者说子目录都是运用了树来构建的。下图展示了Unix文件系统的部分的分层情况。<br/>
-<img src="media/14973171257726/14973998176466.jpg" alt=""/></p></li>
-<li><p><strong>网页</strong>。下图是一个利用超文本标记语言（HTML）编写的简单网页，以及构成网页的超文本标记语言中的标签相互关联关系所构成的树。</p></li>
-</ul>
-
-<pre><code class="language-markup">&lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot; xml:lang=&quot;en&quot; lang=&quot;en&quot;&gt;
-    &lt;head&gt;
-        &lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=utf-8&quot; /&gt;
-        &lt;title&gt;simple&lt;/title&gt;
-    &lt;/head&gt;
-    &lt;body&gt;
-        &lt;h1&gt;A simple web page&lt;/h1&gt;
-            &lt;ul&gt;
-                &lt;li&gt;List item one&lt;/li&gt;
-                &lt;li&gt;List item two&lt;/li&gt;
-            &lt;/ul&gt;
-        &lt;h2&gt;&lt;a href=&quot;http://www.cs.luther.edu&quot;&gt;Luther CS &lt;/a&gt;&lt;h2&gt;
-    &lt;/body&gt;
-&lt;/html&gt;
-</code></pre>
-
-<p><img src="media/14973171257726/14973999293521.jpg" alt=""/></p>
-
-<h2 id="toc_2">树的术语</h2>
-
-<ul>
-<li><p><strong>节点</strong>（Node） <br/>
-节点是树的基本构成部分。它可能有其他专属的名称，我们称之为“键（key）”。一个节点也可能有更多的信息，我们称之为“负载”。虽然负载信息和树的许多算法并不直接相关，但是它对于树的应用至关重要。</p></li>
-<li><p><strong>边</strong>（Edge） <br/>
-边也是树的基本构成部分。边连接两个节点，并表示它们之间存在联系。除了根节点外每个节点都有且只有一条与其他节点相连的入边（指向该节点的边），每个节点可能有许多条出边（从该节点指向其他节点的边）。</p></li>
-<li><p><strong>根节点</strong>（Root） <br/>
-根节点是树种中唯一一个没有入边的节点。在文件系统中，“/”是树的根节点。</p></li>
-<li><p><strong>路径</strong>（Path） <br/>
-路径是由边连接起来的节点的有序排列。例如：（动物界——脊索动物门——哺乳动物纲——食肉动物目——猫科——猫属——家猫）就是一条路径。</p></li>
-<li><p><strong>子节点集</strong>（Children） <br/>
-当一个节点的入边来自另一个节点时，我们称前者是后者的子节点，同一个节点的所有子节点构成子节点集。在文件系统中，节点log/,spool/,yp/构成节点var/的子节点集。</p></li>
-<li><p><strong>父节点</strong>（Parent） <br/>
-一个节点是它出边所连接的所有节点的父节点。在文件系统中，节点var/是节点log/,spool/,yp/的父节点。</p></li>
-<li><p><strong>兄弟节点</strong>（Sibling） <br/>
-同一个节点的所有子节点互为兄弟节点，在文件系统树中节点etc/和节点usr/是兄弟节点。</p></li>
-<li><p><strong>子树</strong>（Subtree） <br/>
-子树是一个父节点的某个子节点的所有边和后代节点所构成的集合。</p></li>
-<li><p><strong>叶节点</strong>（Leaf Node） <br/>
-没有子节点的节点成为称为叶节点。</p></li>
-<li><p><strong>层数</strong>（Level） <br/>
-一个节点的层数是指从根节点到该节点的路径中的边的数目。定义根节点的层数为 0。</p></li>
-<li><p><strong>高度</strong>（Height） <br/>
-树的高度等于所有节点的层数的最大值。图 2 中树的高度为 2。</p></li>
-</ul>
-
-<h2 id="toc_3">树的种类</h2>
-
-<ul>
-<li><strong>无序树</strong>：树中任意节点的子节点之间没有顺序关系，这种树称为无序树，也称为自由树；</li>
-<li><strong>有序树</strong>：树中任意节点的子节点之间有顺序关系，这种树称为有序树；
-<ul>
-<li><strong>霍夫曼树</strong>（用于信息编码）：带权路径最短的二叉树称为哈夫曼树或最优二叉树；</li>
-<li><strong>B树</strong>：一种对读写操作进行优化的自平衡的二叉查找树，能够保持数据有序，拥有多余两个子树；</li>
-<li><strong>二叉树</strong> (<code>Binary Tree</code>)：每个节点最多含有两个子树的树称为二叉树；
-<ul>
-<li><strong>完美二叉树/满二叉树</strong> (<code>Perfect Binary Tree</code>): 一个深度为\(k(&gt;0)\)且有\(2^(k+1) - 1\)个结点的二叉树</li>
-<li><strong>完全二叉树</strong> (<code>Complete Binary Tree</code>)：对于一颗二叉树，假设其深度为\(d(d&gt;1)\)。除了第d层外，其它各层的节点数目均已达最大值，且第d层所有节点从左向右连续地紧密排列，这样的二叉树被称为完全二叉树，其中满二叉树的定义是所有叶节点都在最底层的完全二叉树;</li>
-<li><strong>完满二叉树</strong>（<code>Full Binary Tree</code>): each node either a leaf or possesses exactly two child nodes</li>
-<li><strong>二叉搜索树</strong>（<code>Binary Search Tree</code>:  a binary tree that satisfies the binary search tree property, which states that the key in each node must be greater than or equal to any key stored in the left sub-tree, and less than or equal to any key stored in the right sub-tree.
-<ul>
-<li><strong>平衡二叉树</strong>（<code>Balanced Binary Search Tree</code>, AVL树）：any node-based binary search tree that automatically keeps its height (maximal number of levels below the root) small in the face of arbitrary item insertions and deletions.
-<ul>
-<li><strong>AVL Tree</strong>: 任何节点的两个子树的高度最大差别为1</li>
-</ul></li>
-</ul></li>
-</ul></li>
-</ul></li>
-</ul>
-
-<h3 id="toc_4">Full, Complete, and Perfect Binary Tree</h3>
-
-<p><img src="media/14973171257726/15004304211378.png" alt=""/></p>
-
-<p><img src="media/14973171257726/Screen%20Shot%202017-07-19%20at%2010.14.46%20AM.png" alt="Screen Shot 2017-07-19 at 10.14.46 A"/></p>
-
-<h2 id="toc_5">树的存储</h2>
-
-<p>由于对节点的个数无法掌握，常见树的存储表示都转换成二叉树进行处理，子节点个数最多为2。</p>
-
-<ul>
-<li>嵌套列表：将数据结构存储在固定的数组中，然在遍历速度上有一定的优势，但因所占空间比较大，是非主流二叉树。二叉树通常以链式存储。</li>
-<li>节点和引用</li>
-<li>二叉堆</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/6/14</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Tree.html'>Tree</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1260,6 +974,18 @@ class TreeNode:
 	      
 		      
 			      <li class="post">
+			        <a href="15400989593148.html">Scrapy爬取MovieLens</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="scrapy_top100.html">Scrapy爬取猫眼TOP100榜</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15046649572570.html">Pandas</a>
 			      </li>
 		     
@@ -1273,18 +999,6 @@ class TreeNode:
 		      
 			      <li class="post">
 			        <a href="introduction_to_computer_system_CMU.html">CMU 15-213 Introduction to Computer Systems</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="os-concepts-os-structures.html">Operating System Concepts 2 - Operating System structures</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="os-concets-processes.html">Operating System Concepts 3 - Processes</a>
 			      </li>
 		     
 		  

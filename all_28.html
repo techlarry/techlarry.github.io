@@ -152,6 +152,168 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="14970764330712.html">
+                
+                  <h1>属性@property的使用</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h3 id="toc_0">为什么要使用<code>getter</code>和<code>setter</code>方法</h3>
+
+<p>在绑定属性时，如果可以直接设置属性，虽然写起来很简单，但是没有办法检查参数，并且可以随意更改参数。</p>
+
+<pre><code class="language-python">s = People()
+s.salary = -1000
+</code></pre>
+
+<p>这显然不符合逻辑。为了限制salary的范围，可以通过一个<code>setSalary</code>方法来设置工资，再通过一个<code>getSalary</code>来获得工资，这样在<code>setSalary</code>方法里，就可以检查参数。</p>
+
+<h3 id="toc_1">私有属性添加<code>getter</code>和<code>setter</code>方法</h3>
+
+<pre><code class="language-python">class People(object):
+    def __init__(self):
+        self.__salary = 0
+    def getSalary(self):
+        return self.__salary
+    def setSalary(self, value):
+        if not isinstance(value, int):
+            raise ValueError(&#39;Money must be an integer!&#39;)
+        if value &lt;0 or value &gt; 10000:
+            raise ValueError(&#39;Money must between 0~10000!&#39;)
+        
+        self.__salary = value
+</code></pre>
+
+<h3 id="toc_2">注意点</h3>
+
+<p>t.num到底是调用<code>getter</code>还是<code>setter</code>，要根据实际的场景来判断，</p>
+
+<ol>
+<li>如果是给t.num赋值，那么一定调用<code>setNum()</code></li>
+<li>如果是获取t.num的值，那么久一定调用<code>getNum()</code></li>
+</ol>
+
+<h3 id="toc_3">@property装饰器</h3>
+
+<p>但是直接调用<code>getter()</code>和<code>setter()</code>比较复杂。Python内置的<code>@property</code>装饰器可以把这两种方法转化为属性进行调用。看一下例子：</p>
+
+<pre><code class="language-python">class People(object):
+    def __init__(self):
+        self.__salary = 0
+    
+    @property
+    def salary(self):
+        return self.__salary
+    
+    @salary.setter
+    def salary(self, value):
+        if not isinstance(value, int):
+            raise ValueError(&#39;Salary must be an integer!&#39;)
+        if value &lt;0 or value &gt; 10000:
+            raise ValueError(&#39;Salary must between 0~10000!&#39;)
+        
+        self.__salary = value
+        
+    @property
+    def tax(self):
+        self.__tax = self.__salary*0.1
+        return self.__tax
+</code></pre>
+
+<p>当不定义setter方法时，那么就定义了一个只读属性(例子中<code>tax</code>属性是只读属性)。</p>
+
+<p>@property 成为属性函数，可以对属性赋值时做必要的检查，并保证代码的清晰短小，主要有2个作用：</p>
+
+<ol>
+<li>将方法转换为只读</li>
+<li>重新实现一个属性的设置和读取方法，可做边界判定</li>
+</ol>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/5/10</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="14969760599335.html">
+                
+                  <h1>作用域</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h2 id="toc_0">命名空间</h2>
+
+<p>命名空间就是生效的范围</p>
+
+<h2 id="toc_1">全局，局部</h2>
+
+<p>查看局部变量</p>
+
+<pre><code class="language-python">&gt;&gt;&gt;&gt; locals() 
+</code></pre>
+
+<p>查看全局变量</p>
+
+<pre><code class="language-python">&gt;&gt;&gt;&gt; globals() 
+</code></pre>
+
+<h2 id="toc_2">LEGB规则</h2>
+
+<p>python 使用<code>LEGB</code>的顺序来查找一个符号对应的对象</p>
+
+<p>locals-&gt; enclosing function-&gt;globals-&gt;builtins</p>
+
+<ul>
+<li>locals, 当前所在命名空间（如函数、模块），函数的参数也属于命名空间中的变量</li>
+<li>enclosing，外部嵌套函数的命名空间（闭包中常见）</li>
+<li>globals, 全局变量，函数定义所在模块的命名空间</li>
+<li>builtins, 内建模块的命名空间</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/6/6</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="14969711309827.html">
                 
                   <h1>数据结构介绍</h1>
@@ -310,273 +472,6 @@
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="14969760668045.html">
-                
-                  <h1>闭包，装饰器</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h3 id="toc_0">函数引用</h3>
-
-<pre><code class="language-python">&gt;&gt;&gt; def test():
-...     print(&#39;lala&#39;)
-...
-&gt;&gt;&gt; test()
-lala
-&gt;&gt;&gt; test
-&lt;function test at 0x109a51950&gt; 
-
-&gt;&gt;&gt; b = test  # b指向函数体test
-
-&gt;&gt;&gt; b
-&lt;function test at 0x109a51950&gt;
-
-&gt;&gt;&gt; b()  # 通过引用调用函数
-lala
-</code></pre>
-
-<h3 id="toc_1">闭包</h3>
-
-<p>在函数内部再定义一个函数，并且这个函数用到了外边函数的变量，那么将这个函数以及用到的一些变量统称为闭包</p>
-
-<pre><code class="language-python">def test(number):
-  def test_in(number_in):
-    print(&quot;in test_in, number_in is %d&quot;%number_in)
-    return number+number_in
-  return test_in
-
-ret = test(100)  # ret 指向函数体
-ret(1)  # 调用函数
-</code></pre>
-
-<p>闭包的实际例子：</p>
-
-<pre><code class="language-python">def line_conf(a,b):
-  def line(x):
-    return a*x + b
-  return line
-
-line1 = line_conf(1,1)
-line2 = line_conf(4,5)
-
-print(line1(5))
-print(line2(5))
-</code></pre>
-
-<ol>
-<li>闭包又花了变量，原来需要类对象完成的工作，闭包也可以完成</li>
-<li>由于必报引用了外部函数的局部变量，则外部函数的局部变量没有及时释放，消耗内存</li>
-</ol>
-
-<h2 id="toc_2">装饰器</h2>
-
-<p>装饰器是程序开发中经常会用到的一个功能，用好了装饰器，开发效率如虎添翼。</p>
-
-<ul>
-<li>只要python解释器执行到了装饰器代码部分，那么就会自动装饰，而不是等到调用的时候才装饰</li>
-<li>有多个装饰器时，先执行后面的装饰</li>
-</ul>
-
-<pre><code class="language-python">def w1(func):
-  print(&#39;---正在装饰1-----&#39;)
-  def inner():
-    print(&#39;-----装在验证权限1------&#39;)
-    func()
-  return inner
-  
-def w2(func):
-  print(&#39;---正在装饰2-----&#39;)
-  def inner():
-    print(&#39;-----装在验证权限2------&#39;)
-    func()
-  return inner
-
-@w1
-@w2
-def f1():
-  print(&quot;---f1---&quot;)
-
-f1()
-
-&gt;&gt;&gt;
----正在装饰2-----
----正在装饰1-----
------装在验证权限1------
------装在验证权限2------
----f1---
-</code></pre>
-
-<h3 id="toc_3">通用装饰器</h3>
-
-<p>无参数、有参数、不定长参数、有返回值、无返回值 示例</p>
-
-<pre><code class="language-python">def func(functionName):
-
-  def func_in(*args, **kwargs):
-    ret = functionName(*args, **kwargs)
-    return ret
-    
-  return func_in
-</code></pre>
-
-<h3 id="toc_4">带有参数的装饰器</h3>
-
-<p>同一个装饰器，在装饰不同函数时，起到不同的效果</p>
-
-<pre><code class="language-python">def func_arg(arg):
-    def func(functionName):
-        def func_in():
-            print(&quot;---记录日志-arg=%s--&quot;%arg)
-            if arg==&quot;heihei&quot;:
-                functionName()
-                functionName()
-            else:
-                functionName()
-        return func_in
-    return func
-
-#1. 先执行func_arg(&quot;heihei&quot;)函数,这个函数return 的结果是func这个函数的引用
-#2. @func
-#3. 使用@func对test进行装饰
-@func_arg(&quot;heihei&quot;)
-def test():
-    print(&quot;--test--&quot;)
-
-#带有参数的装饰器,能够起到在运行时,有不同的功能
-@func_arg(&quot;haha&quot;)
-def test2():
-    print(&quot;--test2--&quot;)
-
-test()
-test2()
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/4/5</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="14969760531704.html">
-                
-                  <h1>python是动态语言</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>C语言是静态语言，运行之前需要先编译，不允许在运行过程中修改代码。</p>
-
-<p>动态编程语言，在运行时可以改变其结果的语言：例如新的函数、对象、甚至代码可以被引进，已有的函数可以被删除或是其他结构上的变化。</p>
-
-<h2 id="toc_0">运行的过程中给实例/类添加属性(实例属性/类属性)</h2>
-
-<pre><code class="language-python">class Person(object):
-    def __init__(self, name=None, age=None):
-             self.name = name
-             self.age = age
-P = Person(&#39;X man&#39;,&#39;24&#39;)
-P.sex = &#39;male&#39;  # 给对象添加属性
-Person.sex = &#39;female&#39; #给类添加属性
-</code></pre>
-
-<h2 id="toc_1">运行的过程中给实例/类添加方法</h2>
-
-<p>给实例添加方法时，一般需使用<code>MethodType</code>函数。</p>
-
-<pre><code class="language-python">class Person(object):
-    def __init__(self, name=None, age=None):
-             self.name = name
-             self.age = age
-    def eat(self):
-        print(&#39;---%s is eating&#39;%self.name)
-        
-def run(self):
-    print(&#39;---%s is running&#39;%self.name)
-    
-p1= Person(&#39;P1&#39;, 10)
-p1.eat()
-p1.run = run
-#虽然p1对象中 run属性已经指向了第10行的函数，但是这句代码还不正确
-#因为run属性的函数是后来添加的，即p1.run()的时候，并没有把p1当作第1个参数
-
-import types
-p1.run = types.MethodType(run,p1)
-p1.run()
-</code></pre>
-
-<p>但是静态方法(static method)和类方法(class method)可以直接添加</p>
-
-<pre><code class="language-python">@staticmethod
-def test():
-    print(&quot;---static method-----&quot;)
-p1.test = test
-p1.test()
-
-@classmethod
-def printNum(cls):
-    print(&#39;----class method---&#39;)
-    
-Person.printNum = printNum
-Person.printNum()
-</code></pre>
-
-<h2 id="toc_2">限制属性 __slots__</h2>
-
-<p>定义一个特殊的__slot__变量，限制class实例能添加的属性</p>
-
-<pre><code class="language-python">class Person(object):
-    __slots__=(&quot;name&quot;,&quot;age&quot;)
-
-p = Person()
-p.name = &quot;老王&quot;
-p.age = 10
-p.score = 100
-&gt;&gt;&gt;&gt; AttributeError: &#39;Person&#39; object has no attribute &#39;score&#39;
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/6/6</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -674,6 +569,18 @@ p.score = 100
 	      
 		      
 			      <li class="post">
+			        <a href="15400989593148.html">Scrapy爬取MovieLens</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="scrapy_top100.html">Scrapy爬取猫眼TOP100榜</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15046649572570.html">Pandas</a>
 			      </li>
 		     
@@ -687,18 +594,6 @@ p.score = 100
 		      
 			      <li class="post">
 			        <a href="introduction_to_computer_system_CMU.html">CMU 15-213 Introduction to Computer Systems</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="os-concepts-os-structures.html">Operating System Concepts 2 - Operating System structures</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="os-concets-processes.html">Operating System Concepts 3 - Processes</a>
 			      </li>
 		     
 		  
