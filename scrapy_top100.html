@@ -113,8 +113,6 @@
         
             <li><a href="%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html">机器学习</a></li>
         
-            <li><a href="English.html">English</a></li>
-        
             <li><a href="Computer%20System.html">Computer System</a></li>
         
             <li><a href="Deep%20Learning.html">Deep Learning</a></li>
@@ -238,22 +236,20 @@ score = ratings.css(&#39;.integer::text&#39;).extract()[0] +
         for movie_info in response.xpath(&#39;//*[@id=&quot;app&quot;]/div/div/div[1]/dl/dd&#39;):
             movie = movie_info.css(&#39;.board-item-main .board-item-content&#39;)
             ratings = movie.css(&#39;.movie-item-number .score&#39;)
+            item = MovieItem()
+            # 提取电影名称
+            item[&#39;title&#39;] = movie.css(&#39; .movie-item-info .name a::text&#39;).extract_first()
+            # 提取主演
+            item[&#39;star&#39;] = movie.css(&#39;.movie-item-info .star::text&#39;)
+                .extract_first().strip().strip(&#39;\n&#39;)[3:]
+            # 提取上映时间
+            item[&#39;release_date&#39;] = movie.css(&#39;.movie-item-info .releasetime::text&#39;)
+                .extract_first()[5:]
+            # 提取电影评分
+            item[&#39;score&#39;] = ratings.css(&#39;.integer::text&#39;)
+                .extract_first() + ratings.css(&#39;.fraction::text&#39;).extract_first()
 
-            yield {
-                # 提取电影名称
-                &#39;title&#39;: movie.css(&#39; .movie-item-info .name a::text&#39;)
-                    .extract_first(),
-                # 提取主演
-                &#39;star&#39;: movie.css(&#39;.movie-item-info .star::text&#39;)
-                    .extract_first().strip().strip(&#39;\n&#39;)[3:],
-                # 提取上映时间
-                &#39;release_time&#39;: movie.css(&#39;.movie-item-info .releasetime::text&#39;)
-                    .extract_first()[5:],
-                # 提取电影评分
-                &#39;score&#39;: ratings.css(&#39;.integer::text&#39;).extract_first() 
-                    + ratings.css(&#39;.fraction::text&#39;).extract_first(),
-            }
-            
+            yield item            
 </code></pre>
 
 <p>好了，写完爬虫了，开始正式运行scrapy爬取了！到根目录下，运行：</p>
@@ -282,16 +278,13 @@ score = ratings.css(&#39;.integer::text&#39;).extract()[0] +
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="15400989593148.html" 
-          title="Previous Post: Scrapy爬取MovieLens">&laquo; Scrapy爬取MovieLens</a>
-      
         </p>
         </div>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="15046649572570.html" 
-          title="Next Post: Pandas">Pandas &raquo;</a>
+          <a  href="scrapy_movielens.html" 
+          title="Next Post: Scrapy爬取MovieLens">Scrapy爬取MovieLens &raquo;</a>
       
       </p>
         </div>
@@ -377,8 +370,6 @@ s.setAttribute('data-timestamp', +new Date());
         
             <a href="%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html"><strong>机器学习</strong></a>
         
-            <a href="English.html"><strong>English</strong></a>
-        
             <a href="Computer%20System.html"><strong>Computer System</strong></a>
         
             <a href="Deep%20Learning.html"><strong>Deep Learning</strong></a>
@@ -410,13 +401,13 @@ s.setAttribute('data-timestamp', +new Date());
 	      
 		      
 			      <li class="post">
-			        <a href="15400989593148.html">Scrapy爬取MovieLens</a>
+			        <a href="scrapy_top100.html">Scrapy爬取猫眼TOP100榜</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="scrapy_top100.html">Scrapy爬取猫眼TOP100榜</a>
+			        <a href="scrapy_movielens.html">Scrapy爬取MovieLens</a>
 			      </li>
 		     
 		  
@@ -428,13 +419,13 @@ s.setAttribute('data-timestamp', +new Date());
 		  
 		      
 			      <li class="post">
-			        <a href="exceptional_control_flow.html">CSAPP - 异常控制流</a>
+			        <a href="diagrammatize_TCP_IP.html">图解TCP/IP</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="introduction_to_computer_system_CMU.html">CMU 15-213 Introduction to Computer Systems</a>
+			        <a href="15323640524161.html">Machine Learning with large datasets</a>
 			      </li>
 		     
 		  

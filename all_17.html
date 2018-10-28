@@ -113,8 +113,6 @@
         
             <li><a href="%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html">机器学习</a></li>
         
-            <li><a href="English.html">English</a></li>
-        
             <li><a href="Computer%20System.html">Computer System</a></li>
         
             <li><a href="Deep%20Learning.html">Deep Learning</a></li>
@@ -152,70 +150,49 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="what_is_a_tensorflow_session.html">
+                <a class="clearlink" href="bit_manipulation.html">
                 
-                  <h1>TensorFlow(3):What is a tensorflow session?</h1>
+                  <h1>Bit manipulation</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<p>by <a href="http://danijar.com/what-is-a-tensorflow-session/">Danijar Hafner</a>, modified by <a href="http://larryim.cc">larry</a></p>
+                        	<h2 id="toc_0">136. Single Number</h2>
 
-<p>I’ve seen a lot of confusion over the rules of <code>tf.Graph</code> and <code>tf.Session</code> in TensorFlow. It’s simple:</p>
+<p><a href="https://leetcode.com/problems/single-number/description/">LeetCode Single Number</a></p>
 
-<ul>
-<li>A <code>graph</code> defines the computation. It doesn’t compute anything, it doesn’t hold any values, it just defines the operations that you specified in your code.</li>
-<li>A <code>session</code> allows you to execute graphs or part of graphs. It allocates resources (on one or more machines) for that and holds the actual values of intermediate results and variables.</li>
-</ul>
+<p>Given an array of integers, every element appears <em>twice</em> except for one. Find that single one.</p>
 
-<p>Let’s look at an example.</p>
+<p><strong>Note</strong>:<br/><br/>
+Your algorithm should have a linear runtime complexity. Could you implement it without using extra memory?</p>
 
-<h3 id="toc_0">Defining the Graph</h3>
+<p><code>^</code>(<code>xor</code>, <code>Exclusive or</code>):  outputs true whenever the inputs differ:</p>
 
-<p>We define a graph with a variable and three operations: <code>x</code> returns the current value of our variable. <code>init</code> assigns the initial value of 42 to that variable. <code>x_assign</code> assigns the new value of 13 to that variable.</p>
-
-<pre><code class="language-python">import tensorflow as tf
-graph = tf.Graph()
-with graph.as_default():
-  x = tf.Variable(42, name=&#39;foo&#39;)
-  init = tf.global_variables_initializer()
-  x_assign = x.assign(13)
+<pre><code class="language-python">0 ^ 0 = 0 
+n ^ 0 = n 
+n ^ n = 0
 </code></pre>
 
-<p>On a side note: TensorFlow creates a default graph for you, so we don’t need the first two lines of the code above. The default graph is also what the sessions in the next section use when not manually specifying a graph.</p>
+<p><strong>Solution</strong>:</p>
 
-<h3 id="toc_1">Running Computations in a Session</h3>
-
-<p>To run any of the three defined operations, we need to create a session for that graph. The session will also allocate memory to store the current value of the variable.</p>
-
-<pre><code class="language-python">with tf.Session(graph=graph) as sess:
-  sess.run(init)
-  sess.run(x_assign)
-  print(sess.run(x))
+<pre><code class="language-python">class Solution(object):
+    def singleNumber(self, nums):
+        &quot;&quot;&quot;
+        :type nums: List[int]
+        :rtype: int
+        &quot;&quot;&quot;
+        n = 0
+        for num in nums:
+            n = n^num
+        return n     
 </code></pre>
 
-<pre><code class="language-text">13
-</code></pre>
+<h2 id="toc_1">137 Single Number II</h2>
 
-<p>As you can see, the value of our variable is only valid within one session. If we try to query the value afterwards in a second session, TensorFlow will raise an error because the variable is not initialized there.</p>
+<p>Given an array of integers, every element appears <em>three</em> times except for one, which appears exactly once. Find that single one.</p>
 
-<pre><code class="language-python">with tf.Session(graph=graph) as sess:
-  print(sess.run(x))
-# Error: Attempting to use uninitialized value foo
-
-</code></pre>
-
-<p>Of course, we can use the graph in more than one session, we just have to initialize the variables again. The values in the new session will be completely independent from the first one:</p>
-
-<pre><code class="language-python">with tf.Session(graph=graph) as sess:
-  sess.run(init)
-  print(sess.run(x))
-</code></pre>
-
-<pre><code class="language-text">42
-</code></pre>
-
-<p>Hopefully this short workthrough helped you to better understand <code>tf.Session</code>. </p>
+<p><strong>Note</strong>:<br/>
+Your algorithm should have a linear runtime complexity. Could you implement it without using extra memory?</p>
 
                         
                       </div>
@@ -224,10 +201,10 @@ with graph.as_default():
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2017/8/18</span>
+                    <span class="date">2017/8/16</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Tensorflow.html'>Tensorflow</a></span>
+          					    <span class="posted-in"><a href='Leetcode.html'>Leetcode</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -241,107 +218,147 @@ with graph.as_default():
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="TensorFlow_introduction.html">
+                <a class="clearlink" href="python_and_mysql.html">
                 
-                  <h1>TensorFlow(1): Tensorflow Introduction</h1>
+                  <h1>Python and MySQL</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<ul>
-<li>
-<a href="#toc_0">Install</a>
-</li>
-<li>
-<a href="#toc_1">TensorFlow Python docset</a>
-</li>
-<li>
-<a href="#toc_2">Basics</a>
-<ul>
-<li>
-<ul>
-<li>
-<a href="#toc_3">Graph and Operation</a>
-</li>
-<li>
-<a href="#toc_4">Session</a>
-</li>
-<li>
-<a href="#toc_5">Steps</a>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_6">Learning Resources</a>
-</li>
-</ul>
+                        	<p>There are a lot of python driver available for MySQL and two stand out the most. The one, traditionally everybody’s choice, sort of industrial standard <code>MySQLdb</code>. It uses a C module to link to MySQL’s client library.  For Python3, use <code>PyMySQL</code> instead, because <code>MySQLdb</code> don&#39;t support Python3. Oracle’s <code>mysql-connector</code> on the other hand is pure python so no MySQL libraries and no compilation is necessary.</p>
 
+<h2 id="toc_0">MySQL Connector/Python</h2>
 
-<p><a href="https://www.tensorflow.org">Tensorflow</a> is an open-source software library for Machine Intelligence.</p>
+<p>To use Python with MySQL, you can use the MySQL Connector/Python (<a href="https://dev.mysql.com/downloads/connector/python/">Download Here</a>). For those with anaconda, just install with <code>conda</code>:</p>
 
-<h2 id="toc_0">Install</h2>
-
-<p>Using <code>conda</code> tool under <code>Anaconda</code> to install tensorflow is a very convenient and direct way.</p>
-
-<h2 id="toc_1">TensorFlow Python docset</h2>
-
-<p>Build TensorFlow Python docset is complex, many dependent utilities and procedures are needed. Fortunately,  a feed for TensorFlow Python docset has been built for us.</p>
-
-<p>Add feed below to Dash/Zeal, and install docset. (<a href="https://github.com/ppwwyyxx/dash-docset-tensorflow">Project site</a>)</p>
-
-<pre><code class="language-text">https://raw.githubusercontent.com/ppwwyyxx/dash-docset-tensorflow/master/TensorFlow.xml
+<pre><code class="language-text">conda install -c anaconda mysql-connector-python 
 </code></pre>
 
-<h2 id="toc_2">Basics</h2>
-
-<h4 id="toc_3">Graph and Operation</h4>
-
-<p>A data flow <code>graph</code> representing a TensorFlow computation. It can be viewed via <code>TensorBoard</code>.</p>
-
-<p>An <code>Operation</code> is a node in a TensorFlow <code>Graph</code> that takes zero or more <code>Tensor</code> object as input, and produces zero or more <code>Tensor</code> objects as output.</p>
-
-<p>For example <code>c = tf.matmul(a, b)</code> creates an Operation of type <code>MatMul</code> that takes tensors \(a\) and \(b\) as input, and produces \(c\) as output.</p>
-
-<h4 id="toc_4">Session</h4>
-
-<p>If you are not using an <code>InteractiveSession</code>, then you should build the entire computation graph before starting a session and launching the graph.</p>
-
-<p>Note that there are two typical ways to create and use sessions in tensorflow:</p>
-
-<p><strong>Method 1</strong>:</p>
-
-<pre><code class="language-python">sess = tf.Session()
-# Run the variables initialization (if needed), run the operations
-result = sess.run(..., feed_dict = {...})
-sess.close() # Close the session
-</code></pre>
-
-<p><strong>Method 2</strong>:</p>
-
-<pre><code class="language-python">with tf.Session() as sess: 
-    # run the variables initialization (if needed), run the operations
-    result = sess.run(..., feed_dict = {...})
-    # This takes care of closing the session for you :)
-</code></pre>
-
-<h4 id="toc_5">Steps</h4>
-
-<p>Writing and running programs in TensorFlow has the following steps:</p>
+<p>MySQL Connector/Python includes support for:</p>
 
 <ul>
-<li>Create Tensors (variables) that are not yet executed/evaluated.</li>
-<li>Write operations between those Tensors.</li>
-<li>Initialize your Tensors.</li>
-<li>Create a Session.</li>
-<li>Run the Session. This will run the operations you&#39;d written above.</li>
+<li>Almost all features provided by MySQL Server.</li>
+<li>Converting parameter values back and forth between Python and MySQL data types.</li>
+<li>All MySQL extensions to standard SQL syntax.</li>
 </ul>
 
-<h2 id="toc_6">Learning Resources</h2>
+<pre><code class="language-python">import re
+import mysql.connector
+
+# establishes the connection to MySQL.
+cnx = mysql.connector.connect(user=&#39;root&#39;, password=&#39;8032804254qq&#39;,
+                              host=&#39;127.0.0.1&#39;, database=&#39;rookery&#39;, port=&#39;3306&#39;)
+
+# creates a cursor object (cur) to use for executing queries on the database.
+
+
+cur = cnx.cursor(buffered=True)
+
+# query mysql database for list of user accounts
+sql_stmnt = &quot;SELECT DISTINCT User, Host FROM mysql.db &quot;
+sql_stmnt += &quot;WHERE Db IN(&#39;rookery&#39;,&#39;birdwatchers&#39;) &quot;
+sql_stmnt += &quot;ORDER BY User, Host&quot;
+cur.execute(sql_stmnt)
+
+# loop through list of user accounts
+for user_accounts in cur.fetchall():
+    user_name = user_accounts[0]
+    host_address = user_accounts[1]
+    user_account = user_name.decode(&#39;utf-8&#39;) + &quot;@&quot; + host_address.decode(&#39;utf-8&#39;)
+
+# display user account heading
+print(&#39;User Account:&#39;, (user_name, host_address))
+print(&quot;------------------------------------------&quot;)
+
+# query mysql for grants for user account
+sql_stmnt = &quot;show grants for &quot; + user_account
+cur.execute(sql_stmnt)
+
+# loop through grant entries for user account
+for grants in cur.fetchall():
+    # skip &#39;usage&#39; entry
+    if re.search(&#39;USAGE&#39;, grants[0]):
+        continue
+    # extract name of database and table
+    dbtb = re.search(&#39;ON\s(.*)\.+?(.+?)\sTO&#39;, grants[0])
+    db = dbtb.group(1)
+    tb = dbtb.group(2)
+
+    # change wildcard for tables to &#39;all&#39;
+    if re.search(&#39;\*&#39;, tb): tb = &quot;all&quot;
+
+    # display database and table name for privileges
+    print(&quot;database: &quot;, db, &quot;table: &quot;, tb)
+
+    # extract and display privileges for user account # for database and table
+    privs = re.search(&#39;GRANT\s(.+?)\sON&#39;, grants[0])
+    print(&#39;privileges: &#39;, privs.group(1))
+
+cur.close()
+cnx.close()
+</code></pre>
+
+<h2 id="toc_1">PyMySQL</h2>
+
+<p><a href="https://github.com/PyMySQL/PyMySQL">PyMySQL</a> is to be a drop-in replacement for <code>MySQLdb</code> and work on <code>CPython</code>, <code>PyPy</code> and <code>IronPython</code>.</p>
+
+<h3 id="toc_2">Installation</h3>
+
+<pre><code class="language-bash">$ pip install PyMySQL
+</code></pre>
+
+<h3 id="toc_3">Example</h3>
+
+<pre><code class="language-python">import pymysql
+
+# connect to the datacase
+connection = pymysql.connect(host=&#39;localhost&#39;, user=&#39;root&#39;, password=&#39;8032804254qq&#39;, db=&#39;test&#39;)
+
+with connection.cursor() as cursor:
+    &quot;&quot;&quot;
+    Create Table | CREATE TABLE `books` (
+    `book_id` int(3) NOT NULL AUTO_INCREMENT,
+    `title` text DEFAULT NULL,
+    `status` bit(1) DEFAULT b&#39;0&#39;,
+    PRIMARY KEY (`book_id`)
+    ) ENGINE=MyISAM AUTO_INCREMENT=103 DEFAULT CHARSET=utf8
+    &quot;&quot;&quot;
+    # create a new record
+    sql = &quot;INSERT INTO `books` (`title`, `status`) VALUES (%s, %s)&quot;
+    cursor.execute(sql, (&#39;GRE Reading&#39;, 1))
+    
+    # connection is not autocommit by default. So you must commit to save your changes.
+    connection.commit()
+
+with connection.cursor() as cursor:
+    sql = &quot;select `book_id`, `title`, `status` from `books`&quot;
+    cursor.execute(sql)
+    # read records
+    for book in cursor.fetchall():
+        book = list(book)
+        book[2] = ord(book[2])
+        print(book)
+</code></pre>
+
+<h2 id="toc_4">Difference? which is better?</h2>
+
+<p><code>MySQLdb</code> is a thin python wrapper around C module which implements API for MySQL database.</p>
+
+<p><code>MySQL Connector</code>is a Python module that reimplements the <a href="https://www.python.org/dev/peps/pep-0249/"><code>MySQL Database API</code></a> in Python. It is written in Python and does not have any dependencies except for the Python Standard Library. It is slower, but does not require the C library and so is more portable.</p>
+
+<h3 id="toc_5">Query Performance</h3>
+
+<p>Obviously, <code>MySQLdb</code> has better performance, especially when it comes to large data sets.</p>
+
+<p><img src="media/15026944183320/Untitled.png" alt="Untitled"/></p>
+
+<h2 id="toc_6">Reference</h2>
+
+<p>1.<a href="https://stackoverflow.com/questions/32575857/the-differences-between-mysqldb-and-mysqlconnector">The differences between MySQLdb and mysqlconnector</a><br/>
+2.<a href="http://charlesnagy.info/it/python/python-mysqldb-vs-mysql-connector-query-performance">Python MySQLdb vs mysql-connector query performance</a></p>
 
 <ol>
-<li><a href="https://web.stanford.edu/class/cs20si/">CS 20SI: Tensorflow for Deep Learning Research</a></li>
+<li><a href="https://wiki.openstack.org/wiki/PyMySQL_evaluation">PyMySQL evaluation</a></li>
 </ol>
 
                         
@@ -351,10 +368,10 @@ sess.close() # Close the session
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2017/8/12</span>
+                    <span class="date">2017/8/14</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Tensorflow.html'>Tensorflow</a></span>
+          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E5%BA%93.html'>数据库</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -368,321 +385,521 @@ sess.close() # Close the session
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="getting_started_with_tensorflow.html">
+                <a class="clearlink" href="database_and_SQL.html">
                 
-                  <h1>TensorFlow(2): Getting started with TensorFlow</h1>
+                  <h1>MySQL (2): Database and SQL</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
                         	<ul>
 <li>
-<a href="#toc_0">TensorFlow Core tutorial</a>
+<a href="#toc_0">Database</a>
+</li>
+<li>
+<a href="#toc_1">Primary key</a>
+</li>
+<li>
+<a href="#toc_2">SQL</a>
+</li>
+<li>
+<a href="#toc_3">Concepts</a>
+</li>
+<li>
+<a href="#toc_4">SQL syntax rules</a>
+</li>
+<li>
+<a href="#toc_5">List of SQL commands</a>
+</li>
+<li>
+<a href="#toc_6">SQL Operators</a>
 <ul>
 <li>
-<a href="#toc_1">importing TensorFlow</a>
+<a href="#toc_7">Comparison Operators</a>
 </li>
 <li>
-<a href="#toc_2">The Computational Graph</a>
+<a href="#toc_8">Logical Operators</a>
 </li>
 </ul>
 </li>
 <li>
-<a href="#toc_3">tf.train API</a>
+<a href="#toc_9">Functions</a>
+</li>
+<li>
+<a href="#toc_10">Subqueires</a>
+</li>
+<li>
+<a href="#toc_11">Joining Tables</a>
 <ul>
 <li>
-<a href="#toc_4">Complete program</a>
+<a href="#toc_12">Types of Join</a>
 </li>
 </ul>
 </li>
 <li>
-<a href="#toc_5">tf.estimator</a>
+<a href="#toc_13">Backing up and Restoring</a>
 <ul>
 <li>
-<a href="#toc_6">Basic usage</a>
+<a href="#toc_14">Backing up</a>
+</li>
+<li>
+<a href="#toc_15">Restoring</a>
 </li>
 </ul>
 </li>
+<li>
+<a href="#toc_16">Resources</a>
+</li>
 </ul>
 
 
-<h2 id="toc_0">TensorFlow Core tutorial</h2>
+<h2 id="toc_0">Database</h2>
 
-<h3 id="toc_1">importing TensorFlow</h3>
+<p>A <code>Database</code> is a collection of data that is organized in a manner that facilitates ease of access, as well as efficient management and updating.</p>
 
-<pre><code class="language-python">import tensorflow as tf
-</code></pre>
+<p>A database is made up of <code>tables</code> that store relevant information. Databases often contain multiple tables, each designed for a specific purpose.</p>
 
-<h3 id="toc_2">The Computational Graph</h3>
+<h2 id="toc_1">Primary key</h2>
 
-<p>A <code>computational graph</code> is a series of TensorFlow operations arranged into a graph of nodes. Let&#39;s build a simple computational graph. Each node takes zero or more tensors as inputs and produces a tensor as an output. One type of node is a constant. Like all TensorFlow constant, it takes no inputs, and it outputs a value it stores internally. We can create two floating point Tensor <code>node1</code> and <code>node2</code> as follows:</p>
+<p>A <code>primary key</code>(主键) is a field in the table that uniquely identifies the table records.</p>
 
-<pre><code class="language-python">node1 = tf.constant(3.0, dtype=tf.float32)
-node2 = tf.constant(4.0) # also tf.float32 implicitly
-print(node1, node2)
-</code></pre>
-
-<pre><code class="language-text">Tensor(&quot;Const:0&quot;, shape=(), dtype=float32)
-Tensor(&quot;Const_1:0&quot;, shape=(), dtype=float32)
-</code></pre>
-
-<p>To produce output values for <code>node1</code> and <code>nodes2</code>, evaluation is needed. To actually evaluate the nodes, we must run the computational graph within a <code>session</code>. A session encapsulates the control and state of the Tensorflow runtime.</p>
-
-<p>The following code creates a <code>Session</code> object and then invokes its <code>run</code> method to run enough of the computational graph to evaluate <code>node1</code> and <code>node2</code>. By running the computational graph in a session as follows:</p>
-
-<pre><code class="language-python">sess = tf.Session()
-print(sess.run([node1, node2]))
-</code></pre>
-
-<pre><code class="language-text">[3.0, 4.0]
-</code></pre>
-
-<p>We can build more complicated computations by combining <code>Tensor</code> nodes with operations(Operations are also nodes). For example, we can add our two constant nodes and produce a new graph as follows:</p>
-
-<pre><code class="language-python">node3 = tf.add(node1, node2)
-print(&#39;node3:&#39;, node3)
-print(&#39;sess.run(node3):&#39;, sess.run(node3))
-</code></pre>
-
-<pre><code class="language-text">node3: Tensor(&quot;Add:0&quot;, shape=(), dtype=float32)
-sess.run(node3): 7.0
-</code></pre>
-
-<p>TensorFlow provides a utility called <code>TensorBoard</code> that can display a picture of the computational graph. Here is a screenshot showing how <code>TensorBoard</code> visualizes the graph:<br/>
-<img src="media/15033740189206/getting_started_add.png" alt=""/></p>
-
-<p>As it stands, this graph is not especially interesting because it always produces a constant result. A graph can be parameterized to accept external inputs, known as <code>placeholders</code>. A <code>placeholder</code> is a promise to provide a value later.</p>
-
-<pre><code class="language-python">a = tf.placeholder(tf.float32)
-b = tf.placeholder(tf.float32)
-adder_node = a + b # + provides a shortcut for tf.add(a,b)
-</code></pre>
-
-<p>The preceding three lines are a bit like a function or a lambda in which we define two input parameters (a and b) and then an operation on them. We can evaluate this graph with multiple inputs by using the feed_dict argument to the <code>run method</code> to feed concrete values to the placeholder:</p>
-
-<pre><code class="language-python">print(sess.run(adder_node, {a:3, b:4.5}))
-print(sess.run(adder_node, {a:[1,3], b:[2,4]}))
-</code></pre>
-
-<pre><code class="language-text">7.5
-[ 3.  7.]
-</code></pre>
-
-<p>In <code>TensorBoard</code>, the graph looks like this:</p>
-
-<p><img src="media/15033740189206/getting_started_adder.png" alt=""/></p>
-
-<p>We can make the computational graph more complex by adding another operation. For example,</p>
-
-<pre><code class="language-python">add_and_triple = adder_node * 3.
-print(sess.run(add_and_triple,{a:3, b:4.5}))
-</code></pre>
-
-<pre><code class="language-text">22.5
-</code></pre>
-
-<p>The preceding computational graph would look as follows in <code>TensorBoard</code>:<br/>
-<img src="media/15033740189206/getting_started_triple.png" alt=""/></p>
-
-<p>In machine learning we will typically want a model that can take arbitrary inputs, such as the one above. To make the model trainable, we need to be able to modify the graph to get new outputs with the same input. <code>variables</code> allow us to add trainable parameters to a graph. They are constructed with a type and initial value:</p>
-
-<pre><code class="language-python">W = tf.Variable([.3], dtype=tf.float32)
-b = tf.Variable([-.3], dtype=tf.float32)
-x = tf.placeholder(tf.float32)
-linear_model = W*x +b 
-</code></pre>
-
-<p>Constants are initialized when you call <code>tf.constant</code>, and their value can never change. By contrast, variables are not initialized when you call <code>tf.Variable</code>. To initialize all the variables in a TensorFlow program, you must explicitly call a special operation as follows:</p>
-
-<pre><code class="language-python">init = tf.global_variables_initializer()
-sess.run(init)
-</code></pre>
-
-<p>It is important to realize <code>init</code> is a handle to the TensorFlow sub-graph that initializes all the global variables. Until we call <code>sess.run</code>, the variables are uninitialized.</p>
-
-<p>Since <code>x</code> is a placeholder, we can evaluate <code>linear_model</code> for several values of <code>x</code> simultaneously as follows:</p>
-
-<pre><code class="language-python">print(sess.run(linear_model,{x:[1,2,3,4]}))
-</code></pre>
-
-<pre><code class="language-text">[ 0.          0.30000001  0.60000002  0.90000004]
-</code></pre>
-
-<p>We&#39;ve create a model, but we don&#39;t know how good it is yet. To evaluate the model on training data, we need a <code>y</code> placeholder to provide the desired values, and we need to write a loss function.</p>
-
-<p>A <code>loss function</code> measures how far apart the current model is from the provided data. We&#39;ll use a standard loss model for linear regression, which sums the squares of the deltas between the current model and the provided data. <code>linear_model -y</code> creates a vector where each element is the corresponding example&#39;s error delta. We call <code>tf.square</code> to square that error. Then, we sum all the squared errors to create a single scalar that abstacts the error of all examples using <code>tf.reduce_sum</code>:</p>
-
-<pre><code class="language-python">y = tf.placeholder(tf.float32)
-squared_deltas = tf.square(linear_model - y)
-loss = tf.reduce_sum(squared_deltas)
-print(sess.run(loss, {x:[1,2,3,4], y:[0,-1,-2,-3]}))
-</code></pre>
-
-<pre><code class="language-text">23.66
-</code></pre>
-
-<p>We could improve this manually by reassigning the values of <code>W</code> and <code>b</code> to the perfect values of -1 and 1. A variable is initialized to the value provided to <code>tf.Variable</code> but can be changed using operations like <code>tf.assign</code>. FOr example, <code>W=-1</code> and <code>b=1</code> are the optimal parameters for our model. We can change <code>W</code> and <code>b</code> accordingly:</p>
-
-<pre><code class="language-python">fixW = tf.assign(W, [-1.])
-fixb = tf.assign(b, [1.])
-sess.run([fixW, fixb])
-print(sess.run(loss, {x:[1,2,3,4], y:[0,-1,-2,-3]}))
-</code></pre>
-
-<pre><code class="language-text">0.0
-</code></pre>
-
-<p>We guessed the &quot;perfect&quot; values of <code>W</code> and <code>b</code>, but the whole point of machine learning is to find the correct model parameters automatically. We will show how to accomplish this in the next section.</p>
-
-<h2 id="toc_3">tf.train API</h2>
-
-<p>A complete discussion of machine learning is out of the scope of this tutorial. However, TensorFlow provides <code>optimizers</code> that slowly change each variable in order to minimize the loss function. The simplest optimizer is <code>gradient descent</code>. It modifies each variable according to the magnitude of the derivative of loss with respect to that variable. In general, computing symbolic derivatives manually is tedious and error-prone. Consequently, <code>TensorFlow</code> can automatically produce derivatives given only a description of the model using the function <code>tf.gradients</code>. For simplicity, <code>optimizers</code> typically do this for you. For example,</p>
-
-<pre><code class="language-python">optimizer = tf.train.GradientDescentOptimizer(0.01)
-train = optimizer.minimize(loss)
-
-sess.run(init) # reset values to incorrect defaults
-for i in range(1000):
-    sess.run(train, {x:[1,2,3,4], y:[0,-1,-2,-3]})
-print(sess.run([W,b]))
-</code></pre>
-
-<pre><code class="language-text">[array([-0.9999969], dtype=float32), array([ 0.99999082], dtype=float32)]
-</code></pre>
-
-<p>Now we have done actual machine learning! Although doing this simple linear regression doesn&#39;t require much TensorFlow core code, more complicated models and methods to feed data into your model necessitate more code. Thus TensorFlow provides higher level abstractions for common patterns, structures, and functionality. We will learn how to use some of these abstractions in the next section.</p>
-
-<h3 id="toc_4">Complete program</h3>
-
-<pre><code class="language-python">import tensorflow as tf
-
-# Model parameters
-W = tf.Variable([.3], dtype=tf.float32)
-b = tf.Variable([-.3], dtype=tf.float32)
-# Model input and output
-x = tf.placeholder(tf.float32)
-linear_model = W * x + b
-y = tf.placeholder(tf.float32)
-
-# loss
-loss = tf.reduce_sum(tf.square(linear_model - y)) # sum of the squares
-# optimizer
-optimizer = tf.train.GradientDescentOptimizer(0.01)
-train = optimizer.minimize(loss)
-
-# training data
-x_train = [1, 2, 3, 4]
-y_train = [0, -1, -2, -3]
-# training loop
-init = tf.global_variables_initializer()
-sess = tf.Session()
-sess.run(init) # reset values to wrong
-for i in range(1000):
-  sess.run(train, {x: x_train, y: y_train})
-
-# evaluate training accuracy
-curr_W, curr_b, curr_loss = sess.run([W, b, loss], {x: x_train, y: y_train})
-print(&quot;W: %s b: %s loss: %s&quot;%(curr_W, curr_b, curr_loss))
-</code></pre>
-
-<pre><code class="language-text">W: [-0.9999969] b: [ 0.99999082] loss: 5.69997e-11
-</code></pre>
-
-<p>This more complicated program can still be visualized in TensorBoard:</p>
-
-<p><img src="media/15033740189206/getting_started_final.png" alt=""/></p>
-
-<h2 id="toc_5">tf.estimator</h2>
-
-<p><code>tf.estimator</code> is a high-level TensorFlow library that simplifies the mechanics of machine learning, including the following:</p>
+<p>The primary key&#39;s main features:</p>
 
 <ul>
-<li>running training loops</li>
-<li>running evaluation loops</li>
-<li>managing data sets</li>
-<li><code>tf.estimator</code> defines many common models.</li>
+<li>It must contain a unique value for each row.</li>
+<li>It cannot contain <code>Null</code> values.</li>
+<li>Tables are limited to <strong>One</strong> primary key each.</li>
+<li>The primary key&#39;s value must be different for each row.</li>
 </ul>
 
-<h3 id="toc_6">Basic usage</h3>
+<h2 id="toc_2">SQL</h2>
 
-<p>Notice how much simpler the linear regression program becomes with <code>tf.estimator</code>:</p>
+<p><strong>SQL</strong>, <code>Structured Query Language</code>(结构化查询语言), is a programming language designed to manage data stored in <code>relational databases</code>(关系数据库). </p>
 
-<pre><code class="language-python"># NumPy is often used to load, manipulate and preprocess data.
-import numpy as np
+<p><strong>SQL</strong> operates through simple, declarative statements. This keeps data accurate and secure, and helps maintain the integrity of databases, regardless of size.</p>
 
-# Declare list of features. We only have one numeric feature. There are many
-# other types of columns that are more complicated and useful.
-feature_columns = [tf.feature_column.numeric_column(&quot;x&quot;, shape=[1])]
+<p><strong>SQL</strong> is used to access and manipulate a <strong>database</strong>, <code>MySQL</code> is a program that understands <strong>SQL</strong>.</p>
 
-# An estimator is the front end to invoke training (fitting) and evaluation
-# (inference). There are many predefined types like linear regression,
-# linear classification, and many neural network classifiers and regressors.
-# The following code provides an estimator that does linear regression.
-estimator = tf.estimator.LinearRegressor(feature_columns=feature_columns)
+<p><strong>SQL</strong> can:</p>
 
-# TensorFlow provides many helper methods to read and set up data sets.
-# Here we use two data sets: one for training and one for evaluation
-# We have to tell the function how many batches
-# of data (num_epochs) we want and how big each batch should be.
-x_train = np.array([1., 2., 3., 4.])
-y_train = np.array([0., -1., -2., -3.])
-x_eval = np.array([2., 5., 8., 1.])
-y_eval = np.array([-1.01, -4.1, -7, 0.])
-input_fn = tf.estimator.inputs.numpy_input_fn(
-    {&quot;x&quot;: x_train}, y_train, batch_size=4, num_epochs=None, shuffle=True)
-train_input_fn = tf.estimator.inputs.numpy_input_fn(
-    {&quot;x&quot;: x_train}, y_train, batch_size=4, num_epochs=1000, shuffle=False)
-eval_input_fn = tf.estimator.inputs.numpy_input_fn(
-    {&quot;x&quot;: x_eval}, y_eval, batch_size=4, num_epochs=1000, shuffle=False)
+<ul>
+<li>Insert, update, or delete records in a database.</li>
+<li>Create new databases, tables, stored procedures, views.</li>
+<li>retrieve data from a database, etc.</li>
+</ul>
 
-# We can invoke 1000 training steps by invoking the  method and passing the
-# training data set.
-estimator.train(input_fn=input_fn, steps=1000)
+<p><strong>Common Data types</strong> in SQL are <code>Integer</code>, <code>Text</code>, <code>Date</code>, and <code>Real</code>.</p>
 
-# Here we evaluate how well our model did.
-train_metrics = estimator.evaluate(input_fn=train_input_fn)
-eval_metrics = estimator.evaluate(input_fn=eval_input_fn)
-print(&quot;train metrics: %r&quot;% train_metrics)
-print(&quot;eval metrics: %r&quot;% eval_metrics)
+<p>A <code>Null</code> value in SQL represents missing or unknown data.</p>
+
+<h2 id="toc_3">Concepts</h2>
+
+<ul>
+<li>A <code>relational database</code> is a database that organizes information into one or more tables. </li>
+<li>A <code>table</code> is a collection of data organized into rows and columns. Tables are sometimes referred to as<code>relations</code>.</li>
+<li>A <code>column</code> is a set of data values of a particular type. </li>
+<li>A <code>row</code> is a single record in a table. </li>
+<li>A <code>statement</code> is text that the database recognizes as a valid command. Statements always end in a semi-colon ; The structure of SQL statements vary. The number of lines used do not matter. A statement can be written all on one line, or split up across multiple lines if it makes it easier to read.</li>
+<li><code>Clauses</code> in a <code>statement</code> perform specific tasks in SQL. By convention, clauses are written in capital letters. Clauses can also be referred to as <code>commands</code>.</li>
+<li>A <code>fully qualified name</code> puts the table name prior to the column name, by separating them a dot. E.g. customer.City. It is especially useful with multiple tables that may share the same column names.</li>
+</ul>
+
+<h2 id="toc_4">SQL syntax rules</h2>
+
+<ol>
+<li><p>SQL allows to run multiple queries or commands at the same time. We should end each SQL statement with a <strong>semicolon</strong> to indicate that the statement is complete and ready to be interpreted.</p></li>
+<li><p>SQL is case <strong>insensitive</strong>. </p></li>
+<li><p>A single SQL statement can be placed on one or more text lines. In addition, multiple SQL statements can be combined on a single text line. </p></li>
+</ol>
+
+<p><strong>NOTE</strong></p>
+
+<h2 id="toc_5">List of SQL commands</h2>
+
+<p>Glossary of commonly used SQL commands:</p>
+
+<p><code>ALTER TABLE</code></p>
+
+<pre><code class="language-sql">ALTER TABLE table_name ADD column datatype;
 </code></pre>
 
-<pre><code class="language-text">INFO:tensorflow:Using default config.
-WARNING:tensorflow:Using temporary folder as model directory: /var/folders/66/y1hc77j572v71r0gm2r39rfr0000gn/T/tmp2rnith_a
-INFO:tensorflow:Using config: {&#39;_model_dir&#39;: &#39;/var/folders/66/y1hc77j572v71r0gm2r39rfr0000gn/T/tmp2rnith_a&#39;, &#39;_tf_random_seed&#39;: 1, &#39;_save_summary_steps&#39;: 100, &#39;_save_checkpoints_secs&#39;: 600, &#39;_save_checkpoints_steps&#39;: None, &#39;_session_config&#39;: None, &#39;_keep_checkpoint_max&#39;: 5, &#39;_keep_checkpoint_every_n_hours&#39;: 10000, &#39;_log_step_count_steps&#39;: 100}
-INFO:tensorflow:Create CheckpointSaverHook.
-INFO:tensorflow:Saving checkpoints for 1 into /var/folders/66/y1hc77j572v71r0gm2r39rfr0000gn/T/tmp2rnith_a/model.ckpt.
-INFO:tensorflow:loss = 19.0, step = 1
-INFO:tensorflow:global_step/sec: 592.325
-INFO:tensorflow:loss = 0.192443, step = 101 (0.171 sec)
-INFO:tensorflow:global_step/sec: 710.314
-INFO:tensorflow:loss = 0.0370785, step = 201 (0.141 sec)
-INFO:tensorflow:global_step/sec: 669.791
-INFO:tensorflow:loss = 0.0173565, step = 301 (0.150 sec)
-INFO:tensorflow:global_step/sec: 729.609
-INFO:tensorflow:loss = 0.00361388, step = 401 (0.136 sec)
-INFO:tensorflow:global_step/sec: 814
-INFO:tensorflow:loss = 0.000215951, step = 501 (0.123 sec)
-INFO:tensorflow:global_step/sec: 793.172
-INFO:tensorflow:loss = 0.0001734, step = 601 (0.127 sec)
-INFO:tensorflow:global_step/sec: 776.415
-INFO:tensorflow:loss = 3.66416e-05, step = 701 (0.128 sec)
-INFO:tensorflow:global_step/sec: 845.781
-INFO:tensorflow:loss = 3.03422e-06, step = 801 (0.118 sec)
-INFO:tensorflow:global_step/sec: 849.689
-INFO:tensorflow:loss = 1.18453e-06, step = 901 (0.118 sec)
-INFO:tensorflow:Saving checkpoints for 1000 into /var/folders/66/y1hc77j572v71r0gm2r39rfr0000gn/T/tmp2rnith_a/model.ckpt.
-INFO:tensorflow:Loss for final step: 3.72255e-07.
-INFO:tensorflow:Starting evaluation at 2017-08-21-05:57:38
-INFO:tensorflow:Restoring parameters from /var/folders/66/y1hc77j572v71r0gm2r39rfr0000gn/T/tmp2rnith_a/model.ckpt-1000
-INFO:tensorflow:Finished evaluation at 2017-08-21-05:57:40
-INFO:tensorflow:Saving dict for global step 1000: average_loss = 6.05797e-08, global_step = 1000, loss = 2.42319e-07
-INFO:tensorflow:Starting evaluation at 2017-08-21-05:57:40
-INFO:tensorflow:Restoring parameters from /var/folders/66/y1hc77j572v71r0gm2r39rfr0000gn/T/tmp2rnith_a/model.ckpt-1000
-INFO:tensorflow:Finished evaluation at 2017-08-21-05:57:42
-INFO:tensorflow:Saving dict for global step 1000: average_loss = 0.00254753, global_step = 1000, loss = 0.0101901
-train metrics: {&#39;average_loss&#39;: 6.057968e-08, &#39;loss&#39;: 2.4231872e-07, &#39;global_step&#39;: 1000}
-eval metrics: {&#39;average_loss&#39;: 0.0025475256, &#39;loss&#39;: 0.010190102, &#39;global_step&#39;: 1000}
+<p><strong>ALTER TABLE</strong> lets you add columns to a table in a database.</p>
+
+<p><code>AND</code></p>
+
+<pre><code class="language-sql">SELECT column_name(s)
+FROM table_name
+WHERE column_1 = value_1
+AND column_2 = value_2;
 </code></pre>
+
+<p>AND is an operator that combines two conditions. Both conditions must be true for the row to be included in the result set.</p>
+
+<p><code>AS</code></p>
+
+<pre><code class="language-sql">SELECT column_name AS &#39;Alias&#39;
+FROM table_name;
+</code></pre>
+
+<p><strong>AS</strong> is a keyword in SQL that allows you to rename a column or table using an alias.</p>
+
+<p><code>AVG</code></p>
+
+<pre><code class="language-sql">SELECT AVG(column_name)
+FROM table_name;
+</code></pre>
+
+<p><strong>AVG()</strong> is an aggregate function that returns the average value for a numeric column.</p>
+
+<p><code>BETWEEN</code></p>
+
+<pre><code class="language-sql">SELECT column_name(s)
+FROM table_name
+WHERE column_name BETWEEN value_1 AND value_2;
+The BETWEEN operator is used to filter the result set within a certain range. The values can be numbers, text or dates.
+</code></pre>
+
+<p><code>COUNT</code></p>
+
+<pre><code class="language-sql">SELECT COUNT(column_name)
+FROM table_name;
+</code></pre>
+
+<p><strong>COUNT()</strong> is a function that takes the name of a column as an argument and counts the number of rows where the column is not NULL.</p>
+
+<p><code>CREATE TABLE</code></p>
+
+<pre><code class="language-sql">CREATE TABLE table_name (column_1 datatype, column_2 datatype, column_3 datatype);
+</code></pre>
+
+<p><strong>CREATE TABLE</strong> creates a new table in the database. It allows you to specify the name of the table and the name of each column in the table.</p>
+
+<p><code>DELETE</code></p>
+
+<pre><code class="language-sql">DELETE FROM table_name WHERE some_column = some_value;
+</code></pre>
+
+<p><strong>DELETE</strong> statements are used to remove rows from a table.</p>
+
+<p><code>GROUP BY</code></p>
+
+<pre><code class="language-sql">SELECT COUNT(*)
+FROM table_name
+GROUP BY column_name;
+</code></pre>
+
+<p><strong>GROUP BY</strong> is a clause in SQL that is only used with aggregate functions. It is used in collaboration with the SELECT statement to arrange identical data into groups.</p>
+
+<p><code>INNER JOIN</code></p>
+
+<pre><code class="language-sql">SELECT column_name(s) FROM table_1
+JOIN table_2
+ON table_1.column_name = table_2.column_name;
+</code></pre>
+
+<p>An <strong>inner join</strong> will combine rows from different tables if the join condition is true.</p>
+
+<p><code>INSERT</code></p>
+
+<pre><code class="language-sql">INSERT INTO table_name (column_1, column_2, column_3) VALUES (value_1, &#39;value_2&#39;, value_3);
+</code></pre>
+
+<p><strong>INSERT</strong> statements are used to add a new row to a table.</p>
+
+<p><code>LIKE</code></p>
+
+<pre><code class="language-sql">SELECT column_name(s)
+FROM table_name
+WHERE column_name LIKE pattern;
+</code></pre>
+
+<p><strong>LIKE</strong> is a special operator used with the WHERE clause to search for a specific pattern in a column. SQL <code>pattern</code> matching enables you to use <code>_</code> to match any single character and <code>%</code> to match an arbitrary number of characters (including zero characters).</p>
+
+<p><code>LIMIT</code></p>
+
+<pre><code class="language-sql">SELECT column_name(s)
+FROM table_name
+LIMIT number;
+</code></pre>
+
+<p><strong>LIMIT</strong> is a clause that lets you specify the maximum number of rows the result set will have.</p>
+
+<p><code>MAX</code></p>
+
+<pre><code class="language-sql">SELECT MAX(column_name)
+FROM table_name;
+</code></pre>
+
+<p><strong>MAX()</strong> is a function that takes the name of a column as an argument and returns the largest value in that column.</p>
+
+<p><code>MIN</code></p>
+
+<pre><code class="language-sql">SELECT MIN(column_name)
+FROM table_name;
+MIN() is a function that takes the name of a column as an argument and returns the smallest value in that column.
+</code></pre>
+
+<p><code>OR</code></p>
+
+<pre><code class="language-sql">SELECT column_name
+FROM table_name
+WHERE column_name = value_1
+OR column_name = value_2;
+</code></pre>
+
+<p><strong>OR</strong> is an operator that filters the result set to only include rows where either condition is true.</p>
+
+<p><code>ORDER BY</code></p>
+
+<pre><code class="language-sql">SELECT column_name
+FROM table_name
+ORDER BY column_name1, column_name2 ASC|DESC;
+</code></pre>
+
+<p><strong>ORDER BY</strong> is a clause that indicates you want to sort the result set by a particular column either alphabetically or numerically.</p>
+
+<p><code>OUTER JOIN</code></p>
+
+<pre><code class="language-sql">SELECT column_name(s) FROM table_1
+LEFT JOIN table_2
+ON table_1.column_name = table_2.column_name;
+</code></pre>
+
+<p>An <strong>outer join</strong> will combine rows from different tables even if the the join condition is not met. Every row in the left table is returned in the result set, and if the join condition is not met, then NULL values are used to fill in the columns from the right table.</p>
+
+<p><code>ROUND</code></p>
+
+<pre><code class="language-sql">SELECT ROUND(column_name, integer)
+FROM table_name;
+</code></pre>
+
+<p><strong>ROUND()</strong> is a function that takes a column name and an integer as an argument. It rounds the values in the column to the number of decimal places specified by the integer.</p>
+
+<p><code>SELECT</code></p>
+
+<pre><code class="language-sql">SELECT column_name FROM table_name;
+</code></pre>
+
+<p><strong>SELECT</strong> statements are used to fetch data from a database. Every query will begin with SELECT.</p>
+
+<p><code>SELECT DISTINCT</code></p>
+
+<pre><code class="language-sql">SELECT DISTINCT column_name FROM table_name;
+</code></pre>
+
+<p><strong>SELECT DISTINCT</strong> specifies that the statement is going to be a query that returns unique values in the specified column(s).</p>
+
+<p><code>SUM</code></p>
+
+<pre><code class="language-sql">SELECT SUM(column_name)
+FROM table_name;
+</code></pre>
+
+<p><strong>SUM()</strong> is a function that takes the name of a column as an argument and returns the sum of all the values in that column.</p>
+
+<p><code>UPDATE</code></p>
+
+<pre><code class="language-sql">UPDATE table_name
+SET some_column = some_value
+WHERE some_column = some_value;
+</code></pre>
+
+<p><strong>UPDATE</strong> statments allow you to edit rows in a table.</p>
+
+<p><code>WHERE</code></p>
+
+<pre><code class="language-sql">SELECT column_name(s)
+FROM table_name
+WHERE column_name operator value;
+</code></pre>
+
+<p><strong>WHERE</strong> is a clause that indicates you want to filter the result set to include only rows where the following condition is true. eg. <code>SELECT * FROM customers WHERE ID=7</code>;</p>
+
+<h2 id="toc_6">SQL Operators</h2>
+
+<p>Comparison Operators and Logical Operators are used in the <code>WHERE</code> clause to filter the data to be selected.</p>
+
+<h3 id="toc_7">Comparison Operators</h3>
+
+<p>The following comparison operators can be used in the <code>WHERE</code> clause:</p>
+
+<table>
+<thead>
+<tr>
+<th>Operator</th>
+<th>Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>=</td>
+<td>Equal</td>
+</tr>
+<tr>
+<td>!=</td>
+<td>Not equal</td>
+</tr>
+<tr>
+<td>&gt;</td>
+<td>Greater than</td>
+</tr>
+<tr>
+<td>&lt;</td>
+<td>Less than </td>
+</tr>
+<tr>
+<td>&gt;=</td>
+<td>Greater than or equal</td>
+</tr>
+<tr>
+<td>&lt;=</td>
+<td>Less than or equal</td>
+</tr>
+<tr>
+<td>BETWEEN</td>
+<td>Between an inclusive range</td>
+</tr>
+</tbody>
+</table>
+
+<p><code>BETWEEN</code> Operator:</p>
+
+<pre><code class="language-sql">SELECT * FROM customers
+WHERE ID BETWEEN 3 AND 7;
+</code></pre>
+
+<h3 id="toc_8">Logical Operators</h3>
+
+<p>Logical operators can be used to combine two Boolean values and return a result of <strong>true</strong>, <strong>false</strong>, or <strong>null</strong>.</p>
+
+<p>The following operators exists in SQL:</p>
+
+<table>
+<thead>
+<tr>
+<th>Operator</th>
+<th>Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>AND</td>
+<td>TRUE if both expressions are TRUE</td>
+</tr>
+<tr>
+<td>OR</td>
+<td>TRUE if either expression is TRUE</td>
+</tr>
+<tr>
+<td>IN</td>
+<td>TRUE if the operand is equal to one of a list of expressions</td>
+</tr>
+<tr>
+<td>NOT</td>
+<td>Returns TRUE if expression is not TRUE</td>
+</tr>
+</tbody>
+</table>
+
+<p>The <code>IN</code> Operator:</p>
+
+<pre><code class="language-sql">SELECT * FROM customers 
+WHERE City IN (&#39;New York&#39;, &#39;Los Angeles&#39;, &#39;Chicago&#39;);
+</code></pre>
+
+<p>The <code>NOT IN</code> Operator:</p>
+
+<pre><code class="language-sql">SELECT * FROM customers 
+WHERE City NOT IN (&#39;New York&#39;, &#39;Los Angeles&#39;, &#39;Chicago&#39;);
+</code></pre>
+
+<h2 id="toc_9">Functions</h2>
+
+<p>The <code>UPPER</code> function converts all letters in the specified string to uppercase. <br/>
+The <code>LOWER</code> function converts the string to lowercase.</p>
+
+<p>The following SQL query selects all <em>Lastnames</em> as uppercase:</p>
+
+<pre><code class="language-sql">SELECT FirstName, UPPER(LastName) AS LastName 
+FROM employees;
+</code></pre>
+
+<p>The <code>SQRT</code> function returns the square root of given value in the argument.<br/>
+Similarly, the <code>AVG</code> function returns the average value of a numeric column.<br/>
+The <code>SUM</code> function is used to calculate the sum for a column&#39;s values.</p>
+
+<p>The <code>MIN</code> function is used to return the minimum value of an expression in a <code>SELECT</code> statement.</p>
+
+<p>E.g. you might wish to know the minimum salary among the employees:</p>
+
+<pre><code class="language-sql">SELECT MIN(salary) AS Salary FROM employees;
+</code></pre>
+
+<h2 id="toc_10">Subqueires</h2>
+
+<p>A subquery is a query within another query. Enclose the subquery in parentheses. </p>
+
+<p>E.g.</p>
+
+<pre><code class="language-sql">SELECT FirstName, Salary FROM employees 
+WHERE  Salary &gt; (SELECT AVG(Salary) FROM employees) 
+ORDER BY Salary DESC;
+</code></pre>
+
+<h2 id="toc_11">Joining Tables</h2>
+
+<p>SQL can combine data from multiple tables. In SQL, &#39;joining tables&#39; means combining data from two or more tables. A table join creates a <code>temporary table</code> showing the data from the joined tables.</p>
+
+<p>To join tables, specify them as a comma-separated list in the <code>FROM</code> clause:</p>
+
+<pre><code class="language-sql">SELECT customers.ID, customers.Name, orders.Name, orders.Amount FROM customers, orders
+WHERE customers.ID = orders.Customer_ID
+ORDER BY customers.ID
+</code></pre>
+
+<h3 id="toc_12">Types of Join</h3>
+
+<p>The following are types of <code>JOIN</code> that can be used in SQL:</p>
+
+<ul>
+<li><code>INNER JOIN</code>: returns rows when there is a match between the tables.</li>
+<li><code>LEFT JOIN</code>: returns rows from the left table, even if there are no matches in the right table.</li>
+</ul>
+
+<pre><code class="language-sql">SELECT table1.column1, table2.column2...
+FROM table1 LEFT JOIN table2
+ON table1.column_name = table2.column_name;
+</code></pre>
+
+<p>If no match is found for a particular row,<code>NULL</code>is returned.</p>
+
+<ul>
+<li><code>RIGHT JOIN</code>
+Just like <code>LEFT JOIN</code></li>
+</ul>
+
+<h2 id="toc_13">Backing up and Restoring</h2>
+
+<h3 id="toc_14">Backing up</h3>
+
+<pre><code class="language-bash">mysqldump -u user -p database_name &gt; /data/backups/all-dbs.sql
+</code></pre>
+
+<h3 id="toc_15">Restoring</h3>
+
+<pre><code class="language-bash">mysql -u user -p &lt; all-dbs.sql
+</code></pre>
+
+<h2 id="toc_16">Resources</h2>
+
+<ol>
+<li><p><a href="https://www.codecademy.com/courses/learn-sql/lessons/manipulation/exercises/relational-databases?action=lesson_resume">Codecademy</a></p></li>
+<li><p><a href="https://www.sololearn.com/Play/SQL">Sololearn</a></p></li>
+<li><p><a href="http://www.w3school.com.cn/sql/index.asp">W3school</a></p></li>
+<li><p><a href="https://lagunita.stanford.edu/courses/DB/2014/SelfPaced/about">Standford MOOC</a> </p></li>
+</ol>
 
                         
                       </div>
@@ -691,10 +908,10 @@ eval metrics: {&#39;average_loss&#39;: 0.0025475256, &#39;loss&#39;: 0.010190102
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2017/8/20</span>
+                    <span class="date">2017/7/13</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Tensorflow.html'>Tensorflow</a></span>
+          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E5%BA%93.html'>数据库</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -708,122 +925,83 @@ eval metrics: {&#39;average_loss&#39;: 0.0025475256, &#39;loss&#39;: 0.010190102
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="convolutional-neural-networks.html">
+                <a class="clearlink" href="mysql_introduction.html">
                 
-                  <h1>Convolutional Neural Networks</h1>
+                  <h1>MySQL(1): Introduction</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
                         	<ul>
 <li>
-<a href="#toc_0">Architecture</a>
-<ul>
-<li>
-<ul>
-<li>
-<a href="#toc_1">Conv layers</a>
+<a href="#toc_0">client and server</a>
 </li>
 <li>
-<a href="#toc_2">Pooling</a>
+<a href="#toc_1">basic command</a>
 </li>
 <li>
-<a href="#toc_3">Fully-connected layers</a>
+<a href="#toc_2">GUI</a>
 </li>
 <li>
-<a href="#toc_4">Layer Patterns</a>
+<a href="#toc_3">auto-completion and syntax highlighting</a>
 </li>
 <li>
-<a href="#toc_5">Layer Sizing Patterns</a>
+<a href="#toc_4">Starting to Explore Databases</a>
 </li>
 </ul>
 </li>
 <li>
-<a href="#toc_6">Computational Considerations</a>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_7">The memory bottleneck is the largest bottleneck when constructing ConvNet architectures.</a>
+<a href="#toc_5">Reference</a>
 
 
-<h2 id="toc_0">Architecture</h2>
+<p>MySQL is an open source, multithread, relational database management system.</p>
 
-<p>Three main types of layers to build ConvNet architectures: <strong>Convolutional Layer, Pooling Layer and Fully-Connected Layer</strong>.</p>
+<h2 id="toc_0">client and server</h2>
 
-<p>The layers of a ConvNet have neurons arranged in 3 dimensions: <strong>width, height, depth</strong>.</p>
+<p>The <code>server</code> maintains, controls and protects your data, storing it in files on the computer where the server is running in various formats. It listens for requests from <code>client</code>.</p>
 
-<p><img src="media/15042285789723/15043413926666.jpg" alt="convolutional"/></p>
+<p>For MySQL, <code>mysqld</code>(the <em>d</em> stands for <em>daemon</em>) is the server. <code>mysql</code> is a standard MySQL client. With its text-based interface, a user can log in and execute SQL queries.</p>
 
-<p>A simple ConvNet for <a href="https://www.cs.toronto.edu/%7Ekriz/cifar.html">CIFAR-10</a> classification could have the architecture as follows:</p>
+<h2 id="toc_1">basic command</h2>
 
 <ul>
-<li><strong>INPUT</strong> [width x height x color channel] will hold the raw pixel values of the image, in this case an image of width, height, and with three color channels R,G,B.</li>
-<li><strong>CONV layer</strong> will compute the output of neurons that are connected to local regions in the input, each computing a dot product between their weights and a small region they are connected to in the input volume.</li>
-<li><strong>RELU layer</strong> will apply an elementwise activation function, such as the <code>max(0,x)</code> thresholding at zero. </li>
-<li><strong>POOL layer</strong> will perform a downsampling operation along the spatial dimensions (width, height).</li>
-<li><strong>FC</strong> (i.e. fully-connected) layer will compute the class scores, where each score corresponding to the 10 categories of CIFAR-10. As with ordinary Neural Networks and as the name implies, each neuron in this layer will be connected to all the numbers in the previous volume.</li>
+<li>The <code>mysql_safe</code> script is the most common way to start <code>mysqld</code>, because this script can restart the daemon if it crashes.</li>
+<li>The <code>mysqlaccess</code> tool creates user accounts and sets their privileges.</li>
+<li>The<code>mysqladmin</code> utility can be used to manage the database server itself from the command-line. </li>
+<li>The <code>mysqlshow</code> tool may be used to examine a server’s status, as well as information about databases and tables.</li>
+<li>The <code>mysqldump</code> utility is the most popular one for exporting data and table structures to a plain-text file, known as a <code>dump</code> file. </li>
+<li>The command <code>mysql -u root -p</code> is usually used to start the client <code>mysql</code>, after which the passport should be filled.</li>
+<li>The command <code>mysql -u root -p -e &quot;SELECT User,Host FROM mysql.user;&quot;</code> gives a list of username and host combination on the server.</li>
 </ul>
 
-<h4 id="toc_1">Conv layers</h4>
+<h2 id="toc_2">GUI</h2>
 
-<p>Four hyperparameters <strong>depth</strong>(K), <strong>spatial extent</strong>(\(F\)), <strong>stride</strong>(\(S\)) and <strong>zero-padding</strong>(\(P\)) control the size of the output volume from the input volume (\(W\)).</p>
+<p><a href="https://sequelpro.com">Sequel Pro</a> is a fast, easy-to-use Mac database management application for working with MySQL databases. see <a href="https://segmentfault.com/a/1190000006255923">detail in Chinese</a></p>
 
-<p><strong>Summary</strong>. To summarize, the Conv Layer:</p>
+<p><a href="https://www.mysql.com/products/workbench">WorkBench</a> provides data modeling, SQL development, and comprehensive administration tools for server configuration, user administration, backup, and much more.</p>
 
-<ul>
-<li>Accepts a volume of size \(W_1 \times H_1 \times D_1\)</li>
-<li>Requires four hyperparameters: 
-<ul>
-<li>Number of filters \(K\), </li>
-<li>their spatial extent \(F\), </li>
-<li>the stride \(S\), </li>
-<li>the amount of zero padding \(P\).</li>
-</ul></li>
-<li>Produces a volume of size \(W_2 \times H_2 \times D_2\) where:
-<ul>
-<li>\(W_2 = (W_1 - F + 2P)/S + 1\)</li>
-<li>\(H_2 = (H_1 - F + 2P)/S + 1\) (i.e. width and height are computed equally by symmetry)</li>
-<li>\(D_2 = K\)</li>
-</ul></li>
-<li>With parameter sharing, it introduces \(F \cdot F \cdot D_1\) weights per filter, for a total of \((F \cdot F \cdot D_1) \cdot K\) weights and \(K\) biases.</li>
-<li>In the output volume, the \(d\)-th depth slice (of size \(W_2 \times H_2\)) is the result of performing a valid convolution of the \(d\)-th filter over the input volume with a stride of \(S\), and then offset by \(d\)-th bias.</li>
-</ul>
+<p>Although GUIs are easy-to-use, in the long run they&#39;re not useful. The text-based <code>mysql</code> client causes you to think and remember more, and it&#39;s not that difficult to use or confusing. And the command-line method of using <code>mysql</code> allows you to interact with the server without much overhead.</p>
 
-<p><strong>parameter sharing</strong>: the neurons in each depth slice(i.e \(K\)) to use the same weights and bias. </p>
+<p>``</p>
 
-<h4 id="toc_2">Pooling</h4>
+<h2 id="toc_3">auto-completion and syntax highlighting</h2>
 
-<p><code>max pooling</code> is the most common function performed on the pooling units, others like <code>average pooling</code> or <code>L2-norm pooling</code> is work worse in practice. And Many people dislike the pooling operation and think that we can get away without it.</p>
+<p><a href="http://www.mycli.net">Mycli</a> is a command-line interface which support MariaDB, MySQL with auto-completion and syntax highlighting.</p>
 
-<h4 id="toc_3">Fully-connected layers</h4>
+<p><img src="media/15016407791054/15025066875709.gif" alt=""/></p>
 
-<p>Neurons in a fully connected layer have full connections to all activations in the previous layer.</p>
+<h2 id="toc_4">Starting to Explore Databases</h2>
 
-<h4 id="toc_4">Layer Patterns</h4>
+<p>For each of SQL statements, we heave to specify the database name. If you will be working mainly in one database, you can set the default database so that you don&#39;t have to specify the database each time:</p>
 
-<p>The most common form of a ConvNet architecture stacks a few CONV-RELU layers, follows them with POOL layers, and <strong>repeats this pattern until the image has been merged spatially to a small size</strong>. At some point, it is common to transition to fully-connected layers. The last fully-connected layer holds the output, such as the class scores. In other words, the most common ConvNet architecture follows the pattern:</p>
+<pre><code class="language-sql">USE database_name
+</code></pre>
 
-<p>\[INPUT \rightarrow  [[CONV \rightarrow  RELU]*N \rightarrow  POOL?]*M \rightarrow [FC -&gt; RELU]*K \rightarrow  FC\]</p>
+<h1 id="toc_5">Reference</h1>
 
-<p>where the <code>*</code> indicates repetition, and the <code>POOL?</code> indicates an optional pooling layer. Moreover, <code>N &gt;= 0</code> (and usually <code>N &lt;= 3</code>), <code>M &gt;= 0</code>, <code>K &gt;= 0</code> (and usually <code>K &lt; 3</code>). For example, here are some common ConvNet architectures you may see that follow this pattern:</p>
-
-<p><strong>Note</strong>: <code>INPUT -&gt; FC</code>, implements a linear classifier. Here <code>N = M = K = 0</code>.<br/>
-<strong>Note</strong>: Prefer a stack of small filter CONV to one large receptive field CONV layer, because of few parameters needed and expressing more powerful features of the input.</p>
-
-<h4 id="toc_5">Layer Sizing Patterns</h4>
-
-<ul>
-<li><strong>input layer</strong>:  Common numbers include 32 (e.g. CIFAR-10), 64, 96 (e.g. STL-10), or 224 (e.g. common ImageNet ConvNets), 384, and 512.</li>
-<li><strong>conv layers</strong>: small filters(\(3\times3\) or \(5\times5\)), with \(S=1\). Crucially, <em>padding the input volume with zeros in such way that the conv layer does not alter the spatial dimensions of the input.</em> </li>
-<li><strong>pool layers</strong>: use max-pooling with \(F=2, S=2\) or \(F=3, S=2\)</li>
-</ul>
-
-<h3 id="toc_6">Computational Considerations</h3>
-
-<h1 id="toc_7">The memory bottleneck is the largest bottleneck when constructing ConvNet architectures.</h1>
+<ol>
+<li>Russell T D. 2015. Learning MySQL and MariaDB. O&#39;REILLY.</li>
+</ol>
 
                         
                       </div>
@@ -832,10 +1010,10 @@ eval metrics: {&#39;average_loss&#39;: 0.0025475256, &#39;loss&#39;: 0.010190102
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2017/9/2</span>
+                    <span class="date">2017/8/2</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Deep%20Learning.html'>Deep Learning</a></span>
+          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E5%BA%93.html'>数据库</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -849,16 +1027,28 @@ eval metrics: {&#39;average_loss&#39;: 0.0025475256, &#39;loss&#39;: 0.010190102
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15042359761425.html">
+                <a class="clearlink" href="15026939409542.html">
                 
-                  <h1>Transfer Learning</h1>
+                  <h1>逻辑删除</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<p><code>Transfer learning</code> focuses on storing knowledge gained while solving one problem and applying it to a different but related problem.</p>
+                        	<p><strong>逻辑删除</strong>：当数据非常重要时，在实际执行删除操作时，只是将数据标记为删除。在数据查询操作时，加上是否删除语句。</p>
 
-<p>Generally, transfer learning will work only well if the inputs have similar low-level features.</p>
+<pre><code class="language-sql">mysql&gt; alter table birds add column isDelete bit default b&#39;0&#39;;
+mysql&gt; update birds
+    -&gt; set isDelete = b&#39;1&#39;
+    -&gt; where bird_id = 101;
+mysql&gt; select count(*)
+    -&gt; from birds
+    -&gt; where `isDelete` = 0;
++----------+
+| count(*) |
++----------+
+| 28890    |
++----------+
+</code></pre>
 
                         
                       </div>
@@ -867,10 +1057,10 @@ eval metrics: {&#39;average_loss&#39;: 0.0025475256, &#39;loss&#39;: 0.010190102
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2017/9/1</span>
+                    <span class="date">2017/8/14</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html'>机器学习</a></span>
+          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E5%BA%93.html'>数据库</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -947,8 +1137,6 @@ eval metrics: {&#39;average_loss&#39;: 0.0025475256, &#39;loss&#39;: 0.010190102
         
             <a href="%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html"><strong>机器学习</strong></a>
         
-            <a href="English.html"><strong>English</strong></a>
-        
             <a href="Computer%20System.html"><strong>Computer System</strong></a>
         
             <a href="Deep%20Learning.html"><strong>Deep Learning</strong></a>
@@ -980,13 +1168,13 @@ eval metrics: {&#39;average_loss&#39;: 0.0025475256, &#39;loss&#39;: 0.010190102
 	      
 		      
 			      <li class="post">
-			        <a href="15400989593148.html">Scrapy爬取MovieLens</a>
+			        <a href="scrapy_top100.html">Scrapy爬取猫眼TOP100榜</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="scrapy_top100.html">Scrapy爬取猫眼TOP100榜</a>
+			        <a href="scrapy_movielens.html">Scrapy爬取MovieLens</a>
 			      </li>
 		     
 		  
@@ -998,13 +1186,13 @@ eval metrics: {&#39;average_loss&#39;: 0.0025475256, &#39;loss&#39;: 0.010190102
 		  
 		      
 			      <li class="post">
-			        <a href="exceptional_control_flow.html">CSAPP - 异常控制流</a>
+			        <a href="diagrammatize_TCP_IP.html">图解TCP/IP</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="introduction_to_computer_system_CMU.html">CMU 15-213 Introduction to Computer Systems</a>
+			        <a href="15323640524161.html">Machine Learning with large datasets</a>
 			      </li>
 		     
 		  
