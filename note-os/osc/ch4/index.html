@@ -540,7 +540,7 @@
 <p>A traditional process has a single thread of control. If a process has <strong>multiple threads of control</strong>, it can perform more than one task at a time. 
 一个传统的进程只有单个控制线程，如果进程有多个控制线程，那么它能一次处理多个任务。</p>
 <p>The figure below illustrates the difference between a traditional <strong>single-threaded</strong> process and a <strong>multithreaded</strong> process.</p>
-<p><img alt="single threaded and multithreaded processes" src="ch4/single%20threaded%20and%20multithreaded%20processes.png" /></p>
+<p><img alt="single threaded and multithreaded processes" src="../figures/singleThreadedAndMultithreadedProcesses.png" /></p>
 <h4 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h4>
 <p>Process creation is <strong>time consuming</strong> and <strong>resource intensive</strong>. It is generally more efficient to use one process that contains multiple threads.</p>
 <h4 id="benefits">Benefits<a class="headerlink" href="#benefits" title="Permanent link">&para;</a></h4>
@@ -571,7 +571,7 @@
 <h3 id="2-multicore-programming">2 Multicore Programming<a class="headerlink" href="#2-multicore-programming" title="Permanent link">&para;</a></h3>
 <p>On a system with a <strong>single</strong> computing core, concurrency merely means that the execution of the threads will be <strong>interleaved</strong> over time, because the processing core is capable of executing only one thread at a time.</p>
 <p>On a system with <strong>multiple</strong> cores, however, concurrency means that some threads can run in <strong>parallel</strong>, because the system can assign a separate thread to each core.</p>
-<p><img alt="concurrency of single and multiple core" src="ch4/concurrency%20of%20single%20and%20multiple%20core.png" /></p>
+<p><img alt="concurrency of single and multiple core" src="../figures/concurrency_of_single_and_multiple_core.png" /></p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p><strong><em>Concurrency</em></strong> v.s. <strong><em>Parallelism</em></strong></p>
@@ -595,7 +595,7 @@
 <li><strong>Task parallelism</strong> involves distributing not data but tasks (threads) across multiple computing cores.</li>
 <li>However, data and task parallelism are not mutually exclusive, and an application may in fact use a hybrid of these two strategies.</li>
 </ul>
-<p><img alt="data and task parallelism" src="ch4/data%20and%20task%20parallellism.png" /></p>
+<p><img alt="data and task parallelism" src="../figures/DataAndTaskParallism.png" /></p>
 <h3 id="3-multithreading-models">3 Multithreading Models<a class="headerlink" href="#3-multithreading-models" title="Permanent link">&para;</a></h3>
 <p>Support for threads may be provided either at the user level, for <strong><em>user threads</em></strong>, or by the kernel, for <strong><em>kernel threads</em></strong>. </p>
 <ul>
@@ -611,7 +611,7 @@
 <li>Thread management is done by the thread library in user space, so it is efficient. 线程管理由线程库在用户空间进行的，因而效率比较高。</li>
 <li>Also, because only one thread can access the kernel at a time, multiple threads are unable to run in parallel on multicore systems. 因为任意时刻只能有一个线程能够访问内核，多个线程不能并行运行在多处理器上。</li>
 </ul>
-<p><img alt="many_to_one_mode" src="many_to_one_model.png" /></p>
+<p><img alt="many_to_one_mode" src="../figures/many_to_one_model.png" /></p>
 <h4 id="one-to-one-model">One-to-One Model<a class="headerlink" href="#one-to-one-model" title="Permanent link">&para;</a></h4>
 <p>The <strong>one-to-one model</strong>(一对一模型) maps each user thread to a kernel thread. 一对一模型每个用户线程映射到一个内核线程。</p>
 <ul>
@@ -619,7 +619,7 @@
 <li>It also allows multiple threads to run in parallel on multiprocessors. 它也允许多个线程能并行运行在多处理器系统上。</li>
 <li>The only drawback to this model is that creating a user thread requires creating the corresponding kernel thread, and a large number of kernel threads may <strong><em>burden the performance of a system</em></strong>. 这种模型的唯一缺点是每创建一个用户线程就会创建一个相应的内核线程, 大量内核线程会影响系统性能。</li>
 </ul>
-<p><img alt="one_to_one_mode" src="one_to_one_model.png" /></p>
+<p><img alt="one_to_one_mode" src="../figures/one_to_one_model.png" /></p>
 <h4 id="many-to-many-model">Many-to-Many Model<a class="headerlink" href="#many-to-many-model" title="Permanent link">&para;</a></h4>
 <p>The <strong>many-to-many model</strong>(多对多模型) multiplexes many user-level threads to a smaller or equal number of kernel threads. 多对多模型多路复用了许多用户线程到同样数量或更小数量的内核线程上。</p>
 <ul>
@@ -628,7 +628,7 @@
 <li>Also, when a thread performs a blocking system call, the kernel can schedule another thread for execution. 而且当一个线程执行阻塞系统调用时，内核能调度另一个线程来执行。</li>
 <li>In practice it is <strong><em>difficult to implement</em></strong>. 实际上难以实施。</li>
 </ul>
-<p><img alt="many_to_many_mode" src="many_to_many_model.png" /></p>
+<p><img alt="many_to_many_mode" src="../figures/many_to_many_model.png" /></p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p><strong>Most operating systems now use the one-to-one model.</strong></p>
@@ -774,8 +774,8 @@
 <li>Each LWP is attached to a kernel thread.</li>
 <li>If a kernel thread blocks, the LWP blocks as well. Up the chain, the user-level thread attached to the LWP also blocks.</li>
 </ul>
-<p><img alt="light-weight process" src="ch4/light-weight%20process.png" /></p>
-<p><img alt="" src="15320591793590.jpg" /></p>
+<p><img alt="light-weight process" src="../figures/Light-Weight_process.png" /></p>
+<p><img alt="" src="../figures/15320591793590.jpg" /></p>
 <p>where K denotes kernel threads and  P denotes Process.</p>
 <p>下面是一个测试LINUX中LWP的C程序</p>
 <p> <div class=codehilite><pre><span class=cm>/* filename: test_LWP.c */</span>
@@ -829,7 +829,7 @@ vagrant   2028  1839  2028  0    1 04:18 pts/1    00:00:00 ps -efL
 </ul>
 <p><strong>Example</strong> [<a href="http://www.it.uu.se/education/course/homepage/os/vt18/module-4/implementing-threads/">ref</a>]: </p>
 <p>Let’s study an example of how scheduler activations can be used. The kernel has allocated one kernel thread (1) to a process with three user-level threads (2). The three user level threads take turn executing on the single kernel-level thread.</p>
-<p><img alt="scheduler-activations-1-2" src="scheduler-activations-1.png" /></p>
+<p><img alt="scheduler-activations-1-2" src="../figures/scheduler-activations-1.png" /></p>
 <ul>
 <li>(3) The executing thread makes a <strong>blocking system call</strong>.</li>
 <li>(4) And the the kernel blocks the calling user-level thread and the kernel-level thread used to execute the user-level thread .</li>
@@ -837,7 +837,7 @@ vagrant   2028  1839  2028  0    1 04:18 pts/1    00:00:00 ps -efL
 <li>(6) Upcall: the kernel notifies the user-level thread manager which user-level thread that is now blocked and that a new kernel-level thread is available. </li>
 <li>(7) The user-level thread manager move the other threads to the new kernel thread and resumes one of the ready threads.</li>
 </ul>
-<p><img alt="scheduler-activations-3-7" src="scheduler-activations.png" /></p></div>
+<p><img alt="scheduler-activations-3-7" src="../figures/scheduler-activations.png" /></p></div>
         </div>
 
         <footer class="col-md-12">

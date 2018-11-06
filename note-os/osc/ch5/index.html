@@ -553,7 +553,7 @@
 <li>Process execution begins with a <strong>CPU burst</strong>, which is followed by an <strong>I/O burst</strong> and so on. 进程执行从CPU区间开始，在这之后是I/O区间。</li>
 </ul>
 <p>进程在CPU区间和I/O区间之间切换：</p>
-<p><img alt="alternating sequence of CPU and I:O bursts" src="ch5/alternating%20sequence%20of%20CPU%20and%20I:O%20bursts.png" /></p>
+<p><img alt="alternating sequence of CPU and I:O bursts" src="../figures/alternating_sequence_of_CPU_and_IO_bursts.png" /></p>
 <p>The durations of CPU bursts tend to have a frequency curve similar to the figure below. </p>
 <ul>
 <li>The curve is generally characterized as <strong>exponential</strong> or hyperexpoential(超指数).</li>
@@ -562,7 +562,7 @@
 <li>A CPU-bound program might have a few long CPU bursts.CPU密集程序可能有少量的长CPU区间。</li>
 <li>The distribution can be important when implementing a CPU-scheduling algorithm. 分布有助于选择合适的CPU调度算法。</li>
 </ul>
-<p><img alt="Histogram of CPU-burst durations" src="ch5/Histogram%20of%20CPU-burst%20durations.png" /></p>
+<p><img alt="Histogram of CPU-burst durations" src="../figures/Histogram_of_CPU_burst_durations.png" /></p>
 <h4 id="cpu-scheduler">CPU Scheduler<a class="headerlink" href="#cpu-scheduler" title="Permanent link">&para;</a></h4>
 <p>Whenever the CPU becomes idle, the operating system must select one of the processes in the <strong>ready queue</strong>(就绪队列) to be executed. 每当CPU空闲时，操作系统就必须从就绪队列中选择一个进程来执行。</p>
 <ul>
@@ -591,7 +591,7 @@
 <li>Jumping to the proper location in the user program to resume that program</li>
 </ul>
 <p><strong>Dispatch latency</strong> (分派延迟) is the time it takes for the dispatcher to stop one process and start another running.</p>
-<p><img alt="the role of dispatcher" src="ch5/the%20role%20of%20dispatcher.png" /></p>
+<p><img alt="the role of dispatcher" src="../figures/the_role_of_dispatcher.png" /></p>
 <h3 id="2-scheduling-criteria">2 Scheduling Criteria<a class="headerlink" href="#2-scheduling-criteria" title="Permanent link">&para;</a></h3>
 <p>Scheduling criteria（调度准则) include the following:</p>
 <ul>
@@ -650,7 +650,7 @@
 <h4 id="multilevel-queue-scheduling">Multilevel Queue Scheduling<a class="headerlink" href="#multilevel-queue-scheduling" title="Permanent link">&para;</a></h4>
 <p>For <strong>multilevel queue scheduling</strong>(多级队列调度), there are separate queues for each distinct priority, and priority scheduling simply schedules the process in the highest-priority queue.</p>
 <p>A multilevel queue scheduling algorithm can be used to partition processes into several separate queues based on the process type:</p>
-<p><img alt="multilevel-queue-scheduling" src="multilevel-queue-scheduling.png" /></p>
+<p><img alt="multilevel-queue-scheduling" src="../figures/multilevel-queue-scheduling.png" /></p>
 <p>In addition, there must be scheduling <em><em>among the queues</em></em> :</p>
 <ul>
 <li><strong>Fixed-priority preemptive scheduling</strong>(固定优先级抢占调度): Each queue has absolute priority over lower-priority queues<ul>
@@ -781,21 +781,21 @@
 </ul>
 </li>
 </ul>
-<p><img alt="organization of ready queues" src="ch5/organization%20of%20ready%20queues.png" /></p>
+<p><img alt="organization of ready queues" src="../figures/organization_of_ready_queues.png" /></p>
 <h4 id="multicore-processors">Multicore Processors<a class="headerlink" href="#multicore-processors" title="Permanent link">&para;</a></h4>
 <p><em>Issue</em> : memory stalls occurs when a processor accesses memory, it spends a significant amount of time waiting for the data to become available.</p>
 <ul>
 <li>Occurs primarily because modern processors operate at much faster speeds than memory</li>
 <li>Occur because of a cache miss as well</li>
 </ul>
-<p><img alt="memory stall" src="ch5/memory%20stall.png" /></p>
+<p><img alt="memory stall" src="../figures/memory_stall.png" /></p>
 <p><em>Solution</em> : many recent hardware designs have implemented multithreaded processing cores in which two (or more) <strong>hardware threads</strong>(硬件线程) are assigned to each core.</p>
 <ul>
 <li>If one hardware thread stalls while waiting for memory, the core can switch to another thread.</li>
 <li>From an operating system perspective, each hardware thread maintains its architectural state, such as instruction pointer and register set, and thus appears as a logical CPU that is available to run a software thread. This technique is known as <strong>chip multithreading</strong> (CMT, 芯片多线程). Intel use the term <strong>hyper-threading</strong>(超线程).</li>
 <li><strong>NOTE</strong>: The resources of the physical core (such as caches and pipelines) are shared among its hardware threads, and a processing core can only execute <strong>one</strong> hardware thread at a time.</li>
 </ul>
-<p><img alt="Chip multithreading" src="ch5/Chip%20multithreading.png" /></p>
+<p><img alt="Chip multithreading" src="../figures/Chip_multithreading.png" /></p>
 <p>Two levels of scheduling needed:</p>
 <ul>
 <li>It chooses which software thread to run on each hardware thread.<ul>
@@ -808,7 +808,7 @@
 </ul>
 </li>
 </ul>
-<p><img alt="two levels of scheduling" src="ch5/two%20levels%20of%20scheduling.png" /></p>
+<p><img alt="two levels of scheduling" src="../figures/two_levels_of_scheduling.png" /></p>
 <h4 id="load-balancing">Load Balancing<a class="headerlink" href="#load-balancing" title="Permanent link">&para;</a></h4>
 <p><strong>Load balancing</strong>(负载均衡) attempts to keep the workload evenly distributed across all processors in an SMP system.</p>
 <p>Two general approaches to load balancing:</p>
@@ -825,7 +825,7 @@
 <li>With private, per-processor ready queues, a thread is always scheduled on the same processor and can therefore benefit from the contents of a warm cache.</li>
 </ul>
 <p>The main-memory architecture of a system can affect processor affinity issues as well. <strong>Non-uniform memory access</strong>(NUMA, 非一致性内存访问) where there are two physical processor chips each with their own CPU and local memory. A CPU has faster access to its local memory than to memory local to another CPU.</p>
-<p><img alt="numa and CPU scheduling" src="ch5/numa%20and%20CPU%20scheduling.png" /></p>
+<p><img alt="numa and CPU scheduling" src="../figures/numa_and_CPU_scheduling.png" /></p>
 <p>Interestingly, load balancing often <strong>counteracts</strong> the benefits of processor affinity.</p>
 <h3 id="6-real-time-cpu-scheduling">6 Real-Time CPU Scheduling<a class="headerlink" href="#6-real-time-cpu-scheduling" title="Permanent link">&para;</a></h3>
 <p>Two kinds of real-time systems exist:</p>
@@ -898,11 +898,11 @@
 <li>discover the leftmost node will require <span><span class="MathJax_Preview">O(\log N)</span><script type="math/tex">O(\log N)</script></span> operations.</li>
 <li>Linux scheduler caches the leftmost node in the variable <code class="codehilite">rb_leftmost</code>, and requires only retrieving the cached value.</li>
 </ul>
-<p><img alt="" src="15327413379278.gif" /></p>
+<p><img alt="" src="../figures/15327413379278.gif" /></p>
 <h4 id="load-balancing-on-numa-systems">Load Balancing on NUMA systems<a class="headerlink" href="#load-balancing-on-numa-systems" title="Permanent link">&para;</a></h4>
 <p>Problem: On NUMA systems, migrating a thread may result in a memory access penalty due to either having to invalidate cache contents or, incurring longer memory access times.</p>
 <p>SOLUTION: Linux identifies a hierarchical system of <strong>scheduling domains</strong>(调度域) ——  a set of CPU cores that can be balanced against one another.</p>
-<p><img alt="NUMA-aware load balancing with Linux CFS schedule" src="figures/NUMA-aware%20load%20balancing%20with%20Linux%20CFS%20scheduler.png" /></p>
+<p><img alt="NUMA-aware load balancing with Linux CFS schedule" src="../figures/NUMA-aware_load_balancing_with_Linux_CFS_scheduler.png" /></p>
 <p>The cores in each scheduling domain are grouped according to how they share the resources of the system.</p>
 <ul>
 <li>Pairs of cores share a level 2 (L2) cache and are thus organized into separate domain 0 and domain 1 .</li>
