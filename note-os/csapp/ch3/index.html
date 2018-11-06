@@ -543,7 +543,7 @@
 <p>Intel用术语"字(word)"表示16位数据类型，32位数称为"双字(double words)"，64位数称为"四字(quad words)"。</p>
 <h3 id="4">4 访问信息<a class="headerlink" href="#4" title="Permanent link">&para;</a></h3>
 <p>一个x86-64的CPU包含一组16个存储64位值的<strong>通用目的寄存器</strong>，用来存储整数数据和指针。</p>
-<p><img alt="通用目的寄存器" src="http://or9a8nskt.bkt.clouddn.com/通用目的寄存器.png" /></p>
+<p><img alt="通用目的寄存器" src="../figures/register.png" /></p>
 <h4 id="41">4.1 操作数指示符<a class="headerlink" href="#41" title="Permanent link">&para;</a></h4>
 <p>大多数指令有一个或多个操作数(operand)，指示出执行一个操作中要使用的源数据值，以及放置结果的目的位置。x86-64支持多种操作数格式：</p>
 <ul>
@@ -551,18 +551,18 @@
 <li>寄存器(register)，表示某个寄存器的内容。用符号<span><span class="MathJax_Preview">r_a</span><script type="math/tex">r_a</script></span>来表示任意寄存器<span><span class="MathJax_Preview">a</span><script type="math/tex">a</script></span>，用引用<span><span class="MathJax_Preview">R[r_a]</span><script type="math/tex">R[r_a]</script></span>表示寄存器的值</li>
 <li>内存引用。根据计算出来的地址(通常称为有效地址)访问某个内存位置。因为将内存看成一个很大的字节数组，用符号<span><span class="MathJax_Preview">M_b[Addr]</span><script type="math/tex">M_b[Addr]</script></span>表示对存储在内存中从地址<span><span class="MathJax_Preview">Adrr</span><script type="math/tex">Adrr</script></span>开始的<span><span class="MathJax_Preview">b</span><script type="math/tex">b</script></span>字节值的引用。</li>
 </ul>
-<p><img alt="操作数的类型和格式" src="http://or9a8nskt.bkt.clouddn.com/操作数的类型和格式.png" /></p>
+<p><img alt="操作数的类型和格式" src="../figures/Operand.png" /></p>
 <h4 id="42">4.2 数据传送指令<a class="headerlink" href="#42" title="Permanent link">&para;</a></h4>
 <p>数据传送指令--MOV类--把数据从原位置复制到目的位置。MOV类由四条指令组成：movb、movw、movl、movq。这些指令都执行同样的操作，主要区别是它们操作的数据大小不同：分别是1、2、4和8字节。</p>
 <p>数据传送指令的两个操作数不能都指向内存位置。将一个值从内存位置复制到另一个内存位置需要两条指令 - 第一条指令将源值加载到寄存器中，第二条指令将该寄存器值写入目的位置。</p>
-<p><img alt="数据传送指令" src="http://or9a8nskt.bkt.clouddn.com/数据传送指令.png" /></p>
+<p><img alt="数据传送指令" src="../figures/mov.png" /></p>
 <p>MOVZ类中的指令把目的中剩余的字节填充为0；而MOVS类中的指令通过符号扩展来填充，即把源操作数的最高位进行复制。</p>
 <h4 id="43">4.3 压入和弹出栈数据<a class="headerlink" href="#43" title="Permanent link">&para;</a></h4>
 <p>pushq指令把数据压入到栈上，而popq指令弹出数据。</p>
-<p><img alt="出栈和入栈指令" src="http://or9a8nskt.bkt.clouddn.com/出栈和入栈指令.png" /></p>
+<p><img alt="" src="../figures/pushqPopq.png" /></p>
 <h3 id="5">5 算数和逻辑操作<a class="headerlink" href="#5" title="Permanent link">&para;</a></h3>
 <p>操作被分为四组：加载有效地址、一元操作、二元操作和移位。</p>
-<p><img alt="整数算数操作指令" src="http://or9a8nskt.bkt.clouddn.com/整数算数操作指令.png" /></p>
+<p><img alt="" src="../figures/integerOpp.png" /></p>
 <p><strong>加载有效地址</strong>(load effective address)指令leaq实际上是movq指令的变形，将有效地址写入到目的操作数。</p>
 <p>另外一个leaq的作⽤就是⽤来作为算术运算。例如，如果寄存器<code class="codehilite"><span class="nf">%rdx</span></code>的值为x，那么指令<code class="codehilite">leaq 7(%rdx, %rdx, 4), %rax</code>将设置寄存器<code class="codehilite"><span class="nf">%rax</span></code>的值为5x+7。</p>
 <p>一元操作只有一个操作数，即是源又是目的。这个操作数可以是一个寄存器，也可以是一个内存位置。比如说，指令<code class="codehilite">incq(%rsp)</code>会使栈顶的8字节元素加1。</p>
@@ -576,7 +576,7 @@
 <li>OF：溢出标志。最近的操作导致一个补码溢出 -- 正溢出或负溢出。</li>
 </ul>
 <p>除了第6小节所提及的指令会设置条件码之外，还有两类指令只设置条件码而不改变任何其他寄存器的值，这两类指令都支持四种长度变种后缀(b, w, l, q)</p>
-<p><img alt="比较和测试指令" src="figures/%E6%AF%94%E8%BE%83%E5%92%8C%E6%B5%8B%E8%AF%95%E6%8C%87%E4%BB%A4.png" /></p>
+<p><img alt="比较和测试指令" src="../figures/cmpAndTest.png" /></p>
 <h3 id="7">7 过程<a class="headerlink" href="#7" title="Permanent link">&para;</a></h3>
 <p><strong>过程</strong>(procedure)是软件中一种很重要的抽象。它提供了一种封装代码的方式，用一组制定的参数和一个可选的返回值实现了某这功能。然后，可以在程序中不同的地方调用这个函数。不同编程语言中，过程的形式多样：函数(function)、方法(method)、子例程(subroutine)、处理函数(handler)等等。</p>
 <p>假设过程P调用过程Q，Q执行后返回到P，包含下面一个或多个机制：</p>
@@ -605,7 +605,7 @@
 </li>
 <li>Old frame pointer (optional)</li>
 </ul>
-<p><img alt="stack_frame" src="http://or9a8nskt.bkt.clouddn.com/stack_frame.png" /></p></div>
+<p><img alt="" src="../figures/stack_frame.png" /></p></div>
         </div>
 
         <footer class="col-md-12">

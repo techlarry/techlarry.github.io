@@ -553,9 +553,9 @@
 <h3 id="1">1 物理/虚拟寻址<a class="headerlink" href="#1" title="Permanent link">&para;</a></h3>
 <p>主存是由连续的<strong>字节大小</strong>的单元组成的数组，每字节都有一个唯一的<strong>物理地址</strong>(Physical Adress)。CPU使用物理地址访问内存的方式称为<strong>物理寻址</strong>(Physical adressing)。</p>
 <p>早期的PC以及数字信号处理器等使用物理寻址，下面是物理寻址的示意图：</p>
-<p><img alt="physical_address" src="http://or9a8nskt.bkt.clouddn.com/physical_address.png" /></p>
+<p><img alt="physical_address" src="../figures/physical_address.png" /></p>
 <p>现代处理器通过生成一个<strong>虚拟地址</strong>(Virtual Address)来访问主存，虚拟地址经过<strong>地址翻译</strong>(Address Translation)转换为物理地址。地址翻译由CPU内的<strong>内存管理单元</strong>(Memory Management Unit, <code class="codehilite">MMU</code>)负责.</p>
-<p><img alt="virtual_memory" src="http://or9a8nskt.bkt.clouddn.com/virtual_memory.png" /></p>
+<p><img alt="virtual_memory" src="../figures/virtual_memory.png" /></p>
 <p>虚拟内存充当着三个角色：</p>
 <ul>
 <li>作为缓存的工具，可以更有效率的使用内存：使用DRAM当做部分的虚拟地址空间的缓存</li>
@@ -577,11 +577,11 @@
 <li><strong>缓存的</strong>(Cached): 当前已缓存在物理内存中的已分配页。</li>
 <li><strong>未缓存的</strong>(Uncached): 未缓存在物理内存中的已分配页。</li>
 </ul>
-<p><img alt="vm_as_cache" src="http://or9a8nskt.bkt.clouddn.com/vm_as_cache.png" /></p>
+<p><img alt="vm_as_cache" src="../figures/vm_as_cache.png" /></p>
 <p>那么具体是怎么判断一个虚拟页的状态呢？怎么知道虚拟页放在哪个物理页中呢？</p>
 <p>物理内存中存在一个叫<strong>页表</strong>(page table)的数据结构，由操作系统负责。页表将虚拟页映射到物理页，每次内存管理单元中的<strong>地址翻译硬件</strong>将虚拟地址转换为物理地址时都会读取页表。</p>
 <p>页表其实是一个<strong>页表条目</strong>(Page Table Entry, PTE)的数组。页表条目包含一个<em>有效位(</em>valid bit)和一个<span><span class="MathJax_Preview">n</span><script type="math/tex">n</script></span>位地址字段。</p>
-<p><img alt="page_table" src="http://or9a8nskt.bkt.clouddn.com/page_table.jpg" /></p>
+<p><img alt="page_table" src="../figures/page_table.jpg" /></p>
 <p>在虚拟内存的习惯说法中，DRAM缓存命中/不命中，特称为<strong>页命中</strong>/<strong>缺页</strong>(Page Hit/ Fault)。</p>
 <h4 id="22">2.2 作为内存管理的工具<a class="headerlink" href="#22" title="Permanent link">&para;</a></h4>
 <p>操作系统为每个进程提供了一个独立的页表，也就是提供了一个独立的虚拟地址空间。多个虚拟页面可以映射到同一个共享物理页面上。虚拟内存简化了链接和加载、代码和数据共享、以及应用程序的内存分配。</p>
@@ -592,7 +592,7 @@
 <li>READ/WRITE位控制读和写的访问</li>
 <li>EXEC位控制执行的访问</li>
 </ul>
-<p><img alt="vm_protection_tool" src="http://or9a8nskt.bkt.clouddn.com/vm_protection_tool.png" /></p>
+<p><img alt="vm_protection_tool" src="../figures/vm_protection_tool.jpg" /></p>
 <p>如果违反许可条件，那么就触发段错误(segmentation fault)。</p>
 <h3 id="3">3 地址翻译<a class="headerlink" href="#3" title="Permanent link">&para;</a></h3>
 <p>地址翻译是虚拟地址空间和物理地址空间之间的映射。CPU中的<strong>页表基址寄存器</strong>(Page Table Base Register, PTBR)指向当前页表。</p>
@@ -601,7 +601,7 @@
 <li><span><span class="MathJax_Preview">m</span><script type="math/tex">m</script></span>位的物理地址包含两个部分：一个<span><span class="MathJax_Preview">p</span><script type="math/tex">p</script></span>位的<strong>物理页面偏移</strong>(Physical Page Offset, PPO)和一个<span><span class="MathJax_Preview">m-p</span><script type="math/tex">m-p</script></span>位的<strong>物理页号</strong>(Physical Page Number, PPN)。</li>
 <li>物理页面偏移和虚拟页面偏移是相通的。</li>
 </ul>
-<p><img alt="Address Translation With a Page Table" src="figures/Address%20Translation%20With%20a%20Page%20Table.png" /></p>
+<p><img alt="Address Translation With a Page Table" src="../figures/AddressTranslationWithAPageTable.png" /></p>
 <h4 id="tlb">利用TLB加速地址翻译<a class="headerlink" href="#tlb" title="Permanent link">&para;</a></h4>
 <p>每次CPU产生一个虚拟地址，MMU就必须查阅一个PTE。为了试图消除这种开销，在MMU中包含了一个关于PTE的缓存，称为<strong>转译后备缓冲器</strong>(Translation Lookaside Buffer, TLB)</p>
 <p><img alt="TLB" src="../figures/TLB.png" /></p>
@@ -613,11 +613,11 @@
 <li>第<span><span class="MathJax_Preview">j</span><script type="math/tex">j</script></span>级页表中的每个PTE都指向第<span><span class="MathJax_Preview">j+1</span><script type="math/tex">j+1</script></span>级的某个页表的基址。</li>
 <li>第<span><span class="MathJax_Preview">k</span><script type="math/tex">k</script></span>级页表中的每个PTE包含某个物理页面的PPN。</li>
 </ul>
-<p><img alt="Translation with a k-­level Page Table" src="figures/Translation%20with%20a%20k-%C2%ADlevel%20Page%20Table.png" /></p>
+<p><img alt="Translation with a k-­level Page Table" src="../figures/TranslationWithAK-­levelPageTable.png" /></p>
 <h3 id="4-core-i7">4 core i7内存系统<a class="headerlink" href="#4-core-i7" title="Permanent link">&para;</a></h3>
 <h4 id="core-i7">Core i7简介<a class="headerlink" href="#core-i7" title="Permanent link">&para;</a></h4>
 <p>Core i7在2008年冬季发布，基于全新Nehalem(/nəˈheɪləm/)架构，它的芯片结构如下所示：</p>
-<p><img alt="Intel Core i7 processor internal die photograph" src="figures/Intel%20Core%20i7%20processor%20internal%20die%20photograph.png" /></p>
+<p><img alt="Intel Core i7 processor internal die photograph" src="../figures/IntelCoreI7ProcessorInternalDiePhotograph.png" /></p>
 <p>现在的Core i7支持48位(256TB)虚拟地址空间和52位(4PB)物理地址空间。</p>
 <p>下图给出了Core i7内存系统的重要部分。处理器封装(Processor package)包括四个核、一个大的所有核共享的L3高速缓存，以及一个DDR3内存控制器。 每一个核包含一个层次结构的TLB、一个层次结构的数据核指令高速缓存，以及一组快速的点到点链路(基于QuickPath技术)。</p>
 <ul>
@@ -625,12 +625,12 @@
 <li>L1、L2、L3高速缓存，块大小为64字节。</li>
 <li>L1、L2是8路组相联的，L3是16组相联的。</li>
 </ul>
-<p><img alt="Intel Core i7 Memory System" src="figures/Intel%20Core%20i7%20Memory%20System.png" /></p>
+<p><img alt="Intel Core i7 Memory System" src="../figures/IntelCoreI7MemorySystem.png" /></p>
 <h4 id="core-i7_1">Core i7地址翻译<a class="headerlink" href="#core-i7_1" title="Permanent link">&para;</a></h4>
 <p>Core i7采用四级页表层次结构。每个进程都有它自己私有的页表层次结构。CR3控制寄存器指向第一级页表(L1)的起始位置。</p>
-<p><img alt="Core i7 Address Translation" src="figures/Core%20i7%20Address%20Translation.png" /></p>
+<p><img alt="Core i7 Address Translation" src="../figures/CoreI7AddressTranslation.png" /></p>
 <p>Core i7第1-3级页表条目格式：</p>
-<p><img alt="Core i7 Level 1-­‐3 Page Table Entries" src="figures/Core%20i7%20Level%201-%C2%AD%E2%80%903%20Page%20Table%20Entries.png" /></p>
+<p><img alt="Core i7 Level 1-­‐3 Page Table Entries" src="../figures/CoreI7Level1-3PageTableEntries.png" /></p>
 <p>Each entry references a 4K child page table. <strong>Significant fields</strong>:</p>
 <ul>
 <li><strong>P</strong>: Child page table present in physical memory (1) or not (0).</li>
@@ -643,13 +643,13 @@
 <li><strong>XD</strong>: Disable or enable instruction fetches from all pages reachable from this PTE.</li>
 </ul>
 <p>Core i7第4级页表条目格式：</p>
-<p><img alt="Core i7 Level 4 Page Table Entries" src="figures/Core%20i7%20Level%204%20Page%20Table%20Entries.png" /></p>
+<p><img alt="Core i7 Level 4 Page Table Entries" src="../figures/CoreI7Level4PageTableEntries.png" /></p>
 <ul>
 <li><strong>Page physical base address</strong>: 40 <em>most significant bits</em> of physical page address (forces pages to be 4KB aligned)</li>
 <li><strong>D</strong>: <em>Dirty bit</em> (脏位, or modify bit，set by MMU on <em>writes</em>, cleared by software)</li>
 </ul>
 <p>下图给出了Core i7 MMU如何使用四级页表将虚拟地址翻译成物理地址。36位VPN被划分为四个9位的片，每个片被用作一个页表的偏移量。VPN1提供到一个L1 PET的偏移量，这个PTE包含L2页表的基地址。VPN2提供到一个L2 PET的偏移量，以此类推。</p>
-<p><img alt="Core i7 Page Table Translation" src="figures/Core%20i7%20Page%20Table%20Translation.png" /></p>
+<p><img alt="Core i7 Page Table Translation" src="../figures/CoreI7PageTableTranslation.png" /></p>
 <h3 id="5-linux">5 Linux虚拟内存系统<a class="headerlink" href="#5-linux" title="Permanent link">&para;</a></h3>
 <p>Linux为每个进程维护了一个单独的虚拟地址空间。Linux将虚拟内存组织成一些<strong>区域</strong>的集合。一个区域就是已分配的虚拟内存的连续片。</p>
 <p>Linux虚拟地址空间由如下几个区域组成：</p>
@@ -662,7 +662,7 @@
 <li>栈（<code class="codehilite">Stack</code>）: 函数中的局部变量以及在函数调用过程中产生的临时变量都保存在此段中，具体见下面一节。</li>
 <li>内核虚拟内存：包含内核中的代码和数据结构。</li>
 </ul>
-<p><img alt="Virtual Address Space of a Linux Process" src="figures/Virtual%20Address%20Space%20of%20a%20Linux%20Process.png" /></p>
+<p><img alt="Virtual Address Space of a Linux Process" src="../figures/VirtualAddressSpaceOfALinuxProcess.png" /></p>
 <p>下面是程序示意：</p>
 <p> <div class=codehilite><pre> <span class=cp>#include</span><span class=cpf>&lt;stdio.h&gt;    </span><span class=cp></span>
  <span class=cp>#include</span> <span class=cpf>&lt;malloc.h&gt;    </span><span class=cp></span>
@@ -711,7 +711,7 @@
 </pre></div></p>
 <h4 id="linux">Linux是如何组织虚拟内存的<a class="headerlink" href="#linux" title="Permanent link">&para;</a></h4>
 <p>那么Linux具体是怎么组织虚拟内存的呢？Linux内核为系统中的每个进程维护一个单独的任务结构体(<code class="codehilite">task_struct</code>, 在<code class="codehilite">sched.h</code>头文件中)。<code class="codehilite">task_struct</code>中的元素包含运行该进程所需要的所有信息(PID、指向用户栈的指针、可执行目标文件的名字、以及程序计数器)。</p>
-<p><img alt="vm_linux" src="http://or9a8nskt.bkt.clouddn.com/vm_linux.png" /></p>
+<p><img alt="task_struct" src="../figures/task_struct.png" /></p>
 <p><code class="codehilite">task_struct</code>中的一个元素指向<code class="codehilite">mm_struct</code>，它描述了虚拟内存的当前状态。<code class="codehilite">pgd</code>指向第一级页表的基址，而<code class="codehilite">mmap</code>指向一个<code class="codehilite">vm_area_struct</code>(区域结构, 定义在<code class="codehilite">mm_types.h</code>)的链表。每个区域结构链表都描述了虚拟地址空间的一个区域，包含以下字段：</p>
 <ul>
 <li><code class="codehilite">vm_start</code>: 指向区域的起始处</li>
@@ -726,7 +726,7 @@
 <li>虚拟地址A是合法的吗？-&gt; 段错误(segment fault)</li>
 <li>试图进行的内存访问是合法的吗？ -&gt; 保护异常(也引发段错误)</li>
 </ul>
-<p><img alt="Linux Page Fault Handling " src="figures/Linux%20Page%20Fault%20Handling%20.png" /></p>
+<p><img alt="Linux Page Fault Handling " src="../figures/LinuxPageFaultHandling.png" /></p>
 <h3 id="6">6 内存映射<a class="headerlink" href="#6" title="Permanent link">&para;</a></h3>
 <p>Linux 通过将一个虚拟内区域与一个磁盘上的<em>对象</em>(object)关联起来，以初始化这个虚拟内存区域的内容，这个过程称为<strong>内存映射</strong>(memory mapping).</p>
 <p>一旦一个虚拟页面被初始化了，它就在一个由内核维护的专门的<strong>交换文件</strong>(swap file)之间换来换去。交换文件也叫做<strong>交换空间</strong>(swap space)或交换区域(swap area)。</p>
@@ -797,9 +797,9 @@
 </ul>
 <p>最大化吞吐率和最大化利用率之间是相互 <em>牵制</em> 的，分配器设计的目标是在这两者之间找到一个适当的平衡。</p>
 <p>造成利用率很低的主要原因是<strong>碎片</strong>(fragmentation)现象。当有效载荷比块要小时，发生<strong>内部碎片</strong>(Internal fragmentation)，引起的原因有：对齐等。</p>
-<p><img alt="internal_fragmentation" src="http://or9a8nskt.bkt.clouddn.com/internal_fragmentation.png" /></p>
+<p><img alt="" src="../figures/internal_fragmentation.png" /></p>
 <p>当即使有足够的累积的块内存，但是没有单一块能够满足需求时，发生<strong>外部碎片</strong>(external fragmentation)：</p>
-<p><img alt="external_fragmentation" src="http://or9a8nskt.bkt.clouddn.com/external_fragmentation.png" /></p>
+<p><img alt="" src="../figures/external_fragmentation.png" /></p>
 <p>外部碎片还取决于将来的请求，例如上图，如果最后的p4请求4个字节呢？也就不会发生碎片。正因为外部碎片难以量化且不可能预测，所以分配器通常采用启发式策略来试图维持少量的大空闲块，而不是维持大量的小空闲块。</p>
 <h4 id="723">7.2.3 放置已分配的块<a class="headerlink" href="#723" title="Permanent link">&para;</a></h4>
 <p>当一个应用请求一个<span><span class="MathJax_Preview">k</span><script type="math/tex">k</script></span>字节的块时，分配器搜索空闲链表，查找一个足够大可以放置所请求块的空闲块。分配器的<strong>放置策略</strong>(placement policy)有<strong>首次适配</strong>(first fit)、<strong>下一次适配</strong>(next fit)和<strong>最佳适配</strong>(best fit)。</p>
@@ -815,10 +815,10 @@
 <li>分离式空闲列表 Segregated Free List</li>
 </ul>
 <h4 id="731">7.3.1 隐式空闲列表<a class="headerlink" href="#731" title="Permanent link">&para;</a></h4>
-<p><img alt="implicit_list" src="http://or9a8nskt.bkt.clouddn.com/implicit_list.png" /></p>
+<p><img alt="implicit_list" src="../figures/implicit_list.png" /></p>
 <p>隐式空闲链表优点是简单，缺点是操作开销大。因为无论是分配还是释放块，都需要对隐式空闲列表进行搜索，复杂度是<span><span class="MathJax_Preview">O(n)</span><script type="math/tex">O(n)</script></span>，<span><span class="MathJax_Preview">n</span><script type="math/tex">n</script></span>是已分配块和空闲块的总数。</p>
 <h4 id="732">7.3.2 显式空闲列表<a class="headerlink" href="#732" title="Permanent link">&para;</a></h4>
-<p><img alt="explict_list" src="http://or9a8nskt.bkt.clouddn.com/explict_list.png" /></p>
+<p><img alt="explict_list" src="../figures/explict_list.png" /></p>
 <h4 id="733">7.3.3 分离式空闲列表<a class="headerlink" href="#733" title="Permanent link">&para;</a></h4>
 <h3 id="8">8 垃圾收集<a class="headerlink" href="#8" title="Permanent link">&para;</a></h3>
 <p><strong>垃圾收集器</strong>(garbage collector)是一种动态内存分配器，它自动释放程序不再需要的已分配块。这些块被称作<em>垃圾</em>(garbage)。自动回收存储的过程叫做<em>垃圾收集</em>(garbage collection)。</p>
@@ -831,7 +831,7 @@
 <li>当存在一条从任意根节点出发并到达<span><span class="MathJax_Preview">p</span><script type="math/tex">p</script></span>的有向路径时，节点<span><span class="MathJax_Preview">p</span><script type="math/tex">p</script></span>是<em>可达</em>的。</li>
 <li>垃圾收集器维护可达图的某种表示，并释放不可达节点。</li>
 </ul>
-<p><img alt="A garbage collector’s view of memory as a directed graph." src="figures/A%20garbage%20collector%E2%80%99s%20view%20of%20memory%20as%20a%20directed%20graph..png" /></p>
+<p><img alt="A garbage collector’s view of memory as a directed graph." src="../figures/AGarbageCollectorsViewOfMemoryAsADirectedGraph.png" /></p>
 <h3 id="9-c">9 C程序中常见的与内存有关的错误<a class="headerlink" href="#9-c" title="Permanent link">&para;</a></h3>
 <h4 id="_4">间接引用坏指针<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h4>
 <p>这是非常常见的例子，没有引用对应的地址，少了 &amp;</p>
