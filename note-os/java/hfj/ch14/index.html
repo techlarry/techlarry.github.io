@@ -1,0 +1,1398 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <meta name="author" content="Zhenhua Wang">
+        <link rel="canonical" href="http://larryim.cc/note/java/hfj/ch14/">
+        <link rel="shortcut icon" href="../../../img/favicon.ico">
+        <title>Chapter 14: Serialization and File I/O - Zhenhua's Notes</title>
+        <link href="../../../css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="../../../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../../../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/docco.min.css">
+        <link href="../../../extra_css/custom.css" rel="stylesheet">
+        <link href="../../../extra_css/custom.js" rel="stylesheet">
+        <link href="../../../extra_css/friendly.css" rel="stylesheet">
+        <link href="../../../extra_css/theme.css" rel="stylesheet">
+        <link href="../../../extra_css/mkdocs/js/lunr-0.5.7.min.js" rel="stylesheet">
+        <link href="../../../extra_css/mkdocs/js/mustache.min.js" rel="stylesheet">
+        <link href="../../../extra_css/mkdocs/js/require.js" rel="stylesheet">
+        <link href="../../../extra_css/mkdocs/js/search.js" rel="stylesheet">
+        <link href="../../../extra_css/mkdocs/js/text.js" rel="stylesheet">
+        <link href="../../../extra_css/code-tab.css" rel="stylesheet">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="../../../js/jquery-1.10.2.min.js" defer></script>
+        <script src="../../../js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="../../..">Zhenhua's Notes</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="../../..">Home</a>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Algorithm <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li >
+    <a href="../../..">Home</a>
+</li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">AlgorithmPrinceton</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../algorithm/algorithmPrinceton/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../algorithm/algorithmPrinceton/topic1/">Topic 1: UnionFind </a>
+</li>
+            
+<li >
+    <a href="../../../algorithm/algorithmPrinceton/topic2/">Topic 2: StackQueue</a>
+</li>
+            
+<li >
+    <a href="../../../algorithm/algorithmPrinceton/topic3/">Topic 3: Sort </a>
+</li>
+            
+<li >
+    <a href="../../../algorithm/algorithmPrinceton/topic4/">Topic 4: PriorityQueues</a>
+</li>
+            
+<li >
+    <a href="../../../algorithm/algorithmPrinceton/topic5/">Topic 5: Symbol Tables</a>
+</li>
+            
+<li >
+    <a href="../../../algorithm/algorithmPrinceton/topic6/">Topic 6: Balanced Search Trees</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">AlgorithmStanford</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../algorithm/algorithmStanford/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../algorithm/algorithmStanford/dynamicprogramming/">Topic: Dynammic Programming </a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">CS61B</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../calgorithm/s61b/index.md">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../algorithm/cs61b/Lab1/">Lab1: javac, java, git</a>
+</li>
+            
+<li >
+    <a href="../../../algorithm/cs61b/Lab2/">Lab2: Unit Testing with JUnit and IntLists</a>
+</li>
+            
+<li >
+    <a href="../../../algorithm/cs61b/Lab3/">Lab3: Unit Testing with JUnit, Debugging</a>
+</li>
+    </ul>
+  </li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">OS <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">OSC</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../os/osc/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../os/osc/ch1/">Chapter 1: Introduction </a>
+</li>
+            
+<li >
+    <a href="../../../os/osc/ch2/">Chapter 2: Operating System structures</a>
+</li>
+            
+<li >
+    <a href="../../../os/osc/ch3/">Chapter 3: Processes</a>
+</li>
+            
+<li >
+    <a href="../../../os/osc/ch4/">Chapter 4: Threads and Concurrency</a>
+</li>
+            
+<li >
+    <a href="../../../os/osc/ch5/">Chapter 5: CPU Scheduling</a>
+</li>
+            
+<li >
+    <a href="../../../os/osc/ch6/">Chapter 6: Synchronization Tools</a>
+</li>
+            
+<li >
+    <a href="../../../os/osc/ch7/">Chapter 7: Synchronization Examples</a>
+</li>
+            
+<li >
+    <a href="../../../os/osc/ch8/">Chapter 8: Deadlocks</a>
+</li>
+            
+<li >
+    <a href="../../../os/osc/ch9/">Chapter 9: Main Memory</a>
+</li>
+            
+<li >
+    <a href="../../../os/osc/ch10/">Chapter 10: Virtual Memory</a>
+</li>
+            
+<li >
+    <a href="../../../os/osc/ch11/">Chapter 11: Mass-Storage Structure</a>
+</li>
+            
+<li >
+    <a href="../../../os/osc/ch13/">Chapter 13: File-System Interfaces</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">CSAPP</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../os/csapp/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../os/csapp/ch1/">Chapter 1: 计算机系统漫游</a>
+</li>
+            
+<li >
+    <a href="../../../os/csapp/ch2/">Chapter 2: 信息的表示和处理</a>
+</li>
+            
+<li >
+    <a href="../../../os/csapp/ch3/">Chapter 3: 程序的机器级表示</a>
+</li>
+            
+<li >
+    <a href="../../../os/csapp/ch4/">Chapter 4: 处理器体系结构</a>
+</li>
+            
+<li >
+    <a href="../../../os/csapp/ch5/">Chapter 5: 优化程序性能</a>
+</li>
+            
+<li >
+    <a href="../../../os/csapp/ch6/">Chapter 6: 存储器层次结构</a>
+</li>
+            
+<li >
+    <a href="../../../os/csapp/ch7/">Chapter 7: 链接</a>
+</li>
+            
+<li >
+    <a href="../../../os/csapp/ch8/">Chapter 8: 异常控制流</a>
+</li>
+            
+<li >
+    <a href="../../../os/csapp/ch9/">Chapter 9: 虚拟内存</a>
+</li>
+            
+<li >
+    <a href="../../../os/csapp/ch10/">Chapter 10: 系统级I/O</a>
+</li>
+            
+<li >
+    <a href="../../../csapp/ch11.md">Chapter 11: 网络编程</a>
+</li>
+    </ul>
+  </li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">MySql <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li >
+    <a href="../../../mysql/">Contents</a>
+</li>
+                                    
+<li >
+    <a href="../../../mysql/LearningMySQLandMariaDB/">Chapter Learning MySQL and MariaDB</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="dropdown active">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Java <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">HFJ</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../">Contents</a>
+</li>
+            
+<li >
+    <a href="../ch1/">Chapter 1: Dive in A Quick Dip</a>
+</li>
+            
+<li >
+    <a href="../ch2/">Chapter 2: Classes and Objects</a>
+</li>
+            
+<li >
+    <a href="../ch3/">Chapter 3: Primitives and References</a>
+</li>
+            
+<li >
+    <a href="../ch4/">Chapter 4: Methods use Instance Variables</a>
+</li>
+            
+<li >
+    <a href="../ch5/">Chapter 5: Writing a Program</a>
+</li>
+            
+<li >
+    <a href="../ch6/">Chapter 6: Get to Know the Java API</a>
+</li>
+            
+<li >
+    <a href="../ch7/">Chapter 7: Inheritance and Polymorphism</a>
+</li>
+            
+<li >
+    <a href="../ch8/">Chapter 8: Interfaces and Abstract Classes</a>
+</li>
+            
+<li >
+    <a href="../ch9/">Chapter 9: Constructors and Garbage Collection</a>
+</li>
+            
+<li >
+    <a href="../ch10/">Chapter 10: Numbers and Statics</a>
+</li>
+            
+<li >
+    <a href="../ch11/">Chapter 11: Exception Handling</a>
+</li>
+            
+<li >
+    <a href="../ch12/">Chapter 12: Getting GUI</a>
+</li>
+            
+<li >
+    <a href="../ch13/">Chapter 13: Using Swing</a>
+</li>
+            
+<li class="active">
+    <a href="./">Chapter 14: Serialization and File I/O</a>
+</li>
+            
+<li >
+    <a href="../ch15/">Chapter 15: Networking and Threads</a>
+</li>
+            
+<li >
+    <a href="../ch16/">Chapter 16: Collections and Generics</a>
+</li>
+            
+<li >
+    <a href="../ch17/">Chapter 17: Packages, Jars and Deployment</a>
+</li>
+            
+<li >
+    <a href="../ch18/">Chapter 18: Remote deploy with RMI</a>
+</li>
+            
+<li >
+    <a href="../Appendix/">Appendix: The Top Ten Topics</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">HFDP</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../hfdp/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../hfdp/ch1/">Chapter 1: Strategy Pattern </a>
+</li>
+            
+<li >
+    <a href="../../hfdp/ch2/">Chapter 2: Observer Pattern</a>
+</li>
+            
+<li >
+    <a href="../../hfdp/ch3/">Chapter 3: Decorator Pattern </a>
+</li>
+            
+<li >
+    <a href="../../hfdp/ch4/">Chapter 4: Factory Pattern</a>
+</li>
+            
+<li >
+    <a href="../../hfdp/ch5/">Chapter 5: Singleton Pattern</a>
+</li>
+            
+<li >
+    <a href="../../hfdp/ch6/">Chapter 6: Command Pattern</a>
+</li>
+            
+<li >
+    <a href="../../hfdp/ch7/">Chapter 7: Adapter and Facade Patterns</a>
+</li>
+            
+<li >
+    <a href="../../hfdp/ch8/">Chapter 8: Template Method Pattern</a>
+</li>
+            
+<li >
+    <a href="../../hfdp/ch9/">Chapter 9: Iterator and Composite Patterns</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">TIJ</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../tij/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../tij/ch1/">Chapter 1: Introduction</a>
+</li>
+            
+<li >
+    <a href="../../tij/ch2/">Chapter 2: Introduction to Objects</a>
+</li>
+            
+<li >
+    <a href="../../tij/ch3/">Chapter 3: Everything is an Object</a>
+</li>
+            
+<li >
+    <a href="../../tij/ch4/">Chapter 4: Opertors</a>
+</li>
+            
+<li >
+    <a href="../../tij/ch5/">Chapter 5: Controlling Execution</a>
+</li>
+            
+<li >
+    <a href="../../tij/ch6/">Chapter 6: Initialization & Cleanup</a>
+</li>
+            
+<li >
+    <a href="../../tij/ch7/">Chapter 7: Access Control</a>
+</li>
+            
+<li >
+    <a href="../../tij/ch8/">Chapter 8: Reusing Clases</a>
+</li>
+            
+<li >
+    <a href="../../tij/ch9/">Chapter 9: Polymorphism</a>
+</li>
+            
+<li >
+    <a href="../../tij/ch10/">Chapter 10: Interfaces</a>
+</li>
+            
+<li >
+    <a href="../../tij/ch11/">Chapter 11: Inner Classes</a>
+</li>
+            
+<li >
+    <a href="../../tij/ch12/">Chapter 12: Holding Your Objects</a>
+</li>
+            
+<li >
+    <a href="../../tij/ch13/">Chapter 13: Error Handling with Exceptions</a>
+</li>
+            
+<li >
+    <a href="../../tij/ch14/">Chapter 14: Strings</a>
+</li>
+            
+<li >
+    <a href="../../tij/ch15/">Chapter 15: Type Information</a>
+</li>
+            
+<li >
+    <a href="../../tij/ch16/">Chapter 16: Generics</a>
+</li>
+            
+<li >
+    <a href="../../tij/ch17/">Chapter 17: Arrays</a>
+</li>
+            
+<li >
+    <a href="../../tij/ch18/">Chapter 18: Containers in Depth</a>
+</li>
+            
+<li >
+    <a href="../../tij/ch19/">Chapter 19: I/O</a>
+</li>
+            
+<li >
+    <a href="../../tij/ch20/">Chapter 20: Enumerated Types</a>
+</li>
+            
+<li >
+    <a href="../../tij/ch21/">Chapter 21: Annotations</a>
+</li>
+            
+<li >
+    <a href="../../tij/ch22/">Chapter 22: Concurrency</a>
+</li>
+            
+<li >
+    <a href="../../tij/ch23/">Chapter 23: Graphical User Interfaces</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">UJVM</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../ujvm/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../ujvm/ch1/">Chapter 1 : 走进Java</a>
+</li>
+            
+<li >
+    <a href="../../ujvm/ch2/">Chapter 2 : Java内存区域与内存溢出正常</a>
+</li>
+            
+<li >
+    <a href="../../ujvm/ch3/">Chapter 3 : 垃圾收集器与内存分配策略</a>
+</li>
+            
+<li >
+    <a href="../../ujvm/ch4/">Chapter 4 : 虚拟机性能监控与故障处理工具</a>
+</li>
+            
+<li >
+    <a href="../../ujvm/ch5/">Chapter 5 : 调优案例分析与实战</a>
+</li>
+            
+<li >
+    <a href="../../ujvm/ch6/">Chapter 6 : 类文件结构</a>
+</li>
+            
+<li >
+    <a href="../../ujvm/ch7/">Chapter 7 : 虚拟机类加载机制</a>
+</li>
+            
+<li >
+    <a href="../../ujvm/ch8/">Chapter 8 : 虚拟机字节码执行引擎</a>
+</li>
+            
+<li >
+    <a href="../../ujvm/ch9/">Chapter 9 : 类加载及执行子系统的案例与实战</a>
+</li>
+            
+<li >
+    <a href="../../ujvm/ch10/">Chapter 10 : 早期(编译期)优化</a>
+</li>
+            
+<li >
+    <a href="../../ujvm/ch11/">Chapter 11 : 晚期(运行期)优化</a>
+</li>
+            
+<li >
+    <a href="../../ujvm/ch12/">Chapter 12 : Java内存模型与线程</a>
+</li>
+            
+<li >
+    <a href="../../ujvm/ch13/">Chapter 13 : 线程安全与锁优化</a>
+</li>
+            
+<li >
+    <a href="../../ujvm/AppendixC/">Appendix HotSpot虚拟机主要参数列表</a>
+</li>
+    </ul>
+  </li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">BidData <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">HADOOP</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../bigdata/hadoop/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch1/">Chapter 1: Meet Hadoop</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch2/">Chapter 2: MapReduce</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch3/">Chapter 3: The Hadoop Distributed FileSystem</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch4/">Chapter 4: YARN</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch5/">Chapter 5: Hadoop I/O</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch6/">Chapter 6: Developing a MapReduce Application</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch7/">Chapter 7: How MapReduce Works</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch8/">Chapter 8: MapReduce Types and Formats</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch9/">Chapter 9: MapReduce Features</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch10/">Chapter 10: Setting Up a Hadoop Cluster</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch11/">Chapter 11: Adminstering Hadoop</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch12/">Chapter 12: Avro</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch13/">Chapter 13: Parquet</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch14/">Chapter 14: Flume</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch15/">Chapter 15: Sqoop</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch16/">Chapter 16: Pig</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch17/">Chapter 17: Hive</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch18/">Chapter 18: Crunch</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch19/">Chapter 19: Spark</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch20/">Chapter 20: HBase</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch21/">Chapter 21: ZooKeeper</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch22/">Chapter 22: Composable Data at Center</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch23/">Chapter 23: Biological Data Science: Saving Lives with Software</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch24/">Chapter 24: Cascading</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">Spark</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../bigdata/spark/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/spark/ch1/">Chapter 1: Introduction to Data Analysis with Spark</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/spark/ch2/">Chapter 2: Downloading Spark and Getting Started</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/spark/ch3/">Chapter 3: Programming with RDDs</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/spark/ch4/">Chapter 4: Working with Key/Value Pairs</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/spark/ch5/">Chapter 5: Loading and Saving Your Data</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/spark/ch6/">Chapter 6: Advanced Spark Programming</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/spark/ch7/">Chapter 7: Running on a Cluster</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/spark/ch8/">Chapter 8: Tuning and Debugging Spark</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/spark/ch9/">Chapter 9: Spark SQL</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/spark/ch10/">Chapter 10: Spark Streaming</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/spark/ch11/">Chapter 11: Machine Learning with MLlib</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">GDM</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../bigdata/gdm/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/gdm/ch1/">Chapter 1: 推荐系统入门</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/gdm/ch2/">Chapter 2: 隐式评价和基于物品的过滤算法</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/gdm/ch3/">Chapter 3: 分类</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/gdm/ch4/">Chapter 4: 进一步探索分类</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/gdm/ch5/">Chapter 5: 概率和朴素贝叶斯</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/gdm/ch6/">Chapter 6: 朴素贝叶斯和文本数据</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/gdm/ch7/">Chapter 7: 聚类</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">MLIA</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../bigdata/mlia/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch1/">Chapter 1: 机器学习基础</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch2/">Chapter 2: k-近邻算法</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch3/">Chapter 3: 决策树</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch4/">Chapter 4: 基于概率论的分类方法：朴素贝叶斯</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch5/">Chapter 5: Logistic回归</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch6/">Chapter 6: 支持向量机</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch7/">Chapter 7: 利用AdaBoost元算法提高分类性能</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch8/">Chapter 8: 预测数值型数据：回归</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch9/">Chapter 9: 树回归</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch10/">Chapter 10: 利用Ｋ-均值聚类算法对未标注数据分组</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch11/">Chapter 11: 使用Apriori算法进行关联分析</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch11/">Chapter 12: 使用FP-growth算法来高效发现频繁项集</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch13/">Chapter 13: 利用PCA来简化数据</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">Crawler</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../bigdata/crawler/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/crawler/ch1/">Chapter 1: 开发环境配置</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/crawler/ch2/">Chapter 2: 爬虫基础</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/crawler/ch3/">Chapter 3: 基本库的使用</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/crawler/ch4/">Chapter 4: 解析库的使用</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/crawler/ch5/">Chapter 5: 数据存储</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/crawler/ch7/">Chapter 7: 动态渲染页面爬取</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/crawler/ch13/">Chapter 13: Scrapy框架的使用</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">Projects</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../bigdata/projects/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/projects/SparkStreaming实时流处理项目/">SparkStreaming实时流处理</a>
+</li>
+    </ul>
+  </li>
+                                </ul>
+                            </li>
+                            <li >
+                                <a href="../../../books/">Books</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li >
+                                <a rel="next" href="../ch13/">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li >
+                                <a rel="prev" href="../ch15/">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#chapter-14-serialization-and-file-io">Chapter 14 Serialization and File I/O</a></li>
+        <li class="main "><a href="#saving-objects">Saving Objects</a></li>
+            <li><a href="#writing-a-serialized-object-to-a-file">Writing a serialized object to a file</a></li>
+            <li><a href="#streams">Streams</a></li>
+            <li><a href="#saving-serialized-objects">Saving Serialized Objects</a></li>
+            <li><a href="#implement-serializable">Implement Serializable</a></li>
+            <li><a href="#transient">transient</a></li>
+            <li><a href="#deserialization">Deserialization</a></li>
+            <li><a href="#serialversionuid">serialVersionUID</a></li>
+        <li class="main "><a href="#writing-files">Writing Files</a></li>
+            <li><a href="#file-class">File Class</a></li>
+            <li><a href="#writing-to-a-plain-text-file">Writing to a plain text file</a></li>
+            <li><a href="#buffer">Buffer</a></li>
+        <li class="main "><a href="#reading-files">Reading Files</a></li>
+        <li class="main "><a href="#java-nio">Java NIO</a></li>
+            <li><a href="#main-differences-of-nio-and-io">Main Differences of NIO and IO</a></li>
+            <li><a href="#nio-channel">NIO Channel</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<h3 id="chapter-14-serialization-and-file-io"><strong>Chapter 14 Serialization and File I/O</strong><a class="headerlink" href="#chapter-14-serialization-and-file-io" title="Permanent link">&para;</a></h3>
+<p><img alt="https://www.safaribooksonline.com/library/view/learning-java/1565927184/ch10.html#ch10-15265" src="../figures/JavaIOLibarary.png" /></p>
+<h3 id="saving-objects">Saving Objects<a class="headerlink" href="#saving-objects" title="Permanent link">&para;</a></h3>
+<p>If your data will be used by only the Java program that generated it:</p>
+<ul>
+<li>Using <strong>serialization</strong>(序列化): Serialization is an (automatic) way to save and load the state of an object from a stream. The serialized object could then be stored in a file, database or sent over the network.</li>
+<li>The serialized file is much <em>harder for humans to read</em>, but it's <em>much easier (and safer)</em> to restore  objects from serialization.</li>
+</ul>
+<p><img alt="" src="../figures/serialization.png" /></p>
+<p>If your data will be used by <em>other</em> programs:</p>
+<ul>
+<li>Write a <strong>plain text file</strong>(纯文本文件): Write a file, with delimiters that other programs can parse.</li>
+</ul>
+<h4 id="writing-a-serialized-object-to-a-file">Writing a serialized object to a file<a class="headerlink" href="#writing-a-serialized-object-to-a-file" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Make a <C>FileOutputStream</C><ul>
+<li><code class="codehilite"><span class="n">FileOutputStream</span> <span class="n">fileStream</span> <span class="o">=</span> <span class="k">new</span> <span class="n">FileOutputStream</span><span class="o">(</span><span class="s">&quot;MyGame.ser&quot;</span><span class="o">);</span></code> </li>
+</ul>
+</li>
+<li>Make an <C>ObjectOutputStream</C><ul>
+<li><code class="codehilite"><span class="n">ObjectOutputStream</span> <span class="n">os</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ObjectOutputStream</span><span class="o">(</span><span class="n">fileStream</span><span class="o">);</span></code></li>
+</ul>
+</li>
+<li>Write the object<ul>
+<li><code class="codehilite"><span class="n">os</span><span class="o">.</span><span class="na">writeObject</span><span class="o">(</span><span class="n">characterOne</span><span class="o">);</span></code> </li>
+<li>Serializes the object referenced by character-One, and writes them to the file "myGame.ser".</li>
+</ul>
+</li>
+<li>Close the <C>ObjectOutputStream</C><ul>
+<li><code class="codehilite"><span class="n">os</span><span class="o">.</span><span class="na">close</span><span class="o">();</span></code></li>
+<li>Closing the stream at the top closes the ones underneath, so the <C>FileOutputStream</C> (and the file) will close automatically.   </li>
+</ul>
+</li>
+</ul>
+<h4 id="streams">Streams<a class="headerlink" href="#streams" title="Permanent link">&para;</a></h4>
+<p>The Java I/O API has <strong>connection streams</strong>, that represent connections to destinations and sources such as files or network sockets, and <strong>chain streams</strong> that work only if chained to other streams.</p>
+<ul>
+<li>connection streams represent the connection (<C>FileOutputStream</C>)</li>
+<li>chain streams call methods on connection. (<C>ObjectOutputStream</C>)</li>
+</ul>
+<p><img alt="data_streams" src="../figures/data_streams.png" /></p>
+<ul>
+<li><C>FileOutputStream</C> writes bytes to a file.</li>
+<li><C>ObjectOutputStream</C> turns objects into data that can be written to a stream.</li>
+</ul>
+<blockquote>
+<p>A <C>FileOutputStream</C> is an output stream for writing data to a File or to a <C>FileDescriptor</C>. </p>
+</blockquote>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><C>FileOutputStream</C> is meant for writing streams of raw bytes. For writing streams of characters, consider using <C>FileWriter</C>.</p>
+</div>
+<h4 id="saving-serialized-objects">Saving Serialized Objects<a class="headerlink" href="#saving-serialized-objects" title="Permanent link">&para;</a></h4>
+<p>Serialization saves the entire <strong>object graph</strong>.</p>
+<ul>
+<li>When an object is serialized, all the objects it refers to from instance variables are <em>also</em> serialized.  </li>
+</ul>
+<p><img alt="object_graph" src="../figures/object_graph.png" /></p>
+<h4 id="implement-serializable">Implement Serializable<a class="headerlink" href="#implement-serializable" title="Permanent link">&para;</a></h4>
+<p><b>If you want your class to be serializable, implement <i><mark class="critic">Serializable</mark></i>.</b></p>
+<ul>
+<li>The <C>Serializable</C> interface is known as a <em>marker</em> or <em>tag</em> interface, because the interface doesn't have any methods to implement.</li>
+<li>Its sole purpose is to announce that the class implementing it, is <em>serializable</em>.</li>
+<li>If any superclass of a class is serializable, the subclass is automatically serializable even if the subclass doesn't explicitly declare <C>implements Serializable</C>.</li>
+</ul>
+<blockquote>
+<p>A <strong>marker interface</strong> is an interface that contains NO method declarations, but merely designates (or "marks") a class that implements the interface as having some property. <small>[Effective Java, 2nd]</small></p>
+</blockquote>
+<p>The source file of <code class="codehilite">Serializable.java</code>:</p>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>interface</span> <span class=nc>Serializable</span> <span class=o>{</span>
+<span class=o>}</span>
+</pre></div></p>
+<p><strong>Serialization is all or nothing</strong>: Either the entire object graph is serialized correctly  or serialization fails.</p>
+<p> <div class=codehilite><pre><span class=kn>import</span> <span class=nn>java.io.*</span><span class=o>;</span>
+
+<span class=kd>public</span> <span class=kd>class</span> <span class=nc>Box</span> <span class=kd>implements</span> <span class=n>Serializable</span> <span class=o>{</span>
+    <span class=c1>// No methods to implement, but when you say &quot;implements Serializable&quot;,</span>
+    <span class=c1>// it says to the JVM, &quot;it&#39;s OK to serialize objects of this type.&quot;</span>
+    <span class=kd>private</span> <span class=kt>int</span> <span class=n>width</span><span class=o>;</span>
+    <span class=kd>private</span> <span class=kt>int</span> <span class=n>hight</span><span class=o>;</span>
+
+    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>setWidth</span><span class=o>(</span><span class=kt>int</span> <span class=n>w</span><span class=o>)</span> <span class=o>{</span>
+        <span class=n>width</span> <span class=o>=</span> <span class=n>w</span><span class=o>;</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>setHight</span><span class=o>(</span><span class=kt>int</span> <span class=n>h</span><span class=o>)</span> <span class=o>{</span>
+        <span class=n>hight</span> <span class=o>=</span> <span class=n>h</span><span class=o>;</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kd>static</span> <span class=kt>void</span> <span class=nf>main</span><span class=o>(</span><span class=n>String</span><span class=o>[]</span> <span class=n>args</span><span class=o>)</span> <span class=o>{</span>
+        <span class=n>Box</span> <span class=n>box</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Box</span><span class=o>();</span>
+        <span class=n>box</span><span class=o>.</span><span class=na>setHight</span><span class=o>(</span><span class=mi>5</span><span class=o>);</span>
+        <span class=n>box</span><span class=o>.</span><span class=na>setWidth</span><span class=o>(</span><span class=mi>6</span><span class=o>);</span>
+        <span class=k>try</span> <span class=o>{</span>
+            <span class=n>FileOutputStream</span> <span class=n>outputStream</span> <span class=o>=</span> <span class=k>new</span> <span class=n>FileOutputStream</span><span class=o>(</span><span class=s>&quot;foo.ser&quot;</span><span class=o>);</span>
+            <span class=n>ObjectOutputStream</span> <span class=n>os</span> <span class=o>=</span> <span class=k>new</span> <span class=n>ObjectOutputStream</span><span class=o>(</span><span class=n>outputStream</span><span class=o>);</span>
+            <span class=n>os</span><span class=o>.</span><span class=na>writeObject</span><span class=o>(</span><span class=n>box</span><span class=o>);</span>
+            <span class=n>os</span><span class=o>.</span><span class=na>close</span><span class=o>();</span>
+        <span class=o>}</span> <span class=k>catch</span> <span class=o>(</span><span class=n>IOException</span> <span class=n>ex</span><span class=o>)</span> <span class=o>{</span>
+            <span class=n>ex</span><span class=o>.</span><span class=na>printStackTrace</span><span class=o>();</span>
+        <span class=o>}</span>
+    <span class=o>}</span><span class=c1>// end main</span>
+<span class=o>}</span><span class=c1>// end class Box</span>
+</pre></div></p>
+<h4 id="transient">transient<a class="headerlink" href="#transient" title="Permanent link">&para;</a></h4>
+<p><C>transient</C> is a variables modifier used in serialization:</p>
+<p><b>Mark an instance variable as <i><mark class="critic">transient</mark></i> if it can't (or shouldn't) be saved.</b></p>
+<p> <div class=codehilite><pre><span class=kn>import</span> <span class=nn>java.net.*</span><span class=o>;</span>
+<span class=kd>class</span> <span class=nc>Chat</span> <span class=kd>implements</span> <span class=n>Serializable</span> <span class=o>{</span>
+    <span class=c1>// transient says, </span>
+    <span class=c1>// &quot;don&#39;t save this variable during serialization, just skip it&quot;.</span>
+    <span class=kd>transient</span> <span class=n>String</span> <span class=n>currentID</span><span class=o>;</span>
+
+    <span class=n>String</span> <span class=n>userName</span><span class=o>;</span>
+    <span class=c1>//more code</span>
+<span class=o>}</span>
+</pre></div></p>
+<blockquote>
+<p>Variables may be marked <strong>transient</strong> to indicate that they are not part of the persistent state of an object. <small>[Java Language Specification, Java SE 7 Edition, Section 8.3.1.3. transient Fields]</small></p>
+</blockquote>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you serialize an object, a transient reference instance variable will be brought back as <em>null</em>, regardless of the value it had at the time it was saved.</p>
+</div>
+<div class="admonition question">
+<p class="admonition-title">Question</p>
+<p>What happens if two objects in the object graph are the same object?</p>
+<p>In that case, <em>only one</em> of the objects is saved, and during deserialization, any references to that single object are restored.</p>
+</div>
+<h4 id="deserialization">Deserialization<a class="headerlink" href="#deserialization" title="Permanent link">&para;</a></h4>
+<p><strong>Deserialization</strong>(反序列化) is a lot like <strong>serialization</strong>(序列化) in reverse.</p>
+<ul>
+<li>Make a <C>FileInputStream</C><ul>
+<li><code class="codehilite"><span class="n">FileInputStream</span> <span class="n">fileStream</span> <span class="o">=</span> <span class="k">new</span> <span class="n">FileInputStream</span><span class="o">(</span><span class="s">&quot;MyGame.ser&quot;</span><span class="o">);</span></code></li>
+</ul>
+</li>
+<li>Make an <C>ObjectInputStream</C><ul>
+<li><code class="codehilite"><span class="n">ObjectInputStream</span> <span class="n">os</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ObjectInputStream</span><span class="o">(</span><span class="n">fileStream</span><span class="o">);</span></code></li>
+</ul>
+</li>
+<li>Read the object<ul>
+<li><code class="codehilite"><span class="n">Object</span> <span class="n">one</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="na">readObject</span><span class="o">();</span></code></li>
+<li>Each time you say <C>readObject()</C>, you get the next object in the stream. So you'll read them back in the same order in which they were written.</li>
+</ul>
+</li>
+<li>Cast the objects<ul>
+<li><code class="codehilite"><span class="n">GameCharacter</span> <span class="n">elf</span> <span class="o">=</span> <span class="o">(</span><span class="n">GameCharacter</span><span class="o">)</span> <span class="n">one</span><span class="o">;</span></code></li>
+<li>The return value of <C>readObject()</C> is type <C>Object</C>, so you have to <em>cast</em> it back to the type you know it really is.</li>
+</ul>
+</li>
+<li>Close the <C>ObjectInputStream</C><ul>
+<li><code class="codehilite"><span class="n">os</span><span class="o">.</span><span class="na">close</span><span class="o">();</span></code> </li>
+<li>Closing the stream at the top closes the ones underneath, so the <C>FileInputStream</C> and the file will close automatically.</li>
+</ul>
+</li>
+</ul>
+<p><img alt="deserialization" src="../figures/deserialization.png" /></p>
+<p>What happens during deserialization?</p>
+<ul>
+<li>The object is <strong>read</strong> from the stream.</li>
+<li>The JVM determines (through info stored with the serialized object) the object’s <strong>class type</strong>.</li>
+<li>The JVM attempts to <strong>find</strong> and <strong>load</strong> the object’s class. If the JVM can’t find and/or load the class, the JVM throws an exception and the deserialization fails.</li>
+<li>A new object is given space on the heap, but <strong>the serialized object’s constructor does NOT run</strong>! Obviously, if the constructor ran, it would restore the state of the object back to its original 'new' state, and that’s not what we want. We want the object to be restored to the state it had when it was serialized, not when it was <strong>first</strong> created.</li>
+<li>If the object has a non-serializable class somewhere up its inheritance tree, the constructor for that non-serializable class will run along with any constructors above that (even if they’re serializable). Once the constructor chaining begins, you can’t stop it, which means all superclasses, beginning with the first non-serializable one, will reinitialize their state.</li>
+<li>The object’s instance variables are given the values from the serialized state. Transient variables are given a value of null for object references and defaults (0, false, etc.) for primitives.</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Static variables are <strong>NOT</strong> serialized. Static means "one per class" not "one per object". When an object is deserialized, static variables will have whatever static variable its class <em>currently</em> has.</p>
+</div>
+<h4 id="serialversionuid">serialVersionUID<a class="headerlink" href="#serialversionuid" title="Permanent link">&para;</a></h4>
+<p><strong>Question</strong>: What might happen if you <strong>change the class</strong> and want to deserialize the object?</p>
+<p><strong>Result</strong>: It may throw an <C>InvalidClassException</C>.</p>
+<p>Changes to a class that can hurt deserialization:</p>
+<ul>
+<li>Deleting an instance variable</li>
+<li>Change the declared type of an instance variable</li>
+<li>Changing a non-transient instance variable to transient</li>
+<li>Moving a class up or down the inheritance hierarchy</li>
+<li>Changing a class from Serializable to not Serializable.</li>
+<li>Changing an instance variable to static.</li>
+</ul>
+<p>Each time an object is serialized, the object (including every object in its graph) is 'stamped' with a version ID number for the object's class. The ID is called <strong>serialVersionUID</strong>.</p>
+<blockquote>
+<p>The serialization runtime associates with each serializable class a version number, called a <C>serialVersionUID</C>, which is used during deserialization to verify that the sender and receiver of a serialized object have loaded classes for that object that are <em>compatible</em> with respect to serialization. If the receiver has loaded a class for the object that has a different <C>serialVersionUID</C> than that of the corresponding sender's class, then deserialization will result in an InvalidClassException. <small>[Java Docs]</small></p>
+</blockquote>
+<p><strong>SOLUTION TO THE QUESTION</strong>: <strong><em>If you think there is ANY possibility that your class might evolve, put a serialVersionUID in your class.</em></strong></p>
+<ul>
+<li>As the class evolves, the <C>serialVersionUID</C> will remain the same and the JVM thinks the class is compatible with this serialized object.</li>
+</ul>
+<blockquote>
+<p>If a serializable class does <em>not</em> explicitly declare a <C>serialVersionUID</C>, then the serialization runtime will <em>calculate a default <C>serialVersionUID</C> value</em> for that class based on various aspects of the class. However, it is <strong>strongly recommended that all serializable classes explicitly declare</strong> <C>serialVersionUID</C> <strong>values</strong>, since the default <C>serialVersionUID</C> computation is highly sensitive to class details that may vary depending on compiler implementations, and can thus result in unexpected <C>InvalidClassExceptions</C> during deserialization. <small>[Java Docs]</small></p>
+</blockquote>
+<p><strong>HOW</strong>?</p>
+<p>A serializable class can declare its own <C>serialVersionUID</C> explicitly by declaring a field named "serialVersionUID" that must be <strong>static</strong>, <strong>final</strong>, and of type <strong>long</strong>:</p>
+<p> <div class=codehilite><pre><span class=n>ANY</span><span class=o>-</span><span class=n>ACCESS</span><span class=o>-</span><span class=n>MODIFIER</span> <span class=kd>static</span> <span class=kd>final</span> <span class=kt>long</span> <span class=n>serialVersionUID</span> <span class=o>=</span> <span class=mi>42L</span><span class=o>;</span>
+</pre></div></p>
+<h3 id="writing-files">Writing Files<a class="headerlink" href="#writing-files" title="Permanent link">&para;</a></h3>
+<h4 id="file-class">File Class<a class="headerlink" href="#file-class" title="Permanent link">&para;</a></h4>
+<p>The <C>java.io.File</C> class <em>represents</em> a file on disk, but doesn't actually represent the <em>contents</em> of the file.</p>
+<ul>
+<li>Think of a File object as something more like a <em>pathname</em> of a file (or even a <em>directory</em>) rather than the Actual File Itself.</li>
+</ul>
+<blockquote>
+<p><i><b>File</b></i> is an abstract representation of file and directory pathnames. <small>[Java docs]</small></p>
+</blockquote>
+<p>Some things you can do with a <C>File</C> object:</p>
+<ul>
+<li>Make a file Object representing an existing file<ul>
+<li><code class="codehilite"><span class="n">File</span> <span class="n">f</span> <span class="o">=</span> <span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="s">&quot;Mycode.txt&quot;</span><span class="o">);</span></code>// not actually create a file</li>
+</ul>
+</li>
+<li>Create a new, empty file<ul>
+<li><code class="codehilite"><span class="n">File</span><span class="o">.</span><span class="na">createNewFile</span><span class="err">​</span><span class="o">(</span><span class="s">&quot;MyFile.txt&quot;</span><span class="o">)</span></code> </li>
+</ul>
+</li>
+<li>Make a new directory<ul>
+<li><code class="codehilite"><span class="n">File</span> <span class="n">dir</span> <span class="o">=</span> <span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="s">&quot;Chapter7&quot;</span><span class="o">);</span> <span class="n">dir</span><span class="o">.</span><span class="na">mkdir</span><span class="o">();</span></code></li>
+</ul>
+</li>
+<li>
+<p>List the contents of a directory</p>
+<p><code class="codehilite">Javaif (dir.isDirectory()) {String[] dirContents = dir.list();for (int i=0; i &lt; dirContents.length; i++) {System.out.println(dirContents[i]);}}</code></p>
+</li>
+<li>
+<p>Get the absolute path of a file or directory </p>
+<ul>
+<li><code class="codehilite"><span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">dir</span><span class="o">.</span><span class="na">getAbsolutePath</span><span class="o">());</span></code></li>
+</ul>
+</li>
+<li>Delete a file or directory (returns true if successful)<ul>
+<li><code class="codehilite"><span class="kt">boolean</span> <span class="n">isDeleted</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="na">delete</span><span class="o">();</span></code> </li>
+</ul>
+</li>
+</ul>
+<h4 id="writing-to-a-plain-text-file">Writing to a plain text file<a class="headerlink" href="#writing-to-a-plain-text-file" title="Permanent link">&para;</a></h4>
+<p>To write a string: <code class="codehilite"><span class="n">FileWriter</span><span class="o">.</span><span class="na">write</span><span class="o">(</span><span class="s">&quot;My first String to save&quot;</span><span class="o">)</span></code></p>
+<p> <div class=codehilite><pre><span class=kn>import</span> <span class=nn>java.io.*</span><span class=o>;</span> 
+
+<span class=kd>class</span> <span class=nc>WriteAFile</span> <span class=o>{</span>
+
+    <span class=kd>public</span> <span class=kd>static</span> <span class=kt>void</span> <span class=nf>main</span> <span class=o>(</span><span class=n>String</span><span class=o>[]</span> <span class=n>args</span><span class=o>)</span> <span class=o>{</span> 
+        <span class=k>try</span> <span class=o>{</span> 
+            <span class=c1>// If the file &quot;foo.txt&quot; does not exist, FileWriter will create it.</span>
+            <span class=n>FileWriter</span> <span class=n>writer</span> <span class=o>=</span> <span class=k>new</span> <span class=n>FileWriter</span><span class=o>(</span><span class=err>“</span><span class=n>Foo</span><span class=o>.</span><span class=na>txt</span><span class=err>”</span><span class=o>);</span>
+            <span class=c1>// The write() method takes a String  </span>
+            <span class=n>writer</span><span class=o>.</span><span class=na>write</span><span class=o>(</span><span class=err>“</span><span class=n>hello</span> <span class=n>foo</span><span class=o>!</span><span class=err>”</span><span class=o>);</span> 
+            <span class=c1>// Close it when you&#39;re done!</span>
+            <span class=n>writer</span><span class=o>.</span><span class=na>close</span><span class=o>();</span> 
+        <span class=o>}</span> <span class=k>catch</span><span class=o>(</span><span class=n>IOException</span> <span class=n>ex</span><span class=o>)</span> <span class=o>{</span> 
+            <span class=n>ex</span><span class=o>.</span><span class=na>printStackTrace</span><span class=o>();</span> 
+        <span class=o>}</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></p>
+<h4 id="buffer">Buffer<a class="headerlink" href="#buffer" title="Permanent link">&para;</a></h4>
+<p>Buffers are <em>much</em> more efficient than working without them.</p>
+<p> <div class=codehilite><pre><span class=n>BufferedWriter</span> <span class=n>writer</span> <span class=o>=</span> <span class=k>new</span> <span class=n>BufferedWriter</span><span class=o>(</span><span class=k>new</span> <span class=n>FileWriter</span><span class=o>(</span><span class=n>aFile</span><span class=o>));</span>
+</pre></div></p>
+<ul>
+<li><C>FileWriter</C> writes each and every thing you pass to the file each and every time.</li>
+<li><C>BufferedWriter</C> will hold all the stuff you write to it until it's full. <strong>Only then the buffer is full will the FileWriter actually be told to write to the file on disk</strong>.<ul>
+<li>If you do want to send data <em>before</em> the buffer is full, <strong>Just Flush It</strong>(<code class="codehilite">writer.flush()</code>).</li>
+</ul>
+</li>
+</ul>
+<p><img alt="BufferedWrite" src="../figures/BufferedWriter.png" /></p>
+<h3 id="reading-files">Reading Files<a class="headerlink" href="#reading-files" title="Permanent link">&para;</a></h3>
+<p>Usually, we use a <C>File</C> Object to represent a file, a <C>FileReader</C> to do the actual reading, and a <C>BufferedReader</C> to make the reading more efficient.</p>
+<p> <div class=codehilite><pre><span class=kn>import</span> <span class=nn>java.io.BufferedReader</span><span class=o>;</span>
+<span class=kn>import</span> <span class=nn>java.io.File</span><span class=o>;</span>
+<span class=kn>import</span> <span class=nn>java.io.FileReader</span><span class=o>;</span>
+
+<span class=kd>public</span> <span class=kd>class</span> <span class=nc>ReadAFile</span> <span class=o>{</span>
+    <span class=kd>public</span> <span class=kd>static</span> <span class=kt>void</span> <span class=nf>main</span> <span class=o>(</span><span class=n>String</span><span class=o>[]</span> <span class=n>args</span><span class=o>){</span>
+        <span class=k>try</span><span class=o>{</span>
+            <span class=n>File</span> <span class=n>myFile</span> <span class=o>=</span> <span class=k>new</span> <span class=n>File</span><span class=o>(</span><span class=s>&quot;Foo.text&quot;</span><span class=o>);</span>
+            <span class=c1>// A FileReader is a connection stream for characters, that connects to a text file.</span>
+            <span class=n>FileReader</span> <span class=n>fileReader</span> <span class=o>=</span> <span class=k>new</span> <span class=n>FileReader</span><span class=o>(</span><span class=n>myFile</span><span class=o>);</span>
+            <span class=c1>//Chain the FileReader to a BufferedReader for more efficient reading.</span>
+            <span class=n>BufferedReader</span> <span class=n>reader</span> <span class=o>=</span> <span class=k>new</span> <span class=n>BufferedReader</span><span class=o>(</span><span class=n>fileReader</span><span class=o>);</span>
+
+            <span class=c1>// Make a String variable to hold each line as the line is read.</span>
+            <span class=n>String</span> <span class=n>line</span> <span class=o>=</span> <span class=kc>null</span><span class=o>;</span>
+
+            <span class=k>while</span> <span class=o>((</span><span class=n>line</span> <span class=o>=</span> <span class=n>reader</span><span class=o>.</span><span class=na>readLine</span><span class=o>())!=</span><span class=kc>null</span><span class=o>)</span> <span class=o>{</span>
+                <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=n>line</span><span class=o>);</span>
+            <span class=o>}</span>
+            <span class=n>reader</span><span class=o>.</span><span class=na>close</span><span class=o>();</span>
+        <span class=o>}</span> <span class=k>catch</span> <span class=o>(</span><span class=n>Exception</span> <span class=n>ex</span><span class=o>)</span> <span class=o>{</span>
+            <span class=n>ex</span><span class=o>.</span><span class=na>printStackTrace</span><span class=o>();</span>
+        <span class=o>}</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></p>
+<h3 id="java-nio">Java NIO<a class="headerlink" href="#java-nio" title="Permanent link">&para;</a></h3>
+<p>When studying both the Java NIO and IO API's, a question quickly pops into mind:</p>
+<p>When should I use IO and when should I use NIO?</p>
+<table>
+<thead>
+<tr>
+<th>IO</th>
+<th>NIO</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Stream oriented</td>
+<td>Buffer oriented</td>
+</tr>
+<tr>
+<td>Blocking IO</td>
+<td>Non blocking IO</td>
+</tr>
+<tr>
+<td></td>
+<td>Selectors</td>
+</tr>
+</tbody>
+</table>
+<h4 id="main-differences-of-nio-and-io">Main Differences of NIO and IO<a class="headerlink" href="#main-differences-of-nio-and-io" title="Permanent link">&para;</a></h4>
+<p>[<a href="https://dzone.com/articles/java-nio-vs-io">Java NIO vs. IO</a>，<a href="http://ifeve.com/java-nio-vs-io/">翻译</a>]</p>
+<p><strong>Stream Oriented vs. Buffer Oriented</strong></p>
+<p>The first big difference between Java NIO and IO is that IO is stream oriented(面向流), where NIO is buffer oriented(面向缓冲). </p>
+<p>Java IO being stream oriented means that you read one or more bytes at a time, from a stream. What you do with the read bytes is up to you. They are not cached anywhere. Furthermore, you cannot move forth and back in the data in a stream. If you need to move back and forth in the data read from a stream, you will need to cache it in a buffer first.</p>
+<p>Java NIO's buffer oriented approach is slightly different. Data is read into a buffer from which it is later processed. You can move forth and back in the buffer as you need to. This gives you a bit more flexibility during processing. However, you also need to check if the buffer contains all the data you need in order to fully process it. And, you need to make sure that when reading more data into the buffer, you do not overwrite data in the buffer you have not yet processed.</p>
+<p><strong>Blocking vs. Non-blocking IO</strong></p>
+<p>Java IO's various streams are blocking. That means, that when a thread invokes a read() or write(), that thread is blocked until there is some data to read, or the data is fully written. The thread can do nothing else in the meantime.</p>
+<p>Java IO: Reading data from a blocking stream.</p>
+<p><img alt="" src="../figures/JavaIOReadingDataFromABlockingStream.png" /></p>
+<p>Java NIO's non-blocking mode enables a thread to request reading data from a channel, and only get what is currently available, or nothing at all, if no data is currently available. Rather than remain blocked until data becomes available for reading, the thread can go on with something else.</p>
+<p>The same is true for non-blocking writing. A thread can request that some data be written to a channel, but not wait for it to be fully written. The thread can then go on and do something else in the mean time.</p>
+<p>What threads spend their idle time on when not blocked in IO calls, is usually performing IO on other channels in the meantime. That is, a single thread can now manage multiple channels of input and output.</p>
+<p><img alt="" src="../figures/JavaNIOReadingDataFromAChannelUntilAllNeededDataIsInBuffer.png" /></p>
+<p>If you need to manage thousands of open connections simultaneously, which each only send a little data, for instance a chat server, implementing the server in NIO is probably an advantage. Similarly, if you need to keep a lot of open connections to other computers, e.g. in a P2P network, using a single thread to manage all of your outbound connections might be an advantage. This one thread, multiple connections design is illustrated in this diagram:</p>
+<p><img alt="" src="../figures/15348420529139.png" /></p>
+<p>If you have fewer connections with very high bandwidth, sending a lot of data at a time, perhaps a classic IO server implementation might be the best fit. This diagram illustrates a classic IO server design:</p>
+<p><img alt="" src="../figures/15348420743344.png" /></p>
+<p><strong>Selectors</strong></p>
+<p>Java NIO's selectors(选择器) allow a single thread to monitor multiple channels of input. You can register multiple channels with a selector, then use a single thread to "select" the channels that have input available for processing, or select the channels that are ready for writing. This selector mechanism makes it easy for a single thread to manage multiple channels.</p>
+<h4 id="nio-channel">NIO Channel<a class="headerlink" href="#nio-channel" title="Permanent link">&para;</a></h4>
+<p>Java NIO Channels are similar to streams with a few differences:</p>
+<ul>
+<li>You can both read and write to a Channels. Streams are typically one-way (read or write).</li>
+<li>Channels can be read and written asynchronously.</li>
+<li>Channels always read from, or write to, a Buffer.</li>
+</ul>
+<p>Here are the most important Channel implementations in Java NIO:</p>
+<ul>
+<li><C>FileChannel</C> reads data from and write to files.</li>
+<li><C>DatagramChannel</C> can read and write data over the network via UDP.</li>
+<li><C>SocketChannel</C> can read and write data over the network via TCP.</li>
+<li><C>ServerSocketChannel</C> allows you to listen for incoming TCP connections, like a web server does. For each incoming connection a <C>SocketChannel</C> is created.</li>
+</ul>
+<p> <div class=codehilite><pre><span class=n>RandomAccessFile</span> <span class=n>aFile</span> <span class=o>=</span> <span class=k>new</span> <span class=n>RandomAccessFile</span><span class=o>(</span><span class=s>&quot;data/nio-data.txt&quot;</span><span class=o>,</span> <span class=s>&quot;rw&quot;</span><span class=o>);</span>
+<span class=n>FileChannel</span> <span class=n>inChannel</span> <span class=o>=</span> <span class=n>aFile</span><span class=o>.</span><span class=na>getChannel</span><span class=o>();</span>
+
+<span class=n>ByteBuffer</span> <span class=n>buf</span> <span class=o>=</span> <span class=n>ByteBuffer</span><span class=o>.</span><span class=na>allocate</span><span class=o>(</span><span class=mi>48</span><span class=o>);</span>
+
+<span class=kt>int</span> <span class=n>bytesRead</span> <span class=o>=</span> <span class=n>inChannel</span><span class=o>.</span><span class=na>read</span><span class=o>(</span><span class=n>buf</span><span class=o>);</span>
+<span class=k>while</span> <span class=o>(</span><span class=n>bytesRead</span> <span class=o>!=</span> <span class=o>-</span><span class=mi>1</span><span class=o>)</span> <span class=o>{</span>
+
+      <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=s>&quot;Read &quot;</span> <span class=o>+</span> <span class=n>bytesRead</span><span class=o>);</span>
+      <span class=n>buf</span><span class=o>.</span><span class=na>flip</span><span class=o>();</span>
+
+      <span class=k>while</span><span class=o>(</span><span class=n>buf</span><span class=o>.</span><span class=na>hasRemaining</span><span class=o>()){</span>
+          <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>print</span><span class=o>((</span><span class=kt>char</span><span class=o>)</span> <span class=n>buf</span><span class=o>.</span><span class=na>get</span><span class=o>());</span>
+      <span class=o>}</span>
+
+      <span class=n>buf</span><span class=o>.</span><span class=na>clear</span><span class=o>();</span>
+      <span class=n>bytesRead</span> <span class=o>=</span> <span class=n>inChannel</span><span class=o>.</span><span class=na>read</span><span class=o>(</span><span class=n>buf</span><span class=o>);</span>
+<span class=o>}</span>
+<span class=n>aFile</span><span class=o>.</span><span class=na>close</span><span class=o>();</span>
+</pre></div></p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = "../../..",
+                shortcuts = {"search": 83, "next": 78, "help": 191, "previous": 80};
+        </script>
+        <script src="../../../js/base.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" defer></script>
+        <script src="../../../extra_javascript/tabhack.js" defer></script>
+        <script src="../../../extra_javascript/baidu.js" defer></script>
+        <script src="../../../search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

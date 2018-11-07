@@ -1,0 +1,1334 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <meta name="author" content="Zhenhua Wang">
+        <link rel="canonical" href="http://larryim.cc/note/os/osc/ch4/">
+        <link rel="shortcut icon" href="../../../img/favicon.ico">
+        <title>Chapter 4: Threads and Concurrency - Zhenhua's Notes</title>
+        <link href="../../../css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="../../../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../../../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/docco.min.css">
+        <link href="../../../extra_css/custom.css" rel="stylesheet">
+        <link href="../../../extra_css/custom.js" rel="stylesheet">
+        <link href="../../../extra_css/friendly.css" rel="stylesheet">
+        <link href="../../../extra_css/theme.css" rel="stylesheet">
+        <link href="../../../extra_css/mkdocs/js/lunr-0.5.7.min.js" rel="stylesheet">
+        <link href="../../../extra_css/mkdocs/js/mustache.min.js" rel="stylesheet">
+        <link href="../../../extra_css/mkdocs/js/require.js" rel="stylesheet">
+        <link href="../../../extra_css/mkdocs/js/search.js" rel="stylesheet">
+        <link href="../../../extra_css/mkdocs/js/text.js" rel="stylesheet">
+        <link href="../../../extra_css/code-tab.css" rel="stylesheet">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="../../../js/jquery-1.10.2.min.js" defer></script>
+        <script src="../../../js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="../../..">Zhenhua's Notes</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="../../..">Home</a>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Algorithm <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li >
+    <a href="../../..">Home</a>
+</li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">AlgorithmPrinceton</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../algorithm/algorithmPrinceton/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../algorithm/algorithmPrinceton/topic1/">Topic 1: UnionFind </a>
+</li>
+            
+<li >
+    <a href="../../../algorithm/algorithmPrinceton/topic2/">Topic 2: StackQueue</a>
+</li>
+            
+<li >
+    <a href="../../../algorithm/algorithmPrinceton/topic3/">Topic 3: Sort </a>
+</li>
+            
+<li >
+    <a href="../../../algorithm/algorithmPrinceton/topic4/">Topic 4: PriorityQueues</a>
+</li>
+            
+<li >
+    <a href="../../../algorithm/algorithmPrinceton/topic5/">Topic 5: Symbol Tables</a>
+</li>
+            
+<li >
+    <a href="../../../algorithm/algorithmPrinceton/topic6/">Topic 6: Balanced Search Trees</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">AlgorithmStanford</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../algorithm/algorithmStanford/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../algorithm/algorithmStanford/dynamicprogramming/">Topic: Dynammic Programming </a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">CS61B</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../calgorithm/s61b/index.md">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../algorithm/cs61b/Lab1/">Lab1: javac, java, git</a>
+</li>
+            
+<li >
+    <a href="../../../algorithm/cs61b/Lab2/">Lab2: Unit Testing with JUnit and IntLists</a>
+</li>
+            
+<li >
+    <a href="../../../algorithm/cs61b/Lab3/">Lab3: Unit Testing with JUnit, Debugging</a>
+</li>
+    </ul>
+  </li>
+                                </ul>
+                            </li>
+                            <li class="dropdown active">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">OS <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">OSC</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../">Contents</a>
+</li>
+            
+<li >
+    <a href="../ch1/">Chapter 1: Introduction </a>
+</li>
+            
+<li >
+    <a href="../ch2/">Chapter 2: Operating System structures</a>
+</li>
+            
+<li >
+    <a href="../ch3/">Chapter 3: Processes</a>
+</li>
+            
+<li class="active">
+    <a href="./">Chapter 4: Threads and Concurrency</a>
+</li>
+            
+<li >
+    <a href="../ch5/">Chapter 5: CPU Scheduling</a>
+</li>
+            
+<li >
+    <a href="../ch6/">Chapter 6: Synchronization Tools</a>
+</li>
+            
+<li >
+    <a href="../ch7/">Chapter 7: Synchronization Examples</a>
+</li>
+            
+<li >
+    <a href="../ch8/">Chapter 8: Deadlocks</a>
+</li>
+            
+<li >
+    <a href="../ch9/">Chapter 9: Main Memory</a>
+</li>
+            
+<li >
+    <a href="../ch10/">Chapter 10: Virtual Memory</a>
+</li>
+            
+<li >
+    <a href="../ch11/">Chapter 11: Mass-Storage Structure</a>
+</li>
+            
+<li >
+    <a href="../ch13/">Chapter 13: File-System Interfaces</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">CSAPP</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../csapp/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../csapp/ch1/">Chapter 1: 计算机系统漫游</a>
+</li>
+            
+<li >
+    <a href="../../csapp/ch2/">Chapter 2: 信息的表示和处理</a>
+</li>
+            
+<li >
+    <a href="../../csapp/ch3/">Chapter 3: 程序的机器级表示</a>
+</li>
+            
+<li >
+    <a href="../../csapp/ch4/">Chapter 4: 处理器体系结构</a>
+</li>
+            
+<li >
+    <a href="../../csapp/ch5/">Chapter 5: 优化程序性能</a>
+</li>
+            
+<li >
+    <a href="../../csapp/ch6/">Chapter 6: 存储器层次结构</a>
+</li>
+            
+<li >
+    <a href="../../csapp/ch7/">Chapter 7: 链接</a>
+</li>
+            
+<li >
+    <a href="../../csapp/ch8/">Chapter 8: 异常控制流</a>
+</li>
+            
+<li >
+    <a href="../../csapp/ch9/">Chapter 9: 虚拟内存</a>
+</li>
+            
+<li >
+    <a href="../../csapp/ch10/">Chapter 10: 系统级I/O</a>
+</li>
+            
+<li >
+    <a href="../../../csapp/ch11.md">Chapter 11: 网络编程</a>
+</li>
+    </ul>
+  </li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">MySql <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li >
+    <a href="../../../mysql/">Contents</a>
+</li>
+                                    
+<li >
+    <a href="../../../mysql/LearningMySQLandMariaDB/">Chapter Learning MySQL and MariaDB</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Java <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">HFJ</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../java/hfj/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch1/">Chapter 1: Dive in A Quick Dip</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch2/">Chapter 2: Classes and Objects</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch3/">Chapter 3: Primitives and References</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch4/">Chapter 4: Methods use Instance Variables</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch5/">Chapter 5: Writing a Program</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch6/">Chapter 6: Get to Know the Java API</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch7/">Chapter 7: Inheritance and Polymorphism</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch8/">Chapter 8: Interfaces and Abstract Classes</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch9/">Chapter 9: Constructors and Garbage Collection</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch10/">Chapter 10: Numbers and Statics</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch11/">Chapter 11: Exception Handling</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch12/">Chapter 12: Getting GUI</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch13/">Chapter 13: Using Swing</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch14/">Chapter 14: Serialization and File I/O</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch15/">Chapter 15: Networking and Threads</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch16/">Chapter 16: Collections and Generics</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch17/">Chapter 17: Packages, Jars and Deployment</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch18/">Chapter 18: Remote deploy with RMI</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/Appendix/">Appendix: The Top Ten Topics</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">HFDP</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../java/hfdp/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfdp/ch1/">Chapter 1: Strategy Pattern </a>
+</li>
+            
+<li >
+    <a href="../../../java/hfdp/ch2/">Chapter 2: Observer Pattern</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfdp/ch3/">Chapter 3: Decorator Pattern </a>
+</li>
+            
+<li >
+    <a href="../../../java/hfdp/ch4/">Chapter 4: Factory Pattern</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfdp/ch5/">Chapter 5: Singleton Pattern</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfdp/ch6/">Chapter 6: Command Pattern</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfdp/ch7/">Chapter 7: Adapter and Facade Patterns</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfdp/ch8/">Chapter 8: Template Method Pattern</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfdp/ch9/">Chapter 9: Iterator and Composite Patterns</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">TIJ</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../java/tij/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch1/">Chapter 1: Introduction</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch2/">Chapter 2: Introduction to Objects</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch3/">Chapter 3: Everything is an Object</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch4/">Chapter 4: Opertors</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch5/">Chapter 5: Controlling Execution</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch6/">Chapter 6: Initialization & Cleanup</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch7/">Chapter 7: Access Control</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch8/">Chapter 8: Reusing Clases</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch9/">Chapter 9: Polymorphism</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch10/">Chapter 10: Interfaces</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch11/">Chapter 11: Inner Classes</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch12/">Chapter 12: Holding Your Objects</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch13/">Chapter 13: Error Handling with Exceptions</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch14/">Chapter 14: Strings</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch15/">Chapter 15: Type Information</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch16/">Chapter 16: Generics</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch17/">Chapter 17: Arrays</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch18/">Chapter 18: Containers in Depth</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch19/">Chapter 19: I/O</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch20/">Chapter 20: Enumerated Types</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch21/">Chapter 21: Annotations</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch22/">Chapter 22: Concurrency</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch23/">Chapter 23: Graphical User Interfaces</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">UJVM</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../java/ujvm/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch1/">Chapter 1 : 走进Java</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch2/">Chapter 2 : Java内存区域与内存溢出正常</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch3/">Chapter 3 : 垃圾收集器与内存分配策略</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch4/">Chapter 4 : 虚拟机性能监控与故障处理工具</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch5/">Chapter 5 : 调优案例分析与实战</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch6/">Chapter 6 : 类文件结构</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch7/">Chapter 7 : 虚拟机类加载机制</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch8/">Chapter 8 : 虚拟机字节码执行引擎</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch9/">Chapter 9 : 类加载及执行子系统的案例与实战</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch10/">Chapter 10 : 早期(编译期)优化</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch11/">Chapter 11 : 晚期(运行期)优化</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch12/">Chapter 12 : Java内存模型与线程</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch13/">Chapter 13 : 线程安全与锁优化</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/AppendixC/">Appendix HotSpot虚拟机主要参数列表</a>
+</li>
+    </ul>
+  </li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">BidData <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">HADOOP</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../bigdata/hadoop/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch1/">Chapter 1: Meet Hadoop</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch2/">Chapter 2: MapReduce</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch3/">Chapter 3: The Hadoop Distributed FileSystem</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch4/">Chapter 4: YARN</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch5/">Chapter 5: Hadoop I/O</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch6/">Chapter 6: Developing a MapReduce Application</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch7/">Chapter 7: How MapReduce Works</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch8/">Chapter 8: MapReduce Types and Formats</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch9/">Chapter 9: MapReduce Features</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch10/">Chapter 10: Setting Up a Hadoop Cluster</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch11/">Chapter 11: Adminstering Hadoop</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch12/">Chapter 12: Avro</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch13/">Chapter 13: Parquet</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch14/">Chapter 14: Flume</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch15/">Chapter 15: Sqoop</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch16/">Chapter 16: Pig</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch17/">Chapter 17: Hive</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch18/">Chapter 18: Crunch</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch19/">Chapter 19: Spark</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch20/">Chapter 20: HBase</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch21/">Chapter 21: ZooKeeper</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch22/">Chapter 22: Composable Data at Center</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch23/">Chapter 23: Biological Data Science: Saving Lives with Software</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch24/">Chapter 24: Cascading</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">Spark</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../bigdata/spark/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/spark/ch1/">Chapter 1: Introduction to Data Analysis with Spark</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/spark/ch2/">Chapter 2: Downloading Spark and Getting Started</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/spark/ch3/">Chapter 3: Programming with RDDs</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/spark/ch4/">Chapter 4: Working with Key/Value Pairs</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/spark/ch5/">Chapter 5: Loading and Saving Your Data</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/spark/ch6/">Chapter 6: Advanced Spark Programming</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/spark/ch7/">Chapter 7: Running on a Cluster</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/spark/ch8/">Chapter 8: Tuning and Debugging Spark</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/spark/ch9/">Chapter 9: Spark SQL</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/spark/ch10/">Chapter 10: Spark Streaming</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/spark/ch11/">Chapter 11: Machine Learning with MLlib</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">GDM</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../bigdata/gdm/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/gdm/ch1/">Chapter 1: 推荐系统入门</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/gdm/ch2/">Chapter 2: 隐式评价和基于物品的过滤算法</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/gdm/ch3/">Chapter 3: 分类</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/gdm/ch4/">Chapter 4: 进一步探索分类</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/gdm/ch5/">Chapter 5: 概率和朴素贝叶斯</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/gdm/ch6/">Chapter 6: 朴素贝叶斯和文本数据</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/gdm/ch7/">Chapter 7: 聚类</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">MLIA</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../bigdata/mlia/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch1/">Chapter 1: 机器学习基础</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch2/">Chapter 2: k-近邻算法</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch3/">Chapter 3: 决策树</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch4/">Chapter 4: 基于概率论的分类方法：朴素贝叶斯</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch5/">Chapter 5: Logistic回归</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch6/">Chapter 6: 支持向量机</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch7/">Chapter 7: 利用AdaBoost元算法提高分类性能</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch8/">Chapter 8: 预测数值型数据：回归</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch9/">Chapter 9: 树回归</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch10/">Chapter 10: 利用Ｋ-均值聚类算法对未标注数据分组</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch11/">Chapter 11: 使用Apriori算法进行关联分析</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch11/">Chapter 12: 使用FP-growth算法来高效发现频繁项集</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch13/">Chapter 13: 利用PCA来简化数据</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">Crawler</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../bigdata/crawler/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/crawler/ch1/">Chapter 1: 开发环境配置</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/crawler/ch2/">Chapter 2: 爬虫基础</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/crawler/ch3/">Chapter 3: 基本库的使用</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/crawler/ch4/">Chapter 4: 解析库的使用</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/crawler/ch5/">Chapter 5: 数据存储</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/crawler/ch7/">Chapter 7: 动态渲染页面爬取</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/crawler/ch13/">Chapter 13: Scrapy框架的使用</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">Projects</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../bigdata/projects/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/projects/SparkStreaming实时流处理项目/">SparkStreaming实时流处理</a>
+</li>
+    </ul>
+  </li>
+                                </ul>
+                            </li>
+                            <li >
+                                <a href="../../../books/">Books</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li >
+                                <a rel="next" href="../ch3/">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li >
+                                <a rel="prev" href="../ch5/">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#operating-system-concepts-4-threads-concurrency">Operating System Concepts 4 - Threads &amp; Concurrency</a></li>
+        <li class="main "><a href="#1-overview">1 Overview</a></li>
+            <li><a href="#motivation">Motivation</a></li>
+            <li><a href="#benefits">Benefits</a></li>
+        <li class="main "><a href="#2-multicore-programming">2 Multicore Programming</a></li>
+            <li><a href="#programming-challenges">Programming Challenges</a></li>
+            <li><a href="#types-of-parallelism">Types of Parallelism</a></li>
+        <li class="main "><a href="#3-multithreading-models">3 Multithreading Models</a></li>
+            <li><a href="#many-to-one-model">Many-to-One Model</a></li>
+            <li><a href="#one-to-one-model">One-to-One Model</a></li>
+            <li><a href="#many-to-many-model">Many-to-Many Model</a></li>
+            <li><a href="#userkernel-level-threads">User/Kernel-Level threads</a></li>
+        <li class="main "><a href="#4-thread-libraries">4 Thread Libraries</a></li>
+            <li><a href="#pthreads">Pthreads</a></li>
+            <li><a href="#java-threads">Java Threads</a></li>
+            <li><a href="#java-executor-framework">Java Executor Framework</a></li>
+        <li class="main "><a href="#5-implicit-threading">5 Implicit threading</a></li>
+            <li><a href="#thread-pools">Thread Pools</a></li>
+            <li><a href="#grand-central-dispatch">Grand Central Dispatch</a></li>
+        <li class="main "><a href="#6-threading-issues">6 Threading Issues</a></li>
+            <li><a href="#light-weight-process">Light Weight Process</a></li>
+            <li><a href="#scheduler-activation">Scheduler activation</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<h3 id="operating-system-concepts-4-threads-concurrency"><strong>Operating System Concepts 4 - Threads &amp; Concurrency</strong><a class="headerlink" href="#operating-system-concepts-4-threads-concurrency" title="Permanent link">&para;</a></h3>
+<h3 id="1-overview">1 Overview<a class="headerlink" href="#1-overview" title="Permanent link">&para;</a></h3>
+<p>A <strong>thread</strong> is a basic unit of CPU utilization; it comprises a thread ID, a program counter, a register set, and a stack.</p>
+<p>线程是一个CPU利用的基本单元，它由线程ID，程序计数器、寄存器集合和栈组成。</p>
+<p>A traditional process has a single thread of control. If a process has <strong>multiple threads of control</strong>, it can perform more than one task at a time. 
+一个传统的进程只有单个控制线程，如果进程有多个控制线程，那么它能一次处理多个任务。</p>
+<p>The figure below illustrates the difference between a traditional <strong>single-threaded</strong> process and a <strong>multithreaded</strong> process.</p>
+<p><img alt="single threaded and multithreaded processes" src="../figures/singleThreadedAndMultithreadedProcesses.png" /></p>
+<h4 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h4>
+<p>Process creation is <strong>time consuming</strong> and <strong>resource intensive</strong>. It is generally more efficient to use one process that contains multiple threads.</p>
+<h4 id="benefits">Benefits<a class="headerlink" href="#benefits" title="Permanent link">&para;</a></h4>
+<p>The benefits of  multithreaded programming can be broken down into four major categories:</p>
+<ol>
+<li><strong>Responsiveness</strong><ul>
+<li>It allows a program to continue running even if part of it is blocked or is performing a lengthy operation, thereby increasing responsiveness to the user.</li>
+<li>响应度高：即使程序部分阻塞或执行较冗长操作，该程序仍能继续执行，从而增加了对用户的相应程度。</li>
+</ul>
+</li>
+<li><strong>Resource sharing</strong><ul>
+<li>Processes can share resources only through techniques such as shared memory and message. Such techniques must be explicitly arranged by the programmer.</li>
+<li>Threads share the memory and the resources of the process to which they belong by default.</li>
+<li>资源共享：线程默认共享它们所属进程的内存和资源。代码和数据共享的优点是它允许一个应用程序在同一地址空间有多个不同的活动线程。</li>
+</ul>
+</li>
+<li><strong>Economy</strong><ul>
+<li>Allocating memory and resources for process creation is costly. Because threads share the resources of the process to which they belong, it is more economical to create and context-switch threads.</li>
+<li>经济：进程创建所需要的内存和资源的分配比较昂贵。由于线程能共享它们所属进程的资源，所以创建和切换线程会更为经济。</li>
+</ul>
+</li>
+<li><strong>Scalability</strong><ul>
+<li>The benefits of multithreading can be even greater in a multiprocessor architecture, where threads may be running in parallel on different processing cores.</li>
+<li>可扩展性: 多线程的优点之一是能充分使用多处理器体系结构。以便每个进程能并行运行在不同的处理器上。</li>
+</ul>
+</li>
+</ol>
+<h3 id="2-multicore-programming">2 Multicore Programming<a class="headerlink" href="#2-multicore-programming" title="Permanent link">&para;</a></h3>
+<p>On a system with a <strong>single</strong> computing core, concurrency merely means that the execution of the threads will be <strong>interleaved</strong> over time, because the processing core is capable of executing only one thread at a time.</p>
+<p>On a system with <strong>multiple</strong> cores, however, concurrency means that some threads can run in <strong>parallel</strong>, because the system can assign a separate thread to each core.</p>
+<p><img alt="concurrency of single and multiple core" src="../figures/concurrency_of_single_and_multiple_core.png" /></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong><em>Concurrency</em></strong> v.s. <strong><em>Parallelism</em></strong></p>
+<ul>
+<li>Concurrency: supports more than one task by allowing all the tasks to make progress.</li>
+<li>Parallelism: perform more than one task simultaneously.</li>
+</ul>
+</div>
+<h4 id="programming-challenges">Programming Challenges<a class="headerlink" href="#programming-challenges" title="Permanent link">&para;</a></h4>
+<ol>
+<li><strong>Identifying tasks</strong>. This involves examining applications to find areas that can be divided into separate, concurrent tasks.</li>
+<li><strong>Balance</strong>. Programmer must ensure that the tasks perform equal work of equal value.</li>
+<li><strong>Data splitting</strong>. The data accessed and manipulated by the tasks must be divided to run on separate cores.</li>
+<li><strong>Data dependency</strong>. The data accessed by the tasks must be examined for dependencies between two or more tasks.</li>
+<li><strong>Testing and debugging</strong>. Testing and debugging such concurrent programs is inherently more difficult than testing and debugging single-threaded applications.</li>
+</ol>
+<h4 id="types-of-parallelism">Types of Parallelism<a class="headerlink" href="#types-of-parallelism" title="Permanent link">&para;</a></h4>
+<p>In general, there are two types of parallelism: data parallelism and task parallelism.</p>
+<ul>
+<li><strong>Data parallelism</strong> focuses on distributing subsets of the same data across multiple computing cores and performing the same operation on each core. </li>
+<li><strong>Task parallelism</strong> involves distributing not data but tasks (threads) across multiple computing cores.</li>
+<li>However, data and task parallelism are not mutually exclusive, and an application may in fact use a hybrid of these two strategies.</li>
+</ul>
+<p><img alt="data and task parallelism" src="../figures/DataAndTaskParallism.png" /></p>
+<h3 id="3-multithreading-models">3 Multithreading Models<a class="headerlink" href="#3-multithreading-models" title="Permanent link">&para;</a></h3>
+<p>Support for threads may be provided either at the user level, for <strong><em>user threads</em></strong>, or by the kernel, for <strong><em>kernel threads</em></strong>. </p>
+<ul>
+<li>User threads are supported above the kernel and are managed without kernel support.</li>
+<li>Kernel threads are supported and managed directly by the operating system.</li>
+</ul>
+<p>有两种不同的方法来提供线程支持：用户层的用户级线程和内核层的内核级线程。用户级线程受内核支持，而无需内核管理；而内核级线程由操作系统直接支持和管理。事实上所有当代操作系统都支持内核级线程。</p>
+<p>Ultimately, a relationship must exist between user threads and kernel threads. There are three common ways of establishing such a relationship: the many-to-one model, the one-to-one model, and the many-to-many model.
+在用户级线程和内核级线程之间必然存在一种关系。有三种普遍建立这种关系的方法：多对一模型、一对一模型、多对多模型。</p>
+<h4 id="many-to-one-model">Many-to-One Model<a class="headerlink" href="#many-to-one-model" title="Permanent link">&para;</a></h4>
+<p>The <strong><em>many-to-one model</em></strong>(多对一模型) maps many user-level threads to one kernel thread. 多对一模型将许多用户级线程映射到一个内核线程。</p>
+<ul>
+<li>Thread management is done by the thread library in user space, so it is efficient. 线程管理由线程库在用户空间进行的，因而效率比较高。</li>
+<li>Also, because only one thread can access the kernel at a time, multiple threads are unable to run in parallel on multicore systems. 因为任意时刻只能有一个线程能够访问内核，多个线程不能并行运行在多处理器上。</li>
+</ul>
+<p><img alt="many_to_one_mode" src="../figures/many_to_one_model.png" /></p>
+<h4 id="one-to-one-model">One-to-One Model<a class="headerlink" href="#one-to-one-model" title="Permanent link">&para;</a></h4>
+<p>The <strong>one-to-one model</strong>(一对一模型) maps each user thread to a kernel thread. 一对一模型每个用户线程映射到一个内核线程。</p>
+<ul>
+<li>It provides more concurrency by allowing another thread to run when a thread makes a blocking system call. 该模型在一个线程执行阻塞系统调用时，能允许另一个线程继续执行，提供了更高的并发性。</li>
+<li>It also allows multiple threads to run in parallel on multiprocessors. 它也允许多个线程能并行运行在多处理器系统上。</li>
+<li>The only drawback to this model is that creating a user thread requires creating the corresponding kernel thread, and a large number of kernel threads may <strong><em>burden the performance of a system</em></strong>. 这种模型的唯一缺点是每创建一个用户线程就会创建一个相应的内核线程, 大量内核线程会影响系统性能。</li>
+</ul>
+<p><img alt="one_to_one_mode" src="../figures/one_to_one_model.png" /></p>
+<h4 id="many-to-many-model">Many-to-Many Model<a class="headerlink" href="#many-to-many-model" title="Permanent link">&para;</a></h4>
+<p>The <strong>many-to-many model</strong>(多对多模型) multiplexes many user-level threads to a smaller or equal number of kernel threads. 多对多模型多路复用了许多用户线程到同样数量或更小数量的内核线程上。</p>
+<ul>
+<li>Developers can create as many user threads as necessary. 开发人员可创建任意多的用户线程。</li>
+<li>The corresponding kernel threads can run in parallel on a multiprocessor. 相应内核线程能在多处理器系统上并发执行。</li>
+<li>Also, when a thread performs a blocking system call, the kernel can schedule another thread for execution. 而且当一个线程执行阻塞系统调用时，内核能调度另一个线程来执行。</li>
+<li>In practice it is <strong><em>difficult to implement</em></strong>. 实际上难以实施。</li>
+</ul>
+<p><img alt="many_to_many_mode" src="../figures/many_to_many_model.png" /></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>Most operating systems now use the one-to-one model.</strong></p>
+</div>
+<h4 id="userkernel-level-threads">User/Kernel-Level threads<a class="headerlink" href="#userkernel-level-threads" title="Permanent link">&para;</a></h4>
+<p><a href="https://cs.nyu.edu/rgrimm/teaching/sp07-os/activations.pdf">ref: Scheduler Activations</a></p>
+<p>(1) <strong>User-Level Threads</strong>(用户级线程)</p>
+<p>Advantages:</p>
+<ul>
+<li>Common operations can be implemented <strong>efficiently</strong> </li>
+<li>Interface can be tailored to application needs</li>
+</ul>
+<p>Issues:</p>
+<ul>
+<li>A blocking system call blocks all user-level threads. 阻塞系统调用能够阻塞所有用户级线程。</li>
+<li>Asynchronous system calls can provide partial work-around. 非同步系统调用能提供部分work-around. <a href="https://en.wikipedia.org/wiki/Workaround">view the definition of work-around here</a></li>
+<li>A page fault blocks all user-level threads. 缺页异常阻塞所有用户级线程。</li>
+<li>Matching threads to CPUs in a multiprocessor is hard：<ul>
+<li>No knowledge about the numbers of CPUs available to address space </li>
+<li>No knowledge when a thread blocks</li>
+</ul>
+</li>
+</ul>
+<p>(2) <strong>Kernel-Level Threads</strong> (内核级线程)</p>
+<p>Primary advantage
+* Blocking system calls and page faults handled correctly</p>
+<p>Issues
+<em> Cost of performing thread operations
+</em> Create, exit, lock, signal, wait all require user/kernel crossings</p>
+<p><strong>NOTE</strong>: The term <strong><em>virtual processor</em></strong> is often used instead of kernel thread.</p>
+<h3 id="4-thread-libraries">4 Thread Libraries<a class="headerlink" href="#4-thread-libraries" title="Permanent link">&para;</a></h3>
+<p>A <strong>thread library</strong>(线程库) provides the programmer with an API for creating and managing threads.</p>
+<h4 id="pthreads">Pthreads<a class="headerlink" href="#pthreads" title="Permanent link">&para;</a></h4>
+<p><strong>Pthreads</strong>, the threads extension of the POSIX standard, may be provided as either a user-level or a kernel-level library. Pthread作为POSIX标准扩展，可以提供用户级或内核级的库。</p>
+<p>This is a <em>specification</em> for thread behavior, not an <em>implementation</em>. Operating-system designers may implement the specification in any way they wish.</p>
+<ul>
+<li><code class="codehilite">pthread_t tid</code>: declares the identifier for the thread</li>
+<li><code class="codehilite">pthread attr_t attr</code>: declares the attributes for the thread</li>
+<li><code class="codehilite">pthread_attr_init(&amp;attr)</code>: initialize thread attributes object</li>
+<li><code class="codehilite">pthread_create()</code>: create a new thread</li>
+<li><code class="codehilite">pthread_join()</code>:  join with a terminated thread  </li>
+<li><code class="codehilite">pthread_exit()</code>:  terminate calling thread  </li>
+</ul>
+<p>Note: Compile and link with <code class="codehilite">-pthread</code>.</p>
+<p><code class="codehilite">pthread</code>详细用法和实例, 见<a href="https://www.cs.cmu.edu/afs/cs/academic/class/15492-f07/www/pthreads.html">POSIX thread (pthread) libraries</a></p>
+<h4 id="java-threads">Java Threads<a class="headerlink" href="#java-threads" title="Permanent link">&para;</a></h4>
+<p>The Java thread API allows threads to be created and managed directly in Java programs. However, because in most instances the JVM is running on top of a host operating system, the Java thread API is generally implemented using a thread library available on the host system. This means that on Windows systems, Java threads are typically implemented using the Windows API; UNIX, Linux, and macOS systems typically use Pthreads.</p>
+<p>One approach of creating thread is to define a class that implements the <C>Runnable</C> interface. The code in the <C>run()</C> method of a class that implements <C>Runnable</C> is what executes in a separate thread.</p>
+<p> <div class=codehilite><pre><span class=kd>class</span> <span class=nc>Job</span> <span class=kd>implements</span> <span class=n>Runnable</span>
+<span class=o>{</span>
+    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>run</span><span class=o>()</span> <span class=o>{</span> 
+        <span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=s>&quot;I am a thread.&quot;</span><span class=o>);</span>
+<span class=o>}</span>
+</pre></div></p>
+<p>Thread creation in Java involves creating a <C>Thread</C> object and passing it an instance of a class that implements <C>Runnable</C>, followed by invoking the <C>start()</C> method on the <C>Thread</C> object.</p>
+<p> <div class=codehilite><pre><span class=n>Thread</span> <span class=n>worker</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Thread</span><span class=o>(</span><span class=k>new</span> <span class=n>Job</span><span class=o>());</span> 
+<span class=n>worker</span><span class=o>.</span><span class=na>start</span><span class=o>();</span>
+</pre></div></p>
+<h4 id="java-executor-framework">Java Executor Framework<a class="headerlink" href="#java-executor-framework" title="Permanent link">&para;</a></h4>
+<p>However, beginning with Version 1.5 and its API, Java introduced several new concurrency features that provide developers with much greater control over thread creation and communication.</p>
+<blockquote>
+<p>Executor is an object that executes submitted Runnable tasks. This interface provides a way of decoupling task submission from the mechanics of how each task will be run, including details of thread use, scheduling, etc. An Executor is normally used instead of explicitly creating threads. [<a href="http://docs.oracle.com/javase/9/docs/api/java/util/concurrent/Executor.html">Java Doc</a>]</p>
+</blockquote>
+<p>Rather than explicitly creating <C>Thread</C> objects, thread creation is instead organized around the <C>Executor</C> interface:</p>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>interface</span> <span class=nc>Executor</span> <span class=o>{</span> 
+    <span class=kt>void</span> <span class=nf>execute</span><span class=o>(</span><span class=n>Runnable</span> <span class=n>command</span><span class=o>);</span> 
+<span class=o>}</span>
+</pre></div></p>
+<p>Classes implementing this interface must define the <C>execute()</C> method, which is passed a <C>Runnable</C> object.</p>
+<p> <div class=codehilite><pre><span class=n>Executor</span> <span class=n>service</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Executor</span><span class=o>;</span> 
+<span class=n>service</span><span class=o>.</span><span class=na>execute</span><span class=o>(</span><span class=k>new</span> <span class=n>Job</span><span class=o>());</span>
+</pre></div></p>
+<p>The advantage of this approach is that it not only divides thread creation from execution but also provides a mechanism for communication between concurrent tasks.</p>
+<h3 id="5-implicit-threading">5 Implicit threading<a class="headerlink" href="#5-implicit-threading" title="Permanent link">&para;</a></h3>
+<p><strong>Implicit threading</strong>(隐式线程): Transfers the creation and management of threading from application developers to compilers and run-time libraries.</p>
+<ul>
+<li>One way to address difficulties and better support the design of concurrent and parallel applications.</li>
+<li>The advantage of this approach is that developers <strong><em><em>only need to identify parallel tasks</em></em></strong>, and the libraries determine the specific details of thread creation and management.</li>
+</ul>
+<p>In this section, we explore four alternative approaches to designing applications that can take advantage of multicore processors through implicit threading:</p>
+<ul>
+<li>Thread Pools</li>
+<li>Fork Join</li>
+<li>OpemMP</li>
+<li>Grand Central Dispatch</li>
+</ul>
+<h4 id="thread-pools">Thread Pools<a class="headerlink" href="#thread-pools" title="Permanent link">&para;</a></h4>
+<p>Two main issues exist:</p>
+<ul>
+<li>The thread will be <strong>discarded</strong> once it has completed its work. 线程在完成工作之后就要被丢弃</li>
+<li><strong>Unlimited</strong> threads could exhaust system resources. 无限制的线程会耗尽系统资源</li>
+</ul>
+<p>Solution -&gt; <strong>thread pool</strong>(线程池)</p>
+<ul>
+<li>It creates a number of threads at start-up, and places them into a pool, where they sit and wait for work.</li>
+<li>When a server receives a request, it submits the request to the thread pool and resumes waiting for additional requests.</li>
+<li>If there is an available thread in the pool, it is awakened, and the request is serviced immediately. </li>
+<li>If the pool contains no available thread, the task is queued until one becomes free. </li>
+</ul>
+<p>线程池的思想是在进程开始时创建一定数量的线程，并放入到池中以等待工作。当服务器收到请求时，它会唤醒线程池中的一个线程，并将要处理的请求传递给它，一旦线程完成了服务，它会返回到池中在等待工作。如果池中没有可用的线程，那么服务器会一直等待直到有空线程为止。</p>
+<p>Thread pools offer these benefits:</p>
+<ol>
+<li>Servicing a request with an existing thread is often <strong>faster</strong> than waiting to create a thread. 通常用现有线程处理请求要比等待创建新的线程要快.</li>
+<li>A thread pool <strong>limits</strong> the number of threads that exist at any one point.  线程池限制了在任何时候可用线程的数量.</li>
+<li>Separating the task to be performed from the mechanics of creating the task allows us to use different strategies for running the task.</li>
+</ol>
+<p><big><font color="green">Java Thread Pool</font></big></p>
+<p>The <C>java.util.concurrent</C> package includes an API for several varieties of thread-pool architectures. Here, we focus on the following three models:</p>
+<ol>
+<li>Single thread executor — <C>newSingleThreadExecutor()</C> — creates a pool of size 1.</li>
+<li>Fixed thread executor — <C>newFixedThreadPool(int size)<C> — creates a thread pool with a specified number of threads.</li>
+<li>Cached thread executor — <C>newCachedThreadPool()</C> — creates an unbounded thread pool, reusing threads in many instances.</li>
+</ol>
+<p>Each of these factory methods creates and returns an object instance that implements the <C>ExecutorService</C> interface. <C>ExecutorService</C> extends the <C>Executor</C> interface, allowing us to invoke the <C>execute()</C> method on this object.</p>
+<p> <div class=codehilite><pre><span class=c1>//It creates a cached thread pool and submits tasks to be executed by a thread in the pool using the execute() method. </span>
+<span class=c1>// When the shutdown() method is invoked, the thread pool rejects additional tasks and shuts down once all existing tasks have completed execution.</span>
+<span class=kn>import</span> <span class=nn>java.util.concurrent.*</span><span class=o>;</span> 
+<span class=kd>public</span> <span class=kd>class</span> <span class=nc>ThreadPoolExample</span> 
+<span class=o>{</span> 
+    <span class=kd>public</span> <span class=kd>static</span> <span class=kt>void</span> <span class=nf>main</span><span class=o>(</span><span class=n>String</span><span class=o>[]</span> <span class=n>args</span><span class=o>)</span> <span class=o>{</span>
+        <span class=kt>int</span> <span class=n>numTasks</span> <span class=o>=</span> <span class=n>Integer</span><span class=o>.</span><span class=na>parseInt</span><span class=o>(</span><span class=n>args</span><span class=o>[</span><span class=mi>0</span><span class=o>].</span><span class=na>trim</span><span class=o>());</span> 
+
+        <span class=cm>/* Create the thread pool */</span> 
+        <span class=n>ExecutorService</span> <span class=n>pool</span> <span class=o>=</span> <span class=n>Executors</span><span class=o>.</span><span class=na>newCachedThreadPool</span><span class=o>();</span> 
+        <span class=cm>/* Run each task using a thread in the pool */</span> 
+        <span class=k>for</span> <span class=o>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=o>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>numTasks</span><span class=o>;</span> <span class=n>i</span><span class=o>++)</span> 
+            <span class=n>pool</span><span class=o>.</span><span class=na>execute</span><span class=o>(</span><span class=k>new</span> <span class=n>Task</span><span class=o>());</span> 
+
+         <span class=cm>/* Shut down the pool once all threads have completed */</span>            
+        <span class=n>pool</span><span class=o>.</span><span class=na>shutdown</span><span class=o>();</span>
+<span class=o>}</span>
+</pre></div></p>
+<h4 id="grand-central-dispatch">Grand Central Dispatch<a class="headerlink" href="#grand-central-dispatch" title="Permanent link">&para;</a></h4>
+<p><strong>Grand Central Dispatch</strong> (GCD) is a technology for Apple's Mac OS X and iOS operating systems. It is a combination of extensions to the C languages, an API, and a run-time library that allows application developers identify sections of code to run in parallel.</p>
+<ul>
+<li>GCD identifies two types of dispatch queues: serial and concurrent.</li>
+</ul>
+<h3 id="6-threading-issues">6 Threading Issues<a class="headerlink" href="#6-threading-issues" title="Permanent link">&para;</a></h3>
+<h4 id="light-weight-process">Light Weight Process<a class="headerlink" href="#light-weight-process" title="Permanent link">&para;</a></h4>
+<p>Many systems implementing either the many-to-many or the two-level model place an <em>intermediate</em> data structure between the user and kernel threads. This data structure—typically known as a <strong><em><em>lightweight process</em></em></strong>（轻量级进程）, or <strong>LWP</strong>.</p>
+<ul>
+<li>To the user-thread library, the LWP appears to be a <strong>virtual</strong> processor on which the application can schedule a user thread to run.</li>
+<li>Each LWP is attached to a kernel thread.</li>
+<li>If a kernel thread blocks, the LWP blocks as well. Up the chain, the user-level thread attached to the LWP also blocks.</li>
+</ul>
+<p><img alt="light-weight process" src="../figures/Light-Weight_process.png" /></p>
+<p><img alt="" src="../figures/15320591793590.jpg" /></p>
+<p>where K denotes kernel threads and  P denotes Process.</p>
+<p>下面是一个测试LINUX中LWP的C程序</p>
+<p> <div class=codehilite><pre><span class=cm>/* filename: test_LWP.c */</span>
+<span class=cp>#include</span> <span class=cpf>&lt;stdlib.h&gt;</span><span class=cp></span>
+<span class=cp>#include</span> <span class=cpf>&lt;pthread.h&gt;</span><span class=cp></span>
+<span class=cp>#include</span> <span class=cpf>&lt;stdio.h&gt;</span><span class=cp></span>
+<span class=cp>#include</span> <span class=cpf>&lt;unistd.h&gt;</span><span class=cp></span>
+
+<span class=kt>int</span><span class=o>*</span> <span class=nf>thread</span><span class=p>(</span><span class=kt>void</span><span class=o>*</span> <span class=n>arg</span><span class=p>)</span>
+<span class=p>{</span>
+    <span class=n>pthread_t</span> <span class=n>tid</span><span class=p>;</span> <span class=c1>// the ID of a thread</span>
+    <span class=n>tid</span> <span class=o>=</span> <span class=n>pthread_self</span><span class=p>();</span><span class=c1>//get the current thread&#39;s id</span>
+
+    <span class=n>printf</span><span class=p>(</span><span class=s>&quot;The ID of new thread is =%lu</span><span class=se>\n</span><span class=s>&quot;</span><span class=p>,</span> <span class=n>tid</span><span class=p>);</span>
+    <span class=n>sleep</span><span class=p>(</span><span class=mi>500</span><span class=p>);</span> <span class=c1>//sleep for 500 seconds</span>
+    <span class=k>return</span> <span class=nb>NULL</span><span class=p>;</span> 
+<span class=p>}</span>
+
+<span class=kt>int</span> <span class=nf>main</span><span class=p>()</span>
+<span class=p>{</span>
+    <span class=n>pthread_t</span> <span class=n>tid</span><span class=p>;</span>
+    <span class=n>printf</span><span class=p>(</span><span class=s>&quot;The ID of main thread is %lu</span><span class=se>\n</span><span class=s>&quot;</span><span class=p>,</span> <span class=n>pthread_self</span><span class=p>());</span> <span class=c1>//get the main thread&#39;s id</span>
+  <span class=k>if</span> <span class=p>(</span><span class=n>pthread_create</span><span class=p>(</span><span class=o>&amp;</span><span class=n>tid</span><span class=p>,</span> <span class=nb>NULL</span><span class=p>,</span> <span class=p>(</span><span class=kt>void</span> <span class=o>*</span><span class=p>)</span> <span class=kr>thread</span><span class=p>,</span> <span class=nb>NULL</span><span class=p>)</span> <span class=o>!=</span><span class=mi>0</span><span class=p>)</span> 
+    <span class=p>{</span>
+       <span class=n>printf</span><span class=p>(</span><span class=s>&quot;Thread creation failed</span><span class=se>\n</span><span class=s>&quot;</span><span class=p>);</span>
+        <span class=n>exit</span><span class=p>(</span><span class=mi>1</span><span class=p>);</span>
+    <span class=p>}</span>
+
+    <span class=n>printf</span><span class=p>(</span><span class=s>&quot;my Id is %lu, new thread ID is %lu</span><span class=se>\n</span><span class=s>&quot;</span><span class=p>,</span> <span class=n>pthread_self</span><span class=p>(),</span> <span class=n>tid</span><span class=p>);</span>
+    <span class=n>sleep</span><span class=p>(</span><span class=mi>1000</span><span class=p>);</span>
+    <span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+<span class=p>}</span>
+</pre></div></p>
+<p>运行<code class="codehilite">ps -efL</code> 可以看到, <code class="codehilite">test_LWP</code>进程(PID=1953)有两个LWP，即NLWP(number of light weight process)=2。</p>
+<p> <div class=codehilite><pre>UID        PID  PPID   LWP  C NLWP STIME TTY          TIME CMD
+vagrant   1953  1644  1953  0    2 04:16 pts/0    00:00:00 ./test_LWP
+vagrant   1953  1644  1954  0    2 04:16 pts/0    00:00:00 ./test_LWP
+vagrant   2028  1839  2028  0    1 04:18 pts/1    00:00:00 ps -efL
+</pre></div></p>
+<h4 id="scheduler-activation">Scheduler activation<a class="headerlink" href="#scheduler-activation" title="Permanent link">&para;</a></h4>
+<p><strong>Problems</strong>:
+内核线程在各方面都比较灵活，但是性能不高，经常会出现请求在用户空间和内核空间的传递。那么如何在拥有内核空间线程的灵活性的同时又提高性能呢?</p>
+<p><strong>Solution</strong>:</p>
+<p><strong>Scheduler activation</strong>（调度器激活）are a threading mechanism that, when implemented in an operating system's process scheduler, provide <em><em>kernel-level</em></em> thread functionality with <em><em>user-level</em></em> thread flexibility and performance [<a href="https://en.wikipedia.org/wiki/Scheduler_activations">ref</a>]. </p>
+<p>It works as follows: </p>
+<ul>
+<li>The kernel provides an application with a set of virtual processors (LWPs), and the application can <strong>schedule</strong> user threads onto an available virtual processor. </li>
+<li>Furthermore, the kernel must inform an application about certain events. This procedure is known as an <strong>upcall</strong>(向上调用). </li>
+<li>Upcalls are handled by the thread library with an upcall handler, and upcall handlers must run on a virtual processor.</li>
+<li>While the user threading library will schedule user threads, the kernel will schedule the underlying LWPs.</li>
+</ul>
+<p><strong>Example</strong> [<a href="http://www.it.uu.se/education/course/homepage/os/vt18/module-4/implementing-threads/">ref</a>]: </p>
+<p>Let’s study an example of how scheduler activations can be used. The kernel has allocated one kernel thread (1) to a process with three user-level threads (2). The three user level threads take turn executing on the single kernel-level thread.</p>
+<p><img alt="scheduler-activations-1-2" src="../figures/scheduler-activations-1.png" /></p>
+<ul>
+<li>(3) The executing thread makes a <strong>blocking system call</strong>.</li>
+<li>(4) And the the kernel blocks the calling user-level thread and the kernel-level thread used to execute the user-level thread .</li>
+<li>(5) Scheduler activation: the kernel decides to allocate a new kernel-level thread to the process . </li>
+<li>(6) Upcall: the kernel notifies the user-level thread manager which user-level thread that is now blocked and that a new kernel-level thread is available. </li>
+<li>(7) The user-level thread manager move the other threads to the new kernel thread and resumes one of the ready threads.</li>
+</ul>
+<p><img alt="scheduler-activations-3-7" src="../figures/scheduler-activations.png" /></p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = "../../..",
+                shortcuts = {"search": 83, "next": 78, "help": 191, "previous": 80};
+        </script>
+        <script src="../../../js/base.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" defer></script>
+        <script src="../../../extra_javascript/tabhack.js" defer></script>
+        <script src="../../../extra_javascript/baidu.js" defer></script>
+        <script src="../../../search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

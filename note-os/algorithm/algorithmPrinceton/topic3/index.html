@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <meta name="author" content="Zhenhua Wang">
+        <link rel="canonical" href="http://larryim.cc/note/algorithm/algorithmPrinceton/topic3/">
+        <link rel="shortcut icon" href="../../../img/favicon.ico">
+        <title>Topic 3: Sort  - Zhenhua's Notes</title>
+        <link href="../../../css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="../../../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../../../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/docco.min.css">
+        <link href="../../../extra_css/custom.css" rel="stylesheet">
+        <link href="../../../extra_css/custom.js" rel="stylesheet">
+        <link href="../../../extra_css/friendly.css" rel="stylesheet">
+        <link href="../../../extra_css/theme.css" rel="stylesheet">
+        <link href="../../../extra_css/mkdocs/js/lunr-0.5.7.min.js" rel="stylesheet">
+        <link href="../../../extra_css/mkdocs/js/mustache.min.js" rel="stylesheet">
+        <link href="../../../extra_css/mkdocs/js/require.js" rel="stylesheet">
+        <link href="../../../extra_css/mkdocs/js/search.js" rel="stylesheet">
+        <link href="../../../extra_css/mkdocs/js/text.js" rel="stylesheet">
+        <link href="../../../extra_css/code-tab.css" rel="stylesheet">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="../../../js/jquery-1.10.2.min.js" defer></script>
+        <script src="../../../js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="../../..">Zhenhua's Notes</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="../../..">Home</a>
+                            </li>
+                            <li class="dropdown active">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Algorithm <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li >
+    <a href="../../..">Home</a>
+</li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">AlgorithmPrinceton</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../">Contents</a>
+</li>
+            
+<li >
+    <a href="../topic1/">Topic 1: UnionFind </a>
+</li>
+            
+<li >
+    <a href="../topic2/">Topic 2: StackQueue</a>
+</li>
+            
+<li class="active">
+    <a href="./">Topic 3: Sort </a>
+</li>
+            
+<li >
+    <a href="../topic4/">Topic 4: PriorityQueues</a>
+</li>
+            
+<li >
+    <a href="../topic5/">Topic 5: Symbol Tables</a>
+</li>
+            
+<li >
+    <a href="../topic6/">Topic 6: Balanced Search Trees</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">AlgorithmStanford</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../algorithmStanford/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../algorithmStanford/dynamicprogramming/">Topic: Dynammic Programming </a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">CS61B</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../calgorithm/s61b/index.md">Contents</a>
+</li>
+            
+<li >
+    <a href="../../cs61b/Lab1/">Lab1: javac, java, git</a>
+</li>
+            
+<li >
+    <a href="../../cs61b/Lab2/">Lab2: Unit Testing with JUnit and IntLists</a>
+</li>
+            
+<li >
+    <a href="../../cs61b/Lab3/">Lab3: Unit Testing with JUnit, Debugging</a>
+</li>
+    </ul>
+  </li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">OS <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">OSC</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../os/osc/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../os/osc/ch1/">Chapter 1: Introduction </a>
+</li>
+            
+<li >
+    <a href="../../../os/osc/ch2/">Chapter 2: Operating System structures</a>
+</li>
+            
+<li >
+    <a href="../../../os/osc/ch3/">Chapter 3: Processes</a>
+</li>
+            
+<li >
+    <a href="../../../os/osc/ch4/">Chapter 4: Threads and Concurrency</a>
+</li>
+            
+<li >
+    <a href="../../../os/osc/ch5/">Chapter 5: CPU Scheduling</a>
+</li>
+            
+<li >
+    <a href="../../../os/osc/ch6/">Chapter 6: Synchronization Tools</a>
+</li>
+            
+<li >
+    <a href="../../../os/osc/ch7/">Chapter 7: Synchronization Examples</a>
+</li>
+            
+<li >
+    <a href="../../../os/osc/ch8/">Chapter 8: Deadlocks</a>
+</li>
+            
+<li >
+    <a href="../../../os/osc/ch9/">Chapter 9: Main Memory</a>
+</li>
+            
+<li >
+    <a href="../../../os/osc/ch10/">Chapter 10: Virtual Memory</a>
+</li>
+            
+<li >
+    <a href="../../../os/osc/ch11/">Chapter 11: Mass-Storage Structure</a>
+</li>
+            
+<li >
+    <a href="../../../os/osc/ch13/">Chapter 13: File-System Interfaces</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">CSAPP</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../os/csapp/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../os/csapp/ch1/">Chapter 1: 计算机系统漫游</a>
+</li>
+            
+<li >
+    <a href="../../../os/csapp/ch2/">Chapter 2: 信息的表示和处理</a>
+</li>
+            
+<li >
+    <a href="../../../os/csapp/ch3/">Chapter 3: 程序的机器级表示</a>
+</li>
+            
+<li >
+    <a href="../../../os/csapp/ch4/">Chapter 4: 处理器体系结构</a>
+</li>
+            
+<li >
+    <a href="../../../os/csapp/ch5/">Chapter 5: 优化程序性能</a>
+</li>
+            
+<li >
+    <a href="../../../os/csapp/ch6/">Chapter 6: 存储器层次结构</a>
+</li>
+            
+<li >
+    <a href="../../../os/csapp/ch7/">Chapter 7: 链接</a>
+</li>
+            
+<li >
+    <a href="../../../os/csapp/ch8/">Chapter 8: 异常控制流</a>
+</li>
+            
+<li >
+    <a href="../../../os/csapp/ch9/">Chapter 9: 虚拟内存</a>
+</li>
+            
+<li >
+    <a href="../../../os/csapp/ch10/">Chapter 10: 系统级I/O</a>
+</li>
+            
+<li >
+    <a href="../../../csapp/ch11.md">Chapter 11: 网络编程</a>
+</li>
+    </ul>
+  </li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">MySql <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li >
+    <a href="../../../mysql/">Contents</a>
+</li>
+                                    
+<li >
+    <a href="../../../mysql/LearningMySQLandMariaDB/">Chapter Learning MySQL and MariaDB</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Java <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">HFJ</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../java/hfj/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch1/">Chapter 1: Dive in A Quick Dip</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch2/">Chapter 2: Classes and Objects</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch3/">Chapter 3: Primitives and References</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch4/">Chapter 4: Methods use Instance Variables</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch5/">Chapter 5: Writing a Program</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch6/">Chapter 6: Get to Know the Java API</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch7/">Chapter 7: Inheritance and Polymorphism</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch8/">Chapter 8: Interfaces and Abstract Classes</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch9/">Chapter 9: Constructors and Garbage Collection</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch10/">Chapter 10: Numbers and Statics</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch11/">Chapter 11: Exception Handling</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch12/">Chapter 12: Getting GUI</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch13/">Chapter 13: Using Swing</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch14/">Chapter 14: Serialization and File I/O</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch15/">Chapter 15: Networking and Threads</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch16/">Chapter 16: Collections and Generics</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch17/">Chapter 17: Packages, Jars and Deployment</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch18/">Chapter 18: Remote deploy with RMI</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/Appendix/">Appendix: The Top Ten Topics</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">HFDP</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../java/hfdp/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfdp/ch1/">Chapter 1: Strategy Pattern </a>
+</li>
+            
+<li >
+    <a href="../../../java/hfdp/ch2/">Chapter 2: Observer Pattern</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfdp/ch3/">Chapter 3: Decorator Pattern </a>
+</li>
+            
+<li >
+    <a href="../../../java/hfdp/ch4/">Chapter 4: Factory Pattern</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfdp/ch5/">Chapter 5: Singleton Pattern</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfdp/ch6/">Chapter 6: Command Pattern</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfdp/ch7/">Chapter 7: Adapter and Facade Patterns</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfdp/ch8/">Chapter 8: Template Method Pattern</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfdp/ch9/">Chapter 9: Iterator and Composite Patterns</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">TIJ</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../java/tij/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch1/">Chapter 1: Introduction</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch2/">Chapter 2: Introduction to Objects</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch3/">Chapter 3: Everything is an Object</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch4/">Chapter 4: Opertors</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch5/">Chapter 5: Controlling Execution</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch6/">Chapter 6: Initialization & Cleanup</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch7/">Chapter 7: Access Control</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch8/">Chapter 8: Reusing Clases</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch9/">Chapter 9: Polymorphism</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch10/">Chapter 10: Interfaces</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch11/">Chapter 11: Inner Classes</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch12/">Chapter 12: Holding Your Objects</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch13/">Chapter 13: Error Handling with Exceptions</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch14/">Chapter 14: Strings</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch15/">Chapter 15: Type Information</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch16/">Chapter 16: Generics</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch17/">Chapter 17: Arrays</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch18/">Chapter 18: Containers in Depth</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch19/">Chapter 19: I/O</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch20/">Chapter 20: Enumerated Types</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch21/">Chapter 21: Annotations</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch22/">Chapter 22: Concurrency</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch23/">Chapter 23: Graphical User Interfaces</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">UJVM</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../java/ujvm/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch1/">Chapter 1 : 走进Java</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch2/">Chapter 2 : Java内存区域与内存溢出正常</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch3/">Chapter 3 : 垃圾收集器与内存分配策略</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch4/">Chapter 4 : 虚拟机性能监控与故障处理工具</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch5/">Chapter 5 : 调优案例分析与实战</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch6/">Chapter 6 : 类文件结构</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch7/">Chapter 7 : 虚拟机类加载机制</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch8/">Chapter 8 : 虚拟机字节码执行引擎</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch9/">Chapter 9 : 类加载及执行子系统的案例与实战</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch10/">Chapter 10 : 早期(编译期)优化</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch11/">Chapter 11 : 晚期(运行期)优化</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch12/">Chapter 12 : Java内存模型与线程</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch13/">Chapter 13 : 线程安全与锁优化</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/AppendixC/">Appendix HotSpot虚拟机主要参数列表</a>
+</li>
+    </ul>
+  </li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">BidData <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">HADOOP</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../bigdata/hadoop/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch1/">Chapter 1: Meet Hadoop</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch2/">Chapter 2: MapReduce</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch3/">Chapter 3: The Hadoop Distributed FileSystem</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch4/">Chapter 4: YARN</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch5/">Chapter 5: Hadoop I/O</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch6/">Chapter 6: Developing a MapReduce Application</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch7/">Chapter 7: How MapReduce Works</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch8/">Chapter 8: MapReduce Types and Formats</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch9/">Chapter 9: MapReduce Features</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch10/">Chapter 10: Setting Up a Hadoop Cluster</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch11/">Chapter 11: Adminstering Hadoop</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch12/">Chapter 12: Avro</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch13/">Chapter 13: Parquet</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch14/">Chapter 14: Flume</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch15/">Chapter 15: Sqoop</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch16/">Chapter 16: Pig</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch17/">Chapter 17: Hive</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch18/">Chapter 18: Crunch</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch19/">Chapter 19: Spark</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch20/">Chapter 20: HBase</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch21/">Chapter 21: ZooKeeper</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch22/">Chapter 22: Composable Data at Center</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch23/">Chapter 23: Biological Data Science: Saving Lives with Software</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch24/">Chapter 24: Cascading</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">Spark</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../bigdata/spark/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/spark/ch1/">Chapter 1: Introduction to Data Analysis with Spark</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/spark/ch2/">Chapter 2: Downloading Spark and Getting Started</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/spark/ch3/">Chapter 3: Programming with RDDs</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/spark/ch4/">Chapter 4: Working with Key/Value Pairs</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/spark/ch5/">Chapter 5: Loading and Saving Your Data</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/spark/ch6/">Chapter 6: Advanced Spark Programming</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/spark/ch7/">Chapter 7: Running on a Cluster</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/spark/ch8/">Chapter 8: Tuning and Debugging Spark</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/spark/ch9/">Chapter 9: Spark SQL</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/spark/ch10/">Chapter 10: Spark Streaming</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/spark/ch11/">Chapter 11: Machine Learning with MLlib</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">GDM</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../bigdata/gdm/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/gdm/ch1/">Chapter 1: 推荐系统入门</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/gdm/ch2/">Chapter 2: 隐式评价和基于物品的过滤算法</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/gdm/ch3/">Chapter 3: 分类</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/gdm/ch4/">Chapter 4: 进一步探索分类</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/gdm/ch5/">Chapter 5: 概率和朴素贝叶斯</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/gdm/ch6/">Chapter 6: 朴素贝叶斯和文本数据</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/gdm/ch7/">Chapter 7: 聚类</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">MLIA</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../bigdata/mlia/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch1/">Chapter 1: 机器学习基础</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch2/">Chapter 2: k-近邻算法</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch3/">Chapter 3: 决策树</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch4/">Chapter 4: 基于概率论的分类方法：朴素贝叶斯</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch5/">Chapter 5: Logistic回归</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch6/">Chapter 6: 支持向量机</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch7/">Chapter 7: 利用AdaBoost元算法提高分类性能</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch8/">Chapter 8: 预测数值型数据：回归</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch9/">Chapter 9: 树回归</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch10/">Chapter 10: 利用Ｋ-均值聚类算法对未标注数据分组</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch11/">Chapter 11: 使用Apriori算法进行关联分析</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch11/">Chapter 12: 使用FP-growth算法来高效发现频繁项集</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch13/">Chapter 13: 利用PCA来简化数据</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">Crawler</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../bigdata/crawler/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/crawler/ch1/">Chapter 1: 开发环境配置</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/crawler/ch2/">Chapter 2: 爬虫基础</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/crawler/ch3/">Chapter 3: 基本库的使用</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/crawler/ch4/">Chapter 4: 解析库的使用</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/crawler/ch5/">Chapter 5: 数据存储</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/crawler/ch7/">Chapter 7: 动态渲染页面爬取</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/crawler/ch13/">Chapter 13: Scrapy框架的使用</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">Projects</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../bigdata/projects/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/projects/SparkStreaming实时流处理项目/">SparkStreaming实时流处理</a>
+</li>
+    </ul>
+  </li>
+                                </ul>
+                            </li>
+                            <li >
+                                <a href="../../../books/">Books</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li >
+                                <a rel="next" href="../topic2/">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li >
+                                <a rel="prev" href="../topic4/">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#topic-3-sorting">Topic 3: Sorting</a></li>
+        <li class="main "><a href="#selection-sort">Selection Sort</a></li>
+            <li><a href="#analysis">Analysis</a></li>
+        <li class="main "><a href="#insertion-sort">Insertion Sort</a></li>
+            <li><a href="#analysis_1">Analysis</a></li>
+        <li class="main "><a href="#shell-sort">Shell Sort</a></li>
+        <li class="main "><a href="#shuffling">Shuffling</a></li>
+            <li><a href="#shuffle-sort">Shuffle sort</a></li>
+            <li><a href="#knuth-shuffle">Knuth shuffle</a></li>
+        <li class="main "><a href="#quick-sort">Quick Sort</a></li>
+            <li><a href="#partitioning">Partitioning</a></li>
+            <li><a href="#analysis_2">Analysis</a></li>
+        <li class="main "><a href="#merge-sort">Merge Sort</a></li>
+            <li><a href="#java-implementation">Java Implementation</a></li>
+        <li class="main "><a href="#java-system-sorts">Java System Sorts</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<h3 id="topic-3-sorting"><strong>Topic 3: Sorting</strong><a class="headerlink" href="#topic-3-sorting" title="Permanent link">&para;</a></h3>
+<h3 id="selection-sort">Selection Sort<a class="headerlink" href="#selection-sort" title="Permanent link">&para;</a></h3>
+<ul>
+<li>In iteration <span><span class="MathJax_Preview">i</span><script type="math/tex">i</script></span>, find index <span><span class="MathJax_Preview">min</span><script type="math/tex">min</script></span> of smallest remaining entry. </li>
+<li>Swap <span><span class="MathJax_Preview">a[i]</span><script type="math/tex">a[i]</script></span> and <span><span class="MathJax_Preview">a[min]</span><script type="math/tex">a[min]</script></span>.</li>
+</ul>
+<p>Animation:</p>
+<p><img alt="" src="https://assets.toptal.io/assets/front/static/public/blocks/sorting_algorithms/animations/20/random-initial-order/selection-sort_c041bf.gif" /></p>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>Selection</span> <span class=o>{</span>
+    <span class=kd>public</span> <span class=kd>static</span> <span class=kt>void</span> <span class=nf>sort</span><span class=o>(</span><span class=n>Comparable</span><span class=o>[]</span> <span class=n>a</span><span class=o>)</span> <span class=o>{</span>
+        <span class=kt>int</span> <span class=n>N</span> <span class=o>=</span> <span class=n>a</span><span class=o>.</span><span class=na>length</span><span class=o>;</span>
+        <span class=k>for</span> <span class=o>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=o>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>N</span><span class=o>;</span> <span class=n>i</span><span class=o>++)</span> <span class=o>{</span>
+            <span class=kt>int</span> <span class=n>min</span> <span class=o>=</span> <span class=n>i</span><span class=o>;</span>
+
+            <span class=k>for</span> <span class=o>(</span><span class=kt>int</span> <span class=n>j</span> <span class=o>=</span> <span class=n>i</span> <span class=o>+</span> <span class=mi>1</span><span class=o>;</span> <span class=n>j</span> <span class=o>&lt;</span> <span class=n>N</span><span class=o>;</span> <span class=n>j</span><span class=o>++)</span>
+                <span class=k>if</span> <span class=o>(</span><span class=n>less</span><span class=o>(</span><span class=n>a</span><span class=o>[</span><span class=n>j</span><span class=o>],</span> <span class=n>a</span><span class=o>[</span><span class=n>min</span><span class=o>]))</span> <span class=n>min</span> <span class=o>=</span> <span class=n>j</span><span class=o>;</span>
+            <span class=n>exch</span><span class=o>(</span><span class=n>a</span><span class=o>,</span> <span class=n>i</span><span class=o>,</span> <span class=n>min</span><span class=o>);</span>
+        <span class=o>}</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></p>
+<h4 id="analysis">Analysis<a class="headerlink" href="#analysis" title="Permanent link">&para;</a></h4>
+<p>Selection sort uses <span><span class="MathJax_Preview">(N-1)+(N-2)+...+1\sim N^2/2</span><script type="math/tex">(N-1)+(N-2)+...+1\sim N^2/2</script></span> compares and <span><span class="MathJax_Preview">N</span><script type="math/tex">N</script></span> exchanges.</p>
+<h3 id="insertion-sort">Insertion Sort<a class="headerlink" href="#insertion-sort" title="Permanent link">&para;</a></h3>
+<p>Animation:</p>
+<p><img alt="" src="https://assets.toptal.io/assets/front/static/public/blocks/sorting_algorithms/animations/20/random-initial-order/insertion-sort_e8e408.gif" /></p>
+<ul>
+<li>In iteration <span><span class="MathJax_Preview">i</span><script type="math/tex">i</script></span>, swap <span><span class="MathJax_Preview">a[i]</span><script type="math/tex">a[i]</script></span> with each larger entry to its left.</li>
+</ul>
+<p>Invariants.</p>
+<ul>
+<li>↑ scans from left to right.</li>
+<li>Entries to the left of ↑ (including ↑) are in ascending order.</li>
+<li>Entries to the right of ↑ have not yet been seen.</li>
+</ul>
+<p><img alt="" src="../figures/InsertionSortScan.png" /></p>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>Insertion</span> <span class=o>{</span>
+    <span class=kd>public</span> <span class=kd>static</span> <span class=kt>void</span> <span class=nf>sort</span><span class=o>(</span><span class=n>Comparable</span><span class=o>[]</span> <span class=n>a</span><span class=o>)</span> <span class=o>{</span>
+        <span class=k>for</span> <span class=o>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>1</span><span class=o>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>a</span><span class=o>.</span><span class=na>length</span><span class=o>;</span> <span class=n>i</span><span class=o>++)</span> <span class=o>{</span>
+            <span class=kt>int</span> <span class=n>j</span> <span class=o>=</span> <span class=n>i</span><span class=o>;</span>
+            <span class=k>while</span> <span class=o>(</span><span class=n>j</span> <span class=o>&gt;</span> <span class=mi>0</span> <span class=o>&amp;&amp;</span> <span class=n>less</span><span class=o>(</span><span class=n>a</span><span class=o>[</span><span class=n>j</span><span class=o>],</span> <span class=n>a</span><span class=o>[</span><span class=n>j</span><span class=o>-</span><span class=mi>1</span><span class=o>]))</span> <span class=o>{</span>
+                <span class=n>exch</span><span class=o>(</span><span class=n>a</span><span class=o>,</span> <span class=n>j</span><span class=o>,</span> <span class=n>j</span> <span class=o>-</span><span class=mi>1</span><span class=o>);</span>
+                <span class=n>j</span><span class=o>--;</span>
+            <span class=o>}</span>
+        <span class=o>}</span>
+    <span class=o>}</span>
+
+    <span class=nd>@SuppressWarnings</span><span class=o>(</span><span class=s>&quot;unchecked&quot;</span><span class=o>)</span>
+    <span class=kd>private</span> <span class=kd>static</span> <span class=kt>boolean</span> <span class=nf>less</span><span class=o>(</span><span class=n>Comparable</span> <span class=n>a</span><span class=o>,</span> <span class=n>Comparable</span> <span class=n>b</span><span class=o>)</span> <span class=o>{</span>
+        <span class=k>return</span> <span class=n>a</span><span class=o>.</span><span class=na>compareTo</span><span class=o>(</span><span class=n>b</span><span class=o>)</span> <span class=o>&lt;</span> <span class=mi>0</span><span class=o>;</span>
+    <span class=o>}</span>
+
+    <span class=kd>private</span> <span class=kd>static</span> <span class=kt>void</span> <span class=nf>exch</span><span class=o>(</span><span class=n>Comparable</span><span class=o>[]</span> <span class=n>a</span><span class=o>,</span> <span class=kt>int</span> <span class=n>i</span><span class=o>,</span> <span class=kt>int</span> <span class=n>j</span><span class=o>)</span> <span class=o>{</span>
+        <span class=n>Comparable</span> <span class=n>temp</span> <span class=o>=</span> <span class=n>a</span><span class=o>[</span><span class=n>i</span><span class=o>];</span>
+        <span class=n>a</span><span class=o>[</span><span class=n>i</span><span class=o>]</span> <span class=o>=</span> <span class=n>a</span><span class=o>[</span><span class=n>j</span><span class=o>];</span>
+        <span class=n>a</span><span class=o>[</span><span class=n>j</span><span class=o>]</span> <span class=o>=</span> <span class=n>temp</span><span class=o>;</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></p>
+<h4 id="analysis_1">Analysis<a class="headerlink" href="#analysis_1" title="Permanent link">&para;</a></h4>
+<p>Insertion sort uses <span><span class="MathJax_Preview">\sim N^2/4</span><script type="math/tex">\sim N^2/4</script></span> compares and <span><span class="MathJax_Preview">\sim N^2/4</span><script type="math/tex">\sim N^2/4</script></span> exchanges to sort a randomly ordered array of length <span><span class="MathJax_Preview">N</span><script type="math/tex">N</script></span> with distinct keys, on the average. The worst case is <span><span class="MathJax_Preview">\sim N^2/2</span><script type="math/tex">\sim N^2/2</script></span> compares and <span><span class="MathJax_Preview">\sim N ^2/2</span><script type="math/tex">\sim N ^2/2</script></span> exchanges and the best case is <span><span class="MathJax_Preview">N-1</span><script type="math/tex">N-1</script></span> compares and 0 exchanges.</p>
+<h3 id="shell-sort">Shell Sort<a class="headerlink" href="#shell-sort" title="Permanent link">&para;</a></h3>
+<h3 id="shuffling">Shuffling<a class="headerlink" href="#shuffling" title="Permanent link">&para;</a></h3>
+<p>Our goal is to rearrange array so that result is a <strong>uniformly random</strong> permutation.</p>
+<h4 id="shuffle-sort">Shuffle sort<a class="headerlink" href="#shuffle-sort" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Generate a random real number for each array entry.</li>
+<li>Sort the array based on generated random numbers.</li>
+</ul>
+<p><img alt="ShuffleSort" src="../figures/ShuffleSort.png" /></p>
+<h4 id="knuth-shuffle">Knuth shuffle<a class="headerlink" href="#knuth-shuffle" title="Permanent link">&para;</a></h4>
+<ul>
+<li>In iteration <span><span class="MathJax_Preview">i</span><script type="math/tex">i</script></span>, pick integer <span><span class="MathJax_Preview">r</span><script type="math/tex">r</script></span> between 0 and <span><span class="MathJax_Preview">i</span><script type="math/tex">i</script></span> uniformly at random. </li>
+<li>Swap <span><span class="MathJax_Preview">a[i]</span><script type="math/tex">a[i]</script></span> and <span><span class="MathJax_Preview">a[r]</span><script type="math/tex">a[r]</script></span>.</li>
+</ul>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>KnuthShuffle</span> <span class=o>{</span>
+    <span class=kd>public</span> <span class=kd>static</span> <span class=kt>void</span> <span class=nf>shuffle</span><span class=o>(</span><span class=n>Object</span><span class=o>[]</span> <span class=n>a</span><span class=o>)</span> <span class=o>{</span>
+        <span class=n>Random</span> <span class=n>random</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Random</span><span class=o>();</span>
+        <span class=k>for</span> <span class=o>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=o>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>a</span><span class=o>.</span><span class=na>length</span><span class=o>;</span> <span class=n>i</span><span class=o>++)</span> <span class=o>{</span>
+            <span class=c1>//In iteration i, pick integer r between 0 and i uniformly at random.</span>
+            <span class=kt>int</span> <span class=n>r</span> <span class=o>=</span> <span class=n>random</span><span class=o>.</span><span class=na>nextInt</span><span class=o>(</span><span class=n>i</span> <span class=o>+</span> <span class=mi>1</span><span class=o>);</span>
+            <span class=c1>// Swap a[i] and a[r].</span>
+            <span class=n>exch</span><span class=o>(</span><span class=n>a</span><span class=o>,</span> <span class=n>i</span><span class=o>,</span> <span class=n>r</span><span class=o>);</span>
+        <span class=o>}</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></p>
+<p>Knuth shuffling algorithm produces a uniformly random permutation of the input array in <strong>linear</strong> time.</p>
+<h3 id="quick-sort">Quick Sort<a class="headerlink" href="#quick-sort" title="Permanent link">&para;</a></h3>
+<p>Quicksort honored as one of top 10 algorithms of 20th century in science and engineering. Quicksort is the default Java sort for primitive types.</p>
+<p>Basic plan.</p>
+<ul>
+<li><font color="red">Shuffle</font> the array.</li>
+<li><font color="red">Partition</font> so that, for some <span><span class="MathJax_Preview">j</span><script type="math/tex">j</script></span><ul>
+<li>entry <span><span class="MathJax_Preview">a[j]</span><script type="math/tex">a[j]</script></span> is in place</li>
+<li>no larger entry to the left of <span><span class="MathJax_Preview">j</span><script type="math/tex">j</script></span></li>
+<li>no smaller entry to the right of <span><span class="MathJax_Preview">j</span><script type="math/tex">j</script></span> </li>
+</ul>
+</li>
+<li><font color="red">Sort</font> each piece recursively.</li>
+</ul>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>Quick</span> <span class=o>{</span>
+    <span class=kd>public</span> <span class=kd>static</span> <span class=kt>void</span> <span class=nf>sort</span><span class=o>(</span><span class=n>Comparable</span><span class=o>[]</span> <span class=n>a</span><span class=o>)</span> <span class=o>{</span>
+        <span class=c1>// shuffle needed for performance guarantee</span>
+        <span class=n>StdRandom</span><span class=o>.</span><span class=na>shuffle</span><span class=o>(</span><span class=n>a</span><span class=o>);</span>
+        <span class=n>sort</span><span class=o>(</span><span class=n>a</span><span class=o>,</span> <span class=mi>0</span><span class=o>,</span> <span class=n>a</span><span class=o>.</span><span class=na>length</span> <span class=o>-</span> <span class=mi>1</span><span class=o>);</span>
+    <span class=o>}</span>
+
+    <span class=kd>private</span> <span class=kd>static</span> <span class=kt>void</span> <span class=nf>sort</span><span class=o>(</span><span class=n>Comparable</span><span class=o>[]</span> <span class=n>a</span><span class=o>,</span> <span class=kt>int</span> <span class=n>lo</span><span class=o>,</span> <span class=kt>int</span> <span class=n>hi</span><span class=o>)</span> <span class=o>{</span>
+        <span class=k>if</span> <span class=o>(</span><span class=n>hi</span> <span class=o>&lt;=</span> <span class=n>lo</span><span class=o>)</span> <span class=k>return</span><span class=o>;</span>
+        <span class=kt>int</span> <span class=n>j</span> <span class=o>=</span> <span class=n>partition</span><span class=o>(</span><span class=n>a</span><span class=o>,</span> <span class=n>lo</span><span class=o>,</span> <span class=n>hi</span><span class=o>);</span>
+        <span class=n>sort</span><span class=o>(</span><span class=n>a</span><span class=o>,</span> <span class=n>lo</span><span class=o>,</span> <span class=n>j</span><span class=o>-</span><span class=mi>1</span><span class=o>);</span>
+        <span class=n>sort</span><span class=o>(</span><span class=n>a</span><span class=o>,</span> <span class=n>j</span><span class=o>+</span><span class=mi>1</span><span class=o>,</span> <span class=n>hi</span><span class=o>);</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></p>
+<p>ANIMATION:</p>
+<p><img alt="" src="https://upload.wikimedia.org/wikipedia/commons/9/9c/Quicksort-example.gif" /></p>
+<h4 id="partitioning">Partitioning<a class="headerlink" href="#partitioning" title="Permanent link">&para;</a></h4>
+<p>The crux of the quick sort is the partitioning process, which rearranges the array to make the following three conditions hold:</p>
+<ul>
+<li>The entry <span><span class="MathJax_Preview">a[j]</span><script type="math/tex">a[j]</script></span> is in its final place in the array, for some <span><span class="MathJax_Preview">j</span><script type="math/tex">j</script></span>.</li>
+<li>No entry in <span><span class="MathJax_Preview">a[lo]</span><script type="math/tex">a[lo]</script></span> through <span><span class="MathJax_Preview">a[j-1]</span><script type="math/tex">a[j-1]</script></span> is greater than <span><span class="MathJax_Preview">a[j]</span><script type="math/tex">a[j]</script></span>. </li>
+<li>No entry in <span><span class="MathJax_Preview">a[j+1]</span><script type="math/tex">a[j+1]</script></span> through <span><span class="MathJax_Preview">a[hi]</span><script type="math/tex">a[hi]</script></span> is less than <span><span class="MathJax_Preview">a[j]</span><script type="math/tex">a[j]</script></span>.</li>
+</ul>
+<p><img alt="QuickSortPartition" src="../figures/QuickSortPartition.png" /></p>
+<p>First, we arbitrarily choose <span><span class="MathJax_Preview">a[lo]</span><script type="math/tex">a[lo]</script></span> to be the partitioning item—the one that will go into its final position. Next, we scan from the left end of the array until we find an entry greater than (or equal to) the partitioning item, and we scan from the right end of the array until we find an entry less than (or equal to) the partitioning item. The two items that stopped the scans are out of place in the final partitioned array, so we exchange them.</p>
+<p>Continuing in this way, when the scan indices cross, all that we need to do is to exchange the partitioning item <span><span class="MathJax_Preview">a[lo]</span><script type="math/tex">a[lo]</script></span> with the rightmost entry of the left subarray (<span><span class="MathJax_Preview">a[j]</span><script type="math/tex">a[j]</script></span>) and return its index <span><span class="MathJax_Preview">j</span><script type="math/tex">j</script></span>.</p>
+<p> <div class=codehilite><pre><span class=kd>private</span> <span class=kd>static</span> <span class=kt>int</span> <span class=nf>partition</span><span class=o>(</span><span class=n>Comparable</span> <span class=n>a</span><span class=o>[],</span> <span class=kt>int</span> <span class=n>lo</span><span class=o>,</span> <span class=kt>int</span> <span class=n>hi</span><span class=o>)</span> <span class=o>{</span>
+    <span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=n>lo</span><span class=o>,</span> <span class=n>j</span> <span class=o>=</span> <span class=n>hi</span> <span class=o>+</span> <span class=mi>1</span><span class=o>;</span>
+    <span class=k>while</span> <span class=o>(</span><span class=kc>true</span><span class=o>)</span> <span class=o>{</span>
+        <span class=c1>// find item on left to swap</span>
+        <span class=k>while</span> <span class=o>(</span><span class=n>less</span><span class=o>(</span><span class=n>a</span><span class=o>[++</span><span class=n>i</span><span class=o>],</span> <span class=n>a</span><span class=o>[</span><span class=n>lo</span><span class=o>]))</span>
+            <span class=k>if</span> <span class=o>(</span><span class=n>i</span> <span class=o>==</span> <span class=n>hi</span><span class=o>)</span> <span class=k>break</span><span class=o>;</span>
+        <span class=c1>// find item on right to swap</span>
+        <span class=k>while</span> <span class=o>(</span><span class=n>less</span><span class=o>(</span><span class=n>a</span><span class=o>[</span><span class=n>lo</span><span class=o>],</span> <span class=n>a</span><span class=o>[--</span><span class=n>j</span><span class=o>]))</span>
+            <span class=k>if</span> <span class=o>(</span><span class=n>j</span> <span class=o>==</span> <span class=n>lo</span><span class=o>)</span> <span class=k>break</span><span class=o>;</span>
+
+        <span class=c1>// check if pointers cross</span>
+        <span class=k>if</span> <span class=o>(</span><span class=n>i</span> <span class=o>&gt;=</span> <span class=n>j</span><span class=o>)</span> <span class=k>break</span><span class=o>;</span>
+
+        <span class=c1>// swap</span>
+        <span class=n>exch</span><span class=o>(</span><span class=n>a</span><span class=o>,</span> <span class=n>i</span><span class=o>,</span> <span class=n>j</span><span class=o>);</span>
+    <span class=o>}</span>
+
+    <span class=c1>// swap with partitioning item</span>
+    <span class=n>exch</span><span class=o>(</span><span class=n>a</span><span class=o>,</span> <span class=n>lo</span><span class=o>,</span> <span class=n>j</span><span class=o>);</span>
+    <span class=c1>// return index of item now known to be in place.</span>
+    <span class=k>return</span> <span class=n>j</span><span class=o>;</span>
+<span class=o>}</span>
+</pre></div></p>
+<h4 id="analysis_2">Analysis<a class="headerlink" href="#analysis_2" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Best case. Number of compares is <span><span class="MathJax_Preview">\sim N \lg N</span><script type="math/tex">\sim N \lg N</script></span>.</li>
+<li>Worst case. Number of compares is <span><span class="MathJax_Preview">\sim \frac{1}{2} N^2</span><script type="math/tex">\sim \frac{1}{2} N^2</script></span>.</li>
+<li>The average number of compares <span><span class="MathJax_Preview">C_N</span><script type="math/tex">C_N</script></span> to quicksort an array of <span><span class="MathJax_Preview">N</span><script type="math/tex">N</script></span> distinct keys is ~ <span><span class="MathJax_Preview">2N\ln N</span><script type="math/tex">2N\ln N</script></span> (and the number of exchanges is <span><span class="MathJax_Preview">\sim\frac{1}{3}N \ln N</span><script type="math/tex">\sim\frac{1}{3}N \ln N</script></span>).</li>
+</ul>
+<p>Quicksort is an <strong>in-place</strong> sorting algorithm, but is <strong>not stable</strong>.</p>
+<h3 id="merge-sort">Merge Sort<a class="headerlink" href="#merge-sort" title="Permanent link">&para;</a></h3>
+<p>Basic plan:</p>
+<ul>
+<li>Divide array into two halves</li>
+<li>Recursively sort each half</li>
+<li>Merge two halves</li>
+</ul>
+<p>Goal. Given two sorted subarrays a[lo] to a[mid] and a[mid+1] to a[hi], replace with sorted subarray a[lo] to a[hi]</p>
+<p><img alt="mergeDemo" src="../figures/mergeDemo.png" /></p>
+<h4 id="java-implementation">Java Implementation<a class="headerlink" href="#java-implementation" title="Permanent link">&para;</a></h4>
+<h3 id="java-system-sorts">Java System Sorts<a class="headerlink" href="#java-system-sorts" title="Permanent link">&para;</a></h3>
+<p><C>Arrays.sort()</C></p>
+<ul>
+<li>Has different method for each primitive type.</li>
+<li>Has a method for data types that implement <C>Comparable</C>.</li>
+<li>Has a method that uses a <C>Comparator</C>.</li>
+<li>Uses tuned quicksort for primitive types; tuned mergesort for objects.</li>
+</ul></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = "../../..",
+                shortcuts = {"search": 83, "next": 78, "help": 191, "previous": 80};
+        </script>
+        <script src="../../../js/base.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" defer></script>
+        <script src="../../../extra_javascript/tabhack.js" defer></script>
+        <script src="../../../extra_javascript/baidu.js" defer></script>
+        <script src="../../../search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

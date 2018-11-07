@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <meta name="author" content="Zhenhua Wang">
+        <link rel="canonical" href="http://larryim.cc/note/os/csapp/ch3/">
+        <link rel="shortcut icon" href="../../../img/favicon.ico">
+        <title>Chapter 3: 程序的机器级表示 - Zhenhua's Notes</title>
+        <link href="../../../css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="../../../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../../../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/docco.min.css">
+        <link href="../../../extra_css/custom.css" rel="stylesheet">
+        <link href="../../../extra_css/custom.js" rel="stylesheet">
+        <link href="../../../extra_css/friendly.css" rel="stylesheet">
+        <link href="../../../extra_css/theme.css" rel="stylesheet">
+        <link href="../../../extra_css/mkdocs/js/lunr-0.5.7.min.js" rel="stylesheet">
+        <link href="../../../extra_css/mkdocs/js/mustache.min.js" rel="stylesheet">
+        <link href="../../../extra_css/mkdocs/js/require.js" rel="stylesheet">
+        <link href="../../../extra_css/mkdocs/js/search.js" rel="stylesheet">
+        <link href="../../../extra_css/mkdocs/js/text.js" rel="stylesheet">
+        <link href="../../../extra_css/code-tab.css" rel="stylesheet">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="../../../js/jquery-1.10.2.min.js" defer></script>
+        <script src="../../../js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="../../..">Zhenhua's Notes</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="../../..">Home</a>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Algorithm <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li >
+    <a href="../../..">Home</a>
+</li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">AlgorithmPrinceton</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../algorithm/algorithmPrinceton/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../algorithm/algorithmPrinceton/topic1/">Topic 1: UnionFind </a>
+</li>
+            
+<li >
+    <a href="../../../algorithm/algorithmPrinceton/topic2/">Topic 2: StackQueue</a>
+</li>
+            
+<li >
+    <a href="../../../algorithm/algorithmPrinceton/topic3/">Topic 3: Sort </a>
+</li>
+            
+<li >
+    <a href="../../../algorithm/algorithmPrinceton/topic4/">Topic 4: PriorityQueues</a>
+</li>
+            
+<li >
+    <a href="../../../algorithm/algorithmPrinceton/topic5/">Topic 5: Symbol Tables</a>
+</li>
+            
+<li >
+    <a href="../../../algorithm/algorithmPrinceton/topic6/">Topic 6: Balanced Search Trees</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">AlgorithmStanford</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../algorithm/algorithmStanford/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../algorithm/algorithmStanford/dynamicprogramming/">Topic: Dynammic Programming </a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">CS61B</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../calgorithm/s61b/index.md">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../algorithm/cs61b/Lab1/">Lab1: javac, java, git</a>
+</li>
+            
+<li >
+    <a href="../../../algorithm/cs61b/Lab2/">Lab2: Unit Testing with JUnit and IntLists</a>
+</li>
+            
+<li >
+    <a href="../../../algorithm/cs61b/Lab3/">Lab3: Unit Testing with JUnit, Debugging</a>
+</li>
+    </ul>
+  </li>
+                                </ul>
+                            </li>
+                            <li class="dropdown active">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">OS <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">OSC</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../osc/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../osc/ch1/">Chapter 1: Introduction </a>
+</li>
+            
+<li >
+    <a href="../../osc/ch2/">Chapter 2: Operating System structures</a>
+</li>
+            
+<li >
+    <a href="../../osc/ch3/">Chapter 3: Processes</a>
+</li>
+            
+<li >
+    <a href="../../osc/ch4/">Chapter 4: Threads and Concurrency</a>
+</li>
+            
+<li >
+    <a href="../../osc/ch5/">Chapter 5: CPU Scheduling</a>
+</li>
+            
+<li >
+    <a href="../../osc/ch6/">Chapter 6: Synchronization Tools</a>
+</li>
+            
+<li >
+    <a href="../../osc/ch7/">Chapter 7: Synchronization Examples</a>
+</li>
+            
+<li >
+    <a href="../../osc/ch8/">Chapter 8: Deadlocks</a>
+</li>
+            
+<li >
+    <a href="../../osc/ch9/">Chapter 9: Main Memory</a>
+</li>
+            
+<li >
+    <a href="../../osc/ch10/">Chapter 10: Virtual Memory</a>
+</li>
+            
+<li >
+    <a href="../../osc/ch11/">Chapter 11: Mass-Storage Structure</a>
+</li>
+            
+<li >
+    <a href="../../osc/ch13/">Chapter 13: File-System Interfaces</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">CSAPP</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../">Contents</a>
+</li>
+            
+<li >
+    <a href="../ch1/">Chapter 1: 计算机系统漫游</a>
+</li>
+            
+<li >
+    <a href="../ch2/">Chapter 2: 信息的表示和处理</a>
+</li>
+            
+<li class="active">
+    <a href="./">Chapter 3: 程序的机器级表示</a>
+</li>
+            
+<li >
+    <a href="../ch4/">Chapter 4: 处理器体系结构</a>
+</li>
+            
+<li >
+    <a href="../ch5/">Chapter 5: 优化程序性能</a>
+</li>
+            
+<li >
+    <a href="../ch6/">Chapter 6: 存储器层次结构</a>
+</li>
+            
+<li >
+    <a href="../ch7/">Chapter 7: 链接</a>
+</li>
+            
+<li >
+    <a href="../ch8/">Chapter 8: 异常控制流</a>
+</li>
+            
+<li >
+    <a href="../ch9/">Chapter 9: 虚拟内存</a>
+</li>
+            
+<li >
+    <a href="../ch10/">Chapter 10: 系统级I/O</a>
+</li>
+            
+<li >
+    <a href="../../../csapp/ch11.md">Chapter 11: 网络编程</a>
+</li>
+    </ul>
+  </li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">MySql <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li >
+    <a href="../../../mysql/">Contents</a>
+</li>
+                                    
+<li >
+    <a href="../../../mysql/LearningMySQLandMariaDB/">Chapter Learning MySQL and MariaDB</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Java <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">HFJ</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../java/hfj/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch1/">Chapter 1: Dive in A Quick Dip</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch2/">Chapter 2: Classes and Objects</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch3/">Chapter 3: Primitives and References</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch4/">Chapter 4: Methods use Instance Variables</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch5/">Chapter 5: Writing a Program</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch6/">Chapter 6: Get to Know the Java API</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch7/">Chapter 7: Inheritance and Polymorphism</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch8/">Chapter 8: Interfaces and Abstract Classes</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch9/">Chapter 9: Constructors and Garbage Collection</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch10/">Chapter 10: Numbers and Statics</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch11/">Chapter 11: Exception Handling</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch12/">Chapter 12: Getting GUI</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch13/">Chapter 13: Using Swing</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch14/">Chapter 14: Serialization and File I/O</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch15/">Chapter 15: Networking and Threads</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch16/">Chapter 16: Collections and Generics</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch17/">Chapter 17: Packages, Jars and Deployment</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch18/">Chapter 18: Remote deploy with RMI</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/Appendix/">Appendix: The Top Ten Topics</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">HFDP</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../java/hfdp/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfdp/ch1/">Chapter 1: Strategy Pattern </a>
+</li>
+            
+<li >
+    <a href="../../../java/hfdp/ch2/">Chapter 2: Observer Pattern</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfdp/ch3/">Chapter 3: Decorator Pattern </a>
+</li>
+            
+<li >
+    <a href="../../../java/hfdp/ch4/">Chapter 4: Factory Pattern</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfdp/ch5/">Chapter 5: Singleton Pattern</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfdp/ch6/">Chapter 6: Command Pattern</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfdp/ch7/">Chapter 7: Adapter and Facade Patterns</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfdp/ch8/">Chapter 8: Template Method Pattern</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfdp/ch9/">Chapter 9: Iterator and Composite Patterns</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">TIJ</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../java/tij/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch1/">Chapter 1: Introduction</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch2/">Chapter 2: Introduction to Objects</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch3/">Chapter 3: Everything is an Object</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch4/">Chapter 4: Opertors</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch5/">Chapter 5: Controlling Execution</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch6/">Chapter 6: Initialization & Cleanup</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch7/">Chapter 7: Access Control</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch8/">Chapter 8: Reusing Clases</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch9/">Chapter 9: Polymorphism</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch10/">Chapter 10: Interfaces</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch11/">Chapter 11: Inner Classes</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch12/">Chapter 12: Holding Your Objects</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch13/">Chapter 13: Error Handling with Exceptions</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch14/">Chapter 14: Strings</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch15/">Chapter 15: Type Information</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch16/">Chapter 16: Generics</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch17/">Chapter 17: Arrays</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch18/">Chapter 18: Containers in Depth</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch19/">Chapter 19: I/O</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch20/">Chapter 20: Enumerated Types</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch21/">Chapter 21: Annotations</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch22/">Chapter 22: Concurrency</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch23/">Chapter 23: Graphical User Interfaces</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">UJVM</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../java/ujvm/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch1/">Chapter 1 : 走进Java</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch2/">Chapter 2 : Java内存区域与内存溢出正常</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch3/">Chapter 3 : 垃圾收集器与内存分配策略</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch4/">Chapter 4 : 虚拟机性能监控与故障处理工具</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch5/">Chapter 5 : 调优案例分析与实战</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch6/">Chapter 6 : 类文件结构</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch7/">Chapter 7 : 虚拟机类加载机制</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch8/">Chapter 8 : 虚拟机字节码执行引擎</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch9/">Chapter 9 : 类加载及执行子系统的案例与实战</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch10/">Chapter 10 : 早期(编译期)优化</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch11/">Chapter 11 : 晚期(运行期)优化</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch12/">Chapter 12 : Java内存模型与线程</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch13/">Chapter 13 : 线程安全与锁优化</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/AppendixC/">Appendix HotSpot虚拟机主要参数列表</a>
+</li>
+    </ul>
+  </li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">BidData <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">HADOOP</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../bigdata/hadoop/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch1/">Chapter 1: Meet Hadoop</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch2/">Chapter 2: MapReduce</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch3/">Chapter 3: The Hadoop Distributed FileSystem</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch4/">Chapter 4: YARN</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch5/">Chapter 5: Hadoop I/O</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch6/">Chapter 6: Developing a MapReduce Application</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch7/">Chapter 7: How MapReduce Works</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch8/">Chapter 8: MapReduce Types and Formats</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch9/">Chapter 9: MapReduce Features</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch10/">Chapter 10: Setting Up a Hadoop Cluster</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch11/">Chapter 11: Adminstering Hadoop</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch12/">Chapter 12: Avro</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch13/">Chapter 13: Parquet</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch14/">Chapter 14: Flume</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch15/">Chapter 15: Sqoop</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch16/">Chapter 16: Pig</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch17/">Chapter 17: Hive</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch18/">Chapter 18: Crunch</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch19/">Chapter 19: Spark</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch20/">Chapter 20: HBase</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch21/">Chapter 21: ZooKeeper</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch22/">Chapter 22: Composable Data at Center</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch23/">Chapter 23: Biological Data Science: Saving Lives with Software</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch24/">Chapter 24: Cascading</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">Spark</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../bigdata/spark/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/spark/ch1/">Chapter 1: Introduction to Data Analysis with Spark</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/spark/ch2/">Chapter 2: Downloading Spark and Getting Started</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/spark/ch3/">Chapter 3: Programming with RDDs</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/spark/ch4/">Chapter 4: Working with Key/Value Pairs</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/spark/ch5/">Chapter 5: Loading and Saving Your Data</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/spark/ch6/">Chapter 6: Advanced Spark Programming</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/spark/ch7/">Chapter 7: Running on a Cluster</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/spark/ch8/">Chapter 8: Tuning and Debugging Spark</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/spark/ch9/">Chapter 9: Spark SQL</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/spark/ch10/">Chapter 10: Spark Streaming</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/spark/ch11/">Chapter 11: Machine Learning with MLlib</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">GDM</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../bigdata/gdm/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/gdm/ch1/">Chapter 1: 推荐系统入门</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/gdm/ch2/">Chapter 2: 隐式评价和基于物品的过滤算法</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/gdm/ch3/">Chapter 3: 分类</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/gdm/ch4/">Chapter 4: 进一步探索分类</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/gdm/ch5/">Chapter 5: 概率和朴素贝叶斯</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/gdm/ch6/">Chapter 6: 朴素贝叶斯和文本数据</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/gdm/ch7/">Chapter 7: 聚类</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">MLIA</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../bigdata/mlia/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch1/">Chapter 1: 机器学习基础</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch2/">Chapter 2: k-近邻算法</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch3/">Chapter 3: 决策树</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch4/">Chapter 4: 基于概率论的分类方法：朴素贝叶斯</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch5/">Chapter 5: Logistic回归</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch6/">Chapter 6: 支持向量机</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch7/">Chapter 7: 利用AdaBoost元算法提高分类性能</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch8/">Chapter 8: 预测数值型数据：回归</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch9/">Chapter 9: 树回归</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch10/">Chapter 10: 利用Ｋ-均值聚类算法对未标注数据分组</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch11/">Chapter 11: 使用Apriori算法进行关联分析</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch11/">Chapter 12: 使用FP-growth算法来高效发现频繁项集</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch13/">Chapter 13: 利用PCA来简化数据</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">Crawler</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../bigdata/crawler/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/crawler/ch1/">Chapter 1: 开发环境配置</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/crawler/ch2/">Chapter 2: 爬虫基础</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/crawler/ch3/">Chapter 3: 基本库的使用</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/crawler/ch4/">Chapter 4: 解析库的使用</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/crawler/ch5/">Chapter 5: 数据存储</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/crawler/ch7/">Chapter 7: 动态渲染页面爬取</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/crawler/ch13/">Chapter 13: Scrapy框架的使用</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">Projects</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../bigdata/projects/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/projects/SparkStreaming实时流处理项目/">SparkStreaming实时流处理</a>
+</li>
+    </ul>
+  </li>
+                                </ul>
+                            </li>
+                            <li >
+                                <a href="../../../books/">Books</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li >
+                                <a rel="next" href="../ch2/">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li >
+                                <a rel="prev" href="../ch4/">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#chapter-3">Chapter 3 程序的机器级表示</a></li>
+        <li class="main "><a href="#1">1 历史观点</a></li>
+        <li class="main "><a href="#2">2 程序编码</a></li>
+        <li class="main "><a href="#3">3 数据格式</a></li>
+        <li class="main "><a href="#4">4 访问信息</a></li>
+            <li><a href="#41">4.1 操作数指示符</a></li>
+            <li><a href="#42">4.2 数据传送指令</a></li>
+            <li><a href="#43">4.3 压入和弹出栈数据</a></li>
+        <li class="main "><a href="#5">5 算数和逻辑操作</a></li>
+        <li class="main "><a href="#6">6 控制</a></li>
+            <li><a href="#61">6.1 条件码</a></li>
+        <li class="main "><a href="#7">7 过程</a></li>
+            <li><a href="#71">7.1 运行时栈</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<h3 id="chapter-3"><strong>Chapter 3 程序的机器级表示</strong><a class="headerlink" href="#chapter-3" title="Permanent link">&para;</a></h3>
+<h3 id="1">1 历史观点<a class="headerlink" href="#1" title="Permanent link">&para;</a></h3>
+<p>Intel处理器系列俗称x86，经历了一个长期的、不断进化的发展过程。</p>
+<ul>
+<li>8086(1978年，29K个晶体管)。第一代单芯片、16位微处理器之一。</li>
+<li>i386(1985年， 275K个晶体管)。将体系结构扩展到32位。</li>
+<li>Core i7(2008年，781M个晶体管)。支持超线程、多核。</li>
+</ul>
+<p>Intel处理器系列有好几个名字，包括IA32，也就是“Intel 32位体系结构”(Intel Architecture 32-bit)，以及最新的Intel64，即IA32的64位扩展，也称为x86-64。</p>
+<h3 id="2">2 程序编码<a class="headerlink" href="#2" title="Permanent link">&para;</a></h3>
+<p>对于机器编程来说，其中两种抽象尤为重要。</p>
+<ul>
+<li>指令集体系结构(Instruction Set Architecture, ISA)，定义了机器级程序的格式和行为，它定义了处理器状态、指令的格式以及每条指令对状态的影响。大多数ISA，将程序的行为描述成好像每条指令都是按顺序执行的。常见的ISA有x86、ARM v8、MIPS。</li>
+<li>虚拟地址，提供的内存模型看上去是一个非常大的字节数组。</li>
+</ul>
+<h3 id="3">3 数据格式<a class="headerlink" href="#3" title="Permanent link">&para;</a></h3>
+<p>Intel用术语"字(word)"表示16位数据类型，32位数称为"双字(double words)"，64位数称为"四字(quad words)"。</p>
+<h3 id="4">4 访问信息<a class="headerlink" href="#4" title="Permanent link">&para;</a></h3>
+<p>一个x86-64的CPU包含一组16个存储64位值的<strong>通用目的寄存器</strong>，用来存储整数数据和指针。</p>
+<p><img alt="通用目的寄存器" src="../figures/register.png" /></p>
+<h4 id="41">4.1 操作数指示符<a class="headerlink" href="#41" title="Permanent link">&para;</a></h4>
+<p>大多数指令有一个或多个操作数(operand)，指示出执行一个操作中要使用的源数据值，以及放置结果的目的位置。x86-64支持多种操作数格式：</p>
+<ul>
+<li>立即数(immediate)，用来表示常数值。书写方式是$后面跟一个整数</li>
+<li>寄存器(register)，表示某个寄存器的内容。用符号<span><span class="MathJax_Preview">r_a</span><script type="math/tex">r_a</script></span>来表示任意寄存器<span><span class="MathJax_Preview">a</span><script type="math/tex">a</script></span>，用引用<span><span class="MathJax_Preview">R[r_a]</span><script type="math/tex">R[r_a]</script></span>表示寄存器的值</li>
+<li>内存引用。根据计算出来的地址(通常称为有效地址)访问某个内存位置。因为将内存看成一个很大的字节数组，用符号<span><span class="MathJax_Preview">M_b[Addr]</span><script type="math/tex">M_b[Addr]</script></span>表示对存储在内存中从地址<span><span class="MathJax_Preview">Adrr</span><script type="math/tex">Adrr</script></span>开始的<span><span class="MathJax_Preview">b</span><script type="math/tex">b</script></span>字节值的引用。</li>
+</ul>
+<p><img alt="操作数的类型和格式" src="../figures/Operand.png" /></p>
+<h4 id="42">4.2 数据传送指令<a class="headerlink" href="#42" title="Permanent link">&para;</a></h4>
+<p>数据传送指令--MOV类--把数据从原位置复制到目的位置。MOV类由四条指令组成：movb、movw、movl、movq。这些指令都执行同样的操作，主要区别是它们操作的数据大小不同：分别是1、2、4和8字节。</p>
+<p>数据传送指令的两个操作数不能都指向内存位置。将一个值从内存位置复制到另一个内存位置需要两条指令 - 第一条指令将源值加载到寄存器中，第二条指令将该寄存器值写入目的位置。</p>
+<p><img alt="数据传送指令" src="../figures/mov.png" /></p>
+<p>MOVZ类中的指令把目的中剩余的字节填充为0；而MOVS类中的指令通过符号扩展来填充，即把源操作数的最高位进行复制。</p>
+<h4 id="43">4.3 压入和弹出栈数据<a class="headerlink" href="#43" title="Permanent link">&para;</a></h4>
+<p>pushq指令把数据压入到栈上，而popq指令弹出数据。</p>
+<p><img alt="" src="../figures/pushqPopq.png" /></p>
+<h3 id="5">5 算数和逻辑操作<a class="headerlink" href="#5" title="Permanent link">&para;</a></h3>
+<p>操作被分为四组：加载有效地址、一元操作、二元操作和移位。</p>
+<p><img alt="" src="../figures/integerOpp.png" /></p>
+<p><strong>加载有效地址</strong>(load effective address)指令leaq实际上是movq指令的变形，将有效地址写入到目的操作数。</p>
+<p>另外一个leaq的作⽤就是⽤来作为算术运算。例如，如果寄存器<code class="codehilite"><span class="nf">%rdx</span></code>的值为x，那么指令<code class="codehilite">leaq 7(%rdx, %rdx, 4), %rax</code>将设置寄存器<code class="codehilite"><span class="nf">%rax</span></code>的值为5x+7。</p>
+<p>一元操作只有一个操作数，即是源又是目的。这个操作数可以是一个寄存器，也可以是一个内存位置。比如说，指令<code class="codehilite">incq(%rsp)</code>会使栈顶的8字节元素加1。</p>
+<h3 id="6">6 控制<a class="headerlink" href="#6" title="Permanent link">&para;</a></h3>
+<h4 id="61">6.1 条件码<a class="headerlink" href="#61" title="Permanent link">&para;</a></h4>
+<p><strong>条件码</strong>(condition code)寄存器，描述了最近的算数和逻辑操作的属性。可以检测条件码寄存器来执行条件分支指令。最常用的条件码有：</p>
+<ul>
+<li>CF：进位标志。最近的操作使最高位产生了进位。可以用来检查无符号操作的溢出。</li>
+<li>ZF：零标志。最近的操作得出的结果为0.</li>
+<li>SF：符号标志。最近的操作得到的结果为负数。</li>
+<li>OF：溢出标志。最近的操作导致一个补码溢出 -- 正溢出或负溢出。</li>
+</ul>
+<p>除了第6小节所提及的指令会设置条件码之外，还有两类指令只设置条件码而不改变任何其他寄存器的值，这两类指令都支持四种长度变种后缀(b, w, l, q)</p>
+<p><img alt="比较和测试指令" src="../figures/cmpAndTest.png" /></p>
+<h3 id="7">7 过程<a class="headerlink" href="#7" title="Permanent link">&para;</a></h3>
+<p><strong>过程</strong>(procedure)是软件中一种很重要的抽象。它提供了一种封装代码的方式，用一组制定的参数和一个可选的返回值实现了某这功能。然后，可以在程序中不同的地方调用这个函数。不同编程语言中，过程的形式多样：函数(function)、方法(method)、子例程(subroutine)、处理函数(handler)等等。</p>
+<p>假设过程P调用过程Q，Q执行后返回到P，包含下面一个或多个机制：</p>
+<ul>
+<li>传递控制。在进入过程Q的时候，程序计数器必须被设置为Q的代码的起始地址，然后在返回时，要把程序计数器设置为P中调用Q后面那条指令的地址。</li>
+<li>传递数据。P必须能够向Q提供一个或多个参数，Q必须能够向P返回一个值。</li>
+<li>分配和释放内存。在开始时，Q可能需要为局部变量分配空间，而在返回前，又必须释放这些存储空间。</li>
+</ul>
+<h4 id="71">7.1 运行时栈<a class="headerlink" href="#71" title="Permanent link">&para;</a></h4>
+<p>在函数调用时，往往使用了栈(<code class="codehilite">Stack</code>)这一数据结构。当x86-64过程需要的存储空间超出寄存器能够存放的大小时(意味着其实很多函数根本不需要帧栈)，就会在栈上分配空间，称为<strong>帧栈</strong>(stack frame)。</p>
+<p>Current Stack Frame (“Top” to Bottom) contains:</p>
+<ul>
+<li>Argument build(参数构造区):<ul>
+<li>Parameters for function about to call</li>
+<li>可以通过寄存器最多传递6个整形参数，超出6个部分就要通过栈来传递</li>
+</ul>
+</li>
+<li>Local variables(局部变量):<ul>
+<li>寄存器不足够存放所有的本地数据</li>
+<li>使用地址运算符&amp;，必须能够产生一个地址</li>
+</ul>
+</li>
+<li>Saved register context(被保存的寄存器)<ul>
+<li>保存寄存器的值到栈中</li>
+</ul>
+</li>
+<li>Old frame pointer (optional)</li>
+</ul>
+<p><img alt="" src="../figures/stack_frame.png" /></p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = "../../..",
+                shortcuts = {"search": 83, "next": 78, "help": 191, "previous": 80};
+        </script>
+        <script src="../../../js/base.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" defer></script>
+        <script src="../../../extra_javascript/tabhack.js" defer></script>
+        <script src="../../../extra_javascript/baidu.js" defer></script>
+        <script src="../../../search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

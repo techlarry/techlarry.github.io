@@ -1,0 +1,1286 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <meta name="author" content="Zhenhua Wang">
+        <link rel="canonical" href="http://larryim.cc/note/bigdata/hadoop/ch5/">
+        <link rel="shortcut icon" href="../../../img/favicon.ico">
+        <title>Chapter 5: Hadoop I/O - Zhenhua's Notes</title>
+        <link href="../../../css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="../../../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../../../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/docco.min.css">
+        <link href="../../../extra_css/custom.css" rel="stylesheet">
+        <link href="../../../extra_css/custom.js" rel="stylesheet">
+        <link href="../../../extra_css/friendly.css" rel="stylesheet">
+        <link href="../../../extra_css/theme.css" rel="stylesheet">
+        <link href="../../../extra_css/mkdocs/js/lunr-0.5.7.min.js" rel="stylesheet">
+        <link href="../../../extra_css/mkdocs/js/mustache.min.js" rel="stylesheet">
+        <link href="../../../extra_css/mkdocs/js/require.js" rel="stylesheet">
+        <link href="../../../extra_css/mkdocs/js/search.js" rel="stylesheet">
+        <link href="../../../extra_css/mkdocs/js/text.js" rel="stylesheet">
+        <link href="../../../extra_css/code-tab.css" rel="stylesheet">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="../../../js/jquery-1.10.2.min.js" defer></script>
+        <script src="../../../js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="../../..">Zhenhua's Notes</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="../../..">Home</a>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Algorithm <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li >
+    <a href="../../..">Home</a>
+</li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">AlgorithmPrinceton</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../algorithm/algorithmPrinceton/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../algorithm/algorithmPrinceton/topic1/">Topic 1: UnionFind </a>
+</li>
+            
+<li >
+    <a href="../../../algorithm/algorithmPrinceton/topic2/">Topic 2: StackQueue</a>
+</li>
+            
+<li >
+    <a href="../../../algorithm/algorithmPrinceton/topic3/">Topic 3: Sort </a>
+</li>
+            
+<li >
+    <a href="../../../algorithm/algorithmPrinceton/topic4/">Topic 4: PriorityQueues</a>
+</li>
+            
+<li >
+    <a href="../../../algorithm/algorithmPrinceton/topic5/">Topic 5: Symbol Tables</a>
+</li>
+            
+<li >
+    <a href="../../../algorithm/algorithmPrinceton/topic6/">Topic 6: Balanced Search Trees</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">AlgorithmStanford</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../algorithm/algorithmStanford/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../algorithm/algorithmStanford/dynamicprogramming/">Topic: Dynammic Programming </a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">CS61B</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../calgorithm/s61b/index.md">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../algorithm/cs61b/Lab1/">Lab1: javac, java, git</a>
+</li>
+            
+<li >
+    <a href="../../../algorithm/cs61b/Lab2/">Lab2: Unit Testing with JUnit and IntLists</a>
+</li>
+            
+<li >
+    <a href="../../../algorithm/cs61b/Lab3/">Lab3: Unit Testing with JUnit, Debugging</a>
+</li>
+    </ul>
+  </li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">OS <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">OSC</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../os/osc/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../os/osc/ch1/">Chapter 1: Introduction </a>
+</li>
+            
+<li >
+    <a href="../../../os/osc/ch2/">Chapter 2: Operating System structures</a>
+</li>
+            
+<li >
+    <a href="../../../os/osc/ch3/">Chapter 3: Processes</a>
+</li>
+            
+<li >
+    <a href="../../../os/osc/ch4/">Chapter 4: Threads and Concurrency</a>
+</li>
+            
+<li >
+    <a href="../../../os/osc/ch5/">Chapter 5: CPU Scheduling</a>
+</li>
+            
+<li >
+    <a href="../../../os/osc/ch6/">Chapter 6: Synchronization Tools</a>
+</li>
+            
+<li >
+    <a href="../../../os/osc/ch7/">Chapter 7: Synchronization Examples</a>
+</li>
+            
+<li >
+    <a href="../../../os/osc/ch8/">Chapter 8: Deadlocks</a>
+</li>
+            
+<li >
+    <a href="../../../os/osc/ch9/">Chapter 9: Main Memory</a>
+</li>
+            
+<li >
+    <a href="../../../os/osc/ch10/">Chapter 10: Virtual Memory</a>
+</li>
+            
+<li >
+    <a href="../../../os/osc/ch11/">Chapter 11: Mass-Storage Structure</a>
+</li>
+            
+<li >
+    <a href="../../../os/osc/ch13/">Chapter 13: File-System Interfaces</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">CSAPP</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../os/csapp/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../os/csapp/ch1/">Chapter 1: 计算机系统漫游</a>
+</li>
+            
+<li >
+    <a href="../../../os/csapp/ch2/">Chapter 2: 信息的表示和处理</a>
+</li>
+            
+<li >
+    <a href="../../../os/csapp/ch3/">Chapter 3: 程序的机器级表示</a>
+</li>
+            
+<li >
+    <a href="../../../os/csapp/ch4/">Chapter 4: 处理器体系结构</a>
+</li>
+            
+<li >
+    <a href="../../../os/csapp/ch5/">Chapter 5: 优化程序性能</a>
+</li>
+            
+<li >
+    <a href="../../../os/csapp/ch6/">Chapter 6: 存储器层次结构</a>
+</li>
+            
+<li >
+    <a href="../../../os/csapp/ch7/">Chapter 7: 链接</a>
+</li>
+            
+<li >
+    <a href="../../../os/csapp/ch8/">Chapter 8: 异常控制流</a>
+</li>
+            
+<li >
+    <a href="../../../os/csapp/ch9/">Chapter 9: 虚拟内存</a>
+</li>
+            
+<li >
+    <a href="../../../os/csapp/ch10/">Chapter 10: 系统级I/O</a>
+</li>
+            
+<li >
+    <a href="../../../csapp/ch11.md">Chapter 11: 网络编程</a>
+</li>
+    </ul>
+  </li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">MySql <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li >
+    <a href="../../../mysql/">Contents</a>
+</li>
+                                    
+<li >
+    <a href="../../../mysql/LearningMySQLandMariaDB/">Chapter Learning MySQL and MariaDB</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Java <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">HFJ</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../java/hfj/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch1/">Chapter 1: Dive in A Quick Dip</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch2/">Chapter 2: Classes and Objects</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch3/">Chapter 3: Primitives and References</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch4/">Chapter 4: Methods use Instance Variables</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch5/">Chapter 5: Writing a Program</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch6/">Chapter 6: Get to Know the Java API</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch7/">Chapter 7: Inheritance and Polymorphism</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch8/">Chapter 8: Interfaces and Abstract Classes</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch9/">Chapter 9: Constructors and Garbage Collection</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch10/">Chapter 10: Numbers and Statics</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch11/">Chapter 11: Exception Handling</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch12/">Chapter 12: Getting GUI</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch13/">Chapter 13: Using Swing</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch14/">Chapter 14: Serialization and File I/O</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch15/">Chapter 15: Networking and Threads</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch16/">Chapter 16: Collections and Generics</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch17/">Chapter 17: Packages, Jars and Deployment</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch18/">Chapter 18: Remote deploy with RMI</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/Appendix/">Appendix: The Top Ten Topics</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">HFDP</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../java/hfdp/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfdp/ch1/">Chapter 1: Strategy Pattern </a>
+</li>
+            
+<li >
+    <a href="../../../java/hfdp/ch2/">Chapter 2: Observer Pattern</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfdp/ch3/">Chapter 3: Decorator Pattern </a>
+</li>
+            
+<li >
+    <a href="../../../java/hfdp/ch4/">Chapter 4: Factory Pattern</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfdp/ch5/">Chapter 5: Singleton Pattern</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfdp/ch6/">Chapter 6: Command Pattern</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfdp/ch7/">Chapter 7: Adapter and Facade Patterns</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfdp/ch8/">Chapter 8: Template Method Pattern</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfdp/ch9/">Chapter 9: Iterator and Composite Patterns</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">TIJ</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../java/tij/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch1/">Chapter 1: Introduction</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch2/">Chapter 2: Introduction to Objects</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch3/">Chapter 3: Everything is an Object</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch4/">Chapter 4: Opertors</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch5/">Chapter 5: Controlling Execution</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch6/">Chapter 6: Initialization & Cleanup</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch7/">Chapter 7: Access Control</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch8/">Chapter 8: Reusing Clases</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch9/">Chapter 9: Polymorphism</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch10/">Chapter 10: Interfaces</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch11/">Chapter 11: Inner Classes</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch12/">Chapter 12: Holding Your Objects</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch13/">Chapter 13: Error Handling with Exceptions</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch14/">Chapter 14: Strings</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch15/">Chapter 15: Type Information</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch16/">Chapter 16: Generics</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch17/">Chapter 17: Arrays</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch18/">Chapter 18: Containers in Depth</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch19/">Chapter 19: I/O</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch20/">Chapter 20: Enumerated Types</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch21/">Chapter 21: Annotations</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch22/">Chapter 22: Concurrency</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch23/">Chapter 23: Graphical User Interfaces</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">UJVM</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../java/ujvm/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch1/">Chapter 1 : 走进Java</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch2/">Chapter 2 : Java内存区域与内存溢出正常</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch3/">Chapter 3 : 垃圾收集器与内存分配策略</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch4/">Chapter 4 : 虚拟机性能监控与故障处理工具</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch5/">Chapter 5 : 调优案例分析与实战</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch6/">Chapter 6 : 类文件结构</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch7/">Chapter 7 : 虚拟机类加载机制</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch8/">Chapter 8 : 虚拟机字节码执行引擎</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch9/">Chapter 9 : 类加载及执行子系统的案例与实战</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch10/">Chapter 10 : 早期(编译期)优化</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch11/">Chapter 11 : 晚期(运行期)优化</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch12/">Chapter 12 : Java内存模型与线程</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch13/">Chapter 13 : 线程安全与锁优化</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/AppendixC/">Appendix HotSpot虚拟机主要参数列表</a>
+</li>
+    </ul>
+  </li>
+                                </ul>
+                            </li>
+                            <li class="dropdown active">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">BidData <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">HADOOP</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../">Contents</a>
+</li>
+            
+<li >
+    <a href="../ch1/">Chapter 1: Meet Hadoop</a>
+</li>
+            
+<li >
+    <a href="../ch2/">Chapter 2: MapReduce</a>
+</li>
+            
+<li >
+    <a href="../ch3/">Chapter 3: The Hadoop Distributed FileSystem</a>
+</li>
+            
+<li >
+    <a href="../ch4/">Chapter 4: YARN</a>
+</li>
+            
+<li class="active">
+    <a href="./">Chapter 5: Hadoop I/O</a>
+</li>
+            
+<li >
+    <a href="../ch6/">Chapter 6: Developing a MapReduce Application</a>
+</li>
+            
+<li >
+    <a href="../ch7/">Chapter 7: How MapReduce Works</a>
+</li>
+            
+<li >
+    <a href="../ch8/">Chapter 8: MapReduce Types and Formats</a>
+</li>
+            
+<li >
+    <a href="../ch9/">Chapter 9: MapReduce Features</a>
+</li>
+            
+<li >
+    <a href="../ch10/">Chapter 10: Setting Up a Hadoop Cluster</a>
+</li>
+            
+<li >
+    <a href="../ch11/">Chapter 11: Adminstering Hadoop</a>
+</li>
+            
+<li >
+    <a href="../ch12/">Chapter 12: Avro</a>
+</li>
+            
+<li >
+    <a href="../ch13/">Chapter 13: Parquet</a>
+</li>
+            
+<li >
+    <a href="../ch14/">Chapter 14: Flume</a>
+</li>
+            
+<li >
+    <a href="../ch15/">Chapter 15: Sqoop</a>
+</li>
+            
+<li >
+    <a href="../ch16/">Chapter 16: Pig</a>
+</li>
+            
+<li >
+    <a href="../ch17/">Chapter 17: Hive</a>
+</li>
+            
+<li >
+    <a href="../ch18/">Chapter 18: Crunch</a>
+</li>
+            
+<li >
+    <a href="../ch19/">Chapter 19: Spark</a>
+</li>
+            
+<li >
+    <a href="../ch20/">Chapter 20: HBase</a>
+</li>
+            
+<li >
+    <a href="../ch21/">Chapter 21: ZooKeeper</a>
+</li>
+            
+<li >
+    <a href="../ch22/">Chapter 22: Composable Data at Center</a>
+</li>
+            
+<li >
+    <a href="../ch23/">Chapter 23: Biological Data Science: Saving Lives with Software</a>
+</li>
+            
+<li >
+    <a href="../ch24/">Chapter 24: Cascading</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">Spark</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../spark/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../spark/ch1/">Chapter 1: Introduction to Data Analysis with Spark</a>
+</li>
+            
+<li >
+    <a href="../../spark/ch2/">Chapter 2: Downloading Spark and Getting Started</a>
+</li>
+            
+<li >
+    <a href="../../spark/ch3/">Chapter 3: Programming with RDDs</a>
+</li>
+            
+<li >
+    <a href="../../spark/ch4/">Chapter 4: Working with Key/Value Pairs</a>
+</li>
+            
+<li >
+    <a href="../../spark/ch5/">Chapter 5: Loading and Saving Your Data</a>
+</li>
+            
+<li >
+    <a href="../../spark/ch6/">Chapter 6: Advanced Spark Programming</a>
+</li>
+            
+<li >
+    <a href="../../spark/ch7/">Chapter 7: Running on a Cluster</a>
+</li>
+            
+<li >
+    <a href="../../spark/ch8/">Chapter 8: Tuning and Debugging Spark</a>
+</li>
+            
+<li >
+    <a href="../../spark/ch9/">Chapter 9: Spark SQL</a>
+</li>
+            
+<li >
+    <a href="../../spark/ch10/">Chapter 10: Spark Streaming</a>
+</li>
+            
+<li >
+    <a href="../../spark/ch11/">Chapter 11: Machine Learning with MLlib</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">GDM</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../gdm/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../gdm/ch1/">Chapter 1: 推荐系统入门</a>
+</li>
+            
+<li >
+    <a href="../../gdm/ch2/">Chapter 2: 隐式评价和基于物品的过滤算法</a>
+</li>
+            
+<li >
+    <a href="../../gdm/ch3/">Chapter 3: 分类</a>
+</li>
+            
+<li >
+    <a href="../../gdm/ch4/">Chapter 4: 进一步探索分类</a>
+</li>
+            
+<li >
+    <a href="../../gdm/ch5/">Chapter 5: 概率和朴素贝叶斯</a>
+</li>
+            
+<li >
+    <a href="../../gdm/ch6/">Chapter 6: 朴素贝叶斯和文本数据</a>
+</li>
+            
+<li >
+    <a href="../../gdm/ch7/">Chapter 7: 聚类</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">MLIA</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../mlia/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../mlia/ch1/">Chapter 1: 机器学习基础</a>
+</li>
+            
+<li >
+    <a href="../../mlia/ch2/">Chapter 2: k-近邻算法</a>
+</li>
+            
+<li >
+    <a href="../../mlia/ch3/">Chapter 3: 决策树</a>
+</li>
+            
+<li >
+    <a href="../../mlia/ch4/">Chapter 4: 基于概率论的分类方法：朴素贝叶斯</a>
+</li>
+            
+<li >
+    <a href="../../mlia/ch5/">Chapter 5: Logistic回归</a>
+</li>
+            
+<li >
+    <a href="../../mlia/ch6/">Chapter 6: 支持向量机</a>
+</li>
+            
+<li >
+    <a href="../../mlia/ch7/">Chapter 7: 利用AdaBoost元算法提高分类性能</a>
+</li>
+            
+<li >
+    <a href="../../mlia/ch8/">Chapter 8: 预测数值型数据：回归</a>
+</li>
+            
+<li >
+    <a href="../../mlia/ch9/">Chapter 9: 树回归</a>
+</li>
+            
+<li >
+    <a href="../../mlia/ch10/">Chapter 10: 利用Ｋ-均值聚类算法对未标注数据分组</a>
+</li>
+            
+<li >
+    <a href="../../mlia/ch11/">Chapter 11: 使用Apriori算法进行关联分析</a>
+</li>
+            
+<li >
+    <a href="../../mlia/ch11/">Chapter 12: 使用FP-growth算法来高效发现频繁项集</a>
+</li>
+            
+<li >
+    <a href="../../mlia/ch13/">Chapter 13: 利用PCA来简化数据</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">Crawler</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../crawler/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../crawler/ch1/">Chapter 1: 开发环境配置</a>
+</li>
+            
+<li >
+    <a href="../../crawler/ch2/">Chapter 2: 爬虫基础</a>
+</li>
+            
+<li >
+    <a href="../../crawler/ch3/">Chapter 3: 基本库的使用</a>
+</li>
+            
+<li >
+    <a href="../../crawler/ch4/">Chapter 4: 解析库的使用</a>
+</li>
+            
+<li >
+    <a href="../../crawler/ch5/">Chapter 5: 数据存储</a>
+</li>
+            
+<li >
+    <a href="../../crawler/ch7/">Chapter 7: 动态渲染页面爬取</a>
+</li>
+            
+<li >
+    <a href="../../crawler/ch13/">Chapter 13: Scrapy框架的使用</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">Projects</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../projects/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../projects/SparkStreaming实时流处理项目/">SparkStreaming实时流处理</a>
+</li>
+    </ul>
+  </li>
+                                </ul>
+                            </li>
+                            <li >
+                                <a href="../../../books/">Books</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li >
+                                <a rel="next" href="../ch4/">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li >
+                                <a rel="prev" href="../ch6/">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#hadoop-the-definitive-guide-5-hadoop-io">Hadoop: The Definitive Guide 5 - Hadoop I/O</a></li>
+        <li class="main "><a href="#1-data-integrity">1 Data Integrity</a></li>
+            <li><a href="#data-integrity-in-hdfs">Data Integrity in HDFS</a></li>
+            <li><a href="#localfilesystem">LocalFileSystem</a></li>
+            <li><a href="#checksumfilesystem">ChecksumFileSystem</a></li>
+        <li class="main "><a href="#2-compression">2 Compression</a></li>
+            <li><a href="#codecs">Codecs</a></li>
+            <li><a href="#compression-and-input-splits">Compression and Input Splits</a></li>
+            <li><a href="#using-compression-in-mapreduce">Using Compression in MapReduce</a></li>
+        <li class="main "><a href="#3-serialization">3 Serialization</a></li>
+            <li><a href="#the-writable-interface">The Writable Interface</a></li>
+            <li><a href="#writable-classes">Writable Classes</a></li>
+            <li><a href="#implementing-a-custom-writable">Implementing a Custom Writable</a></li>
+            <li><a href="#serialization-frameworks">Serialization Frameworks</a></li>
+        <li class="main "><a href="#4-file-based-data-structures">4 File-Based Data Structures</a></li>
+            <li><a href="#sequencefile">SequenceFile</a></li>
+            <li><a href="#mapfile">MapFile</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<h3 id="hadoop-the-definitive-guide-5-hadoop-io"><strong>Hadoop: The Definitive Guide 5 - Hadoop I/O</strong><a class="headerlink" href="#hadoop-the-definitive-guide-5-hadoop-io" title="Permanent link">&para;</a></h3>
+<h3 id="1-data-integrity">1 Data Integrity<a class="headerlink" href="#1-data-integrity" title="Permanent link">&para;</a></h3>
+<p>The usual way of detecting corrupted data is by computing a <em>checksum</em>(校验和) for the data when it first enters the system, and again whenever it is transmitted across a channel that is unreliable and hence capable of corrupting the data.</p>
+<p>A commonly used error-detecting code is CRC-32 (32-bit cyclic redundancy check, 循环冗余校验), which computes a 32-bit integer checksum for input of any size. CRC32 is used for checksumming in Hadoop's <C>checksumFileSystem</C>, while HDFS uses a more efficient variant called CRC-32C.</p>
+<h4 id="data-integrity-in-hdfs">Data Integrity in HDFS<a class="headerlink" href="#data-integrity-in-hdfs" title="Permanent link">&para;</a></h4>
+<p>HDFS transparently checksums all data written to it and by default verifies checksums when reading data. A separate checksum is created for every <C>ChecksumFileSystem.bytesPerChecksum</C>(default 512) bytes of data.</p>
+<p>Datanodes are responsible for verifying the data they receive before storing the data and its checksum. When clients read data from datanodes, they verify checksums as well.</p>
+<p>In addition to block verification on client reads, each datanode runs a <C>DataBlockScanner</C> in a background thread that <em>periodically</em> verifies all the blocks stored on the datanode.</p>
+<p>You can find a file’s checksum with <C>hadoop fs -checksum</C>.</p>
+<h4 id="localfilesystem">LocalFileSystem<a class="headerlink" href="#localfilesystem" title="Permanent link">&para;</a></h4>
+<p>The Hadoop <C>LocalFileSystem</C> performs client-side checksumming. It is possible to disable checksums, by using <C>RawLocalFileSystem</C> in place of <C>LocalFileSystem</C>.</p>
+<h4 id="checksumfilesystem">ChecksumFileSystem<a class="headerlink" href="#checksumfilesystem" title="Permanent link">&para;</a></h4>
+<p><C>LocalFileSystem</C> extends <C>ChecksumFileSystem</C>, and <C>ChecksumFileSystem</C> is also a wrapper around <C>FileSystem</C> (uses <a href="http://larryim.cc/note-os/hfdp/ch3/#2-decorator-pattern">decorator pattern</a> here). The general idiom is as follows:</p>
+<p> <div class=codehilite><pre><span class=n>FileSystem</span> <span class=n>rawFs</span> <span class=o>=</span> <span class=o>...</span>
+<span class=n>FileSystem</span> <span class=n>checksummedFs</span> <span class=o>=</span> <span class=k>new</span> <span class=n>ChecksumFileSystem</span><span class=o>(</span><span class=n>rawFs</span><span class=o>);</span>
+</pre></div></p>
+<p><img alt="LocalFileSystemUML" src="../figures/LocalFileSystemUML.png" /></p>
+<h3 id="2-compression">2 Compression<a class="headerlink" href="#2-compression" title="Permanent link">&para;</a></h3>
+<p>File compression brings two major benefits: it <strong>reduces the space</strong> needed to store files, and it <strong>speeds up data transfer</strong> across the network or to or from disk. When dealing with large volumes of data, both of these savings can be significant.</p>
+<p>A summary of compression formats:</p>
+<table>
+<thead>
+<tr>
+<th>Compression format</th>
+<th>Tools</th>
+<th>Algorithm</th>
+<th>File Extension</th>
+<th>CompressionCodec</th>
+<th>Splittable?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DEFLATE</td>
+<td>N/A</td>
+<td>DEFLATE</td>
+<td>.deflate</td>
+<td>DefaultCodec</td>
+<td>No</td>
+</tr>
+<tr>
+<td>gzip</td>
+<td>gzip</td>
+<td>DEFLATE</td>
+<td>.gz</td>
+<td>GzipCodec</td>
+<td>No</td>
+</tr>
+<tr>
+<td>bzip2</td>
+<td>bzip2</td>
+<td>bzip2</td>
+<td>.bz2</td>
+<td>BZip2Codec</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>LZO</td>
+<td>lzop</td>
+<td>LZO</td>
+<td>.lzo</td>
+<td>LzoCodec</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Snappy</td>
+<td>N/A</td>
+<td>Snappy</td>
+<td>.snappy</td>
+<td>SnappyCodec</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<p>All compression algorithm exhibit a space/time trade-off. Splittable compression formats are especially suitable for MapReduce.</p>
+<h4 id="codecs">Codecs<a class="headerlink" href="#codecs" title="Permanent link">&para;</a></h4>
+<p>A <em>codec</em> is the implementation of a compression-decompression algorithm. In Hadoop, a codec is represented by an implementation of the <C>CompressionCodec</C> interface. So, for example, <C>GzipCodec</C> encapsulates the compression and decompression algorithm for gzip.</p>
+<p><hh>Compressing and decompressing streams with CompressionCodec</hh></p>
+<p><C>Interface CompressionCodec </C> has two methods that allow you to easily compress or decompress data. </p>
+<ul>
+<li>To compress data being written to an output stream, use the <C>createOutputStream(OutputStream out)</C> method to create a <C>CompressionOutputStream</C></li>
+<li>Conversely, to decompress data being read from an input stream, call <C>createInputStream(InputStream in)</C> to obtain a <C>CompressionInputStream</C>.</li>
+</ul>
+<p>The code below illustrates how to use the API to compress data read from standard input and write it to standard output.</p>
+<p> <div class=codehilite><pre><span class=kn>import</span> <span class=nn>org.apache.hadoop.conf.Configuration</span><span class=o>;</span>
+<span class=kn>import</span> <span class=nn>org.apache.hadoop.io.IOUtils</span><span class=o>;</span>
+<span class=kn>import</span> <span class=nn>org.apache.hadoop.io.compress.CompressionCodec</span><span class=o>;</span>
+<span class=kn>import</span> <span class=nn>org.apache.hadoop.io.compress.CompressionOutputStream</span><span class=o>;</span>
+<span class=kn>import</span> <span class=nn>org.apache.hadoop.util.ReflectionUtils</span><span class=o>;</span>
+
+<span class=c1>// vv StreamCompressor</span>
+<span class=kd>public</span> <span class=kd>class</span> <span class=nc>StreamCompressor</span> <span class=o>{</span>
+
+    <span class=kd>public</span> <span class=kd>static</span> <span class=kt>void</span> <span class=nf>main</span><span class=o>(</span><span class=n>String</span><span class=o>[]</span> <span class=n>args</span><span class=o>)</span> <span class=kd>throws</span> <span class=n>Exception</span> <span class=o>{</span>
+        <span class=n>String</span> <span class=n>codecClassname</span> <span class=o>=</span> <span class=n>args</span><span class=o>[</span><span class=mi>0</span><span class=o>];</span>
+        <span class=n>Class</span><span class=o>&lt;?&gt;</span> <span class=n>codecClass</span> <span class=o>=</span> <span class=n>Class</span><span class=o>.</span><span class=na>forName</span><span class=o>(</span><span class=n>codecClassname</span><span class=o>);</span>
+        <span class=n>Configuration</span> <span class=n>conf</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Configuration</span><span class=o>();</span>
+        <span class=n>CompressionCodec</span> <span class=n>codec</span> <span class=o>=</span> <span class=o>(</span><span class=n>CompressionCodec</span><span class=o>)</span>
+                <span class=n>ReflectionUtils</span><span class=o>.</span><span class=na>newInstance</span><span class=o>(</span><span class=n>codecClass</span><span class=o>,</span> <span class=n>conf</span><span class=o>);</span>
+
+        <span class=n>CompressionOutputStream</span> <span class=n>out</span> <span class=o>=</span> <span class=n>codec</span><span class=o>.</span><span class=na>createOutputStream</span><span class=o>(</span><span class=n>System</span><span class=o>.</span><span class=na>out</span><span class=o>);</span>
+        <span class=n>IOUtils</span><span class=o>.</span><span class=na>copyBytes</span><span class=o>(</span><span class=n>System</span><span class=o>.</span><span class=na>in</span><span class=o>,</span> <span class=n>out</span><span class=o>,</span> <span class=mi>4096</span><span class=o>,</span> <span class=kc>false</span><span class=o>);</span>
+        <span class=n>out</span><span class=o>.</span><span class=na>finish</span><span class=o>();</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></p>
+<p>We can try it out with the following command line, which compresses the string “Text” using the <C>StreamCompressor</C> program with the <C>GzipCodec</C>, then decompresses it from standard input using <C>gunzip</C>:</p>
+<p> <div class=codehilite><pre><span class=nb>export</span> <span class=nv>HADOOP_CLASSPATH</span><span class=o>=</span>/Users/larry/JavaProject/out/artifacts/StreamCompressor/StreamCompressor.jar
+<span class=nb>echo</span> <span class=s2>&quot;Text&quot;</span> <span class=p>|</span> hadoop com.definitivehadoop.compression.StreamCompressor org.apache.hadoop.io.compress.GzipCodec <span class=p>|</span> gunzip 
+</pre></div></p>
+<p><hh>Inferring CompressionCodecs using CompressionCodecFactory</hh></p>
+<p><C>CompressionCodecFactory</C> provides a way of mapping a filename extension to a <C>CompressionCodec</C> using its <C>getCodec()</C> method, <C>CodecPool</C>.</p>
+<p>If you are using a native library and you are doing a lot of compression or decompression in your application, consider using <C>CodecPool</C>, which allows you to reuse compressors and decompressors, thereby amortizing the cost of creating these objects.</p>
+<h4 id="compression-and-input-splits">Compression and Input Splits<a class="headerlink" href="#compression-and-input-splits" title="Permanent link">&para;</a></h4>
+<p>If a compressed file using a format that does not support splitting, say gzip format, MapReduce will not try to split the gzipped file, at the expense of locality: a single map will process all blocks containing the file, most of which will not be local to the map.</p>
+<p>For an LZO file, in spite of not supporting splitting, it is possible to preprocess LZO files using an indexer tool that comes with the Hadoop LZO libraries. </p>
+<h4 id="using-compression-in-mapreduce">Using Compression in MapReduce<a class="headerlink" href="#using-compression-in-mapreduce" title="Permanent link">&para;</a></h4>
+<p>In order to compress the output of a MapReduce, job you can use the static convenience methods on <C>FileOutputFormat</C> to set properties.</p>
+<p>Application to run the maximum temperature job producing compressed output:</p>
+<div class=md-fenced-code-tabs id=tab-tab-group-3><input name=tab-group-3 type=radio id=tab-group-3-0_Java checked=checked class=code-tab data-lang=Java aria-controls=tab-group-3-0_Java-panel role=tab><label for=tab-group-3-0_Java class=code-tab-label data-lang=Java id=tab-group-3-0_Java-label>Maxtemperaturewithcompression</label><div class=code-tabpanel role=tabpanel data-lang=Java id=tab-group-3-0_Java-panel aria-labelledby=tab-group-3-0_Java-label><div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>MaxTemperatureWithCompression</span> <span class=o>{</span>
+    <span class=kd>public</span> <span class=kd>static</span> <span class=kt>void</span> <span class=nf>main</span><span class=o>(</span><span class=n>String</span><span class=o>[]</span> <span class=n>args</span><span class=o>)</span> <span class=kd>throws</span> <span class=n>Exception</span> <span class=o>{</span>
+        <span class=k>if</span> <span class=o>(</span><span class=n>args</span><span class=o>.</span><span class=na>length</span> <span class=o>!=</span> <span class=mi>2</span><span class=o>)</span> <span class=o>{</span>
+            <span class=n>System</span><span class=o>.</span><span class=na>err</span><span class=o>.</span><span class=na>println</span><span class=o>(</span><span class=s>&quot;Usage: MaxTemperatureWithCompression &lt;input path&gt; &quot;</span> <span class=o>+</span>
+                    <span class=s>&quot;&lt;output path&gt;&quot;</span><span class=o>);</span>
+            <span class=n>System</span><span class=o>.</span><span class=na>exit</span><span class=o>(-</span><span class=mi>1</span><span class=o>);</span>
+        <span class=o>}</span>
+
+        <span class=n>Job</span> <span class=n>job</span> <span class=o>=</span>  <span class=n>Job</span><span class=o>.</span><span class=na>getInstance</span><span class=o>();</span>
+        <span class=n>job</span><span class=o>.</span><span class=na>setJarByClass</span><span class=o>(</span><span class=n>com</span><span class=o>.</span><span class=na>definitivehadoop</span><span class=o>.</span><span class=na>weatherdata</span><span class=o>.</span><span class=na>MaxTemperature</span><span class=o>.</span><span class=na>class</span><span class=o>);</span>
+
+        <span class=n>FileInputFormat</span><span class=o>.</span><span class=na>addInputPath</span><span class=o>(</span><span class=n>job</span><span class=o>,</span> <span class=k>new</span> <span class=n>Path</span><span class=o>(</span><span class=n>args</span><span class=o>[</span><span class=mi>0</span><span class=o>]));</span>
+        <span class=n>FileOutputFormat</span><span class=o>.</span><span class=na>setOutputPath</span><span class=o>(</span><span class=n>job</span><span class=o>,</span> <span class=k>new</span> <span class=n>Path</span><span class=o>(</span><span class=n>args</span><span class=o>[</span><span class=mi>1</span><span class=o>]));</span>
+
+        <span class=n>job</span><span class=o>.</span><span class=na>setOutputKeyClass</span><span class=o>(</span><span class=n>Text</span><span class=o>.</span><span class=na>class</span><span class=o>);</span>
+        <span class=n>job</span><span class=o>.</span><span class=na>setOutputValueClass</span><span class=o>(</span><span class=n>IntWritable</span><span class=o>.</span><span class=na>class</span><span class=o>);</span>
+
+        <span class=cm>/*[*/</span>
+        <span class=n>FileOutputFormat</span><span class=o>.</span><span class=na>setCompressOutput</span><span class=o>(</span><span class=n>job</span><span class=o>,</span> <span class=kc>true</span><span class=o>);</span>
+        <span class=n>FileOutputFormat</span><span class=o>.</span><span class=na>setOutputCompressorClass</span><span class=o>(</span><span class=n>job</span><span class=o>,</span> <span class=n>GzipCodec</span><span class=o>.</span><span class=na>class</span><span class=o>);</span><span class=cm>/*]*/</span>
+
+<span class=n>job</span><span class=o>.</span><span class=na>setMapperClass</span><span class=o>(</span><span class=n>com</span><span class=o>.</span><span class=na>definitivehadoop</span><span class=o>.</span><span class=na>weatherdata</span><span class=o>.</span><span class=na>MaxTemperatureMapper</span><span class=o>.</span><span class=na>class</span><span class=o>);</span>
+<span class=n>job</span><span class=o>.</span><span class=na>setCombinerClass</span><span class=o>(</span><span class=n>com</span><span class=o>.</span><span class=na>definitivehadoop</span><span class=o>.</span><span class=na>weatherdata</span><span class=o>.</span><span class=na>MaxTemperatureReducer</span><span class=o>.</span><span class=na>class</span><span class=o>);</span>
+<span class=n>job</span><span class=o>.</span><span class=na>setReducerClass</span><span class=o>(</span><span class=n>com</span><span class=o>.</span><span class=na>definitivehadoop</span><span class=o>.</span><span class=na>weatherdata</span><span class=o>.</span><span class=na>MaxTemperatureReducer</span><span class=o>.</span><span class=na>class</span><span class=o>);</span>
+
+        <span class=n>System</span><span class=o>.</span><span class=na>exit</span><span class=o>(</span><span class=n>job</span><span class=o>.</span><span class=na>waitForCompletion</span><span class=o>(</span><span class=kc>true</span><span class=o>)</span> <span class=o>?</span> <span class=mi>0</span> <span class=o>:</span> <span class=mi>1</span><span class=o>);</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+<span class=c1>//^^ MaxTemperatureWithCompression</span>
+</pre></div></div><input name=tab-group-3 type=radio id=tab-group-3-1_bash class=code-tab data-lang=bash aria-controls=tab-group-3-1_bash-panel role=tab><label for=tab-group-3-1_bash class=code-tab-label data-lang=bash id=tab-group-3-1_bash-label>Usage</label><div class=code-tabpanel role=tabpanel data-lang=bash id=tab-group-3-1_bash-panel aria-labelledby=tab-group-3-1_bash-label><div class=codehilite><pre>$ <span class=nb>export</span> <span class=nv>HADOOP_CLASSPATH</span><span class=o>=</span>/Users/larry/JavaProject/out/artifacts/MaxTemperatureWithCompression/MaxTemperatureWithCompression.jar
+$ hadoop com.definitivehadoop.compression.MaxTemperatureWithCompression /Users/larry/JavaProject/resources/HadoopBook/ncdc/sample.txt output
+</pre></div></div></div>
+
+<h3 id="3-serialization">3 Serialization<a class="headerlink" href="#3-serialization" title="Permanent link">&para;</a></h3>
+<p>See concepts of serialization and deserialization in Head First Java <a href="http://larryim.cc/note-os/hfj/ch14">Chapter 14</a> .</p>
+<p><em>Serialization</em> is the process of turning structured objects into a byte stream for transmission over a network or for writing to persistent storage. <em>Deserialization</em> is the reverse process of turning a byte stream back into a series of structured objects.</p>
+<p>Serialization is used in two quite distinct areas of distributed data processing: for <strong>interprocess communication</strong> and for <strong>persistent storage</strong>.</p>
+<p>In Hadoop, interprocess communication between nodes in the system is implemented using remote procedure calls (RPCs). The RPC protocol uses serialization to render the message into a binary stream to be sent to the remote node, which then deserializes the binary stream into the original message. In general, four desirable properties are crucial for an RPC serialization and persistent storage:</p>
+<table>
+<thead>
+<tr>
+<th>Properties</th>
+<th>PRC Serialization</th>
+<th>Persistent Storage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Compact</td>
+<td>makes the best use of network bandwidth</td>
+<td>make efficient use of storage space</td>
+</tr>
+<tr>
+<td>Fast</td>
+<td>little performance overhead</td>
+<td>little overhead in reading or writing</td>
+</tr>
+<tr>
+<td>Extensible</td>
+<td>meet new requirements</td>
+<td>transparently read data of older formats</td>
+</tr>
+<tr>
+<td>Interoperable</td>
+<td>support clients written in different languages</td>
+<td>read/write using different languages</td>
+</tr>
+</tbody>
+</table>
+<p>Hadoop uses its own serialization format, <C>Writables</C>, which is certainly compact and fast, but not so easy to extend or use from languages other than Java. Avro, a serialization system that was designed to overcome some of the limitations of <C>Writables</C>, is covered in <a href="../ch12/">Chapter 12</a>.</p>
+<h4 id="the-writable-interface">The Writable Interface<a class="headerlink" href="#the-writable-interface" title="Permanent link">&para;</a></h4>
+<p>The <C>Writable</C> interface defines two methods — one for writing its state to a <C>DataOutput</C> binary stream and one for reading its state from a <C>DataInput</C> binary stream (note: <C>DataOutput</C> and <C>DataInput</C> are also inferfaces):</p>
+<p> <div class=codehilite><pre><span class=kn>package</span> <span class=nn>org.apache.hadoop.io</span><span class=o>;</span>
+
+<span class=kn>import</span> <span class=nn>java.io.DataOutput</span><span class=o>;</span> 
+<span class=kn>import</span> <span class=nn>java.io.DataInput</span><span class=o>;</span> 
+<span class=kn>import</span> <span class=nn>java.io.IOException</span><span class=o>;</span>
+
+<span class=kd>public</span> <span class=kd>interface</span> <span class=nc>Writable</span> <span class=o>{</span> 
+    <span class=kt>void</span> <span class=nf>write</span><span class=o>(</span><span class=n>DataOutput</span> <span class=n>out</span><span class=o>)</span> <span class=kd>throws</span> <span class=n>IOException</span><span class=o>;</span> 
+    <span class=kt>void</span> <span class=nf>readFields</span><span class=o>(</span><span class=n>DataInput</span> <span class=n>in</span><span class=o>)</span> <span class=kd>throws</span> <span class=n>IOException</span><span class=o>;</span> 
+<span class=o>}</span>
+</pre></div></p>
+<h4 id="writable-classes">Writable Classes<a class="headerlink" href="#writable-classes" title="Permanent link">&para;</a></h4>
+<p><hh>Writable wrappers for Java primitives</hh></p>
+<p>There are <C>Writable</C> wrappers for all the Java primitive types except <C>char</C> (which can be stored in an <C>IntWritable</C>). All have a <C>get()</C> and <C>set()</C> method for retrieving and storing the wrapped value.</p>
+<p><img alt="" src="../figures/WritableClassHierarchy.jpg" /></p>
+<p>When it comes to encoding integers, there is a choice between the fixed-length formats (<C>IntWritable</C> and <C>LongWritable</C>) and the variable-length formats (<C>VIntWritable</C> and <C>VLongWritable</C>). Fixed-length encodings are good when the distribution of values is fairly uniform across the whole value space, such as when using a (well-designed) hash function. Most numeric variables tend to have nonuniform distributions, though, and on average, the variable-length encoding will save space.</p>
+<p><hh>Text</hh></p>
+<p><C>Text</C> is a Writable for UTF-8 sequences. It can be thought of as the Writable equivalent of <C>java.lang.String</C>.</p>
+<p>Indexing for the <C>Text</C> class is in terms of position in the encoded byte sequence, not the Unicode character in the string or the Java <C>char</C> code unit (as it is for <C>String</C>). For ASCII strings, these three concepts of index position coincide.</p>
+<p>Another difference from <C>String</C> is that <C>Text</C> is mutable. You can reuse a <C>Text</C> instance by calling one of the <C>set()</C> methods on it.</p>
+<p> <div class=codehilite><pre><span class=n>Text</span> <span class=n>t</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Text</span><span class=o>(</span><span class=s>&quot;hadoop&quot;</span><span class=o>);</span> <span class=n>t</span><span class=o>.</span><span class=na>set</span><span class=o>(</span><span class=s>&quot;pig&quot;</span><span class=o>);</span>
+</pre></div></p>
+<p><C>Text</C> doesn’t have as rich an API for manipulating <C>java.lang.String</C>, so in many cases, you need to convert the <C>Text</C> object to a <C>String</C>: <code class="codehilite"><span class="n">Text</span><span class="o">(</span><span class="s">&quot;hadoop&quot;</span><span class="o">).</span><span class="na">toString</span><span class="o">()</span></code></p>
+<h4 id="implementing-a-custom-writable">Implementing a Custom Writable<a class="headerlink" href="#implementing-a-custom-writable" title="Permanent link">&para;</a></h4>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>If you are considering writing a custom <C>Writable</C>, it may be worth trying another serialization framework, like Avro, that allows you to define custom types declaratively.</p>
+</div>
+<h4 id="serialization-frameworks">Serialization Frameworks<a class="headerlink" href="#serialization-frameworks" title="Permanent link">&para;</a></h4>
+<p>Any type can be used to serialize, because Hadoop has an API for pluggable serialization frameworks, which is represented by an implementation of <C>Serialization</C>. For instance, <C>WritableSerialization</C>, is the implementation of <C>Serialization</C> for <C>Writable</C> types; <C>AvroSerialization</C>, is the implementation of <C>Serialization</C> for <C>Avro</C> types.</p>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>WritableSerialization</span> <span class=kd>extends</span> <span class=n>Configured</span>
+    <span class=kd>implements</span> <span class=n>Serialization</span><span class=o>&lt;</span><span class=n>Writable</span><span class=o>&gt;</span>
+<span class=kd>public</span> <span class=kd>abstract</span> <span class=kd>class</span> <span class=nc>AvroSerialization</span><span class=o>&lt;</span><span class=n>T</span><span class=o>&gt;</span> <span class=kd>extends</span> <span class=n>Configured</span> 
+    <span class=kd>implements</span> <span class=n>Serialization</span><span class=o>&lt;</span><span class=n>T</span><span class=o>&gt;</span>
+</pre></div></p>
+<p>A <C>Serialization</C> defines a mapping from types to <C>Serializer</C> instances (for turning an object into a byte stream) and <C>Deserializer</C> instances (for turning a byte stream into an object).</p>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>interface</span> <span class=nc>Serialization</span><span class=o>&lt;</span><span class=n>T</span><span class=o>&gt;</span> <span class=o>{</span>
+  <span class=c1>// Allows clients to test whether this  Serialization</span>
+  <span class=c1>// supports the given class.</span>
+  <span class=kt>boolean</span> <span class=nf>accept</span><span class=o>(</span><span class=n>Class</span><span class=o>&lt;?&gt;</span> <span class=n>c</span><span class=o>);</span>
+  <span class=c1>// @return a {@link Serializer} for the given class.</span>
+  <span class=n>Serializer</span><span class=o>&lt;</span><span class=n>T</span><span class=o>&gt;</span> <span class=nf>getSerializer</span><span class=o>(</span><span class=n>Class</span><span class=o>&lt;</span><span class=n>T</span><span class=o>&gt;</span> <span class=n>c</span><span class=o>);</span>
+  <span class=c1>//return a {@link Deserializer} for the given class.</span>
+  <span class=n>Deserializer</span><span class=o>&lt;</span><span class=n>T</span><span class=o>&gt;</span> <span class=nf>getDeserializer</span><span class=o>(</span><span class=n>Class</span><span class=o>&lt;</span><span class=n>T</span><span class=o>&gt;</span> <span class=n>c</span><span class=o>);</span>
+<span class=o>}</span>
+</pre></div></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Although it makes it convenient to be able to use standard Java types such as <C>Integer</C> or <C>String</C> in <C>MapReduce</C> programs, Java Object Serialization is not as efficient as <C>Writables</C>, so it’s not worth making this trade-off.</p>
+</div>
+<p><hh>Serialization IDL</hh></p>
+<p>Apache Thrift and Google Protocol Buffers are both popular serialization frameworks, and both are commonly used as a format for persistent binary data. Avro is an IDL-based serialization framework designed to work well with large-scale data processing in Hadoop.</p>
+<h3 id="4-file-based-data-structures">4 File-Based Data Structures<a class="headerlink" href="#4-file-based-data-structures" title="Permanent link">&para;</a></h3>
+<p>For some applications, you need a specialized data structure to hold your data. For doing MapReduce-based processing, putting each blob of binary data into its own file doesn’t scale, so Hadoop developed a number of higher-level containers for these situations.</p>
+<h4 id="sequencefile">SequenceFile<a class="headerlink" href="#sequencefile" title="Permanent link">&para;</a></h4>
+<p>Hadoop’s <C>SequenceFile</C> provides a persistent data structure for binary key-value pairs. It is suitable for a log file, where each log record is a new line of text. To use it as a logfile format, you would choose a key, such as timestamp represented by a <C>LongWritable</C>, and the value would be a <C>Writable</C> that represents the quantity being logged.</p>
+<p><hh>Writing a SequenceFile</hh></p>
+<p>To create a <C>SequenceFile</C>, use one of its <C>createWriter()</C> static methods, which return a <C>SequenceFile.Writer</C> instance. Then write key-value pairs using the <C>append()</C> method. When you’ve finished, you call the <C>close()</C> method.</p>
+<p><hh>Displaying a SequenceFile with the command-line interface</hh></p>
+<p>The hadoop <C>fs</C> command has a <C>-text</C> option to display sequence files in textual form.</p>
+<p> <div class=codehilite><pre><span class=o>%</span> <span class=n>hadoop</span> <span class=n>fs</span> <span class=o>-</span><span class=n>text</span> <span class=n>numbers</span><span class=o>.</span><span class=na>seq</span> <span class=o>|</span> <span class=n>head</span>
+</pre></div></p>
+<p><hh>The SequenceFile format</hh></p>
+<p>A sequence file(顺序文件) consists of a header followed by one or more records. The sync marker(同步标识) is used to allow a reader synchronize to a record boundary from any position in the file, which incurs less than a 1% storage overhead.</p>
+<p><img alt="" src="../figures/TheInternalStructureOfSequenceFile.jpg" /></p>
+<p>The internal format of the records depends on whether compression is enabled, and if it is, whether it is record compression(记录压缩) or block compression(块压缩).</p>
+<p>The format for record compression is almost identical to that for no compression, except the value bytes are compressed using the codec defined in the header. Note that keys are not compressed.</p>
+<p><img alt="The Internal Structure Of A Sequence File With Block Compression" src="../figures/TheInternalStructureOfASequenceFileWithBlockCompression.jpg" /></p>
+<p>Block compression compresses multiple records at once; it is therefore more compact than and should generally be preferred over record compression because it has the opportunity to take advantage of similarities between records. A sync marker is written before the start of every block. The format of a block is a field indicating the number of records in the block, followed by four compressed fields: the key lengths, the keys, the value lengths, and the values.</p>
+<h4 id="mapfile">MapFile<a class="headerlink" href="#mapfile" title="Permanent link">&para;</a></h4>
+<p>A <C>MapFile</C> is a sorted <C>SequenceFile</C> with an index to permit lookups by key. The index is itself a <C>SequenceFile</C> that contains a fraction of the keys in the map.</p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = "../../..",
+                shortcuts = {"search": 83, "next": 78, "help": 191, "previous": 80};
+        </script>
+        <script src="../../../js/base.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" defer></script>
+        <script src="../../../extra_javascript/tabhack.js" defer></script>
+        <script src="../../../extra_javascript/baidu.js" defer></script>
+        <script src="../../../search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>
