@@ -402,173 +402,6 @@ searchFrom(myMaze, myMaze.startRow, myMaze.startCol)
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="heap.html">
-                
-                  <h1>Heap (1): Introduction and Implementation</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>A <strong>heap</strong> (堆)is a specialized tree-based data structure。 A <strong>heap</strong> can be classified as either a <strong>max heap</strong> or a <strong>min heap</strong>. </p>
-
-<ul>
-<li>In a <strong>max heap</strong>(最大堆), the keys of parent nodes are always greater than or equal to those of the children and the highest key is in the root node. </li>
-<li>In a <strong>min heap</strong>(最小堆), the keys of parent nodes are less than or equal to those of the children and the lowest key is in the root node.</li>
-</ul>
-
-<p><strong>Heap</strong> is one maximally efficient implementation of an abstract data type called a <strong>priority queue</strong> (see <a href="http://larryim.cc/priority_queue.html">here</a>), and in fact priority queues are often referred to as <strong>heaps</strong>, regardless of how they may be implemented. </p>
-
-<h2 id="toc_0">Implementation</h2>
-
-<p>Priority queues typically use a heap as backbone, giving \(O(\log n)\) performance for pushs and pops, and <strong>\(O(n)\)</strong> to build initially.</p>
-
-<h2 id="toc_1">Binary Heap</h2>
-
-<p>A common implementation of a heap is the <strong>binary heap</strong>(二叉堆), in which the tree is a <strong>complete binary tree</strong>(完全二叉树). </p>
-
-<p>二叉堆的操作与实现</p>
-
-<ul>
-<li><code>BinaryHeap()</code>：创建一个新的、空的二叉堆对象</li>
-<li><code>push(k)</code>：把新元素加入到堆中</li>
-<li><code>findMin()</code>：返回堆中的最小项，最小项仍保留在堆中</li>
-<li><code>pop()</code>：返回堆中的最小项，同时从堆中删除</li>
-<li><code>isEmpty()</code>：返回堆是否为空</li>
-<li><code>size()</code>：返回堆中元素的个数</li>
-<li><code>heapify(list)</code>：从一个包含元素的列表创建新堆</li>
-</ul>
-
-<p>有两个关键的操作：</p>
-
-<ol>
-<li><code>insert</code>方法。首先，为了满足“完全二叉树”的性质，新键值应该添加到列表的末尾。然而新键值简单地添加在列表末尾，显然无法满足堆次序。所以要通过比较父节点和新加入的元素的方法来重新满足堆次序。如果新加入的元素比父节点要小，可以与父节点互换位置；不断交换，直到到达树的顶端。下图所示一系列交换操作来使新加入元素“上浮”到正确的位置。</li>
-</ol>
-
-<p><img src="media/14973171257726/14974156268132.jpg" alt=""/></p>
-
-<p>2.<code>pop</code>方法 移走根节点的元素后如何保持堆结构和堆次序: 首先，用最后一个节点来代替根节点, 移走最后一个节点保持了堆结构的性质。这么简单的替换，还是会破坏堆次序。第二步，将新节点“下沉”来恢复堆次序。下图所示的是一系列交换操作来使新节点“下沉”到正确的位置。</p>
-
-<p>为了保持堆次序，我们需将新的根节点沿着一条路径“下沉”，直到比两个子节点都小。在选择下沉路径时，如果新根节点比子节点大，那么选择较小的子节点与之交换。</p>
-
-<p><img src="media/14973171257726/14974156980805.jpg" alt=""/></p>
-
-<pre><code class="language-python">class BinHeap(object):
-    &quot;&quot;&quot;
-    创建一个新的、空的二叉堆对象
-    &quot;&quot;&quot;
-    def __init__(self):
-        self.list = [0]
-        self.size = 0
-
-    def perc_up(self,i):
-        &quot;&quot;&quot;
-        Percolate the new node into proper position
-        &quot;&quot;&quot;
-        while i: 
-            if self.list[i] &lt; self.list[i//2]:
-                self.list[i], self.list[i//2] = self.list[i//2], self.list[i]
-            i = i//2
-    
-    def push(self, item):
-        &quot;&quot;&quot;把新元素加入到堆中&quot;&quot;&quot;
-        self.list.append(item)
-        self.size += 1
-        self.perc_up(self.size)
-
-    def findMin(self):
-        &quot;&quot;&quot;返回堆中的最小项，最小项仍保留在堆中&quot;&quot;&quot;
-        return self.list[1]
-
-    def pop(self):
-        &quot;&quot;&quot;返回堆中的最小项，同时从堆中删除&quot;&quot;&quot;
-        retval = self.list[1]
-        self.list[1] = self.list[-1]
-        self.size -=1
-        self.list.pop()
-        self.perc_down(1)
-
-        return retval
-
-
-    def percDown(self,i):
-        &quot;&quot;&quot;
-        将新节点“下沉”来恢复堆次序
-        &quot;&quot;&quot;
-        while (i * 2) &lt;= self.size:
-            mc = self.minChild(i)
-            if self.list[i] &gt; self.list[mc]:
-                tmp = self.list[i]
-                self.list[i] = self.list[mc]
-                self.list[mc] = tmp
-            i = mc
-
-    def minChild(self,i):
-        &quot;&quot;&quot;
-        返回较小的子节点
-        &quot;&quot;&quot;
-        if i * 2 + 1 &gt; size:
-            return i * 2
-        else:
-            if self.list[i*2] &lt; self.list[i*2+1]:
-                return i * 2
-            else:
-                return i * 2 + 1
-
-    def isEmpty(self):
-        &quot;&quot;&quot;返回堆是否为空&quot;&quot;&quot;
-        return self.size == 0
-
-    def __len__(self):
-        &quot;&quot;&quot;返回堆中元素的个数&quot;&quot;&quot;
-        return self.size
-
-    def heapify(self,alist):
-        &quot;&quot;&quot;从一个包含元素的列表创建新堆&quot;&quot;&quot;
-        self.size = len(alist)
-        self.list.extend(alist)
-        i = self.size //2
-        while i &gt; 0:
-            self.perc_down(i)
-            i -= 1
-</code></pre>
-
-<h2 id="toc_2">建堆的复杂度</h2>
-
-<p>建堆过程的时间复杂度是堆的一个难点。一般会误认为建堆的时间复杂度是\(O(nlog n)\)，因为每一次堆调整的时间复杂度为\(O(log n)\)，那么\(n\)个节点的时间复杂度为\(O(nlog n)\)，这其实是错的。</p>
-
-<p>首先对于二叉树，它必须保证每一层填满之后才能去填充下一层。而且，如果从根结点开始计数(根结点为第0层)，往下第\(i\)层的元素如果不是最后一层的话，这一层的元素数量为\(2^i\)。这样，对于一棵高为\(h\)的完全二叉树，它的元素个数为\(n=1+2+4+...+2^i, i\in(0,h)\).</p>
-
-<p>然后理解函数<code>heapify</code>中的循环范围是\(i=\text{size}//2\sim 0\)，也就是说这是一个从下往上的建堆。对于第\(h-1\)层的每个节点来说，它需要和它的2个子节点比较一次，共计\(2^{(h-1)}\times 2\)。对于第\(h-2\)层的每个节点来说，最坏情况下，它需要和它的2个子节点比较一次，然后和子节点交换，子节点再和该子节点的子节点比较，所以共计\(2^{(h-2)}\times 4\)。以此类推，对于第\(i\)层的每个节点来说，最坏情况下，共需比较\(2^i\times 2(h-i)\)。</p>
-
-<p>总共需要比较:<br/>
-\[ S= \sum\limits^{i=0}_{i=h-1} 2^{i+1}(h-i) =2^h+2^{h-1}\times 2 + 2^{h-2}\times 3+... \quad .......(a)\]<br/>
-\[ 2*S= \sum\limits^{i=0}_{i=h-1} 2^{i+2}(h-i) = 2^{h+1} + 2^h\times 2 + 2^{h-1}\times 3 + ... \quad .......(b)\]<br/>
-\[ \text{(b-a)}\quad S = 2^h+2^{h-1}+2^{h-2}+... = n = O(n) \]</p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/7/12</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Tree.html'>Tree</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
                 <a class="clearlink" href="15205897518090.html">
                 
                   <h1>深度优先搜索和广度优先搜索</h1>
@@ -815,6 +648,107 @@ Edge List<br/>
                   <div class="more-left left">
                   
                     <span class="date">2017/6/30</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Graph.html'>Graph</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="dijkstra_algorithm.html">
+                
+                  <h1>Dijkstra's algorithm</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p><code>Dijkstra&#39;s algorithm</code> is an iterative algorithm that provides us with the shortest path from one particular starting node to all other nodes in the graph.</p>
+
+<p>The algorithm iterates once for every vertex in the graph. The order that iterates over the vertices is controlled by a <code>priority queue</code>. When a vertex is first created <code>dist</code> is set to a very large number(<code>sys.maxsize</code>)</p>
+
+<pre><code class="language-text">Dijkstra(G, w, s)
+INITIALIZE-SINGLE-SOURCE(G, s)
+Q=G.V
+while Q:
+    u = EXTRACT-MIN(Q)
+    for each vertex in adjacent
+        RELAX(u,v,w)
+</code></pre>
+
+<pre><code class="language-python">from priorityqueue import PriorityQueue
+from graph import Graph, Vertex
+import sys
+import unittest
+
+def dijkstra(aGraph, start):
+    &quot;&quot;&quot;
+    Find Single-Source shortest-paths on a weighted, directed graph
+    Return shortest path
+    aGraph: class Graph
+    start: class Vertex
+    &quot;&quot;&quot;
+    pq = PriorityQueue()
+    start.setDistance(0)
+    pq.buildHeap([(v.getDistance(), v) for v in aGraph])
+    while not pq.isEmpty():
+        u = pq.delMin()
+        for adjacent in u.getConnections():
+            newDist = u.dist + u.getWeight(adjacent)
+            if adjacent.dist &gt; newDist:
+                adjacent.setDistance(newDist)
+                adjacent.setPred(u)
+                pq.decreaseKey(adjacent, newDist)
+
+
+class TestDijkstra(unittest.TestCase):
+
+
+    def testShortest(self):
+
+        aGraph = Graph()
+        with open(&#39;dijkstraData.txt&#39;) as infile:
+            for line in infile:
+                numbers = [number for number in line.split()]
+                from_v = int(numbers[0])
+
+                for to_v_cost in numbers[1:]:
+                    to_v, cost = to_v_cost.split(&#39;,&#39;)
+                    aGraph.addEdge(from_v, int(to_v), int(cost))
+
+        dijkstra(aGraph, aGraph.getVertex(1))
+
+        dists = []
+        for vertex_id in [7, 37, 59, 82, 99, 115, 133, 165, 188, 197]:
+            dist = aGraph.getVertex(vertex_id).getDistance()
+            if dist == sys.maxsize:
+                dist = 100000
+            dists.append(dist)
+        assert dists == [2599, 2610, 2947, 2052, 2367, 2399, 2029, 2442, 2505, 3068]
+
+
+if __name__ == &#39;__main__&#39;:
+    unittest.main()
+</code></pre>
+
+<p>It is important to note that <code>Dijkstra&#39;s algorithm</code> works only when the weights are all positive. If you introduced a negative weight on one of the edges to the graph that the algorithm would never exit.</p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/7/14</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Graph.html'>Graph</a></span>

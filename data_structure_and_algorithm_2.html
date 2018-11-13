@@ -150,231 +150,6 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="minimum_spanning_tree_prim_kruskal.html">
-                
-                  <h1>Minimum Spanning Tree: Prim's, Kruskal's Algorithm and Clustering</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<ul>
-<li>
-<a href="#toc_0">Concepts</a>
-</li>
-<li>
-<a href="#toc_1">Prim&#39;s algorithm</a>
-<ul>
-<li>
-<a href="#toc_2">Implementation</a>
-</li>
-<li>
-<a href="#toc_3">Prim&#39;s v.s. Dijkstra&#39;s</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_4">Kruskal&#39;s Algorithm</a>
-<ul>
-<li>
-<a href="#toc_5">Implementation</a>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_6">Clustering</a>
-<ul>
-<li>
-<a href="#toc_7">Implementation</a>
-</li>
-</ul>
-
-
-<p>Let \(G=(V, E)\) be a connected, undirected graph with a real-valued weight function \(w\) defined on \(E\). If an acyclic subset \(T\in E\) that connects all of the vertices and whose total weight \(w(T)=\sum_{(u,v)\in T}w(u,v)\) is minimized, \(T\) forms a <code>Minimum Spanning Tree</code>.</p>
-
-<h2 id="toc_0">Concepts</h2>
-
-<ul>
-<li><code>safe edge</code>: An edge that may be added to \(A\) without violating the invariant that \(A\) is a subset of some <code>minimum spanning tree</code>.</li>
-<li><code>cut</code>: A <code>cut</code> \((S, V-S)\) of an undirected graph \(G=(V,E)\) is a partition of \(V\).</li>
-<li><code>cross</code>: We say that an edge \((u,v)\in E\) <code>crosses</code> the cut \((S,V-S)\) if one of its endpoints is in \(S\) and the other is in \(V-S\).</li>
-<li><code>respect</code>: If no edge in \(A\) (a subset of some <code>minimum spanning tree</code>) <code>crosses</code> the cut, the cut <code>respects</code> a set \(A\) of edges.</li>
-<li><code>light edge</code>: An edge is a <code>light edge</code> crossing a cut if its weight is the minimum of any edge crossing the cut. </li>
-</ul>
-
-<h2 id="toc_1">Prim&#39;s algorithm</h2>
-
-<p>In <code>Prim&#39;s algorithm</code>, each step adds a light edge to minimum spanning tree. The running time of the Prim&#39;s algorithm is \(O(E \log(V))\)</p>
-
-<h3 id="toc_2">Implementation</h3>
-
-<pre><code class="language-python">def prim(agraph, start):
-    &quot;&quot;&quot;
-    Prim&#39;s algorithm for minimum spanning tree
-    Using min-heap data structure
-
-    return a minimum spanning tree
-    &quot;&quot;&quot;
-    # vertex of minimun spanning tree
-    mst_vertex = []
-    pq = PriorityQueue()
-    for v in agraph:
-        v.setDistance(sys.maxsize)
-        v.setPred(None)
-    start.setDistance(0)
-    pq.buildHeap([(v.getDistance(), v) for v in agraph])
-    while not pq.isEmpty():
-        u = pq.delMin()
-        mst_vertex.append(u)
-        for adjacent in u.getConnections():
-            newcost = u.getWeight(adjacent)
-            if adjacent in pq and newcost &lt; adjacent.getDistance():
-                adjacent.setPred(u)
-                adjacent.setDistance(newcost)
-                pq.decreaseKey(adjacent, newcost)
-
-    # edges of minimum spanning tree
-    mst = []
-    for i in range(1, len(mst_vertex)):
-        # u, v, cost
-        mst.append((mst_vertex[i-1], mst_vertex[i],  mst_vertex[i].getDistance()))
-
-    return mst
-</code></pre>
-
-<h3 id="toc_3">Prim&#39;s v.s. Dijkstra&#39;s</h3>
-
-<p><code>Prim&#39;s algorithm</code> are similar to <code>Dijkstra&#39;s algorithm</code>, both of which use a <code>priority queue</code>. And  each of them belongs to <code>greedy algorithm</code>. There is trivial difference when implementing:</p>
-
-<p>\[\text{Prim&#39;s} p(v) = \min_{(u,v): u\in S} w(u,v)\]<br/>
-\[\text{Dijkstra&#39;s} s(v) = \min_{(u,v): u\in S} \text{dist(su,u)} w(u,v)\]</p>
-
-<h2 id="toc_4">Kruskal&#39;s Algorithm</h2>
-
-<p>In <code>Kruskal&#39;s algorithm</code>, always add edges in increasing weight, skipping those whose addition would create a cycle.</p>
-
-<p>In order to keep track of the connected components of a minimum spanning tree when implementing Kruskal&#39;s algorithm, a disjoint-set data structure should be used. The pseudo code for <code>MST-KRUSKAL</code>:</p>
-
-<pre><code class="language-python">mst = []
-for each vertex in G:
-    make-set(vertex)
-sort the edges of G into nondecreasing order by weight of edges
-for each edge (u,v) in G:
-    if find-set(u) != find_set(v):
-        mst = mst + (u,v)
-        union(u,v)
-return mst
-</code></pre>
-
-<p>If we use <code>union-by-rank</code> and <code>path-compression</code> heuristics in <code>disjoint-set</code> data structure, the running time of <code>Kruskal&#39;s algorithm</code> is \(O(E\lg V)\).</p>
-
-<h3 id="toc_5">Implementation</h3>
-
-<pre><code class="language-python">def kruskal_mst(agraph):
-    &quot;&quot;&quot;
-    Return a minimum spanning tree using kruskal&#39;s algorithm
-    &quot;&quot;&quot;
-    # minimum spanning tree
-    mst = []
-
-    # disjoint set
-    disjoint_set = DisjointSet()
-
-    # make set
-    for vertex in agraph.Vertices():
-        disjoint_set.make_set(vertex)
-
-    # edges of the graph
-    edges = agraph.edges()
-    edges.sort(key=lambda tup: tup[2])
-
-    for u, v, cost in edges:
-        if disjoint_set.find_set(u) != disjoint_set.find_set(v):
-            mst.append((u, v, cost))
-            disjoint_set.union(u, v)
-    return mst
-</code></pre>
-
-<h1 id="toc_6">Clustering</h1>
-
-<p><strong>Max-Spacing k clustering</strong>: Given a set of objects \(p_1, . . . , p_n\), a distance function \(d(p_i,p_j)\) specifies their similarity.  \(d(p_i,p_j)\) may be an actual distance, or some abstract representation of how dissimilar of two things are. </p>
-
-<p><strong>OUR GOAL</strong>: Divide the \(n\) items up into \(k\) groups so that the minimum distance between items in different groups is maximized.</p>
-
-<p><strong>IDEA</strong>: </p>
-
-<ul>
-<li>we maintain clusters as a set of connected components of a graph. </li>
-<li>And Iteratively combine the clusters containing the two closest items by adding an edge between them.</li>
-<li>Stop when there are \(k\) clusters.</li>
-</ul>
-
-<p>You&#39;ll find this is exactly <code>Kruskal&#39;s algorithm</code>.</p>
-
-<h3 id="toc_7">Implementation</h3>
-
-<pre><code class="language-python">def clustering(agraph, k):
-    &quot;&quot;&quot;
-    Max-Spacing k clustering
-
-    Return maximum spacing of a k-clustering
-    and corresponding mst.
-    &quot;&quot;&quot;
-    # minimum spanning tree
-    mst = []
-
-    # disjoint set
-    disjoint_set = DisjointSet()
-
-    # make set
-    for vertex in agraph.Vertices():
-        disjoint_set.make_set(vertex)
-
-    # edges of the graph
-    edges = agraph.edges()
-    edges.sort(key=lambda tup: tup[2])
-
-    for u, v, cost in edges:
-        if len(disjoint_set) &gt;= k:
-
-            if disjoint_set.find_set(u) != disjoint_set.find_set(v):
-                mst.append((u, v, cost))
-                max_cost = cost
-                disjoint_set.union(u, v)
-        else:
-            break
-
-
-    return max_cost, mst
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/8/4</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Tree.html'>Tree</a></span>
-          				  
-          					    <span class="posted-in"><a href='Graph.html'>Graph</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
                 <a class="clearlink" href="disjoint_set_data_structure.html">
                 
                   <h1>Disjoint-Set Data Structure</h1>
@@ -943,6 +718,118 @@ if __name__ == &quot;__main__&quot;:
 <li><a href="https://www.cse.iitb.ac.in/%7Esri/cs213/lec-Hashing.pdf">Hash Functions and Hash Tables</a></li>
 <li>Cormen, Leiserson, Rivest, and Stein, Introduction to Algorithms (3rd edition)</li>
 </ol>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/7/23</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Hash%20Table.html'>Hash Table</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="Hash_Table_3_A_variant_of_2_Sum_Algorithm.html">
+                
+                  <h1>Hash Table (3): A variant of 2-Sum Algorithm</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>The goal of the arcticle is to implement a variant of the <code>2-SUM algorithm</code>.</p>
+
+<p>The file contains 1 million integers, both positive and negative (repetitions exists!). This is your array of integers, with the \(i\)th row of the file specifying the \(i\)th entry of the array.</p>
+
+<p>The task is to compute the number of target values \(t\) in the interval \([-10000,10000]\)(inclusive) such that there are distinct numbers \(x,y\) in the input file that satisfy \(x+y=t\). </p>
+
+<h2 id="toc_0">Implementation</h2>
+
+<p>The key process lies in the <code>hash function</code>, which might be set to appropriate small value based on the origin value:<br/>
+\[\text{hash_function}= \frac{\text{number}}{\text{factor}}\]</p>
+
+<p>The <code>factor</code> is selected based on the number of <code>slots</code> needed in the algorithm. i.e.<br/>
+\[\frac{\text{the range of keys}}{\text{factor}}\approx \text{the number of slots} &lt; \text{the number of keys}\]</p>
+
+<p>There, factor is \(\frac{\text{the number of key}}{2}\)</p>
+
+<pre><code class="language-python">class HashTable(object):
+
+    def __init__(self):
+
+        self.size = 5000000
+        self.slots = [set() for i in range(self.size)]
+        self.data = set()
+
+    def put(self, key, data):
+
+        hash_value = self.hash_function(key)
+        self.slots[hash_value].add(data)
+        self.data.add(data)
+
+    def hash_function(self, key):
+
+        return key//(self.size//2)
+
+    def get(self, key):
+        &quot;&quot;&quot;
+        there key == data
+        &quot;&quot;&quot;
+        slot = self.hash_function(key)
+        if key in self.slots[slot]:
+            return key
+        else:
+            return None
+
+    def buildfromfile(self, textfile):
+
+        with open(text_file, &#39;r&#39;) as infile:
+            for line in infile.readlines():
+                self.put(int(line), int(line))
+
+    def two_sum_count(self):
+        &quot;&quot;&quot;
+        Compute the number of target values t in the interval[low, high] (inclusive),
+        such that there are distinct numbers x, y that satisfy x+y = t
+        &quot;&quot;&quot;
+        sums = set()
+
+        for key1 in self.data:
+            left = self.hash_function(-key1-10000)
+            right = self.hash_function(-key1+10000)
+
+            for slot in self.slots[left:right+1]:
+
+                for key2 in slot:
+
+                    if 10000 &gt; key1 + key2 &gt; -10000:
+                        sums.add(key1+key2)
+
+        return len(sums)
+
+
+if __name__ == &quot;__main__&quot;:
+
+    # target files for counting
+    text_file = &#39;two_sum.txt&#39;
+
+    hashnumber = HashTable()
+    hashnumber.buildfromfile(text_file)
+    print(hashnumber.two_sum_count())
+</code></pre>
 
                         
                       </div>

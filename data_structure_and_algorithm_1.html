@@ -150,107 +150,6 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="dijkstra_algorithm.html">
-                
-                  <h1>Dijkstra's algorithm</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p><code>Dijkstra&#39;s algorithm</code> is an iterative algorithm that provides us with the shortest path from one particular starting node to all other nodes in the graph.</p>
-
-<p>The algorithm iterates once for every vertex in the graph. The order that iterates over the vertices is controlled by a <code>priority queue</code>. When a vertex is first created <code>dist</code> is set to a very large number(<code>sys.maxsize</code>)</p>
-
-<pre><code class="language-text">Dijkstra(G, w, s)
-INITIALIZE-SINGLE-SOURCE(G, s)
-Q=G.V
-while Q:
-    u = EXTRACT-MIN(Q)
-    for each vertex in adjacent
-        RELAX(u,v,w)
-</code></pre>
-
-<pre><code class="language-python">from priorityqueue import PriorityQueue
-from graph import Graph, Vertex
-import sys
-import unittest
-
-def dijkstra(aGraph, start):
-    &quot;&quot;&quot;
-    Find Single-Source shortest-paths on a weighted, directed graph
-    Return shortest path
-    aGraph: class Graph
-    start: class Vertex
-    &quot;&quot;&quot;
-    pq = PriorityQueue()
-    start.setDistance(0)
-    pq.buildHeap([(v.getDistance(), v) for v in aGraph])
-    while not pq.isEmpty():
-        u = pq.delMin()
-        for adjacent in u.getConnections():
-            newDist = u.dist + u.getWeight(adjacent)
-            if adjacent.dist &gt; newDist:
-                adjacent.setDistance(newDist)
-                adjacent.setPred(u)
-                pq.decreaseKey(adjacent, newDist)
-
-
-class TestDijkstra(unittest.TestCase):
-
-
-    def testShortest(self):
-
-        aGraph = Graph()
-        with open(&#39;dijkstraData.txt&#39;) as infile:
-            for line in infile:
-                numbers = [number for number in line.split()]
-                from_v = int(numbers[0])
-
-                for to_v_cost in numbers[1:]:
-                    to_v, cost = to_v_cost.split(&#39;,&#39;)
-                    aGraph.addEdge(from_v, int(to_v), int(cost))
-
-        dijkstra(aGraph, aGraph.getVertex(1))
-
-        dists = []
-        for vertex_id in [7, 37, 59, 82, 99, 115, 133, 165, 188, 197]:
-            dist = aGraph.getVertex(vertex_id).getDistance()
-            if dist == sys.maxsize:
-                dist = 100000
-            dists.append(dist)
-        assert dists == [2599, 2610, 2947, 2052, 2367, 2399, 2029, 2442, 2505, 3068]
-
-
-if __name__ == &#39;__main__&#39;:
-    unittest.main()
-</code></pre>
-
-<p>It is important to note that <code>Dijkstra&#39;s algorithm</code> works only when the weights are all positive. If you introduced a negative weight on one of the edges to the graph that the algorithm would never exit.</p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/7/14</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Graph.html'>Graph</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
                 <a class="clearlink" href="bitwise%20operator%20in%20python.html">
                 
                   <h1>Bitwise Operation</h1>
@@ -1267,6 +1166,231 @@ class BigClustring:
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='data_structure_and_algorithm.html'>数据结构和算法</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="minimum_spanning_tree_prim_kruskal.html">
+                
+                  <h1>Minimum Spanning Tree: Prim's, Kruskal's Algorithm and Clustering</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<ul>
+<li>
+<a href="#toc_0">Concepts</a>
+</li>
+<li>
+<a href="#toc_1">Prim&#39;s algorithm</a>
+<ul>
+<li>
+<a href="#toc_2">Implementation</a>
+</li>
+<li>
+<a href="#toc_3">Prim&#39;s v.s. Dijkstra&#39;s</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_4">Kruskal&#39;s Algorithm</a>
+<ul>
+<li>
+<a href="#toc_5">Implementation</a>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_6">Clustering</a>
+<ul>
+<li>
+<a href="#toc_7">Implementation</a>
+</li>
+</ul>
+
+
+<p>Let \(G=(V, E)\) be a connected, undirected graph with a real-valued weight function \(w\) defined on \(E\). If an acyclic subset \(T\in E\) that connects all of the vertices and whose total weight \(w(T)=\sum_{(u,v)\in T}w(u,v)\) is minimized, \(T\) forms a <code>Minimum Spanning Tree</code>.</p>
+
+<h2 id="toc_0">Concepts</h2>
+
+<ul>
+<li><code>safe edge</code>: An edge that may be added to \(A\) without violating the invariant that \(A\) is a subset of some <code>minimum spanning tree</code>.</li>
+<li><code>cut</code>: A <code>cut</code> \((S, V-S)\) of an undirected graph \(G=(V,E)\) is a partition of \(V\).</li>
+<li><code>cross</code>: We say that an edge \((u,v)\in E\) <code>crosses</code> the cut \((S,V-S)\) if one of its endpoints is in \(S\) and the other is in \(V-S\).</li>
+<li><code>respect</code>: If no edge in \(A\) (a subset of some <code>minimum spanning tree</code>) <code>crosses</code> the cut, the cut <code>respects</code> a set \(A\) of edges.</li>
+<li><code>light edge</code>: An edge is a <code>light edge</code> crossing a cut if its weight is the minimum of any edge crossing the cut. </li>
+</ul>
+
+<h2 id="toc_1">Prim&#39;s algorithm</h2>
+
+<p>In <code>Prim&#39;s algorithm</code>, each step adds a light edge to minimum spanning tree. The running time of the Prim&#39;s algorithm is \(O(E \log(V))\)</p>
+
+<h3 id="toc_2">Implementation</h3>
+
+<pre><code class="language-python">def prim(agraph, start):
+    &quot;&quot;&quot;
+    Prim&#39;s algorithm for minimum spanning tree
+    Using min-heap data structure
+
+    return a minimum spanning tree
+    &quot;&quot;&quot;
+    # vertex of minimun spanning tree
+    mst_vertex = []
+    pq = PriorityQueue()
+    for v in agraph:
+        v.setDistance(sys.maxsize)
+        v.setPred(None)
+    start.setDistance(0)
+    pq.buildHeap([(v.getDistance(), v) for v in agraph])
+    while not pq.isEmpty():
+        u = pq.delMin()
+        mst_vertex.append(u)
+        for adjacent in u.getConnections():
+            newcost = u.getWeight(adjacent)
+            if adjacent in pq and newcost &lt; adjacent.getDistance():
+                adjacent.setPred(u)
+                adjacent.setDistance(newcost)
+                pq.decreaseKey(adjacent, newcost)
+
+    # edges of minimum spanning tree
+    mst = []
+    for i in range(1, len(mst_vertex)):
+        # u, v, cost
+        mst.append((mst_vertex[i-1], mst_vertex[i],  mst_vertex[i].getDistance()))
+
+    return mst
+</code></pre>
+
+<h3 id="toc_3">Prim&#39;s v.s. Dijkstra&#39;s</h3>
+
+<p><code>Prim&#39;s algorithm</code> are similar to <code>Dijkstra&#39;s algorithm</code>, both of which use a <code>priority queue</code>. And  each of them belongs to <code>greedy algorithm</code>. There is trivial difference when implementing:</p>
+
+<p>\[\text{Prim&#39;s} p(v) = \min_{(u,v): u\in S} w(u,v)\]<br/>
+\[\text{Dijkstra&#39;s} s(v) = \min_{(u,v): u\in S} \text{dist(su,u)} w(u,v)\]</p>
+
+<h2 id="toc_4">Kruskal&#39;s Algorithm</h2>
+
+<p>In <code>Kruskal&#39;s algorithm</code>, always add edges in increasing weight, skipping those whose addition would create a cycle.</p>
+
+<p>In order to keep track of the connected components of a minimum spanning tree when implementing Kruskal&#39;s algorithm, a disjoint-set data structure should be used. The pseudo code for <code>MST-KRUSKAL</code>:</p>
+
+<pre><code class="language-python">mst = []
+for each vertex in G:
+    make-set(vertex)
+sort the edges of G into nondecreasing order by weight of edges
+for each edge (u,v) in G:
+    if find-set(u) != find_set(v):
+        mst = mst + (u,v)
+        union(u,v)
+return mst
+</code></pre>
+
+<p>If we use <code>union-by-rank</code> and <code>path-compression</code> heuristics in <code>disjoint-set</code> data structure, the running time of <code>Kruskal&#39;s algorithm</code> is \(O(E\lg V)\).</p>
+
+<h3 id="toc_5">Implementation</h3>
+
+<pre><code class="language-python">def kruskal_mst(agraph):
+    &quot;&quot;&quot;
+    Return a minimum spanning tree using kruskal&#39;s algorithm
+    &quot;&quot;&quot;
+    # minimum spanning tree
+    mst = []
+
+    # disjoint set
+    disjoint_set = DisjointSet()
+
+    # make set
+    for vertex in agraph.Vertices():
+        disjoint_set.make_set(vertex)
+
+    # edges of the graph
+    edges = agraph.edges()
+    edges.sort(key=lambda tup: tup[2])
+
+    for u, v, cost in edges:
+        if disjoint_set.find_set(u) != disjoint_set.find_set(v):
+            mst.append((u, v, cost))
+            disjoint_set.union(u, v)
+    return mst
+</code></pre>
+
+<h1 id="toc_6">Clustering</h1>
+
+<p><strong>Max-Spacing k clustering</strong>: Given a set of objects \(p_1, . . . , p_n\), a distance function \(d(p_i,p_j)\) specifies their similarity.  \(d(p_i,p_j)\) may be an actual distance, or some abstract representation of how dissimilar of two things are. </p>
+
+<p><strong>OUR GOAL</strong>: Divide the \(n\) items up into \(k\) groups so that the minimum distance between items in different groups is maximized.</p>
+
+<p><strong>IDEA</strong>: </p>
+
+<ul>
+<li>we maintain clusters as a set of connected components of a graph. </li>
+<li>And Iteratively combine the clusters containing the two closest items by adding an edge between them.</li>
+<li>Stop when there are \(k\) clusters.</li>
+</ul>
+
+<p>You&#39;ll find this is exactly <code>Kruskal&#39;s algorithm</code>.</p>
+
+<h3 id="toc_7">Implementation</h3>
+
+<pre><code class="language-python">def clustering(agraph, k):
+    &quot;&quot;&quot;
+    Max-Spacing k clustering
+
+    Return maximum spacing of a k-clustering
+    and corresponding mst.
+    &quot;&quot;&quot;
+    # minimum spanning tree
+    mst = []
+
+    # disjoint set
+    disjoint_set = DisjointSet()
+
+    # make set
+    for vertex in agraph.Vertices():
+        disjoint_set.make_set(vertex)
+
+    # edges of the graph
+    edges = agraph.edges()
+    edges.sort(key=lambda tup: tup[2])
+
+    for u, v, cost in edges:
+        if len(disjoint_set) &gt;= k:
+
+            if disjoint_set.find_set(u) != disjoint_set.find_set(v):
+                mst.append((u, v, cost))
+                max_cost = cost
+                disjoint_set.union(u, v)
+        else:
+            break
+
+
+    return max_cost, mst
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/8/4</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Tree.html'>Tree</a></span>
+          				  
+          					    <span class="posted-in"><a href='Graph.html'>Graph</a></span>
           				   
                   </div>
                   <div class="more-right right">
