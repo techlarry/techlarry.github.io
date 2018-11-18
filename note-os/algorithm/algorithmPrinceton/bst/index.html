@@ -6,7 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         
         <meta name="author" content="Zhenhua Wang">
-        <link rel="canonical" href="http://larryim.cc/note/algorithm/algorithmPrinceton/topic6/">
+        <link rel="canonical" href="http://larryim.cc/note/algorithm/algorithmPrinceton/bst/">
         <link rel="shortcut icon" href="../../../img/favicon.ico">
         <title>Topic 6: Balanced Search Trees - Zhenhua's Notes</title>
         <link href="../../../css/bootstrap-custom.min.css" rel="stylesheet">
@@ -63,6 +63,10 @@
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Algorithm <b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     
+<li >
+    <a href="../../">Contents</a>
+</li>
+                                    
   <li class="dropdown-submenu">
     <a href="#">AlgorithmPrinceton</a>
     <ul class="dropdown-menu">
@@ -72,27 +76,35 @@
 </li>
             
 <li >
-    <a href="../topic1/">Topic 1: UnionFind</a>
+    <a href="../unionfind/">Topic 1: UnionFind</a>
 </li>
             
 <li >
-    <a href="../topic2/">Topic 2: StackQueue</a>
+    <a href="../stackqueue/">Topic 2: StackQueue</a>
 </li>
             
 <li >
-    <a href="../topic3/">Topic 3: Sort</a>
+    <a href="../sort/">Topic 3: Sort</a>
 </li>
             
 <li >
-    <a href="../topic4/">Topic 4: PriorityQueues</a>
+    <a href="../priorityqueue/">Topic 4: PriorityQueues</a>
 </li>
             
 <li >
-    <a href="../topic5/">Topic 5: Symbol Tables</a>
+    <a href="../symboltable/">Topic 5: Symbol Tables</a>
 </li>
             
 <li class="active">
     <a href="./">Topic 6: Balanced Search Trees</a>
+</li>
+            
+<li >
+    <a href="../hashtable/">Topic 8: Hash Table</a>
+</li>
+            
+<li >
+    <a href="../graph/">Topic 8: Graph</a>
 </li>
     </ul>
   </li>
@@ -115,6 +127,10 @@
             
 <li >
     <a href="../../algorithmStanford/graph/">Topic: Graph</a>
+</li>
+            
+<li >
+    <a href="../../algorithmStanford/greedy/">Topic: Greedy Algorithm</a>
 </li>
     </ul>
   </li>
@@ -145,6 +161,10 @@
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">OS <b class="caret"></b></a>
                                 <ul class="dropdown-menu">
+                                    
+<li >
+    <a href="../../../os/">Contents</a>
+</li>
                                     
   <li class="dropdown-submenu">
     <a href="#">OSC</a>
@@ -263,16 +283,20 @@
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">DataBase <b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     
+<li >
+    <a href="../../../database/">Contents</a>
+</li>
+                                    
   <li class="dropdown-submenu">
     <a href="#">MySql</a>
     <ul class="dropdown-menu">
             
 <li >
-    <a href="../../../mysql/index.md">Contents</a>
+    <a href="../../../database/mysql/">Contents</a>
 </li>
             
 <li >
-    <a href="../../../mysql/LearningMySQLandMariaDB.md">Chapter Learning MySQL and MariaDB</a>
+    <a href="../../../database/mysql/LearningMySQLandMariaDB/">Chapter Learning MySQL and MariaDB</a>
 </li>
     </ul>
   </li>
@@ -281,6 +305,10 @@
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Java <b class="caret"></b></a>
                                 <ul class="dropdown-menu">
+                                    
+<li >
+    <a href="../../../java/">Contents</a>
+</li>
                                     
   <li class="dropdown-submenu">
     <a href="#">HFJ</a>
@@ -586,6 +614,10 @@
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">BigData <b class="caret"></b></a>
                                 <ul class="dropdown-menu">
+                                    
+<li >
+    <a href="../../../bigdata/">Contents</a>
+</li>
                                     
   <li class="dropdown-submenu">
     <a href="#">HADOOP</a>
@@ -914,12 +946,12 @@
 
                      <!--
                             <li >
-                                <a rel="next" href="../topic5/">
+                                <a rel="next" href="../symboltable/">
                                     <i class="fa fa-arrow-left"></i> Previous
                                 </a>
                             </li>
                             <li >
-                                <a rel="prev" href="../../algorithmStanford/">
+                                <a rel="prev" href="../hashtable/">
                                     Next <i class="fa fa-arrow-right"></i>
                                 </a>
                             </li>
@@ -948,15 +980,17 @@
             <li><a href="#rotations">Rotations</a></li>
             <li><a href="#flipping-colors">Flipping colors</a></li>
             <li><a href="#implementation-put">Implementation: put()</a></li>
-        <li class="main "><a href="#geometric-applications-of-bsts">Geometric Applications of BSTs</a></li>
-            <li><a href="#k-d-tree">K-d Tree</a></li>
+        <li class="main "><a href="#application-kd-tree">Application : Kd Tree</a></li>
+            <li><a href="#insert">Insert</a></li>
+            <li><a href="#nearest-neighbor">Nearest Neighbor</a></li>
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
 
 <h3 id="topic-6-balanced-search-trees"><strong>Topic 6: Balanced Search Trees</strong><a class="headerlink" href="#topic-6-balanced-search-trees" title="Permanent link">&para;</a></h3>
 <p><span class="badge badge-pill badge-info">Binary Search Tree</span>
-<span class="badge badge-pill badge-info">Balanced Search Trees</span></p>
+<span class="badge badge-pill badge-info">Balanced Search Trees</span>
+<span class="badge badge-pill badge-info">k-d Tree</span></p>
 <p>Binary Search Tree have poor worst-case performance. Balanced Search Trees are <em>guaranteed</em> to be logarithmic, no matter what sequence of keys is used to construct them.</p>
 <h3 id="2-3-search-trees">2-3 Search Trees<a class="headerlink" href="#2-3-search-trees" title="Permanent link">&para;</a></h3>
 <div class="admonition definition">
@@ -1085,8 +1119,68 @@
     <span class=k>return</span> <span class=n>h</span><span class=o>;</span>
 <span class=o>}</span>
 </pre></div></p>
-<h3 id="geometric-applications-of-bsts">Geometric Applications of BSTs<a class="headerlink" href="#geometric-applications-of-bsts" title="Permanent link">&para;</a></h3>
-<h4 id="k-d-tree">K-d Tree<a class="headerlink" href="#k-d-tree" title="Permanent link">&para;</a></h4></div>
+<h3 id="application-kd-tree">Application : Kd Tree<a class="headerlink" href="#application-kd-tree" title="Permanent link">&para;</a></h3>
+<p>k-d Tree is invented in 1970s by Jon Bentley. Its name originally meant "3d-trees, 4d-trees", where k was the number of dimensions. Its Idea is simple: Each level of the tree compares against 1 dimension.</p>
+<h4 id="insert">Insert<a class="headerlink" href="#insert" title="Permanent link">&para;</a></h4>
+<p>The algorithms for search and insert are similar to those for BSTs, but at the level <span><span class="MathJax_Preview">cd</span><script type="math/tex">cd</script></span>(cut dimension) we use the <span><span class="MathJax_Preview">cd</span><script type="math/tex">cd</script></span>th coordinate (if the point to be inserted has a smaller coordinate than the point at the root, go left; otherwise go right);</p>
+<p><img alt="kdtree Insert" src="../figures/kdtreeInsert.gif" /></p>
+<p> <div class=codehilite><pre><span class=c1>// Insert a point</span>
+<span class=kd>public</span> <span class=kt>void</span> <span class=nf>put</span><span class=o>(</span><span class=n>Point</span> <span class=n>p</span><span class=o>)</span> <span class=o>{</span>
+    <span class=n>root</span> <span class=o>=</span> <span class=n>put</span><span class=o>(</span><span class=n>p</span><span class=o>,</span> <span class=n>root</span><span class=o>,</span> <span class=mi>0</span><span class=o>);</span>
+<span class=o>}</span>
+
+<span class=c1>// put a point into current subtree.</span>
+<span class=c1>// @param p: the point to put</span>
+<span class=c1>// @param x: the root of the current subtree</span>
+<span class=c1>// @param cd: cut dim</span>
+<span class=kd>private</span> <span class=n>KDNode</span> <span class=nf>put</span><span class=o>(</span><span class=n>Point</span> <span class=n>p</span><span class=o>,</span> <span class=n>KDNode</span> <span class=n>x</span><span class=o>,</span> <span class=kt>int</span> <span class=n>cd</span><span class=o>)</span> <span class=o>{</span>
+    <span class=k>if</span> <span class=o>(</span><span class=n>x</span> <span class=o>==</span> <span class=kc>null</span><span class=o>)</span> <span class=o>{</span> <span class=n>size</span><span class=o>++;</span>  <span class=k>return</span> <span class=k>new</span> <span class=n>KDNode</span><span class=o>(</span><span class=n>p</span><span class=o>);</span> <span class=o>}</span>
+    <span class=k>if</span> <span class=o>(</span><span class=n>p</span><span class=o>.</span><span class=na>equals</span><span class=o>(</span><span class=n>x</span><span class=o>.</span><span class=na>p</span><span class=o>))</span>   <span class=o>;</span> <span class=c1>// the point repeats, only contain one copy</span>
+    <span class=k>else</span> <span class=k>if</span> <span class=o>(</span><span class=n>p</span><span class=o>.</span><span class=na>get</span><span class=o>(</span><span class=n>cd</span><span class=o>)</span> <span class=o>&lt;</span> <span class=n>x</span><span class=o>.</span><span class=na>p</span><span class=o>.</span><span class=na>get</span><span class=o>(</span><span class=n>cd</span><span class=o>))</span> 
+        <span class=n>x</span><span class=o>.</span><span class=na>left</span> <span class=o>=</span> <span class=n>put</span><span class=o>(</span><span class=n>p</span><span class=o>,</span> <span class=n>x</span><span class=o>.</span><span class=na>left</span><span class=o>,</span> <span class=o>(</span><span class=n>cd</span> <span class=o>+</span> <span class=mi>1</span><span class=o>)</span> <span class=o>%</span> <span class=n>dim</span><span class=o>);</span>
+    <span class=k>else</span> 
+        <span class=n>x</span><span class=o>.</span><span class=na>right</span> <span class=o>=</span> <span class=n>put</span><span class=o>(</span><span class=n>p</span><span class=o>,</span> <span class=n>x</span><span class=o>.</span><span class=na>right</span><span class=o>,</span> <span class=o>(</span><span class=n>cd</span> <span class=o>+</span> <span class=mi>1</span><span class=o>)</span> <span class=o>%</span> <span class=n>dim</span><span class=o>);</span>
+    <span class=k>return</span> <span class=n>x</span><span class=o>;</span>
+<span class=o>}</span>
+</pre></div></p>
+<h4 id="nearest-neighbor">Nearest Neighbor<a class="headerlink" href="#nearest-neighbor" title="Permanent link">&para;</a></h4>
+<p><img alt="kdtree_nearest_neighbo" src="../figures/kdtree_nearest_neighbor.png" /></p>
+<p> <div class=codehilite><pre><span class=cm>/**</span>
+<span class=cm> * A nearest neighbor in the set to point p; null if the set is empty</span>
+<span class=cm> * @param p: an point</span>
+<span class=cm> * @return a nearest neighbor, null if the set is empty</span>
+<span class=cm> */</span>
+<span class=kd>public</span> <span class=n>Point</span> <span class=nf>nearestNeighbor</span><span class=o>(</span><span class=n>Point</span> <span class=n>p</span><span class=o>)</span> <span class=o>{</span>
+    <span class=n>minDistanceSquared</span> <span class=o>=</span> <span class=n>Double</span><span class=o>.</span><span class=na>POSITIVE_INFINITY</span><span class=o>;</span>
+    <span class=n>nearestPoint</span> <span class=o>=</span> <span class=kc>null</span><span class=o>;</span>
+    <span class=n>nearestNeighbor</span><span class=o>(</span><span class=n>p</span><span class=o>,</span> <span class=n>root</span><span class=o>,</span> <span class=mi>0</span><span class=o>);</span>
+    <span class=k>return</span> <span class=n>nearestPoint</span><span class=o>;</span>
+<span class=o>}</span>
+
+<span class=kd>private</span> <span class=kt>void</span> <span class=nf>nearestNeighbor</span><span class=o>(</span><span class=n>Point</span> <span class=n>p</span><span class=o>,</span> <span class=n>KDNode</span> <span class=n>x</span><span class=o>,</span> <span class=kt>int</span> <span class=n>cd</span><span class=o>)</span> <span class=o>{</span>
+    <span class=c1>// if this bounding box is too far, do nothing</span>
+    <span class=k>if</span> <span class=o>(</span><span class=n>x</span> <span class=o>==</span> <span class=kc>null</span><span class=o>)</span> <span class=k>return</span><span class=o>;</span>
+
+    <span class=c1>// if this point is better than the best:</span>
+    <span class=kt>double</span> <span class=n>distanceSquared</span> <span class=o>=</span> <span class=n>p</span><span class=o>.</span><span class=na>distanceSquaredTo</span><span class=o>(</span><span class=n>x</span><span class=o>.</span><span class=na>p</span><span class=o>);</span>
+    <span class=k>if</span> <span class=o>(</span><span class=n>distanceSquared</span> <span class=o>&lt;</span> <span class=n>minDistanceSquared</span><span class=o>)</span> <span class=o>{</span>
+        <span class=n>minDistanceSquared</span> <span class=o>=</span> <span class=n>distanceSquared</span><span class=o>;</span>
+        <span class=n>nearestPoint</span> <span class=o>=</span> <span class=n>x</span><span class=o>.</span><span class=na>p</span><span class=o>;</span>
+    <span class=o>}</span>
+
+    <span class=c1>// visit subtrees is most promising order:</span>
+    <span class=k>if</span> <span class=o>(</span><span class=n>p</span><span class=o>.</span><span class=na>get</span><span class=o>(</span><span class=n>cd</span><span class=o>)</span> <span class=o>&lt;</span> <span class=n>x</span><span class=o>.</span><span class=na>p</span><span class=o>.</span><span class=na>get</span><span class=o>(</span><span class=n>cd</span><span class=o>))</span> <span class=o>{</span>
+        <span class=n>nearestNeighbor</span><span class=o>(</span><span class=n>p</span><span class=o>,</span> <span class=n>x</span><span class=o>.</span><span class=na>left</span><span class=o>,</span> <span class=o>(</span><span class=n>cd</span> <span class=o>+</span> <span class=mi>1</span><span class=o>)</span> <span class=o>%</span> <span class=n>dim</span><span class=o>);</span>
+        <span class=k>if</span> <span class=o>(</span><span class=n>p</span><span class=o>.</span><span class=na>get</span><span class=o>(</span><span class=n>cd</span><span class=o>)</span> <span class=o>+</span> <span class=n>distanceSquared</span> <span class=o>&gt;</span> <span class=n>x</span><span class=o>.</span><span class=na>p</span><span class=o>.</span><span class=na>get</span><span class=o>(</span><span class=n>cd</span><span class=o>))</span>
+            <span class=n>nearestNeighbor</span><span class=o>(</span><span class=n>p</span><span class=o>,</span> <span class=n>x</span><span class=o>.</span><span class=na>right</span><span class=o>,</span> <span class=o>(</span><span class=n>cd</span> <span class=o>+</span> <span class=mi>1</span><span class=o>)</span> <span class=o>%</span> <span class=n>dim</span><span class=o>);</span>
+    <span class=o>}</span>
+    <span class=k>else</span><span class=o>{</span>
+        <span class=n>nearestNeighbor</span><span class=o>(</span><span class=n>p</span><span class=o>,</span> <span class=n>x</span><span class=o>.</span><span class=na>right</span><span class=o>,</span> <span class=o>(</span><span class=n>cd</span> <span class=o>+</span> <span class=mi>1</span><span class=o>)</span> <span class=o>%</span> <span class=n>dim</span><span class=o>);</span>
+        <span class=k>if</span> <span class=o>(</span><span class=n>p</span><span class=o>.</span><span class=na>get</span><span class=o>(</span><span class=n>cd</span><span class=o>)</span> <span class=o>-</span> <span class=n>distanceSquared</span> <span class=o>&lt;=</span> <span class=n>x</span><span class=o>.</span><span class=na>p</span><span class=o>.</span><span class=na>get</span><span class=o>(</span><span class=n>cd</span><span class=o>))</span>
+            <span class=n>nearestNeighbor</span><span class=o>(</span><span class=n>p</span><span class=o>,</span> <span class=n>x</span><span class=o>.</span><span class=na>right</span><span class=o>,</span> <span class=o>(</span><span class=n>cd</span> <span class=o>+</span> <span class=mi>1</span><span class=o>)</span> <span class=o>%</span> <span class=n>dim</span><span class=o>);</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></p></div>
         </div>
 
         <footer class="col-md-12">
