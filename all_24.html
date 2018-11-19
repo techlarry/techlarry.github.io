@@ -50,15 +50,9 @@
       <div style="position: relative;width:100%;"><div style="position: absolute; width:100%;">
         <ul id="main-menu" class="left">
         
-        <li id=""><a target="_self" href="index.html">HomePage</a></li>
-        
         <li id=""><a target="_self" href="archives.html">Archives</a></li>
         
         <li id=""><a target="_blank" href="wiki">WIKI</a></li>
-        
-        <li id=""><a target="_self" href="notebook.html">NOTEBOOK</a></li>
-        
-        <li id=""><a target="_self" href="about.html">About</a></li>
         
         <li id=""><a target="_blank" href="note-os">NOTE-OS</a></li>
         
@@ -87,15 +81,9 @@
 <aside class="left-off-canvas-menu">
       <ul class="off-canvas-list">
         
-        <li><a target="_self" href="index.html">HomePage</a></li>
-        
         <li><a target="_self" href="archives.html">Archives</a></li>
         
         <li><a target="_blank" href="wiki">WIKI</a></li>
-        
-        <li><a target="_self" href="notebook.html">NOTEBOOK</a></li>
-        
-        <li><a target="_self" href="about.html">About</a></li>
         
         <li><a target="_blank" href="note-os">NOTE-OS</a></li>
         
@@ -150,407 +138,82 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="14973620419454.html">
+                <a class="clearlink" href="14969760531704.html">
                 
-                  <h1>魔法方法(一)：自定义序列</h1>
+                  <h1>python是动态语言</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<p>Python中的魔法方法可以理解为对类中的内置方法的重载。</p>
+                        	<p>C语言是静态语言，运行之前需要先编译，不允许在运行过程中修改代码。</p>
 
-<h2 id="toc_0">自定义序列</h2>
+<p>动态编程语言，在运行时可以改变其结果的语言：例如新的函数、对象、甚至代码可以被引进，已有的函数可以被删除或是其他结构上的变化。</p>
 
-<p>有许多办法可以让Python类表现得像是内建序列类型(字典，元组，列表，字符串等)。</p>
+<h2 id="toc_0">运行的过程中给实例/类添加属性(实例属性/类属性)</h2>
 
-<h3 id="toc_1">预备知识</h3>
+<pre><code class="language-python">class Person(object):
+    def __init__(self, name=None, age=None):
+             self.name = name
+             self.age = age
+P = Person(&#39;X man&#39;,&#39;24&#39;)
+P.sex = &#39;male&#39;  # 给对象添加属性
+Person.sex = &#39;female&#39; #给类添加属性
+</code></pre>
 
-<p>协议类似某些语言中的接口，里面包含的是一些必须实现的方法。在Python中，协议完全是非正式的，也不需要显式的声明，事实上，它们更像是一种参考标准。</p>
+<h2 id="toc_1">运行的过程中给实例/类添加方法</h2>
 
-<p>在Python中实现自定义容器类型需要用到一些协议。首先，不可变容器类型有如下协议：想实现一个不可变容器，你需要定义 <code>__len__</code> 和 <code>__getitem__</code> (后面会具体说明）。可变容器的协议除了上面提到的两个方法之外，还需要定义 <code>__setitem__</code> 和 <code>__delitem__</code> 。最后，如果你想让你的对象可以迭代，你需要定义 <code>__iter__</code> ，这个方法返回一个迭代器。迭代器必须遵守迭代器协议，需要定义 <code>__iter__</code> （返回它自己）和 <code>next</code> 方法。</p>
+<p>给实例添加方法时，一般需使用<code>MethodType</code>函数。</p>
 
-<h3 id="toc_2">容器背后的魔法方法</h3>
-
-<ul>
-<li><p><code>__len__(self)</code><br/>
-返回容器的长度，可变和不可变类型都需要实现。</p></li>
-<li><p><code>__getitem__(self, key)</code><br/>
-定义对容器中某一项使用 self[key] 的方式进行读取操作时的行为。这也是可变和不可变容器类型都需要实现的一个方法。它应该在键的类型错误式产生 <code>TypeError</code> 异常，同时在没有与键值相匹配的内容时产生 <code>KeyError</code> 异常。</p></li>
-<li><p><code>__setitem__(self, key)</code><br/>
-定义对容器中某一项使用 self[key] 的方式进行赋值操作时的行为。它是可变容器类型必须实现的一个方法，同样应该在合适的时候产生 <code>KeyError</code> 和 <code>TypeError</code> 异常。</p></li>
-<li><p><code>__iter__(self, key)</code><br/>
-它应该返回当前容器的一个迭代器。迭代器以一连串内容的形式返回，最常见的是使用<code>iter()</code>函数调用，以及在类似 for x in container: 的循环中被调用。迭代器是他们自己的对象，需要定义 <code>__iter__</code>方法并在其中返回自己。</p></li>
-<li><p><code>__reversed__(self)</code><br/>
-定义了对容器使用<code>reversed()</code>内建函数时的行为。它应该返回一个反转之后的序列。当你的序列类是有序时，类似列表和元组，再实现这个方法，</p></li>
-<li><p><code>__contains__(self, item)</code><br/>
-<code>__contains__</code>定义了使用<code>in</code>和<code>not in</code>进行成员测试时类的行为。你可能好奇为什么这个方法不是序列协议的一部分，原因是，如果<code>__contains__</code>没有定义，Python就会迭代整个序列，如果找到了需要的一项就返回<code>True</code>。</p></li>
-<li><p><code>__missing__(self ,key)</code><br/>
-<code>__missing__</code>在字典的子类中使用，它定义了当试图访问一个字典中不存在的键时的行为（目前为止是指字典的实例，例如我有一个字典 d ， “george” 不是字典中的一个键，当试图访问 d[“george’] 时就会调用 d.__missing__(“george”))。</p></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/6/13</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
+<pre><code class="language-python">class Person(object):
+    def __init__(self, name=None, age=None):
+             self.name = name
+             self.age = age
+    def eat(self):
+        print(&#39;---%s is eating&#39;%self.name)
         
-			<div class="article">
-                <a class="clearlink" href="14969760398302.html">
-                
-                  <h1>迭代器与生成器</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<ul>
-<li>
-<a href="#toc_0">可迭代对象</a>
-<ul>
-<li>
-<a href="#toc_1">判断是否可以迭代</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_2">迭代器</a>
-<ul>
-<li>
-<a href="#toc_3">手动访问迭代器中的元素</a>
-</li>
-<li>
-<a href="#toc_4">将可迭代对象转换成迭代器</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_5">生成器</a>
-<ul>
-<li>
-<a href="#toc_6">生成器表达式</a>
-</li>
-<li>
-<a href="#toc_7">生成器函数</a>
-</li>
-<li>
-<a href="#toc_8">next()方法运行流程</a>
-</li>
-<li>
-<a href="#toc_9">send()方法</a>
-</li>
-</ul>
-</li>
-</ul>
-
-
-<p>迭代是Python中最强有力的特性之一。</p>
-
-<h2 id="toc_0">可迭代对象</h2>
-
-<p>迭代是访问集合元素的一种方式。迭代器是一个可以记住遍历的位置的对象。迭代器对象从集合的第一个元素开始访问，直到所有的元素被访问完结束。迭代器只能往前不会后退。</p>
-
-<p>以直接作用于for循环的数据类型有以下几种：</p>
-
-<p>一类是集合数据类型，如list, tuple, dict, set, str等；<br/>
-一类是generator,包括生成器和带yield的生成器函数(generator function).</p>
-
-<p>这些可以直接作用于for循环的对象统称为可迭代对象：<code>Iterable</code></p>
-
-<h3 id="toc_1">判断是否可以迭代</h3>
-
-<p>可以使用<code>isinstance()</code>判断一个对象是否是<code>Iterable</code>对象：</p>
-
-<pre><code class="language-python">from collections import Iterable
-
-isinstance([], Iterable)
-</code></pre>
-
-<h2 id="toc_2">迭代器</h2>
-
-<p>可以被<code>next()</code>函数调用并不断返回下一个值的对象称为迭代器：Iterator。</p>
-
-<h3 id="toc_3">手动访问迭代器中的元素</h3>
-
-<p>要手动访问可迭代对象中的元素，可以使用<code>next()</code>函数，然后自己编写代码来捕获<code>StopIteration</code>异常。例如，下面这个例子采用手工方式从文件中读取文本行：</p>
-
-<pre><code class="language-python"># 打印hosts文件
-with open(&#39;/etc/hosts&#39;) as f:
-    try:
-        while True:
-            line = next(f)
-            print(line, end=&#39;&#39;)
-    except: StopIteration:
-        pass
-</code></pre>
-
-<p>可以使用<code>isinstance()</code>判断一个对象是否是<code>Iterator</code>对象：</p>
-
-<pre><code class="language-python">from collections import Iterator
-isinstance((x for x in ragne(10)), Iterator)
-</code></pre>
-
-<h3 id="toc_4">将可迭代对象转换成迭代器</h3>
-
-<p>把list, dict, str等可迭代对象变成迭代器，可以使用<code>iter()</code>函数</p>
-
-<pre><code class="language-python">&gt;&gt;&gt; a = [11,22,33,44]
-&gt;&gt;&gt; type(a)
-&lt;class &#39;list&#39;&gt;
-&gt;&gt;&gt; b=iter(a)
-&gt;&gt;&gt; b
-&lt;list_iterator object at 0x109ba3278&gt;
-</code></pre>
-
-<h2 id="toc_5">生成器</h2>
-
-<p>如果列表元素可以按照某种算法推算出来，从而节省大量空间，即保存计算生成的方式，当需要时才生成。</p>
-
-<p>生成器可以通过next()获得生成器的下一个返回值。</p>
-
-<p>生成器的特点：</p>
-
-<ol>
-<li>节约内存</li>
-<li>迭代到下一次的调用时，所使用的参数都是第一次所保留下的</li>
-</ol>
-
-<h3 id="toc_6">生成器表达式</h3>
-
-<p><code>生成器表达式(generator expression)</code>: An expression that returns an iterator.</p>
-
-<pre><code class="language-python">&gt;&gt;&gt;&gt; a = ( x for x in range(1,100))
-&gt;&gt;&gt;&gt; a
-&gt;&gt;&gt;&gt; &lt;generator object &lt;genexpr&gt; at 0x10ce60f10&gt; # 生成器表达式
-</code></pre>
-
-<h3 id="toc_7">生成器函数</h3>
-
-<p>如果想实现一种新的迭代模式，可使用<code>生成器函数</code>来定义。函数中只要出现了<code>yield</code>语句就会讲其转变成一个生成器。一旦执行到<code>yield</code>语句，生成器函数返回，迭代停止。</p>
-
-<pre><code class="language-python">def fib(times):
-     &quot;&quot;&quot;
-     斐波那契数列
-     &quot;&quot;&quot;
-     
-     n =0
-     a,b = 0,1
-     while n&lt; times:
-        yield b    #与函数的唯一区别是yield语句
-        a,b = b, a+b
-        n+=1
-     return &#39;done&#39;
-
-for n in fib(5):
-    print(n)
-</code></pre>
-
-<h3 id="toc_8">next()方法运行流程</h3>
-
-<p>当第一次调用生成器的<code>next</code>方法时，生成器开始执行生成器函数，从第一行代码开始执行，一直执行到<code>yield</code>语句后，生成器函数返回<code>yield</code>表达式的值。之后每一次调用生成器的<code>next</code>方法时，生成器从<code>yield</code>语句的下一句开始执行，直到再次遇到<code>yield</code>语句返回。</p>
-
-<h3 id="toc_9">send()方法</h3>
-
-<p>生成器对象首先是一个迭代器，但比一般迭代器对象多了一些方法，包括<code>send()</code>,<code>throw()</code>,<code>close()</code>方法；这些方法主要用与生成器对象的交互。</p>
-
-<p>对于生成器，使用<code>send()</code>时，第一次需要<code>send(None)</code>，因为没有<code>yield</code>语句来接受参数。（<code>yield</code>执行完就跳出，对应变量没有赋值，看下面的例子）</p>
-
-<p><code>send()</code>方法和<code>next()</code>方法类似，不同的是<code>send()</code>可以向生成器传参数。当<br/>
-第一次调用生成器的<code>send()</code>方法时，从生成器函数的第一行代码开始执行，一直执行到yield语句后，生成器函数返回。注意这个过程中，变量一直没有赋值。当下一次运行时，变量才赋值，赋值的值来源于这一次的<code>send()</code>方法（不是上一次！而且第一次都是<code>None</code>），但并不执行yield部分，直到再次遇到<code>yield</code>语句返回。</p>
-
-<pre><code class="language-python">&gt;&gt;&gt; def gen():
-...     while True:
-...         s = yield
-...         print(s)
-...
-&gt;&gt;&gt; g = gen()
-&gt;&gt;&gt; g.send()
-Traceback (most recent call last):
-  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
-TypeError: send() takes exactly one argument (0 given)
-&gt;&gt;&gt; g.send(None)  # 第一次需要传入参数None
-&gt;&gt;&gt; g.send(&#39;Kiss&#39;) # 将参数赋值给变量s
-Kiss
-</code></pre>
-
-<p><strong>注意： 不能将一个非None的值传给初始的生成器</strong></p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/6/9</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="14970764330712.html">
-                
-                  <h1>属性@property的使用</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h3 id="toc_0">为什么要使用<code>getter</code>和<code>setter</code>方法</h3>
-
-<p>在绑定属性时，如果可以直接设置属性，虽然写起来很简单，但是没有办法检查参数，并且可以随意更改参数。</p>
-
-<pre><code class="language-python">s = People()
-s.salary = -1000
-</code></pre>
-
-<p>这显然不符合逻辑。为了限制salary的范围，可以通过一个<code>setSalary</code>方法来设置工资，再通过一个<code>getSalary</code>来获得工资，这样在<code>setSalary</code>方法里，就可以检查参数。</p>
-
-<h3 id="toc_1">私有属性添加<code>getter</code>和<code>setter</code>方法</h3>
-
-<pre><code class="language-python">class People(object):
-    def __init__(self):
-        self.__salary = 0
-    def getSalary(self):
-        return self.__salary
-    def setSalary(self, value):
-        if not isinstance(value, int):
-            raise ValueError(&#39;Money must be an integer!&#39;)
-        if value &lt;0 or value &gt; 10000:
-            raise ValueError(&#39;Money must between 0~10000!&#39;)
-        
-        self.__salary = value
-</code></pre>
-
-<h3 id="toc_2">注意点</h3>
-
-<p>t.num到底是调用<code>getter</code>还是<code>setter</code>，要根据实际的场景来判断，</p>
-
-<ol>
-<li>如果是给t.num赋值，那么一定调用<code>setNum()</code></li>
-<li>如果是获取t.num的值，那么久一定调用<code>getNum()</code></li>
-</ol>
-
-<h3 id="toc_3">@property装饰器</h3>
-
-<p>但是直接调用<code>getter()</code>和<code>setter()</code>比较复杂。Python内置的<code>@property</code>装饰器可以把这两种方法转化为属性进行调用。看一下例子：</p>
-
-<pre><code class="language-python">class People(object):
-    def __init__(self):
-        self.__salary = 0
+def run(self):
+    print(&#39;---%s is running&#39;%self.name)
     
-    @property
-    def salary(self):
-        return self.__salary
+p1= Person(&#39;P1&#39;, 10)
+p1.eat()
+p1.run = run
+#虽然p1对象中 run属性已经指向了第10行的函数，但是这句代码还不正确
+#因为run属性的函数是后来添加的，即p1.run()的时候，并没有把p1当作第1个参数
+
+import types
+p1.run = types.MethodType(run,p1)
+p1.run()
+</code></pre>
+
+<p>但是静态方法(static method)和类方法(class method)可以直接添加</p>
+
+<pre><code class="language-python">@staticmethod
+def test():
+    print(&quot;---static method-----&quot;)
+p1.test = test
+p1.test()
+
+@classmethod
+def printNum(cls):
+    print(&#39;----class method---&#39;)
     
-    @salary.setter
-    def salary(self, value):
-        if not isinstance(value, int):
-            raise ValueError(&#39;Salary must be an integer!&#39;)
-        if value &lt;0 or value &gt; 10000:
-            raise ValueError(&#39;Salary must between 0~10000!&#39;)
-        
-        self.__salary = value
-        
-    @property
-    def tax(self):
-        self.__tax = self.__salary*0.1
-        return self.__tax
+Person.printNum = printNum
+Person.printNum()
 </code></pre>
 
-<p>当不定义setter方法时，那么就定义了一个只读属性(例子中<code>tax</code>属性是只读属性)。</p>
+<h2 id="toc_2">限制属性 __slots__</h2>
 
-<p>@property 成为属性函数，可以对属性赋值时做必要的检查，并保证代码的清晰短小，主要有2个作用：</p>
+<p>定义一个特殊的__slot__变量，限制class实例能添加的属性</p>
 
-<ol>
-<li>将方法转换为只读</li>
-<li>重新实现一个属性的设置和读取方法，可做边界判定</li>
-</ol>
+<pre><code class="language-python">class Person(object):
+    __slots__=(&quot;name&quot;,&quot;age&quot;)
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/5/10</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="14969760599335.html">
-                
-                  <h1>作用域</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h2 id="toc_0">命名空间</h2>
-
-<p>命名空间就是生效的范围</p>
-
-<h2 id="toc_1">全局，局部</h2>
-
-<p>查看局部变量</p>
-
-<pre><code class="language-python">&gt;&gt;&gt;&gt; locals() 
+p = Person()
+p.name = &quot;老王&quot;
+p.age = 10
+p.score = 100
+&gt;&gt;&gt;&gt; AttributeError: &#39;Person&#39; object has no attribute &#39;score&#39;
 </code></pre>
-
-<p>查看全局变量</p>
-
-<pre><code class="language-python">&gt;&gt;&gt;&gt; globals() 
-</code></pre>
-
-<h2 id="toc_2">LEGB规则</h2>
-
-<p>python 使用<code>LEGB</code>的顺序来查找一个符号对应的对象</p>
-
-<p>locals-&gt; enclosing function-&gt;globals-&gt;builtins</p>
-
-<ul>
-<li>locals, 当前所在命名空间（如函数、模块），函数的参数也属于命名空间中的变量</li>
-<li>enclosing，外部嵌套函数的命名空间（闭包中常见）</li>
-<li>globals, 全局变量，函数定义所在模块的命名空间</li>
-<li>builtins, 内建模块的命名空间</li>
-</ul>
 
                         
                       </div>
@@ -576,35 +239,266 @@ s.salary = -1000
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="14969711309827.html">
+                <a class="clearlink" href="14969929726510.html">
                 
-                  <h1>数据结构介绍</h1>
+                  <h1>Python 类属性与实例属性</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h2 id="toc_0">概念</h2>
+                        	<p>Python属于动态语言，类属性很好体现了python动态语言这一特性。<br/>
+对于属性，通常可以通过类属性和实例属性的形式调用。<br/>
+看一个例子：</p>
 
-<p>数据是一个抽象的概念，将其进行分类后得到程序设计语言中的基本类型。如：int，float，char等。数据元素之间不是独立的，存在特定的关系，这些关系便是结构。数据结构指数据对象中数据元素之间的关系。</p>
+<pre><code class="language-python">class AAA():
+    aaa = 10
+    
+obj1 = AAA()
+obj2 = AAA()
+print(obj1.aaa, obj2.aaa, AAA.aaa) # result: 10 10 10
 
-<p>程序= 数据结构+算法<br/>
-总结：算法是为了解决实际问题而设计的，数据结构是算法需要处理的问题载体。</p>
+obj1.aaa += 2
+print(obj1.aaa, obj2.aaa, AAA.aaa) # result: 12 10 10
 
-<h2 id="toc_1">抽象数据类型(Abstract Data Type)</h2>
+AAA.aaa += 4
+print(obj1.aaa,obj2.aaa,AAA.aaa)  # result: 12 14 14
+</code></pre>
 
-<p>抽象数据类型(ADT)的含义是指一个数学模型以及定义在此数学模型上的一组操作。即把数据类型和数据类型上的运算捆在一起，进行封装。引入抽象数据类型的目的是把数据类型的表示和数据类型上运算的实现与这些数据类型和运算在程序中的引用隔开，使它们相互独立。</p>
+<p>上例中，<code>AAA.aaa</code>就属于<strong>类属性</strong>形式，<code>obj1.aaa</code>属于<strong>实例属性</strong>的形式</p>
 
-<h2 id="toc_2">内存、类型本质、连续存储</h2>
+<h2 id="toc_0">属性查找机制</h2>
 
-<p>内存是连续的存储空间，内存的基本存储单元是一个字节，1个字节(Byte)是8位(Bit)</p>
+<p>Python中属性查找是一个向上查找的机制，具体可参考下图所示：<br/>
+       <img src="media/14969929726510/Screen%20Shot%202017-06-09%20at%203.39.06%20PM.png" alt="Screen Shot 2017-06-09 at 3.39.06 P"/></p>
 
-<p>顺序表的内存形式：</p>
+<p>所以</p>
 
 <ul>
-<li>逻辑地址：0,1,2,3,...,n01</li>
-<li>元素存储: e0,e1,e2,e3,....,en-1</li>
-<li>物理地址:l0,l0+c,l0+2c,l0+3c,l0+(n-1)c</li>
+<li>当调用类属性<code>AAA.aaa</code>时，直接从<code>AAA</code>获取其属性<code>aaa</code></li>
+<li>当调用实例属性<code>obj1.aaa</code>时，python按照由下到上的顺序查找属性，当<code>job1</code>和<code>job2</code>没有时，到类<code>AAA</code>中去查找</li>
 </ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/6/9</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="14969711309826.html">
+                
+                  <h1>内置LIST，DICT 时间复杂度</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h2 id="toc_0">timeit 模块</h2>
+
+<pre><code class="language-python">class timeit.Timer(stmt=&#39;pass&#39;, setup=&#39;pass&#39;, timer=&lt;timer function&gt;)
+</code></pre>
+
+<ul>
+<li>Timer是测量小段代码执行速度的类。</li>
+<li>stmt参数是要测试的代码语句（statment）；</li>
+<li>setup参数是运行代码时需要的设置；</li>
+<li>timer参数是一个定时器函数，与平台有关。</li>
+</ul>
+
+<p>timeit.Timer.timeit(number=1000000)</p>
+
+<p>Timer类中测试语句执行速度的对象方法。number参数是测试代码时的测试次数，默认为1000000次。方法返回执行代码的平均耗时，一个float类型的秒数。</p>
+
+<pre><code class="language-python">from timeit import Timer
+
+li1 = [1,2]
+li2 = [23,5]
+li = li1+li2
+
+li = [i for i in range(10000)]
+li = list(range(10000))
+
+def t1():
+    li = []
+    for i in range(10000):
+        li.append(i)
+
+def t2():
+    li = []
+    for i in range(10000):
+        li += [i]
+
+def t3():
+    li = [ i for i in range(10000)]
+
+def t4():
+    li = list(range(10000))
+
+timer1 = Timer(&#39;t1()&#39;,&quot;from __main__ import t1&quot;)
+timer2 = Timer(&#39;t2()&#39;,&#39;from __main__ import t2&#39;)
+timer3 = Timer(&#39;t3()&#39;,&#39;from __main__ import t3&#39;)
+timer4 = Timer(&#39;t4()&#39;,&#39;from __main__ import t4&#39;)
+
+
+print(&#39;append&#39;,timer1.timeit(1000))
+print(&#39;+&#39;,timer2.timeit(1000))
+print(&#39;comprehesion&#39;,timer3.timeit(1000))
+print(&#39;list(range)&#39;,timer4.timeit(1000))
+
+
+# pop
+x = range(2000000)
+pop_zero = Timer(&quot;x.pop(0)&quot;, &quot;from __main__ import x&quot;)
+pop_end = Timer(&quot;x.pop()&quot;, &quot;from __main__ import x&quot;)
+print(&#39;pop zero&#39;, pop_zero.timeit(1000))
+print(&#39;pop end&#39;, pop_end.timeit(1000))
+
+</code></pre>
+
+<h2 id="toc_1">list 内置操作的时间复杂度</h2>
+
+<pre><code class="language-text">* Operatation Big-O Efficiency
+* indexx[]          O(1)
+* index assignment  O(1)
+* append            O(1)
+* pop()             O(1)    #弹出
+* pop(i)            O(n)    #插入
+* insert(i, item)   O(n)
+* del operator      O(n)
+* iteration         O(n)
+* contains(in)      O(n)
+* get slice[x:y]    O(k)    # 取切片
+* del slice         O(n)    #删除切片
+* set slice         O(n+k)  #设置切片
+* reverse           O(n)
+* concatenate       O(k)
+* sort              O(nlogn)
+* multiply          O(nk)
+</code></pre>
+
+<h2 id="toc_2">dict 内置操作的时间复杂度</h2>
+
+<pre><code class="language-text">* copy                O(n)
+* get item            O(n)   #取
+* set item            O(n)   #设置
+* delete tiem         O(n)   #删除键
+* contains(in)        O(1)    #包含，不用遍历
+* iteration           O(n)    #迭代
+
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/6/9</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='data_structure_and_algorithm.html'>数据结构和算法</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="14969800806372.html">
+                
+                  <h1>顺序表</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h3 id="toc_0">顺序表的结构</h3>
+
+<p>一个顺序表的完整信息包括两部分，</p>
+
+<ul>
+<li>数据区，表中的元素集合</li>
+<li>信息区，是为实现正确操作而需记录的信息，即有关表的整体情况的信息，主要包括元素存储区的容量和当前表中已有的元素个数两项。</li>
+</ul>
+
+<h3 id="toc_1">顺序表的两种基本实现形式</h3>
+
+<ul>
+<li><p><strong>一体式结构</strong>：存储表信息的单元与元素存储区以连续的方式安排在一块存储区里，两部分数据的整体形成一个完整的顺序表对象。</p></li>
+<li><p><strong>分离式结构</strong>：表对象里只保存与整个表有关的信息（即容量和元素个数），实际数据元素存放在另一个独立的元素存储区里，通过链接与基本表对象关联。</p></li>
+</ul>
+
+<p>当申请内存空间不够时，只能向操作系统重新申请内存空间： 对于一体式结构，则意味着表头也需要重新申请<br/>
+------&gt;一体式结构由于顺序表信息区与数据区连续存储在一起，所以若想更换数据区，则只能整体搬迁，即整个顺序表对象改变了；对于分离式结构，只需将表信息区中的数据区链接地址更新即可，该顺序表对象不变。</p>
+
+<h3 id="toc_2">顺序表扩充</h3>
+
+<p>顺序表扩充的两种策略</p>
+
+<ul>
+<li>每次扩充增加固定数目的存储位置，如每次扩充增加10个元素位置，这种策略可称为线性增长<br/>
+特点：节省空间，但是扩充操作频繁，操作次数多</li>
+<li>每次扩充容量加倍，如每次扩充增加一倍存储空间，倍增<br/>
+特点：减少了扩充次数，但可能会浪费空间资源。以空间换时间，推荐的方式。</li>
+</ul>
+
+<h3 id="toc_3">顺序表增加/删除元素</h3>
+
+<p>增加元素</p>
+
+<ul>
+<li>尾端加入元素，时间复杂度为O(1)</li>
+<li>非保序的加入元素(不常见)，时间复杂度为O(1)</li>
+<li>保序的元素删除，时间复杂度为O(n) (常用，基本）</li>
+</ul>
+
+<p>删除元素</p>
+
+<ul>
+<li>删除表尾元素，时间复杂度为O(1)</li>
+<li>非保序的元素删除（不常见），时间复杂度为O(1)</li>
+<li>保序的元素删除，时间复杂度为O(n)<br/>
+## python中的顺序表</li>
+</ul>
+
+<p>Python 中的list和tuple两种类型采用了顺序表的实现技术。tuple是不可变类型，其他方面与list类似。</p>
+
+<h3 id="toc_4">list的基本实现技术</h3>
+
+<p>基于下标（位置）的高效元素访问和更新，时间复杂度是O(1)；</p>
+
+<p>为满足该特征，应该采用顺序表技术，表中元素保存在一块连续的存储区中。</p>
+
+<p>允许任意加入元素，而且在不断加入元素的过程中，表对象的标识（函数id得到的值）不变。</p>
+
+<p>为满足该特征，就必须能更换元素存储区，并且为保证更换存储区时list对象的标识id不变，只能采用分离式实现技术。</p>
+
+<p>在Python的官方实现中，list就是一种采用分离式技术实现的动态顺序表。这就是为什么用list.append(x) （或 list.insert(len(list), x)，即尾部插入）比在指定位置插入元素效率高的原因。</p>
+
+<p>在Python的官方实现中，list实现采用了如下的策略：<br/>
+<strong>在建立空表（或者很小的表）时，系统分配一块能容纳8个元素的存储区；在执行插入操作（insert或append）时，如果元素存储区满就换一块4倍大的存储区。但如果此时的表已经很大（目前的阀值为50000），则改变策略，采用加一倍的方法。引入这种改变策略的方式，是为了避免出现过多空闲的存储位置。</strong></p>
 
                         
                       </div>
@@ -640,7 +534,7 @@ s.salary = -1000
 			  </div>
 			  <div class="large-6 columns">
 			<p class="text-right" style="padding-top:25px;">
-			 <a href="all_25.html">&raquo; Next Page</a> 
+			
 			</p>
 			  </div>
 			</div>
@@ -724,6 +618,12 @@ s.salary = -1000
 	      
 		      
 			      <li class="post">
+			        <a href="bit_manipulation.html">Bit manipulation</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="scrapy_top100.html">Scrapy爬取猫眼TOP100榜</a>
 			      </li>
 		     
@@ -743,12 +643,6 @@ s.salary = -1000
 		      
 			      <li class="post">
 			        <a href="diagrammatize_TCP_IP.html">图解TCP/IP</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15323640524161.html">Machine Learning with large datasets</a>
 			      </li>
 		     
 		  

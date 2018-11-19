@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <meta name="author" content="Zhenhua Wang">
+        <link rel="canonical" href="http://larryim.cc/note/algorithm/algorithmPrinceton/mst_shortestpath/">
+        <link rel="shortcut icon" href="../../../img/favicon.ico">
+        <title>Topic 9: Minimum Spanning Tree and Shortest Path - Zhenhua's Notes</title>
+        <link href="../../../css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="../../../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../../../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/docco.min.css">
+        <link href="../../../extra_css/custom.css" rel="stylesheet">
+        <link href="../../../extra_css/custom.js" rel="stylesheet">
+        <link href="../../../extra_css/friendly.css" rel="stylesheet">
+        <link href="../../../extra_css/theme.css" rel="stylesheet">
+        <link href="../../../extra_css/mkdocs/js/lunr-0.5.7.min.js" rel="stylesheet">
+        <link href="../../../extra_css/mkdocs/js/mustache.min.js" rel="stylesheet">
+        <link href="../../../extra_css/mkdocs/js/require.js" rel="stylesheet">
+        <link href="../../../extra_css/mkdocs/js/search.js" rel="stylesheet">
+        <link href="../../../extra_css/mkdocs/js/text.js" rel="stylesheet">
+        <link href="../../../extra_css/code-tab.css" rel="stylesheet">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="../../../js/jquery-1.10.2.min.js" defer></script>
+        <script src="../../../js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="../../..">Zhenhua's Notes</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="../../..">Home</a>
+                            </li>
+                            <li class="dropdown active">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Algorithm <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li >
+    <a href="../../">Contents</a>
+</li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">AlgorithmPrinceton</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../">Contents</a>
+</li>
+            
+<li >
+    <a href="../unionfind/">Topic 1: UnionFind</a>
+</li>
+            
+<li >
+    <a href="../stackqueue/">Topic 2: StackQueue</a>
+</li>
+            
+<li >
+    <a href="../sort/">Topic 3: Sort</a>
+</li>
+            
+<li >
+    <a href="../priorityqueue/">Topic 4: PriorityQueues</a>
+</li>
+            
+<li >
+    <a href="../symboltable/">Topic 5: Symbol Tables</a>
+</li>
+            
+<li >
+    <a href="../bst/">Topic 6: Balanced Search Trees</a>
+</li>
+            
+<li >
+    <a href="../hashtable/">Topic 7: Hash Table</a>
+</li>
+            
+<li >
+    <a href="../graph/">Topic 8: Graph</a>
+</li>
+            
+<li class="active">
+    <a href="./">Topic 9: Minimum Spanning Tree and Shortest Path</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">AlgorithmStanford</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../algorithmStanford/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../algorithmStanford/dynamicprogramming/">Topic: Dynammic Programming</a>
+</li>
+            
+<li >
+    <a href="../../algorithmStanford/heap/">Topic: Heap</a>
+</li>
+            
+<li >
+    <a href="../../algorithmStanford/graph/">Topic: Graph</a>
+</li>
+            
+<li >
+    <a href="../../algorithmStanford/greedy/">Topic: Greedy Algorithm</a>
+</li>
+            
+<li >
+    <a href="../../algorithmStanford/hashtable/">Topic: Hash Table</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">CS61B</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../calgorithm/s61b/index.md">Contents</a>
+</li>
+            
+<li >
+    <a href="../../cs61b/Lab1/">Lab1: javac, java, git</a>
+</li>
+            
+<li >
+    <a href="../../cs61b/Lab2/">Lab2: Unit Testing with JUnit and IntLists</a>
+</li>
+            
+<li >
+    <a href="../../cs61b/Lab3/">Lab3: Unit Testing with JUnit, Debugging</a>
+</li>
+    </ul>
+  </li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">OS <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li >
+    <a href="../../../os/">Contents</a>
+</li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">OSC</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../os/osc/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../os/osc/ch1/">Chapter 1: Introduction </a>
+</li>
+            
+<li >
+    <a href="../../../os/osc/ch2/">Chapter 2: Operating System structures</a>
+</li>
+            
+<li >
+    <a href="../../../os/osc/ch3/">Chapter 3: Processes</a>
+</li>
+            
+<li >
+    <a href="../../../os/osc/ch4/">Chapter 4: Threads and Concurrency</a>
+</li>
+            
+<li >
+    <a href="../../../os/osc/ch5/">Chapter 5: CPU Scheduling</a>
+</li>
+            
+<li >
+    <a href="../../../os/osc/ch6/">Chapter 6: Synchronization Tools</a>
+</li>
+            
+<li >
+    <a href="../../../os/osc/ch7/">Chapter 7: Synchronization Examples</a>
+</li>
+            
+<li >
+    <a href="../../../os/osc/ch8/">Chapter 8: Deadlocks</a>
+</li>
+            
+<li >
+    <a href="../../../os/osc/ch9/">Chapter 9: Main Memory</a>
+</li>
+            
+<li >
+    <a href="../../../os/osc/ch10/">Chapter 10: Virtual Memory</a>
+</li>
+            
+<li >
+    <a href="../../../os/osc/ch11/">Chapter 11: Mass-Storage Structure</a>
+</li>
+            
+<li >
+    <a href="../../../os/osc/ch13/">Chapter 13: File-System Interfaces</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">CSAPP</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../os/csapp/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../os/csapp/ch1/">Chapter 1: 计算机系统漫游</a>
+</li>
+            
+<li >
+    <a href="../../../os/csapp/ch2/">Chapter 2: 信息的表示和处理</a>
+</li>
+            
+<li >
+    <a href="../../../os/csapp/ch3/">Chapter 3: 程序的机器级表示</a>
+</li>
+            
+<li >
+    <a href="../../../os/csapp/ch4/">Chapter 4: 处理器体系结构</a>
+</li>
+            
+<li >
+    <a href="../../../os/csapp/ch5/">Chapter 5: 优化程序性能</a>
+</li>
+            
+<li >
+    <a href="../../../os/csapp/ch6/">Chapter 6: 存储器层次结构</a>
+</li>
+            
+<li >
+    <a href="../../../os/csapp/ch7/">Chapter 7: 链接</a>
+</li>
+            
+<li >
+    <a href="../../../os/csapp/ch8/">Chapter 8: 异常控制流</a>
+</li>
+            
+<li >
+    <a href="../../../os/csapp/ch9/">Chapter 9: 虚拟内存</a>
+</li>
+            
+<li >
+    <a href="../../../os/csapp/ch10/">Chapter 10: 系统级I/O</a>
+</li>
+            
+<li >
+    <a href="../../../csapp/ch11.md">Chapter 11: 网络编程</a>
+</li>
+    </ul>
+  </li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">DataBase <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li >
+    <a href="../../../database/">Contents</a>
+</li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">MySql</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../database/mysql/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../database/mysql/LearningMySQLandMariaDB/">Chapter Learning MySQL and MariaDB</a>
+</li>
+    </ul>
+  </li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Java <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li >
+    <a href="../../../java/">Contents</a>
+</li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">HFJ</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../java/hfj/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch1/">Chapter 1: Dive in A Quick Dip</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch2/">Chapter 2: Classes and Objects</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch3/">Chapter 3: Primitives and References</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch4/">Chapter 4: Methods use Instance Variables</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch5/">Chapter 5: Writing a Program</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch6/">Chapter 6: Get to Know the Java API</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch7/">Chapter 7: Inheritance and Polymorphism</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch8/">Chapter 8: Interfaces and Abstract Classes</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch9/">Chapter 9: Constructors and Garbage Collection</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch10/">Chapter 10: Numbers and Statics</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch11/">Chapter 11: Exception Handling</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch12/">Chapter 12: Getting GUI</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch13/">Chapter 13: Using Swing</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch14/">Chapter 14: Serialization and File I/O</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch15/">Chapter 15: Networking and Threads</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch16/">Chapter 16: Collections and Generics</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch17/">Chapter 17: Packages, Jars and Deployment</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/ch18/">Chapter 18: Remote deploy with RMI</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfj/Appendix/">Appendix: The Top Ten Topics</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">HFDP</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../java/hfdp/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfdp/ch1/">Chapter 1: Strategy Pattern </a>
+</li>
+            
+<li >
+    <a href="../../../java/hfdp/ch2/">Chapter 2: Observer Pattern</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfdp/ch3/">Chapter 3: Decorator Pattern </a>
+</li>
+            
+<li >
+    <a href="../../../java/hfdp/ch4/">Chapter 4: Factory Pattern</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfdp/ch5/">Chapter 5: Singleton Pattern</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfdp/ch6/">Chapter 6: Command Pattern</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfdp/ch7/">Chapter 7: Adapter and Facade Patterns</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfdp/ch8/">Chapter 8: Template Method Pattern</a>
+</li>
+            
+<li >
+    <a href="../../../java/hfdp/ch9/">Chapter 9: Iterator and Composite Patterns</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">TIJ</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../java/tij/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch1/">Chapter 1: Introduction</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch2/">Chapter 2: Introduction to Objects</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch3/">Chapter 3: Everything is an Object</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch4/">Chapter 4: Opertors</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch5/">Chapter 5: Controlling Execution</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch6/">Chapter 6: Initialization & Cleanup</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch7/">Chapter 7: Access Control</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch8/">Chapter 8: Reusing Clases</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch9/">Chapter 9: Polymorphism</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch10/">Chapter 10: Interfaces</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch11/">Chapter 11: Inner Classes</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch12/">Chapter 12: Holding Your Objects</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch13/">Chapter 13: Error Handling with Exceptions</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch14/">Chapter 14: Strings</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch15/">Chapter 15: Type Information</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch16/">Chapter 16: Generics</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch17/">Chapter 17: Arrays</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch18/">Chapter 18: Containers in Depth</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch19/">Chapter 19: I/O</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch20/">Chapter 20: Enumerated Types</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch21/">Chapter 21: Annotations</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch22/">Chapter 22: Concurrency</a>
+</li>
+            
+<li >
+    <a href="../../../java/tij/ch23/">Chapter 23: Graphical User Interfaces</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">UJVM</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../java/ujvm/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch1/">Chapter 1 : 走进Java</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch2/">Chapter 2 : Java内存区域与内存溢出正常</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch3/">Chapter 3 : 垃圾收集器与内存分配策略</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch4/">Chapter 4 : 虚拟机性能监控与故障处理工具</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch5/">Chapter 5 : 调优案例分析与实战</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch6/">Chapter 6 : 类文件结构</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch7/">Chapter 7 : 虚拟机类加载机制</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch8/">Chapter 8 : 虚拟机字节码执行引擎</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch9/">Chapter 9 : 类加载及执行子系统的案例与实战</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch10/">Chapter 10 : 早期(编译期)优化</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch11/">Chapter 11 : 晚期(运行期)优化</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch12/">Chapter 12 : Java内存模型与线程</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/ch13/">Chapter 13 : 线程安全与锁优化</a>
+</li>
+            
+<li >
+    <a href="../../../java/ujvm/AppendixC/">Appendix HotSpot虚拟机主要参数列表</a>
+</li>
+    </ul>
+  </li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">BigData <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li >
+    <a href="../../../bigdata/">Contents</a>
+</li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">HADOOP</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../bigdata/hadoop/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch1/">Chapter 1: Meet Hadoop</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch2/">Chapter 2: MapReduce</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch3/">Chapter 3: The Hadoop Distributed FileSystem</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch4/">Chapter 4: YARN</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch5/">Chapter 5: Hadoop I/O</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch6/">Chapter 6: Developing a MapReduce Application</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch7/">Chapter 7: How MapReduce Works</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch8/">Chapter 8: MapReduce Types and Formats</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch9/">Chapter 9: MapReduce Features</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch10/">Chapter 10: Setting Up a Hadoop Cluster</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch11/">Chapter 11: Adminstering Hadoop</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch12/">Chapter 12: Avro</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch13/">Chapter 13: Parquet</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch14/">Chapter 14: Flume</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch15/">Chapter 15: Sqoop</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch16/">Chapter 16: Pig</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch17/">Chapter 17: Hive</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch18/">Chapter 18: Crunch</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch19/">Chapter 19: Spark</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch20/">Chapter 20: HBase</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch21/">Chapter 21: ZooKeeper</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch22/">Chapter 22: Composable Data at Center</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch23/">Chapter 23: Biological Data Science: Saving Lives with Software</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/hadoop/ch24/">Chapter 24: Cascading</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">Spark</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../bigdata/spark/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/spark/ch1/">Chapter 1: Introduction to Data Analysis with Spark</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/spark/ch2/">Chapter 2: Downloading Spark and Getting Started</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/spark/ch3/">Chapter 3: Programming with RDDs</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/spark/ch4/">Chapter 4: Working with Key/Value Pairs</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/spark/ch5/">Chapter 5: Loading and Saving Your Data</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/spark/ch6/">Chapter 6: Advanced Spark Programming</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/spark/ch7/">Chapter 7: Running on a Cluster</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/spark/ch8/">Chapter 8: Tuning and Debugging Spark</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/spark/ch9/">Chapter 9: Spark SQL</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/spark/ch10/">Chapter 10: Spark Streaming</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/spark/ch11/">Chapter 11: Machine Learning with MLlib</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">GDM</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../bigdata/gdm/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/gdm/ch1/">Chapter 1: 推荐系统入门</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/gdm/ch2/">Chapter 2: 隐式评价和基于物品的过滤算法</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/gdm/ch3/">Chapter 3: 分类</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/gdm/ch4/">Chapter 4: 进一步探索分类</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/gdm/ch5/">Chapter 5: 概率和朴素贝叶斯</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/gdm/ch6/">Chapter 6: 朴素贝叶斯和文本数据</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/gdm/ch7/">Chapter 7: 聚类</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">MLIA</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../bigdata/mlia/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch1/">Chapter 1: 机器学习基础</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch2/">Chapter 2: k-近邻算法</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch3/">Chapter 3: 决策树</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch4/">Chapter 4: 基于概率论的分类方法：朴素贝叶斯</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch5/">Chapter 5: Logistic回归</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch6/">Chapter 6: 支持向量机</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch7/">Chapter 7: 利用AdaBoost元算法提高分类性能</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch8/">Chapter 8: 预测数值型数据：回归</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch9/">Chapter 9: 树回归</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch10/">Chapter 10: 利用Ｋ-均值聚类算法对未标注数据分组</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch11/">Chapter 11: 使用Apriori算法进行关联分析</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch11/">Chapter 12: 使用FP-growth算法来高效发现频繁项集</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/mlia/ch13/">Chapter 13: 利用PCA来简化数据</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">Crawler</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../bigdata/crawler/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/crawler/ch1/">Chapter 1: 开发环境配置</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/crawler/ch2/">Chapter 2: 爬虫基础</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/crawler/ch3/">Chapter 3: 基本库的使用</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/crawler/ch4/">Chapter 4: 解析库的使用</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/crawler/ch5/">Chapter 5: 数据存储</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/crawler/ch7/">Chapter 7: 动态渲染页面爬取</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/crawler/ch13/">Chapter 13: Scrapy框架的使用</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#">Projects</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../../bigdata/projects/">Contents</a>
+</li>
+            
+<li >
+    <a href="../../../bigdata/projects/SparkStreaming实时流处理项目/">SparkStreaming实时流处理</a>
+</li>
+    </ul>
+  </li>
+                                </ul>
+                            </li>
+                            <li >
+                                <a href="../../../books/">Books</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+
+                     <!--
+                            <li >
+                                <a rel="next" href="../graph/">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li >
+                                <a rel="prev" href="../../algorithmStanford/">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                    -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#topic-9-minimum-spanning-tree-and-shortest-path">Topic 9: Minimum Spanning Tree and Shortest Path</a></li>
+        <li class="main "><a href="#1-minimum-spanning-tree">1 Minimum Spanning Tree</a></li>
+            <li><a href="#cut-property">Cut property</a></li>
+            <li><a href="#greedy-mst-algorithm">Greedy MST algorithm</a></li>
+            <li><a href="#edge-weighted-graph">Edge-Weighted Graph</a></li>
+            <li><a href="#mst-api">MST API</a></li>
+            <li><a href="#kruskals-algorithm">Kruskal's Algorithm</a></li>
+            <li><a href="#prims-algorithm">Prim's Algorithm</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<h3 id="topic-9-minimum-spanning-tree-and-shortest-path"><strong>Topic 9: Minimum Spanning Tree and Shortest Path</strong><a class="headerlink" href="#topic-9-minimum-spanning-tree-and-shortest-path" title="Permanent link">&para;</a></h3>
+<h3 id="1-minimum-spanning-tree">1 Minimum Spanning Tree<a class="headerlink" href="#1-minimum-spanning-tree" title="Permanent link">&para;</a></h3>
+<blockquote>
+<p>A <font color='red'>spanning tree</font> of <span><span class="MathJax_Preview">G</span><script type="math/tex">G</script></span> is a subgraph <span><span class="MathJax_Preview">T</span><script type="math/tex">T</script></span> that is both a <font color='red'>tree</font> (connected and acyclic) and <font color='red'>spanning</font> (includes all of the vertices). A <font color='red'>minimum spanning tree</font> (MST) of an edge-weighted graph is a spanning tree whose weight (the sum of the weights of its edges) is minimum.</p>
+</blockquote>
+<h4 id="cut-property">Cut property<a class="headerlink" href="#cut-property" title="Permanent link">&para;</a></h4>
+<blockquote>
+<p>A <em>cut</em> of a graph is a partition of its vertices into two nonempty disjoint sets. A <em>crossing edge</em> of a cut is an edge that connects a vertex in one set with a vertex in the other.</p>
+</blockquote>
+<p>Given any cut in an edge-weighted graph, the crossing edge of minimum weight is in the MST of the graph.</p>
+<p>Pf. Suppose min-weight crossing edge <span><span class="MathJax_Preview">e</span><script type="math/tex">e</script></span> is not in the MST.</p>
+<ul>
+<li>Adding <span><span class="MathJax_Preview">e</span><script type="math/tex">e</script></span> to the MST creates a cycle.</li>
+<li>Some other edge <span><span class="MathJax_Preview">f</span><script type="math/tex">f</script></span> in cycle must be a crossing edge. </li>
+<li>Removing <span><span class="MathJax_Preview">f</span><script type="math/tex">f</script></span> and adding <span><span class="MathJax_Preview">e</span><script type="math/tex">e</script></span> is also a spanning tree. </li>
+<li>Since weight of <span><span class="MathJax_Preview">e</span><script type="math/tex">e</script></span> is less than the weight of <span><span class="MathJax_Preview">f</span><script type="math/tex">f</script></span>, that spanning tree is lower weight.</li>
+<li>Contradiction.</li>
+</ul>
+<p><img alt="cut_property" src="../figures/cut_property.png" /></p>
+<h4 id="greedy-mst-algorithm">Greedy MST algorithm<a class="headerlink" href="#greedy-mst-algorithm" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Start with all edges colored gray.</li>
+<li>Find cut with no black crossing edges; color its min-weight edge black. </li>
+<li>Repeat until V - 1 edges are colored black.</li>
+</ul>
+<p><img alt="mst_greedy_algorith" src="../figures/mst_greedy_algorithm.gif" /></p>
+<p>Efficient implementations. Choose cut? Find min-weight edge? </p>
+<ul>
+<li>Ex 1. Kruskal's algorithm.</li>
+<li>Ex 2. Prim's algorithm</li>
+</ul>
+<h4 id="edge-weighted-graph">Edge-Weighted Graph<a class="headerlink" href="#edge-weighted-graph" title="Permanent link">&para;</a></h4>
+<p>Edge abstraction needed for weighted edges:</p>
+<p><img alt="api_for_a_weighted_edge" src="../figures/api_for_a_weighted_edge.png" /></p>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>Edge</span> <span class=kd>implements</span> <span class=n>Comparable</span><span class=o>&lt;</span><span class=n>Edge</span><span class=o>&gt;</span> <span class=o>{</span> 
+    <span class=kd>private</span> <span class=kd>final</span> <span class=kt>int</span> <span class=n>v</span><span class=o>,</span> <span class=n>w</span><span class=o>;</span>
+    <span class=kd>private</span> <span class=kd>final</span> <span class=kt>double</span> <span class=n>weight</span><span class=o>;</span>
+
+    <span class=c1>// Initializes an edge between vertices v and w of</span>
+    <span class=c1>// the given weight</span>
+    <span class=kd>public</span> <span class=nf>Edge</span><span class=o>(</span><span class=kt>int</span> <span class=n>v</span><span class=o>,</span> <span class=kt>int</span> <span class=n>w</span><span class=o>,</span> <span class=kt>double</span> <span class=n>weight</span><span class=o>)</span> <span class=o>{</span>
+        <span class=k>this</span><span class=o>.</span><span class=na>v</span> <span class=o>=</span> <span class=n>v</span><span class=o>;</span>
+        <span class=k>this</span><span class=o>.</span><span class=na>w</span> <span class=o>=</span> <span class=n>w</span><span class=o>;</span>
+        <span class=k>this</span><span class=o>.</span><span class=na>weight</span> <span class=o>=</span> <span class=n>weight</span><span class=o>;</span>
+    <span class=o>}</span>
+
+    <span class=c1>// Returns the weight of this edge.</span>
+    <span class=kd>public</span> <span class=kt>double</span> <span class=nf>weight</span><span class=o>()</span>
+    <span class=o>{</span> <span class=k>return</span> <span class=n>weight</span><span class=o>;</span> <span class=o>}</span>
+
+    <span class=c1>// Returns either endpoint of this edge.</span>
+    <span class=kd>public</span> <span class=kt>int</span> <span class=nf>either</span><span class=o>()</span> <span class=o>{</span>
+    <span class=o>{</span> <span class=k>return</span> <span class=n>v</span><span class=o>;</span> <span class=o>}</span>
+
+    <span class=c1>// Returns the endpoint of the edge different from the given vertex.</span>
+    <span class=kd>public</span> <span class=kt>int</span> <span class=nf>other</span><span class=o>(</span><span class=kt>int</span> <span class=n>vertex</span><span class=o>)</span> <span class=o>{</span>
+        <span class=k>if</span>      <span class=o>(</span><span class=n>vertex</span> <span class=o>==</span> <span class=n>v</span><span class=o>)</span> <span class=k>return</span> <span class=n>w</span><span class=o>;</span>
+        <span class=k>else</span>                  <span class=k>return</span> <span class=n>v</span><span class=o>;</span>
+    <span class=o>}</span>
+
+    <span class=c1>// Compares two edges by weight.</span>
+    <span class=nd>@Override</span>
+    <span class=kd>public</span> <span class=kt>int</span> <span class=nf>compareTo</span><span class=o>(</span><span class=n>Edge</span> <span class=n>that</span><span class=o>)</span> <span class=o>{</span>
+        <span class=k>return</span> <span class=n>Double</span><span class=o>.</span><span class=na>compare</span><span class=o>(</span><span class=k>this</span><span class=o>.</span><span class=na>weight</span><span class=o>,</span> <span class=n>that</span><span class=o>.</span><span class=na>weight</span><span class=o>);</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></p>
+<p>The API if <C>EdgeWeightedGraph</C> is very similar to the API for <C>Graph</C>. The two important differences are that it is based on <C>Edge</C> and that it adds the <C>edges()</C> method at right, which iterates through to all the graph&rsquo;s edges (ignoring any self-loops).</p>
+<p><img alt="api_for_an_edge_weigted_graph" src="../figures/api_for_an_edge_weigted_graph.png" /></p>
+<p>The implementation maintains a vertex-indexed array of lists of edges. As with <C>Graph</C>, every edge appears twice: if an edge connects <span><span class="MathJax_Preview">v</span><script type="math/tex">v</script></span> and <span><span class="MathJax_Preview">w</span><script type="math/tex">w</script></span>, it appears both in <span><span class="MathJax_Preview">v</span><script type="math/tex">v</script></span>&rsquo;s list and in <span><span class="MathJax_Preview">w</span><script type="math/tex">w</script></span>&rsquo;s list. The <C>edges()</C> method puts all the edges in a <C>Bag</C>.</p>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>EdgeWeightedGraph</span> <span class=o>{</span>
+    <span class=kd>private</span> <span class=kd>final</span> <span class=kt>int</span> <span class=n>V</span><span class=o>;</span>
+    <span class=kd>private</span> <span class=kt>int</span> <span class=n>E</span><span class=o>;</span>
+    <span class=kd>private</span> <span class=n>Bag</span><span class=o>&lt;</span><span class=n>Edge</span><span class=o>&gt;[]</span> <span class=n>adj</span><span class=o>;</span>
+
+    <span class=c1>// Initializes an empty edge-weighted graph with V vertices and 0 edges.</span>
+    <span class=kd>public</span> <span class=nf>EdgeWeightedGraph</span><span class=o>(</span><span class=kt>int</span> <span class=n>V</span><span class=o>)</span> <span class=o>{</span>
+        <span class=k>this</span><span class=o>.</span><span class=na>V</span> <span class=o>=</span> <span class=n>V</span><span class=o>;</span>
+        <span class=k>this</span><span class=o>.</span><span class=na>E</span> <span class=o>=</span> <span class=mi>0</span><span class=o>;</span>
+        <span class=n>adj</span> <span class=o>=</span> <span class=o>(</span><span class=n>Bag</span><span class=o>&lt;</span><span class=n>Edge</span><span class=o>&gt;[])</span> <span class=k>new</span> <span class=n>Bag</span><span class=o>[</span><span class=n>V</span><span class=o>];</span>
+        <span class=k>for</span> <span class=o>(</span><span class=kt>int</span> <span class=n>v</span> <span class=o>=</span> <span class=mi>0</span><span class=o>;</span> <span class=n>v</span> <span class=o>&lt;</span> <span class=n>V</span><span class=o>;</span> <span class=n>v</span><span class=o>++)</span>
+            <span class=n>adj</span><span class=o>[</span><span class=n>v</span><span class=o>]</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Bag</span><span class=o>&lt;</span><span class=n>Edge</span><span class=o>&gt;();</span>
+    <span class=o>}</span>
+    <span class=c1>// Returns the number of vertices.</span>
+    <span class=kd>public</span> <span class=kt>int</span> <span class=nf>V</span><span class=o>()</span>
+    <span class=o>{</span> <span class=k>return</span> <span class=n>V</span><span class=o>;</span> <span class=o>}</span>
+
+    <span class=c1>// Returns the number of edges</span>
+    <span class=kd>public</span> <span class=kt>int</span> <span class=nf>E</span><span class=o>()</span>
+    <span class=o>{</span> <span class=k>return</span> <span class=n>E</span><span class=o>;</span> <span class=o>}</span>
+
+    <span class=c1>// Adds the undirected edge e.</span>
+    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>addEdge</span><span class=o>(</span><span class=n>Edge</span> <span class=n>e</span><span class=o>)</span> <span class=o>{</span>
+        <span class=kt>int</span> <span class=n>v</span> <span class=o>=</span> <span class=n>e</span><span class=o>.</span><span class=na>either</span><span class=o>();</span>
+        <span class=kt>int</span> <span class=n>w</span> <span class=o>=</span> <span class=n>e</span><span class=o>.</span><span class=na>other</span><span class=o>(</span><span class=n>v</span><span class=o>);</span>
+        <span class=n>adj</span><span class=o>[</span><span class=n>v</span><span class=o>].</span><span class=na>add</span><span class=o>(</span><span class=n>e</span><span class=o>);</span>
+        <span class=n>adj</span><span class=o>[</span><span class=n>w</span><span class=o>].</span><span class=na>add</span><span class=o>(</span><span class=n>e</span><span class=o>);</span>
+        <span class=n>E</span><span class=o>++;</span>
+    <span class=o>}</span>
+
+   <span class=c1>// Returns the edges incident on vertex</span>
+    <span class=kd>public</span> <span class=n>Iterable</span><span class=o>&lt;</span><span class=n>Edge</span><span class=o>&gt;</span> <span class=nf>adj</span><span class=o>(</span><span class=kt>int</span> <span class=n>v</span><span class=o>)</span>
+    <span class=o>{</span> <span class=k>return</span> <span class=n>adj</span><span class=o>[</span><span class=n>v</span><span class=o>];</span> <span class=o>}</span>
+
+    <span class=c1>// Returns all edges in this edge-weighted graph.</span>
+    <span class=kd>public</span> <span class=n>Iterable</span><span class=o>&lt;</span><span class=n>Edge</span><span class=o>&gt;</span> <span class=nf>edges</span><span class=o>()</span> <span class=o>{</span>
+        <span class=n>Bag</span><span class=o>&lt;</span><span class=n>Edge</span><span class=o>&gt;</span> <span class=n>list</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Bag</span><span class=o>&lt;</span><span class=n>Edge</span><span class=o>&gt;();</span>
+        <span class=k>for</span> <span class=o>(</span><span class=kt>int</span> <span class=n>v</span> <span class=o>=</span> <span class=mi>0</span><span class=o>;</span> <span class=n>v</span> <span class=o>&lt;</span> <span class=n>V</span><span class=o>;</span> <span class=n>v</span><span class=o>++)</span> <span class=o>{</span>
+            <span class=kt>int</span> <span class=n>selfLoops</span> <span class=o>=</span> <span class=mi>0</span><span class=o>;</span>
+            <span class=k>for</span> <span class=o>(</span><span class=n>Edge</span> <span class=n>e</span> <span class=o>:</span> <span class=n>adj</span><span class=o>(</span><span class=n>v</span><span class=o>))</span> <span class=o>{</span>
+                <span class=k>if</span> <span class=o>(</span><span class=n>e</span><span class=o>.</span><span class=na>other</span><span class=o>(</span><span class=n>v</span><span class=o>)</span> <span class=o>&gt;</span> <span class=n>v</span><span class=o>)</span>
+                    <span class=n>list</span><span class=o>.</span><span class=na>add</span><span class=o>(</span><span class=n>e</span><span class=o>);</span>
+                <span class=c1>// add only one copy of each self loop </span>
+                <span class=c1>// (self loops will be consecutive)</span>
+                <span class=k>else</span> <span class=k>if</span> <span class=o>(</span><span class=n>e</span><span class=o>.</span><span class=na>other</span><span class=o>(</span><span class=n>v</span><span class=o>)</span> <span class=o>==</span> <span class=n>v</span><span class=o>)</span>
+                    <span class=k>if</span> <span class=o>(</span><span class=n>selfLoops</span> <span class=o>%</span> <span class=mi>2</span> <span class=o>==</span> <span class=mi>0</span><span class=o>)</span> <span class=n>list</span><span class=o>.</span><span class=na>add</span><span class=o>(</span><span class=n>e</span><span class=o>);</span>
+                    <span class=n>selfLoops</span><span class=o>++;</span>
+            <span class=o>}</span>
+        <span class=o>}</span>
+        <span class=k>return</span> <span class=n>list</span><span class=o>;</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></p>
+<h4 id="mst-api">MST API<a class="headerlink" href="#mst-api" title="Permanent link">&para;</a></h4>
+<p>How to represent the MST?</p>
+<p><img alt="mst_api" src="../figures/mst_api.png" /></p>
+<h4 id="kruskals-algorithm">Kruskal's Algorithm<a class="headerlink" href="#kruskals-algorithm" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Consider edges in ascending order of weight.</li>
+<li>Add next edge to tree <span><span class="MathJax_Preview">T</span><script type="math/tex">T</script></span> unless doing so would create a cycle.</li>
+</ul>
+<p><img alt="kruskals-algorithm_demo" src="../figures/kruskals-algorithm_demo.gif" /></p>
+<p>Pf. Kruskal's algorithm is a special case of the greedy MST algorithm.</p>
+<ul>
+<li>If the next edge to be considered does not form a cycle with black edges, it crosses a cut defined by the set of vertices connected to one of the edge&rsquo;s vertices by tree edges (and its complement). </li>
+<li>Since the edge does not create a cycle, it is the only crossing edge seen so far.</li>
+<li>Since we consider the edges in sorted order, it is a crossing edge of minimum weight. </li>
+<li>Thus, the algorithm is successively taking a minimal-weight crossing edge, in accordance with the greedy algorithm.</li>
+</ul>
+<p>The implementation of Kruskal&rsquo;s algorithm uses a queue to hold MST edges, a priority queue to hold edges not yet examined, and a <a href="../unionfind/">union-find</a> data structure for identifying ineligible edges.</p>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>KruskalMST</span> <span class=o>{</span>
+    <span class=kd>private</span> <span class=kt>double</span> <span class=n>weight</span><span class=o>;</span>                        <span class=c1>// weight of MST</span>
+    <span class=kd>private</span> <span class=n>Queue</span><span class=o>&lt;</span><span class=n>Edge</span><span class=o>&gt;</span> <span class=n>mst</span> <span class=o>=</span> <span class=k>new</span> <span class=n>LinkedList</span><span class=o>&lt;&gt;();</span> <span class=c1>// edges in MST</span>
+
+    <span class=c1>// Compute a minimum spanning tree (or forest) of an edge-weighted graph.</span>
+    <span class=kd>public</span> <span class=nf>KruskalMST</span><span class=o>(</span><span class=n>EdgeWeightedGraph</span> <span class=n>G</span><span class=o>)</span> <span class=o>{</span>
+        <span class=c1>// more efficient to build heap by passing array of edges</span>
+        <span class=n>ArrayList</span><span class=o>&lt;</span><span class=n>Edge</span><span class=o>&gt;</span> <span class=n>edges</span> <span class=o>=</span> <span class=k>new</span> <span class=n>ArrayList</span><span class=o>&lt;&gt;();</span>
+        <span class=k>for</span> <span class=o>(</span><span class=n>Edge</span> <span class=n>edge</span> <span class=o>:</span> <span class=n>G</span><span class=o>.</span><span class=na>edges</span><span class=o>())</span>  <span class=n>edges</span><span class=o>.</span><span class=na>add</span><span class=o>(</span><span class=n>edge</span><span class=o>);</span>
+        <span class=n>PriorityQueue</span><span class=o>&lt;</span><span class=n>Edge</span><span class=o>&gt;</span> <span class=n>pq</span> <span class=o>=</span> <span class=k>new</span> <span class=n>PriorityQueue</span><span class=o>&lt;&gt;(</span><span class=n>edges</span><span class=o>);</span>
+
+        <span class=c1>// run greedy algorithm</span>
+        <span class=n>UF</span> <span class=n>uf</span> <span class=o>=</span> <span class=k>new</span> <span class=n>UF</span><span class=o>(</span><span class=n>G</span><span class=o>.</span><span class=na>V</span><span class=o>());</span>
+        <span class=k>while</span> <span class=o>(!</span><span class=n>pq</span><span class=o>.</span><span class=na>isEmpty</span><span class=o>()</span> <span class=o>&amp;&amp;</span> <span class=n>mst</span><span class=o>.</span><span class=na>size</span><span class=o>()</span> <span class=o>&lt;</span> <span class=n>G</span><span class=o>.</span><span class=na>V</span><span class=o>()</span> <span class=o>-</span> <span class=mi>1</span><span class=o>)</span> <span class=o>{</span>
+            <span class=n>Edge</span> <span class=n>e</span> <span class=o>=</span> <span class=n>pq</span><span class=o>.</span><span class=na>poll</span><span class=o>();</span>
+            <span class=kt>int</span> <span class=n>v</span> <span class=o>=</span> <span class=n>e</span><span class=o>.</span><span class=na>either</span><span class=o>(),</span> <span class=n>w</span> <span class=o>=</span> <span class=n>e</span><span class=o>.</span><span class=na>other</span><span class=o>(</span><span class=n>v</span><span class=o>);</span>
+            <span class=k>if</span> <span class=o>(!</span><span class=n>uf</span><span class=o>.</span><span class=na>connected</span><span class=o>(</span><span class=n>v</span><span class=o>,</span> <span class=n>w</span><span class=o>))</span> <span class=o>{</span> <span class=c1>// v-w does not create a cycle</span>
+                <span class=n>uf</span><span class=o>.</span><span class=na>union</span><span class=o>(</span><span class=n>v</span><span class=o>,</span> <span class=n>w</span><span class=o>);</span>  <span class=c1>// merge v and w components</span>
+                <span class=n>mst</span><span class=o>.</span><span class=na>offer</span><span class=o>(</span><span class=n>e</span><span class=o>);</span>   <span class=c1>// add edge e to mst</span>
+                <span class=n>weight</span> <span class=o>+=</span> <span class=n>e</span><span class=o>.</span><span class=na>weight</span><span class=o>();</span>
+            <span class=o>}</span>
+        <span class=o>}</span>
+    <span class=o>}</span>
+
+    <span class=c1>// Returns the edges in a minimum spanning tree (or forest).</span>
+    <span class=kd>public</span> <span class=n>Iterable</span><span class=o>&lt;</span><span class=n>Edge</span><span class=o>&gt;</span> <span class=nf>edges</span><span class=o>()</span> <span class=o>{</span>
+        <span class=k>return</span> <span class=n>mst</span><span class=o>;</span>
+    <span class=o>}</span>
+
+   <span class=c1>// Returns the sum of the edge weights in a minimum spanning tree (or forest).</span>
+    <span class=kd>public</span> <span class=kt>double</span> <span class=nf>weight</span><span class=o>()</span> <span class=o>{</span>
+        <span class=k>return</span> <span class=n>weight</span><span class=o>;</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></p>
+<p>Kruskal's algorithm computes MST in time proportional to <span><span class="MathJax_Preview">E \log E</span><script type="math/tex">E \log E</script></span> (in the worst case).</p>
+<h4 id="prims-algorithm">Prim's Algorithm<a class="headerlink" href="#prims-algorithm" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Start with vertex 0 and greedily grow tree <span><span class="MathJax_Preview">T</span><script type="math/tex">T</script></span>.</li>
+<li>Add to <span><span class="MathJax_Preview">T</span><script type="math/tex">T</script></span> the min weight edge with exactly one endpoint in <span><span class="MathJax_Preview">T</span><script type="math/tex">T</script></span>. </li>
+<li>Repeat until <span><span class="MathJax_Preview">V</span><script type="math/tex">V</script></span> - 1 edge</li>
+</ul>
+<p><img alt="prims_algorithm_demo" src="../figures/prims_algorithm_demo.gif" /></p>
+<p>Pf. Prim's algorithm is a special case of the greedy MST algorithm.</p>
+<p>The growing tree defines a cut with no black edges; the algorithm takes the crossing edge of minimal weight, so it is successively coloring edges black in accordance with the greedy algorithm.</p>
+<p><hh>Data structures</hh></p>
+<ul>
+<li>Vertices on the tree : We use a vertex-indexed boolean array <C>marked[]</C>, where marked[<span><span class="MathJax_Preview">v</span><script type="math/tex">v</script></span>] is true if <span><span class="MathJax_Preview">v</span><script type="math/tex">v</script></span> is on the tree.</li>
+<li>Edges on the tree : We use one of two data structures: a queue <C>mst</C> to collect MST edges or a vertex-indexed array <C>edgeTo[]</C> of <C>Edge </C>objects, where edgeTo[<span><span class="MathJax_Preview">v</span><script type="math/tex">v</script></span>] is the Edge that connects <span><span class="MathJax_Preview">v</span><script type="math/tex">v</script></span> to the tree.</li>
+<li>Crossing edges : We use a <C>MinPQ<Edge></C> priority queue that compares edges by weight.</li>
+</ul>
+<p>Challenge. Find the min weight edge with exactly one endpoint in <span><span class="MathJax_Preview">T</span><script type="math/tex">T</script></span>.</p>
+<p><hh>Lazy Implementation</hh></p>
+<p>Maintaining the set of crossing edges.</p>
+<ul>
+<li>Key = edge; priority = weight of edge.</li>
+<li>Delete-min to determine next edge <span><span class="MathJax_Preview">e = v-w</span><script type="math/tex">e = v-w</script></span> to add to <span><span class="MathJax_Preview">T</span><script type="math/tex">T</script></span>.</li>
+<li>Disregard if both endpoints <span><span class="MathJax_Preview">v</span><script type="math/tex">v</script></span> and <span><span class="MathJax_Preview">w</span><script type="math/tex">w</script></span> are marked (both in <span><span class="MathJax_Preview">T</span><script type="math/tex">T</script></span>). </li>
+<li>Otherwise, let <span><span class="MathJax_Preview">w</span><script type="math/tex">w</script></span> be the unmarked vertex (not in <span><span class="MathJax_Preview">T</span><script type="math/tex">T</script></span>):<ul>
+<li>add to PQ any edge incident to <span><span class="MathJax_Preview">w</span><script type="math/tex">w</script></span> (assuming other endpoint not in <span><span class="MathJax_Preview">T</span><script type="math/tex">T</script></span>)</li>
+<li>add <span><span class="MathJax_Preview">e</span><script type="math/tex">e</script></span> to <span><span class="MathJax_Preview">T</span><script type="math/tex">T</script></span> and mark <span><span class="MathJax_Preview">w</span><script type="math/tex">w</script></span></li>
+</ul>
+</li>
+</ul>
+<p>The lazy version of Prim&rsquo;s algorithm uses space proportional to <span><span class="MathJax_Preview">E</span><script type="math/tex">E</script></span> and time proportional to <span><span class="MathJax_Preview">E\log E</span><script type="math/tex">E\log E</script></span> (in the worst case) to compute the MST of a connected edge-weighted graph with <span><span class="MathJax_Preview">E</span><script type="math/tex">E</script></span> edges and <span><span class="MathJax_Preview">V</span><script type="math/tex">V</script></span> vertices.</p>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>LazyPrimMST</span> <span class=o>{</span>
+    <span class=kd>private</span> <span class=kt>double</span> <span class=n>weight</span><span class=o>;</span>                  <span class=c1>// total weight of MST</span>
+    <span class=kd>private</span> <span class=n>Queue</span><span class=o>&lt;</span><span class=n>Edge</span><span class=o>&gt;</span> <span class=n>mst</span><span class=o>;</span>                <span class=c1>// edges in the MST</span>
+    <span class=kd>private</span> <span class=kt>boolean</span><span class=o>[]</span> <span class=n>marked</span><span class=o>;</span>               <span class=c1>// marked[v] = true if v on tree</span>
+    <span class=kd>private</span> <span class=n>PriorityQueue</span><span class=o>&lt;</span><span class=n>Edge</span><span class=o>&gt;</span> <span class=n>pq</span><span class=o>;</span>         <span class=c1>// edges with one endpoint in tree</span>
+
+    <span class=c1>// Compute a minimum spanning tree (or forest) of an edge-weighted graph.</span>
+    <span class=kd>public</span> <span class=nf>LazyPrimMST</span><span class=o>(</span><span class=n>EdgeWeightedGraph</span> <span class=n>G</span><span class=o>)</span> <span class=o>{</span>
+        <span class=n>mst</span> <span class=o>=</span> <span class=k>new</span> <span class=n>LinkedList</span><span class=o>&lt;&gt;();</span>
+        <span class=n>pq</span> <span class=o>=</span> <span class=k>new</span> <span class=n>PriorityQueue</span><span class=o>&lt;&gt;();</span>
+        <span class=n>marked</span> <span class=o>=</span> <span class=k>new</span> <span class=kt>boolean</span><span class=o>[</span><span class=n>G</span><span class=o>.</span><span class=na>V</span><span class=o>()];</span>
+        <span class=k>for</span> <span class=o>(</span><span class=kt>int</span> <span class=n>v</span> <span class=o>=</span> <span class=mi>0</span><span class=o>;</span> <span class=n>v</span> <span class=o>&lt;</span> <span class=n>G</span><span class=o>.</span><span class=na>V</span><span class=o>();</span> <span class=n>v</span><span class=o>++)</span>     <span class=c1>// run Prim from all vertices to</span>
+            <span class=k>if</span> <span class=o>(!</span><span class=n>marked</span><span class=o>[</span><span class=n>v</span><span class=o>])</span> <span class=n>prim</span><span class=o>(</span><span class=n>G</span><span class=o>,</span> <span class=n>v</span><span class=o>);</span>     <span class=c1>// get a minimum spanning forest</span>
+    <span class=o>}</span>
+
+    <span class=c1>// run Prim&#39;s algorithm</span>
+    <span class=kd>private</span> <span class=kt>void</span> <span class=nf>prim</span><span class=o>(</span><span class=n>EdgeWeightedGraph</span> <span class=n>G</span><span class=o>,</span> <span class=kt>int</span> <span class=n>s</span><span class=o>)</span> <span class=o>{</span>
+        <span class=n>scan</span><span class=o>(</span><span class=n>G</span><span class=o>,</span> <span class=n>s</span><span class=o>);</span>
+        <span class=k>while</span> <span class=o>(!</span><span class=n>pq</span><span class=o>.</span><span class=na>isEmpty</span><span class=o>())</span> <span class=o>{</span>                     <span class=c1>// better to stop when mst has V-1 edges</span>
+            <span class=n>Edge</span> <span class=n>e</span> <span class=o>=</span> <span class=n>pq</span><span class=o>.</span><span class=na>poll</span><span class=o>();</span>                     <span class=c1>// smallest edge on pq</span>
+            <span class=kt>int</span> <span class=n>v</span> <span class=o>=</span> <span class=n>e</span><span class=o>.</span><span class=na>either</span><span class=o>(),</span> <span class=n>w</span> <span class=o>=</span> <span class=n>e</span><span class=o>.</span><span class=na>other</span><span class=o>(</span><span class=n>v</span><span class=o>);</span>     <span class=c1>// two endpoints</span>
+            <span class=k>if</span> <span class=o>(</span><span class=n>marked</span><span class=o>[</span><span class=n>v</span><span class=o>]</span> <span class=o>&amp;&amp;</span> <span class=n>marked</span><span class=o>[</span><span class=n>w</span><span class=o>])</span> <span class=k>continue</span><span class=o>;</span>   <span class=c1>// lazy, both v and w already scanned</span>
+            <span class=n>mst</span><span class=o>.</span><span class=na>offer</span><span class=o>(</span><span class=n>e</span><span class=o>);</span>                           <span class=c1>// add e to MST</span>
+            <span class=n>weight</span> <span class=o>+=</span> <span class=n>e</span><span class=o>.</span><span class=na>weight</span><span class=o>();</span>
+            <span class=k>if</span> <span class=o>(!</span><span class=n>marked</span><span class=o>[</span><span class=n>v</span><span class=o>])</span> <span class=n>scan</span><span class=o>(</span><span class=n>G</span><span class=o>,</span> <span class=n>v</span><span class=o>);</span>             <span class=c1>// v becomes part of tree</span>
+            <span class=k>if</span> <span class=o>(!</span><span class=n>marked</span><span class=o>[</span><span class=n>w</span><span class=o>])</span> <span class=n>scan</span><span class=o>(</span><span class=n>G</span><span class=o>,</span> <span class=n>w</span><span class=o>);</span>             <span class=c1>// w becomes part of tree</span>
+        <span class=o>}</span>
+    <span class=o>}</span>
+
+    <span class=c1>// add all edges e incident to v onto pq if the other endpoint has not yet been scanned</span>
+    <span class=kd>private</span> <span class=kt>void</span> <span class=nf>scan</span><span class=o>(</span><span class=n>EdgeWeightedGraph</span> <span class=n>G</span><span class=o>,</span> <span class=kt>int</span> <span class=n>v</span><span class=o>)</span> <span class=o>{</span>
+        <span class=n>marked</span><span class=o>[</span><span class=n>v</span><span class=o>]</span> <span class=o>=</span> <span class=kc>true</span><span class=o>;</span>
+        <span class=k>for</span> <span class=o>(</span><span class=n>Edge</span> <span class=n>e</span> <span class=o>:</span> <span class=n>G</span><span class=o>.</span><span class=na>adj</span><span class=o>(</span><span class=n>v</span><span class=o>))</span>
+            <span class=k>if</span> <span class=o>(!</span><span class=n>marked</span><span class=o>[</span><span class=n>e</span><span class=o>.</span><span class=na>other</span><span class=o>(</span><span class=n>v</span><span class=o>)])</span> <span class=n>pq</span><span class=o>.</span><span class=na>offer</span><span class=o>(</span><span class=n>e</span><span class=o>);</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = "../../..",
+                shortcuts = {"search": 83, "next": 78, "help": 191, "previous": 80};
+        </script>
+        <script src="../../../js/base.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" defer></script>
+        <script src="../../../extra_javascript/tabhack.js" defer></script>
+        <script src="../../../extra_javascript/baidu.js" defer></script>
+        <script src="../../../search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

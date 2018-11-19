@@ -50,15 +50,9 @@
       <div style="position: relative;width:100%;"><div style="position: absolute; width:100%;">
         <ul id="main-menu" class="left">
         
-        <li id=""><a target="_self" href="index.html">HomePage</a></li>
-        
         <li id=""><a target="_self" href="archives.html">Archives</a></li>
         
         <li id=""><a target="_blank" href="wiki">WIKI</a></li>
-        
-        <li id=""><a target="_self" href="notebook.html">NOTEBOOK</a></li>
-        
-        <li id=""><a target="_self" href="about.html">About</a></li>
         
         <li id=""><a target="_blank" href="note-os">NOTE-OS</a></li>
         
@@ -87,15 +81,9 @@
 <aside class="left-off-canvas-menu">
       <ul class="off-canvas-list">
         
-        <li><a target="_self" href="index.html">HomePage</a></li>
-        
         <li><a target="_self" href="archives.html">Archives</a></li>
         
         <li><a target="_blank" href="wiki">WIKI</a></li>
-        
-        <li><a target="_self" href="notebook.html">NOTEBOOK</a></li>
-        
-        <li><a target="_self" href="about.html">About</a></li>
         
         <li><a target="_blank" href="note-os">NOTE-OS</a></li>
         
@@ -150,218 +138,80 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="disjoint_set_data_structure.html">
+                <a class="clearlink" href="greedy_algorithm_introduction.html">
                 
-                  <h1>Disjoint-Set Data Structure</h1>
+                  <h1>Greedy algorithm (1): Introduction</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
                         	<ul>
 <li>
-<a href="#toc_0">Linked-List Implementation</a>
+<a href="#toc_0">Definition</a>
 </li>
 <li>
-<a href="#toc_1">Forest Implementation of Disjoint-Set</a>
-</li>
-<li>
-<a href="#toc_2">Reference</a>
+<a href="#toc_1">Contrast with Divide &amp; Conquer</a>
 </li>
 </ul>
+</li>
+<li>
+<a href="#toc_2">Examples</a>
+<ul>
+<li>
+<a href="#toc_3">The Optimal Caching Algorithm</a>
+</li>
+<li>
+<a href="#toc_4">A Scheduling Problem</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_5">Reference</a>
 
 
-<p>In order to keep track of the connected components of a minimum spanning tree when implementing <code>Kruskal&#39;s algorithm</code>, a disjoint-set data structure should be used.</p>
+<h3 id="toc_0">Definition</h3>
 
-<p><code>Disjoint-set</code> data structure, also called <code>union-find</code> data structure, is a data structure that keeps track of a set of elements partitioned into a number of disjoint subsets.</p>
+<p>A <code>greedy algorithm</code> always makes the choice that looks best at the moment. That is, it makes a locally optimal choice in the hope that this choice will lead to a globally optimal solution. (Cormen et al., 2009)</p>
 
-<p>A <code>disjoint-set</code> data structure supports following operations:</p>
+<h3 id="toc_1">Contrast with Divide &amp; Conquer</h3>
+
+<ol>
+<li>Easy to propose multiple greedy algorithms for many problems. </li>
+<li>Easy running time analysis. (Contrast with Master method etc.)</li>
+<li>Hard to establish correctness.<br/>
+(Contrast with straightforward inductive correctness proofs.)</li>
+</ol>
+
+<p><strong>DANGER: Most greedy algorithms are NOT correct. (Even if your intuition says otherwise!)</strong></p>
+
+<h2 id="toc_2">Examples</h2>
+
+<h3 id="toc_3">The Optimal Caching Algorithm</h3>
+
+<p>Theorem: [Bélády&#39;s 1960s] <code>Farthest-in-Future</code> is the optimal algorithm that minimizes the number of cache misses.</p>
+
+<p><code>Bélády&#39;s Algorithm</code>:</p>
+
+<p>When \(d_i\) is requested but not in the cache,<br/>
+evict the cache item that will next be used farthest into the future.</p>
+
+<h3 id="toc_4">A Scheduling Problem</h3>
+
+<p>Assume: Each job has a:</p>
 
 <ul>
-<li><code>MAKE-SET(x)</code> creates a new set whose only member is \(x\)</li>
-<li><code>UNION(x,y)</code> unites the dynamic sets that contains \(x\) and \(y\), into a new set that is the union of these two sets.</li>
-<li><code>FIND-SET(x)</code> returns the representative of the set containing \(x\).</li>
+<li>weight \(w_j\) (“priority”) </li>
+<li>length \(l_j\)</li>
 </ul>
 
-<h2 id="toc_0">Linked-List Implementation</h2>
+<p>The completion time \(C_j\) of job \(j\) = Sum of job lengths up to and including \(j\).</p>
 
-<p>Each set is represented by its own <strong>linked list</strong>. The object for each set has attributes <em>head</em>, pointing to the first object in the list, and <em>tail</em>, pointing to the last object. Each object in the linked list contains a set member, a pointer to the next object in the list, and a pointer back to the set object.</p>
+<p>Goal: Minimize the weighted sum of completion times: \(\min \sum ^n_j= w_jC_j\)</p>
 
-<p><img src="media/15017471539381/Screen%20Shot%202017-08-03%20at%209.21.43%20PM.png" alt="Linked List implementaion"/></p>
-
-<p><strong>Weighted-Union Heuristic</strong>: And each linked list also includes the length of the list and we always append the shorter list onto the longer.</p>
-
-<p>Using the linked-list representation of disjoint sets and the weighted-union heuristic, a sequence of \(m\) MAKE-SET, UNION, and FIND-SET, \(n\) of which are MAKE-SET operations, takes \(O(m+n\lg n)\) time.</p>
-
-<pre><code class="language-python">class Node:
-    &quot;&quot;&quot;
-    class Node for double liked list
-    &quot;&quot;&quot;
-    def __init__(self, elem):
-        self.prev = None
-        self.elem = elem
-        self.next = None
-
-    def __hash__(self):
-        return hash(self.elem)
-
-    def __eq__(self, x, y):
-        return x.elem == y.elem
-
-
-class LinkedList:
-
-    def __init__(self):
-        self.head = None
-        self.tail = None
-        self.length = 0
-
-    def add(self, node):
-        &quot;&quot;&quot;
-        add element to disjoint set
-        &quot;&quot;&quot;
-        if self.head:
-            node.prev = self
-            self.tail.next = node
-            self.tail = node
-        else:
-            self.head = node
-            self.tail = node
-            node.prev = self
-        self.length += 1
-
-    def __len__(self):
-        return self.length
-
-    def set_length(self, l):
-        self.length = l
-
-    def __iter__(self):
-        next_node = self.head
-        while next_node:
-            yield next_node
-            next_node = next_node.next
-
-
-            
-
-class DisjointSet:
-
-    def __init__(self):
-        self.sets = []
-
-    def make_set(self, node):
-        &quot;&quot;&quot; 
-        creates a new set whose only member (and thus representative) is x.
-        &quot;&quot;&quot;
-        alist = LinkedList()
-        alist.add(node)
-        self.sets.append(alist)
-        return alist
-
-    def union(self, nodex, nodey):
-        &quot;&quot;&quot;
-        unites the dynamic sets that contain x and y, into a new set that is the union of these two sets.
-        &quot;&quot;&quot;
-        listx = self.find_set(nodex)
-        listy = self.find_set(nodey)
-        
-        # append the shorter list onto the longer.
-        if len(listx) &gt; len(listy):
-            listx.tail.next = listy.head
-            for y in listy:
-                y.prev = listx
-            listx.tail = listy.tail
-            listx.set_length = len(listx) + len(listy)
-            self.sets.remove(listy)
-        else:
-            listy.tail.next = listx.head
-            for x in listx:
-                x.prev = listy
-            listy.tail = listx.tail
-            listy.setlength = len(listx) + len(listy)
-            self.sets.remove(listx)
-
-
-
-    def find_set(self, node):
-        &quot;&quot;&quot;
-        returns the representative of the set containing x
-        &quot;&quot;&quot;
-        return node.prev
-
-    def connected_components(self):
-        for link_list in self.sets:
-            print(&#39;( &#39;, end=&#39;&#39;)
-            for node in link_list:
-                print(node.elem, end=&#39; &#39;)
-            print(&#39;) &#39;, end=&#39;&#39;)
-
-    def __len__(self):
-        return len(self.sets)
-
-</code></pre>
-
-<h2 id="toc_1">Forest Implementation of Disjoint-Set</h2>
-
-<p><code>Disjoint-set forest</code>, a faster implementation of disjoint sets, uses rooted trees represent sets, with each node containing one member and each tree representing one set. In a <code>disjoint-set forest</code>, each member points only to its parents. The root of each tree contains the representative and is its own parent.</p>
-
-<p><img src="media/15017471539381/15017663990040.png" alt="disjoint set forest"/></p>
-
-<p><strong>Union by Rank</strong>: For each node, we maintain a <code>rank</code>, which is an upper bound on the hight of the node. We make the root with smaller rank point to the root with larger rank during a <code>Union</code> operation.</p>
-
-<p><strong>Path Compression</strong>: When we call <code>find_set</code>, we traverse the path from a node up to its root. Instead of just returning root, we will link all the nodes in this path directly to root. </p>
-
-<p><img src="media/15017471539381/15017663772888.png" alt="path compression"/></p>
-
-<pre><code class="language-python">class DisjointSet:
-    &quot;&quot;&quot;
-    Disjoint set data structure
-    &quot;&quot;&quot;
-
-    def __init__(self):
-        self.sets = []
-        self.parent = {}
-        self.rank = {}
-
-    def make_set(self, node):
-        &quot;&quot;&quot;
-        creates a new set whose only member (and thus representative) is x.
-        &quot;&quot;&quot;
-        self.parent[node] = node
-        self.sets.append(node)
-        self.rank[node] = 0
-
-    def union(self, x, y):
-        &quot;&quot;&quot;
-        unites the dynamic sets that contain x and y, into a new set that is the union of these two sets.
-        &quot;&quot;&quot;
-        x_root = self.find_set(x)
-        y_root = self.find_set(y)
-        if x_root == y_root:
-            return
-
-        if self.rank[x_root] &gt; self.rank[y_root]:
-            self.parent[y_root] = x_root
-        else:
-            self.parent[x_root] = y_root
-            if self.rank[x_root] == self.rank[y_root]:
-                self.rank[y_root] = self.rank[y_root] + 1
-
-    def find_set(self, x):
-        &quot;&quot;&quot;
-        returns the representative of the set containing x
-        &quot;&quot;&quot;
-        if self.parent[x] != x:
-            self.parent[x] = self.find_set(self.parent[x])
-        return self.parent[x]
-
-</code></pre>
-
-<h2 id="toc_2">Reference</h2>
+<h2 id="toc_5">Reference</h2>
 
 <ol>
 <li>Cormen, Leiserson, Rivest, and Stein. 2009. Introduction to Algorithms (3rd edition)</li>
-<li><a href="https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-046j-design-and-analysis-of-algorithms-spring-2012/lecture-notes/MIT6_046JS12_lec16.pdf">Disjoint-set Data Structure MIT</a></li>
 </ol>
 
                         
@@ -371,7 +221,683 @@ class DisjointSet:
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2017/8/3</span>
+                    <span class="date">2017/7/31</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Greedy.html'>Greedy</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="binary_search_tree.html">
+                
+                  <h1>Python树(三)：Binary Search Tree</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>A <code>binary search tree</code>  is a tree that keys that are less than the parent are found in the left subtree, and keys that are greater than the parent are found in the right subtree.</p>
+
+<p>Let \(x\) be a node in a binary search tree. If \(y\) is a node in the left subtree of \(x\), then \(y.key\le x.key\). If \(y\) is a node in the right subtree of \(x\), then \(y.key\le x.key\).</p>
+
+<h2 id="toc_0">Implementation</h2>
+
+<ul>
+<li><code>Map()</code> Create a new, empty map.</li>
+<li><code>put(key,val)</code> Add a new key-value pair to the map. If the key is already in the map then replace the old value with the new value.</li>
+<li><code>get(key)</code> Given a key, return the value stored in the map or <code>None</code> otherwise.</li>
+<li><code>del</code> Delete the key-value pair from the map using a statement of the form <code>del map[key]</code>.</li>
+<li><code>len()</code> Return the number of key-value pairs stored in the map.</li>
+<li><code>in</code> Return <code>True</code> for a statement of the form <code>key in map</code>, if the given key is in the map.</li>
+</ul>
+
+<p>To implement the binary search tree,  the method of <code>the nodes and references approached</code> similar to <code>binary tree</code>(<a href="http://larryim.cc/tree_2.html">Link</a>) The <code>BinarySearchTree</code> class has a reference to the <code>TreeNode</code> that is the root of the binary search tree. </p>
+
+<h3 id="toc_1"><code>delete</code> method</h3>
+
+<p>Once we’ve found the node containing the key we want to delete, there are three cases that we must consider:</p>
+
+<ul>
+<li>The node to be deleted has no children.</li>
+<li>The node to be deleted has only one child.</li>
+<li>The node to be deleted has two children.</li>
+</ul>
+
+<p>The first case is straightforward. If the current node has no children all we need to do is delete the node and remove the reference to this node in the parent. The code for this case is shown in here.</p>
+
+<p>The second case is only slightly more complicated. If a node has only a single child, then we can simply promote the child to take the place of its parent. The code for this case is shown in the next listing. As you look at this code you will see that there are six cases to consider. Since the cases are symmetric with respect to either having a left or right child we will just discuss the case where the current node has a left child. The decision proceeds as follows:</p>
+
+<ul>
+<li>If the current node is a left child then we only need to update the parent reference of the left child to point to the parent of the current node, and then update the left child reference of the parent to point to the current node’s left child.</li>
+<li>If the current node is a right child then we only need to update the parent reference of the left child to point to the parent of the current node, and then update the right child reference of the parent to point to the current node’s left child.</li>
+<li>If the current node has no parent, it must be the root. In this case we will just replace the key, payload, leftChild, and rightChild data by calling the <code>replaceNodeData</code> method on the root.</li>
+</ul>
+
+<p>The third case is the most difficult case to handle. If a node has two children, then it is unlikely that we can simply promote one of them to take the node’s place. We can, however, search the tree for a node that can be used to replace the one scheduled for deletion. What we need is a node that will preserve the binary search tree relationships for both of the existing left and right subtrees. The node that will do this is the node that has the next-largest key in the tree. We call this node the <code>successor</code>, and we will look at a way to find the successor shortly. The successor is guaranteed to have no more than one child, so we know how to remove it using the two cases for deletion that we have already implemented. Once the successor has been removed, we simply put it in the tree in place of the node to be deleted.</p>
+
+<h3 id="toc_2"><code>successor</code> Method</h3>
+
+<p>The code to find the successor is a method of the <code>TreeNode</code> class. This code makes use of the same properties of binary search trees that cause an <code>inorder traversal</code> to print out the nodes in the tree from smallest to largest. There are three cases to consider when looking for the successor:</p>
+
+<ul>
+<li>If the node has a right child, then the successor is the smallest key in the right subtree.</li>
+<li>If the node has no right child and is the left child of its parent, then the parent is the successor.</li>
+<li>If the node is the right child of its parent, and itself has no right child, then the successor to this node is the successor of its parent, excluding this node.</li>
+</ul>
+
+<pre><code class="language-python">
+class BinarySearchTree(object):
+
+    def __init__(self):
+        self.root = None
+        self.size = 0
+
+    def put(self, key, val):
+        if self.root:
+            self._put(key, val, self.root)
+        else:
+            self.root = TreeNode(key, val)
+        self.size = self.size + 1
+
+    def _put(self, key, val, currentNode):
+        if key &lt; currentNode.key:
+            if currentNode.hasLeftChild():
+                self._put(key, val, currentNode.leftChild)
+            else:
+                currentNode.leftChild = TreeNode(key, val, parent=currentNode)
+        else:
+            if currentNode.hasRightChild():
+                self._put(key, val, currentNode.rightChild)
+            else:
+                currentNode.rightChild = TreeNode(key, val, parent=currentNode)
+
+    def __setitem__(self, k, v):
+        self.put(k, v)
+
+    def get(self, key):
+        if self.root:
+            res = self._get(key, self.root)
+            if res:
+                return res.payload
+            else:
+                return None
+        else:
+            return None
+
+    def _get(self, key, currentNode):
+        if not currentNode:
+            return None
+        elif currentNode.key == key:
+            return currentNode
+        elif key &lt; currentNode.key:
+            return self._get(key, currentNode.leftChild)
+        else:
+            return self._get(key, currentNode.rightChild)
+
+    def __getitem__(self, key):
+        res = self.get(key)
+        if res:
+            return res
+        else:
+            raise KeyError(&#39;Error, key not in tree&#39;)
+
+    def __contains__(self, key):
+        if self._get(key, self.root):
+            return True
+        else:
+            return False
+
+    def length(self):
+        return self.size
+
+    def __len__(self):
+        return self.size
+
+    def __iter__(self):
+        return self.root.__iter__()
+
+    def delete(self, key):
+        if self.size &gt; 1:
+            nodeToRemove = self._get(key, self.root)
+            if nodeToRemove:
+                self.remove(nodeToRemove)
+                self.size = self.size - 1
+            else:
+                raise KeyError(&#39;Error, key not in tree&#39;)
+        elif self.size == 1 and self.root.key == key:
+            self.root = None
+            self.size = self.size - 1
+        else:
+            raise KeyError(&#39;Error, key not in tree&#39;)
+
+    def __delitem__(self, key):
+        self.delete(key)
+
+    def remove(self, currentNode):
+        if currentNode.isLeaf():  # leaf
+            if currentNode == currentNode.parent.leftChild:
+                currentNode.parent.leftChild = None
+            else:
+                currentNode.parent.rightChild = None
+        elif currentNode.hasBothChildren():  # interior
+            succ = currentNode.findSuccessor()
+            succ.spliceOut()
+            currentNode.key = succ.key
+            currentNode.payload = succ.payload
+        else:  # this node has one child
+            if currentNode.hasLeftChild():
+                if currentNode.isLeftChild():
+                    currentNode.leftChild.parent = currentNode.parent
+                    currentNode.parent.leftChild = currentNode.leftChild
+                elif currentNode.isRightChild():
+                    currentNode.leftChild.parent = currentNode.parent
+                    currentNode.parent.rightChild = currentNode.leftChild
+                else:
+                    currentNode.replaceNodeData(currentNode.leftChild.key,
+                                                currentNode.leftChild.payload,
+                                                currentNode.leftChild.leftChild,
+                                                currentNode.leftChild.rightChild)
+            else:
+                if currentNode.isLeftChild():
+                    currentNode.rightChild.parent = currentNode.parent
+                    currentNode.parent.leftChild = currentNode.rightChild
+                elif currentNode.isRightChild():
+                    currentNode.rightChild.parent = currentNode.parent
+                    currentNode.parent.rightChild = currentNode.rightChild
+                else:
+                    currentNode.replaceNodeData(currentNode.rightChild.key,
+                                                currentNode.rightChild.payload,
+                                                currentNode.rightChild.leftChild,
+                                                currentNode.rightChild.rightChild)
+
+    def inorder(self):
+        self._inorder(self.root)
+
+    def _inorder(self, tree):
+        if tree != None:
+            self._inorder(tree.leftChild)
+            print(tree.key)
+            self._inorder(tree.rightChild)
+
+    def postorder(self):
+        self._postorder(self.root)
+
+    def _postorder(self, tree):
+        if tree:
+            self._postorder(tree.rightChild)
+            self._postorder(tree.leftChild)
+            print(tree.key)
+
+    def preorder(self):
+        self._preorder(self, self.root)
+
+    def _preorder(self, tree):
+        if tree:
+            print(tree.key)
+            self._preorder(tree.leftChild)
+            self._preorder(tree.rightChild)
+
+
+class TreeNode:
+    def __init__(self, key, val, left=None, right=None, parent=None):
+        self.key = key
+        self.payload = val
+        self.leftChild = left
+        self.rightChild = right
+        self.parent = parent
+        self.balanceFactor = 0
+
+    def hasLeftChild(self):
+        return self.leftChild
+
+    def hasRightChild(self):
+        return self.rightChild
+
+    def isLeftChild(self):
+        return self.parent and self.parent.leftChild == self
+
+    def isRightChild(self):
+        return self.parent and self.parent.rightChild == self
+
+    def isRoot(self):
+        return not self.parent
+
+    def isLeaf(self):
+        return not (self.rightChild or self.leftChild)
+
+    def hasAnyChildren(self):
+        return self.rightChild or self.leftChild
+
+    def hasBothChildren(self):
+        return self.rightChild and self.leftChild
+
+    def replaceNodeData(self, key, value, lc, rc):
+        self.key = key
+        self.payload = value
+        self.leftChild = lc
+        self.rightChild = rc
+        if self.hasLeftChild():
+            self.leftChild.parent = self
+        if self.hasRightChild():
+            self.rightChild.parent = self
+
+    def findSuccessor(self):
+        succ = None
+        if self.hasRightChild():
+            succ = self.rightChild.findMin()
+        else:
+            if self.parent:
+                if self.isLeftChild():
+                    succ = self.parent
+                else:
+                    self.parent.rightChild = None
+                    succ = self.parent.findSuccessor()
+                    self.parent.rightChild = self
+        return succ
+
+    def spliceOut(self):
+        if self.isLeaf():
+            if self.isLeftChild():
+                self.parent.leftChild = None
+            else:
+                self.parent.rightChild = None
+        elif self.hasAnyChildren():
+            if self.hasLeftChild():
+                if self.isLeftChild():
+                    self.parent.leftChild = self.leftChild
+                else:
+                    self.parent.rightChild = self.leftChild
+                self.leftChild.parent = self.parent
+            else:
+                if self.isLeftChild():
+                    self.parent.leftChild = self.rightChild
+                else:
+                    self.parent.rightChild = self.rightChild
+                self.rightChild.parent = self.parent
+
+    def findMin(self):
+        current = self
+        while current.hasLeftChild():
+            current = current.leftChild
+        return current
+
+    def __iter__(self):
+        &quot;&quot;&quot;The standard inorder traversal of a binary tree.&quot;&quot;&quot;
+        if self:
+            if self.hasLeftChild():
+                for elem in self.leftChild:
+                    yield elem
+            yield self.key
+            if self.hasRightChild():
+                for elem in self.rightChild:
+                    yield elem
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/7/19</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Tree.html'>Tree</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="tree_1.html">
+                
+                  <h1>Python树(一)：介绍</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<ul>
+<li>
+<a href="#toc_0">定义</a>
+</li>
+<li>
+<a href="#toc_1">树的应用</a>
+</li>
+<li>
+<a href="#toc_2">树的术语</a>
+</li>
+<li>
+<a href="#toc_3">树的种类</a>
+<ul>
+<li>
+<a href="#toc_4">Full, Complete, and Perfect Binary Tree</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_5">树的存储</a>
+</li>
+</ul>
+
+
+<p>树(tree)是一种抽象数据类型（ADT），用来模拟具有树状结构性质的数据集合。它是由\(n\)个有限节点组成一个具有层次关系的集合。树在计算机科学里应用广泛，包括操作系统，图形学，数据库和计算机网络。树和真正的树有许多相似的地方，也包括根、树枝和叶子，它们的不同在于计算机中的树的根在顶层而它的叶子在底部。它具有以下的特点：</p>
+
+<ul>
+<li>树是分级的，即树的顶层部分更加宽泛，而底部更加具体</li>
+<li>一个节点（node）的所有子节点（children）和另一个节点的子节点是完全独立的</li>
+<li>每个它的叶节点（leaf）都是不同的</li>
+</ul>
+
+<h2 id="toc_0">定义</h2>
+
+<p>每个树或者为空，或者包含一个根节点和 0 个或多个子树，其中每个子树也符合这样的定义。每个子树的根节点和其父树的根节点之间通过边相连。</p>
+
+<p>A tree is either empty or consists of a root and zeros or more subtrees, each of which is also a tree. The root of each subtree is connected to the root of the parent tree by an edge.</p>
+
+<h2 id="toc_1">树的应用</h2>
+
+<ul>
+<li><p><strong>文件系统</strong>。在文件系统中，磁盘的分支或者说子目录都是运用了树来构建的。下图展示了Unix文件系统的部分的分层情况。<br/>
+<img src="media/14973171257726/14973998176466.jpg" alt=""/></p></li>
+<li><p><strong>网页</strong>。下图是一个利用超文本标记语言（HTML）编写的简单网页，以及构成网页的超文本标记语言中的标签相互关联关系所构成的树。</p></li>
+</ul>
+
+<pre><code class="language-markup">&lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot; xml:lang=&quot;en&quot; lang=&quot;en&quot;&gt;
+    &lt;head&gt;
+        &lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=utf-8&quot; /&gt;
+        &lt;title&gt;simple&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;h1&gt;A simple web page&lt;/h1&gt;
+            &lt;ul&gt;
+                &lt;li&gt;List item one&lt;/li&gt;
+                &lt;li&gt;List item two&lt;/li&gt;
+            &lt;/ul&gt;
+        &lt;h2&gt;&lt;a href=&quot;http://www.cs.luther.edu&quot;&gt;Luther CS &lt;/a&gt;&lt;h2&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+
+<p><img src="media/14973171257726/14973999293521.jpg" alt=""/></p>
+
+<h2 id="toc_2">树的术语</h2>
+
+<ul>
+<li><p><strong>节点</strong>（Node） <br/>
+节点是树的基本构成部分。它可能有其他专属的名称，我们称之为“键（key）”。一个节点也可能有更多的信息，我们称之为“负载”。虽然负载信息和树的许多算法并不直接相关，但是它对于树的应用至关重要。</p></li>
+<li><p><strong>边</strong>（Edge） <br/>
+边也是树的基本构成部分。边连接两个节点，并表示它们之间存在联系。除了根节点外每个节点都有且只有一条与其他节点相连的入边（指向该节点的边），每个节点可能有许多条出边（从该节点指向其他节点的边）。</p></li>
+<li><p><strong>根节点</strong>（Root） <br/>
+根节点是树种中唯一一个没有入边的节点。在文件系统中，“/”是树的根节点。</p></li>
+<li><p><strong>路径</strong>（Path） <br/>
+路径是由边连接起来的节点的有序排列。例如：（动物界——脊索动物门——哺乳动物纲——食肉动物目——猫科——猫属——家猫）就是一条路径。</p></li>
+<li><p><strong>子节点集</strong>（Children） <br/>
+当一个节点的入边来自另一个节点时，我们称前者是后者的子节点，同一个节点的所有子节点构成子节点集。在文件系统中，节点log/,spool/,yp/构成节点var/的子节点集。</p></li>
+<li><p><strong>父节点</strong>（Parent） <br/>
+一个节点是它出边所连接的所有节点的父节点。在文件系统中，节点var/是节点log/,spool/,yp/的父节点。</p></li>
+<li><p><strong>兄弟节点</strong>（Sibling） <br/>
+同一个节点的所有子节点互为兄弟节点，在文件系统树中节点etc/和节点usr/是兄弟节点。</p></li>
+<li><p><strong>子树</strong>（Subtree） <br/>
+子树是一个父节点的某个子节点的所有边和后代节点所构成的集合。</p></li>
+<li><p><strong>叶节点</strong>（Leaf Node） <br/>
+没有子节点的节点成为称为叶节点。</p></li>
+<li><p><strong>层数</strong>（Level） <br/>
+一个节点的层数是指从根节点到该节点的路径中的边的数目。定义根节点的层数为 0。</p></li>
+<li><p><strong>高度</strong>（Height） <br/>
+树的高度等于所有节点的层数的最大值。图 2 中树的高度为 2。</p></li>
+</ul>
+
+<h2 id="toc_3">树的种类</h2>
+
+<ul>
+<li><strong>无序树</strong>：树中任意节点的子节点之间没有顺序关系，这种树称为无序树，也称为自由树；</li>
+<li><strong>有序树</strong>：树中任意节点的子节点之间有顺序关系，这种树称为有序树；
+<ul>
+<li><strong>霍夫曼树</strong>（用于信息编码）：带权路径最短的二叉树称为哈夫曼树或最优二叉树；</li>
+<li><strong>B树</strong>：一种对读写操作进行优化的自平衡的二叉查找树，能够保持数据有序，拥有多余两个子树；</li>
+<li><strong>二叉树</strong> (<code>Binary Tree</code>)：每个节点最多含有两个子树的树称为二叉树；
+<ul>
+<li><strong>完美二叉树/满二叉树</strong> (<code>Perfect Binary Tree</code>): 一个深度为\(k(&gt;0)\)且有\(2^(k+1) - 1\)个结点的二叉树</li>
+<li><strong>完全二叉树</strong> (<code>Complete Binary Tree</code>)：对于一颗二叉树，假设其深度为\(d(d&gt;1)\)。除了第d层外，其它各层的节点数目均已达最大值，且第d层所有节点从左向右连续地紧密排列，这样的二叉树被称为完全二叉树，其中满二叉树的定义是所有叶节点都在最底层的完全二叉树;</li>
+<li><strong>完满二叉树</strong>（<code>Full Binary Tree</code>): each node either a leaf or possesses exactly two child nodes</li>
+<li><strong>二叉搜索树</strong>（<code>Binary Search Tree</code>:  a binary tree that satisfies the binary search tree property, which states that the key in each node must be greater than or equal to any key stored in the left sub-tree, and less than or equal to any key stored in the right sub-tree.
+<ul>
+<li><strong>平衡二叉树</strong>（<code>Balanced Binary Search Tree</code>, AVL树）：any node-based binary search tree that automatically keeps its height (maximal number of levels below the root) small in the face of arbitrary item insertions and deletions.
+<ul>
+<li><strong>AVL Tree</strong>: 任何节点的两个子树的高度最大差别为1</li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+
+<h3 id="toc_4">Full, Complete, and Perfect Binary Tree</h3>
+
+<p><img src="media/14973171257726/15004304211378.png" alt=""/></p>
+
+<p><img src="media/14973171257726/Screen%20Shot%202017-07-19%20at%2010.14.46%20AM.png" alt="Screen Shot 2017-07-19 at 10.14.46 A"/></p>
+
+<h2 id="toc_5">树的存储</h2>
+
+<p>由于对节点的个数无法掌握，常见树的存储表示都转换成二叉树进行处理，子节点个数最多为2。</p>
+
+<ul>
+<li>嵌套列表：将数据结构存储在固定的数组中，然在遍历速度上有一定的优势，但因所占空间比较大，是非主流二叉树。二叉树通常以链式存储。</li>
+<li>节点和引用</li>
+<li>二叉堆</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/6/14</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Tree.html'>Tree</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="14969804243106.html">
+                
+                  <h1>栈与队列</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h2 id="toc_0">栈</h2>
+
+<p>栈(<code>stack</code>)，是一种容器，可存入数据元素、访问元素、删除元素，它的特点是只能在容器的一端加入数据（<code>push</code>）和输出数据(<code>pop</code>)的运算。没有了位置概念，保证任何时候可以访问，删除的元素都是此前最后存入的那个元素，确定了一种默认的访问顺序。</p>
+
+<p>栈数据结构只允许在一端进行操作，按照后进先出(<code>LIFO, Last In First Out</code>)的原理运作。</p>
+
+<p>栈可以用顺序表实现，也可以用链表实现。</p>
+
+<p><img src="media/14969804243106/Screen%20Shot%202017-06-10%20at%203.14.14%20PM.png" alt="Screen Shot 2017-06-10 at 3.14.14 P"/></p>
+
+<h3 id="toc_1">栈的操作</h3>
+
+<ul>
+<li><code>Stack()</code> 创建一个新的空栈</li>
+<li><code>push(item)</code> 添加一个新的元素item到栈顶</li>
+<li><code>pop()</code> 弹出栈顶元素</li>
+<li><code>peek()</code> 返回栈顶元素</li>
+<li><code>is_empty()</code> 判断栈是否为空</li>
+<li><code>size()</code> 返回栈的元素个数</li>
+</ul>
+
+<pre><code class="language-python">class Stack(object):
+    &quot;&quot;&quot;
+    创建一个新的空栈
+    &quot;&quot;&quot;
+    def __init__(self):
+        self.__list = []
+
+    def push(self, item):
+        &quot;&quot;&quot;
+        添加一个新的元素item到栈顶
+        &quot;&quot;&quot;
+        self.__list.append(item)
+
+    def pop(self):
+        &quot;&quot;&quot;
+        弹出栈顶元素
+        &quot;&quot;&quot;
+        return self.__list.pop()
+
+    def peek(self):
+        &quot;&quot;&quot;
+        返回栈顶元素
+        &quot;&quot;&quot;
+        if self.is_empty():
+            return None
+        else:
+            return self.__list[-1]
+
+    def is_empty(self):
+        &quot;&quot;&quot;
+        判断栈是否为空
+        &quot;&quot;&quot;
+        return not self.__list  ## 空链表、空字典等是假
+
+    def size(self):
+        &quot;&quot;&quot;
+        返回栈的元素个数
+        &quot;&quot;&quot;
+        return self.__list.__len__()
+</code></pre>
+
+<h2 id="toc_2">队列</h2>
+
+<p>队列(<code>queue</code>,美音/kju/)只是允许在一端进行插入操作，而在另一段进行删除操作的线性表。队列是一种先进先出（<code>First In First Out, FIFO</code>）的线性表。允许插入的一端为队尾，允许删除的一端为队头。队列不允许在中间部位进行操作。</p>
+
+<p><img src="media/14969804243106/Screen%20Shot%202017-06-10%20at%203.21.23%20PM.png" alt="Screen Shot 2017-06-10 at 3.21.23 P"/></p>
+
+<h3 id="toc_3">队列的操作</h3>
+
+<ul>
+<li><code>Queue()</code> 创建一个空的队列</li>
+<li><code>enqueue(item)</code> 往队列中添加一个item元素</li>
+<li><code>dequeue()</code> 从队列头部删除一个元素</li>
+<li><code>is_empty()</code> 判断一个队列是否为空</li>
+<li><code>size()</code> 返回队列的大小</li>
+</ul>
+
+<pre><code class="language-python">class Queue(object):
+    &quot;&quot;&quot;队列&quot;&quot;&quot;
+    def __init__(self):
+        self.__list = []
+
+    def enqueue(self, item):
+        &quot;&quot;&quot;往队列中添加一个item元素&quot;&quot;&quot;
+        self.__list.append(item)
+
+    def dequeue(self):
+        &quot;&quot;&quot;从队列头部删除一个元素&quot;&quot;&quot;
+        return self.__list.pop(0)
+
+    def is_empty(self):
+        &quot;&quot;&quot;判断一个队列是否为空&quot;&quot;&quot;
+        return not self.__list
+
+    def size(self):
+        &quot;&quot;&quot;返回队列的大小&quot;&quot;&quot;
+        return len(self.__list)
+</code></pre>
+
+<h2 id="toc_4">双端队列</h2>
+
+<p>双端队列(deque，全名double-ended queue, (pronounced “deck”))，是一种具有队列和栈的性质的数据结构。</p>
+
+<p>双端队列中的元素可以从两端弹出，其限定插入和删除操作在表的两端进行。双端队列可以在队列任意一端入队和出队。</p>
+
+<p><img src="media/14969804243106/14970822950255.png" alt=""/></p>
+
+<h3 id="toc_5">双端队列的操作</h3>
+
+<ul>
+<li><code>Deque()</code> 创建一个空的双端队列</li>
+<li><code>add_front(item)</code> 从队头加入一个item元素</li>
+<li><code>add_rear(item)</code> 从队尾加入一个item元素</li>
+<li><code>remove_front()</code> 从队头删除一个item元素</li>
+<li><code>remove_rear()</code> 从队尾删除一个item元素</li>
+<li><code>is_empty()</code> 判断双端队列是否为空</li>
+<li><code>size()</code> 返回队列的大小</li>
+</ul>
+
+<pre><code class="language-python">class Deque():
+    &quot;&quot;&quot;
+    创建一个空的双端队列
+    &quot;&quot;&quot;
+    def __init__(self):
+        self.__list = []
+
+    def add_front(self, item):
+        &quot;&quot;&quot;从队头加入一个item元素&quot;&quot;&quot;
+        self.__list.insert(0, item)
+
+    def add_rear(self, item):
+        &quot;&quot;&quot;从队尾加入一个item元素&quot;&quot;&quot;
+        self.__list.append(item)
+    
+    def remove_front(self):
+        &quot;&quot;&quot;从队头删除一个item元素&quot;&quot;&quot;
+        return self.__list.pop(0)
+
+    def remove_rear(self):
+        &quot;&quot;&quot;从队尾删除一个item元素&quot;&quot;&quot;
+        return self.__list.pop()
+    
+    def is_empty(self):
+        &quot;&quot;&quot;判断双端队列是否为空&quot;&quot;&quot;
+        return not self.__list
+
+    def size(self):
+        &quot;&quot;&quot;返回队列的大小&quot;&quot;&quot;
+        return self.__list.__len__()
+    ```
+
+
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/6/9</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='data_structure_and_algorithm.html'>数据结构和算法</a></span>
@@ -388,447 +914,139 @@ class DisjointSet:
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="hash_table_5_hashable.html">
+                <a class="clearlink" href="priority_queue.html">
                 
-                  <h1>Hash Table (5): Hashable</h1>
+                  <h1>Priority queue</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<p>To make items hashable, you should implement <code>__hash__</code>. You should also implement <code>__eq__</code> in a compatible way -- items that are equivalent should hash the same.</p>
+                        	<p><strong>A priority queue</strong>(优先队列) is an ADP which likes a regular queue or stack , but where additionally each element has a <code>priority</code> associated with it. In a priority queue, an element with high priority is served before an element with low priority. If two elements have the same priority, they are served according to their order in the queue.</p>
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/8/3</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Hash%20Table.html'>Hash Table</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="hash_table_1_introduction.html">
-                
-                  <h1>Hash Table (1): Introduction</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>One of the most useful Python collections is the dictionary, which is an associative data type where you can store key-data pairs. It is implemented using <code>hash tables</code>(哈希表).</p>
-
-<p><code>Hash table</code> (哈希表) is a collection of items which are stored in such a way as to make it easy to find item. Each position of the hash table, often called a <code>slot</code>, can hold an item and is named by an integer value starting at 0. The mapping between an item and the slot where that item belongs in the hash table is called the <code>hash function</code>(哈希函数). A <code>perfect hash function</code> maps every items into a unique slot. When two items hash to the same slot, <code>collision</code> happens. And a systematic method, which called <code>collision resolution</code>, for placing the second item in the hash table must be put forward.</p>
-
-<h2 id="toc_0">Direct-address tables</h2>
-
-<p>If the number of possible keys is small and they are unique, <code>direct-address tables</code> (直接寻址表) can be used. Each slot corresponds to a unique key.</p>
-
-<pre><code class="language-python">
-Insert(T,x)
-    T[key(x)] = x
-    
-Search(T,x)
-    return(T[key(x)])
-    
-Delete(T,x)
-    T[key(x)] = NIL
-</code></pre>
-
-<p><img src="media/14973464173252/14973484465039.gif" alt="nameasdfasfas"/></p>
-
-<p>The range of the key determines the size of the direct address table and may be too large to be practical. For instance, it&#39;s not likely that you&#39;ll be able to use a direct address table to store elements which have arbitary 32-but integers as their keys for a few years yet.</p>
-
-<h2 id="toc_1">Hash function</h2>
-
-<h3 id="toc_2">What is a good hash function</h3>
-
-<p>Hash functions should have the following properties:</p>
+<p>A priority queue must at least support the following operations:</p>
 
 <ul>
-<li>Fast computation of the hash value (\(O(1)\)) </li>
-<li>Hash values should be distributed (nearly) uniformly</li>
+<li><code>insert_with_priority</code>: add an element to the queue with an associated priority.</li>
+<li><code>pull_highest_priority_element</code>: remove the element from the queue that has the highest priority, and return it.</li>
+<li><code>peek</code> :return the highest-priority element but does not modify the queue</li>
 </ul>
 
-<p>The goal of a hash function is</p>
+<h2 id="toc_0">Naive Implementation</h2>
 
-<ul>
-<li>disperse the keys in an apparently random way</li>
-</ul>
+<p>There are a variety of simple, usually inefficient, ways to implement a priority queue. They provide an analogy to help one understand what a priority queue is. For instance, one can keep all the elements in an unsorted list. Whenever the highest-priority element is requested, search through all elements for the one with the highest priority. (In big O notation: \(O(1)\) insertion time, \(O(n)\) pull time due to search.)</p>
 
-<p><code>Remainder method</code> simply takes an item and divides it by the table size, returning the remainder as its hash value, i.e. \(h(item)=item\%11\)</p>
+<h2 id="toc_1">Heap Implementation</h2>
 
-<p><code>Folding method</code> begins by dividing the item into equal size pieces (the last piece may not be of equal size), and then added together to give the resulting hash value by extra step of dividing by the table size and keeping the remainder.</p>
-
-<h2 id="toc_3">Collision Resolution</h2>
-
-<p>Various techniques are used to manage collision:</p>
-
-<ul>
-<li>Chaining (链接法)</li>
-<li>Open addressing (开放寻址法)
-<ul>
-<li>linear probing (线性探查)</li>
-<li>quadratic probing (二次探查)</li>
-</ul></li>
-</ul>
-
-<h3 id="toc_4">chaining</h3>
-
-<p>Chaining(链接法) allows each slot to hold a reference to a collection of items. It allows many items to exist at the same location in the hash table.</p>
-
-<p><img src="media/14973464173252/Screen%20Shot%202017-06-13%20at%206.16.40%20PM.png" alt="Screen Shot 2017-06-13 at 6.16.40 P"/></p>
-
-<h3 id="toc_5">Open addressing</h3>
-
-<p>In <strong>open addressing</strong>, all elements occupy the hash table itself. That is, each table entry contains either an element of the dynamic set or NIL. When searching for an element, we systematically examine table slots until either we find the desired element or we have ascertained that the element is not in the table. No lists and no elements are stored outside the table, unlike in chaining.</p>
-
-<h4 id="toc_6">Linear probing</h4>
-
-<p>One of the simplest re-hashing functions is +1(or -1) on a collision, i.e. look in the neighbouring slot in the table. It calculates new address extremely quickly.</p>
-
-<p>A disadvantage to linear probing is the tendency for clustering: items become clustered in the table.</p>
-
-<h4 id="toc_7">Quadratic probing</h4>
-
-<p>Instead of using a constant &#39;skip&#39; value, quadratic probing using a rehash function that increments the hash value by 1,3,5,7,9 and so on. This means that if the first hash value is \(h\), the successive values are \(h+1\), \(h+4\),\(h+9\), \(h+16\) and so on.</p>
-
-<h3 id="toc_8">Load factor</h3>
-
-<p>Load factor (装载因子) is commonly denoted by \(\lambda = \frac{number\_of\_items}{table\_size}\).</p>
-
-<p>The most important piece of information we need to analyze the use of a hash table is the load factor, \(\lambda\). Conceptually, if the load factor is small, then there is a lower chance of collisions.</p>
-
-<p>For a successful search, using open addressing with linear probing, the average number of comparisons is approximately \(\frac{1}{2}(1+\frac{1}{1-\lambda})\) and an unsuccessful search gives \(\frac{1}{2}(1+(\frac{1}{1-\lambda})^2)\).</p>
-
-<p>Using chaining, the average number of comparisons is \(1+\lambda/2\) for the successful case, and simply \(\lambda\) comparisons if the search is unsuccessful.</p>
-
-<p>High load factor \(\alpha \ge 0.85\) has negative effect on efficiency:</p>
-
-<ul>
-<li>lots of collisions<br/>
-efficiency due to collision overhead</li>
-</ul>
-
-<p>其中出现的魔法方法可以参见<a href="http://larryim.cc/14973620419454.html">Link</a></p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/6/13</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Hash%20Table.html'>Hash Table</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="Hash_Table_4_Universal_Hashing.html">
-                
-                  <h1>Hash Table (4): Universal Hashing</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>Let \(H\) be a finite collection of hash functions that map a given universe \(U\) of keys into the range \(\{0,1,...,m-1\}\). Such a collection is said to be <code>universal</code> if for each pair of distinct keys \(k,l \in U\), the number of <code>hash function</code> \(h \in H\) for which \(h(k) = h(l)\) is at most \(\frac{|H|}{m}\), i.e.</p>
-
-<p>\[ \forall k,l \in U, k\ne l: \Pr_{h\in H }[h(x)=h(y)]\le \frac{1}{m}  \]</p>
-
-<h2 id="toc_0">Why Universal Hashing?</h2>
-
-<p>Some malicious adversary might chooses the keys which all hash to the same slot, yielding an average retrieval time of \(\Theta(n)\). Instead of fixed hash functions, randomly chosen hash functions can yield good performance on average.</p>
-
-<h2 id="toc_1">Designing a universal class of hash functions</h2>
-
-<p>In short, you can generate family of hash functions using following simple equation:</p>
-
-<pre><code class="language-python">h(x,a,b) = ((ax+b) mod p) mod m
-</code></pre>
-
-<p>\(x\) is key you want to hash<br/>
-\(a\) is any number you can choose between \(1\) to \(p-1\) inclusive.<br/>
-\(b\) is any number you can choose between \(0\) to \(p-1\) inclusive.<br/>
-\(p\) is a prime number that is greater than max possible value of \(x\)<br/>
-\(m\) is a max possible value you want for hash code + 1<br/>
-By selecting different values of \(a\) and \(b\) you can generate many hash codes that are independent of each other.</p>
-
-<h2 id="toc_2">Implementation</h2>
-
-<pre><code class="language-python">import random
-
-
-class UniversalHash:
-    &quot;&quot;&quot;
-    &gt;&gt;&gt; h=UniversalHash()
-    &gt;&gt;&gt; h[54]=&quot;cat&quot;
-    &gt;&gt;&gt; h[26]=&quot;dog&quot;
-    &gt;&gt;&gt; h[93]=&quot;lion&quot;
-    &gt;&gt;&gt; h[77]=&quot;bird&quot;
-    &gt;&gt;&gt; h[31]=&quot;cow&quot;
-    &gt;&gt;&gt; h[44]=&quot;goat&quot;
-    &gt;&gt;&gt; 54 in h
-    True
-    &quot;&quot;&quot;
+<pre><code class="language-python">class PriorityQueue:
     def __init__(self):
-        self.size = 100
-        self.slots = [None] * self.size
-        self.data = [None] * self.size
-        (self.p, self.a, self.b) = self.generate_hash_constants()
+        self.heapArray = [(0, 0)]
+        self.currentSize = 0
 
-
-    def generate_hash_constants(self):
+    def buildHeap(self, alist):
         &quot;&quot;&quot;
-        generate a, b, p for universal hashing
+        &quot;&quot;&quot;从一个包含元素的列表创建新堆&quot;&quot;&quot;
+        :param alist: a list
         &quot;&quot;&quot;
-        p = self._get_prime()  # set p a  random prime number
-        a = random.randint(1, p - 1)  # A has a random value between 1 and p - 1.
-        b = random.randint(1, p - 1)  # B has a random value between 1 and p - 1
-        return p, a, b
+        self.currentSize = len(alist)
+        self.heapArray = [(0, 0)]
+        for i in alist:
+            self.heapArray.append(i)
+        i = len(alist) // 2
+        while (i &gt; 0):
+            self.percDown(i)
+            i = i - 1
 
-    def put(self, key, data):
-        hash_value = self.hash_function(key)
-        if self.slots[hash_value] is None:
-            self.slots[hash_value] = key
-            self.data[hash_value] = data
-        elif self.slots[hash_value] == key:
-            self.data[hash_value] = data
+    def percDown(self, i):
+        &quot;&quot;&quot;
+        Percolate the ith node down the tree
+        &quot;&quot;&quot;
+        while (i * 2) &lt;= self.currentSize:
+            mc = self.minChild(i)
+            if self.heapArray[i][0] &gt; self.heapArray[mc][0]:
+                tmp = self.heapArray[i]
+                self.heapArray[i] = self.heapArray[mc]
+                self.heapArray[mc] = tmp
+            i = mc
+
+    def minChild(self, i):
+        &quot;&quot;&quot;
+        Find the smallest child
+        &quot;&quot;&quot;
+        if i * 2 &gt; self.currentSize:
+            return -1
         else:
-            # rehash
-            next_slot = self.rehash(hash_value, len(self.slots))
-            while self.slots[next_slot] is not None and self.slots[next_slot] != key:
-                next_slot = self.rehash(hash_value, len(self.slots))
-
-            if self.slots[next_slot] is None:
-                self.slots[next_slot] = key
-                self.data[hash_value] = data
+            if i * 2 + 1 &gt; self.currentSize:
+                return i * 2
             else:
-                self.data[hash_value] = data
+                if self.heapArray[i * 2][0] &lt; self.heapArray[i * 2 + 1][0]:
+                    return i * 2
+                else:
+                    return i * 2 + 1
 
-    def hash_function(self, key):
+    def percUp(self, i):
         &quot;&quot;&quot;
-        hash_function implements the simple remainder method
+        Percolate the ith node up the tree
         &quot;&quot;&quot;
-        return round(self.a * key + self.b) % self.p % self.size
+        while i // 2 &gt; 0:
+            if self.heapArray[i][0] &lt; self.heapArray[i // 2][0]:
+                tmp = self.heapArray[i // 2]
+                self.heapArray[i // 2] = self.heapArray[i]
+                self.heapArray[i] = tmp
+            i = i // 2
 
-    def rehash(self, old_hash, size):
-        &quot;&quot;&quot;
-        linear probing with a plus 1
-        &quot;&quot;&quot;
-        return (old_hash+1) % size
+    def add(self, k):
+        self.heapArray.append(k)
+        self.currentSize = self.currentSize + 1
+        self.percUp(self.currentSize)
 
-    def get(self, key):
-        start_slot = self.hash_function(key)
-        data = None
-        stop = False
-        found = False
-        position = start_slot
-        while self.slots[position] is not None and \
-                not found and not stop:
-            if self.slots[position] == key:
-                found = True
-                data = self.data[position]
-            else:
-                position = self.rehash(position, len(self.slots))
-            if position == start_slot:
-                stop = True
-        return data
+    def delMin(self):
+        &quot;&quot;&quot;
+        delete the min-vertex of heap array, which always in the first position.
+        &quot;&quot;&quot;
+        retval = self.heapArray[1][1]
+        self.heapArray[1] = self.heapArray[self.currentSize]
+        self.currentSize = self.currentSize - 1
+        self.heapArray.pop()
+        self.percDown(1)
+        return retval
 
-    def _is_prime(self,n):
-        if n &lt;= 2 or n%2 == 0:
+    def isEmpty(self):
+        &quot;&quot;&quot;
+        return true if the heapArray is empty
+        &quot;&quot;&quot;
+        if self.currentSize == 0:
+            return True
+        else:
             return False
 
-        return not any((n%i == 0 for i in range(3, n-1)))
-
-    def _get_prime(self, p=0):
+    def decreaseKey(self, val, amt):
         &quot;&quot;&quot;
-        get a prime number
+        Decrease the key of the specific vertex (here, val)
+
+        First, find its position in the heapArray: myKey
+        Second, set its position to the right
         &quot;&quot;&quot;
-        if p == 0:
-            p = random.randint(1000000,10000000)
-        while not self._is_prime(p):
-            p += 1
+        done = False
+        i = 1
+        myKey = 0
+        while not done and i &lt;= self.currentSize:
+            if self.heapArray[i][1] == val:
+                done = True
+                myKey = i
+            else:
+                i = i + 1
+        if myKey &gt; 0:
+            self.heapArray[myKey] = (amt, self.heapArray[myKey][1])
+            self.percUp(myKey)
 
-        return p
-
-    def __getitem__(self, key):
-        return self.get(key)
-
-    def __setitem__(self, key, data):
-        self.put(key, data)
-
-    def __len__(self):
+    def __contains__(self, vtx):
         &quot;&quot;&quot;
-        return length
+        Built-in Magic method
         &quot;&quot;&quot;
-        count = 0
-        for item in self.slots:
-            if item is not None:
-                count += 1
-
-        return count
-
-    def __contains__(self, item):
-        &quot;&quot;&quot;
-        定义了使用in和not in进行成员测试时类的行为
-        &quot;&quot;&quot;
-        return self.get(item) is not None
-
-    def __iter__(self):
-        &quot;&quot;&quot;
-        iterator
-        &quot;&quot;&quot;
-        for item in self.slots:
-            if item is not None:
-                yield item
-
-if __name__ == &quot;__main__&quot;:
-    import doctest
-    doctest.testmod(verbose=True)
-
-</code></pre>
-
-<h2 id="toc_3">Resources</h2>
-
-<ol>
-<li><a href="https://www.cse.iitb.ac.in/%7Esri/cs213/lec-Hashing.pdf">Hash Functions and Hash Tables</a></li>
-<li>Cormen, Leiserson, Rivest, and Stein, Introduction to Algorithms (3rd edition)</li>
-</ol>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/7/23</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Hash%20Table.html'>Hash Table</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="Hash_Table_3_A_variant_of_2_Sum_Algorithm.html">
-                
-                  <h1>Hash Table (3): A variant of 2-Sum Algorithm</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>The goal of the arcticle is to implement a variant of the <code>2-SUM algorithm</code>.</p>
-
-<p>The file contains 1 million integers, both positive and negative (repetitions exists!). This is your array of integers, with the \(i\)th row of the file specifying the \(i\)th entry of the array.</p>
-
-<p>The task is to compute the number of target values \(t\) in the interval \([-10000,10000]\)(inclusive) such that there are distinct numbers \(x,y\) in the input file that satisfy \(x+y=t\). </p>
-
-<h2 id="toc_0">Implementation</h2>
-
-<p>The key process lies in the <code>hash function</code>, which might be set to appropriate small value based on the origin value:<br/>
-\[\text{hash_function}= \frac{\text{number}}{\text{factor}}\]</p>
-
-<p>The <code>factor</code> is selected based on the number of <code>slots</code> needed in the algorithm. i.e.<br/>
-\[\frac{\text{the range of keys}}{\text{factor}}\approx \text{the number of slots} &lt; \text{the number of keys}\]</p>
-
-<p>There, factor is \(\frac{\text{the number of key}}{2}\)</p>
-
-<pre><code class="language-python">class HashTable(object):
-
-    def __init__(self):
-
-        self.size = 5000000
-        self.slots = [set() for i in range(self.size)]
-        self.data = set()
-
-    def put(self, key, data):
-
-        hash_value = self.hash_function(key)
-        self.slots[hash_value].add(data)
-        self.data.add(data)
-
-    def hash_function(self, key):
-
-        return key//(self.size//2)
-
-    def get(self, key):
-        &quot;&quot;&quot;
-        there key == data
-        &quot;&quot;&quot;
-        slot = self.hash_function(key)
-        if key in self.slots[slot]:
-            return key
-        else:
-            return None
-
-    def buildfromfile(self, textfile):
-
-        with open(text_file, &#39;r&#39;) as infile:
-            for line in infile.readlines():
-                self.put(int(line), int(line))
-
-    def two_sum_count(self):
-        &quot;&quot;&quot;
-        Compute the number of target values t in the interval[low, high] (inclusive),
-        such that there are distinct numbers x, y that satisfy x+y = t
-        &quot;&quot;&quot;
-        sums = set()
-
-        for key1 in self.data:
-            left = self.hash_function(-key1-10000)
-            right = self.hash_function(-key1+10000)
-
-            for slot in self.slots[left:right+1]:
-
-                for key2 in slot:
-
-                    if 10000 &gt; key1 + key2 &gt; -10000:
-                        sums.add(key1+key2)
-
-        return len(sums)
-
-
-if __name__ == &quot;__main__&quot;:
-
-    # target files for counting
-    text_file = &#39;two_sum.txt&#39;
-
-    hashnumber = HashTable()
-    hashnumber.buildfromfile(text_file)
-    print(hashnumber.two_sum_count())
+        for pair in self.heapArray:
+            if pair[1] == vtx:
+                return True
+        return False
 </code></pre>
 
                         
@@ -838,10 +1056,10 @@ if __name__ == &quot;__main__&quot;:
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2017/7/23</span>
+                    <span class="date">2017/7/12</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Hash%20Table.html'>Hash Table</a></span>
+          					    <span class="posted-in"><a href='data_structure_and_algorithm.html'>数据结构和算法</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -949,6 +1167,12 @@ if __name__ == &quot;__main__&quot;:
 	      
 		      
 			      <li class="post">
+			        <a href="bit_manipulation.html">Bit manipulation</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="scrapy_top100.html">Scrapy爬取猫眼TOP100榜</a>
 			      </li>
 		     
@@ -968,12 +1192,6 @@ if __name__ == &quot;__main__&quot;:
 		      
 			      <li class="post">
 			        <a href="diagrammatize_TCP_IP.html">图解TCP/IP</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15323640524161.html">Machine Learning with large datasets</a>
 			      </li>
 		     
 		  

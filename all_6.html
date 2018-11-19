@@ -50,15 +50,9 @@
       <div style="position: relative;width:100%;"><div style="position: absolute; width:100%;">
         <ul id="main-menu" class="left">
         
-        <li id=""><a target="_self" href="index.html">HomePage</a></li>
-        
         <li id=""><a target="_self" href="archives.html">Archives</a></li>
         
         <li id=""><a target="_blank" href="wiki">WIKI</a></li>
-        
-        <li id=""><a target="_self" href="notebook.html">NOTEBOOK</a></li>
-        
-        <li id=""><a target="_self" href="about.html">About</a></li>
         
         <li id=""><a target="_blank" href="note-os">NOTE-OS</a></li>
         
@@ -87,15 +81,9 @@
 <aside class="left-off-canvas-menu">
       <ul class="off-canvas-list">
         
-        <li><a target="_self" href="index.html">HomePage</a></li>
-        
         <li><a target="_self" href="archives.html">Archives</a></li>
         
         <li><a target="_blank" href="wiki">WIKI</a></li>
-        
-        <li><a target="_self" href="notebook.html">NOTEBOOK</a></li>
-        
-        <li><a target="_self" href="about.html">About</a></li>
         
         <li><a target="_blank" href="note-os">NOTE-OS</a></li>
         
@@ -149,128 +137,6 @@
 	<div class="large-8 medium-8 columns">
 		<div class="markdown-body home-categories">
 		
-			<div class="article">
-                <a class="clearlink" href="data_science_competition.html">
-                
-                  <h1>Data Science Competition</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h2 id="toc_0">real-world application v. s.competition</h2>
-
-<p><img src="media/15114480120681/real%20machine%20learning.png" alt="real machine learning"/></p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/11/23</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html'>机器学习</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="covariance_spark.html">
-                
-                  <h1>Covariance Matrix and its solution in Spark</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>A <code>covariance matrix</code>(协方差矩阵, 离差矩阵) is a matrix whose element in the \(i,j\) position is the covariance between the \(i^{th}\) and \(j^{th}\) elements of a <code>random vector</code>(随机向量,多元随机变量). Each element of a random vector is a scalar <code>random variable</code>(随机变量).</p>
-
-<p>Because the covariance of the \(i^{th}\) random variable with itself is simply that random variable&#39;s variance, each element on the principal diagonal of the covariance matrix is the variance of one of the random variables:</p>
-
-<p>The covariance between random variables \(X, Y\):</p>
-
-<p>\[\text{cov}(X,Y)=\text{E}[(X-E[X])(Y-E[Y])]\]</p>
-
-<p>Then the covariance matrix \(\sum\) is the matrix whose \((i,j)\) is the covariance</p>
-
-<p>\[\sum(i,j) =\text{cov}(X_i,X_j)=\text{E}[(X_i-E[X_i])(Y_i-E[Y_i])]\]</p>
-
-<p>where \(X=[X_1,...,X_n]\)</p>
-
-<h2 id="toc_0">Distributed Computing: Spark</h2>
-
-<p>Setup: Raw data \(\mathbf{P} \in \mathbb{R}^{n \times d}\)</p>
-
-<ul>
-<li>Step 1: Zero Mean Data \(X=\text{E}(P)\)
-<ul>
-<li>Compute \(d\) feature means, \(m\in \mathbf{R}^d\)</li>
-<li>Communication \(m\) to all workers</li>
-<li>Subtract \(m\) from each data point</li>
-</ul></li>
-<li>Step 2: Compute Covariance Matrix \( \mathbf{C}_{\mathbf X} = \frac{1}{n} \mathbf{X}^\top \mathbf{X} \,.\)
-<ul>
-<li>compute the outer product of each data point, </li>
-<li>add together these outer products, and divide by the number of data points</li>
-</ul></li>
-</ul>
-
-<p><img src="media/15124807146530/compute_covariance_matrix.png" alt="compute_covariance_matrix"/></p>
-
-<p>_Spark Code in Python_:</p>
-
-<pre><code class="language-python">def estimateCovariance(data):
-    &quot;&quot;&quot;Compute the covariance matrix for a given rdd.
-   
-    Args:
-        data (RDD of np.ndarray):  An `RDD` consisting of NumPy arrays.
-
-    Returns:
-        np.ndarray: A multi-dimensional array where the number of rows and columns both equal the length of the arrays in the input `RDD`.
-    &quot;&quot;&quot;
-    mean = data.mean()
-    normalized = data.map(lambda x: x-mean)
-    return normalized.map(lambda x: np.outer(x, x)).sum()/data.count()
-</code></pre>
-
-<h2 id="toc_1">Reference</h2>
-
-<ol>
-<li><a href="https://en.wikipedia.org/wiki/Covariance_matrix">Covariance matrix from wikipedia</a></li>
-</ol>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2017/11/25</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html'>机器学习</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
 			<div class="article">
                 <a class="clearlink" href="PCA.html">
                 
@@ -528,6 +394,166 @@ def varianceExplained(data, k=1):
                 </div>
               </div><!-- article -->
         
+			<div class="article">
+                <a class="clearlink" href="15108229432607.html">
+                
+                  <h1>`Filter`, `Map`, `Reduce`</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<pre><code class="language-python">&gt;&gt;&gt; foo = [2, 18, 9, 22, 17, 24, 8, 12, 27]
+&gt;&gt;&gt; print filter(lambda x: x % 3 == 0, foo)
+[18, 9, 24, 12, 27]
+&gt;&gt;&gt; 
+&gt;&gt;&gt; print map(lambda x: x * 2 + 10, foo)
+[14, 46, 28, 54, 44, 58, 26, 34, 64]
+&gt;&gt;&gt; 
+&gt;&gt;&gt; print reduce(lambda x, y: x + y, foo)
+139
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/11/16</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python%E7%89%B9%E6%80%A7.html'>Python特性</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15035780907547.html">
+                
+                  <h1>TensorFlow(5): Vector and Matrix Product in Numpy and TensorFlow</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h2 id="toc_0">Numpy</h2>
+
+<p>Following are common vector and matrix product operations in Numpy, they are quite simple and straightforward:</p>
+
+<ul>
+<li><p>Inner Product   \(\quad a^Tb\quad \):  <code>np.inner(a,b)</code></p></li>
+<li><p>Outer Product  \(\quad ab^T\quad \):  <code>np.outer(a,b)</code></p></li>
+<li><p>Dot Product  \(\quad a \cdot b = \sum a_ib_i\quad \): <code>np.dot(a,b)</code></p></li>
+<li><p>Elementwise Product  \(\quad c_i = a_ib_i\quad \): <code>np.multiply()</code> or <code>c=a*b</code></p></li>
+</ul>
+
+<p>Note: inner product is defined on vector spaces over a field 𝕂 (finite or infinite dimensional). Dot product refers specifically to the product of vectors in \(ℝ^n\)</p>
+
+<p>The difference between the following implementations of the dot/inner/outer/elementwise product are demonstrated as follows:</p>
+
+<pre><code class="language-python">import numpy as np
+
+W = np.ones((2, 7), dtype=&#39;float32&#39;)
+x1 = np.array([9, 2, 5, 0, 0, 7, 5])
+x2 = np.array([9, 2, 2, 9, 0, 9, 2])
+print(&#39;vector dot product&#39;, np.dot(x1,x2)) # dot product
+print(&#39;inner&#39;, np.inner(x1,x2)) # inner product
+print(&#39;outter&#39;, np.outer(x1,x2)) # outter product
+print(&#39;element-wsie&#39;, np.multiply(x1,x2)) # Element-wise product
+print(&#39;element-wsie&#39;, x1*x2) # Element-wise product
+print(&#39;matrix dot product&#39;, np.dot(W, x1)) # dot product
+</code></pre>
+
+<pre><code class="language-text">vector dot product 168
+inner 168
+outter [[81 18 18 81  0 81 18]
+ [18  4  4 18  0 18  4]
+ [45 10 10 45  0 45 10]
+ [ 0  0  0  0  0  0  0]
+ [ 0  0  0  0  0  0  0]
+ [63 14 14 63  0 63 14]
+ [45 10 10 45  0 45 10]]
+element-wsie [81  4 10  0  0 63 10]
+element-wsie [81  4 10  0  0 63 10]
+matrix dot product [ 28.  28.]
+</code></pre>
+
+<p>For detailed explanation, see <a href="">here</a>;</p>
+
+<h2 id="toc_1">TensorFlow</h2>
+
+<p>Vector inner/outer Product are a bit complex in TensorFlow. </p>
+
+<pre><code class="language-python">import tensorflow as tf
+import numpy as np
+
+x = tf.Variable([[1, -2, 3]], tf.float32, name=&#39;x&#39;)
+y = tf.Variable([[-1, 2, -3]], tf.float32, name=&#39;y&#39;)
+
+## inner product
+inner_product1 = tf.reduce_sum(tf.multiply(x, y))
+inner_product2 = tf.matmul(x, y, transpose_a=False, transpose_b= True) # different from inner_product1
+
+## outer product
+outer_product2 = tf.matmul(x, y, transpose_a= True)
+
+## matrix dot product
+X = tf.constant(np.random.randn(3,3), name=&#39;X&#39;)
+W = tf.constant(np.random.randn(3,3), name=&#39;W&#39;)
+matrix_product = tf.matmul(W, X)
+
+sess = tf.InteractiveSession()
+init_op = tf.global_variables_initializer()
+
+# run
+sess.run(init_op)
+print(sess.run(inner_product1))
+print(sess.run(inner_product2))
+print(sess.run(outer_product2))
+print(sess.run(matrix_product))
+</code></pre>
+
+<pre><code class="language-text">-14
+[[-14]]
+[[-1  2 -3]
+ [ 2 -4  6]
+ [-3  6 -9]]
+[[-0.88722509 -0.94128018 -2.1999658 ]
+ [-0.67967623  1.33193446 -0.75612585]
+ [ 0.31741623  1.3271727  -0.04311113]]
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/8/24</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Tensorflow.html'>Tensorflow</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
               
 
 
@@ -623,6 +649,12 @@ def varianceExplained(data, k=1):
 	      
 		      
 			      <li class="post">
+			        <a href="bit_manipulation.html">Bit manipulation</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="scrapy_top100.html">Scrapy爬取猫眼TOP100榜</a>
 			      </li>
 		     
@@ -642,12 +674,6 @@ def varianceExplained(data, k=1):
 		      
 			      <li class="post">
 			        <a href="diagrammatize_TCP_IP.html">图解TCP/IP</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15323640524161.html">Machine Learning with large datasets</a>
 			      </li>
 		     
 		  
