@@ -110,6 +110,14 @@
 <li >
     <a href="../mst_shortestpath/">Topic 9: Minimum Spanning Tree and Shortest Path</a>
 </li>
+            
+<li >
+    <a href="../stringsort/">Topic 11: String Sort</a>
+</li>
+            
+<li >
+    <a href="../tries/">Topic 12: Tries</a>
+</li>
     </ul>
   </li>
                                     
@@ -976,7 +984,12 @@
         <li class="main "><a href="#undirected-graph">UnDirected Graph</a></li>
             <li><a href="#glossary">Glossary</a></li>
             <li><a href="#api">API</a></li>
-        <li class="main "><a href="#cycle">Cycle</a></li>
+            <li><a href="#dfs">DFS</a></li>
+            <li><a href="#finding-paths">Finding Paths</a></li>
+            <li><a href="#bfs">BFS</a></li>
+            <li><a href="#connected-components">Connected components</a></li>
+            <li><a href="#cycle">Cycle</a></li>
+            <li><a href="#bipartite-graph">Bipartite Graph</a></li>
         <li class="main "><a href="#directed-graph">Directed Graph</a></li>
             <li><a href="#glossary_1">Glossary</a></li>
             <li><a href="#api_1">API</a></li>
@@ -1006,14 +1019,319 @@
 <li>A <em>simple path</em> is one with no repeated vertices. </li>
 <li>A <em>cycle</em> is a path with at least one edge whose first and last vertices are the same. </li>
 <li>A <em>simple cycle</em> is a cycle with no repeated edges or vertices (except the requisite repetition of the first and last vertices). The length of a path or a cycle is its number of edges.</li>
+<li>A <em>self-loop</em> is an edge that connects a vertex to itself.</li>
 <li>A graph is <em>connected</em> if there is a path from every vertex to every other vertex in the graph. A graph that is not connected consists of a set of <em>connected components</em>, which are maximal connected subgraphs.</li>
 <li>An <em>acyclic</em> graph is a graph with no cycles. A tree is an <em>acyclic</em> connected graph.</li>
 <li>A disjoint set of trees is called a <em>forest</em>. A <em>spanning tree</em> of a connected graph is a subgraph that contains all of that graph’s vertices and is a single tree. A <em>spanning forest</em> of a graph is the union of spanning trees of its connected components.</li>
 </ul>
 <h4 id="api">API<a class="headerlink" href="#api" title="Permanent link">&para;</a></h4>
 <p><img alt="undirected_graph_api" src="../figures/undirected_graph_api.png" /></p>
-<h3 id="cycle">Cycle<a class="headerlink" href="#cycle" title="Permanent link">&para;</a></h3>
-<p><a href="../unionfind/">UnionFind</a> algorithm can be used to check whether an undirected graph contains cycle or not. For each edge, make subsets using both the vertices of the edge. If both the vertices are in the same subset, a cycle is found.</p>
+<p>Use the adjacency-lists representation, where we maintain a vertex-indexed array of lists of the vertices connected by an edge to each vertex.</p>
+<p><img alt="" src="../figures/adjacency-list-represent-of-graph.png" /></p>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>Graph</span> <span class=o>{</span>
+    <span class=kd>private</span> <span class=kd>final</span> <span class=kt>int</span> <span class=n>V</span><span class=o>;</span>
+    <span class=kd>private</span> <span class=kt>int</span> <span class=n>E</span><span class=o>;</span>
+    <span class=kd>private</span> <span class=n>LinkedList</span><span class=o>&lt;</span><span class=n>Integer</span><span class=o>&gt;[]</span> <span class=n>adj</span><span class=o>;</span>
+
+    <span class=c1>// Initializes an empty graph with V vertices and 0 edges.</span>
+    <span class=kd>public</span> <span class=nf>Graph</span><span class=o>(</span><span class=kt>int</span> <span class=n>V</span><span class=o>)</span> <span class=o>{</span>
+        <span class=k>this</span><span class=o>.</span><span class=na>V</span> <span class=o>=</span> <span class=n>V</span><span class=o>;</span>
+        <span class=k>this</span><span class=o>.</span><span class=na>E</span> <span class=o>=</span> <span class=mi>0</span><span class=o>;</span>
+        <span class=n>adj</span> <span class=o>=</span>  <span class=o>(</span><span class=n>LinkedList</span><span class=o>&lt;</span><span class=n>Integer</span><span class=o>&gt;[])</span> <span class=k>new</span> <span class=n>LinkedList</span><span class=o>&lt;?&gt;[</span><span class=n>V</span><span class=o>];</span>
+        <span class=k>for</span> <span class=o>(</span><span class=kt>int</span> <span class=n>v</span> <span class=o>=</span> <span class=mi>0</span><span class=o>;</span> <span class=n>v</span> <span class=o>&lt;</span> <span class=n>V</span><span class=o>;</span> <span class=n>v</span><span class=o>++)</span>
+            <span class=n>adj</span><span class=o>[</span><span class=n>v</span><span class=o>]</span> <span class=o>=</span> <span class=k>new</span> <span class=n>LinkedList</span><span class=o>&lt;&gt;();</span>
+    <span class=o>}</span>
+
+    <span class=c1>// Returns the number of vertices in this graph.</span>
+    <span class=kd>public</span> <span class=kt>int</span> <span class=nf>V</span><span class=o>()</span> <span class=o>{</span>
+        <span class=k>return</span> <span class=n>V</span><span class=o>;</span>
+    <span class=o>}</span>
+
+    <span class=c1>// Returns the number of edges in this graph.</span>
+    <span class=kd>public</span> <span class=kt>int</span> <span class=nf>E</span><span class=o>()</span> <span class=o>{</span>
+        <span class=k>return</span> <span class=n>E</span><span class=o>;</span>
+    <span class=o>}</span>
+
+    <span class=c1>// Adds the undirected edge v-w to this graph.</span>
+    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>addEdge</span><span class=o>(</span><span class=kt>int</span> <span class=n>v</span><span class=o>,</span> <span class=kt>int</span> <span class=n>w</span><span class=o>)</span> <span class=o>{</span>
+        <span class=n>E</span><span class=o>++;</span>
+        <span class=n>adj</span><span class=o>[</span><span class=n>v</span><span class=o>].</span><span class=na>add</span><span class=o>(</span><span class=n>w</span><span class=o>);</span>
+        <span class=n>adj</span><span class=o>[</span><span class=n>w</span><span class=o>].</span><span class=na>add</span><span class=o>(</span><span class=n>v</span><span class=o>);</span>
+    <span class=o>}</span>
+
+
+    <span class=c1>// Returns the vertices adjacent to vertex v.</span>
+    <span class=kd>public</span> <span class=n>Iterable</span><span class=o>&lt;</span><span class=n>Integer</span><span class=o>&gt;</span> <span class=nf>adj</span><span class=o>(</span><span class=kt>int</span> <span class=n>v</span><span class=o>)</span> <span class=o>{</span>
+        <span class=k>return</span> <span class=n>adj</span><span class=o>[</span><span class=n>v</span><span class=o>];</span>
+    <span class=o>}</span>
+
+    <span class=c1>// Returns the degree of vertex v.</span>
+    <span class=kd>public</span> <span class=kt>int</span> <span class=nf>degree</span><span class=o>(</span><span class=kt>int</span> <span class=n>v</span><span class=o>)</span> <span class=o>{</span>
+        <span class=k>return</span> <span class=n>adj</span><span class=o>[</span><span class=n>v</span><span class=o>].</span><span class=na>size</span><span class=o>();</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></p>
+<h4 id="dfs">DFS<a class="headerlink" href="#dfs" title="Permanent link">&para;</a></h4>
+<p>DFS (to visit a vertex <span><span class="MathJax_Preview">v</span><script type="math/tex">v</script></span>)</p>
+<ul>
+<li>Mark <span><span class="MathJax_Preview">v</span><script type="math/tex">v</script></span> as visited.</li>
+<li>Recursively visit all unmarked vertices <span><span class="MathJax_Preview">w</span><script type="math/tex">w</script></span> adjacent to <span><span class="MathJax_Preview">v</span><script type="math/tex">v</script></span>.</li>
+</ul>
+<p>DFS marks all the vertices connected to a given source in time proportional to the sum of their degrees.</p>
+<p><img alt="depth-first-search-demo" src="../figures/depth-first-search-demo.gif" /></p>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>DepthFirstSearch</span> <span class=o>{</span>
+    <span class=kd>private</span> <span class=kt>boolean</span><span class=o>[]</span> <span class=n>marked</span><span class=o>;</span>    <span class=c1>// marked[v] = is there an s-v path?</span>
+    <span class=kd>private</span> <span class=kt>int</span> <span class=n>count</span><span class=o>;</span>           <span class=c1>// number of vertices connected to s</span>
+
+    <span class=c1>// Computes the vertices in graph G that are</span>
+    <span class=c1>// connected to the source vertex s.</span>
+    <span class=kd>public</span> <span class=nf>DepthFirstSearch</span><span class=o>(</span><span class=n>Graph</span> <span class=n>G</span><span class=o>,</span> <span class=kt>int</span> <span class=n>s</span><span class=o>)</span> <span class=o>{</span>
+        <span class=n>marked</span> <span class=o>=</span> <span class=k>new</span> <span class=kt>boolean</span><span class=o>[</span><span class=n>G</span><span class=o>.</span><span class=na>V</span><span class=o>()];</span>
+        <span class=n>dfs</span><span class=o>(</span><span class=n>G</span><span class=o>,</span> <span class=n>s</span><span class=o>);</span>
+    <span class=o>}</span>
+
+    <span class=c1>// depth first search from v</span>
+    <span class=kd>private</span> <span class=kt>void</span> <span class=nf>dfs</span><span class=o>(</span><span class=n>Graph</span> <span class=n>G</span><span class=o>,</span> <span class=kt>int</span> <span class=n>v</span><span class=o>)</span> <span class=o>{</span>
+        <span class=n>count</span><span class=o>++;</span>
+        <span class=n>marked</span><span class=o>[</span><span class=n>v</span><span class=o>]</span> <span class=o>=</span> <span class=kc>true</span><span class=o>;</span>
+        <span class=k>for</span> <span class=o>(</span><span class=kt>int</span> <span class=n>w</span> <span class=o>:</span> <span class=n>G</span><span class=o>.</span><span class=na>adj</span><span class=o>(</span><span class=n>v</span><span class=o>))</span> <span class=o>{</span>
+            <span class=k>if</span> <span class=o>(!</span><span class=n>marked</span><span class=o>[</span><span class=n>w</span><span class=o>])</span> <span class=n>dfs</span><span class=o>(</span><span class=n>G</span><span class=o>,</span> <span class=n>w</span><span class=o>);</span> 
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></p>
+<p>Typical applications.</p>
+<ul>
+<li>Find all vertices connected to a given source vertex. </li>
+<li>Find a path between two vertices.</li>
+</ul>
+<h4 id="finding-paths">Finding Paths<a class="headerlink" href="#finding-paths" title="Permanent link">&para;</a></h4>
+<p><strong><em>Single-source paths</em></strong>. Given a graph and a source vertex <span><span class="MathJax_Preview">s</span><script type="math/tex">s</script></span>, support queries of the form: Is there a path from <span><span class="MathJax_Preview">s</span><script type="math/tex">s</script></span> to a given target vertex <span><span class="MathJax_Preview">v</span><script type="math/tex">v</script></span>? If so, find such a path.</p>
+<p><img alt="paths_api" src="../figures/paths_api.png" /></p>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>Paths</span> <span class=o>{</span>
+    <span class=kd>private</span> <span class=kt>boolean</span><span class=o>[]</span> <span class=n>marked</span><span class=o>;</span>    <span class=c1>// marked[v] = is there an s-v path?</span>
+    <span class=kd>private</span> <span class=kt>int</span><span class=o>[]</span> <span class=n>edgeTo</span><span class=o>;</span>        <span class=c1>// edgeTo[v] = last edge on s-v path</span>
+    <span class=kd>private</span> <span class=kd>final</span> <span class=kt>int</span> <span class=n>s</span><span class=o>;</span>         <span class=c1>// source vertex</span>
+
+    <span class=c1>// Computes a path between s and every other vertex in graph G.</span>
+    <span class=kd>public</span> <span class=nf>Paths</span><span class=o>(</span><span class=n>Graph</span> <span class=n>G</span><span class=o>,</span> <span class=kt>int</span> <span class=n>s</span><span class=o>)</span> <span class=o>{</span>
+        <span class=k>this</span><span class=o>.</span><span class=na>s</span> <span class=o>=</span> <span class=n>s</span><span class=o>;</span>
+        <span class=n>edgeTo</span> <span class=o>=</span> <span class=k>new</span> <span class=kt>int</span><span class=o>[</span><span class=n>G</span><span class=o>.</span><span class=na>V</span><span class=o>()];</span>
+        <span class=n>marked</span> <span class=o>=</span> <span class=k>new</span> <span class=kt>boolean</span><span class=o>[</span><span class=n>G</span><span class=o>.</span><span class=na>V</span><span class=o>()];</span>
+        <span class=n>dfs</span><span class=o>(</span><span class=n>G</span><span class=o>,</span> <span class=n>s</span><span class=o>);</span>
+    <span class=o>}</span>
+
+    <span class=c1>// depth first search from v</span>
+    <span class=kd>private</span> <span class=kt>void</span> <span class=nf>dfs</span><span class=o>(</span><span class=n>Graph</span> <span class=n>G</span><span class=o>,</span> <span class=kt>int</span> <span class=n>v</span><span class=o>)</span> <span class=o>{</span>
+        <span class=n>marked</span><span class=o>[</span><span class=n>v</span><span class=o>]</span> <span class=o>=</span> <span class=kc>true</span><span class=o>;</span>
+        <span class=k>for</span> <span class=o>(</span><span class=kt>int</span> <span class=n>w</span> <span class=o>:</span> <span class=n>G</span><span class=o>.</span><span class=na>adj</span><span class=o>(</span><span class=n>v</span><span class=o>))</span>
+            <span class=k>if</span> <span class=o>(!</span><span class=n>marked</span><span class=o>[</span><span class=n>w</span><span class=o>])</span> <span class=o>{</span>
+                <span class=n>edgeTo</span><span class=o>[</span><span class=n>w</span><span class=o>]</span> <span class=o>=</span> <span class=n>v</span><span class=o>;</span>
+                <span class=n>dfs</span><span class=o>(</span><span class=n>G</span><span class=o>,</span> <span class=n>w</span><span class=o>);</span>
+            <span class=o>}</span>
+    <span class=o>}</span>
+
+    <span class=c1>// Is there a path between the source vertex s and vertex v?</span>
+    <span class=kt>boolean</span> <span class=nf>hasPathTo</span><span class=o>(</span><span class=kt>int</span> <span class=n>v</span><span class=o>)</span> <span class=o>{</span>
+        <span class=k>return</span> <span class=n>marked</span><span class=o>[</span><span class=n>v</span><span class=o>];</span>
+    <span class=o>}</span>
+
+   <span class=c1>// Returns a path between the source vertex s and vertex v, </span>
+   <span class=c1>//  or null if no such path.</span>
+    <span class=kd>public</span> <span class=n>Iterable</span><span class=o>&lt;</span><span class=n>Integer</span><span class=o>&gt;</span> <span class=nf>pathTo</span><span class=o>(</span><span class=kt>int</span> <span class=n>v</span><span class=o>)</span> <span class=o>{</span>
+        <span class=k>if</span> <span class=o>(!</span><span class=n>hasPathTo</span><span class=o>(</span><span class=n>v</span><span class=o>))</span> <span class=k>return</span> <span class=kc>null</span><span class=o>;</span>
+        <span class=n>Stack</span><span class=o>&lt;</span><span class=n>Integer</span><span class=o>&gt;</span> <span class=n>path</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Stack</span><span class=o>&lt;</span><span class=n>Integer</span><span class=o>&gt;();</span>
+        <span class=k>for</span> <span class=o>(</span><span class=kt>int</span> <span class=n>x</span> <span class=o>=</span> <span class=n>v</span><span class=o>;</span> <span class=n>x</span> <span class=o>!=</span> <span class=n>s</span><span class=o>;</span> <span class=n>x</span> <span class=o>=</span> <span class=n>edgeTo</span><span class=o>[</span><span class=n>x</span><span class=o>])</span> <span class=n>path</span><span class=o>.</span><span class=na>push</span><span class=o>(</span><span class=n>x</span><span class=o>);</span>
+        <span class=n>path</span><span class=o>.</span><span class=na>push</span><span class=o>(</span><span class=n>s</span><span class=o>);</span>
+        <span class=k>return</span> <span class=n>path</span><span class=o>;</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></p>
+<h4 id="bfs">BFS<a class="headerlink" href="#bfs" title="Permanent link">&para;</a></h4>
+<p><strong><em>Single-source shortest paths</em></strong> Given a graph and a source vertex <span><span class="MathJax_Preview">s</span><script type="math/tex">s</script></span>, support queries of the form: Is there a path from <span><span class="MathJax_Preview">s</span><script type="math/tex">s</script></span> to a given target vertex <span><span class="MathJax_Preview">v</span><script type="math/tex">v</script></span>? If so, find a <em>shortest</em> such path (one with a minimal number of edges).</p>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>BreadthFirstPaths</span> <span class=o>{</span>
+    <span class=kd>private</span> <span class=kt>boolean</span><span class=o>[]</span> <span class=n>marked</span><span class=o>;</span>  <span class=c1>// marked[v] = is there an s-v path</span>
+    <span class=kd>private</span> <span class=kt>int</span><span class=o>[]</span> <span class=n>edgeTo</span><span class=o>;</span>      <span class=c1>// edgeTo[v] = previous edge on shortest s-v path</span>
+    <span class=kd>private</span> <span class=kt>int</span><span class=o>[]</span> <span class=n>distTo</span><span class=o>;</span>      <span class=c1>// distTo[v] = number of edges shortest s-v path</span>
+
+    <span class=c1>// Computes the shortest path between the source vertex s</span>
+    <span class=c1>// and every other vertex in the graph {@code G}.</span>
+    <span class=kd>public</span> <span class=nf>BreadthFirstPaths</span><span class=o>(</span><span class=n>Graph</span> <span class=n>G</span><span class=o>,</span> <span class=kt>int</span> <span class=n>s</span><span class=o>)</span> <span class=o>{</span>
+        <span class=n>marked</span> <span class=o>=</span> <span class=k>new</span> <span class=kt>boolean</span><span class=o>[</span><span class=n>G</span><span class=o>.</span><span class=na>V</span><span class=o>()];</span>
+        <span class=n>distTo</span> <span class=o>=</span> <span class=k>new</span> <span class=kt>int</span><span class=o>[</span><span class=n>G</span><span class=o>.</span><span class=na>V</span><span class=o>()];</span>
+        <span class=n>edgeTo</span> <span class=o>=</span> <span class=k>new</span> <span class=kt>int</span><span class=o>[</span><span class=n>G</span><span class=o>.</span><span class=na>V</span><span class=o>()];</span>
+        <span class=n>bfs</span><span class=o>(</span><span class=n>G</span><span class=o>,</span> <span class=n>s</span><span class=o>);</span>
+    <span class=o>}</span>
+
+
+    <span class=c1>// breadth-first search from a single source</span>
+    <span class=kd>private</span> <span class=kt>void</span> <span class=nf>bfs</span><span class=o>(</span><span class=n>Graph</span> <span class=n>G</span><span class=o>,</span> <span class=kt>int</span> <span class=n>s</span><span class=o>)</span> <span class=o>{</span>
+        <span class=n>Queue</span><span class=o>&lt;</span><span class=n>Integer</span><span class=o>&gt;</span> <span class=n>q</span> <span class=o>=</span> <span class=k>new</span> <span class=n>LinkedList</span><span class=o>&lt;&gt;();</span>
+        <span class=n>distTo</span><span class=o>[</span><span class=n>s</span><span class=o>]</span> <span class=o>=</span> <span class=mi>0</span><span class=o>;</span>
+        <span class=n>marked</span><span class=o>[</span><span class=n>s</span><span class=o>]</span> <span class=o>=</span> <span class=kc>true</span><span class=o>;</span>
+        <span class=n>q</span><span class=o>.</span><span class=na>offer</span><span class=o>(</span><span class=n>s</span><span class=o>);</span>
+
+        <span class=k>while</span> <span class=o>(!</span><span class=n>q</span><span class=o>.</span><span class=na>isEmpty</span><span class=o>())</span> <span class=o>{</span>
+            <span class=kt>int</span> <span class=n>v</span> <span class=o>=</span> <span class=n>q</span><span class=o>.</span><span class=na>poll</span><span class=o>();</span>
+            <span class=k>for</span> <span class=o>(</span><span class=kt>int</span> <span class=n>w</span> <span class=o>:</span> <span class=n>G</span><span class=o>.</span><span class=na>adj</span><span class=o>(</span><span class=n>v</span><span class=o>))</span>
+                <span class=k>if</span> <span class=o>(!</span><span class=n>marked</span><span class=o>[</span><span class=n>w</span><span class=o>])</span> <span class=o>{</span>
+                    <span class=n>edgeTo</span><span class=o>[</span><span class=n>w</span><span class=o>]</span> <span class=o>=</span> <span class=n>v</span><span class=o>;</span>
+                    <span class=n>distTo</span><span class=o>[</span><span class=n>w</span><span class=o>]</span> <span class=o>=</span> <span class=n>distTo</span><span class=o>[</span><span class=n>v</span><span class=o>]</span> <span class=o>+</span> <span class=mi>1</span><span class=o>;</span>
+                    <span class=n>marked</span><span class=o>[</span><span class=n>w</span><span class=o>]</span> <span class=o>=</span> <span class=kc>true</span><span class=o>;</span>
+                    <span class=n>q</span><span class=o>.</span><span class=na>offer</span><span class=o>(</span><span class=n>w</span><span class=o>);</span>
+                <span class=o>}</span><span class=c1>// end if</span>
+        <span class=o>}</span> <span class=c1>// end while</span>
+    <span class=o>}</span>
+
+    <span class=c1>// Is there a path between the source vertex s and vertex v?</span>
+    <span class=kd>public</span> <span class=kt>boolean</span> <span class=nf>hasPathTo</span><span class=o>(</span><span class=kt>int</span> <span class=n>v</span><span class=o>)</span> <span class=o>{</span>
+        <span class=k>return</span> <span class=n>marked</span><span class=o>[</span><span class=n>v</span><span class=o>];</span>
+    <span class=o>}</span>
+
+    <span class=c1>// Returns the number of edges in a shortest path between </span>
+    <span class=c1>// the source vertex s and vertex v, or -1 if no such path.</span>
+    <span class=kd>public</span> <span class=kt>int</span> <span class=nf>distTo</span><span class=o>(</span><span class=kt>int</span> <span class=n>v</span><span class=o>)</span> <span class=o>{</span>
+        <span class=k>if</span> <span class=o>(!</span><span class=n>hasPathTo</span><span class=o>(</span><span class=n>v</span><span class=o>))</span> <span class=k>return</span> <span class=o>-</span><span class=mi>1</span><span class=o>;</span>
+        <span class=k>return</span> <span class=n>distTo</span><span class=o>[</span><span class=n>v</span><span class=o>];</span>
+    <span class=o>}</span>
+
+    <span class=c1>// Returns a shortest path between the source vertex s </span>
+    <span class=c1>// and v, or null if no such path.</span>
+    <span class=kd>public</span> <span class=n>Iterable</span><span class=o>&lt;</span><span class=n>Integer</span><span class=o>&gt;</span> <span class=nf>pathTo</span><span class=o>(</span><span class=kt>int</span> <span class=n>v</span><span class=o>)</span> <span class=o>{</span>
+        <span class=k>if</span> <span class=o>(!</span><span class=n>hasPathTo</span><span class=o>(</span><span class=n>v</span><span class=o>))</span> <span class=k>return</span> <span class=kc>null</span><span class=o>;</span>
+        <span class=n>Stack</span><span class=o>&lt;</span><span class=n>Integer</span><span class=o>&gt;</span> <span class=n>path</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Stack</span><span class=o>&lt;&gt;();</span>
+        <span class=kt>int</span> <span class=n>x</span><span class=o>;</span>
+        <span class=k>for</span> <span class=o>(</span><span class=n>x</span> <span class=o>=</span> <span class=n>v</span><span class=o>;</span> <span class=n>distTo</span><span class=o>[</span><span class=n>x</span><span class=o>]</span> <span class=o>!=</span> <span class=mi>0</span><span class=o>;</span> <span class=n>x</span> <span class=o>=</span> <span class=n>edgeTo</span><span class=o>[</span><span class=n>x</span><span class=o>])</span>
+            <span class=n>path</span><span class=o>.</span><span class=na>push</span><span class=o>(</span><span class=n>x</span><span class=o>);</span>
+        <span class=n>path</span><span class=o>.</span><span class=na>push</span><span class=o>(</span><span class=n>x</span><span class=o>);</span>
+        <span class=k>return</span> <span class=n>path</span><span class=o>;</span>
+    <span class=o>}</span>
+</pre></div></p>
+<h4 id="connected-components">Connected components<a class="headerlink" href="#connected-components" title="Permanent link">&para;</a></h4>
+<p>Next direct application of depth-first search is to find the connected components of a graph.</p>
+<p><img alt="api_for_connected_components" src="../figures/api_for_connected_components.png" /></p>
+<p>Depth-first search to find connected components in a graph:</p>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>CC</span> <span class=o>{</span>
+    <span class=kd>private</span> <span class=kt>boolean</span><span class=o>[]</span> <span class=n>marked</span><span class=o>;</span>   <span class=c1>// marked[v] = has vertex v been marked?</span>
+    <span class=kd>private</span> <span class=kt>int</span><span class=o>[]</span> <span class=n>id</span><span class=o>;</span>           <span class=c1>// id[v] = id of connected component containing v</span>
+    <span class=kd>private</span> <span class=kt>int</span><span class=o>[]</span> <span class=n>size</span><span class=o>;</span>         <span class=c1>// size[id] = number of vertices in given component</span>
+    <span class=kd>private</span> <span class=kt>int</span> <span class=n>count</span><span class=o>;</span>          <span class=c1>// number of connected components</span>
+
+    <span class=c1>// Computes the connected components of the undirected graph G.</span>
+    <span class=kd>public</span> <span class=nf>CC</span><span class=o>(</span><span class=n>Graph</span> <span class=n>G</span><span class=o>)</span> <span class=o>{</span>
+        <span class=n>marked</span> <span class=o>=</span> <span class=k>new</span> <span class=kt>boolean</span><span class=o>[</span><span class=n>G</span><span class=o>.</span><span class=na>V</span><span class=o>()];</span>
+        <span class=n>id</span> <span class=o>=</span> <span class=k>new</span> <span class=kt>int</span><span class=o>[</span><span class=n>G</span><span class=o>.</span><span class=na>V</span><span class=o>()];</span>
+        <span class=n>size</span> <span class=o>=</span> <span class=k>new</span> <span class=kt>int</span><span class=o>[</span><span class=n>G</span><span class=o>.</span><span class=na>V</span><span class=o>()];</span>
+        <span class=k>for</span> <span class=o>(</span><span class=kt>int</span> <span class=n>v</span> <span class=o>=</span> <span class=mi>0</span><span class=o>;</span> <span class=n>v</span> <span class=o>&lt;</span> <span class=n>G</span><span class=o>.</span><span class=na>V</span><span class=o>();</span> <span class=n>v</span><span class=o>++)</span>
+            <span class=k>if</span> <span class=o>(!</span><span class=n>marked</span><span class=o>[</span><span class=n>v</span><span class=o>])</span> <span class=o>{</span>
+                <span class=n>dfs</span><span class=o>(</span><span class=n>G</span><span class=o>,</span> <span class=n>v</span><span class=o>);</span>
+                <span class=n>count</span><span class=o>++;</span>
+            <span class=o>}</span>
+    <span class=o>}</span>
+
+    <span class=c1>// depth-first search for a Graph</span>
+    <span class=kd>private</span> <span class=kt>void</span> <span class=nf>dfs</span><span class=o>(</span><span class=n>Graph</span> <span class=n>G</span><span class=o>,</span> <span class=kt>int</span> <span class=n>v</span><span class=o>)</span> <span class=o>{</span>
+        <span class=n>marked</span><span class=o>[</span><span class=n>v</span><span class=o>]</span> <span class=o>=</span> <span class=kc>true</span><span class=o>;</span>
+        <span class=n>id</span><span class=o>[</span><span class=n>v</span><span class=o>]</span> <span class=o>=</span> <span class=n>count</span><span class=o>;</span>
+        <span class=n>size</span><span class=o>[</span><span class=n>count</span><span class=o>]++;</span>
+        <span class=k>for</span> <span class=o>(</span><span class=kt>int</span> <span class=n>w</span> <span class=o>:</span> <span class=n>G</span><span class=o>.</span><span class=na>adj</span><span class=o>(</span><span class=n>v</span><span class=o>))</span>
+            <span class=k>if</span> <span class=o>(!</span><span class=n>marked</span><span class=o>[</span><span class=n>w</span><span class=o>])</span>  <span class=n>dfs</span><span class=o>(</span><span class=n>G</span><span class=o>,</span> <span class=n>w</span><span class=o>);</span>
+    <span class=o>}</span>
+
+   <span class=c1>// Returns the component id of the connected component containing vertex v.</span>
+    <span class=kd>public</span> <span class=kt>int</span> <span class=nf>id</span><span class=o>(</span><span class=kt>int</span> <span class=n>v</span><span class=o>)</span> <span class=o>{</span>
+        <span class=k>return</span> <span class=n>id</span><span class=o>[</span><span class=n>v</span><span class=o>];</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></p>
+<h4 id="cycle">Cycle<a class="headerlink" href="#cycle" title="Permanent link">&para;</a></h4>
+<p><a href="../unionfind/">UnionFind</a> and dfs can be used to check whether an undirected graph contains cycle or not. </p>
+<p><hh>DFS</hh>: For every visited vertex <span><span class="MathJax_Preview">v</span><script type="math/tex">v</script></span>, if there is an adjacent <span><span class="MathJax_Preview">w</span><script type="math/tex">w</script></span> such that <span><span class="MathJax_Preview">w</span><script type="math/tex">w</script></span> is already visited and <span><span class="MathJax_Preview">w</span><script type="math/tex">w</script></span> is not parent of <span><span class="MathJax_Preview">v</span><script type="math/tex">v</script></span>, then there is a cycle in graph.</p>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>Cycle</span> <span class=o>{</span>
+
+    <span class=kd>private</span> <span class=kt>boolean</span><span class=o>[]</span> <span class=n>marked</span><span class=o>;</span> 
+    <span class=kd>private</span> <span class=kt>boolean</span> <span class=n>hasCycle</span><span class=o>;</span>
+    <span class=kd>public</span> <span class=nf>Cycle</span><span class=o>(</span><span class=n>Graph</span> <span class=n>G</span><span class=o>)</span> <span class=o>{</span>
+        <span class=n>marked</span> <span class=o>=</span> <span class=k>new</span> <span class=kt>boolean</span><span class=o>[</span><span class=n>G</span><span class=o>.</span><span class=na>V</span><span class=o>()];</span>
+        <span class=k>for</span> <span class=o>(</span><span class=kt>int</span> <span class=n>s</span> <span class=o>=</span> <span class=mi>0</span><span class=o>;</span> <span class=n>s</span> <span class=o>&lt;</span> <span class=n>G</span><span class=o>.</span><span class=na>V</span><span class=o>();</span> <span class=n>s</span><span class=o>++)</span>
+            <span class=k>if</span> <span class=o>(!</span><span class=n>hasCycle</span> <span class=o>&amp;&amp;</span> <span class=o>!</span><span class=n>marked</span><span class=o>[</span><span class=n>s</span><span class=o>])</span> <span class=n>dfs</span><span class=o>(</span><span class=n>G</span><span class=o>,</span> <span class=n>s</span><span class=o>,</span> <span class=n>s</span><span class=o>);</span> 
+    <span class=o>}</span>
+
+    <span class=c1>// u is parent of v, try to visit v&#39;s adjcent</span>
+    <span class=kd>private</span> <span class=kt>void</span> <span class=nf>dfs</span><span class=o>(</span><span class=n>Graph</span> <span class=n>G</span><span class=o>,</span> <span class=kt>int</span> <span class=n>v</span><span class=o>,</span> <span class=kt>int</span> <span class=n>u</span><span class=o>)</span> <span class=o>{</span>
+        <span class=n>marked</span><span class=o>[</span><span class=n>v</span><span class=o>]</span> <span class=o>=</span> <span class=kc>true</span><span class=o>;</span>
+        <span class=k>for</span> <span class=o>(</span><span class=kt>int</span> <span class=n>w</span> <span class=o>:</span> <span class=n>G</span><span class=o>.</span><span class=na>adj</span><span class=o>(</span><span class=n>v</span><span class=o>))</span>
+            <span class=k>if</span> <span class=o>(!</span><span class=n>marked</span><span class=o>[</span><span class=n>w</span><span class=o>])</span> <span class=n>dfs</span><span class=o>(</span><span class=n>G</span><span class=o>,</span> <span class=n>w</span><span class=o>,</span> <span class=n>v</span><span class=o>);</span>
+            <span class=k>else</span> <span class=k>if</span> <span class=o>(</span><span class=n>w</span> <span class=o>!=</span> <span class=n>u</span><span class=o>)</span> <span class=n>hasCycle</span> <span class=o>=</span> <span class=kc>true</span><span class=o>;</span> 
+     <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kt>boolean</span> <span class=nf>hasCycle</span><span class=o>()</span> <span class=o>{</span> 
+        <span class=k>return</span> <span class=n>hasCycle</span><span class=o>;</span> 
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></p>
+<p><hh>UnionFind</hh>: For each edge, make subsets using both the vertices of the edge. If both the vertices are in the same subset, a cycle is found.</p>
+<p> <div class=codehilite><pre><span class=kt>boolean</span> <span class=nf>hasCycle</span><span class=o>(</span><span class=n>Graph</span> <span class=n>graph</span><span class=o>)</span> <span class=o>{</span> 
+    <span class=c1>// union find</span>
+    <span class=n>WeightedQuickUnion</span> <span class=n>union</span> <span class=o>=</span> <span class=k>new</span> <span class=n>WeightedQuickUnion</span><span class=o>(</span><span class=n>graph</span><span class=o>.</span><span class=na>V</span><span class=o>());</span> 
+
+    <span class=c1>// Iterate through all edges of graph, find subset of both </span>
+    <span class=c1>// vertices of every edge, if both subsets are same, then </span>
+    <span class=c1>// there is cycle in graph. </span>
+    <span class=k>for</span> <span class=o>(</span><span class=n>Edge</span> <span class=n>edge</span> <span class=o>:</span> <span class=n>graph</span><span class=o>.</span><span class=na>edges</span><span class=o>())</span> <span class=o>{</span> 
+        <span class=kt>int</span> <span class=n>v</span> <span class=o>=</span> <span class=n>edge</span><span class=o>.</span><span class=na>either</span><span class=o>(),</span> <span class=n>w</span> <span class=o>=</span> <span class=n>edge</span><span class=o>.</span><span class=na>other</span><span class=o>(</span><span class=n>v</span><span class=o>);</span>
+        <span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=n>union</span><span class=o>.</span><span class=na>find</span><span class=o>(</span><span class=n>v</span><span class=o>);</span> 
+        <span class=kt>int</span> <span class=n>j</span> <span class=o>=</span> <span class=n>union</span><span class=o>.</span><span class=na>find</span><span class=o>(</span><span class=n>j</span><span class=o>);</span> 
+        <span class=k>if</span> <span class=o>(</span><span class=n>i</span> <span class=o>==</span> <span class=n>j</span><span class=o>)</span> <span class=k>return</span> <span class=kc>true</span><span class=o>;</span> 
+        <span class=n>union</span><span class=o>.</span><span class=na>union</span><span class=o>(</span><span class=n>i</span><span class=o>,</span> <span class=n>j</span><span class=o>);</span> 
+    <span class=o>}</span> 
+    <span class=k>return</span> <span class=kc>false</span><span class=o>;</span> 
+<span class=o>}</span> 
+</pre></div></p>
+<h4 id="bipartite-graph">Bipartite Graph<a class="headerlink" href="#bipartite-graph" title="Permanent link">&para;</a></h4>
+<blockquote>
+<p>A <em>bipartite graph</em>(<font size=2>二分图</font>) is a graph whose vertices we can divide into two sets such that all edges connect a vertex in one set with a vertex in the other set. </p>
+</blockquote>
+<p>The figure below gives an example of a bipartite graph, where one set of vertices is colored red and the other set of vertices is colored black.</p>
+<p><img alt="bipartite" src="../figures/bipartite-graph.png" /></p>
+<p><strong><em>Two-colorability</em></strong> Support this query: Can the vertices of a given graph be assigned one of two colors in such a way that no edge connects vertices of the same color? which is equivalent to this question: <em>Is the graph bipartite</em>?</p>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>Bipartite</span> <span class=o>{</span>
+    <span class=kd>private</span> <span class=kt>boolean</span> <span class=n>isBipartite</span><span class=o>;</span>   <span class=c1>// is the graph bipartite?</span>
+    <span class=kd>private</span> <span class=kt>boolean</span><span class=o>[]</span> <span class=n>color</span><span class=o>;</span>       <span class=c1>// color[v] gives vertices on one side of bipartition</span>
+    <span class=kd>private</span> <span class=kt>boolean</span><span class=o>[]</span> <span class=n>marked</span><span class=o>;</span>      <span class=c1>// marked[v] = true if v has been visited in DFS</span>
+
+    <span class=c1>// Determines whether an undirected graph is bipartite and finds either a</span>
+    <span class=c1>// bipartition or an odd-length cycle.</span>
+    <span class=kd>public</span> <span class=nf>Bipartite</span><span class=o>(</span><span class=n>Graph</span> <span class=n>G</span><span class=o>)</span> <span class=o>{</span>
+        <span class=n>isBipartite</span> <span class=o>=</span> <span class=kc>true</span><span class=o>;</span>
+        <span class=n>color</span>  <span class=o>=</span> <span class=k>new</span> <span class=kt>boolean</span><span class=o>[</span><span class=n>G</span><span class=o>.</span><span class=na>V</span><span class=o>()];</span>
+        <span class=n>marked</span> <span class=o>=</span> <span class=k>new</span> <span class=kt>boolean</span><span class=o>[</span><span class=n>G</span><span class=o>.</span><span class=na>V</span><span class=o>()];</span>
+
+        <span class=k>for</span> <span class=o>(</span><span class=kt>int</span> <span class=n>v</span> <span class=o>=</span> <span class=mi>0</span><span class=o>;</span> <span class=n>v</span> <span class=o>&lt;</span> <span class=n>G</span><span class=o>.</span><span class=na>V</span><span class=o>();</span> <span class=n>v</span><span class=o>++)</span>
+            <span class=k>if</span> <span class=o>(</span><span class=n>isBipartite</span> <span class=o>&amp;&amp;</span> <span class=o>!</span><span class=n>marked</span><span class=o>[</span><span class=n>v</span><span class=o>])</span> <span class=n>dfs</span><span class=o>(</span><span class=n>G</span><span class=o>,</span> <span class=n>v</span><span class=o>);</span>
+    <span class=o>}</span>
+
+    <span class=kd>private</span> <span class=kt>void</span> <span class=nf>dfs</span><span class=o>(</span><span class=n>Graph</span> <span class=n>G</span><span class=o>,</span> <span class=kt>int</span> <span class=n>v</span><span class=o>)</span> <span class=o>{</span> 
+        <span class=n>marked</span><span class=o>[</span><span class=n>v</span><span class=o>]</span> <span class=o>=</span> <span class=kc>true</span><span class=o>;</span>
+        <span class=k>for</span> <span class=o>(</span><span class=kt>int</span> <span class=n>w</span> <span class=o>:</span> <span class=n>G</span><span class=o>.</span><span class=na>adj</span><span class=o>(</span><span class=n>v</span><span class=o>))</span> <span class=o>{</span>
+            <span class=c1>// if not bipartite</span>
+            <span class=k>if</span> <span class=o>(!</span><span class=n>isBipartite</span><span class=o>)</span> <span class=k>return</span><span class=o>;</span>
+
+            <span class=c1>// found uncolored vertex, so recur</span>
+            <span class=k>else</span> <span class=k>if</span> <span class=o>(!</span><span class=n>marked</span><span class=o>[</span><span class=n>w</span><span class=o>])</span> <span class=o>{</span>
+                <span class=n>color</span><span class=o>[</span><span class=n>w</span><span class=o>]</span> <span class=o>=</span> <span class=o>!</span><span class=n>color</span><span class=o>[</span><span class=n>v</span><span class=o>];</span>
+                <span class=n>dfs</span><span class=o>(</span><span class=n>G</span><span class=o>,</span> <span class=n>w</span><span class=o>);</span>
+            <span class=o>}</span> 
+            <span class=c1>// if v, w have same color, not bipartitable</span>
+            <span class=k>else</span> <span class=k>if</span> <span class=o>(</span><span class=n>color</span><span class=o>[</span><span class=n>w</span><span class=o>]</span> <span class=o>==</span> <span class=n>color</span><span class=o>[</span><span class=n>v</span><span class=o>])</span> <span class=n>isBipartite</span> <span class=o>=</span> <span class=kc>false</span><span class=o>;</span>
+        <span class=o>}</span>
+    <span class=o>}</span>
+
+    <span class=c1>// Returns true if the graph is bipartite.</span>
+    <span class=kd>public</span> <span class=kt>boolean</span> <span class=nf>isBipartite</span><span class=o>()</span> <span class=o>{</span>
+        <span class=k>return</span> <span class=n>isBipartite</span><span class=o>;</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></p>
 <h3 id="directed-graph">Directed Graph<a class="headerlink" href="#directed-graph" title="Permanent link">&para;</a></h3>
 <blockquote>
 <p>Definition. A <strong>directed graph</strong> (or <em>digraph</em>) is a set of vertices and a collection of <em>directed edges</em>. Each directed edge connects an ordered pair of vertices.</p>

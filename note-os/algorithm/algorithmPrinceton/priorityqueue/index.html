@@ -110,6 +110,14 @@
 <li >
     <a href="../mst_shortestpath/">Topic 9: Minimum Spanning Tree and Shortest Path</a>
 </li>
+            
+<li >
+    <a href="../stringsort/">Topic 11: String Sort</a>
+</li>
+            
+<li >
+    <a href="../tries/">Topic 12: Tries</a>
+</li>
     </ul>
   </li>
                                     
@@ -973,15 +981,19 @@
                 <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
         <li class="main active"><a href="#topic-4-priority-queues">Topic 4: Priority Queues</a></li>
-        <li class="main "><a href="#1-priority-queue">1 Priority Queue</a></li>
-            <li><a href="#elementary-implementations">Elementary implementations</a></li>
+        <li class="main "><a href="#1-api">1 API</a></li>
+        <li class="main "><a href="#2-elementary-implementations">2 Elementary implementations</a></li>
+            <li><a href="#array-representation-unordered">Array representation (unordered)</a></li>
+            <li><a href="#array-representation-ordered">Array representation (ordered)</a></li>
+            <li><a href="#linked-list-representations">Linked-list representations</a></li>
             <li><a href="#analysis">Analysis</a></li>
-        <li class="main "><a href="#2-binary-heap">2 Binary Heap</a></li>
+        <li class="main "><a href="#3-heap-definitions">3 Heap definitions</a></li>
+        <li class="main "><a href="#4-algorithms-on-heaps">4 Algorithms On Heaps</a></li>
             <li><a href="#promotion-in-a-heap">Promotion in a heap</a></li>
             <li><a href="#insertion-in-a-heap">Insertion in a heap</a></li>
             <li><a href="#demotion-in-a-heap">Demotion in a heap</a></li>
             <li><a href="#delete-the-maximum-in-a-heap">Delete the maximum in a heap</a></li>
-        <li class="main "><a href="#3-heap-sort">3 Heap Sort</a></li>
+        <li class="main "><a href="#6-heap-sort">6 Heap Sort</a></li>
             <li><a href="#heap-construction">Heap construction</a></li>
             <li><a href="#sortdown">Sortdown</a></li>
             <li><a href="#analysis_1">Analysis</a></li>
@@ -990,10 +1002,10 @@
                 <div class="col-md-9" role="main">
 
 <h3 id="topic-4-priority-queues"><strong>Topic 4: Priority Queues</strong><a class="headerlink" href="#topic-4-priority-queues" title="Permanent link">&para;</a></h3>
-<h3 id="1-priority-queue">1 Priority Queue<a class="headerlink" href="#1-priority-queue" title="Permanent link">&para;</a></h3>
 <blockquote>
 <p>A <strong>priority queue</strong> is an abstract data type which is like a regular queue or stack data structure, but where additionally each element has a "priority" associated with it.  It basically supports two operations: <em>remove the maximum</em> and <em>insert</em>.</p>
 </blockquote>
+<h3 id="1-api">1 API<a class="headerlink" href="#1-api" title="Permanent link">&para;</a></h3>
 <p><img alt="PriorityQueueAPI" src="../figures/PriorityQueueAPI.png" /></p>
 <div class="admonition question">
 <p class="admonition-title">Question</p>
@@ -1003,8 +1015,8 @@
 <li>In other examples, all the data does not even exist together at any point in time.</li>
 </ul>
 </div>
-<h4 id="elementary-implementations">Elementary implementations<a class="headerlink" href="#elementary-implementations" title="Permanent link">&para;</a></h4>
-<p><hh> Array representation (unordered)</hh></p>
+<h3 id="2-elementary-implementations">2 Elementary implementations<a class="headerlink" href="#2-elementary-implementations" title="Permanent link">&para;</a></h3>
+<h4 id="array-representation-unordered">Array representation (unordered)<a class="headerlink" href="#array-representation-unordered" title="Permanent link">&para;</a></h4>
 <p>Perhaps the simplest priority-queue implementation is based on pushdown stacks. The code for <C>insert</C> in the priority queue is the same as for <C>push</C> in the stack. To implement <C>remove the maximum</C>, we can add code like the inner loop of selection sort to exchange the maximum item with the item at the end and then delete that one, the same as <C>pop()</C> for stacks. As with stacks, we can add resizing-array code to ensure that the data structure is always at least one-quarter full and never overflows.</p>
 <p><details><summary>click here</summary></p>
 <p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>UnorderedMaxPQ</span><span class=o>&lt;</span><span class=n>Key</span> <span class=kd>extends</span> <span class=n>Comparable</span><span class=o>&lt;</span><span class=n>Key</span><span class=o>&gt;&gt;</span> <span class=o>{</span>
@@ -1045,19 +1057,22 @@
     <span class=kd>private</span> <span class=kt>boolean</span> <span class=nf>less</span><span class=o>(</span><span class=kt>int</span> <span class=n>i</span><span class=o>,</span> <span class=kt>int</span> <span class=n>j</span><span class=o>)</span> <span class=o>{</span>
         <span class=k>return</span> <span class=n>pq</span><span class=o>[</span><span class=n>i</span><span class=o>].</span><span class=na>compareTo</span><span class=o>(</span><span class=n>pq</span><span class=o>[</span><span class=n>j</span><span class=o>])</span> <span class=o>&lt;</span> <span class=mi>0</span><span class=o>;</span>
     <span class=o>}</span>
-
 <span class=o>}</span>
 </pre></div></p>
 <p></details></p>
-<p><hh>Array representation (ordered).</hh></p>
+<h4 id="array-representation-ordered">Array representation (ordered)<a class="headerlink" href="#array-representation-ordered" title="Permanent link">&para;</a></h4>
 <p>Another approach for <C>insert</C>  is to move larger entries one position to the right, thus keeping the keys in the array in order (as in insertion sort). Thus, the largest element is always at the end, and the code for remove the maximum in the priority queue is the same as for <C>pop</C> in the stack.</p>
+<h4 id="linked-list-representations">Linked-list representations<a class="headerlink" href="#linked-list-representations" title="Permanent link">&para;</a></h4>
 <h4 id="analysis">Analysis<a class="headerlink" href="#analysis" title="Permanent link">&para;</a></h4>
 <p>Order of growth of worst-case running time for priority-queue implementations：</p>
 <p><img alt="Order of growth of worst-case running time for priority-queue implementations" src="../figures/priorityQueueComplexity.png" /></p>
-<h3 id="2-binary-heap">2 Binary Heap<a class="headerlink" href="#2-binary-heap" title="Permanent link">&para;</a></h3>
+<h3 id="3-heap-definitions">3 Heap definitions<a class="headerlink" href="#3-heap-definitions" title="Permanent link">&para;</a></h3>
 <blockquote>
-<p>A <strong>binary tree</strong> is heap-ordered if the key in each node is larger than or equal to the keys in that node’s two children (if any).</p>
-<p>A <strong>binary heap</strong> is a collection of keys arranged in a <mark class="critic">complete</mark> heap-ordered binary tree, represented in level order in an array (not using the first entry).</p>
+<p>A binary tree is <font color='red'>heap-ordered</font> if the key in each node is larger than or equal to the keys in that node’s two children (if any).</p>
+</blockquote>
+<p>The largest key in a heap-ordered binary tree is found at the root.</p>
+<blockquote>
+<p>A <font color='red'>binary heap</font> is a collection of keys arranged in a <mark class="critic">complete</mark> heap-ordered binary tree, represented in level order in an array (not using the first entry).</p>
 </blockquote>
 <p><img alt="HeapRepresentations" src="../figures/HeapRepresentations.png" /></p>
 <ul>
@@ -1070,6 +1085,7 @@
 <p>Q. Why not use <span><span class="MathJax_Preview">a[0]</span><script type="math/tex">a[0]</script></span> in the heap representation?</p>
 <p>A. Doing so simplifies the arithmetic a bit.</p>
 </div>
+<h3 id="4-algorithms-on-heaps">4 Algorithms On Heaps<a class="headerlink" href="#4-algorithms-on-heaps" title="Permanent link">&para;</a></h3>
 <h4 id="promotion-in-a-heap">Promotion in a heap<a class="headerlink" href="#promotion-in-a-heap" title="Permanent link">&para;</a></h4>
 <p>Scenario: Child's key becomes larger key than its parent's key.</p>
 <p><img alt="PromotionInAHeap" src="../figures/PromotionInAHeap.png" /></p>
@@ -1190,7 +1206,7 @@
 <span class=o>}</span>
 </pre></div></p>
 <p></details></p>
-<h3 id="3-heap-sort">3 Heap Sort<a class="headerlink" href="#3-heap-sort" title="Permanent link">&para;</a></h3>
+<h3 id="6-heap-sort">6 Heap Sort<a class="headerlink" href="#6-heap-sort" title="Permanent link">&para;</a></h3>
 <p>Heapsort use any heap-based priority queue as the basis for a sorting algorithm by inserting a sequence of items, then successively removing the smallest to get them out.</p>
 <p>Heapsort breaks into two phases: </p>
 <ul>
