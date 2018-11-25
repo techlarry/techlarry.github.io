@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <meta charset="utf-8">
+    
+    <title>TF会话生命周期 | Wiki</title>
+    
+    
+        <meta name="keywords" content="tensorflow" />
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="转自 TensorFlow的系统结构以C API为界，将整个系统分为「前端」和「后端」两个子系统： 前端系统：提供编程模型，负责构造计算图； 后端系统：提供运行时环境，负责执行计算图。  前端系统主要扮演Client的角色，主要负责计算图的构造，并管理Session生命周期过程。 前端系统是一个支持多语言的编程环境，并提供统一的编程模型支撑用户构造计算图。Client通过Session，连接Ten">
+<meta name="keywords" content="tensorflow">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TF会话生命周期">
+<meta property="og:url" content="http://larryim.cc/2017/12/30/TensorFlow-TF会话生命周期/index.html">
+<meta property="og:site_name" content="Wiki">
+<meta property="og:description" content="转自 TensorFlow的系统结构以C API为界，将整个系统分为「前端」和「后端」两个子系统： 前端系统：提供编程模型，负责构造计算图； 后端系统：提供运行时环境，负责执行计算图。  前端系统主要扮演Client的角色，主要负责计算图的构造，并管理Session生命周期过程。 前端系统是一个支持多语言的编程环境，并提供统一的编程模型支撑用户构造计算图。Client通过Session，连接Ten">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://or9a8nskt.bkt.clouddn.com/15148941239904.png">
+<meta property="og:image" content="http://or9a8nskt.bkt.clouddn.com/15148941860360.png">
+<meta property="og:image" content="http://or9a8nskt.bkt.clouddn.com/15148944313909.png">
+<meta property="og:image" content="http://or9a8nskt.bkt.clouddn.com/15148944356342.png">
+<meta property="og:image" content="http://or9a8nskt.bkt.clouddn.com/15148944411026.png">
+<meta property="og:image" content="http://or9a8nskt.bkt.clouddn.com/15148944539577.png">
+<meta property="og:image" content="http://larryim.cc/2017/12/30/TensorFlow-TF会话生命周期/media/2017041237.png">
+<meta property="og:image" content="http://larryim.cc/2017/12/30/TensorFlow-TF会话生命周期/media/2017041238.png">
+<meta property="og:updated_time" content="2018-01-28T07:12:58.405Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="TF会话生命周期">
+<meta name="twitter:description" content="转自 TensorFlow的系统结构以C API为界，将整个系统分为「前端」和「后端」两个子系统： 前端系统：提供编程模型，负责构造计算图； 后端系统：提供运行时环境，负责执行计算图。  前端系统主要扮演Client的角色，主要负责计算图的构造，并管理Session生命周期过程。 前端系统是一个支持多语言的编程环境，并提供统一的编程模型支撑用户构造计算图。Client通过Session，连接Ten">
+<meta name="twitter:image" content="http://or9a8nskt.bkt.clouddn.com/15148941239904.png">
+    
+
+    
+
+    
+
+    <link rel="stylesheet" href="/wiki/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/wiki/libs/open-sans/styles.css">
+    <link rel="stylesheet" href="/wiki/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/wiki/css/style.css">
+    <script src="/wiki/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="/wiki/libs/jquery/plugins/cookie/1.4.1/jquery.cookie.js"></script>
+    
+    
+        <link rel="stylesheet" href="/wiki/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/wiki/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+        <script type="text/javascript">
+(function(i,s,o,g,r,a,m) {i['GoogleAnalyticsObject']=r;i[r]=i[r]||function() {
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-112743284-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+    
+    
+    
+        <script>
+var _hmt = _hmt || [];
+(function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?fdc936c9f5a3b72177541183cdeb8cb3";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+    
+
+
+</head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/wiki/" id="logo">
+                
+                <span class="site-title">Wiki</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/wiki/">首页</a>
+                
+                    <a class="main-nav-link" href="/wiki/tags">标签</a>
+                
+            </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="Search" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="Type something..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: 'Posts',
+            PAGES: 'Pages',
+            CATEGORIES: 'Categories',
+            TAGS: 'Tags',
+            UNTITLED: '(Untitled)',
+        },
+        ROOT_URL: '/wiki/',
+        CONTENT_URL: '/wiki/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/wiki/js/insight.js"></script>
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/wiki/">首页</a></td>
+                
+                    <td><a class="main-nav-link" href="/wiki/tags">标签</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="Search" />
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+            
+                <aside id="sidebar">
+   
+        
+    <div class="widget-wrap" id='categories'>
+        <h3 class="widget-title">
+            <span>categories</span>
+            &nbsp;
+            <a id='allExpand' href="#">
+                <i class="fa fa-angle-double-down fa-2x"></i>
+            </a>
+        </h3>
+        
+        
+        
+         <ul class="unstyled" id="tree" > 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            Algorithm
+                        </a>
+                         <ul class="unstyled" id="tree" >  <li class="file"><a href="/wiki/2017/10/10/Algorithm-水塘抽样/">水塘抽样</a></li>  <li class="file"><a href="/wiki/2017/10/30/Algorithm-Divide-and-Conquer/">Divide and Conquer</a></li>  <li class="file"><a href="/wiki/2017/01/30/Algorithm-Recursion/">Recursion</a></li>  <li class="file"><a href="/wiki/2017/10/30/Algorithm-Backtracking/">Exhaustive Search and Backtracking</a></li>  <li class="file"><a href="/wiki/2017/08/17/Algorithm-位操作/">位操作</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            C
+                        </a>
+                         <ul class="unstyled" id="tree" >  <li class="file"><a href="/wiki/2017/12/30/C-static用法/">static用法</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            C++
+                        </a>
+                         <ul class="unstyled" id="tree" >  <li class="file"><a href="/wiki/2017/07/30/C-C-Primer-12-动态内存-C-Primer-12-动态内存C-Primer-12-动态内存/">C++ Primer (12) - 动态内存</a></li>  <li class="file"><a href="/wiki/2017/07/30/C-C-Primer-6-函数C-Primer-12-动态内存/">C++ Primer (6) - 函数</a></li>  <li class="file"><a href="/wiki/2017/10/30/C-STL源码剖析/">STL源码剖析</a></li>  <li class="file"><a href="/wiki/2018/03/01/C-面试题/"></a></li>  <li class="file"><a href="/wiki/2017/08/17/C-Vector-string/">STL中的vector<string>总结</a></li>  <li class="file"><a href="/wiki/2017/08/17/C-C-面试经典100题/">C++面试经典100题</a></li>  <li class="file"><a href="/wiki/2017/08/17/C-EOF/">EOF</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            CSAPP Lab
+                        </a>
+                         <ul class="unstyled" id="tree" >  <li class="file"><a href="/wiki/2017/12/30/CSAPP-Lab-Malloc-lab/">Lab6 Malloc Lab</a></li>  <li class="file"><a href="/wiki/2017/12/30/CSAPP-Lab-Shell-Lab/">Lab5 Shell Lab</a></li>  <li class="file"><a href="/wiki/2017/12/30/CSAPP-Lab-Cache-Lab/">Lab4 Cache Lab</a></li>  <li class="file"><a href="/wiki/2017/12/30/CSAPP-Lab-Attack-Lab/">Lab3 Attack Lab</a></li>  <li class="file"><a href="/wiki/2017/12/30/CSAPP-Lab-Data-Lab/">Lab1 Data Lab</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            Java
+                        </a>
+                         <ul class="unstyled" id="tree" >  <li class="file"><a href="/wiki/2018/07/12/Java-关键字native/">修饰词native</a></li>  <li class="file"><a href="/wiki/2018/07/12/Java-record/">Java record</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            Leetcode
+                        </a>
+                         <ul class="unstyled" id="tree" >  <li class="file"><a href="/wiki/2017/10/30/Leetcode-941-Valid-Mountain-Array/">941. Valid Mountain Array</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-876-Middle-of-the-Linked-List/">876. Middle of the Linked List</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-867-Transpose-Matrix/">867. Transpose Matrix</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-841-Keys-and-Rooms/">841. Keys and Rooms</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-785-Is-Graph-Bipartite/">785. Is Graph Bipartite?</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-783-Minimum-Distance-Between-BST-Nodes/">783. Minimum Distance Between BST Nodes</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-760-Find-Anagram-Mappings/">760. Find Anagram Mappings</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-746-Min-Cost-Climbing-Stairs/">746. Min Cost Climbing Stairs</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-743-Network-Delay-Time/">743. Network Delay Time</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-741-Cherry-Pickup/">741. Cherry Pickup</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-728-Self-Dividing-Numbers/">728. Self Dividing Numbers</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-703-Kth-Largest-Element-in-a-Stream/">703. Kth Largest Element in a Stream</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-687-Longest-Univalue-Path/">687. Longest Univalue Path</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-685-Redundant-Connection-II/">685. Redundant Connection II</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-684-Redundant-Connection/">684. Redundant Connection</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-671-Second-Minimum-Node-In-a-Binary-Tree/">671. Second Minimum Node In a Binary Tree</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-637-Average-of-Levels-in-Binary-Tree/">637. Average of Levels in Binary Tree</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-633-Sum-of-Square-Numbers/">633. Sum of Square Numbers</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-606-Construct-String-from-Binary-Tree/">606. Construct String from Binary Tree</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-599-Minimum-Index-Sum-of-Two-Lists/">599. Minimum Index Sum of Two Lists</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-559-Maximum-Depth-of-N-ary-Tree/">559. Maximum Depth of N-ary Tree</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-538-Convert-BST-to-Greater-Tree/">538. Convert BST to Greater Tree</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-507-Perfect-Number/">507. Perfect Number</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-500-Keyboard-Row/">500. Keyboard Row</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-463-Island-Perimeter/">463. Island Perimeter</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-438-Find-All-Anagrams-in-a-String/">438. Find All Anagrams in a String</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-437-Path-Sum-III/">437. Path Sum III</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-429-N-ary-Tree-Level-Order-Traversal/">429. N-ary Tree Level Order Traversal</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-415-Add-Strings/">415. Add Strings</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-409-Longest-Palindrome/">409. Longest Palindrome</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-404-Sum-of-Left-Leaves/">404. Sum of Left Leaves</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-401-Binary-Watch/">401. Binary Watch</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-399-Evaluate-Division/">399. Evaluate Division</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-384-Shuffle-an-Array/">384. Shuffle an Array</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-382-Linked-List-Random-Node/">382. Linked List Random Node</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-378-Kth-Smallest-Element-in-a-Sorted-Matrix/">378. Kth Smallest Element in a Sorted Matrix</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-373-Find-K-Pairs-with-Smallest-Sums/">373. Find K Pairs with Smallest Sums</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-372-Super-Pow/">372. Super Pow</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-370-Range-Addition/">370. Range Addition</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-367-Valid-Perfect-Square/">367. Valid Perfect Square</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-366-Find-Leaves-of-Binary-Tree/">366. Find Leaves of Binary Tree</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-359-Logger-Rate-Limiter/">359. Logger Rate Limiter</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-350-Intersection-of-Two-Arrays-II/">350. Intersection of Two Arrays II</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-349-Intersection-of-Two-Arrays/">349. Intersection of Two Arrays</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-345-Reverse-Vowels-of-a-String/">345. Reverse Vowels of a String</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-344-Reverse-String/">344. Reverse String</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-338-Counting-Bits/">338. Counting Bits</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-337-House-Robber-III/">337. House Robber III</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-332-Reconstruct-Itinerary/">332. Reconstruct Itinerary</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-331-Verity-Preorder-Serialization-of-a-Binary-Tree/">331. Verify Preorder Serialization of a Binary Tree</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-328-Odd-Even-Linked-List/">328. Odd Even Linked List</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-326-Power-of-Three/">326. Power of Three</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-310-Minimum-Height-Trees/">310. Minimum Height Trees</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-309-Best-Time-to-Buy-and-Sell-Stock-with-Cooldown/">309. Best Time to Buy and Sell Stock with Cooldown</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-304-Range-Sum-Query-2D-Immutable/">304. Range Sum Query 2D - Immutable</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-303-Range-Sum-Query-Immutable/">303. Range Sum Query - Immutable</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-300-Longest-Increasing-Subsequence/">300. Longest Increasing Subsequence</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-297-Serialize-and-Deserialize-Binary-Tree/">297. Serialize and Deserialize Binary Tree</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-295-Find-Median-from-Data-Stream/">295. Find Median from Data Stream</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-290-Word-Pattern/">290. Word Pattern</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-287-Find-the-Duplicate-Number/">287. Find the Duplicate Number</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-279-Perfect-Squares/">279. Perfect Squares</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-278-First-Bad-Version/">278. First Bad Version</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-276-Paint-Fence/">276. Paint Fence</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-270-Closest-Binary-Search-Tree-Value/">270. Closest Binary Search Tree Value</a></li>  <li class="file"><a href="/wiki/2017/08/17/Leetcode-268-Missing-Number/">268. Missing Number</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-265-Paint-House-II/">265. Paint House II</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-264-Ugly-Number-II/">264. Ugly Number II</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-263-Ugly-Number/">263. Ugly Number</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-261-Graph-Valid-Tree/">261. Graph Valid Tree</a></li>  <li class="file"><a href="/wiki/2017/08/17/Leetcode-260-Single-Number-III/">260. Single Number III</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-258-Add-Digits/">258. Add Digits</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-257-Binary-Tree-Paths/">257. Binary Tree Paths</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-256-Paint-House/">256. Paint House</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-242-Valid-Anagram/">242. Valid Anagram</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-241-Different-Ways-to-Add-Parentheses/">241. Different Ways to Add Parentheses</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-240-Search-a-2D-Matrix-II/">240. Search a 2D Matrix II</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-237-Delete-Node-in-a-Linked-List/">237. Delete Node in a Linked List</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-236-Lowest-Common-Ancestor-of-a-Binary-Tree/">236. Lowest Common Ancestor of a Binary Tree</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-235-Lowest-Common-Ancestor-of-a-Binary-Search-Tree/">235. Lowest Common Ancestor of a Binary Search Tree</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-234-Palindrome-Linked-List/">234. Palindrome Linked List</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-232-Implement-Queue-using-Stacks/">232. Implement Queue using Stacks</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-230-Kth-Smallest-Element-in-a-BST/">230. Kth Smallest Element in a BST</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-226-Invert-Binary-Tree/">226. Invert Binary Tree</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-225-mplementStackUsingQueues/">225. Implement Stack using Queues</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-224-Basic-Calculator/">224. Basic Calculator</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-222-Count-Complete-Tree-Nodes/">222. Count Complete Tree Nodes</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-221-Maximal-Square/">221. Maximal Square</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-216-Combination-Sum-III/">216. Combination Sum III</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-215-Kth-Largest-Element-in-an-Array/">215. Kth Largest Element in an Array</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-213-House-Robber-II/">213. House Robber II</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-210-Course-Schedule-II/">210. Course Schedule II</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-209-Minimum-Size-Subarray-Sum/">209. Minimum Size Subarray Sum</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-207-Course-Schedule/">207. Course Schedule</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-206-Reverse-Linked-List/">206. Reverse Linked List</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-205-Isomorphic-Strings/">205. Isomorphic Strings</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-204-Count-Primes/">204. Count Primes</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-203-Remove-Linked-List-Elements/">203. Remove Linked List Elements</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-202-Happy-Number/">202. Happy Number</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-200-Number-of-Islands/">200. Number of Islands</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-199-Binary-Tree-Right-Side-View/">199. Binary Tree Right Side View</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-198-House-Robber/">198. House Robber</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-191-Number-of-1-Bits/">191. Number of 1 Bits</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-190-Reverse-Bits/">190. Reverse Bits</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-187-Repeated-DNA-Sequences/">187. Repeated DNA Sequences</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-179-Largest-Number/">179. Largest Number</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-174-Dungeon-Game/">174. Dungeon Game</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-173-Binary-Search-Tree-Iterator/">173. Binary Search Tree Iterator</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-172-Factorial-Trailing-Zeroes/">172. Factorial Trailing Zeroes</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-171-Excel-Sheet-Column-Number/">171. Excel Sheet Column Number</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-170-TwoSum-III/">170. TwoSum III</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-168-Excel-Sheet-Column-Title/">168. Excel Sheet Column Title</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-167-Two-Sum-II-Input-array-is-sorted/">167. Two Sum II - Input array is sorted</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-166-Fraction-to-Recurring-Decimal/">166. Fraction to Recurring Decimal</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-160-Intersection-of-Two-Linked-Lists/">160. Intersection of Two Linked Lists</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-155-Min-Stack/">155. Min Stack</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-152-Maximum-Product-Subarray/">152. Maximum Product Subarray</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-151-Reverse-Words-in-a-String/">151. Reverse Words in a String</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-150-Evaluate-Reverse-Polish-Notation/">150. Evaluate Reverse Polish Notation</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-149-Max-Points-on-a-Line/">149. Max Points on a Line</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-148-Sort-List/">148. Sort List</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-147-Insertion-Sort-List/">147. Insertion Sort List</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-146-LRU-Cache/">146. LRU Cache</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-145-Binary-Tree-Postorder-Traversal/">145. Binary Tree Postorder Traversal</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-144-Binary-Tree-Preorder-Traversal/">144. Binary Tree Preorder Traversal</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-143-Reorder-List/">143. Reorder List</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-142-Linked-List-Cycle-II/">142. Linked List Cycle II</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-141-Linked-List-Cycle/">141. Linked List Cycle</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-139-Word-Break/">139. Word Break</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-138-Copy-List-with-Random-Pointer/">138. Copy List with Random Pointer</a></li>  <li class="file"><a href="/wiki/2017/08/17/Leetcode-136-Single-Number/">136 Single Number</a></li>  <li class="file"><a href="/wiki/2017/08/17/Leetcode-137-Single-Number-II/">137 Single Number II</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-133-Clone-Graph/">133. Clone Graph</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-132-Palindrome-Partitioning-II/">132. Palindrome Partitioning II</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-131-Palindrome-Partitioning/">131. Palindrome Partitioning</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-130-Surrounded-Regions/">130. Surrounded Regions</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-129-Sum-Root-to-Leaf-Numbers/">129. Sum Root to Leaf Numbers</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-128-Longest-Consecutive-Sequence/">128. Longest Consecutive Sequence</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-127-Word-Ladder/">127. Word Ladder</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-125-Valid-Palindrome/">125. Valid Palindrome</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-124-Binary-Tree-Maximum-Path-Sum/">124. Binary Tree Maximum Path Sum</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-121-Best-Time-to-Buy-and-Sell-Stock/">121. Best Time to Buy and Sell Stock</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-120-Triangle/">120. Triangle</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-119-Pascal-s-Triangle-II/">119. Pascal's Triangle II</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-118-Pascal-s-Triangle/">118. Pascal's Triangle</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-117-Populating-Next-Right-Pointers-in-Each-Node-II/">117. Populating Next Right Pointers in Each Node II</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-116-Populating-Next-Right-Pointers-in-Each-Node/">116. Populating Next Right Pointers in Each Node</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-114-Flatten-Binary-Tree-to-Linked-List/">114. Flatten Binary Tree to Linked List</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-113-Path-Sum-II/">113. Path Sum II</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-112-Path-Sum/">112. Path Sum</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-111-Minimum-Depth-of-Binary-Tree/">111. Minimum Depth of Binary Tree</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-110-Balanced-Binary-Tree/">110. Balanced Binary Tree</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-108-Convert-Sorted-Array-to-Binary-Search-Tree/">108. Convert Sorted Array to Binary Search Tree</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-107-Binary-Tree-Level-Order-Traversal-II/">107. Binary Tree Level Order Traversal II</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-105-Construct-Binary-Tree-from-Preorder-and-Inorder-Traversal/">105. Construct Binary Tree from Preorder and Inorder Traversal</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-104-Maximum-Depth-of-Binary-Tree/">104. Maximum Depth of Binary Tree</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-103-Binary-Tree-Zigzag-Level-Order-Traversal/">103. Binary Tree Zigzag Level Order Traversal</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-102-Binary-Tree-Level-Order-Traversal/">102. Binary Tree Level Order Traversal</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-101-Symmetric-Tree/">101. Symmetric Tree</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-100-Same-Tree/">100. Same Tree</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-99-Recover-Binary-Search-Tree/">99. Recover Binary Search Tree</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-98-Validate-Binary-Search-Tree/">98. Validate Binary Search Tree</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-96-Unique-Binary-Search-Trees/">96. Unique Binary Search Trees</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-95-Unique-Binary-Search-Trees-II/">95. Unique Binary Search Trees II</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-94-Binary-Tree-Inorder-Traversal/">94. Binary Tree Inorder Traversal</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-93-Restore-IP-Adress/">93. Restore IP Adress</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-93-Restore-IP-Addresses/">93. Restore IP Addresses</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-92-Reverse-Linked-List-II/">92. Reverse Linked List II</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-91-Decode-Ways/">91. Decode Ways</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-90-Subsets-II/">90. Subsets II</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-89-Gray-Code/">89. Gray Code</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-88-Merge-Sorted-Array/">88. Merge Sorted Array</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-86-Partition-List/">86. Partition List</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-85-Maximal-Rectangle/">85. Maximal Rectangle</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-84-Largest-Rectangle-in-Histogram/">84. Largest Rectangle in Histogram</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-83-Remove-Duplicates-from-Sorted-List/">83. Remove Duplicates from Sorted List</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-82-Remove-Duplicates-from-Sorted-List-II/">82. Remove Duplicates from Sorted List II</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-79-Word-Search/">79. Word Search</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-78-Subsets-md/">78. Subsets</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-77-Combinations/">77. Combinations</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-76-Minimum-Window-Substring/">76. Minimum Window Substring</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-75-Sort-Colors/">75. Sort Colors</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-74-Search-a-2D-Matrix/">74. Search a 2D Matrix</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-71-Simplify-Path/">71. Simplify Path</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-70-Climbing-Stairs/">70. Climbing Stairs</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-69-Sqrt-x/">69. Sqrt(x)</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-67-Add-Binary/">67. Add Binary</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-66-Plus-One/">66. Plus One</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-64-Minimum-Path-Sum/">64. Minimum Path Sum</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-63-Unique-Paths-II/">63. Unique Paths II</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-62-Unique-Paths/">62. Unique Paths</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-61-Rotate-List/">61. Rotate List</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-60-Permutation-Sequence/">60. Permutation Sequence</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-58-Length-of-Last-Word/">58. Length of Last Word</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-56-Merge-Intervals/">56. Merge Intervals</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-53-Maximum-Subarray/">53. Maximum Subarray</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-52-N-Queens-II/">52. N-Queens II</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-51-N-Queens/">51. N-Queens</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-50-Pow-x-n/">50. Pow(x, n)</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-49-Group-Anagrams/">49. Group Anagrams</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-47-Permutations-II/">47. Permutations II</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-46-Permutations/">46. Permutations</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-43-Multiply-Strings/">43. Multiply Strings</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-42-Trapping-Rain-Water/">42. Trapping Rain Water</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-40-Combination-Sum-II/">40. Combination Sum II</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-39-Combination-Sum/">39. Combination Sum</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-38-Count-and-Say/">38. Count and Say</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-37-Sudoku-Solver/">37. Sudoku Solver</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-36-Valid-Sudoku/">36. Valid Sudoku</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-35-Search-Insert-Position/">35. Search Insert Position</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-34-Search-for-a-Range/">34. Find First and Last Position of Element in Sorted Array</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-33-Search-in-Rotated-Sorted-Array/">33. Search in Rotated Sorted Array</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-33-Search-in-Rotated-Sorted-Array/">33. Search in Rotated Sorted Array</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-32-Longest-Valid-Parentheses/">32. Longest Valid Parentheses</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-31-Next-Permutation/">31. Next Permutation</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-30-Substring-with-Concatenation-of-All-Words/">30. Substring with Concatenation of All Words</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-29-Divide-Two-Integers/">29. Divide Two Integers</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-28-Implement-strStr/">28. Implement strStr()</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-27-Remove-Element/">27. Remove Element</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-26-Remove-Duplicates-from-Sorted-Array/">26. Remove Duplicates from Sorted Array</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-25-Reverse-Nodes-in-k-Group/">25. Reverse Nodes in k-Group</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-24-Swap-Nodes-in-Pairs/">24. Swap Nodes in Pairs</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-23-Merge-k-Sorted-Lists/">23. Merge k Sorted Lists</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-22-Generate-Parentheses/">22. Generate Parentheses</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-21-Merge-Two-Sorted-Lists/">21. Merge Two Sorted Lists</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-20-Valid-Parentheses/">20. Valid Parentheses</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-19-Remove-Nth-Node-From-End-of-List/">19. Remove Nth Node From End of List</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-18-4-Sum/">18. 4 Sum</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-17-Letter-Combinations-of-a-Phone-Number/">17. Letter Combinations of a Phone Number.md</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-16-3-Sum-Cloest/">16. 3Sum Closest</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-15-3-Sum/">15. 3Sum</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-14-Longest-Common-Prefix/">14. Longest Common Prefix</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-12-Integer-to-Roman/">12. Integer to Roman</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-11-Container-With-Most-Water/">11. Container With Most Water</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-10-Regular-Expression-Matching/">10. Regular Expression Matching</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-9-Palindrome-Number/">9. Palindrome Number</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-8-String-to-Integer-atoi/">8. String to Integer (atoi)</a></li>  <li class="file"><a href="/wiki/2017/09/01/Leetcode-7-Reverse-Integer/">7. Reverse Integer</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-6-ZigZag-Conversion/">6. ZigZag Conversion</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-5-Longest-Palindromic-Substring/">5. Longest Palindromic Substring</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-4-Median-of-Two-Sorted-Arrays/">4. Median of Two Sorted Arrays</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-3-Longest-Substring-Without-Repeating-Characters/">3. Longest Substring Without Repeating Characters</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-2-Add-Two-Numbers/">2. Add Two Numbers</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-1-Two-Sum/">1. Two Sum</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            LintCode
+                        </a>
+                         <ul class="unstyled" id="tree" >  <li class="file"><a href="/wiki/2017/10/10/LintCode-464-Sort-Integers-II/">464. Sort Integers II</a></li>  <li class="file"><a href="/wiki/2017/10/30/LintCode-77-Longest-Common-Subsequence/">77. Longest Common Subsequence</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            OS
+                        </a>
+                         <ul class="unstyled" id="tree" > 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            CSE521
+                        </a>
+                         <ul class="unstyled" id="tree" >  <li class="file"><a href="/wiki/2017/07/30/OS-CSE521-10-Introduction-to-scheduling/">Introduction to scheduling</a></li>  <li class="file"><a href="/wiki/2017/07/30/OS-CSE521-9-Threads-and-Thread-Implementations/">Threads and Thread Implementations</a></li>  <li class="file"><a href="/wiki/2017/07/30/OS-CSE521-8-contect-switching/">context switching</a></li>  <li class="file"><a href="/wiki/2017/07/30/OS-CSE521-7-Interrupt-and-Exception-Handling/">Interrupt and Exception Handling</a></li>  <li class="file"><a href="/wiki/2017/07/30/OS-CSE521-6-Deaklock-and-exec/">Deadlock and exec</a></li>  <li class="file"><a href="/wiki/2017/07/30/OS-CSE521-5-Synchronation-Primitive/">Synchronization Primitives</a></li>  <li class="file"><a href="/wiki/2017/07/30/OS-CSE521-4-Introduction-to-Synchronation/">Introduction to Synchronization</a></li>  <li class="file"><a href="/wiki/2017/07/30/OS-CSE521-3-fork-and-pipe/">fork() and pipe()</a></li>  </ul> 
+                    </li> 
+                     <li class="file"><a href="/wiki/2017/07/30/OS-实现操作系统1-配置/">实现操作系统1 - 配置</a></li>  <li class="file"><a href="/wiki/2018/07/12/OS-POSIX/">POSIX</a></li>  <li class="file"><a href="/wiki/2018/07/12/OS-超线程/">超线程</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            Python
+                        </a>
+                         <ul class="unstyled" id="tree" >  <li class="file"><a href="/wiki/2017/12/30/Python-Records/">Records</a></li>  <li class="file"><a href="/wiki/2017/10/30/Python-谈谈Python中的拷贝/">谈谈Python中的拷贝</a></li>  <li class="file"><a href="/wiki/2017/10/30/Python-python引号/">Python引号</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            TOOLS
+                        </a>
+                         <ul class="unstyled" id="tree" >  <li class="file"><a href="/wiki/2017/03/30/TOOLS-Python配置/">Python配置</a></li>  <li class="file"><a href="/wiki/2017/10/30/TOOLS-LLDB使用/">LLDB使用</a></li>  <li class="file"><a href="/wiki/2018/01/01/TOOLS-Git/">Git</a></li>  <li class="file"><a href="/wiki/2017/12/30/TOOLS-VIM技巧/">VIM技巧</a></li>  <li class="file"><a href="/wiki/2017/10/30/TOOLS-Clion/">Clion</a></li>  <li class="file"><a href="/wiki/2017/10/30/TOOLS-Maven/">Maven</a></li>  <li class="file"><a href="/wiki/2017/10/30/TOOLS-VSCODE/">VSCode</a></li>  <li class="file"><a href="/wiki/2017/10/30/TOOLS-GCC/">GCC</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory open">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder-open"></i>
+                            &nbsp;
+                            TensorFlow
+                        </a>
+                         <ul class="unstyled" id="tree" >  <li class="file active"><a href="/wiki/2017/12/30/TensorFlow-TF会话生命周期/">TF会话生命周期</a></li>  <li class="file"><a href="/wiki/2017/12/30/TensorFlow-5-TF-Graph模块/">5 TF - Graph模块</a></li>  <li class="file"><a href="/wiki/2017/12/30/TensorFlow-4-OpKernels简介/">4 TF OpKernels简介</a></li>  <li class="file"><a href="/wiki/2017/12/30/TensorFlow-3-代码分析初步/">3 TF代码分析初步</a></li>  <li class="file"><a href="/wiki/2017/12/30/TensorFlow-2-核心概念/">2 TF核心概念</a></li>  <li class="file"><a href="/wiki/2017/12/30/TensorFlow-1-TF系统框架/">1 TF系统框架</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            awesome Install
+                        </a>
+                         <ul class="unstyled" id="tree" >  <li class="file"><a href="/wiki/2018/01/01/awesome-Install-shadowsocks/">搭建shadowsocks</a></li>  <li class="file"><a href="/wiki/2017/12/30/awesome-Install-vagrant搭建ubuntu/">vagrant搭建ubuntu</a></li>  <li class="file"><a href="/wiki/2017/12/30/awesome-Install-git/">git</a></li>  <li class="file"><a href="/wiki/2017/12/30/awesome-Install-Youtube/">Youtube</a></li>  <li class="file"><a href="/wiki/2017/12/11/awesome-Install-nasm/">Nasm</a></li>  <li class="file"><a href="/wiki/2017/12/10/awesome-Install-octave/">Octave</a></li>  <li class="file"><a href="/wiki/2017/12/03/awesome-Install-Intel-Parallel-Studio-XE/">Intel Parallel Studio XE</a></li>  <li class="file"><a href="/wiki/2017/09/30/awesome-Install-Mac环境下搭建Hadoop家族产品/">Mac环境下搭建Hadoop家族产品</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            小技巧
+                        </a>
+                         <ul class="unstyled" id="tree" >  <li class="file"><a href="/wiki/2018/02/02/小技巧-Mac禁止访问网站/">Mac禁止访问网站</a></li>  </ul> 
+                    </li> 
+                     <li class="file"><a href="/wiki/2018/01/06/index/"></a></li>  </ul> 
+    </div>
+    <script>
+        $(document).ready(function() {
+            var iconFolderOpenClass  = 'fa-folder-open';
+            var iconFolderCloseClass = 'fa-folder';
+            var iconAllExpandClass = 'fa-angle-double-down';
+            var iconAllPackClass = 'fa-angle-double-up';
+            // Handle directory-tree expansion:
+            // 左键单独展开目录
+            $(document).on('click', '#categories a[data-role="directory"]', function (event) {
+                event.preventDefault();
+
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconFolderOpenClass);
+                var subtree = $(this).siblings('ul');
+                icon.removeClass(iconFolderOpenClass).removeClass(iconFolderCloseClass);
+                if (expanded) {
+                    if (typeof subtree != 'undefined') {
+                        subtree.slideUp({ duration: 100 });
+                    }
+                    icon.addClass(iconFolderCloseClass);
+                } else {
+                    if (typeof subtree != 'undefined') {
+                        subtree.slideDown({ duration: 100 });
+                    }
+                    icon.addClass(iconFolderOpenClass);
+                }
+            });
+            // 右键展开下属所有目录
+            $('#categories a[data-role="directory"]').bind("contextmenu", function(event){
+                event.preventDefault();
+                
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconFolderOpenClass);
+                var listNode = $(this).siblings('ul');
+                var subtrees = $.merge(listNode.find('li ul'), listNode);
+                var icons = $.merge(listNode.find('.fa'), icon);
+                icons.removeClass(iconFolderOpenClass).removeClass(iconFolderCloseClass);
+                if(expanded) {
+                    subtrees.slideUp({ duration: 100 });
+                    icons.addClass(iconFolderCloseClass);
+                } else {
+                    subtrees.slideDown({ duration: 100 });
+                    icons.addClass(iconFolderOpenClass);
+                }
+            })
+            // 展开关闭所有目录按钮
+            $(document).on('click', '#allExpand', function (event) {
+                event.preventDefault();
+                
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconAllExpandClass);
+                icon.removeClass(iconAllExpandClass).removeClass(iconAllPackClass);
+                if(expanded) {
+                    $('#sidebar .fa.fa-folder').removeClass('fa-folder').addClass('fa-folder-open')
+                    $('#categories li ul').slideDown({ duration: 100 });
+                    icon.addClass(iconAllPackClass);
+                } else {
+                    $('#sidebar .fa.fa-folder-open').removeClass('fa-folder-open').addClass('fa-folder')
+                    $('#categories li ul').slideUp({ duration: 100 });
+                    icon.addClass(iconAllExpandClass);
+                }
+            });  
+        });
+    </script>
+
+    
+        
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title"><span>links</span></h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a href="http://larryim.cc">My Blog</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+            
+            <section id="main"><article id="post-TensorFlow-TF会话生命周期" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+                    <div class="article-meta">
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/wiki/categories/TensorFlow/">TensorFlow</a>
+    </div>
+
+                        
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/wiki/tags/tensorflow/">tensorflow</a>
+    </div>
+
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/wiki/2017/12/30/TensorFlow-TF会话生命周期/">
+            <time datetime="2017-12-29T16:00:00.000Z" itemprop="datePublished">2017-12-30</time>
+        </a>
+    </div>
+
+
+                        
+                    </div>
+                
+                
+    
+        <h1 class="article-title" itemprop="name">
+            TF会话生命周期
+        </h1>
+    
+
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+        
+            
+                <div id="toc" class="toc-article">
+                <strong class="toc-title">Catalogue</strong>
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Swig-幕后英雄"><span class="toc-number">1.</span> <span class="toc-text">Swig: 幕后英雄</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#编程接口：Python"><span class="toc-number">2.</span> <span class="toc-text">编程接口：Python</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#生成代码：Swig"><span class="toc-number">3.</span> <span class="toc-text">生成代码：Swig</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#C-API：桥梁"><span class="toc-number">4.</span> <span class="toc-text">C API：桥梁</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#后端系统：C"><span class="toc-number">5.</span> <span class="toc-text">后端系统：C++</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#会话生命周期"><span class="toc-number">6.</span> <span class="toc-text">会话生命周期</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#创建-扩展图"><span class="toc-number">7.</span> <span class="toc-text">创建/扩展图</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#迭代运行"><span class="toc-number">8.</span> <span class="toc-text">迭代运行</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#销毁会话"><span class="toc-number">9.</span> <span class="toc-text">销毁会话</span></a></li></ol>
+                </div>
+            
+        
+        
+            <p><a href="http://www.uml.org.cn/zjjs/201704123.asp">转自</a></p>
+<p>TensorFlow的系统结构以C API为界，将整个系统分为「前端」和「后端」两个子系统：</p>
+<p>前端系统：提供编程模型，负责构造计算图；</p>
+<p>后端系统：提供运行时环境，负责执行计算图。</p>
+<p><img src="http://or9a8nskt.bkt.clouddn.com/15148941239904.png" alt="系统架构"></p>
+<p>前端系统主要扮演Client的角色，主要负责计算图的构造，并管理Session生命周期过程。</p>
+<p>前端系统是一个支持多语言的编程环境，并提供统一的编程模型支撑用户构造计算图。Client通过Session，连接TensorFlow后端的「运行时」，启动计算图的执行过程。</p>
+<p>后端系统是TensorFlow的运行时系统，主要负责计算图的执行过程，包括计算图的剪枝，设备分配，子图计算等过程。</p>
+<p>本文首先以Session创建为例，揭示前端Python与后端C/C++系统实现的通道，阐述TensorFlow多语言编程的奥秘。随后，以Python前端，C API桥梁，C++后端为生命线，阐述Session的生命周期过程。</p>
+<h1 id="Swig-幕后英雄"><a href="#Swig-幕后英雄" class="headerlink" title="Swig: 幕后英雄"></a>Swig: 幕后英雄</h1><p>前端多语言编程环境与后端C/C++实现系统的通道归功于Swig的包装器。TensorFlow使用Bazel的构建工具，在编译之前启动Swig的代码生成过程，通过<code>tf_session.i</code>自动生成了两个适配(Wrapper)文件：</p>
+<ul>
+<li><p>pywrap_tensorflow.py: 负责对接上层Python调用；</p>
+</li>
+<li><p>pywrap_tensorflow.cpp: 负责对接下层C实现。</p>
+</li>
+</ul>
+<p>此外，<code>pywrap_tensorflow.py</code>模块首次被加载时，自动地加载<code>_pywrap_tensorflow.so</code>的动态链接库。从而实现了<code>pywrap_tensorflow.py</code>到<code>pywrap_tensorflow.cpp</code>的函数调用关系。</p>
+<p>在<code>pywrap_tensorflow.cpp</code>的实现中，静态注册了一个函数符号表。在运行时，按照Python的函数名称，匹配找到对应的C函数实现，最终转调到<code>c_api.c</code>的具体实现。</p>
+<p><img src="http://or9a8nskt.bkt.clouddn.com/15148941860360.png" alt="Swig代码生成器"></p>
+<h1 id="编程接口：Python"><a href="#编程接口：Python" class="headerlink" title="编程接口：Python"></a>编程接口：Python</h1><p>当Client要启动计算图的执行过程时，先创建了一个Session实例，进而调用父类BaseSession的构造函数。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># tensorflow/python/client/session.py</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Session</span><span class="params">(BaseSession)</span>:</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, target=<span class="string">''</span>, graph=None, config=None)</span>:</span></span><br><span class="line">    super(Session, self).__init__(target, graph, config=config)</span><br><span class="line">    <span class="comment"># ignoring others</span></span><br></pre></td></tr></table></figure>
+<p>在BaseSession的构造函数中，将调用<code>pywrap_tensorflow</code>模块中的函数。其中，<code>pywrap_tensorflow</code>模块自动由Swig生成。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"> <span class="comment"># tensorflow/python/client/session.py</span></span><br><span class="line"><span class="keyword">from</span> tensorflow.python <span class="keyword">import</span> pywrap_tensorflow <span class="keyword">as</span> tf_session</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BaseSession</span><span class="params">(SessionInterface)</span>:</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, target=<span class="string">''</span>, graph=None, config=None)</span>:</span></span><br><span class="line">    self._session = <span class="keyword">None</span></span><br><span class="line">    opts = tf_session.TF_NewSessionOptions(target=self._target, config=config)</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        <span class="keyword">with</span> errors.raise_exception_on_not_ok_status() <span class="keyword">as</span> status:</span><br><span class="line">            self._session = tf_session.TF_NewDeprecatedSession(opts, status)</span><br><span class="line">    <span class="keyword">finally</span>:</span><br><span class="line">        tf_session.TF_DeleteSessionOptions(opts)</span><br><span class="line"><span class="comment"># ignoring others</span></span><br></pre></td></tr></table></figure>
+<h1 id="生成代码：Swig"><a href="#生成代码：Swig" class="headerlink" title="生成代码：Swig"></a>生成代码：Swig</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pywrap_tensorflow.py</span><br></pre></td></tr></table></figure>
+<p>在pywrap_tensorflow模块中，通过_pywrap_tensorflow将在_pywrap_tensorflow.so中调用对应的C++函数实现。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># tensorflow/bazel-bin/tensorflow/python/pywrap_tensorflow.py</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">TF_NewDeprecatedSession</span><span class="params">(arg1, status)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> _pywrap_tensorflow.TF_NewDeprecatedSession(arg1, status)</span><br></pre></td></tr></table></figure>
+<p>在pywrap_tensorflow.cpp的具体实现中，它静态注册了函数调用的符号表，实现Python的函数名称到C++实现函数的具体映射。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># tensorflow/bazel-bin/tensorflow/python/pywrap_tensorflow.cpp</span></span><br><span class="line">static PyMethodDef SwigMethods[] = &#123;</span><br><span class="line">    ...</span><br><span class="line">     &#123;<span class="string">"TF_NewDeprecatedSession"</span>, _wrap_TF_NewDeprecatedSession, METH_VARARGS, NULL&#125;,</span><br><span class="line">&#125;</span><br><span class="line">PyObject *_wrap_TF_NewDeprecatedSession(</span><br><span class="line">PyObject *self, PyObject *args) &#123;</span><br><span class="line">TF_SessionOptions* arg1 = ... </span><br><span class="line">TF_Status* arg2 = ...</span><br><span class="line"></span><br><span class="line">TF_DeprecatedSession* result = TF_NewDeprecatedSession(arg1, arg2);</span><br><span class="line">// ignoring others implements</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>最终，自动生成的pywrap_tensorflow.cpp仅仅负责函数调用的转发，最终将调用底层C系统向上提供的API接口。</p>
+<h1 id="C-API：桥梁"><a href="#C-API：桥梁" class="headerlink" title="C API：桥梁"></a>C API：桥梁</h1><p><code>c_api.h</code>是TensorFlow的后端执行系统面向前端开放的公共API接口之一，自此将进入TensorFlow后端系统的浩瀚天空。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// tensorflow/c/c_api.c</span></span><br><span class="line"><span class="function">TF_DeprecatedSession* <span class="title">TF_NewDeprecatedSession</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">  <span class="keyword">const</span> TF_SessionOptions*, TF_Status* status)</span> </span>&#123;</span><br><span class="line">  Session* session;</span><br><span class="line">  status-&gt;status = NewSession(opt-&gt;options, &amp;session);</span><br><span class="line">  <span class="keyword">if</span> (status-&gt;status.ok()) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> TF_DeprecatedSession(&#123;session&#125;);</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="后端系统：C"><a href="#后端系统：C" class="headerlink" title="后端系统：C++"></a>后端系统：C++</h1><p>NewSession将根据前端传递的Session.target，使用SessionFactory多态创建不同类型的Session(C++)对象。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Status <span class="title">NewSession</span><span class="params">(<span class="keyword">const</span> SessionOptions&amp; options, Session** out_session)</span> </span>&#123;</span><br><span class="line">  SessionFactory* factory;</span><br><span class="line">  Status s = SessionFactory::GetFactory(options, &amp;factory);</span><br><span class="line">  <span class="keyword">if</span> (!s.ok()) &#123;</span><br><span class="line">    *out_session = <span class="literal">nullptr</span>;</span><br><span class="line">    LOG(ERROR) &lt;&lt; s;</span><br><span class="line">    <span class="keyword">return</span> s;</span><br><span class="line">  &#125;</span><br><span class="line">  *out_session = factory-&gt;NewSession(options);</span><br><span class="line">  <span class="keyword">if</span> (!*out_session) &#123;</span><br><span class="line">    <span class="keyword">return</span> errors::Internal(<span class="string">"Failed to create session."</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> Status::OK();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="会话生命周期"><a href="#会话生命周期" class="headerlink" title="会话生命周期"></a>会话生命周期</h1><p>下文以前端Python，桥梁C API，后端C++为生命线，理顺三者之间的调用关系，阐述Session的生命周期过程。</p>
+<p>在Python前端，Session的生命周期主要体现在：</p>
+<p>创建Session(target)</p>
+<p>迭代执行Session.run(fetches, feed_dict)</p>
+<p>Session._extend_graph(graph)</p>
+<p>Session.TF_Run(feeds, fetches, targets)</p>
+<p>关闭Session</p>
+<p>销毁Session</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sess = Session(target)</span><br><span class="line"><span class="keyword">for</span> _ <span class="keyword">in</span> range(<span class="number">1000</span>):</span><br><span class="line">  batch_xs, batch_ys = mnist.train.next_batch(<span class="number">100</span>)</span><br><span class="line">  sess.run(train_step, feed_dict=&#123;x: batch_xs, y_: batch_ys&#125;)</span><br><span class="line">sess.close()</span><br></pre></td></tr></table></figure>
+<p>相应地，C++后端，Session的生命周期主要体现在：</p>
+<p>根据target多态创建Session</p>
+<p>Session.Create(graph)：有且仅有一次</p>
+<p>Session.Extend(graph)：零次或多次</p>
+<p>迭代执行Session.Run(inputs, outputs, targets)</p>
+<p>关闭Session.Close</p>
+<p>销毁Session对象</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// create/load graph ...</span></span><br><span class="line">tensorflow::GraphDef graph;</span><br><span class="line"><span class="comment">// local runtime, target is ""</span></span><br><span class="line">tensorflow::SessionOptions options;</span><br><span class="line"></span><br><span class="line"><span class="comment">// create Session</span></span><br><span class="line"><span class="built_in">std</span>::<span class="built_in">unique_ptr</span>&lt;tensorflow::Session&gt; </span><br><span class="line">sess(tensorflow::NewSession(options));</span><br><span class="line"></span><br><span class="line"><span class="comment">// create graph at initialization.</span></span><br><span class="line">tensorflow::Status s = sess-&gt;Create(graph);</span><br><span class="line"><span class="keyword">if</span> (!s.ok()) &#123; ... &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// run step</span></span><br><span class="line"><span class="built_in">std</span>::<span class="built_in">vector</span>&lt;tensorflow::Tensor&gt; outputs;</span><br><span class="line">s = session-&gt;Run(</span><br><span class="line">&#123;&#125;, <span class="comment">// inputs is empty </span></span><br><span class="line">&#123;<span class="string">"output:0"</span>&#125;, <span class="comment">// outputs names</span></span><br><span class="line">&#123;<span class="string">"update_state"</span>&#125;, <span class="comment">// target names</span></span><br><span class="line">&amp;outputs); <span class="comment">// output tensors</span></span><br><span class="line"><span class="keyword">if</span> (!s.ok()) &#123; ... &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// close</span></span><br><span class="line">session-&gt;Close();</span><br></pre></td></tr></table></figure>
+<p>创建会话</p>
+<p>上文介绍了Session创建的详细过程，从Python前端为起点，通过Swig自动生成的Python-C++的包装器为媒介，实现了Python到TensorFlow的C API的调用。</p>
+<p>其中，C API是前端系统与后端系统的分水岭。后端C++系统根据前端传递的Session.target，使用SessionFactory多态创建Session(C++)对象。</p>
+<p><img src="http://or9a8nskt.bkt.clouddn.com/15148944313909.png" alt=""></p>
+<p>创建会话</p>
+<p>从严格的角色意义上划分，GrpcSession依然扮演了Client的角色。它使用target，通过RPC协议与Master建立通信连接，因此，GrpcSession同时扮演了RPC Client的角色。</p>
+<p><img src="http://or9a8nskt.bkt.clouddn.com/15148944356342.png" alt="Session多态创建"></p>
+<h1 id="创建-扩展图"><a href="#创建-扩展图" class="headerlink" title="创建/扩展图"></a>创建/扩展图</h1><p>随后，Python前端将调用Session.run接口，将构造好的计算图，以GraphDef的形式发送给C++后端。</p>
+<p>其中，前端每次调用Session.run接口时，都会试图将新增节点的计算图发送给后端系统，以便后端系统将新增节点的计算图Extend到原来的计算图中。特殊地，在首次调用Session.run时，将发送整个计算图给后端系统。</p>
+<p>后端系统首次调用Session.Extend时，转调(或等价)Session.Create；以后，后端系统每次调用Session.Extend时将真正执行Extend的语义，将新增的计算图的节点追加至原来的计算图中。</p>
+<p>随后，后端将启动计算图执行的准备工作。</p>
+<p><img src="http://or9a8nskt.bkt.clouddn.com/15148944411026.png" alt="创建/扩展图"></p>
+<h1 id="迭代运行"><a href="#迭代运行" class="headerlink" title="迭代运行"></a>迭代运行</h1><p>接着，Python前端Session.run实现将Feed, Fetch列表准备好，传递给后端系统。后端系统调用Session.Run接口。</p>
+<p>后端系统的一次Session.Run执行常常被称为一次Step，Step的执行过程是TensorFlow运行时的核心。</p>
+<p>每次Step，计算图将正向计算网络的输出，反向传递梯度，并完成一次训练参数的更新。首先，后端系统根据Feed, Fetch，对计算图(常称为Full Graph)进行剪枝，得到一个最小依赖的计算子图(常称为Client Graph)。</p>
+<p>然后，运行时启动设备分配算法，如果节点之间的边横跨设备，则将该边分裂，插入相应的Send与Recv节点，实现跨设备节点的通信机制。</p>
+<p>随后，将分裂出来的子图片段(常称为Partition Graph)注册到相应的设备上，并在本地设备上启动子图片段的执行过程。</p>
+<p><img src="http://or9a8nskt.bkt.clouddn.com/15148944539577.png" alt="关闭会话"></p>
+<p>当计算图执行完毕后，需要关闭Session，以便释放后端的系统资源，包括队列，IO等。会话关闭流程较为简单，如下图所示。</p>
+<p><img src="media/2017041237.png" alt="关闭会话"></p>
+<h1 id="销毁会话"><a href="#销毁会话" class="headerlink" title="销毁会话"></a>销毁会话</h1><p>最后，会话关闭之后，Python前端系统启动GC，当Session.del被调用后，启动后台C++的Session对象销毁过程。</p>
+<p><img src="media/2017041238.png" alt="销毁会话"></p>
+
+            </div>
+        
+        <footer class="article-footer">
+        </footer>
+    </div>
+</article>
+
+
+    
+<nav id="article-nav">
+    
+        <a href="/wiki/2017/12/30/CSAPP-Lab-Malloc-lab/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">Newer</strong>
+            <div class="article-nav-title">
+                
+                    Lab6 Malloc Lab
+                
+            </div>
+        </a>
+    
+    
+        <a href="/wiki/2017/12/30/TensorFlow-5-TF-Graph模块/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">Older</strong>
+            <div class="article-nav-title">5 TF - Graph模块</div>
+        </a>
+    
+</nav>
+
+
+
+
+
+    
+    
+
+
+
+
+<!-- baidu url auto push script -->
+<script type="text/javascript">
+    !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=window.location.href,o=document.referrer;if(!e.test(r)){var n="//api.share.baidu.com/s.gif";o?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var t=new Image;t.src=n}}(window);
+</script>     
+</section>
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            larry &copy; 2018 
+            <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/80x15.png" /></a>
+            <br> Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>. Theme - <a href="https://github.com/zthxxx/hexo-theme-Wikitten">wikitten</a>
+        </div>
+    </div>
+</footer>
+        
+
+    
+        <script src="/wiki/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/wiki/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/wiki/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/wiki/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/wiki/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/wiki/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/wiki/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/wiki/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/wiki/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/wiki/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+        <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true,
+            TeX: {
+                equationNumbers: {
+                  autoNumber: 'AMS'
+                }
+            }
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/wiki/js/main.js"></script>
+
+    </div>
+</body>
+</html>

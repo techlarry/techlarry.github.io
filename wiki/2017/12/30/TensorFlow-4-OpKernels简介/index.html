@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <meta charset="utf-8">
+    
+    <title>4 TF OpKernels简介 | Wiki</title>
+    
+    
+        <meta name="keywords" content="tensorflow" />
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="OpKernel类（core/framework/op_kernel.h）是所有Op类的基类。继承OpKernel还可以自定义新的Op类。用的较多的Op如（MatMul,  Conv2D,  SoftMax,  AvgPooling, Argmax等）。 所有Op包含注册（Register Op）和实现（正向计算、梯度定义）两部分。 所有Op类的实现需要overide抽象基函数 void Comp">
+<meta name="keywords" content="tensorflow">
+<meta property="og:type" content="article">
+<meta property="og:title" content="4 TF OpKernels简介">
+<meta property="og:url" content="http://larryim.cc/2017/12/30/TensorFlow-4-OpKernels简介/index.html">
+<meta property="og:site_name" content="Wiki">
+<meta property="og:description" content="OpKernel类（core/framework/op_kernel.h）是所有Op类的基类。继承OpKernel还可以自定义新的Op类。用的较多的Op如（MatMul,  Conv2D,  SoftMax,  AvgPooling, Argmax等）。 所有Op包含注册（Register Op）和实现（正向计算、梯度定义）两部分。 所有Op类的实现需要overide抽象基函数 void Comp">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://or9a8nskt.bkt.clouddn.com/15148888986528.jpg">
+<meta property="og:image" content="http://or9a8nskt.bkt.clouddn.com/15148889249291.jpg">
+<meta property="og:image" content="http://or9a8nskt.bkt.clouddn.com/15148889292844.jpg">
+<meta property="og:image" content="http://or9a8nskt.bkt.clouddn.com/15148889481292.jpg">
+<meta property="og:image" content="http://or9a8nskt.bkt.clouddn.com/15148889531209.jpg">
+<meta property="og:image" content="http://or9a8nskt.bkt.clouddn.com/15148889599122.jpg">
+<meta property="og:image" content="http://or9a8nskt.bkt.clouddn.com/15148889642022.jpg">
+<meta property="og:image" content="http://or9a8nskt.bkt.clouddn.com/15148889881424.jpg">
+<meta property="og:image" content="http://or9a8nskt.bkt.clouddn.com/15148889946670.jpg">
+<meta property="og:image" content="http://or9a8nskt.bkt.clouddn.com/15148890096198.jpg">
+<meta property="og:image" content="http://or9a8nskt.bkt.clouddn.com/15148890181645.jpg">
+<meta property="og:image" content="http://or9a8nskt.bkt.clouddn.com/15148890280195.jpg">
+<meta property="og:image" content="http://or9a8nskt.bkt.clouddn.com/15148890353345.jpg">
+<meta property="og:image" content="http://or9a8nskt.bkt.clouddn.com/15148890463715.jpg">
+<meta property="og:image" content="http://or9a8nskt.bkt.clouddn.com/15148890640354.jpg">
+<meta property="og:image" content="http://or9a8nskt.bkt.clouddn.com/15148890728382.jpg">
+<meta property="og:image" content="http://or9a8nskt.bkt.clouddn.com/15148890890660.jpg">
+<meta property="og:image" content="http://or9a8nskt.bkt.clouddn.com/15148890938124.jpg">
+<meta property="og:image" content="http://or9a8nskt.bkt.clouddn.com/15148891413185.jpg">
+<meta property="og:updated_time" content="2018-01-28T07:12:47.443Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="4 TF OpKernels简介">
+<meta name="twitter:description" content="OpKernel类（core/framework/op_kernel.h）是所有Op类的基类。继承OpKernel还可以自定义新的Op类。用的较多的Op如（MatMul,  Conv2D,  SoftMax,  AvgPooling, Argmax等）。 所有Op包含注册（Register Op）和实现（正向计算、梯度定义）两部分。 所有Op类的实现需要overide抽象基函数 void Comp">
+<meta name="twitter:image" content="http://or9a8nskt.bkt.clouddn.com/15148888986528.jpg">
+    
+
+    
+
+    
+
+    <link rel="stylesheet" href="/wiki/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/wiki/libs/open-sans/styles.css">
+    <link rel="stylesheet" href="/wiki/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/wiki/css/style.css">
+    <script src="/wiki/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="/wiki/libs/jquery/plugins/cookie/1.4.1/jquery.cookie.js"></script>
+    
+    
+        <link rel="stylesheet" href="/wiki/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/wiki/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+        <script type="text/javascript">
+(function(i,s,o,g,r,a,m) {i['GoogleAnalyticsObject']=r;i[r]=i[r]||function() {
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-112743284-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+    
+    
+    
+        <script>
+var _hmt = _hmt || [];
+(function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?fdc936c9f5a3b72177541183cdeb8cb3";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+    
+
+
+</head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/wiki/" id="logo">
+                
+                <span class="site-title">Wiki</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/wiki/">首页</a>
+                
+                    <a class="main-nav-link" href="/wiki/tags">标签</a>
+                
+            </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="Search" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="Type something..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: 'Posts',
+            PAGES: 'Pages',
+            CATEGORIES: 'Categories',
+            TAGS: 'Tags',
+            UNTITLED: '(Untitled)',
+        },
+        ROOT_URL: '/wiki/',
+        CONTENT_URL: '/wiki/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/wiki/js/insight.js"></script>
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/wiki/">首页</a></td>
+                
+                    <td><a class="main-nav-link" href="/wiki/tags">标签</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="Search" />
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+            
+                <aside id="sidebar">
+   
+        
+    <div class="widget-wrap" id='categories'>
+        <h3 class="widget-title">
+            <span>categories</span>
+            &nbsp;
+            <a id='allExpand' href="#">
+                <i class="fa fa-angle-double-down fa-2x"></i>
+            </a>
+        </h3>
+        
+        
+        
+         <ul class="unstyled" id="tree" > 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            Algorithm
+                        </a>
+                         <ul class="unstyled" id="tree" >  <li class="file"><a href="/wiki/2017/10/10/Algorithm-水塘抽样/">水塘抽样</a></li>  <li class="file"><a href="/wiki/2017/10/30/Algorithm-Divide-and-Conquer/">Divide and Conquer</a></li>  <li class="file"><a href="/wiki/2017/01/30/Algorithm-Recursion/">Recursion</a></li>  <li class="file"><a href="/wiki/2017/10/30/Algorithm-Backtracking/">Exhaustive Search and Backtracking</a></li>  <li class="file"><a href="/wiki/2017/08/17/Algorithm-位操作/">位操作</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            C
+                        </a>
+                         <ul class="unstyled" id="tree" >  <li class="file"><a href="/wiki/2017/12/30/C-static用法/">static用法</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            C++
+                        </a>
+                         <ul class="unstyled" id="tree" >  <li class="file"><a href="/wiki/2017/07/30/C-C-Primer-12-动态内存-C-Primer-12-动态内存C-Primer-12-动态内存/">C++ Primer (12) - 动态内存</a></li>  <li class="file"><a href="/wiki/2017/07/30/C-C-Primer-6-函数C-Primer-12-动态内存/">C++ Primer (6) - 函数</a></li>  <li class="file"><a href="/wiki/2017/10/30/C-STL源码剖析/">STL源码剖析</a></li>  <li class="file"><a href="/wiki/2018/03/01/C-面试题/"></a></li>  <li class="file"><a href="/wiki/2017/08/17/C-Vector-string/">STL中的vector<string>总结</a></li>  <li class="file"><a href="/wiki/2017/08/17/C-C-面试经典100题/">C++面试经典100题</a></li>  <li class="file"><a href="/wiki/2017/08/17/C-EOF/">EOF</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            CSAPP Lab
+                        </a>
+                         <ul class="unstyled" id="tree" >  <li class="file"><a href="/wiki/2017/12/30/CSAPP-Lab-Malloc-lab/">Lab6 Malloc Lab</a></li>  <li class="file"><a href="/wiki/2017/12/30/CSAPP-Lab-Shell-Lab/">Lab5 Shell Lab</a></li>  <li class="file"><a href="/wiki/2017/12/30/CSAPP-Lab-Cache-Lab/">Lab4 Cache Lab</a></li>  <li class="file"><a href="/wiki/2017/12/30/CSAPP-Lab-Attack-Lab/">Lab3 Attack Lab</a></li>  <li class="file"><a href="/wiki/2017/12/30/CSAPP-Lab-Data-Lab/">Lab1 Data Lab</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            Java
+                        </a>
+                         <ul class="unstyled" id="tree" >  <li class="file"><a href="/wiki/2018/07/12/Java-关键字native/">修饰词native</a></li>  <li class="file"><a href="/wiki/2018/07/12/Java-record/">Java record</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            Leetcode
+                        </a>
+                         <ul class="unstyled" id="tree" >  <li class="file"><a href="/wiki/2017/10/30/Leetcode-941-Valid-Mountain-Array/">941. Valid Mountain Array</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-876-Middle-of-the-Linked-List/">876. Middle of the Linked List</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-867-Transpose-Matrix/">867. Transpose Matrix</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-841-Keys-and-Rooms/">841. Keys and Rooms</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-785-Is-Graph-Bipartite/">785. Is Graph Bipartite?</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-783-Minimum-Distance-Between-BST-Nodes/">783. Minimum Distance Between BST Nodes</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-760-Find-Anagram-Mappings/">760. Find Anagram Mappings</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-746-Min-Cost-Climbing-Stairs/">746. Min Cost Climbing Stairs</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-743-Network-Delay-Time/">743. Network Delay Time</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-741-Cherry-Pickup/">741. Cherry Pickup</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-728-Self-Dividing-Numbers/">728. Self Dividing Numbers</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-703-Kth-Largest-Element-in-a-Stream/">703. Kth Largest Element in a Stream</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-687-Longest-Univalue-Path/">687. Longest Univalue Path</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-685-Redundant-Connection-II/">685. Redundant Connection II</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-684-Redundant-Connection/">684. Redundant Connection</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-671-Second-Minimum-Node-In-a-Binary-Tree/">671. Second Minimum Node In a Binary Tree</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-637-Average-of-Levels-in-Binary-Tree/">637. Average of Levels in Binary Tree</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-633-Sum-of-Square-Numbers/">633. Sum of Square Numbers</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-606-Construct-String-from-Binary-Tree/">606. Construct String from Binary Tree</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-599-Minimum-Index-Sum-of-Two-Lists/">599. Minimum Index Sum of Two Lists</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-559-Maximum-Depth-of-N-ary-Tree/">559. Maximum Depth of N-ary Tree</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-538-Convert-BST-to-Greater-Tree/">538. Convert BST to Greater Tree</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-507-Perfect-Number/">507. Perfect Number</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-500-Keyboard-Row/">500. Keyboard Row</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-463-Island-Perimeter/">463. Island Perimeter</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-438-Find-All-Anagrams-in-a-String/">438. Find All Anagrams in a String</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-437-Path-Sum-III/">437. Path Sum III</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-429-N-ary-Tree-Level-Order-Traversal/">429. N-ary Tree Level Order Traversal</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-415-Add-Strings/">415. Add Strings</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-409-Longest-Palindrome/">409. Longest Palindrome</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-404-Sum-of-Left-Leaves/">404. Sum of Left Leaves</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-401-Binary-Watch/">401. Binary Watch</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-399-Evaluate-Division/">399. Evaluate Division</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-384-Shuffle-an-Array/">384. Shuffle an Array</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-382-Linked-List-Random-Node/">382. Linked List Random Node</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-378-Kth-Smallest-Element-in-a-Sorted-Matrix/">378. Kth Smallest Element in a Sorted Matrix</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-373-Find-K-Pairs-with-Smallest-Sums/">373. Find K Pairs with Smallest Sums</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-372-Super-Pow/">372. Super Pow</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-370-Range-Addition/">370. Range Addition</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-367-Valid-Perfect-Square/">367. Valid Perfect Square</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-366-Find-Leaves-of-Binary-Tree/">366. Find Leaves of Binary Tree</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-359-Logger-Rate-Limiter/">359. Logger Rate Limiter</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-350-Intersection-of-Two-Arrays-II/">350. Intersection of Two Arrays II</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-349-Intersection-of-Two-Arrays/">349. Intersection of Two Arrays</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-345-Reverse-Vowels-of-a-String/">345. Reverse Vowels of a String</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-344-Reverse-String/">344. Reverse String</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-338-Counting-Bits/">338. Counting Bits</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-337-House-Robber-III/">337. House Robber III</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-332-Reconstruct-Itinerary/">332. Reconstruct Itinerary</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-331-Verity-Preorder-Serialization-of-a-Binary-Tree/">331. Verify Preorder Serialization of a Binary Tree</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-328-Odd-Even-Linked-List/">328. Odd Even Linked List</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-326-Power-of-Three/">326. Power of Three</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-310-Minimum-Height-Trees/">310. Minimum Height Trees</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-309-Best-Time-to-Buy-and-Sell-Stock-with-Cooldown/">309. Best Time to Buy and Sell Stock with Cooldown</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-304-Range-Sum-Query-2D-Immutable/">304. Range Sum Query 2D - Immutable</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-303-Range-Sum-Query-Immutable/">303. Range Sum Query - Immutable</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-300-Longest-Increasing-Subsequence/">300. Longest Increasing Subsequence</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-297-Serialize-and-Deserialize-Binary-Tree/">297. Serialize and Deserialize Binary Tree</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-295-Find-Median-from-Data-Stream/">295. Find Median from Data Stream</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-290-Word-Pattern/">290. Word Pattern</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-287-Find-the-Duplicate-Number/">287. Find the Duplicate Number</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-279-Perfect-Squares/">279. Perfect Squares</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-278-First-Bad-Version/">278. First Bad Version</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-276-Paint-Fence/">276. Paint Fence</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-270-Closest-Binary-Search-Tree-Value/">270. Closest Binary Search Tree Value</a></li>  <li class="file"><a href="/wiki/2017/08/17/Leetcode-268-Missing-Number/">268. Missing Number</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-265-Paint-House-II/">265. Paint House II</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-264-Ugly-Number-II/">264. Ugly Number II</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-263-Ugly-Number/">263. Ugly Number</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-261-Graph-Valid-Tree/">261. Graph Valid Tree</a></li>  <li class="file"><a href="/wiki/2017/08/17/Leetcode-260-Single-Number-III/">260. Single Number III</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-258-Add-Digits/">258. Add Digits</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-257-Binary-Tree-Paths/">257. Binary Tree Paths</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-256-Paint-House/">256. Paint House</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-242-Valid-Anagram/">242. Valid Anagram</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-241-Different-Ways-to-Add-Parentheses/">241. Different Ways to Add Parentheses</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-240-Search-a-2D-Matrix-II/">240. Search a 2D Matrix II</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-237-Delete-Node-in-a-Linked-List/">237. Delete Node in a Linked List</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-236-Lowest-Common-Ancestor-of-a-Binary-Tree/">236. Lowest Common Ancestor of a Binary Tree</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-235-Lowest-Common-Ancestor-of-a-Binary-Search-Tree/">235. Lowest Common Ancestor of a Binary Search Tree</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-234-Palindrome-Linked-List/">234. Palindrome Linked List</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-232-Implement-Queue-using-Stacks/">232. Implement Queue using Stacks</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-230-Kth-Smallest-Element-in-a-BST/">230. Kth Smallest Element in a BST</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-226-Invert-Binary-Tree/">226. Invert Binary Tree</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-225-mplementStackUsingQueues/">225. Implement Stack using Queues</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-224-Basic-Calculator/">224. Basic Calculator</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-222-Count-Complete-Tree-Nodes/">222. Count Complete Tree Nodes</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-221-Maximal-Square/">221. Maximal Square</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-216-Combination-Sum-III/">216. Combination Sum III</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-215-Kth-Largest-Element-in-an-Array/">215. Kth Largest Element in an Array</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-213-House-Robber-II/">213. House Robber II</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-210-Course-Schedule-II/">210. Course Schedule II</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-209-Minimum-Size-Subarray-Sum/">209. Minimum Size Subarray Sum</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-207-Course-Schedule/">207. Course Schedule</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-206-Reverse-Linked-List/">206. Reverse Linked List</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-205-Isomorphic-Strings/">205. Isomorphic Strings</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-204-Count-Primes/">204. Count Primes</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-203-Remove-Linked-List-Elements/">203. Remove Linked List Elements</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-202-Happy-Number/">202. Happy Number</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-200-Number-of-Islands/">200. Number of Islands</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-199-Binary-Tree-Right-Side-View/">199. Binary Tree Right Side View</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-198-House-Robber/">198. House Robber</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-191-Number-of-1-Bits/">191. Number of 1 Bits</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-190-Reverse-Bits/">190. Reverse Bits</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-187-Repeated-DNA-Sequences/">187. Repeated DNA Sequences</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-179-Largest-Number/">179. Largest Number</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-174-Dungeon-Game/">174. Dungeon Game</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-173-Binary-Search-Tree-Iterator/">173. Binary Search Tree Iterator</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-172-Factorial-Trailing-Zeroes/">172. Factorial Trailing Zeroes</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-171-Excel-Sheet-Column-Number/">171. Excel Sheet Column Number</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-170-TwoSum-III/">170. TwoSum III</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-168-Excel-Sheet-Column-Title/">168. Excel Sheet Column Title</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-167-Two-Sum-II-Input-array-is-sorted/">167. Two Sum II - Input array is sorted</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-166-Fraction-to-Recurring-Decimal/">166. Fraction to Recurring Decimal</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-160-Intersection-of-Two-Linked-Lists/">160. Intersection of Two Linked Lists</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-155-Min-Stack/">155. Min Stack</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-152-Maximum-Product-Subarray/">152. Maximum Product Subarray</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-151-Reverse-Words-in-a-String/">151. Reverse Words in a String</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-150-Evaluate-Reverse-Polish-Notation/">150. Evaluate Reverse Polish Notation</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-149-Max-Points-on-a-Line/">149. Max Points on a Line</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-148-Sort-List/">148. Sort List</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-147-Insertion-Sort-List/">147. Insertion Sort List</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-146-LRU-Cache/">146. LRU Cache</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-145-Binary-Tree-Postorder-Traversal/">145. Binary Tree Postorder Traversal</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-144-Binary-Tree-Preorder-Traversal/">144. Binary Tree Preorder Traversal</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-143-Reorder-List/">143. Reorder List</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-142-Linked-List-Cycle-II/">142. Linked List Cycle II</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-141-Linked-List-Cycle/">141. Linked List Cycle</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-139-Word-Break/">139. Word Break</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-138-Copy-List-with-Random-Pointer/">138. Copy List with Random Pointer</a></li>  <li class="file"><a href="/wiki/2017/08/17/Leetcode-136-Single-Number/">136 Single Number</a></li>  <li class="file"><a href="/wiki/2017/08/17/Leetcode-137-Single-Number-II/">137 Single Number II</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-133-Clone-Graph/">133. Clone Graph</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-132-Palindrome-Partitioning-II/">132. Palindrome Partitioning II</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-131-Palindrome-Partitioning/">131. Palindrome Partitioning</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-130-Surrounded-Regions/">130. Surrounded Regions</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-129-Sum-Root-to-Leaf-Numbers/">129. Sum Root to Leaf Numbers</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-128-Longest-Consecutive-Sequence/">128. Longest Consecutive Sequence</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-127-Word-Ladder/">127. Word Ladder</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-125-Valid-Palindrome/">125. Valid Palindrome</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-124-Binary-Tree-Maximum-Path-Sum/">124. Binary Tree Maximum Path Sum</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-121-Best-Time-to-Buy-and-Sell-Stock/">121. Best Time to Buy and Sell Stock</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-120-Triangle/">120. Triangle</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-119-Pascal-s-Triangle-II/">119. Pascal's Triangle II</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-118-Pascal-s-Triangle/">118. Pascal's Triangle</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-117-Populating-Next-Right-Pointers-in-Each-Node-II/">117. Populating Next Right Pointers in Each Node II</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-116-Populating-Next-Right-Pointers-in-Each-Node/">116. Populating Next Right Pointers in Each Node</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-114-Flatten-Binary-Tree-to-Linked-List/">114. Flatten Binary Tree to Linked List</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-113-Path-Sum-II/">113. Path Sum II</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-112-Path-Sum/">112. Path Sum</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-111-Minimum-Depth-of-Binary-Tree/">111. Minimum Depth of Binary Tree</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-110-Balanced-Binary-Tree/">110. Balanced Binary Tree</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-108-Convert-Sorted-Array-to-Binary-Search-Tree/">108. Convert Sorted Array to Binary Search Tree</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-107-Binary-Tree-Level-Order-Traversal-II/">107. Binary Tree Level Order Traversal II</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-105-Construct-Binary-Tree-from-Preorder-and-Inorder-Traversal/">105. Construct Binary Tree from Preorder and Inorder Traversal</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-104-Maximum-Depth-of-Binary-Tree/">104. Maximum Depth of Binary Tree</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-103-Binary-Tree-Zigzag-Level-Order-Traversal/">103. Binary Tree Zigzag Level Order Traversal</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-102-Binary-Tree-Level-Order-Traversal/">102. Binary Tree Level Order Traversal</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-101-Symmetric-Tree/">101. Symmetric Tree</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-100-Same-Tree/">100. Same Tree</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-99-Recover-Binary-Search-Tree/">99. Recover Binary Search Tree</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-98-Validate-Binary-Search-Tree/">98. Validate Binary Search Tree</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-96-Unique-Binary-Search-Trees/">96. Unique Binary Search Trees</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-95-Unique-Binary-Search-Trees-II/">95. Unique Binary Search Trees II</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-94-Binary-Tree-Inorder-Traversal/">94. Binary Tree Inorder Traversal</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-93-Restore-IP-Adress/">93. Restore IP Adress</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-93-Restore-IP-Addresses/">93. Restore IP Addresses</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-92-Reverse-Linked-List-II/">92. Reverse Linked List II</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-91-Decode-Ways/">91. Decode Ways</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-90-Subsets-II/">90. Subsets II</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-89-Gray-Code/">89. Gray Code</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-88-Merge-Sorted-Array/">88. Merge Sorted Array</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-86-Partition-List/">86. Partition List</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-85-Maximal-Rectangle/">85. Maximal Rectangle</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-84-Largest-Rectangle-in-Histogram/">84. Largest Rectangle in Histogram</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-83-Remove-Duplicates-from-Sorted-List/">83. Remove Duplicates from Sorted List</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-82-Remove-Duplicates-from-Sorted-List-II/">82. Remove Duplicates from Sorted List II</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-79-Word-Search/">79. Word Search</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-78-Subsets-md/">78. Subsets</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-77-Combinations/">77. Combinations</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-76-Minimum-Window-Substring/">76. Minimum Window Substring</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-75-Sort-Colors/">75. Sort Colors</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-74-Search-a-2D-Matrix/">74. Search a 2D Matrix</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-71-Simplify-Path/">71. Simplify Path</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-70-Climbing-Stairs/">70. Climbing Stairs</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-69-Sqrt-x/">69. Sqrt(x)</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-67-Add-Binary/">67. Add Binary</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-66-Plus-One/">66. Plus One</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-64-Minimum-Path-Sum/">64. Minimum Path Sum</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-63-Unique-Paths-II/">63. Unique Paths II</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-62-Unique-Paths/">62. Unique Paths</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-61-Rotate-List/">61. Rotate List</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-60-Permutation-Sequence/">60. Permutation Sequence</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-58-Length-of-Last-Word/">58. Length of Last Word</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-56-Merge-Intervals/">56. Merge Intervals</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-53-Maximum-Subarray/">53. Maximum Subarray</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-52-N-Queens-II/">52. N-Queens II</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-51-N-Queens/">51. N-Queens</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-50-Pow-x-n/">50. Pow(x, n)</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-49-Group-Anagrams/">49. Group Anagrams</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-47-Permutations-II/">47. Permutations II</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-46-Permutations/">46. Permutations</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-43-Multiply-Strings/">43. Multiply Strings</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-42-Trapping-Rain-Water/">42. Trapping Rain Water</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-40-Combination-Sum-II/">40. Combination Sum II</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-39-Combination-Sum/">39. Combination Sum</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-38-Count-and-Say/">38. Count and Say</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-37-Sudoku-Solver/">37. Sudoku Solver</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-36-Valid-Sudoku/">36. Valid Sudoku</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-35-Search-Insert-Position/">35. Search Insert Position</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-34-Search-for-a-Range/">34. Find First and Last Position of Element in Sorted Array</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-33-Search-in-Rotated-Sorted-Array/">33. Search in Rotated Sorted Array</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-33-Search-in-Rotated-Sorted-Array/">33. Search in Rotated Sorted Array</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-32-Longest-Valid-Parentheses/">32. Longest Valid Parentheses</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-31-Next-Permutation/">31. Next Permutation</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-30-Substring-with-Concatenation-of-All-Words/">30. Substring with Concatenation of All Words</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-29-Divide-Two-Integers/">29. Divide Two Integers</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-28-Implement-strStr/">28. Implement strStr()</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-27-Remove-Element/">27. Remove Element</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-26-Remove-Duplicates-from-Sorted-Array/">26. Remove Duplicates from Sorted Array</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-25-Reverse-Nodes-in-k-Group/">25. Reverse Nodes in k-Group</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-24-Swap-Nodes-in-Pairs/">24. Swap Nodes in Pairs</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-23-Merge-k-Sorted-Lists/">23. Merge k Sorted Lists</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-22-Generate-Parentheses/">22. Generate Parentheses</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-21-Merge-Two-Sorted-Lists/">21. Merge Two Sorted Lists</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-20-Valid-Parentheses/">20. Valid Parentheses</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-19-Remove-Nth-Node-From-End-of-List/">19. Remove Nth Node From End of List</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-18-4-Sum/">18. 4 Sum</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-17-Letter-Combinations-of-a-Phone-Number/">17. Letter Combinations of a Phone Number.md</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-16-3-Sum-Cloest/">16. 3Sum Closest</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-15-3-Sum/">15. 3Sum</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-14-Longest-Common-Prefix/">14. Longest Common Prefix</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-12-Integer-to-Roman/">12. Integer to Roman</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-11-Container-With-Most-Water/">11. Container With Most Water</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-10-Regular-Expression-Matching/">10. Regular Expression Matching</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-9-Palindrome-Number/">9. Palindrome Number</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-8-String-to-Integer-atoi/">8. String to Integer (atoi)</a></li>  <li class="file"><a href="/wiki/2017/09/01/Leetcode-7-Reverse-Integer/">7. Reverse Integer</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-6-ZigZag-Conversion/">6. ZigZag Conversion</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-5-Longest-Palindromic-Substring/">5. Longest Palindromic Substring</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-4-Median-of-Two-Sorted-Arrays/">4. Median of Two Sorted Arrays</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-3-Longest-Substring-Without-Repeating-Characters/">3. Longest Substring Without Repeating Characters</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-2-Add-Two-Numbers/">2. Add Two Numbers</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-1-Two-Sum/">1. Two Sum</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            LintCode
+                        </a>
+                         <ul class="unstyled" id="tree" >  <li class="file"><a href="/wiki/2017/10/10/LintCode-464-Sort-Integers-II/">464. Sort Integers II</a></li>  <li class="file"><a href="/wiki/2017/10/30/LintCode-77-Longest-Common-Subsequence/">77. Longest Common Subsequence</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            OS
+                        </a>
+                         <ul class="unstyled" id="tree" > 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            CSE521
+                        </a>
+                         <ul class="unstyled" id="tree" >  <li class="file"><a href="/wiki/2017/07/30/OS-CSE521-10-Introduction-to-scheduling/">Introduction to scheduling</a></li>  <li class="file"><a href="/wiki/2017/07/30/OS-CSE521-9-Threads-and-Thread-Implementations/">Threads and Thread Implementations</a></li>  <li class="file"><a href="/wiki/2017/07/30/OS-CSE521-8-contect-switching/">context switching</a></li>  <li class="file"><a href="/wiki/2017/07/30/OS-CSE521-7-Interrupt-and-Exception-Handling/">Interrupt and Exception Handling</a></li>  <li class="file"><a href="/wiki/2017/07/30/OS-CSE521-6-Deaklock-and-exec/">Deadlock and exec</a></li>  <li class="file"><a href="/wiki/2017/07/30/OS-CSE521-5-Synchronation-Primitive/">Synchronization Primitives</a></li>  <li class="file"><a href="/wiki/2017/07/30/OS-CSE521-4-Introduction-to-Synchronation/">Introduction to Synchronization</a></li>  <li class="file"><a href="/wiki/2017/07/30/OS-CSE521-3-fork-and-pipe/">fork() and pipe()</a></li>  </ul> 
+                    </li> 
+                     <li class="file"><a href="/wiki/2017/07/30/OS-实现操作系统1-配置/">实现操作系统1 - 配置</a></li>  <li class="file"><a href="/wiki/2018/07/12/OS-POSIX/">POSIX</a></li>  <li class="file"><a href="/wiki/2018/07/12/OS-超线程/">超线程</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            Python
+                        </a>
+                         <ul class="unstyled" id="tree" >  <li class="file"><a href="/wiki/2017/12/30/Python-Records/">Records</a></li>  <li class="file"><a href="/wiki/2017/10/30/Python-谈谈Python中的拷贝/">谈谈Python中的拷贝</a></li>  <li class="file"><a href="/wiki/2017/10/30/Python-python引号/">Python引号</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            TOOLS
+                        </a>
+                         <ul class="unstyled" id="tree" >  <li class="file"><a href="/wiki/2017/03/30/TOOLS-Python配置/">Python配置</a></li>  <li class="file"><a href="/wiki/2017/10/30/TOOLS-LLDB使用/">LLDB使用</a></li>  <li class="file"><a href="/wiki/2018/01/01/TOOLS-Git/">Git</a></li>  <li class="file"><a href="/wiki/2017/12/30/TOOLS-VIM技巧/">VIM技巧</a></li>  <li class="file"><a href="/wiki/2017/10/30/TOOLS-Clion/">Clion</a></li>  <li class="file"><a href="/wiki/2017/10/30/TOOLS-Maven/">Maven</a></li>  <li class="file"><a href="/wiki/2017/10/30/TOOLS-VSCODE/">VSCode</a></li>  <li class="file"><a href="/wiki/2017/10/30/TOOLS-GCC/">GCC</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory open">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder-open"></i>
+                            &nbsp;
+                            TensorFlow
+                        </a>
+                         <ul class="unstyled" id="tree" >  <li class="file"><a href="/wiki/2017/12/30/TensorFlow-TF会话生命周期/">TF会话生命周期</a></li>  <li class="file"><a href="/wiki/2017/12/30/TensorFlow-5-TF-Graph模块/">5 TF - Graph模块</a></li>  <li class="file active"><a href="/wiki/2017/12/30/TensorFlow-4-OpKernels简介/">4 TF OpKernels简介</a></li>  <li class="file"><a href="/wiki/2017/12/30/TensorFlow-3-代码分析初步/">3 TF代码分析初步</a></li>  <li class="file"><a href="/wiki/2017/12/30/TensorFlow-2-核心概念/">2 TF核心概念</a></li>  <li class="file"><a href="/wiki/2017/12/30/TensorFlow-1-TF系统框架/">1 TF系统框架</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            awesome Install
+                        </a>
+                         <ul class="unstyled" id="tree" >  <li class="file"><a href="/wiki/2018/01/01/awesome-Install-shadowsocks/">搭建shadowsocks</a></li>  <li class="file"><a href="/wiki/2017/12/30/awesome-Install-vagrant搭建ubuntu/">vagrant搭建ubuntu</a></li>  <li class="file"><a href="/wiki/2017/12/30/awesome-Install-git/">git</a></li>  <li class="file"><a href="/wiki/2017/12/30/awesome-Install-Youtube/">Youtube</a></li>  <li class="file"><a href="/wiki/2017/12/11/awesome-Install-nasm/">Nasm</a></li>  <li class="file"><a href="/wiki/2017/12/10/awesome-Install-octave/">Octave</a></li>  <li class="file"><a href="/wiki/2017/12/03/awesome-Install-Intel-Parallel-Studio-XE/">Intel Parallel Studio XE</a></li>  <li class="file"><a href="/wiki/2017/09/30/awesome-Install-Mac环境下搭建Hadoop家族产品/">Mac环境下搭建Hadoop家族产品</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            小技巧
+                        </a>
+                         <ul class="unstyled" id="tree" >  <li class="file"><a href="/wiki/2018/02/02/小技巧-Mac禁止访问网站/">Mac禁止访问网站</a></li>  </ul> 
+                    </li> 
+                     <li class="file"><a href="/wiki/2018/01/06/index/"></a></li>  </ul> 
+    </div>
+    <script>
+        $(document).ready(function() {
+            var iconFolderOpenClass  = 'fa-folder-open';
+            var iconFolderCloseClass = 'fa-folder';
+            var iconAllExpandClass = 'fa-angle-double-down';
+            var iconAllPackClass = 'fa-angle-double-up';
+            // Handle directory-tree expansion:
+            // 左键单独展开目录
+            $(document).on('click', '#categories a[data-role="directory"]', function (event) {
+                event.preventDefault();
+
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconFolderOpenClass);
+                var subtree = $(this).siblings('ul');
+                icon.removeClass(iconFolderOpenClass).removeClass(iconFolderCloseClass);
+                if (expanded) {
+                    if (typeof subtree != 'undefined') {
+                        subtree.slideUp({ duration: 100 });
+                    }
+                    icon.addClass(iconFolderCloseClass);
+                } else {
+                    if (typeof subtree != 'undefined') {
+                        subtree.slideDown({ duration: 100 });
+                    }
+                    icon.addClass(iconFolderOpenClass);
+                }
+            });
+            // 右键展开下属所有目录
+            $('#categories a[data-role="directory"]').bind("contextmenu", function(event){
+                event.preventDefault();
+                
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconFolderOpenClass);
+                var listNode = $(this).siblings('ul');
+                var subtrees = $.merge(listNode.find('li ul'), listNode);
+                var icons = $.merge(listNode.find('.fa'), icon);
+                icons.removeClass(iconFolderOpenClass).removeClass(iconFolderCloseClass);
+                if(expanded) {
+                    subtrees.slideUp({ duration: 100 });
+                    icons.addClass(iconFolderCloseClass);
+                } else {
+                    subtrees.slideDown({ duration: 100 });
+                    icons.addClass(iconFolderOpenClass);
+                }
+            })
+            // 展开关闭所有目录按钮
+            $(document).on('click', '#allExpand', function (event) {
+                event.preventDefault();
+                
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconAllExpandClass);
+                icon.removeClass(iconAllExpandClass).removeClass(iconAllPackClass);
+                if(expanded) {
+                    $('#sidebar .fa.fa-folder').removeClass('fa-folder').addClass('fa-folder-open')
+                    $('#categories li ul').slideDown({ duration: 100 });
+                    icon.addClass(iconAllPackClass);
+                } else {
+                    $('#sidebar .fa.fa-folder-open').removeClass('fa-folder-open').addClass('fa-folder')
+                    $('#categories li ul').slideUp({ duration: 100 });
+                    icon.addClass(iconAllExpandClass);
+                }
+            });  
+        });
+    </script>
+
+    
+        
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title"><span>links</span></h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a href="http://larryim.cc">My Blog</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+            
+            <section id="main"><article id="post-TensorFlow-4-OpKernels简介" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+                    <div class="article-meta">
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/wiki/categories/TensorFlow/">TensorFlow</a>
+    </div>
+
+                        
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/wiki/tags/tensorflow/">tensorflow</a>
+    </div>
+
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/wiki/2017/12/30/TensorFlow-4-OpKernels简介/">
+            <time datetime="2017-12-29T16:00:00.000Z" itemprop="datePublished">2017-12-30</time>
+        </a>
+    </div>
+
+
+                        
+                    </div>
+                
+                
+    
+        <h1 class="article-title" itemprop="name">
+            4 TF OpKernels简介
+        </h1>
+    
+
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+        
+            
+                <div id="toc" class="toc-article">
+                <strong class="toc-title">Catalogue</strong>
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#4-2-UnaryOp-amp-BinaryOp"><span class="toc-number">1.</span> <span class="toc-text">4.2 UnaryOp &amp; BinaryOp</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-3-MatMul"><span class="toc-number">2.</span> <span class="toc-text">4.3 MatMul</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-1-Python相关部分"><span class="toc-number">2.1.</span> <span class="toc-text">4.3.1 Python相关部分</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-2-C-相关部分"><span class="toc-number">2.2.</span> <span class="toc-text">4.3.2 C++相关部分</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-3-MatMul正向计算"><span class="toc-number">2.3.</span> <span class="toc-text">4.3.3 MatMul正向计算</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-4-MatMul梯度计算"><span class="toc-number">2.4.</span> <span class="toc-text">4.3.4 MatMul梯度计算</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-4-Conv2d"><span class="toc-number">3.</span> <span class="toc-text">4.4 Conv2d</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-4-1-Conv2d正向计算部分"><span class="toc-number">3.1.</span> <span class="toc-text">4.4.1 Conv2d正向计算部分</span></a></li></ol></li></ol>
+                </div>
+            
+        
+        
+            <p><code>OpKernel</code>类（core/framework/op_kernel.h）是所有Op类的基类。继承<code>OpKernel</code>还可以自定义新的Op类。用的较多的Op如（MatMul,  Conv2D,  SoftMax,  AvgPooling, Argmax等）。</p>
+<p>所有Op包含注册（Register Op）和实现（正向计算、梯度定义）两部分。</p>
+<p>所有Op类的实现需要overide抽象基函数 void Compute(OpKernelContext* context)，实现自身Op功能。用户可以根据需要自定义新的Op操作，参考[12]。</p>
+<p>TF中所有Op操作的属性定义和描述都在 <code>ops/ops.pbtxt</code>。如下Add操作，定义了输入参数x、y，输出参数z。</p>
+<p><img src="http://or9a8nskt.bkt.clouddn.com/15148888986528.jpg" alt=""></p>
+<h2 id="4-2-UnaryOp-amp-BinaryOp"><a href="#4-2-UnaryOp-amp-BinaryOp" class="headerlink" title="4.2 UnaryOp &amp; BinaryOp"></a>4.2 UnaryOp &amp; BinaryOp</h2><p>UnaryOp和BinaryOp定义了简单的一元操作和二元操作，类定义在/core/kernels/ cwise_ops.h文件，类实现在/core/kernels/cwise<em>op</em>*.cc类型的文件中，如cwise_op_sin.cc文件。</p>
+<p>一元操作全称为Coefficient-wise unary operations，一元运算有abs， sqrt， exp， sin， cos，conj（共轭）等。如abs的基本定义：</p>
+<p><img src="http://or9a8nskt.bkt.clouddn.com/15148889249291.jpg" alt=""></p>
+<p>二元操作全称为Coefficient-wise binary operations，二元运算有add，sub， div， mul，mod等。如sum的基本定义：</p>
+<p><img src="http://or9a8nskt.bkt.clouddn.com/15148889292844.jpg" alt=""></p>
+<h2 id="4-3-MatMul"><a href="#4-3-MatMul" class="headerlink" title="4.3 MatMul"></a>4.3 MatMul</h2><h3 id="4-3-1-Python相关部分"><a href="#4-3-1-Python相关部分" class="headerlink" title="4.3.1 Python相关部分"></a>4.3.1 Python相关部分</h3><p>在Python脚本中定义matmul运算：</p>
+<p><img src="http://or9a8nskt.bkt.clouddn.com/15148889481292.jpg" alt=""></p>
+<p>根据Ops名称MatMul从Ops库中找出对应Ops类型</p>
+<p><img src="http://or9a8nskt.bkt.clouddn.com/15148889531209.jpg" alt=""></p>
+<p>创建ops节点</p>
+<p><img src="http://or9a8nskt.bkt.clouddn.com/15148889599122.jpg" alt=""></p>
+<p>创建ops节点并指定相关属性和设备分配</p>
+<p><img src="http://or9a8nskt.bkt.clouddn.com/15148889642022.jpg" alt=""></p>
+<h3 id="4-3-2-C-相关部分"><a href="#4-3-2-C-相关部分" class="headerlink" title="4.3.2 C++相关部分"></a>4.3.2 C++相关部分</h3><p>Python脚本通过swig调用进入C接口API文件core/client/tensor_c_api.cc，调用TF_NewNode函数生成节点，同时还需要指定输入变量，TF_AddInput函数设置first输入变量，TF_AddInputList函数设置other输入变量。这里op_type为MatMul，first输入变量为a，other输入变量为b。</p>
+<p><img src="http://or9a8nskt.bkt.clouddn.com/15148889881424.jpg" alt=""></p>
+<p>创建节点根据节点类型从注册的Ops工厂中生成，即TF通过工厂模式把一系列Ops注册到Ops工厂中。其中MatMul的注册函数为如下</p>
+<p><img src="http://or9a8nskt.bkt.clouddn.com/15148889946670.jpg" alt=""></p>
+<h3 id="4-3-3-MatMul正向计算"><a href="#4-3-3-MatMul正向计算" class="headerlink" title="4.3.3 MatMul正向计算"></a>4.3.3 MatMul正向计算</h3><p>MatMul的实现部分在core/kernels/matmul_op.cc文件中，类MatMulOp继承于<code>OpKernel</code>，成员函数Compute完成计算操作。</p>
+<p><img src="http://or9a8nskt.bkt.clouddn.com/15148890096198.jpg" alt=""></p>
+<p>MatMul的测试用例core/kernels/matmul_op_test.cc文件，要调试这个测试用例，可通过如下方式：</p>
+<p><img src="http://or9a8nskt.bkt.clouddn.com/15148890181645.jpg" alt=""></p>
+<p>在TF中MatMul实现了CPU和GPU两个版本，其中CPU版本使用Eigen库，GPU版本使用cuBLAS库。</p>
+<p>CPU版的MatMul使用Eigen库，调用方式如下：</p>
+<p><img src="http://or9a8nskt.bkt.clouddn.com/15148890280195.jpg" alt=""></p>
+<p>简而言之就是调用eigen的constract函数。</p>
+<p><img src="http://or9a8nskt.bkt.clouddn.com/15148890353345.jpg" alt=""></p>
+<p>GPU版的MatMul使用cuBLAS库，准确而言是基于cuBLAS的stream_executor库。Stream executor是google开发的开源并行计算库，调用方式如下：</p>
+<p><img src="http://or9a8nskt.bkt.clouddn.com/15148890463715.jpg" alt=""></p>
+<p>其中stream类似于设备句柄，可以调用stream executor中的cuda模块完成运算。</p>
+<h3 id="4-3-4-MatMul梯度计算"><a href="#4-3-4-MatMul梯度计算" class="headerlink" title="4.3.4 MatMul梯度计算"></a>4.3.4 MatMul梯度计算</h3><p>MatMul的梯度计算本质上也是一种kernel ops，描述为MatMulGrad。MatMulgrad操作是定义在grad_ops工厂中，类似于ops工厂。定义方式如下：</p>
+<p><img src="http://or9a8nskt.bkt.clouddn.com/15148890640354.jpg" alt=""></p>
+<p>MatmulGrad由FDH（Function Define Helper）完成定义，</p>
+<p><img src="http://or9a8nskt.bkt.clouddn.com/15148890728382.jpg" alt=""></p>
+<p>其中attr_adj_x=”transpose_a” ax0=false, ax1=true, attr_adj_y= “transpose_b”, ay0=true, ay1=false, *g属于FunctionDef类，包含MatMul的梯度定义。</p>
+<p>从FDH定义中可以看出MatMulGrad本质上还是MatMul操作。在矩阵求导运算中：</p>
+<p><img src="http://or9a8nskt.bkt.clouddn.com/15148890890660.jpg" alt=""></p>
+<p>MatMulGrad的测试用例core/ops/math_grad_test.cc文件，要调试这个测试用例，可通过如下方式：</p>
+<p><img src="http://or9a8nskt.bkt.clouddn.com/15148890938124.jpg" alt=""></p>
+<h2 id="4-4-Conv2d"><a href="#4-4-Conv2d" class="headerlink" title="4.4 Conv2d"></a>4.4 Conv2d</h2><p>关于conv2d的python调用部分和C++创建部分可参考MatMul中的描述。</p>
+<h3 id="4-4-1-Conv2d正向计算部分"><a href="#4-4-1-Conv2d正向计算部分" class="headerlink" title="4.4.1 Conv2d正向计算部分"></a>4.4.1 Conv2d正向计算部分</h3><p>TF中conv2d接口如下所示，简单易用：</p>
+<p><img src="http://or9a8nskt.bkt.clouddn.com/15148891413185.jpg" alt=""></p>
+<p>实现部分在<code>core/kernels/conv_ops.cc</code>文件中，类Conv2DOp继承于抽象基类<code>OpKernel</code>。<br>Conv2DOp的测试用例<code>core/kernels/eigen_spatial_convolutions_test.cc</code>文件，要调试这个测试用例，可通过如下方式：</p>
+<p>Conv2DOp的成员函数Compute完成计算操作。</p>
+<p><code>Conv2Dop::Compute(OpKernelContect* context)</code></p>
+<p>为方便描述，假设tf.nn.conv2d中input参数的shape为[batch, in_rows, in_cols, in_depth]，filter参数的shape为[filter_rows, filter_cols, in_depth, out_depth]。</p>
+<p>首先，计算卷积运算后输出tensor的shape。</p>
+<p>Ø  若padding=VALID，output_size = (input_size - filter_size + stride) / stride;</p>
+<p>Ø  若padding=SAME，output_size = (input_size + stride - 1) / stride;</p>
+<p>其次，根据计算结果给输出tensor分配内存。</p>
+<p>然后，开始卷积计算。Conv2DOp实现了CPU和GPU两种模式下的卷积运算。同时，还需要注意input tensor的输入格式，通常有NHWC和NCHW两种格式。在TF中，Conv2d-CPU模式下目前仅支持NHWC格式，即[Number, Height, Weight, Channel]格式。Conv2d-GPU模式下以NCHW为主，但支持将NHWC转换为NCHW求解。C++中多维数组是row-major顺序存储的，而Eigen默认是col-major顺序的，则C++中[N, H, W, C]相当于Eigen中的[C, W, H, N]，即dimention order是相反的，需要特别注意。</p>
+<p>Conv2d-CPU模式下调用Eigen库函数。</p>
+<p>Eigen库中卷积函数的详细代码参见图 4 2。</p>
+<p>图 4 2 Eigen卷积运算的定义</p>
+<p>Ø  Tensor::extract_image_patches() 为卷积或池化操作抽取与kernel size一致的image patches。该函数的定义在eigen3/unsupported/Eigen/CXX11/src/Tensor/ TensorBase.h中，参考该目录下ReadME.md。</p>
+<p>Ø  Tensor::extract_image_patches() 的输出与input tensor的data layout有关。设input tensor为ColMajor格式[NHWC]，则image patches输出为[batch, filter_index, filter_rows, filter_cols, in_depth]，并reshape为[batch <em> filter_index, filter_rows </em> filter_cols <em> in_depth]，而kernels维度为[filter_rows </em> filter_cols <em> in_depth, out_depth]，然后kernels矩阵乘image patches得到输出矩阵[batch </em> filter_index, out_depth]，并reshape为[batch, out_rows, out_cols, out_depth]。</p>
+<p>Conv2d-GPU模式下调用基于cuDNN的stream_executor库。若input tensor为NHWC格式的，则先转换为NCHW格式</p>
+<p>调用cudnn库实现卷积运算：</p>
+<p>计算完成后再转换成HHWC格式的</p>
+<p>4.4.2 Conv2d梯度计算部分</p>
+<p>Conv2D梯度计算公式，假设output=Conv2d(input, filter)，则</p>
+<p>Conv2D梯度计算的测试用例core/kernels/eigen_backward_spatial_convolutions_test.cc文件，要调试这个测试用例，可通过如下方式：</p>
+<p>Conv2d的梯度计算函数描述为Conv2DGrad。Conv2DGrad操作定义在grad_ops工厂中。注册方式如下：</p>
+<p>Conv2DGrad由FDH（Function Define Helper）完成定义，参见图 4 3。</p>
+<p>图 4 3 Conv2DGrad的函数定义</p>
+<p>Conv2DGrad梯度函数定义中依赖Conv2DBackpropInput和Conv2DBackpropFilter两种Ops，二者均定义在kernels/conv_grad_ops.cc文件中。</p>
+<p>Conv2DBackpropInputOp和Conv2DBackpropFilterOp的实现分为GPU和CPU版本。</p>
+<p>Conv2D运算的GPU版实现定义在类Conv2DSlowBackpropInputOp和类Conv2DSlowBackprop FilterOp 中。</p>
+<p>Conv2D运算的CPU版有两种实现形式，分别为custom模式和fast模式。Custom模式基于贾扬清在caffe中的思路实现，相关类是Conv2DCustomBackpropInputOp和Conv2DCustomBackpropFilterOp。Fast模式基于Eigen计算库，由于在GPU下会出现nvcc编译超时，目前仅适用于CPU环境，相关类是Conv2DFastBackpropInputOp和Conv2DFastBackpropFilterOp。 </p>
+<p>根据Conv2DGrad的函数定义，从代码分析Conv2D-GPU版的实现代码，即分析Conv2DBackpropInput和Conv2DBackpropFilter的实现方式。</p>
+<p>Conv2DSlowBackpropInputOp的成员函数Compute完成计算操作。</p>
+<p>Compute实现部分调用stream executor的相关函数，需要先获取库的stream句柄，再调用卷积梯度函数。</p>
+<p>stream executor在卷积梯度运算部分仍然是借助cudnn库实现的。</p>
+<p>4.4.3 MaxPooling计算部分</p>
+<p>在很多图像分类和识别问题中都用到了池化运算，池化操作主要有最大池化（max pooling）和均值池化（avg pooling），本章节主要介绍最大池化的实现方法。调用TF接口可以很容易实现池化操作。</p>
+<p>类MaxPoolingOp继承于类<code>OpKernel</code>，成员函数Compute实现了最大池化运算。</p>
+<p>最大池化运算调用Eigen库实现。</p>
+<p>Eigen库中最大池化的详细描述如下：</p>
+<p>其中最大池化运算主要分为两步，第一步中extract_image_patch为池化操作抽取与kernel size一致的image patches，第二步计算每个image patch的最大值。</p>
+<p>4.5 SendOp &amp; RecvOp</p>
+<p>TF所有操作都是节点形式表示的，包括计算节点和非计算节点。在跨设备通信中，发送节点（SendOp）和接收节点（RecvOp）为不同设备的两个相邻节点完成完成数据通信操作。Send和Recv通过TCP或RDMA来传输数据。</p>
+<p>TF采用Rendezvous（回合）通信机制，Rendezvous类似生产者/消费者的消息信箱。引用TF描述如下：</p>
+<p>TF的消息传递属于采用“发送不阻塞/接收阻塞”机制，实现场景有LocalRendezvous<br>（本地消息传递）、RpcRemoteRendezvous (分布式消息传递)。除此之外还有IntraProcessRendezvous用于本地不同设备间通信。</p>
+<p>TF会在不同设备的两个相邻节点之间添加Send和Recv节点，通过Send和Recv之间进行通信来达到op之间通信的效果，如图 4 4右子图所示。图中还涉及到一个优化问题，即a-&gt;b和a-&gt;c需要建立两组send/recv连接的，但两组连接是可以共用的，所以合并成一组连接。</p>
+<p>图 4 4 Graph跨设备通信</p>
+<p>Send和Recv分别对应<code>OpKernel</code>中的SendOp和RecvOp两个类(kernels/sendrecv_ops.h)。<br>SendOp的计算函数。</p>
+<p>SendOp作为发送方需要先获取封装ctx消息，然后借助Rendezvous模块发送给接收方。</p>
+<p>RecvOp的计算函数如下。</p>
+<p>RecvOp作为接收方借助Rendezvous模块获取ctx消息。</p>
+<p>其中parsed变量是类ParsedKey的实例。图 5‑5是Rendezvous封装的ParsedKey消息实体示例。</p>
+<p>4.6 ReaderOp &amp; QueueOp</p>
+<p>4.6.1 TF数据读取</p>
+<p>TF系统定义了三种数据读取方式[13]：</p>
+<p>Ø  供给数据(Feeding)： 在TensorFlow程序运行的每一步， 通过feed_dict来供给数据。</p>
+<p>Ø  从文件读取数据： 在TensorFlow图的起始， 让一个输入管线（piplines）从文件中读取数据放入队列，通过QueueRunner供给数据，其中队列可以实现多线程异步计算。</p>
+<p>Ø  预加载数据： 在TensorFlow图中定义常量或变量来保存所有数据，如Mnist数据集（仅适用于数据量比较小的情况）。</p>
+<p>除了以上三种数据读取方式外，TF还支持用户自定义数据读取方式，即继承ReaderOpKernel类创建新的输入读取类[14]。本章节主要讲述通过piplines方式读取数据的方法。</p>
+<p>Piplines利用队列实现异步计算</p>
+<p>从piplines读取数据也有两种方式：一种是读取所有样本文件路径名转换成string tensor，使用input_producer将tensor乱序（shuffle）或slice（切片）处理放入队列中；另一种是将数据转化为TF标准输入格式，即使用TFRecordWriter将样本数据写入tfrecords文件中，再使用TFRecordReader将tfrecords文件读取到队列中。</p>
+<p>图 4 6描述了piplines读取数据的第一种方式，这些流程通过节点和边串联起来，成为graph数据流的一部分。</p>
+<p>从左向右，第一步是载入文件列表，使用convert_to_tensor函数将文件列表转化为tensor，如cifar10数据集中的image_files_tensor和label_tensor。</p>
+<p>第二步是使用input_producer将image_files_tensor和label_tensor放入图中的文件队列中，这里的input_producer作用就是将样本放入队列节点中，有string_input_producer、range_input_producer和slice_input_producer三种，其中slice_input_producer的切片功能支持乱序，其他两种需要借助tf.train.shuffle_batch函数作乱序处理，有关三种方式的具体描述可参考tensorflow/python/training/input.py注释说明。</p>
+<p>第三步是使用tf.read_file()读取队列中的文件数据到内存中，使用解码器如tf.image.decode_jpeg()解码成[height, width, channels]格式的数据。</p>
+<p>最后就是使用batch函数将样本数据处理成一批批的样本，然后使用session执行训练。</p>
+<p>图 4 6 使用piplines读取数据</p>
+<p>4.6.2 TFRecords使用</p>
+<p>TFRecords是TF支持的标准文件格式，这种格式允许将任意的数据转换为TFRecords支持的文件格式。TFRecords方法需要两步：第一步是使用TFRecordWriter将样本数据写入tfrecords文件中，第二步是使用TFRecordReader将tfrecords文件读取到队列中。</p>
+<p>图 4 7是TFRecords文件写入的简单示例。tf.train.Example将数据填入到Example协议内存块(protocol buffer)，将协议内存块序列化为一个字符串，通过TFRecordWriter写入到TFRecords文件，图中定义了label和image_raw两个feature。Example协议内存块的定义请参考文件core/example/example.proto。</p>
+<p>图 4 7 TFRecordWriter写入数据示例</p>
+<p>图 4 8是TFRecords文件读取的简单示例。tf.parse_single_example解析器将Example协议内存块解析为张量，放入example队列中，其中features命名和类型要与Example写入的一致。</p>
+<p>图 4 8 TFRecrodReader读取数据示例</p>
+<p>4.6.3 ReaderOps分析</p>
+<p>ReaderOpsKernel类封装了数据读取的入口函数Compute，通过继承ReaderOpsKernel类可实现各种自定义的数据读取方法。图 4 9是ReaderOp相关的UML视图。</p>
+<p>图 4 9 ReaderOp相关的UML视图</p>
+<p>ReaderOpKernel子类必须重新定义成员函数SetReaderFactory实现对应的数据读取逻辑。TFRecordReaderOp的读取方法定义在TFRecordReader类中。</p>
+<p>TFRecordReader调用RecordReader::ReadRecord()函数逐步读取.tfrecord文件中的数据，每读取一次，offset向后移动一定长度。</p>
+<p>其中offset的计算方式。</p>
+
+            </div>
+        
+        <footer class="article-footer">
+        </footer>
+    </div>
+</article>
+
+
+    
+<nav id="article-nav">
+    
+        <a href="/wiki/2017/12/30/TOOLS-VIM技巧/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">Newer</strong>
+            <div class="article-nav-title">
+                
+                    VIM技巧
+                
+            </div>
+        </a>
+    
+    
+        <a href="/wiki/2017/12/30/TensorFlow-3-代码分析初步/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">Older</strong>
+            <div class="article-nav-title">3 TF代码分析初步</div>
+        </a>
+    
+</nav>
+
+
+
+
+
+    
+    
+
+
+
+
+<!-- baidu url auto push script -->
+<script type="text/javascript">
+    !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=window.location.href,o=document.referrer;if(!e.test(r)){var n="//api.share.baidu.com/s.gif";o?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var t=new Image;t.src=n}}(window);
+</script>     
+</section>
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            larry &copy; 2018 
+            <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/80x15.png" /></a>
+            <br> Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>. Theme - <a href="https://github.com/zthxxx/hexo-theme-Wikitten">wikitten</a>
+        </div>
+    </div>
+</footer>
+        
+
+    
+        <script src="/wiki/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/wiki/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/wiki/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/wiki/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/wiki/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/wiki/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/wiki/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/wiki/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/wiki/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/wiki/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+        <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true,
+            TeX: {
+                equationNumbers: {
+                  autoNumber: 'AMS'
+                }
+            }
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/wiki/js/main.js"></script>
+
+    </div>
+</body>
+</html>

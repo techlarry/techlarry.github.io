@@ -994,8 +994,10 @@
             <li><a href="#glossary_1">Glossary</a></li>
             <li><a href="#api_1">API</a></li>
             <li><a href="#reachability-in-digraphs">Reachability in digraphs</a></li>
+            <li><a href="#dfs-edge-classification">DFS Edge Classification</a></li>
             <li><a href="#cycles-and-dags">Cycles and DAGs</a></li>
             <li><a href="#topological-sort">Topological Sort</a></li>
+            <li><a href="#dfs-edge-classification_1">DFS Edge Classification</a></li>
             <li><a href="#strong-connectivity-in-digraphs">Strong connectivity in digraphs</a></li>
         <li class="main "><a href="#application-wordnet">Application: WordNet</a></li>
             <li><a href="#the-wordnet-digraph">The WordNet digraph</a></li>
@@ -1108,7 +1110,7 @@
 <p><strong><em>Single-source paths</em></strong>. Given a graph and a source vertex <span><span class="MathJax_Preview">s</span><script type="math/tex">s</script></span>, support queries of the form: Is there a path from <span><span class="MathJax_Preview">s</span><script type="math/tex">s</script></span> to a given target vertex <span><span class="MathJax_Preview">v</span><script type="math/tex">v</script></span>? If so, find such a path.</p>
 <p><img alt="paths_api" src="../figures/paths_api.png" /></p>
 <p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>Paths</span> <span class=o>{</span>
-    <span class=kd>private</span> <span class=kt>boolean</span><span class=o>[]</span> <span class=n>marked</span><span class=o>;</span>    <span class=c1>// marked[v] = is there an s-v path?</span>
+    <span class=kd>private</span> <span class=kt>boolean</span><span class=o>[]</span> <span class=n>marked</span><span class=o>;</span>    <span class=c1>// marked[v] = is there a s-v path?</span>
     <span class=kd>private</span> <span class=kt>int</span><span class=o>[]</span> <span class=n>edgeTo</span><span class=o>;</span>        <span class=c1>// edgeTo[v] = last edge on s-v path</span>
     <span class=kd>private</span> <span class=kd>final</span> <span class=kt>int</span> <span class=n>s</span><span class=o>;</span>         <span class=c1>// source vertex</span>
 
@@ -1136,7 +1138,7 @@
     <span class=o>}</span>
 
    <span class=c1>// Returns a path between the source vertex s and vertex v, </span>
-   <span class=c1>//  or null if no such path.</span>
+   <span class=c1>// or null if no such path.</span>
     <span class=kd>public</span> <span class=n>Iterable</span><span class=o>&lt;</span><span class=n>Integer</span><span class=o>&gt;</span> <span class=nf>pathTo</span><span class=o>(</span><span class=kt>int</span> <span class=n>v</span><span class=o>)</span> <span class=o>{</span>
         <span class=k>if</span> <span class=o>(!</span><span class=n>hasPathTo</span><span class=o>(</span><span class=n>v</span><span class=o>))</span> <span class=k>return</span> <span class=kc>null</span><span class=o>;</span>
         <span class=n>Stack</span><span class=o>&lt;</span><span class=n>Integer</span><span class=o>&gt;</span> <span class=n>path</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Stack</span><span class=o>&lt;</span><span class=n>Integer</span><span class=o>&gt;();</span>
@@ -1425,12 +1427,24 @@
 <p><hh>Application: Mark-and-sweep garbage collection</hh></p>
 <p>An important application of multiple-source reachability is found in typical memory-management systems, including many implementations of Java. A digraph where each vertex represents an object and each edge represents a reference to an object is an appropriate model for the memory usage of a running Java program. A mark-and-sweep garbage collection strategy reserves one bit per object for the purpose of garbage collection, then periodically marks the set of potentially accessible objects by running a digraph reachability algorithm like <C>DirectedDFS</C> and sweeps through all objects, collecting the unmarked ones for use for new objects.</p>
 <p><img alt="mark-sweep-garbage-collection" src="../figures/mark-sweep-garbage-collection.png" /></p>
+<h4 id="dfs-edge-classification">DFS Edge Classification<a class="headerlink" href="#dfs-edge-classification" title="Permanent link">&para;</a></h4>
+<p><a href="https://courses.csail.mit.edu/6.006/fall11/rec/rec14.pdf">MIT 6.006 Introduction to Algorithms</a></p>
+<p>The edges which dfs traverse can be classified into four edge types. During a DFS execution, the classification of edge (<span><span class="MathJax_Preview">u</span><script type="math/tex">u</script></span>, <span><span class="MathJax_Preview">v</span><script type="math/tex">v</script></span>), the edge from vertex <span><span class="MathJax_Preview">u</span><script type="math/tex">u</script></span> to vertex <span><span class="MathJax_Preview">v</span><script type="math/tex">v</script></span>, depends on whether we have visited <span><span class="MathJax_Preview">v</span><script type="math/tex">v</script></span> before in the DFS and if so, the relationship between <span><span class="MathJax_Preview">u</span><script type="math/tex">u</script></span> and <span><span class="MathJax_Preview">v</span><script type="math/tex">v</script></span>.</p>
+<ol>
+<li>If <span><span class="MathJax_Preview">v</span><script type="math/tex">v</script></span> is visited for the first time as we traverse the edge (<span><span class="MathJax_Preview">u, v</span><script type="math/tex">u, v</script></span>), then the edge is a tree edge. </li>
+<li>Else, <span><span class="MathJax_Preview">v</span><script type="math/tex">v</script></span> has already been visited:<ul>
+<li>If <span><span class="MathJax_Preview">v</span><script type="math/tex">v</script></span> is an ancestor of <span><span class="MathJax_Preview">u</span><script type="math/tex">u</script></span>, then edge (<span><span class="MathJax_Preview">u, v</span><script type="math/tex">u, v</script></span>) is a <em>back edge</em>.</li>
+<li>Else, if <span><span class="MathJax_Preview">v</span><script type="math/tex">v</script></span> is a descendant of <span><span class="MathJax_Preview">u</span><script type="math/tex">u</script></span>, then edge (<span><span class="MathJax_Preview">u</span><script type="math/tex">u</script></span>, <span><span class="MathJax_Preview">v</span><script type="math/tex">v</script></span>) is a <em>forward edge</em>.</li>
+<li>Else, if <span><span class="MathJax_Preview">v</span><script type="math/tex">v</script></span> is neither an ancestor or descendant of <span><span class="MathJax_Preview">u</span><script type="math/tex">u</script></span>, then edge (<span><span class="MathJax_Preview">u</span><script type="math/tex">u</script></span>, <span><span class="MathJax_Preview">v</span><script type="math/tex">v</script></span>) is a <em>cross edge</em>.</li>
+</ul>
+</li>
+</ol>
 <h4 id="cycles-and-dags">Cycles and DAGs<a class="headerlink" href="#cycles-and-dags" title="Permanent link">&para;</a></h4>
 <p>Directed cycle detection: Does a given digraph have a directed cycle? If so, find the vertices on some such cycle, in order from some vertex back to itself.</p>
 <blockquote>
 <p>Definition. A <strong>directed acyclic graph</strong> (DAG, 有向无环图) is a digraph with no directed cycles.</p>
 </blockquote>
-<p>Developing a dfs-based solution to this problem is not difficult, based on the fact that the recursive call stack maintained by the system represents the “current” directed path under consideration. If we ever find a directed edge <span><span class="MathJax_Preview">v\rightarrow w</span><script type="math/tex">v\rightarrow w</script></span> to a vertex <span><span class="MathJax_Preview">w</span><script type="math/tex">w</script></span> that is on that stack, we have found a cycle, since the stack is evidence of a directed path from <span><span class="MathJax_Preview">w</span><script type="math/tex">w</script></span> to <span><span class="MathJax_Preview">v</span><script type="math/tex">v</script></span>, and the edge <span><span class="MathJax_Preview">v\rightarrow w</span><script type="math/tex">v\rightarrow w</script></span> completes the cycle.</p>
+<p>Developing a dfs-based solution to this problem is not difficult, based on the fact that the recursive call stack maintained by the system represents the “current” directed path under consideration. If we ever find a directed edge <span><span class="MathJax_Preview">v\rightarrow w</span><script type="math/tex">v\rightarrow w</script></span> to a vertex <span><span class="MathJax_Preview">w</span><script type="math/tex">w</script></span> that is on that stack, we have found a cycle, since the stack is evidence of a directed path from <span><span class="MathJax_Preview">w</span><script type="math/tex">w</script></span> to <span><span class="MathJax_Preview">v</span><script type="math/tex">v</script></span>, and the edge <span><span class="MathJax_Preview">v\rightarrow w</span><script type="math/tex">v\rightarrow w</script></span>(<em>back edge</em>) completes the cycle.</p>
 <p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>DirectedCycle</span> <span class=o>{</span>
     <span class=kd>private</span> <span class=kt>boolean</span><span class=o>[]</span> <span class=n>marked</span><span class=o>;</span>        <span class=c1>// marked[v] = has vertex v been marked?</span>
     <span class=kd>private</span> <span class=kt>int</span><span class=o>[]</span> <span class=n>edgeTo</span><span class=o>;</span>            <span class=c1>// edgeTo[v] = previous vertex on path to v</span>
@@ -1564,6 +1578,58 @@
 </ul>
 </div>
 <p>With DFS, we can topologically sort a DAG in time proportional to <span><span class="MathJax_Preview">|V|+|E|</span><script type="math/tex">|V|+|E|</script></span>.</p>
+<h4 id="dfs-edge-classification_1">DFS Edge Classification<a class="headerlink" href="#dfs-edge-classification_1" title="Permanent link">&para;</a></h4>
+<p><a href="https://courses.csail.mit.edu/6.006/fall11/rec/rec14.pdf">MIT 6.006 Introduction to Algorithms</a></p>
+<p>The edges which dfs traverse can be classified into four edge types. During a DFS execution, the classification of edge (<span><span class="MathJax_Preview">u</span><script type="math/tex">u</script></span>, <span><span class="MathJax_Preview">w</span><script type="math/tex">w</script></span>), the edge from vertex <span><span class="MathJax_Preview">u</span><script type="math/tex">u</script></span> to vertex <span><span class="MathJax_Preview">w</span><script type="math/tex">w</script></span> is classified as:</p>
+<ol>
+<li>If <span><span class="MathJax_Preview">v</span><script type="math/tex">v</script></span> is visited for the first time as we traverse the edge (<span><span class="MathJax_Preview">u, w</span><script type="math/tex">u, w</script></span>), then the edge is a <em>tree edge</em>. </li>
+<li>
+<p>Else, <span><span class="MathJax_Preview">w</span><script type="math/tex">w</script></span> has already been visited:</p>
+<ul>
+<li>If <span><span class="MathJax_Preview">w</span><script type="math/tex">w</script></span> is an ancestor of <span><span class="MathJax_Preview">u</span><script type="math/tex">u</script></span>, then edge (<span><span class="MathJax_Preview">u, w</span><script type="math/tex">u, w</script></span>) is a <em>back edge</em>.</li>
+<li>Else, if <span><span class="MathJax_Preview">w</span><script type="math/tex">w</script></span> is a descendant of <span><span class="MathJax_Preview">u</span><script type="math/tex">u</script></span>, then edge (<span><span class="MathJax_Preview">u</span><script type="math/tex">u</script></span>, <span><span class="MathJax_Preview">w</span><script type="math/tex">w</script></span>) is a <em>forward edge</em>.</li>
+<li>Else, if <span><span class="MathJax_Preview">w</span><script type="math/tex">w</script></span> is neither an ancestor or descendant of <span><span class="MathJax_Preview">u</span><script type="math/tex">u</script></span>, then edge (<span><span class="MathJax_Preview">u</span><script type="math/tex">u</script></span>, <span><span class="MathJax_Preview">w</span><script type="math/tex">w</script></span>) is a <em>cross edge</em>.</li>
+</ul>
+</li>
+</ol>
+<p><img alt="" src="../figures/edge_classification.png" /></p>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>EdgeClassification</span> <span class=o>{</span>
+    <span class=kd>private</span> <span class=kt>boolean</span><span class=o>[]</span> <span class=n>marked</span><span class=o>;</span> <span class=c1>// marked[v] = v has been marked in dfs?</span>
+    <span class=kd>private</span> <span class=kt>boolean</span><span class=o>[]</span> <span class=n>finish</span><span class=o>;</span> <span class=c1>// finish[v] = v has been finished visit in dfs?</span>
+    <span class=kd>private</span> <span class=kt>int</span><span class=o>[]</span> <span class=n>start</span><span class=o>;</span>      <span class=c1>// start[v] = start time of visit v.</span>
+    <span class=kd>private</span> <span class=kt>int</span> <span class=n>order</span><span class=o>;</span>       <span class=c1>// visit order of dfs</span>
+    <span class=kd>private</span> <span class=n>Map</span><span class=o>&lt;</span><span class=n>List</span><span class=o>&lt;</span><span class=n>Integer</span><span class=o>&gt;,</span> <span class=n>String</span><span class=o>&gt;</span> <span class=n>edges</span><span class=o>;</span> <span class=c1>// edge classification of graph</span>
+
+    <span class=c1>// Classify edges of the given graph.</span>
+    <span class=kd>public</span> <span class=nf>EdgeClassification</span><span class=o>(</span><span class=n>Digraph</span> <span class=n>G</span><span class=o>)</span> <span class=o>{</span>
+        <span class=c1>// initialize</span>
+        <span class=n>marked</span>    <span class=o>=</span> <span class=k>new</span> <span class=kt>boolean</span><span class=o>[</span><span class=n>G</span><span class=o>.</span><span class=na>V</span><span class=o>()];</span>
+        <span class=n>finish</span>  <span class=o>=</span> <span class=k>new</span> <span class=kt>boolean</span><span class=o>[</span><span class=n>G</span><span class=o>.</span><span class=na>V</span><span class=o>()];</span>
+        <span class=n>start</span>   <span class=o>=</span> <span class=k>new</span> <span class=kt>int</span><span class=o>[</span><span class=n>G</span><span class=o>.</span><span class=na>V</span><span class=o>()];</span>
+        <span class=n>edges</span> <span class=o>=</span> <span class=k>new</span> <span class=n>HashMap</span><span class=o>&lt;&gt;();</span>
+
+        <span class=c1>// dfs</span>
+        <span class=k>for</span> <span class=o>(</span><span class=kt>int</span> <span class=n>v</span> <span class=o>=</span> <span class=mi>0</span><span class=o>;</span> <span class=n>v</span> <span class=o>&lt;</span> <span class=n>G</span><span class=o>.</span><span class=na>V</span><span class=o>();</span> <span class=n>v</span><span class=o>++)</span>
+            <span class=k>if</span> <span class=o>(!</span><span class=n>marked</span><span class=o>[</span><span class=n>v</span><span class=o>])</span> <span class=n>dfs</span><span class=o>(</span><span class=n>G</span><span class=o>,</span> <span class=n>v</span><span class=o>);</span>
+    <span class=o>}</span>
+
+    <span class=c1>// run DFS in digraph G</span>
+    <span class=kd>private</span> <span class=kt>void</span> <span class=nf>dfs</span><span class=o>(</span><span class=n>Digraph</span> <span class=n>G</span><span class=o>,</span> <span class=kt>int</span> <span class=n>v</span><span class=o>)</span> <span class=o>{</span>
+        <span class=n>start</span><span class=o>[</span><span class=n>v</span><span class=o>]</span> <span class=o>=</span> <span class=n>order</span><span class=o>++;</span>
+        <span class=n>marked</span><span class=o>[</span><span class=n>v</span><span class=o>]</span> <span class=o>=</span> <span class=kc>true</span><span class=o>;</span>
+        <span class=k>for</span> <span class=o>(</span><span class=kt>int</span> <span class=n>w</span> <span class=o>:</span> <span class=n>G</span><span class=o>.</span><span class=na>adj</span><span class=o>(</span><span class=n>v</span><span class=o>))</span>
+            <span class=k>if</span> <span class=o>(!</span><span class=n>marked</span><span class=o>[</span><span class=n>w</span><span class=o>])</span> <span class=o>{</span> <span class=n>edges</span><span class=o>.</span><span class=na>put</span><span class=o>(</span><span class=n>Arrays</span><span class=o>.</span><span class=na>asList</span><span class=o>(</span><span class=n>v</span><span class=o>,</span> <span class=n>w</span><span class=o>),</span> <span class=s>&quot;tree edge&quot;</span><span class=o>);</span>  <span class=n>dfs</span><span class=o>(</span><span class=n>G</span><span class=o>,</span> <span class=n>w</span><span class=o>);</span> <span class=o>}</span>
+            <span class=k>else</span> <span class=k>if</span> <span class=o>(!</span><span class=n>finish</span><span class=o>[</span><span class=n>w</span><span class=o>])</span> <span class=n>edges</span><span class=o>.</span><span class=na>put</span><span class=o>(</span><span class=n>Arrays</span><span class=o>.</span><span class=na>asList</span><span class=o>(</span><span class=n>v</span><span class=o>,</span> <span class=n>w</span><span class=o>),</span> <span class=s>&quot;back edge&quot;</span><span class=o>);</span>
+            <span class=k>else</span> <span class=k>if</span> <span class=o>(</span><span class=n>start</span><span class=o>[</span><span class=n>v</span><span class=o>]</span> <span class=o>&lt;</span> <span class=n>start</span><span class=o>[</span><span class=n>w</span><span class=o>])</span> <span class=n>edges</span><span class=o>.</span><span class=na>put</span><span class=o>(</span><span class=n>Arrays</span><span class=o>.</span><span class=na>asList</span><span class=o>(</span><span class=n>v</span><span class=o>,</span> <span class=n>w</span><span class=o>),</span> <span class=s>&quot;forward edge&quot;</span><span class=o>);</span>
+            <span class=k>else</span> <span class=n>edges</span><span class=o>.</span><span class=na>put</span><span class=o>(</span><span class=n>Arrays</span><span class=o>.</span><span class=na>asList</span><span class=o>(</span><span class=n>v</span><span class=o>,</span> <span class=n>w</span><span class=o>),</span> <span class=s>&quot;cross edge&quot;</span><span class=o>);</span>
+        <span class=n>finish</span><span class=o>[</span><span class=n>v</span><span class=o>]</span> <span class=o>=</span> <span class=kc>true</span><span class=o>;</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=n>Map</span><span class=o>&lt;</span><span class=n>List</span><span class=o>&lt;</span><span class=n>Integer</span><span class=o>&gt;,</span> <span class=n>String</span><span class=o>&gt;</span> <span class=nf>getEdgesClass</span><span class=o>()</span> <span class=o>{</span>
+        <span class=k>return</span> <span class=n>edges</span><span class=o>;</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></p>
 <h4 id="strong-connectivity-in-digraphs">Strong connectivity in digraphs<a class="headerlink" href="#strong-connectivity-in-digraphs" title="Permanent link">&para;</a></h4>
 <blockquote>
 <p>Definition. Two vertices <span><span class="MathJax_Preview">v</span><script type="math/tex">v</script></span> and <span><span class="MathJax_Preview">w</span><script type="math/tex">w</script></span> are <em>strongly connected</em> if they are mutually reachable: that is, if there is a directed path from <span><span class="MathJax_Preview">v</span><script type="math/tex">v</script></span> to <span><span class="MathJax_Preview">w</span><script type="math/tex">w</script></span> and a directed path from <span><span class="MathJax_Preview">w</span><script type="math/tex">w</script></span> to <span><span class="MathJax_Preview">v</span><script type="math/tex">v</script></span>. A digraph is <em>strongly connected</em> if all its vertices are strongly connected to one another.</p>

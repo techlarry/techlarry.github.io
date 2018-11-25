@@ -989,12 +989,16 @@
         <li class="main "><a href="#shuffling">Shuffling</a></li>
             <li><a href="#shuffle-sort">Shuffle sort</a></li>
             <li><a href="#knuth-shuffle">Knuth shuffle</a></li>
+        <li class="main "><a href="#merge-sort">Merge Sort</a></li>
+            <li><a href="#in-place-merge">In-place Merge</a></li>
+            <li><a href="#top-down-mergesort">Top-down mergesort</a></li>
+            <li><a href="#bottom-up-mergesort">Bottom-up mergesort</a></li>
         <li class="main "><a href="#quick-sort">Quick Sort</a></li>
             <li><a href="#partitioning">Partitioning</a></li>
             <li><a href="#analysis_2">Analysis</a></li>
-        <li class="main "><a href="#merge-sort">Merge Sort</a></li>
-            <li><a href="#java-implementation">Java Implementation</a></li>
         <li class="main "><a href="#java-system-sorts">Java System Sorts</a></li>
+        <li class="main "><a href="#which-algorithms-should-i-use">Which Algorithms should I use?</a></li>
+        <li class="main "><a href="#application-line-recognition">Application: Line Recognition</a></li>
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
@@ -1087,12 +1091,94 @@
 <span class=o>}</span>
 </pre></div></p>
 <p>Knuth shuffling algorithm produces a uniformly random permutation of the input array in <strong>linear</strong> time.</p>
+<h3 id="merge-sort">Merge Sort<a class="headerlink" href="#merge-sort" title="Permanent link">&para;</a></h3>
+<blockquote>
+<p>Mergesort : to sort an array, divide it into two halves, sort the two halves (recursively), and then merge the results.</p>
+</blockquote>
+<p>Basic plan:</p>
+<ul>
+<li>Divide array into two halves.</li>
+<li><font color="red">Recursively</font> sort each half.</li>
+<li>Merge two halves.</li>
+</ul>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>static</span> <span class=kt>void</span> <span class=nf>sort</span><span class=o>(</span><span class=n>Comparable</span><span class=o>[]</span> <span class=n>a</span><span class=o>)</span> <span class=o>{</span>
+    <span class=n>Comparable</span><span class=o>[]</span> <span class=n>aux</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Comparable</span><span class=o>[</span><span class=n>a</span><span class=o>.</span><span class=na>length</span><span class=o>];</span>
+    <span class=n>sort</span><span class=o>(</span><span class=n>a</span><span class=o>,</span> <span class=n>aux</span><span class=o>,</span> <span class=mi>0</span><span class=o>,</span> <span class=n>a</span><span class=o>.</span><span class=na>length</span> <span class=o>-</span> <span class=mi>1</span><span class=o>);</span>
+<span class=o>}</span>
+
+<span class=kd>private</span> <span class=kd>static</span> <span class=kt>void</span> <span class=nf>sort</span><span class=o>(</span><span class=n>Comparable</span><span class=o>[]</span> <span class=n>a</span><span class=o>,</span> <span class=n>Comparable</span><span class=o>[]</span> <span class=n>aux</span><span class=o>,</span> <span class=kt>int</span> <span class=n>lo</span><span class=o>,</span> <span class=kt>int</span> <span class=n>hi</span><span class=o>)</span> <span class=o>{</span>
+    <span class=k>if</span> <span class=o>(</span><span class=n>hi</span> <span class=o>&lt;=</span> <span class=n>lo</span><span class=o>)</span> <span class=k>return</span><span class=o>;</span>   
+    <span class=kt>int</span> <span class=n>mid</span> <span class=o>=</span> <span class=n>lo</span> <span class=o>+</span> <span class=o>(</span><span class=n>hi</span> <span class=o>-</span> <span class=n>lo</span><span class=o>)</span> <span class=o>/</span> <span class=mi>2</span><span class=o>;</span>
+    <span class=n>sort</span><span class=o>(</span><span class=n>a</span><span class=o>,</span> <span class=n>aux</span><span class=o>,</span> <span class=n>lo</span><span class=o>,</span> <span class=n>mid</span><span class=o>);</span>          <span class=c1>// Sort left half.</span>
+    <span class=n>sort</span><span class=o>(</span><span class=n>a</span><span class=o>,</span> <span class=n>aux</span><span class=o>,</span> <span class=n>mid</span> <span class=o>+</span> <span class=mi>1</span><span class=o>,</span> <span class=n>hi</span><span class=o>);</span>      <span class=c1>// Sort right half.</span>
+    <span class=n>merge</span><span class=o>(</span><span class=n>a</span><span class=o>,</span> <span class=n>aux</span><span class=o>,</span> <span class=n>lo</span><span class=o>,</span> <span class=n>mid</span><span class=o>,</span> <span class=n>hi</span><span class=o>);</span>     <span class=c1>// Merge results</span>
+<span class=o>}</span>
+</pre></div></p>
+<h4 id="in-place-merge">In-place Merge<a class="headerlink" href="#in-place-merge" title="Permanent link">&para;</a></h4>
+<p><img alt="merge_sort_merge_demo" src="../figures/merge_sort_merge_demo.gif" /></p>
+<p><C>merge(a, lo, mid, hi)</C> puts the result of merging the subarrays a[lo..mid] with a[mid+1..hi] into a single ordered array, leaving the result in a[lo..hi]. </p>
+<p> <div class=codehilite><pre><span class=c1>// Merge a[lo..mid] with a[mid+1..hi].</span>
+<span class=kd>private</span> <span class=kd>static</span> <span class=kt>void</span> <span class=nf>merge</span><span class=o>(</span><span class=n>Comparable</span><span class=o>[]</span> <span class=n>a</span><span class=o>,</span> <span class=n>Comparable</span><span class=o>[]</span> <span class=n>aux</span><span class=o>,</span> <span class=kt>int</span> <span class=n>lo</span><span class=o>,</span> <span class=kt>int</span> <span class=n>mid</span><span class=o>,</span> <span class=kt>int</span> <span class=n>hi</span><span class=o>)</span> <span class=o>{</span>
+    <span class=k>for</span> <span class=o>(</span><span class=kt>int</span> <span class=n>k</span> <span class=o>=</span> <span class=n>lo</span><span class=o>;</span> <span class=n>k</span> <span class=o>&lt;=</span> <span class=n>hi</span><span class=o>;</span> <span class=n>k</span><span class=o>++)</span>          <span class=c1>// Copy a[lo..hi] to aux[lo..hi].</span>
+        <span class=n>aux</span><span class=o>[</span><span class=n>k</span><span class=o>]</span> <span class=o>=</span> <span class=n>a</span><span class=o>[</span><span class=n>k</span><span class=o>];</span> 
+    <span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=n>lo</span><span class=o>,</span> <span class=n>j</span> <span class=o>=</span> <span class=n>mid</span> <span class=o>+</span> <span class=mi>1</span><span class=o>;</span>
+    <span class=k>for</span> <span class=o>(</span><span class=kt>int</span> <span class=n>k</span> <span class=o>=</span> <span class=n>lo</span><span class=o>;</span> <span class=n>k</span> <span class=o>&lt;=</span> <span class=n>hi</span><span class=o>;</span> <span class=n>k</span><span class=o>++)</span> <span class=o>{</span>        <span class=c1>// Merge back to a[lo..hi].</span>
+        <span class=k>if</span> <span class=o>(</span><span class=n>i</span> <span class=o>&gt;</span> <span class=n>mid</span><span class=o>)</span>                            <span class=n>a</span><span class=o>[</span><span class=n>k</span><span class=o>]</span> <span class=o>=</span> <span class=n>aux</span><span class=o>[</span><span class=n>j</span><span class=o>++];</span>
+        <span class=k>else</span> <span class=k>if</span> <span class=o>(</span><span class=n>j</span> <span class=o>&gt;</span> <span class=n>hi</span><span class=o>)</span>                        <span class=n>a</span><span class=o>[</span><span class=n>k</span><span class=o>]</span> <span class=o>=</span> <span class=n>aux</span><span class=o>[</span><span class=n>i</span><span class=o>++];</span>
+        <span class=k>else</span> <span class=k>if</span> <span class=o>(</span><span class=n>aux</span><span class=o>[</span><span class=n>j</span><span class=o>].</span><span class=na>compareTo</span><span class=o>(</span><span class=n>aux</span><span class=o>[</span><span class=n>i</span><span class=o>])</span> <span class=o>&lt;</span> <span class=mi>0</span><span class=o>)</span>  <span class=n>a</span><span class=o>[</span><span class=n>k</span><span class=o>]</span> <span class=o>=</span> <span class=n>aux</span><span class=o>[</span><span class=n>j</span><span class=o>++];</span>
+        <span class=k>else</span>                                    <span class=n>a</span><span class=o>[</span><span class=n>k</span><span class=o>]</span> <span class=o>=</span> <span class=n>aux</span><span class=o>[</span><span class=n>i</span><span class=o>++];</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></p>
+<h4 id="top-down-mergesort">Top-down mergesort<a class="headerlink" href="#top-down-mergesort" title="Permanent link">&para;</a></h4>
+<p>Algorithm described so far is a recursive mergesort implementation based on in-place merge. It is one of the best-known examples of the utility of the divide-and-conquer paradigm for efficient algorithm design.</p>
+<p>To understand Top-down mergesort, it is worthwhile to consider carefully the dynamics of the method calls, shown in the trace below. To sort a[0..7], the <C>sort()</C> method calls itself to sort a[0..3] then calls itself to sort a[0..1] before finally doing the first merge of a[0] with a[1] after calling itself to sort a[0] and then a[1]（for brevity, we omit the calls for the base-case 1-entry sorts in the trace）. Then the next merge is a[2] with a[3] and then a[0..1] with a[2..3] and so forth. From this trace, we see that the sort code simply provides an organized way to sequence the calls to the <C>merge()</C> method.</p>
+<p><img alt="top-down-merge-sort-call-trace" src="../figures/top-down-merge-sort-call-trace.png" /></p>
+<p>Top-down mergesort uses <span><span class="MathJax_Preview">N\lg N</span><script type="math/tex">N\lg N</script></span> compares to sort any array of length <span><span class="MathJax_Preview">N</span><script type="math/tex">N</script></span>.</p>
+<p><hh>Practical Improvements</hh></p>
+<ul>
+<li>Use insertion sort for small subarrays. Mergesort has too much overhead for tiny subarrays. Cutoff to insertion sort for ≈ 7 items</li>
+</ul>
+<p> <div class=codehilite><pre><span class=k>if</span> <span class=o>(</span><span class=n>hi</span> <span class=o>&lt;=</span> <span class=n>lo</span> <span class=o>+</span> <span class=n>CUTOFF</span> <span class=o>-</span> <span class=mi>1</span><span class=o>)</span> <span class=o>{</span>
+    <span class=n>Insertion</span><span class=o>.</span><span class=na>sort</span><span class=o>(</span><span class=n>a</span><span class=o>,</span> <span class=n>lo</span><span class=o>,</span> <span class=n>hi</span><span class=o>);</span>
+    <span class=k>return</span><span class=o>;</span> 
+<span class=o>}</span>
+</pre></div></p>
+<ul>
+<li>Stop merging if already sorted. Is biggest item in first half ≤ smallest item in second half? Helps for partially-ordered arrays.</li>
+</ul>
+<p> <div class=codehilite><pre><span class=k>if</span> <span class=o>(</span><span class=n>a</span><span class=o>[</span><span class=n>mid</span><span class=o>+</span><span class=mi>1</span><span class=o>].</span><span class=na>compareTo</span><span class=o>(</span><span class=n>a</span><span class=o>[</span><span class=n>mid</span><span class=o>])</span> <span class=o>&gt;=</span> <span class=mi>0</span><span class=o>)</span> <span class=k>return</span><span class=o>;</span>
+</pre></div></p>
+<ul>
+<li>Eliminate the copy to the auxiliary array. Save time (but not space) by switching the role of the input and auxiliary array in each recursive call.</li>
+</ul>
+<h4 id="bottom-up-mergesort">Bottom-up mergesort<a class="headerlink" href="#bottom-up-mergesort" title="Permanent link">&para;</a></h4>
+<p>Bottom-up mergesort is a simple and <em>non-recursive</em> version of mergesort.</p>
+<p>Basic plan:</p>
+<ul>
+<li>Pass through array, merging subarrays of size 1. </li>
+<li>Repeat for subarrays of size 2, 4, 8, 16, ....</li>
+</ul>
+<p><img alt="bottom-up-merge-sort-visual-trace" src="../figures/bottom-up-merge-sort-visual-trace.png" /></p>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>static</span> <span class=kt>void</span> <span class=nf>sort</span><span class=o>(</span><span class=n>Comparable</span><span class=o>[]</span> <span class=n>a</span><span class=o>)</span> <span class=o>{</span>
+    <span class=kt>int</span> <span class=n>n</span> <span class=o>=</span> <span class=n>a</span><span class=o>.</span><span class=na>length</span><span class=o>;</span>
+    <span class=n>Comparable</span><span class=o>[]</span> <span class=n>aux</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Comparable</span><span class=o>[</span><span class=n>n</span><span class=o>];</span>
+    <span class=k>for</span> <span class=o>(</span><span class=kt>int</span> <span class=n>len</span> <span class=o>=</span> <span class=mi>1</span><span class=o>;</span> <span class=n>len</span> <span class=o>&lt;</span> <span class=n>n</span><span class=o>;</span> <span class=n>len</span> <span class=o>+=</span> <span class=n>len</span><span class=o>)</span> <span class=o>{</span>      <span class=c1>//len: subarray size</span>
+        <span class=k>for</span> <span class=o>(</span><span class=kt>int</span> <span class=n>lo</span> <span class=o>=</span> <span class=mi>0</span><span class=o>;</span> <span class=n>lo</span> <span class=o>&lt;</span> <span class=n>n</span> <span class=o>-</span> <span class=n>len</span><span class=o>;</span> <span class=n>lo</span> <span class=o>+=</span> <span class=n>len</span><span class=o>+</span><span class=n>len</span><span class=o>)</span> <span class=o>{</span>
+            <span class=kt>int</span> <span class=n>mid</span>  <span class=o>=</span> <span class=n>lo</span> <span class=o>+</span> <span class=n>len</span> <span class=o>-</span> <span class=mi>1</span><span class=o>;</span>
+            <span class=kt>int</span> <span class=n>hi</span> <span class=o>=</span> <span class=n>Math</span><span class=o>.</span><span class=na>min</span><span class=o>(</span><span class=n>lo</span> <span class=o>+</span> <span class=n>len</span> <span class=o>+</span> <span class=n>len</span> <span class=o>-</span> <span class=mi>1</span><span class=o>,</span> <span class=n>n</span> <span class=o>-</span> <span class=mi>1</span><span class=o>);</span>
+            <span class=n>merge</span><span class=o>(</span><span class=n>a</span><span class=o>,</span> <span class=n>aux</span><span class=o>,</span> <span class=n>lo</span><span class=o>,</span> <span class=n>mid</span><span class=o>,</span> <span class=n>hi</span><span class=o>);</span>
+        <span class=o>}</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></p>
 <h3 id="quick-sort">Quick Sort<a class="headerlink" href="#quick-sort" title="Permanent link">&para;</a></h3>
-<p>Quicksort honored as one of top 10 algorithms of 20th century in science and engineering. Quicksort is the default Java sort for primitive types.</p>
+<p>Quicksort honored as one of <em>top 10 algorithms</em> of 20th century in science and engineering. </p>
+<p>Quicksort is popular because it is not difficult to implement, works well for a variety of <em>different</em> kinds of input data, and is substantially <em>faster</em> than any other sorting method in typical applications.</p>
 <p>Basic plan.</p>
 <ul>
 <li><font color="red">Shuffle</font> the array.</li>
-<li><font color="red">Partition</font> so that, for some <span><span class="MathJax_Preview">j</span><script type="math/tex">j</script></span><ul>
+<li><font color="red">Partition</font> so that, for some <span><span class="MathJax_Preview">j</span><script type="math/tex">j</script></span> <ul>
 <li>entry <span><span class="MathJax_Preview">a[j]</span><script type="math/tex">a[j]</script></span> is in place</li>
 <li>no larger entry to the left of <span><span class="MathJax_Preview">j</span><script type="math/tex">j</script></span></li>
 <li>no smaller entry to the right of <span><span class="MathJax_Preview">j</span><script type="math/tex">j</script></span> </li>
@@ -1117,6 +1203,15 @@
 </pre></div></p>
 <p>ANIMATION:</p>
 <p><img alt="" src="https://upload.wikimedia.org/wikipedia/commons/9/9c/Quicksort-example.gif" /></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><hh>Quicksort and Mergesort</hh> Quicksort is a divide-and-conquer method for sorting. Quicksort is complementary to mergesort: </p>
+<ul>
+<li>for mergesort, we break the array into two subarrays to be sorted and then combine the ordered subarrays to make the whole ordered array; for quicksort, we rearrange the array such that, when the two subarrays are sorted, the whole array is ordered. </li>
+<li>for mergesort, we do the two recursive calls before working on the whole array; for quicksort, we do the two recursive calls after working on the whole array. </li>
+<li>for mergesort, the array is divided in half; for quicksort, the position of the partition depends on the contents of the array.</li>
+</ul>
+</div>
 <h4 id="partitioning">Partitioning<a class="headerlink" href="#partitioning" title="Permanent link">&para;</a></h4>
 <p>The crux of the quick sort is the partitioning process, which rearranges the array to make the following three conditions hold:</p>
 <ul>
@@ -1125,8 +1220,13 @@
 <li>No entry in <span><span class="MathJax_Preview">a[j+1]</span><script type="math/tex">a[j+1]</script></span> through <span><span class="MathJax_Preview">a[hi]</span><script type="math/tex">a[hi]</script></span> is less than <span><span class="MathJax_Preview">a[j]</span><script type="math/tex">a[j]</script></span>.</li>
 </ul>
 <p><img alt="QuickSortPartition" src="../figures/QuickSortPartition.png" /></p>
-<p>First, we arbitrarily choose <span><span class="MathJax_Preview">a[lo]</span><script type="math/tex">a[lo]</script></span> to be the partitioning item—the one that will go into its final position. Next, we scan from the left end of the array until we find an entry greater than (or equal to) the partitioning item, and we scan from the right end of the array until we find an entry less than (or equal to) the partitioning item. The two items that stopped the scans are out of place in the final partitioned array, so we exchange them.</p>
-<p>Continuing in this way, when the scan indices cross, all that we need to do is to exchange the partitioning item <span><span class="MathJax_Preview">a[lo]</span><script type="math/tex">a[lo]</script></span> with the rightmost entry of the left subarray (<span><span class="MathJax_Preview">a[j]</span><script type="math/tex">a[j]</script></span>) and return its index <span><span class="MathJax_Preview">j</span><script type="math/tex">j</script></span>.</p>
+<ul>
+<li>First, we arbitrarily choose <span><span class="MathJax_Preview">a[lo]</span><script type="math/tex">a[lo]</script></span> to be the partitioning item—the one that will go into its final position. </li>
+<li>Next, we scan from the left end of the array until we find an entry greater than (or equal to) the partitioning item, and we scan from the right end of the array until we find an entry less than (or equal to) the partitioning item. </li>
+<li>The two items that stopped the scans are out of place in the final partitioned array, so we exchange them.</li>
+<li>Continuing in this way, when the scan indices cross, all that we need to do is to exchange the partitioning item <span><span class="MathJax_Preview">a[lo]</span><script type="math/tex">a[lo]</script></span> with the rightmost entry of the left subarray (<span><span class="MathJax_Preview">a[j]</span><script type="math/tex">a[j]</script></span>) and return its index <span><span class="MathJax_Preview">j</span><script type="math/tex">j</script></span>.</li>
+</ul>
+<p><img alt="quicksort-partition-demo" src="../figures/quicksort-partition-demo.gif" /></p>
 <p> <div class=codehilite><pre><span class=kd>private</span> <span class=kd>static</span> <span class=kt>int</span> <span class=nf>partition</span><span class=o>(</span><span class=n>Comparable</span> <span class=n>a</span><span class=o>[],</span> <span class=kt>int</span> <span class=n>lo</span><span class=o>,</span> <span class=kt>int</span> <span class=n>hi</span><span class=o>)</span> <span class=o>{</span>
     <span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=n>lo</span><span class=o>,</span> <span class=n>j</span> <span class=o>=</span> <span class=n>hi</span> <span class=o>+</span> <span class=mi>1</span><span class=o>;</span>
     <span class=k>while</span> <span class=o>(</span><span class=kc>true</span><span class=o>)</span> <span class=o>{</span>
@@ -1147,7 +1247,7 @@
     <span class=c1>// swap with partitioning item</span>
     <span class=n>exch</span><span class=o>(</span><span class=n>a</span><span class=o>,</span> <span class=n>lo</span><span class=o>,</span> <span class=n>j</span><span class=o>);</span>
     <span class=c1>// return index of item now known to be in place.</span>
-    <span class=k>return</span> <span class=n>j</span><span class=o>;</span>
+    <span class=k>return</span> <span class=n>j</span><span class=o>;</span>       <span class=c1>// with a[lo..j-1] &lt;= a[j] &lt;= a[j+1..hi].</span>
 <span class=o>}</span>
 </pre></div></p>
 <h4 id="analysis_2">Analysis<a class="headerlink" href="#analysis_2" title="Permanent link">&para;</a></h4>
@@ -1157,16 +1257,11 @@
 <li>The average number of compares <span><span class="MathJax_Preview">C_N</span><script type="math/tex">C_N</script></span> to quicksort an array of <span><span class="MathJax_Preview">N</span><script type="math/tex">N</script></span> distinct keys is ~ <span><span class="MathJax_Preview">2N\ln N</span><script type="math/tex">2N\ln N</script></span> (and the number of exchanges is <span><span class="MathJax_Preview">\sim\frac{1}{3}N \ln N</span><script type="math/tex">\sim\frac{1}{3}N \ln N</script></span>).</li>
 </ul>
 <p>Quicksort is an <strong>in-place</strong> sorting algorithm, but is <strong>not stable</strong>.</p>
-<h3 id="merge-sort">Merge Sort<a class="headerlink" href="#merge-sort" title="Permanent link">&para;</a></h3>
-<p>Basic plan:</p>
-<ul>
-<li>Divide array into two halves</li>
-<li>Recursively sort each half</li>
-<li>Merge two halves</li>
-</ul>
-<p>Goal. Given two sorted subarrays a[lo] to a[mid] and a[mid+1] to a[hi], replace with sorted subarray a[lo] to a[hi]</p>
-<p><img alt="mergeDemo" src="../figures/mergeDemo.png" /></p>
-<h4 id="java-implementation">Java Implementation<a class="headerlink" href="#java-implementation" title="Permanent link">&para;</a></h4>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Quicksort is the <strong>fastest</strong> general-purpose sort.</p>
+<p>Evidence: This hypothesis is supported by countless implementations of quicksort on countless computer systems since its invention decades ago. Generally, the reason that quicksort is fastest is that it has only a few instructions in its inner loop (and it does well with cache memories because it most often references data sequentially) so that its running time is <span><span class="MathJax_Preview">\sim c N \lg N</span><script type="math/tex">\sim c N \lg N</script></span> with the value of c smaller than the corresponding constants for other linearithmic sorts. With 3-way partitioning, quicksort becomes linear for certain key distributions likely to arise in practice, where other sorts are linearithmic.</p>
+</div>
 <h3 id="java-system-sorts">Java System Sorts<a class="headerlink" href="#java-system-sorts" title="Permanent link">&para;</a></h3>
 <p><C>Arrays.sort()</C></p>
 <ul>
@@ -1174,7 +1269,141 @@
 <li>Has a method for data types that implement <C>Comparable</C>.</li>
 <li>Has a method that uses a <C>Comparator</C>.</li>
 <li>Uses tuned quicksort for primitive types; tuned mergesort for objects.</li>
-</ul></div>
+</ul>
+<h3 id="which-algorithms-should-i-use">Which Algorithms should I use?<a class="headerlink" href="#which-algorithms-should-i-use" title="Permanent link">&para;</a></h3>
+<p><img alt="Performance_characteristics_of_sorting_algorithms" src="../figures/Performance_characteristics_of_sorting_algorithms.png" /></p>
+<h3 id="application-line-recognition">Application: Line Recognition<a class="headerlink" href="#application-line-recognition" title="Permanent link">&para;</a></h3>
+<p>Given a set of <span><span class="MathJax_Preview">n</span><script type="math/tex">n</script></span> distinct points in the plane, find every (maximal) line segment that connects a subset of 4 or more of the points.</p>
+<p><img alt="" src="../figures/line_recognition_demo.jpg" /></p>
+<p><strong>A faster, sorting-based solution</strong>. Given a point <span><span class="MathJax_Preview">p</span><script type="math/tex">p</script></span>, the following method determines whether <span><span class="MathJax_Preview">p</span><script type="math/tex">p</script></span> participates in a set of 4 or more collinear points.</p>
+<ul>
+<li>Think of <span><span class="MathJax_Preview">p</span><script type="math/tex">p</script></span> as the origin.</li>
+<li>For each other point <span><span class="MathJax_Preview">q</span><script type="math/tex">q</script></span>, determine the slope it makes with <span><span class="MathJax_Preview">p</span><script type="math/tex">p</script></span>.</li>
+<li>Sort the points according to the slopes they makes with <span><span class="MathJax_Preview">p</span><script type="math/tex">p</script></span>.</li>
+<li>Check if any 3 (or more) adjacent points in the sorted order have equal slopes with respect to <span><span class="MathJax_Preview">p</span><script type="math/tex">p</script></span>. If so, these points, together with <span><span class="MathJax_Preview">p</span><script type="math/tex">p</script></span>, are collinear.</li>
+</ul>
+<p>An immutable data type <C>Point</C> that represents a point in the plane.</p>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>Point</span> <span class=kd>implements</span> <span class=n>Comparable</span><span class=o>&lt;</span><span class=n>Point</span><span class=o>&gt;</span> <span class=o>{</span>
+    <span class=kd>private</span> <span class=kd>final</span> <span class=kt>int</span> <span class=n>x</span><span class=o>;</span>     <span class=c1>// x-coordinate of this point</span>
+    <span class=kd>private</span> <span class=kd>final</span> <span class=kt>int</span> <span class=n>y</span><span class=o>;</span>     <span class=c1>// y-coordinate of this point</span>
+
+    <span class=c1>// Initializes a new point.</span>
+    <span class=kd>public</span> <span class=nf>Point</span><span class=o>(</span><span class=kt>int</span> <span class=n>x</span><span class=o>,</span> <span class=kt>int</span> <span class=n>y</span><span class=o>)</span> <span class=o>{</span>
+        <span class=k>this</span><span class=o>.</span><span class=na>x</span> <span class=o>=</span> <span class=n>x</span><span class=o>;</span>
+        <span class=k>this</span><span class=o>.</span><span class=na>y</span> <span class=o>=</span> <span class=n>y</span><span class=o>;</span>
+    <span class=o>}</span>
+
+    <span class=c1>//  Returns the slope between this point and the specified point.</span>
+    <span class=kd>public</span> <span class=kt>double</span> <span class=nf>slopeTo</span><span class=o>(</span><span class=n>Point</span> <span class=n>that</span><span class=o>)</span> <span class=o>{</span>
+        <span class=c1>// points are equal</span>
+        <span class=k>if</span> <span class=o>((</span><span class=n>x</span> <span class=o>==</span> <span class=n>that</span><span class=o>.</span><span class=na>x</span><span class=o>)</span> <span class=o>&amp;&amp;</span> <span class=o>(</span><span class=n>y</span> <span class=o>==</span> <span class=n>that</span><span class=o>.</span><span class=na>y</span><span class=o>))</span> <span class=k>return</span> <span class=n>Double</span><span class=o>.</span><span class=na>NEGATIVE_INFINITY</span><span class=o>;</span>
+        <span class=c1>// line segment connecting the two points is horizontal</span>
+        <span class=k>if</span> <span class=o>(</span><span class=n>y</span> <span class=o>==</span> <span class=n>that</span><span class=o>.</span><span class=na>y</span><span class=o>)</span> <span class=k>return</span> <span class=o>(</span><span class=mi>1</span><span class=o>-</span><span class=mi>1</span><span class=o>)/</span><span class=mi>1</span><span class=o>;</span> <span class=c1>// positive zero</span>
+        <span class=c1>// line segment connecting the two points is vertical</span>
+        <span class=k>if</span> <span class=o>(</span><span class=n>x</span> <span class=o>==</span> <span class=n>that</span><span class=o>.</span><span class=na>x</span><span class=o>)</span> <span class=k>return</span> <span class=n>Double</span><span class=o>.</span><span class=na>POSITIVE_INFINITY</span><span class=o>;</span>
+        <span class=k>return</span> <span class=o>((</span><span class=kt>double</span><span class=o>)</span> <span class=n>that</span><span class=o>.</span><span class=na>y</span> <span class=o>-</span> <span class=n>y</span><span class=o>)/(</span><span class=n>that</span><span class=o>.</span><span class=na>x</span> <span class=o>-</span> <span class=n>x</span><span class=o>);</span>
+    <span class=o>}</span>
+
+    <span class=c1>// Compares two points by y-coordinate, breaking ties by x-coordinate.</span>
+    <span class=c1>// Formally, the invoking point (x0, y0) is less than the argument point</span>
+    <span class=c1>// (x1, y1) if and only if either y0 &lt; y1 or if y0 = y1 and x0 &lt; x1.</span>
+    <span class=kd>public</span> <span class=kt>int</span> <span class=nf>compareTo</span><span class=o>(</span><span class=n>Point</span> <span class=n>that</span><span class=o>)</span> <span class=o>{</span>
+        <span class=k>if</span> <span class=o>((</span><span class=n>x</span> <span class=o>==</span> <span class=n>that</span><span class=o>.</span><span class=na>x</span><span class=o>)</span> <span class=o>&amp;&amp;</span> <span class=o>(</span><span class=n>y</span> <span class=o>==</span> <span class=n>that</span><span class=o>.</span><span class=na>y</span><span class=o>))</span> <span class=k>return</span> <span class=mi>0</span><span class=o>;</span>
+        <span class=k>if</span> <span class=o>((</span><span class=n>y</span> <span class=o>&lt;</span> <span class=n>that</span><span class=o>.</span><span class=na>y</span><span class=o>)</span> <span class=o>||</span> <span class=o>((</span><span class=n>y</span> <span class=o>==</span> <span class=n>that</span><span class=o>.</span><span class=na>y</span><span class=o>)</span> <span class=o>&amp;&amp;</span> <span class=o>(</span><span class=n>x</span> <span class=o>&lt;</span> <span class=n>that</span><span class=o>.</span><span class=na>x</span><span class=o>)))</span> <span class=k>return</span> <span class=o>-</span><span class=mi>1</span><span class=o>;</span>
+        <span class=k>return</span> <span class=mi>1</span><span class=o>;</span>
+    <span class=o>}</span>
+
+    <span class=c1>// Compares two points by the slope they make with this point.</span>
+    <span class=kd>public</span> <span class=n>Comparator</span><span class=o>&lt;</span><span class=n>Point</span><span class=o>&gt;</span> <span class=nf>slopeOrder</span><span class=o>()</span> <span class=o>{</span>
+        <span class=k>return</span> <span class=n>Comparator</span><span class=o>.</span><span class=na>comparing</span><span class=o>(</span><span class=k>this</span><span class=o>::</span><span class=n>slopeTo</span><span class=o>);</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></p>
+<p>To represent line segments in the plane, use the data type <C>LineSegment</C>.</p>
+<p> <div class=codehilite><pre> <span class=kd>public</span> <span class=kd>class</span> <span class=nc>LineSegment</span> <span class=o>{</span>
+    <span class=kd>private</span> <span class=kd>final</span> <span class=n>Point</span> <span class=n>p</span><span class=o>;</span>   <span class=c1>// one endpoint of this line segment</span>
+    <span class=kd>private</span> <span class=kd>final</span> <span class=n>Point</span> <span class=n>q</span><span class=o>;</span>   <span class=c1>// the other endpoint of this line segment</span>
+    <span class=c1>// Initializes a new line segment.</span>
+    <span class=kd>public</span> <span class=nf>LineSegment</span><span class=o>(</span><span class=n>Point</span> <span class=n>p</span><span class=o>,</span> <span class=n>Point</span> <span class=n>q</span><span class=o>)</span> <span class=o>{</span>
+        <span class=k>this</span><span class=o>.</span><span class=na>p</span> <span class=o>=</span> <span class=n>p</span><span class=o>;</span>
+        <span class=k>this</span><span class=o>.</span><span class=na>q</span> <span class=o>=</span> <span class=n>q</span><span class=o>;</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></p>
+<p><C>FastCollinearPoints</C> implements the algorithm.</p>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>class</span> <span class=nc>FastCollinearPoints</span> <span class=o>{</span>
+    <span class=kd>private</span> <span class=n>Point</span><span class=o>[]</span> <span class=n>points</span><span class=o>;</span>     <span class=c1>// array for points;</span>
+    <span class=kd>private</span> <span class=n>List</span><span class=o>&lt;</span><span class=n>LineSegment</span><span class=o>&gt;</span> <span class=n>lineSegments</span><span class=o>;</span> <span class=c1>//line segments</span>
+    <span class=c1>// Finds all line segments containing 4 points.</span>
+    <span class=kd>public</span> <span class=nf>FastCollinearPoints</span><span class=o>(</span><span class=n>Point</span><span class=o>[]</span> <span class=n>pointsIn</span><span class=o>)</span> <span class=o>{</span>
+        <span class=c1>// make a copy of points, make it immutable</span>
+        <span class=n>points</span> <span class=o>=</span> <span class=n>pointsIn</span><span class=o>.</span><span class=na>clone</span><span class=o>();</span>
+        <span class=c1>// check null</span>
+        <span class=k>for</span> <span class=o>(</span><span class=n>Point</span> <span class=n>point</span> <span class=o>:</span> <span class=n>points</span><span class=o>)</span>
+            <span class=k>if</span> <span class=o>(</span><span class=n>point</span> <span class=o>==</span> <span class=kc>null</span><span class=o>)</span>
+                <span class=k>throw</span> <span class=k>new</span> <span class=n>IllegalArgumentException</span><span class=o>();</span>
+
+        <span class=c1>// check for duplicity</span>
+        <span class=n>Arrays</span><span class=o>.</span><span class=na>sort</span><span class=o>(</span><span class=n>points</span><span class=o>);</span>
+        <span class=k>for</span> <span class=o>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=o>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>points</span><span class=o>.</span><span class=na>length</span> <span class=o>-</span> <span class=mi>1</span><span class=o>;</span> <span class=n>i</span><span class=o>++)</span>
+            <span class=k>if</span> <span class=o>(</span><span class=n>points</span><span class=o>[</span><span class=n>i</span><span class=o>].</span><span class=na>compareTo</span><span class=o>(</span><span class=n>points</span><span class=o>[</span><span class=n>i</span> <span class=o>+</span> <span class=mi>1</span><span class=o>])</span> <span class=o>==</span> <span class=mi>0</span><span class=o>)</span>
+                <span class=k>throw</span> <span class=k>new</span> <span class=n>IllegalArgumentException</span><span class=o>(</span><span class=s>&quot;Some of Points are repeat.&quot;</span><span class=o>);</span>
+
+        <span class=c1>// find line segments</span>
+        <span class=n>lineSegments</span> <span class=o>=</span> <span class=k>new</span> <span class=n>ArrayList</span><span class=o>&lt;&gt;();</span>
+        <span class=c1>// array used for points sort by slope</span>
+        <span class=n>Point</span><span class=o>[]</span> <span class=n>pointsSortedBySlope</span><span class=o>;</span>
+        <span class=c1>// for every point p, find line segments containing p.</span>
+        <span class=k>for</span> <span class=o>(</span><span class=n>Point</span> <span class=n>p</span> <span class=o>:</span> <span class=n>points</span><span class=o>)</span> <span class=o>{</span>
+            <span class=c1>// initialize pointSort</span>
+            <span class=n>pointsSortedBySlope</span> <span class=o>=</span> <span class=n>points</span><span class=o>.</span><span class=na>clone</span><span class=o>();</span>
+            <span class=c1>// sort by Comparator based on slopes</span>
+            <span class=n>Arrays</span><span class=o>.</span><span class=na>sort</span><span class=o>(</span><span class=n>pointsSortedBySlope</span><span class=o>,</span> <span class=n>p</span><span class=o>.</span><span class=na>slopeOrder</span><span class=o>());</span>
+            <span class=n>findLineSegment</span><span class=o>(</span><span class=n>lineSegments</span><span class=o>,</span> <span class=n>pointsSortedBySlope</span><span class=o>,</span> <span class=n>p</span><span class=o>);</span>
+        <span class=o>}</span>
+    <span class=o>}</span>
+
+    <span class=c1>//  For point p, find line Segment containing p.</span>
+    <span class=kd>private</span> <span class=kt>void</span> <span class=nf>findLineSegment</span><span class=o>(</span><span class=n>List</span><span class=o>&lt;</span><span class=n>LineSegment</span><span class=o>&gt;</span> <span class=n>lineSegments</span><span class=o>,</span>
+                    <span class=n>Point</span><span class=o>[]</span> <span class=n>pointsSortedBySlope</span><span class=o>,</span> <span class=n>Point</span> <span class=n>p</span><span class=o>)</span> <span class=o>{</span>
+        <span class=c1>// sliding window (start, end), where start, end is inclusive</span>
+        <span class=kt>int</span> <span class=n>start</span> <span class=o>=</span> <span class=mi>0</span><span class=o>,</span> <span class=n>end</span><span class=o>;</span>
+        <span class=k>while</span> <span class=o>(</span><span class=n>start</span> <span class=o>&lt;</span> <span class=n>pointsSortedBySlope</span><span class=o>.</span><span class=na>length</span> <span class=o>-</span> <span class=mi>2</span><span class=o>)</span> <span class=o>{</span>
+            <span class=n>end</span> <span class=o>=</span> <span class=n>start</span> <span class=o>+</span> <span class=mi>1</span><span class=o>;</span>
+            <span class=c1>// when the slope is the same, keep extending the sliding window</span>
+            <span class=k>while</span> <span class=o>(</span><span class=n>end</span> <span class=o>&lt;</span> <span class=n>pointsSortedBySlope</span><span class=o>.</span><span class=na>length</span>
+                    <span class=o>&amp;&amp;</span> <span class=n>p</span><span class=o>.</span><span class=na>slopeTo</span><span class=o>(</span><span class=n>pointsSortedBySlope</span><span class=o>[</span><span class=n>start</span><span class=o>])</span> <span class=o>==</span> <span class=n>p</span><span class=o>.</span><span class=na>slopeTo</span><span class=o>(</span><span class=n>pointsSortedBySlope</span><span class=o>[</span><span class=n>end</span><span class=o>]))</span>
+                <span class=n>end</span><span class=o>++;</span>
+            <span class=c1>// find line segments which have at leat 4 points</span>
+            <span class=k>if</span> <span class=o>(</span><span class=n>end</span> <span class=o>-</span> <span class=n>start</span> <span class=o>&gt;=</span> <span class=mi>3</span><span class=o>)</span> <span class=o>{</span>
+                <span class=c1>// sort points based on their x, y coordinates</span>
+                <span class=n>Arrays</span><span class=o>.</span><span class=na>sort</span><span class=o>(</span><span class=n>pointsSortedBySlope</span><span class=o>,</span> <span class=n>start</span><span class=o>,</span> <span class=n>end</span><span class=o>);</span>
+
+                <span class=c1>// We store a linesegment in the array </span>
+                <span class=c1>// only if the point which is iterating in the outside loop</span>
+                <span class=c1>// is the smallest point in the line segment.</span>
+                <span class=c1>// And this solve the problem without extra memory</span>
+                <span class=c1>// or the use of hash set.</span>
+                <span class=k>if</span> <span class=o>(</span><span class=n>p</span><span class=o>.</span><span class=na>compareTo</span><span class=o>(</span><span class=n>pointsSortedBySlope</span><span class=o>[</span><span class=n>start</span><span class=o>])</span> <span class=o>&lt;</span> <span class=mi>0</span><span class=o>)</span>
+                    <span class=n>lineSegments</span><span class=o>.</span><span class=na>add</span><span class=o>(</span><span class=k>new</span> <span class=n>LineSegment</span><span class=o>(</span><span class=n>p</span><span class=o>,</span> <span class=n>pointsSortedBySlope</span><span class=o>[</span><span class=n>end</span> <span class=o>-</span> <span class=mi>1</span><span class=o>]));</span>
+                <span class=c1>// jump to unvisited points</span>
+                <span class=n>start</span> <span class=o>=</span> <span class=n>end</span> <span class=o>-</span> <span class=mi>3</span><span class=o>;</span>
+            <span class=o>}</span> <span class=c1>// end if</span>
+            <span class=n>start</span><span class=o>++;</span>
+        <span class=o>}</span> <span class=c1>// end while</span>
+    <span class=o>}</span>
+
+    <span class=c1>// Return the number of line segments</span>
+    <span class=kd>public</span> <span class=kt>int</span> <span class=nf>numberOfSegments</span><span class=o>()</span> <span class=o>{</span>
+        <span class=k>return</span> <span class=n>lineSegments</span><span class=o>.</span><span class=na>size</span><span class=o>();</span>
+
+
+    <span class=c1>// Return line segments.</span>
+    <span class=kd>public</span> <span class=n>LineSegment</span><span class=o>[]</span> <span class=nf>segments</span><span class=o>()</span> <span class=o>{</span>
+        <span class=k>return</span> <span class=n>lineSegments</span><span class=o>.</span><span class=na>toArray</span><span class=o>(</span><span class=k>new</span> <span class=n>LineSegment</span><span class=o>[</span><span class=mi>0</span><span class=o>]);</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></p></div>
         </div>
 
         <footer class="col-md-12">

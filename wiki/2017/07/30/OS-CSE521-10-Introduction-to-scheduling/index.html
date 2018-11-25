@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <meta charset="utf-8">
+    
+    <title>Introduction to scheduling | Wiki</title>
+    
+    
+        <meta name="keywords" content="OS" />
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="Thread StatesWe talk about threads—and sometimes the processes containing them—as being in several different states:  Running: executing instructions on a CPU core. Ready: not executing instructions b">
+<meta name="keywords" content="OS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Introduction to scheduling">
+<meta property="og:url" content="http://larryim.cc/2017/07/30/OS-CSE521-10-Introduction-to-scheduling/index.html">
+<meta property="og:site_name" content="Wiki">
+<meta property="og:description" content="Thread StatesWe talk about threads—and sometimes the processes containing them—as being in several different states:  Running: executing instructions on a CPU core. Ready: not executing instructions b">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2018-09-23T13:43:28.088Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Introduction to scheduling">
+<meta name="twitter:description" content="Thread StatesWe talk about threads—and sometimes the processes containing them—as being in several different states:  Running: executing instructions on a CPU core. Ready: not executing instructions b">
+    
+
+    
+
+    
+
+    <link rel="stylesheet" href="/wiki/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/wiki/libs/open-sans/styles.css">
+    <link rel="stylesheet" href="/wiki/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/wiki/css/style.css">
+    <script src="/wiki/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="/wiki/libs/jquery/plugins/cookie/1.4.1/jquery.cookie.js"></script>
+    
+    
+        <link rel="stylesheet" href="/wiki/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/wiki/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+        <script type="text/javascript">
+(function(i,s,o,g,r,a,m) {i['GoogleAnalyticsObject']=r;i[r]=i[r]||function() {
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-112743284-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+    
+    
+    
+        <script>
+var _hmt = _hmt || [];
+(function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?fdc936c9f5a3b72177541183cdeb8cb3";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+    
+
+
+</head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/wiki/" id="logo">
+                
+                <span class="site-title">Wiki</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/wiki/">首页</a>
+                
+                    <a class="main-nav-link" href="/wiki/tags">标签</a>
+                
+            </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="Search" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="Type something..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: 'Posts',
+            PAGES: 'Pages',
+            CATEGORIES: 'Categories',
+            TAGS: 'Tags',
+            UNTITLED: '(Untitled)',
+        },
+        ROOT_URL: '/wiki/',
+        CONTENT_URL: '/wiki/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/wiki/js/insight.js"></script>
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/wiki/">首页</a></td>
+                
+                    <td><a class="main-nav-link" href="/wiki/tags">标签</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="Search" />
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+            
+                <aside id="sidebar">
+   
+        
+    <div class="widget-wrap" id='categories'>
+        <h3 class="widget-title">
+            <span>categories</span>
+            &nbsp;
+            <a id='allExpand' href="#">
+                <i class="fa fa-angle-double-down fa-2x"></i>
+            </a>
+        </h3>
+        
+        
+        
+         <ul class="unstyled" id="tree" > 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            Algorithm
+                        </a>
+                         <ul class="unstyled" id="tree" >  <li class="file"><a href="/wiki/2017/10/10/Algorithm-水塘抽样/">水塘抽样</a></li>  <li class="file"><a href="/wiki/2017/10/30/Algorithm-Divide-and-Conquer/">Divide and Conquer</a></li>  <li class="file"><a href="/wiki/2017/01/30/Algorithm-Recursion/">Recursion</a></li>  <li class="file"><a href="/wiki/2017/10/30/Algorithm-Backtracking/">Exhaustive Search and Backtracking</a></li>  <li class="file"><a href="/wiki/2017/08/17/Algorithm-位操作/">位操作</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            C
+                        </a>
+                         <ul class="unstyled" id="tree" >  <li class="file"><a href="/wiki/2017/12/30/C-static用法/">static用法</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            C++
+                        </a>
+                         <ul class="unstyled" id="tree" >  <li class="file"><a href="/wiki/2017/07/30/C-C-Primer-12-动态内存-C-Primer-12-动态内存C-Primer-12-动态内存/">C++ Primer (12) - 动态内存</a></li>  <li class="file"><a href="/wiki/2017/07/30/C-C-Primer-6-函数C-Primer-12-动态内存/">C++ Primer (6) - 函数</a></li>  <li class="file"><a href="/wiki/2017/10/30/C-STL源码剖析/">STL源码剖析</a></li>  <li class="file"><a href="/wiki/2018/03/01/C-面试题/"></a></li>  <li class="file"><a href="/wiki/2017/08/17/C-Vector-string/">STL中的vector<string>总结</a></li>  <li class="file"><a href="/wiki/2017/08/17/C-C-面试经典100题/">C++面试经典100题</a></li>  <li class="file"><a href="/wiki/2017/08/17/C-EOF/">EOF</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            CSAPP Lab
+                        </a>
+                         <ul class="unstyled" id="tree" >  <li class="file"><a href="/wiki/2017/12/30/CSAPP-Lab-Malloc-lab/">Lab6 Malloc Lab</a></li>  <li class="file"><a href="/wiki/2017/12/30/CSAPP-Lab-Shell-Lab/">Lab5 Shell Lab</a></li>  <li class="file"><a href="/wiki/2017/12/30/CSAPP-Lab-Cache-Lab/">Lab4 Cache Lab</a></li>  <li class="file"><a href="/wiki/2017/12/30/CSAPP-Lab-Attack-Lab/">Lab3 Attack Lab</a></li>  <li class="file"><a href="/wiki/2017/12/30/CSAPP-Lab-Data-Lab/">Lab1 Data Lab</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            Java
+                        </a>
+                         <ul class="unstyled" id="tree" >  <li class="file"><a href="/wiki/2018/07/12/Java-关键字native/">修饰词native</a></li>  <li class="file"><a href="/wiki/2018/07/12/Java-record/">Java record</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            Leetcode
+                        </a>
+                         <ul class="unstyled" id="tree" >  <li class="file"><a href="/wiki/2017/10/30/Leetcode-941-Valid-Mountain-Array/">941. Valid Mountain Array</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-876-Middle-of-the-Linked-List/">876. Middle of the Linked List</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-867-Transpose-Matrix/">867. Transpose Matrix</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-841-Keys-and-Rooms/">841. Keys and Rooms</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-785-Is-Graph-Bipartite/">785. Is Graph Bipartite?</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-783-Minimum-Distance-Between-BST-Nodes/">783. Minimum Distance Between BST Nodes</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-760-Find-Anagram-Mappings/">760. Find Anagram Mappings</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-746-Min-Cost-Climbing-Stairs/">746. Min Cost Climbing Stairs</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-743-Network-Delay-Time/">743. Network Delay Time</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-741-Cherry-Pickup/">741. Cherry Pickup</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-728-Self-Dividing-Numbers/">728. Self Dividing Numbers</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-703-Kth-Largest-Element-in-a-Stream/">703. Kth Largest Element in a Stream</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-687-Longest-Univalue-Path/">687. Longest Univalue Path</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-685-Redundant-Connection-II/">685. Redundant Connection II</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-684-Redundant-Connection/">684. Redundant Connection</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-671-Second-Minimum-Node-In-a-Binary-Tree/">671. Second Minimum Node In a Binary Tree</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-637-Average-of-Levels-in-Binary-Tree/">637. Average of Levels in Binary Tree</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-633-Sum-of-Square-Numbers/">633. Sum of Square Numbers</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-606-Construct-String-from-Binary-Tree/">606. Construct String from Binary Tree</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-599-Minimum-Index-Sum-of-Two-Lists/">599. Minimum Index Sum of Two Lists</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-559-Maximum-Depth-of-N-ary-Tree/">559. Maximum Depth of N-ary Tree</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-538-Convert-BST-to-Greater-Tree/">538. Convert BST to Greater Tree</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-507-Perfect-Number/">507. Perfect Number</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-500-Keyboard-Row/">500. Keyboard Row</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-463-Island-Perimeter/">463. Island Perimeter</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-438-Find-All-Anagrams-in-a-String/">438. Find All Anagrams in a String</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-437-Path-Sum-III/">437. Path Sum III</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-429-N-ary-Tree-Level-Order-Traversal/">429. N-ary Tree Level Order Traversal</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-415-Add-Strings/">415. Add Strings</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-409-Longest-Palindrome/">409. Longest Palindrome</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-404-Sum-of-Left-Leaves/">404. Sum of Left Leaves</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-401-Binary-Watch/">401. Binary Watch</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-399-Evaluate-Division/">399. Evaluate Division</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-384-Shuffle-an-Array/">384. Shuffle an Array</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-382-Linked-List-Random-Node/">382. Linked List Random Node</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-378-Kth-Smallest-Element-in-a-Sorted-Matrix/">378. Kth Smallest Element in a Sorted Matrix</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-373-Find-K-Pairs-with-Smallest-Sums/">373. Find K Pairs with Smallest Sums</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-372-Super-Pow/">372. Super Pow</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-370-Range-Addition/">370. Range Addition</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-367-Valid-Perfect-Square/">367. Valid Perfect Square</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-366-Find-Leaves-of-Binary-Tree/">366. Find Leaves of Binary Tree</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-359-Logger-Rate-Limiter/">359. Logger Rate Limiter</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-350-Intersection-of-Two-Arrays-II/">350. Intersection of Two Arrays II</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-349-Intersection-of-Two-Arrays/">349. Intersection of Two Arrays</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-345-Reverse-Vowels-of-a-String/">345. Reverse Vowels of a String</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-344-Reverse-String/">344. Reverse String</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-338-Counting-Bits/">338. Counting Bits</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-337-House-Robber-III/">337. House Robber III</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-332-Reconstruct-Itinerary/">332. Reconstruct Itinerary</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-331-Verity-Preorder-Serialization-of-a-Binary-Tree/">331. Verify Preorder Serialization of a Binary Tree</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-328-Odd-Even-Linked-List/">328. Odd Even Linked List</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-326-Power-of-Three/">326. Power of Three</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-310-Minimum-Height-Trees/">310. Minimum Height Trees</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-309-Best-Time-to-Buy-and-Sell-Stock-with-Cooldown/">309. Best Time to Buy and Sell Stock with Cooldown</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-304-Range-Sum-Query-2D-Immutable/">304. Range Sum Query 2D - Immutable</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-303-Range-Sum-Query-Immutable/">303. Range Sum Query - Immutable</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-300-Longest-Increasing-Subsequence/">300. Longest Increasing Subsequence</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-297-Serialize-and-Deserialize-Binary-Tree/">297. Serialize and Deserialize Binary Tree</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-295-Find-Median-from-Data-Stream/">295. Find Median from Data Stream</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-290-Word-Pattern/">290. Word Pattern</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-287-Find-the-Duplicate-Number/">287. Find the Duplicate Number</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-279-Perfect-Squares/">279. Perfect Squares</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-278-First-Bad-Version/">278. First Bad Version</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-276-Paint-Fence/">276. Paint Fence</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-270-Closest-Binary-Search-Tree-Value/">270. Closest Binary Search Tree Value</a></li>  <li class="file"><a href="/wiki/2017/08/17/Leetcode-268-Missing-Number/">268. Missing Number</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-265-Paint-House-II/">265. Paint House II</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-264-Ugly-Number-II/">264. Ugly Number II</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-263-Ugly-Number/">263. Ugly Number</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-261-Graph-Valid-Tree/">261. Graph Valid Tree</a></li>  <li class="file"><a href="/wiki/2017/08/17/Leetcode-260-Single-Number-III/">260. Single Number III</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-258-Add-Digits/">258. Add Digits</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-257-Binary-Tree-Paths/">257. Binary Tree Paths</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-256-Paint-House/">256. Paint House</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-242-Valid-Anagram/">242. Valid Anagram</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-241-Different-Ways-to-Add-Parentheses/">241. Different Ways to Add Parentheses</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-240-Search-a-2D-Matrix-II/">240. Search a 2D Matrix II</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-237-Delete-Node-in-a-Linked-List/">237. Delete Node in a Linked List</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-236-Lowest-Common-Ancestor-of-a-Binary-Tree/">236. Lowest Common Ancestor of a Binary Tree</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-235-Lowest-Common-Ancestor-of-a-Binary-Search-Tree/">235. Lowest Common Ancestor of a Binary Search Tree</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-234-Palindrome-Linked-List/">234. Palindrome Linked List</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-232-Implement-Queue-using-Stacks/">232. Implement Queue using Stacks</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-230-Kth-Smallest-Element-in-a-BST/">230. Kth Smallest Element in a BST</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-226-Invert-Binary-Tree/">226. Invert Binary Tree</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-225-mplementStackUsingQueues/">225. Implement Stack using Queues</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-224-Basic-Calculator/">224. Basic Calculator</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-222-Count-Complete-Tree-Nodes/">222. Count Complete Tree Nodes</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-221-Maximal-Square/">221. Maximal Square</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-216-Combination-Sum-III/">216. Combination Sum III</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-215-Kth-Largest-Element-in-an-Array/">215. Kth Largest Element in an Array</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-213-House-Robber-II/">213. House Robber II</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-210-Course-Schedule-II/">210. Course Schedule II</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-209-Minimum-Size-Subarray-Sum/">209. Minimum Size Subarray Sum</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-207-Course-Schedule/">207. Course Schedule</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-206-Reverse-Linked-List/">206. Reverse Linked List</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-205-Isomorphic-Strings/">205. Isomorphic Strings</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-204-Count-Primes/">204. Count Primes</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-203-Remove-Linked-List-Elements/">203. Remove Linked List Elements</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-202-Happy-Number/">202. Happy Number</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-200-Number-of-Islands/">200. Number of Islands</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-199-Binary-Tree-Right-Side-View/">199. Binary Tree Right Side View</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-198-House-Robber/">198. House Robber</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-191-Number-of-1-Bits/">191. Number of 1 Bits</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-190-Reverse-Bits/">190. Reverse Bits</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-187-Repeated-DNA-Sequences/">187. Repeated DNA Sequences</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-179-Largest-Number/">179. Largest Number</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-174-Dungeon-Game/">174. Dungeon Game</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-173-Binary-Search-Tree-Iterator/">173. Binary Search Tree Iterator</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-172-Factorial-Trailing-Zeroes/">172. Factorial Trailing Zeroes</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-171-Excel-Sheet-Column-Number/">171. Excel Sheet Column Number</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-170-TwoSum-III/">170. TwoSum III</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-168-Excel-Sheet-Column-Title/">168. Excel Sheet Column Title</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-167-Two-Sum-II-Input-array-is-sorted/">167. Two Sum II - Input array is sorted</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-166-Fraction-to-Recurring-Decimal/">166. Fraction to Recurring Decimal</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-160-Intersection-of-Two-Linked-Lists/">160. Intersection of Two Linked Lists</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-155-Min-Stack/">155. Min Stack</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-152-Maximum-Product-Subarray/">152. Maximum Product Subarray</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-151-Reverse-Words-in-a-String/">151. Reverse Words in a String</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-150-Evaluate-Reverse-Polish-Notation/">150. Evaluate Reverse Polish Notation</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-149-Max-Points-on-a-Line/">149. Max Points on a Line</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-148-Sort-List/">148. Sort List</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-147-Insertion-Sort-List/">147. Insertion Sort List</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-146-LRU-Cache/">146. LRU Cache</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-145-Binary-Tree-Postorder-Traversal/">145. Binary Tree Postorder Traversal</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-144-Binary-Tree-Preorder-Traversal/">144. Binary Tree Preorder Traversal</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-143-Reorder-List/">143. Reorder List</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-142-Linked-List-Cycle-II/">142. Linked List Cycle II</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-141-Linked-List-Cycle/">141. Linked List Cycle</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-139-Word-Break/">139. Word Break</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-138-Copy-List-with-Random-Pointer/">138. Copy List with Random Pointer</a></li>  <li class="file"><a href="/wiki/2017/08/17/Leetcode-136-Single-Number/">136 Single Number</a></li>  <li class="file"><a href="/wiki/2017/08/17/Leetcode-137-Single-Number-II/">137 Single Number II</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-133-Clone-Graph/">133. Clone Graph</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-132-Palindrome-Partitioning-II/">132. Palindrome Partitioning II</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-131-Palindrome-Partitioning/">131. Palindrome Partitioning</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-130-Surrounded-Regions/">130. Surrounded Regions</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-129-Sum-Root-to-Leaf-Numbers/">129. Sum Root to Leaf Numbers</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-128-Longest-Consecutive-Sequence/">128. Longest Consecutive Sequence</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-127-Word-Ladder/">127. Word Ladder</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-125-Valid-Palindrome/">125. Valid Palindrome</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-124-Binary-Tree-Maximum-Path-Sum/">124. Binary Tree Maximum Path Sum</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-121-Best-Time-to-Buy-and-Sell-Stock/">121. Best Time to Buy and Sell Stock</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-120-Triangle/">120. Triangle</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-119-Pascal-s-Triangle-II/">119. Pascal's Triangle II</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-118-Pascal-s-Triangle/">118. Pascal's Triangle</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-117-Populating-Next-Right-Pointers-in-Each-Node-II/">117. Populating Next Right Pointers in Each Node II</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-116-Populating-Next-Right-Pointers-in-Each-Node/">116. Populating Next Right Pointers in Each Node</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-114-Flatten-Binary-Tree-to-Linked-List/">114. Flatten Binary Tree to Linked List</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-113-Path-Sum-II/">113. Path Sum II</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-112-Path-Sum/">112. Path Sum</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-111-Minimum-Depth-of-Binary-Tree/">111. Minimum Depth of Binary Tree</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-110-Balanced-Binary-Tree/">110. Balanced Binary Tree</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-108-Convert-Sorted-Array-to-Binary-Search-Tree/">108. Convert Sorted Array to Binary Search Tree</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-107-Binary-Tree-Level-Order-Traversal-II/">107. Binary Tree Level Order Traversal II</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-105-Construct-Binary-Tree-from-Preorder-and-Inorder-Traversal/">105. Construct Binary Tree from Preorder and Inorder Traversal</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-104-Maximum-Depth-of-Binary-Tree/">104. Maximum Depth of Binary Tree</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-103-Binary-Tree-Zigzag-Level-Order-Traversal/">103. Binary Tree Zigzag Level Order Traversal</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-102-Binary-Tree-Level-Order-Traversal/">102. Binary Tree Level Order Traversal</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-101-Symmetric-Tree/">101. Symmetric Tree</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-100-Same-Tree/">100. Same Tree</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-99-Recover-Binary-Search-Tree/">99. Recover Binary Search Tree</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-98-Validate-Binary-Search-Tree/">98. Validate Binary Search Tree</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-96-Unique-Binary-Search-Trees/">96. Unique Binary Search Trees</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-95-Unique-Binary-Search-Trees-II/">95. Unique Binary Search Trees II</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-94-Binary-Tree-Inorder-Traversal/">94. Binary Tree Inorder Traversal</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-93-Restore-IP-Adress/">93. Restore IP Adress</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-93-Restore-IP-Addresses/">93. Restore IP Addresses</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-92-Reverse-Linked-List-II/">92. Reverse Linked List II</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-91-Decode-Ways/">91. Decode Ways</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-90-Subsets-II/">90. Subsets II</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-89-Gray-Code/">89. Gray Code</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-88-Merge-Sorted-Array/">88. Merge Sorted Array</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-86-Partition-List/">86. Partition List</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-85-Maximal-Rectangle/">85. Maximal Rectangle</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-84-Largest-Rectangle-in-Histogram/">84. Largest Rectangle in Histogram</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-83-Remove-Duplicates-from-Sorted-List/">83. Remove Duplicates from Sorted List</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-82-Remove-Duplicates-from-Sorted-List-II/">82. Remove Duplicates from Sorted List II</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-79-Word-Search/">79. Word Search</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-78-Subsets-md/">78. Subsets</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-77-Combinations/">77. Combinations</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-76-Minimum-Window-Substring/">76. Minimum Window Substring</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-75-Sort-Colors/">75. Sort Colors</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-74-Search-a-2D-Matrix/">74. Search a 2D Matrix</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-71-Simplify-Path/">71. Simplify Path</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-70-Climbing-Stairs/">70. Climbing Stairs</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-69-Sqrt-x/">69. Sqrt(x)</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-67-Add-Binary/">67. Add Binary</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-66-Plus-One/">66. Plus One</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-64-Minimum-Path-Sum/">64. Minimum Path Sum</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-63-Unique-Paths-II/">63. Unique Paths II</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-62-Unique-Paths/">62. Unique Paths</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-61-Rotate-List/">61. Rotate List</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-60-Permutation-Sequence/">60. Permutation Sequence</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-58-Length-of-Last-Word/">58. Length of Last Word</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-56-Merge-Intervals/">56. Merge Intervals</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-53-Maximum-Subarray/">53. Maximum Subarray</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-52-N-Queens-II/">52. N-Queens II</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-51-N-Queens/">51. N-Queens</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-50-Pow-x-n/">50. Pow(x, n)</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-49-Group-Anagrams/">49. Group Anagrams</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-47-Permutations-II/">47. Permutations II</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-46-Permutations/">46. Permutations</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-43-Multiply-Strings/">43. Multiply Strings</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-42-Trapping-Rain-Water/">42. Trapping Rain Water</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-40-Combination-Sum-II/">40. Combination Sum II</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-39-Combination-Sum/">39. Combination Sum</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-38-Count-and-Say/">38. Count and Say</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-37-Sudoku-Solver/">37. Sudoku Solver</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-36-Valid-Sudoku/">36. Valid Sudoku</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-35-Search-Insert-Position/">35. Search Insert Position</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-34-Search-for-a-Range/">34. Find First and Last Position of Element in Sorted Array</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-33-Search-in-Rotated-Sorted-Array/">33. Search in Rotated Sorted Array</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-33-Search-in-Rotated-Sorted-Array/">33. Search in Rotated Sorted Array</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-32-Longest-Valid-Parentheses/">32. Longest Valid Parentheses</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-31-Next-Permutation/">31. Next Permutation</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-30-Substring-with-Concatenation-of-All-Words/">30. Substring with Concatenation of All Words</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-29-Divide-Two-Integers/">29. Divide Two Integers</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-28-Implement-strStr/">28. Implement strStr()</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-27-Remove-Element/">27. Remove Element</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-26-Remove-Duplicates-from-Sorted-Array/">26. Remove Duplicates from Sorted Array</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-25-Reverse-Nodes-in-k-Group/">25. Reverse Nodes in k-Group</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-24-Swap-Nodes-in-Pairs/">24. Swap Nodes in Pairs</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-23-Merge-k-Sorted-Lists/">23. Merge k Sorted Lists</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-22-Generate-Parentheses/">22. Generate Parentheses</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-21-Merge-Two-Sorted-Lists/">21. Merge Two Sorted Lists</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-20-Valid-Parentheses/">20. Valid Parentheses</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-19-Remove-Nth-Node-From-End-of-List/">19. Remove Nth Node From End of List</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-18-4-Sum/">18. 4 Sum</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-17-Letter-Combinations-of-a-Phone-Number/">17. Letter Combinations of a Phone Number.md</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-16-3-Sum-Cloest/">16. 3Sum Closest</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-15-3-Sum/">15. 3Sum</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-14-Longest-Common-Prefix/">14. Longest Common Prefix</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-12-Integer-to-Roman/">12. Integer to Roman</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-11-Container-With-Most-Water/">11. Container With Most Water</a></li>  <li class="file"><a href="/wiki/2017/10/30/Leetcode-10-Regular-Expression-Matching/">10. Regular Expression Matching</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-9-Palindrome-Number/">9. Palindrome Number</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-8-String-to-Integer-atoi/">8. String to Integer (atoi)</a></li>  <li class="file"><a href="/wiki/2017/09/01/Leetcode-7-Reverse-Integer/">7. Reverse Integer</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-6-ZigZag-Conversion/">6. ZigZag Conversion</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-5-Longest-Palindromic-Substring/">5. Longest Palindromic Substring</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-4-Median-of-Two-Sorted-Arrays/">4. Median of Two Sorted Arrays</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-3-Longest-Substring-Without-Repeating-Characters/">3. Longest Substring Without Repeating Characters</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-2-Add-Two-Numbers/">2. Add Two Numbers</a></li>  <li class="file"><a href="/wiki/2017/10/10/Leetcode-1-Two-Sum/">1. Two Sum</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            LintCode
+                        </a>
+                         <ul class="unstyled" id="tree" >  <li class="file"><a href="/wiki/2017/10/10/LintCode-464-Sort-Integers-II/">464. Sort Integers II</a></li>  <li class="file"><a href="/wiki/2017/10/30/LintCode-77-Longest-Common-Subsequence/">77. Longest Common Subsequence</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory open">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder-open"></i>
+                            &nbsp;
+                            OS
+                        </a>
+                         <ul class="unstyled" id="tree" > 
+                    <li class="directory open">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder-open"></i>
+                            &nbsp;
+                            CSE521
+                        </a>
+                         <ul class="unstyled" id="tree" >  <li class="file active"><a href="/wiki/2017/07/30/OS-CSE521-10-Introduction-to-scheduling/">Introduction to scheduling</a></li>  <li class="file"><a href="/wiki/2017/07/30/OS-CSE521-9-Threads-and-Thread-Implementations/">Threads and Thread Implementations</a></li>  <li class="file"><a href="/wiki/2017/07/30/OS-CSE521-8-contect-switching/">context switching</a></li>  <li class="file"><a href="/wiki/2017/07/30/OS-CSE521-7-Interrupt-and-Exception-Handling/">Interrupt and Exception Handling</a></li>  <li class="file"><a href="/wiki/2017/07/30/OS-CSE521-6-Deaklock-and-exec/">Deadlock and exec</a></li>  <li class="file"><a href="/wiki/2017/07/30/OS-CSE521-5-Synchronation-Primitive/">Synchronization Primitives</a></li>  <li class="file"><a href="/wiki/2017/07/30/OS-CSE521-4-Introduction-to-Synchronation/">Introduction to Synchronization</a></li>  <li class="file"><a href="/wiki/2017/07/30/OS-CSE521-3-fork-and-pipe/">fork() and pipe()</a></li>  </ul> 
+                    </li> 
+                     <li class="file"><a href="/wiki/2017/07/30/OS-实现操作系统1-配置/">实现操作系统1 - 配置</a></li>  <li class="file"><a href="/wiki/2018/07/12/OS-POSIX/">POSIX</a></li>  <li class="file"><a href="/wiki/2018/07/12/OS-超线程/">超线程</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            Python
+                        </a>
+                         <ul class="unstyled" id="tree" >  <li class="file"><a href="/wiki/2017/12/30/Python-Records/">Records</a></li>  <li class="file"><a href="/wiki/2017/10/30/Python-谈谈Python中的拷贝/">谈谈Python中的拷贝</a></li>  <li class="file"><a href="/wiki/2017/10/30/Python-python引号/">Python引号</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            TOOLS
+                        </a>
+                         <ul class="unstyled" id="tree" >  <li class="file"><a href="/wiki/2017/03/30/TOOLS-Python配置/">Python配置</a></li>  <li class="file"><a href="/wiki/2017/10/30/TOOLS-LLDB使用/">LLDB使用</a></li>  <li class="file"><a href="/wiki/2018/01/01/TOOLS-Git/">Git</a></li>  <li class="file"><a href="/wiki/2017/12/30/TOOLS-VIM技巧/">VIM技巧</a></li>  <li class="file"><a href="/wiki/2017/10/30/TOOLS-Clion/">Clion</a></li>  <li class="file"><a href="/wiki/2017/10/30/TOOLS-Maven/">Maven</a></li>  <li class="file"><a href="/wiki/2017/10/30/TOOLS-VSCODE/">VSCode</a></li>  <li class="file"><a href="/wiki/2017/10/30/TOOLS-GCC/">GCC</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            TensorFlow
+                        </a>
+                         <ul class="unstyled" id="tree" >  <li class="file"><a href="/wiki/2017/12/30/TensorFlow-TF会话生命周期/">TF会话生命周期</a></li>  <li class="file"><a href="/wiki/2017/12/30/TensorFlow-5-TF-Graph模块/">5 TF - Graph模块</a></li>  <li class="file"><a href="/wiki/2017/12/30/TensorFlow-4-OpKernels简介/">4 TF OpKernels简介</a></li>  <li class="file"><a href="/wiki/2017/12/30/TensorFlow-3-代码分析初步/">3 TF代码分析初步</a></li>  <li class="file"><a href="/wiki/2017/12/30/TensorFlow-2-核心概念/">2 TF核心概念</a></li>  <li class="file"><a href="/wiki/2017/12/30/TensorFlow-1-TF系统框架/">1 TF系统框架</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            awesome Install
+                        </a>
+                         <ul class="unstyled" id="tree" >  <li class="file"><a href="/wiki/2018/01/01/awesome-Install-shadowsocks/">搭建shadowsocks</a></li>  <li class="file"><a href="/wiki/2017/12/30/awesome-Install-vagrant搭建ubuntu/">vagrant搭建ubuntu</a></li>  <li class="file"><a href="/wiki/2017/12/30/awesome-Install-git/">git</a></li>  <li class="file"><a href="/wiki/2017/12/30/awesome-Install-Youtube/">Youtube</a></li>  <li class="file"><a href="/wiki/2017/12/11/awesome-Install-nasm/">Nasm</a></li>  <li class="file"><a href="/wiki/2017/12/10/awesome-Install-octave/">Octave</a></li>  <li class="file"><a href="/wiki/2017/12/03/awesome-Install-Intel-Parallel-Studio-XE/">Intel Parallel Studio XE</a></li>  <li class="file"><a href="/wiki/2017/09/30/awesome-Install-Mac环境下搭建Hadoop家族产品/">Mac环境下搭建Hadoop家族产品</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            小技巧
+                        </a>
+                         <ul class="unstyled" id="tree" >  <li class="file"><a href="/wiki/2018/02/02/小技巧-Mac禁止访问网站/">Mac禁止访问网站</a></li>  </ul> 
+                    </li> 
+                     <li class="file"><a href="/wiki/2018/01/06/index/"></a></li>  </ul> 
+    </div>
+    <script>
+        $(document).ready(function() {
+            var iconFolderOpenClass  = 'fa-folder-open';
+            var iconFolderCloseClass = 'fa-folder';
+            var iconAllExpandClass = 'fa-angle-double-down';
+            var iconAllPackClass = 'fa-angle-double-up';
+            // Handle directory-tree expansion:
+            // 左键单独展开目录
+            $(document).on('click', '#categories a[data-role="directory"]', function (event) {
+                event.preventDefault();
+
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconFolderOpenClass);
+                var subtree = $(this).siblings('ul');
+                icon.removeClass(iconFolderOpenClass).removeClass(iconFolderCloseClass);
+                if (expanded) {
+                    if (typeof subtree != 'undefined') {
+                        subtree.slideUp({ duration: 100 });
+                    }
+                    icon.addClass(iconFolderCloseClass);
+                } else {
+                    if (typeof subtree != 'undefined') {
+                        subtree.slideDown({ duration: 100 });
+                    }
+                    icon.addClass(iconFolderOpenClass);
+                }
+            });
+            // 右键展开下属所有目录
+            $('#categories a[data-role="directory"]').bind("contextmenu", function(event){
+                event.preventDefault();
+                
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconFolderOpenClass);
+                var listNode = $(this).siblings('ul');
+                var subtrees = $.merge(listNode.find('li ul'), listNode);
+                var icons = $.merge(listNode.find('.fa'), icon);
+                icons.removeClass(iconFolderOpenClass).removeClass(iconFolderCloseClass);
+                if(expanded) {
+                    subtrees.slideUp({ duration: 100 });
+                    icons.addClass(iconFolderCloseClass);
+                } else {
+                    subtrees.slideDown({ duration: 100 });
+                    icons.addClass(iconFolderOpenClass);
+                }
+            })
+            // 展开关闭所有目录按钮
+            $(document).on('click', '#allExpand', function (event) {
+                event.preventDefault();
+                
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconAllExpandClass);
+                icon.removeClass(iconAllExpandClass).removeClass(iconAllPackClass);
+                if(expanded) {
+                    $('#sidebar .fa.fa-folder').removeClass('fa-folder').addClass('fa-folder-open')
+                    $('#categories li ul').slideDown({ duration: 100 });
+                    icon.addClass(iconAllPackClass);
+                } else {
+                    $('#sidebar .fa.fa-folder-open').removeClass('fa-folder-open').addClass('fa-folder')
+                    $('#categories li ul').slideUp({ duration: 100 });
+                    icon.addClass(iconAllExpandClass);
+                }
+            });  
+        });
+    </script>
+
+    
+        
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title"><span>links</span></h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a href="http://larryim.cc">My Blog</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+            
+            <section id="main"><article id="post-OS-CSE521-10-Introduction-to-scheduling" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+                    <div class="article-meta">
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/wiki/categories/OS/">OS</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/wiki/categories/OS/CSE521/">CSE521</a>
+    </div>
+
+                        
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/wiki/tags/OS/">OS</a>
+    </div>
+
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/wiki/2017/07/30/OS-CSE521-10-Introduction-to-scheduling/">
+            <time datetime="2017-07-29T16:00:00.000Z" itemprop="datePublished">2017-07-30</time>
+        </a>
+    </div>
+
+
+                        
+                    </div>
+                
+                
+    
+        <h1 class="article-title" itemprop="name">
+            Introduction to scheduling
+        </h1>
+    
+
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+        
+            
+                <div id="toc" class="toc-article">
+                <strong class="toc-title">Catalogue</strong>
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Thread-States"><span class="toc-number">1.</span> <span class="toc-text">Thread States</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Thread-State-Transitions"><span class="toc-number">2.</span> <span class="toc-text">Thread State Transitions</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Scheduling-What"><span class="toc-number">3.</span> <span class="toc-text">Scheduling: What?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Scheduling-Why"><span class="toc-number">4.</span> <span class="toc-text">Scheduling: Why?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Scheduling-When"><span class="toc-number">5.</span> <span class="toc-text">Scheduling: When?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Why-yield"><span class="toc-number">6.</span> <span class="toc-text">Why yield()?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Scheduling-How"><span class="toc-number">7.</span> <span class="toc-text">Scheduling: How?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Policy-v-Mechanism"><span class="toc-number">8.</span> <span class="toc-text">Policy v. Mechanism</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Scheduling-Matters"><span class="toc-number">9.</span> <span class="toc-text">Scheduling Matters</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Human-Computer-Interaction-and-Expectations"><span class="toc-number">10.</span> <span class="toc-text">Human-Computer Interaction (and Expectations)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Respond-Click"><span class="toc-number">11.</span> <span class="toc-text">Respond (Click)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Continue-Watch"><span class="toc-number">12.</span> <span class="toc-text">Continue (Watch)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Finish-Expect"><span class="toc-number">13.</span> <span class="toc-text">Finish (Expect)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Click-Watch-Expect"><span class="toc-number">14.</span> <span class="toc-text">Click, Watch, Expect</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Conflicting-Goals"><span class="toc-number">15.</span> <span class="toc-text">Conflicting Goals</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Deadlines-Win"><span class="toc-number">16.</span> <span class="toc-text">Deadlines Win</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Scheduling-Goals"><span class="toc-number">17.</span> <span class="toc-text">Scheduling Goals</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Aside-Realtime-Scheduling"><span class="toc-number">18.</span> <span class="toc-text">(Aside) Realtime Scheduling</span></a></li></ol>
+                </div>
+            
+        
+        
+            <h2 id="Thread-States"><a href="#Thread-States" class="headerlink" title="Thread States"></a>Thread States</h2><p>We talk about threads—and sometimes the processes containing them—as being in several different states:</p>
+<ul>
+<li><strong>Running</strong>: executing instructions on a CPU core.</li>
+<li><strong>Ready</strong>: not executing instructions but capable of being restarted.</li>
+<li><strong>Waiting, Blocked or Sleeping</strong>: not executing instructions and not able to be restarted until some event occurs.</li>
+</ul>
+<h2 id="Thread-State-Transitions"><a href="#Thread-State-Transitions" class="headerlink" title="Thread State Transitions"></a>Thread State Transitions</h2><ul>
+<li>Running → Ready: a thread was <strong>descheduled</strong>.</li>
+<li>Running → Waiting: a thread performed a <strong>blocking system call</strong>.</li>
+<li>Waiting → Ready: the event the thread was waiting for happened.</li>
+<li>Ready → Running: a thread was <strong>scheduled</strong>.</li>
+<li>Running → Terminated: a thread <strong>exited</strong> or hit a fatal <strong>exception</strong>.</li>
+</ul>
+<p>Operating systems have data structures to organize threads into these groups which you encountered during ASST1.</p>
+<h2 id="Scheduling-What"><a href="#Scheduling-What" class="headerlink" title="Scheduling: What?"></a>Scheduling: What?</h2><p>What is scheduling?</p>
+<ul>
+<li><strong>Scheduling</strong> is the process of choosing the next thread (or threads) to run on the CPU (or CPUs).</li>
+<li>We will primarily discuss <strong>single core</strong> scheduling for most of the week but return to multi-core scheduling issues later.</li>
+</ul>
+<h2 id="Scheduling-Why"><a href="#Scheduling-Why" class="headerlink" title="Scheduling: Why?"></a>Scheduling: Why?</h2><p>Why schedule threads?</p>
+<ul>
+<li><strong>CPU multiplexing</strong>: we have more threads that cores to run them on.</li>
+<li><strong>Kernel privilege</strong>: we are in charge of allocating the CPU and must try to make good decisions. <strong>Applications rely on it.</strong></li>
+</ul>
+<h2 id="Scheduling-When"><a href="#Scheduling-When" class="headerlink" title="Scheduling: When?"></a>Scheduling: When?</h2><p>When does scheduling happen?</p>
+<ul>
+<li>When a thread <strong>voluntarily</strong> gives up the CPU by calling <code>yield()</code>.</li>
+<li>When a thread makes a blocking <strong>system call</strong> and must sleep until the call completes.</li>
+<li>When a thread <strong>exits</strong>.</li>
+<li>When the <strong>kernel decides</strong> that a thread has run for long enough.</li>
+<li><code>#4</code> is what makes a scheduling policy <strong>preemptive</strong>, as opposed to <strong>cooperative</strong>: the kernel can preempt (or stop) a thread that has not requested to be stopped.</li>
+</ul>
+<h2 id="Why-yield"><a href="#Why-yield" class="headerlink" title="Why yield()?"></a>Why <code>yield()</code>?</h2><p>What is the rationale behind having a way for threads to voluntarily give up the CPU?</p>
+<ul>
+<li><code>yield()</code> can be a useful way of allowing a well-behaved thread to tell the CPU that it has no more useful work to do.</li>
+<li><code>yield()</code> is inherently cooperative. “Let me get out of the way so that another, more useful, thread can run.”</li>
+</ul>
+<h2 id="Scheduling-How"><a href="#Scheduling-How" class="headerlink" title="Scheduling: How?"></a>Scheduling: How?</h2><p>Two separate questions here:</p>
+<ul>
+<li><strong>Mechanism</strong>: how do we switch between threads?</li>
+<li><strong>Policy</strong>: how do we choose the next thread to run?</li>
+</ul>
+<p>How do we <strong>switch between threads</strong>?</p>
+<ul>
+<li>Perform a <strong>context switch</strong> and move threads between the <strong>ready, running,</strong> and <strong>waiting</strong> queues.</li>
+</ul>
+<h2 id="Policy-v-Mechanism"><a href="#Policy-v-Mechanism" class="headerlink" title="Policy v. Mechanism"></a>Policy v. Mechanism</h2><p>Scheduling is as example of useful separation between <strong>policy</strong> and <strong>mechanism</strong>:</p>
+<ul>
+<li>P: deciding what thread to run.</li>
+<li>M: context switch.</li>
+<li>M: maintaining the running, ready and waiting queues.</li>
+<li>P: giving preference to interactive tasks.</li>
+<li>M: using timer interrupts to stop running threads.</li>
+<li>P: choosing a thread to run at random.</li>
+</ul>
+<h2 id="Scheduling-Matters"><a href="#Scheduling-Matters" class="headerlink" title="Scheduling Matters"></a>Scheduling Matters</h2><p>How the CPU is scheduled impacts <strong>every other part</strong> of the system.</p>
+<p>Why?</p>
+<ul>
+<li>Using other system resources requires the CPU!</li>
+<li><strong>Intelligent scheduling</strong> makes a modestly-powered system seem fast and responsive.</li>
+<li><strong>Stupid scheduling</strong> makes a powerful system seem sluggish and laggy.</li>
+</ul>
+<h2 id="Human-Computer-Interaction-and-Expectations"><a href="#Human-Computer-Interaction-and-Expectations" class="headerlink" title="Human-Computer Interaction (and Expectations)"></a>Human-Computer Interaction (and Expectations)</h2><p>What do you expect from your machine?</p>
+<ul>
+<li><strong>Respond</strong> (Click)</li>
+<li><strong>Continue</strong> (Watch, or active waiting)</li>
+<li><strong>Finish</strong> (Expect, or passive waiting)</li>
+</ul>
+<h2 id="Respond-Click"><a href="#Respond-Click" class="headerlink" title="Respond (Click)"></a>Respond (Click)</h2><p><strong>Responsiveness</strong>: when you give the computer and instruction, or input, <strong>it responds in a timely manne</strong>r.</p>
+<ul>
+<li>It may <strong>not</strong> finish, but at least you know it has <strong>started</strong> (or understood).</li>
+</ul>
+<p>Most of what we do with computers consists of responsive tasks. This is <strong>using</strong> a computer, and what makes computers different from television.</p>
+<p>Examples of responsive tasks:</p>
+<ul>
+<li>Web browsing: when a link is clicked, retrieve the web page.</li>
+<li>Editing: when I enter text at the keyboard, place it at the cursor.</li>
+<li>Chatting: when I hit send, transmit the text to my chat partner.</li>
+</ul>
+<h2 id="Continue-Watch"><a href="#Continue-Watch" class="headerlink" title="Continue (Watch)"></a>Continue (Watch)</h2><p><strong>Continuity</strong>: when you ask the computer to perform a continuous task it does so smoothly.</p>
+<ul>
+<li>Continuity implies <strong>active waiting</strong>: you are not interacting with the computer, but you are expecting it to continue to perform a task you have initiated.</li>
+</ul>
+<p>As computers have started to deliver media, this function is <strong>increasingly important</strong>.</p>
+<p>Examples of continuous tasks:</p>
+<ul>
+<li>Blinking a cursor.</li>
+<li>Playing music or a movie.</li>
+<li>Stupid (!) web animations.</li>
+</ul>
+<h2 id="Finish-Expect"><a href="#Finish-Expect" class="headerlink" title="Finish (Expect)"></a>Finish (Expect)</h2><p><strong>Completion</strong>: when we ask to the computer to perform a task—or it performs one on our behalf—that we expect to take a long time, we want it to complete eventually.</p>
+<ul>
+<li>Completion implies <strong>passive waiting</strong>: you are asking the computer to continue to deliver interactive performance while working on your long-running task. (We also consider these background tasks.)</li>
+<li>Unlike responsive and continuous task, background tasks may not be user initiated.</li>
+</ul>
+<p>Examples of background tasks:</p>
+<ul>
+<li>Performing a system backup.</li>
+<li>Indexing files on my computer.</li>
+</ul>
+<h2 id="Click-Watch-Expect"><a href="#Click-Watch-Expect" class="headerlink" title="Click, Watch, Expect"></a>Click, Watch, Expect</h2><p>Many applications <strong>combine</strong> all three system expectations.</p>
+<p>Music player:</p>
+<ul>
+<li>Click: change tracks.</li>
+<li>Watch: play the selected track.</li>
+<li>Finish: update album artwork.</li>
+</ul>
+<p>Web browser:</p>
+<ul>
+<li>Click: follow a link.</li>
+<li>Watch: play web video.</li>
+<li>Finish: index search history.</li>
+</ul>
+<h2 id="Conflicting-Goals"><a href="#Conflicting-Goals" class="headerlink" title="Conflicting Goals"></a>Conflicting Goals</h2><p>Scheduling is a balance between <strong>meeting deadlines</strong> and <strong>optimizing resource allocation</strong>:</p>
+<ul>
+<li>Optimal resource allocation: carefully allocate tasks so that all resources are constantly in used.</li>
+<li>Meeting deadlines: drop everything and do this <strong>now</strong>!</li>
+</ul>
+<p>Responsiveness and continuity require meeting deadlines—unpredictable or predictable:</p>
+<ul>
+<li><strong>Responsiveness</strong> → unpredictable deadlines. “When the user moves the mouse I need to be ready to redraw the cursor.”</li>
+<li><strong>Continuity</strong> → predictable deadlines. “Every 5 ms I need to write more data to the sound card buffer.”</li>
+</ul>
+<p>Throughput requires careful resource allocation:</p>
+<ul>
+<li><strong>Throughput</strong> → optimal resource allocation. “I should really give the backup process more resources so that it can finish overnight.”</li>
+</ul>
+<h2 id="Deadlines-Win"><a href="#Deadlines-Win" class="headerlink" title="Deadlines Win"></a>Deadlines Win</h2><p>Humans are sensitive to <strong>responsiveness</strong> and <strong>continuity</strong>.</p>
+<ul>
+<li>We don’t notice resource allocation (as much).</li>
+<li>Heard: “My computer feels slow.”</li>
+<li>Unheard: “My computer is not using all of its RAM.”</li>
+</ul>
+<p><strong>Why</strong>:</p>
+<ul>
+<li>Poor responsiveness or continuity wastes our time! (“The mouse jumped all over and I couldn’t click anywhere.”, “The movie kept stalling and I couldn’t watch it.”)</li>
+<li>Poor throughput usually just wastes computer time. (“The backup took 12 hours but I was sleeping.”)</li>
+</ul>
+<h2 id="Scheduling-Goals"><a href="#Scheduling-Goals" class="headerlink" title="Scheduling Goals"></a>Scheduling Goals</h2><p>(Or, how to <strong>evaluate schedulers</strong>.)</p>
+<ul>
+<li>How well does it meet deadlines—unpredictable or predictable?</li>
+<li>How completely does it allocate system resources?</li>
+<li>No point having idle CPU, memory, or disk bandwidth when something useful could be happening.</li>
+</ul>
+<p>On human-facing systems, deadlines (or <strong>interactivity</strong>) usually wins. Why?</p>
+<ul>
+<li>Your time is more valuable than your computer’s.</li>
+</ul>
+<h2 id="Aside-Realtime-Scheduling"><a href="#Aside-Realtime-Scheduling" class="headerlink" title="(Aside) Realtime Scheduling"></a>(Aside) Realtime Scheduling</h2><p>We have established that deadlines are important to human-facing systems. This is mainly because systems that don’t meet deadlines are <strong>annoying</strong>. (“Buffering…​”, “Buffering…​”, etc.)</p>
+<p>There are other classes of systems where the failure to meet deadlines can be <strong>fatal</strong>.</p>
+<ul>
+<li>“I meant to get around to running the motion_stop task 1 s ago, but I didn’t quite make it. And…​the robot rolled off of the cliff.</li>
+</ul>
+
+            </div>
+        
+        <footer class="article-footer">
+        </footer>
+    </div>
+</article>
+
+
+    
+<nav id="article-nav">
+    
+        <a href="/wiki/2017/07/30/C-C-Primer-6-函数C-Primer-12-动态内存/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">Newer</strong>
+            <div class="article-nav-title">
+                
+                    C++ Primer (6) - 函数
+                
+            </div>
+        </a>
+    
+    
+        <a href="/wiki/2017/07/30/OS-CSE521-3-fork-and-pipe/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">Older</strong>
+            <div class="article-nav-title">fork() and pipe()</div>
+        </a>
+    
+</nav>
+
+
+
+
+
+    
+    
+
+
+
+
+<!-- baidu url auto push script -->
+<script type="text/javascript">
+    !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=window.location.href,o=document.referrer;if(!e.test(r)){var n="//api.share.baidu.com/s.gif";o?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var t=new Image;t.src=n}}(window);
+</script>     
+</section>
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            larry &copy; 2018 
+            <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/80x15.png" /></a>
+            <br> Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>. Theme - <a href="https://github.com/zthxxx/hexo-theme-Wikitten">wikitten</a>
+        </div>
+    </div>
+</footer>
+        
+
+    
+        <script src="/wiki/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/wiki/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/wiki/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/wiki/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/wiki/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/wiki/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/wiki/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/wiki/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/wiki/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/wiki/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+        <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true,
+            TeX: {
+                equationNumbers: {
+                  autoNumber: 'AMS'
+                }
+            }
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/wiki/js/main.js"></script>
+
+    </div>
+</body>
+</html>
