@@ -982,22 +982,197 @@
     <ul class="nav bs-sidenav">
         <li class="main active"><a href="#topic-11-string-sort">Topic 11: String Sort</a></li>
         <li class="main "><a href="#strings-in-java">strings in Java</a></li>
+            <li><a href="#the-char-data-type">The char data type</a></li>
         <li class="main "><a href="#key-indexed-counting">key-indexed counting</a></li>
         <li class="main "><a href="#lsd-radix-sort">LSD radix sort</a></li>
-        <li class="main "><a href="#radix-sort">radix sort</a></li>
-        <li class="main "><a href="#3-way-radix-quicksort">3-way radix quicksort</a></li>
+            <li><a href="#analysis">Analysis</a></li>
+        <li class="main "><a href="#msd-radix-sort">MSD radix sort</a></li>
+            <li><a href="#end-of-string-convection">End-of-string-convection</a></li>
+            <li><a href="#small-subarrays">Small subarrays</a></li>
+            <li><a href="#analysis_1">Analysis</a></li>
         <li class="main "><a href="#suffix-arrays">suffix arrays</a></li>
+            <li><a href="#application-longest-repeated-substring">Application: Longest repeated substring</a></li>
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
 
 <h3 id="topic-11-string-sort"><strong>Topic 11: String Sort</strong><a class="headerlink" href="#topic-11-string-sort" title="Permanent link">&para;</a></h3>
 <h3 id="strings-in-java">strings in Java<a class="headerlink" href="#strings-in-java" title="Permanent link">&para;</a></h3>
+<h4 id="the-char-data-type">The char data type<a class="headerlink" href="#the-char-data-type" title="Permanent link">&para;</a></h4>
+<p>C char data type. Typically an <em>8-bit</em> integer.</p>
+<ul>
+<li>Supports 7-bit ASCII.</li>
+<li>Can represent only 256 characters.</li>
+</ul>
+<p>Java char data type. A <em>16-bit unsigned</em> integer.</p>
+<ul>
+<li>Support original 16-bit Unicode.</li>
+</ul>
 <h3 id="key-indexed-counting">key-indexed counting<a class="headerlink" href="#key-indexed-counting" title="Permanent link">&para;</a></h3>
+<p>Goal. Sort an array <span><span class="MathJax_Preview">a[]</span><script type="math/tex">a[]</script></span> of <span><span class="MathJax_Preview">N</span><script type="math/tex">N</script></span> integers between 0 and <span><span class="MathJax_Preview">R</span><script type="math/tex">R</script></span> - 1.</p>
+<ul>
+<li>Count frequencies of each letter using key as index. </li>
+<li>Compute frequency cumulates which specify destinations. </li>
+<li>Access cumulates using key as index to move items. </li>
+<li>Copy back into original array.</li>
+</ul>
+<p> <div class=codehilite><pre><span class=kt>int</span> <span class=n>N</span> <span class=o>=</span> <span class=n>a</span><span class=o>.</span><span class=na>length</span><span class=o>;</span> 
+<span class=kt>int</span><span class=o>[]</span> <span class=n>count</span> <span class=o>=</span> <span class=k>new</span> <span class=kt>int</span><span class=o>[</span><span class=n>R</span><span class=o>+</span><span class=mi>1</span><span class=o>];</span>
+<span class=c1>// Count frequencies of each letter using key as index. </span>
+<span class=k>for</span> <span class=o>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=o>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>N</span><span class=o>;</span> <span class=n>i</span><span class=o>++)</span> <span class=n>count</span><span class=o>[</span><span class=n>a</span><span class=o>[</span><span class=n>i</span><span class=o>]+</span><span class=mi>1</span><span class=o>]++;</span>
+<span class=c1>// Compute frequency cumulates which specify destinations. </span>
+<span class=k>for</span> <span class=o>(</span><span class=kt>int</span> <span class=n>r</span> <span class=o>=</span> <span class=mi>0</span><span class=o>;</span> <span class=n>r</span> <span class=o>&lt;</span> <span class=n>R</span><span class=o>;</span> <span class=n>r</span><span class=o>++)</span> <span class=n>count</span><span class=o>[</span><span class=n>r</span><span class=o>+</span><span class=mi>1</span><span class=o>]</span> <span class=o>+=</span> <span class=n>count</span><span class=o>[</span><span class=n>r</span><span class=o>];</span>
+<span class=c1>// Access cumulates using key as index to move items</span>
+<span class=k>for</span> <span class=o>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=o>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>N</span><span class=o>;</span> <span class=n>i</span><span class=o>++)</span> <span class=n>aux</span><span class=o>[</span><span class=n>count</span><span class=o>[</span><span class=n>a</span><span class=o>[</span><span class=n>i</span><span class=o>]]++]</span> <span class=o>=</span> <span class=n>a</span><span class=o>[</span><span class=n>i</span><span class=o>];</span>
+<span class=c1>// Copy back into original array</span>
+<span class=k>for</span> <span class=o>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=o>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>N</span><span class=o>;</span> <span class=n>i</span><span class=o>++)</span> <span class=n>a</span><span class=o>[</span><span class=n>i</span><span class=o>]</span> <span class=o>=</span> <span class=n>aux</span><span class=o>[</span><span class=n>i</span><span class=o>];</span>
+</pre></div></p>
+<p><img alt="index-counting-demo" src="../figures/index-counting-demo.gif" /></p>
 <h3 id="lsd-radix-sort">LSD radix sort<a class="headerlink" href="#lsd-radix-sort" title="Permanent link">&para;</a></h3>
-<h3 id="radix-sort">radix sort<a class="headerlink" href="#radix-sort" title="Permanent link">&para;</a></h3>
-<h3 id="3-way-radix-quicksort">3-way radix quicksort<a class="headerlink" href="#3-way-radix-quicksort" title="Permanent link">&para;</a></h3>
-<h3 id="suffix-arrays">suffix arrays<a class="headerlink" href="#suffix-arrays" title="Permanent link">&para;</a></h3></div>
+<p><em>least-significant-digit first</em> (LSD) string sort</p>
+<ul>
+<li>Consider characters from right to left.</li>
+<li>Stably sort using <span><span class="MathJax_Preview">d^{th}</span><script type="math/tex">d^{th}</script></span> character as the key (using key-indexed counting).</li>
+</ul>
+<p>Consider the following motivating application: Suppose that a highway engineer sets up a device that records the license plate number of all vehicles using a busy highway for a given period of time. License plates are a mixture of numbers of letters. </p>
+<p><img alt="least-significant-digit-first-sort" src="../figures/least-significant-digit-first-sort.png" /></p>
+<p>If the strings are each of length <span><span class="MathJax_Preview">W</span><script type="math/tex">W</script></span>, we sort the strings <span><span class="MathJax_Preview">W</span><script type="math/tex">W</script></span> times with key-indexed counting, using each of the positions as the key, proceeding from right to left. </p>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>static</span> <span class=kt>void</span> <span class=nf>lsdSort</span><span class=o>(</span><span class=n>String</span><span class=o>[]</span> <span class=n>a</span><span class=o>,</span> <span class=kt>int</span> <span class=n>w</span><span class=o>)</span> <span class=o>{</span>
+    <span class=kt>int</span> <span class=n>n</span> <span class=o>=</span> <span class=n>a</span><span class=o>.</span><span class=na>length</span><span class=o>;</span>
+    <span class=kt>int</span> <span class=n>R</span> <span class=o>=</span> <span class=mi>256</span><span class=o>;</span>   <span class=c1>// extend ASCII alphabet size</span>
+    <span class=n>String</span><span class=o>[]</span> <span class=n>aux</span> <span class=o>=</span> <span class=k>new</span> <span class=n>String</span><span class=o>[</span><span class=n>n</span><span class=o>];</span>
+
+    <span class=k>for</span> <span class=o>(</span><span class=kt>int</span> <span class=n>d</span> <span class=o>=</span> <span class=n>w</span><span class=o>-</span><span class=mi>1</span><span class=o>;</span> <span class=n>d</span> <span class=o>&gt;=</span> <span class=mi>0</span><span class=o>;</span> <span class=n>d</span><span class=o>--)</span> <span class=o>{</span>
+        <span class=c1>// sort by key-indexed counting on dth character</span>
+        <span class=c1>// compute frequency counts</span>
+        <span class=kt>int</span><span class=o>[]</span> <span class=n>count</span> <span class=o>=</span> <span class=k>new</span> <span class=kt>int</span><span class=o>[</span><span class=n>R</span><span class=o>+</span><span class=mi>1</span><span class=o>];</span>
+        <span class=k>for</span> <span class=o>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=o>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>n</span><span class=o>;</span> <span class=n>i</span><span class=o>++)</span> <span class=n>count</span><span class=o>[</span><span class=n>a</span><span class=o>[</span><span class=n>i</span><span class=o>].</span><span class=na>charAt</span><span class=o>(</span><span class=n>d</span><span class=o>)</span> <span class=o>+</span> <span class=mi>1</span><span class=o>]++;</span>
+        <span class=c1>// compute cumulates</span>
+        <span class=k>for</span> <span class=o>(</span><span class=kt>int</span> <span class=n>r</span> <span class=o>=</span> <span class=mi>0</span><span class=o>;</span> <span class=n>r</span> <span class=o>&lt;</span> <span class=n>R</span><span class=o>;</span> <span class=n>r</span><span class=o>++)</span> <span class=n>count</span><span class=o>[</span><span class=n>r</span><span class=o>+</span><span class=mi>1</span><span class=o>]</span> <span class=o>+=</span> <span class=n>count</span><span class=o>[</span><span class=n>r</span><span class=o>];</span>
+        <span class=c1>// move data</span>
+        <span class=k>for</span> <span class=o>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=o>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>n</span><span class=o>;</span> <span class=n>i</span><span class=o>++)</span>
+            <span class=n>aux</span><span class=o>[</span><span class=n>count</span><span class=o>[</span><span class=n>a</span><span class=o>[</span><span class=n>i</span><span class=o>].</span><span class=na>charAt</span><span class=o>(</span><span class=n>d</span><span class=o>)]++]</span> <span class=o>=</span> <span class=n>a</span><span class=o>[</span><span class=n>i</span><span class=o>];</span>
+        <span class=c1>// copy back</span>
+        <span class=k>for</span> <span class=o>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=o>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>n</span><span class=o>;</span> <span class=n>i</span><span class=o>++)</span> <span class=n>a</span><span class=o>[</span><span class=n>i</span><span class=o>]</span> <span class=o>=</span> <span class=n>aux</span><span class=o>[</span><span class=n>i</span><span class=o>];</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</pre></div></p>
+<h4 id="analysis">Analysis<a class="headerlink" href="#analysis" title="Permanent link">&para;</a></h4>
+<p>LSD string sort uses <span><span class="MathJax_Preview">\sim 7WN+ 3WR</span><script type="math/tex">\sim 7WN+ 3WR</script></span> array accesses and extra space proportional to <span><span class="MathJax_Preview">N + R</span><script type="math/tex">N + R</script></span> to sort <span><span class="MathJax_Preview">N</span><script type="math/tex">N</script></span> items whose keys are <span><span class="MathJax_Preview">W</span><script type="math/tex">W</script></span>-character strings taken from an <span><span class="MathJax_Preview">R</span><script type="math/tex">R</script></span>-character alphabet.</p>
+<p>For typical applications, <span><span class="MathJax_Preview">R</span><script type="math/tex">R</script></span> is far smaller than <span><span class="MathJax_Preview">N</span><script type="math/tex">N</script></span>, so the total running time is proportional to <span><span class="MathJax_Preview">WN</span><script type="math/tex">WN</script></span>.</p>
+<div class="admonition question">
+<p class="admonition-title">Question</p>
+<p><hh>Sort one million 32-bit integers</hh> (Black Obama was asked for the question, <a href="http://www.youtube.com/watch?v=k4RRi_ntQc8&amp;amp;feature=related">video</a>), see discussion <a href="https://www.quora.com/What-is-the-most-efficient-way-to-sort-a-million-32-bit-integers">here</a>. Solution: LSD radix sort.</p>
+</div>
+<h3 id="msd-radix-sort">MSD radix sort<a class="headerlink" href="#msd-radix-sort" title="Permanent link">&para;</a></h3>
+<p><em>most-significant-digit-first</em> (MSD) string sort:</p>
+<ul>
+<li>Partition array into <span><span class="MathJax_Preview">R</span><script type="math/tex">R</script></span> pieces according to first character (use key-indexed counting).</li>
+<li>Recursively sort all strings that start with each character (key-indexed counts delineate subarrays to sort).</li>
+</ul>
+<p><img alt="Trace_of_recursive_calls_for_MSD_string_sort" src="../figures/Trace_of_recursive_calls_for_MSD_string_sort.png" /></p>
+<h4 id="end-of-string-convection">End-of-string-convection<a class="headerlink" href="#end-of-string-convection" title="Permanent link">&para;</a></h4>
+<p>For a proper sort, we need the subarray for strings whose characters have all been examined to appear as the first subarray, and we do not want to recursively sort this subarray. </p>
+<p>To facilitate these two parts of the computation we use a private two argument <C>toChar()</C> method to convert from an indexed string character to an array index that returns -1 if the specified character position is past the end of the string. Then, we just add 1 to each returned value, to get a nonnegative int that we can use to index <C>count[]</C>. </p>
+<p> <div class=codehilite><pre><span class=c1>// return dth character of s, -1 if d = length of string</span>
+<span class=kd>private</span> <span class=kd>static</span> <span class=kt>int</span> <span class=nf>charAt</span><span class=o>(</span><span class=n>String</span> <span class=n>s</span><span class=o>,</span> <span class=kt>int</span> <span class=n>d</span><span class=o>)</span> <span class=o>{</span>
+    <span class=k>if</span> <span class=o>(</span><span class=n>d</span> <span class=o>==</span> <span class=n>s</span><span class=o>.</span><span class=na>length</span><span class=o>())</span> <span class=k>return</span> <span class=o>-</span><span class=mi>1</span><span class=o>;</span>
+    <span class=k>return</span> <span class=n>s</span><span class=o>.</span><span class=na>charAt</span><span class=o>(</span><span class=n>d</span><span class=o>);</span>
+<span class=o>}</span>
+</pre></div></p>
+<p>This convention means that we have <span><span class="MathJax_Preview">R+1</span><script type="math/tex">R+1</script></span> different possible character values at each string position: 0 to signify end of string, 1 for the first alphabet character, 2 for the second alphabet character, and so forth.</p>
+<p>Since key-indexed counting already needs one extra position, we use the code int <C>count[] = new int[R+2]</C>; to create the array of frequency counts (and set all of its values to 0).</p>
+<p><img alt="Interpretation_of_count_values_during_MSD_string_sort" src="../figures/Interpretation_of_count_values_during_MSD_string_sort.png" /></p>
+<h4 id="small-subarrays">Small subarrays<a class="headerlink" href="#small-subarrays" title="Permanent link">&para;</a></h4>
+<p>Small subarrays are of critical importance in the performance of MSD string sort.</p>
+<ul>
+<li>Each function call needs its own <C>count[]</C> array.</li>
+<li>ASCII (256 counts): 100x slower than copy pass for <span><span class="MathJax_Preview">N</span><script type="math/tex">N</script></span> = 2. </li>
+<li>Unicode (65,536 counts): 32,000x slower for <span><span class="MathJax_Preview">N</span><script type="math/tex">N</script></span> = 2.</li>
+<li>Huge number of small subarrays because of recursion.</li>
+</ul>
+<p>Solution: Cutoff to insertion sort for small subarrays.</p>
+<p> <div class=codehilite><pre><span class=kd>private</span> <span class=kd>static</span> <span class=kt>int</span> <span class=n>R</span> <span class=o>=</span> <span class=mi>256</span><span class=o>;</span>         <span class=c1>// radix</span>
+<span class=kd>private</span> <span class=kd>static</span> <span class=kd>final</span> <span class=kt>int</span> <span class=n>M</span> <span class=o>=</span> <span class=mi>15</span><span class=o>;</span>    <span class=c1>// cutoff for small subarrays</span>
+<span class=kd>private</span> <span class=kd>static</span> <span class=n>String</span><span class=o>[]</span> <span class=n>aux</span><span class=o>;</span>        <span class=c1>// auxiliary array for distribution</span>
+
+<span class=kd>public</span> <span class=kd>static</span> <span class=kt>void</span> <span class=nf>sort</span><span class=o>(</span><span class=n>String</span><span class=o>[]</span> <span class=n>a</span><span class=o>)</span> <span class=o>{</span>
+    <span class=kt>int</span> <span class=n>n</span> <span class=o>=</span> <span class=n>a</span><span class=o>.</span><span class=na>length</span><span class=o>;</span>
+    <span class=n>String</span><span class=o>[]</span> <span class=n>aux</span> <span class=o>=</span> <span class=k>new</span> <span class=n>String</span><span class=o>[</span><span class=n>n</span><span class=o>];</span>
+    <span class=n>sort</span><span class=o>(</span><span class=n>a</span><span class=o>,</span> <span class=mi>0</span><span class=o>,</span> <span class=n>n</span><span class=o>-</span><span class=mi>1</span><span class=o>,</span> <span class=mi>0</span><span class=o>,</span> <span class=n>aux</span><span class=o>);</span>
+<span class=o>}</span>
+
+<span class=c1>// sort from a[lo] to a[hi], starting at the dth character</span>
+<span class=kd>private</span> <span class=kd>static</span> <span class=kt>void</span> <span class=nf>sort</span><span class=o>(</span><span class=n>String</span><span class=o>[]</span> <span class=n>a</span><span class=o>,</span> <span class=kt>int</span> <span class=n>lo</span><span class=o>,</span> <span class=kt>int</span> <span class=n>hi</span><span class=o>,</span> <span class=kt>int</span> <span class=n>d</span><span class=o>,</span> <span class=n>String</span><span class=o>[]</span> <span class=n>aux</span><span class=o>)</span> <span class=o>{</span>
+    <span class=c1>// cutoff to insertion sort for small subarrays</span>
+    <span class=k>if</span> <span class=o>(</span><span class=n>hi</span> <span class=o>&lt;=</span> <span class=n>lo</span> <span class=o>+</span> <span class=n>CUTOFF</span><span class=o>)</span> <span class=o>{</span>
+        <span class=n>insertion</span><span class=o>(</span><span class=n>a</span><span class=o>,</span> <span class=n>lo</span><span class=o>,</span> <span class=n>hi</span><span class=o>,</span> <span class=n>d</span><span class=o>);</span>
+        <span class=k>return</span><span class=o>;</span>
+    <span class=o>}</span>
+    <span class=c1>// compute frequency counts</span>
+    <span class=kt>int</span><span class=o>[]</span> <span class=n>count</span> <span class=o>=</span> <span class=k>new</span> <span class=kt>int</span><span class=o>[</span><span class=n>R</span><span class=o>+</span><span class=mi>2</span><span class=o>];</span>
+    <span class=k>for</span> <span class=o>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=n>lo</span><span class=o>;</span> <span class=n>i</span> <span class=o>&lt;=</span> <span class=n>hi</span><span class=o>;</span> <span class=n>i</span><span class=o>++)</span> <span class=o>{</span>
+        <span class=kt>int</span> <span class=n>c</span> <span class=o>=</span> <span class=n>charAt</span><span class=o>(</span><span class=n>a</span><span class=o>[</span><span class=n>i</span><span class=o>],</span> <span class=n>d</span><span class=o>);</span>
+        <span class=n>count</span><span class=o>[</span><span class=n>c</span><span class=o>+</span><span class=mi>2</span><span class=o>]++;</span>
+    <span class=o>}</span>
+    <span class=c1>// transform counts to indicies</span>
+    <span class=k>for</span> <span class=o>(</span><span class=kt>int</span> <span class=n>r</span> <span class=o>=</span> <span class=mi>0</span><span class=o>;</span> <span class=n>r</span> <span class=o>&lt;</span> <span class=n>R</span><span class=o>+</span><span class=mi>1</span><span class=o>;</span> <span class=n>r</span><span class=o>++)</span> <span class=n>count</span><span class=o>[</span><span class=n>r</span><span class=o>+</span><span class=mi>1</span><span class=o>]</span> <span class=o>+=</span> <span class=n>count</span><span class=o>[</span><span class=n>r</span><span class=o>];</span>
+    <span class=c1>// distribute</span>
+    <span class=k>for</span> <span class=o>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=n>lo</span><span class=o>;</span> <span class=n>i</span> <span class=o>&lt;=</span> <span class=n>hi</span><span class=o>;</span> <span class=n>i</span><span class=o>++)</span> <span class=o>{</span>
+        <span class=kt>int</span> <span class=n>c</span> <span class=o>=</span> <span class=n>charAt</span><span class=o>(</span><span class=n>a</span><span class=o>[</span><span class=n>i</span><span class=o>],</span> <span class=n>d</span><span class=o>);</span>
+        <span class=n>aux</span><span class=o>[</span><span class=n>count</span><span class=o>[</span><span class=n>c</span><span class=o>+</span><span class=mi>1</span><span class=o>]++]</span> <span class=o>=</span> <span class=n>a</span><span class=o>[</span><span class=n>i</span><span class=o>];</span>
+    <span class=o>}</span>
+    <span class=c1>// copy back</span>
+    <span class=k>for</span> <span class=o>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=n>lo</span><span class=o>;</span> <span class=n>i</span> <span class=o>&lt;=</span> <span class=n>hi</span><span class=o>;</span> <span class=n>i</span><span class=o>++)</span>  <span class=n>a</span><span class=o>[</span><span class=n>i</span><span class=o>]</span> <span class=o>=</span> <span class=n>aux</span><span class=o>[</span><span class=n>i</span> <span class=o>-</span> <span class=n>lo</span><span class=o>];</span>
+    <span class=c1>// recursively sort for each character (excludes sentinel -1)</span>
+    <span class=k>for</span> <span class=o>(</span><span class=kt>int</span> <span class=n>r</span> <span class=o>=</span> <span class=mi>0</span><span class=o>;</span> <span class=n>r</span> <span class=o>&lt;</span> <span class=n>R</span><span class=o>;</span> <span class=n>r</span><span class=o>++)</span>
+        <span class=n>sort</span><span class=o>(</span><span class=n>a</span><span class=o>,</span> <span class=n>lo</span> <span class=o>+</span> <span class=n>count</span><span class=o>[</span><span class=n>r</span><span class=o>],</span> <span class=n>lo</span> <span class=o>+</span> <span class=n>count</span><span class=o>[</span><span class=n>r</span><span class=o>+</span><span class=mi>1</span><span class=o>]</span> <span class=o>-</span> <span class=mi>1</span><span class=o>,</span> <span class=n>d</span><span class=o>+</span><span class=mi>1</span><span class=o>,</span> <span class=n>aux</span><span class=o>);</span>
+<span class=o>}</span>
+</pre></div></p>
+<h4 id="analysis_1">Analysis<a class="headerlink" href="#analysis_1" title="Permanent link">&para;</a></h4>
+<p>To sort <span><span class="MathJax_Preview">N</span><script type="math/tex">N</script></span> random strings from an R-character alphabet, MSD string sort examines about <span><span class="MathJax_Preview">N\ log_ R N</span><script type="math/tex">N\ log_ R N</script></span> characters, on average.</p>
+<p>Disadvantages MSD string sort.</p>
+<ul>
+<li>Extra space for aux[].</li>
+<li>Extra space for count[].</li>
+<li>Inner loop has a lot of instructions.</li>
+<li>Accesses memory "randomly" (cache inefficient).</li>
+</ul>
+<h3 id="suffix-arrays">suffix arrays<a class="headerlink" href="#suffix-arrays" title="Permanent link">&para;</a></h3>
+<p><hh>Keyword-in-context search</hh> Given a text of <span><span class="MathJax_Preview">N</span><script type="math/tex">N</script></span> characters, preprocess it to enable fast substring search (find all occurrences of query string context).</p>
+<p><img alt="keyword-in-context-search" src="../figures/keyword-in-context-search.png" /></p>
+<ul>
+<li>Preprocess: suffix sort the text.</li>
+<li>Query: binary search for query; scan until mismatch.</li>
+</ul>
+<h4 id="application-longest-repeated-substring">Application: Longest repeated substring<a class="headerlink" href="#application-longest-repeated-substring" title="Permanent link">&para;</a></h4>
+<p>Given a string of <span><span class="MathJax_Preview">N</span><script type="math/tex">N</script></span> characters, find the longest repeated substring.</p>
+<p>Brute-force algorithm.</p>
+<ul>
+<li>Try all indices <span><span class="MathJax_Preview">i</span><script type="math/tex">i</script></span> and <span><span class="MathJax_Preview">j</span><script type="math/tex">j</script></span> for start of possible match. </li>
+<li>Compute longest common prefix (LCP) for each pair.</li>
+<li>Analysis. Running time <span><span class="MathJax_Preview">≤ D N^ 2</span><script type="math/tex">≤ D N^ 2</script></span> , where <span><span class="MathJax_Preview">D</span><script type="math/tex">D</script></span> is length of longest match.</li>
+</ul>
+<p><img alt="Computing-the-LRS-by-sorting-suffixes" src="../figures/Computing-the-LRS-by-sorting-suffixes.png" /></p>
+<p> <div class=codehilite><pre><span class=kd>public</span> <span class=kd>static</span> <span class=n>String</span> <span class=nf>lrs</span><span class=o>(</span><span class=n>String</span> <span class=n>text</span><span class=o>)</span> <span class=o>{</span>
+    <span class=kt>int</span> <span class=n>n</span> <span class=o>=</span> <span class=n>text</span><span class=o>.</span><span class=na>length</span><span class=o>();</span>
+    <span class=n>String</span><span class=o>[]</span> <span class=n>suffixes</span> <span class=o>=</span> <span class=k>new</span> <span class=n>String</span><span class=o>[</span><span class=n>N</span><span class=o>];</span>
+    <span class=c1>// create suffixes (linear time and space)</span>
+    <span class=k>for</span> <span class=o>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=o>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>N</span><span class=o>;</span> <span class=n>i</span><span class=o>++)</span>
+        <span class=n>suffixes</span><span class=o>[</span><span class=n>i</span><span class=o>]</span> <span class=o>=</span> <span class=n>s</span><span class=o>.</span><span class=na>substring</span><span class=o>(</span><span class=n>i</span><span class=o>,</span> <span class=n>N</span><span class=o>);</span>
+    <span class=c1>// sort suffixes</span>
+    <span class=n>Arrays</span><span class=o>.</span><span class=na>sort</span><span class=o>(</span><span class=n>suffixes</span><span class=o>);</span>
+
+    <span class=c1>// find LCP between adjacent suffixes in sorted order</span>
+    <span class=n>String</span> <span class=n>lrs</span> <span class=o>=</span> <span class=s>&quot;&quot;</span><span class=o>;</span>
+    <span class=k>for</span> <span class=o>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=o>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>N</span> <span class=o>-</span> <span class=mi>1</span><span class=o>;</span> <span class=n>i</span><span class=o>++)</span> <span class=o>{</span>
+        <span class=kt>int</span> <span class=n>len</span> <span class=o>=</span> <span class=n>lcp</span><span class=o>(</span><span class=n>suffixes</span><span class=o>[</span><span class=n>i</span><span class=o>],</span> <span class=n>suffixes</span><span class=o>[</span><span class=n>i</span><span class=o>+</span><span class=mi>1</span><span class=o>]);</span>
+        <span class=k>if</span> <span class=o>(</span><span class=n>len</span> <span class=o>&gt;</span> <span class=n>lrs</span><span class=o>.</span><span class=na>length</span><span class=o>())</span> <span class=n>lrs</span> <span class=o>=</span> <span class=n>suffixes</span><span class=o>[</span><span class=n>i</span><span class=o>].</span><span class=na>substring</span><span class=o>(</span><span class=mi>0</span><span class=o>,</span> <span class=n>len</span><span class=o>);</span>
+    <span class=k>return</span> <span class=n>lrs</span><span class=o>;</span>
+<span class=o>}</span>
+</pre></div></p>
+<p>Problem. Five scientists A, B, C, D, and E are looking for long repeated substring in a genome with over 1 billion nucleotides.</p>
+<p>Solution:  Use suffix sorting solution with 3-way string quicksort.</p></div>
         </div>
 
         <footer class="col-md-12">
