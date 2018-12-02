@@ -1,0 +1,5798 @@
+
+
+
+
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <meta http-equiv="x-ua-compatible" content="ie=edge">
+      
+      
+      
+      
+        <meta name="lang:clipboard.copy" content="Copy to clipboard">
+      
+        <meta name="lang:clipboard.copied" content="Copied to clipboard">
+      
+        <meta name="lang:search.language" content="en, jp">
+      
+        <meta name="lang:search.pipeline.stopwords" content="True">
+      
+        <meta name="lang:search.pipeline.trimmer" content="True">
+      
+        <meta name="lang:search.result.none" content="No matching documents">
+      
+        <meta name="lang:search.result.one" content="1 matching document">
+      
+        <meta name="lang:search.result.other" content="# matching documents">
+      
+        <meta name="lang:search.tokenizer" content="[\s\-\.]+">
+      
+      <link rel="shortcut icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.0.4, mkdocs-material-3.1.0">
+    
+    
+      
+        <title>Lab4 Cache Lab</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/application.11e41852.css">
+      
+        <link rel="stylesheet" href="../../../assets/stylesheets/application-palette.22915126.css">
+      
+      
+        
+        
+        <meta name="theme-color" content="#3f51b5">
+      
+    
+    
+      <script src="../../../assets/javascripts/modernizr.20ef595d.js"></script>
+    
+    
+      
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700|Roboto+Mono">
+        <style>body,input{font-family:"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}</style>
+      
+    
+    <link rel="stylesheet" href="../../../assets/fonts/material-icons.css">
+    
+    
+      <link rel="stylesheet" href="../../../css/extra.css">
+    
+    
+  </head>
+  
+    
+    
+    <body dir="ltr" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    <svg class="md-svg">
+      <defs>
+        
+        
+      </defs>
+    </svg>
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+    
+      <a href="#part-a" tabindex="1" class="md-skip">
+        Skip to content
+      </a>
+    
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="../../.." title="Zhenhua's Wiki" class="md-header-nav__button md-logo">
+          
+            <i class="md-icon"></i>
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          
+            
+              <span class="md-header-nav__topic">
+                Zhenhua's Wiki
+              </span>
+              <span class="md-header-nav__topic">
+                Lab4 Cache Lab
+              </span>
+            
+          
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        
+          
+            <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+            
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+          
+        
+      </div>
+      
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container">
+      
+        
+      
+      
+        
+
+  
+
+<nav class="md-tabs md-tabs--active" data-md-component="tabs">
+  <div class="md-tabs__inner md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  <li class="md-tabs__item">
+    
+      <a href="../../.." title="分享、记录CS" class="md-tabs__link">
+        分享、记录CS
+      </a>
+    
+  </li>
+
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="../../../Algorithm/Backtracking/" title="Algorithm" class="md-tabs__link">
+          Algorithm
+        </a>
+      
+    </li>
+  
+
+      
+        
+  
+  
+    
+    
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="../../../Language/Cpp/ C++ Primer 12/" title="Language" class="md-tabs__link">
+          Language
+        </a>
+      
+    </li>
+  
+
+  
+
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="../../../Leetcode/1. Two Sum/" title="Leetcode" class="md-tabs__link">
+          Leetcode
+        </a>
+      
+    </li>
+  
+
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="../../../Miscellaneous/Clion/" title="Miscellaneous" class="md-tabs__link">
+          Miscellaneous
+        </a>
+      
+    </li>
+  
+
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="../../POSIX/" title="OS" class="md-tabs__link md-tabs__link--active">
+          OS
+        </a>
+      
+    </li>
+  
+
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="../../../tags/Array/" title="Tags" class="md-tabs__link">
+          Tags
+        </a>
+      
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+      
+      <main class="md-main">
+        <div class="md-main__inner md-grid" data-md-component="container">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href="../../.." title="Zhenhua's Wiki" class="md-nav__button md-logo">
+      
+        <i class="md-icon"></i>
+      
+    </a>
+    Zhenhua's Wiki
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../.." title="分享、记录CS" class="md-nav__link">
+      分享、记录CS
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2">
+    
+    <label class="md-nav__link" for="nav-2">
+      Algorithm
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-2">
+        Algorithm
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Algorithm/Backtracking/" title="Exhaustive Search and Backtracking" class="md-nav__link">
+      Exhaustive Search and Backtracking
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Algorithm/Bucket Sort/" title="Bucket Sort" class="md-nav__link">
+      Bucket Sort
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Algorithm/Divide and Conquer/" title="Divide and Conquer" class="md-nav__link">
+      Divide and Conquer
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Algorithm/Recursion/" title="Recursion" class="md-nav__link">
+      Recursion
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Algorithm/水塘抽样/" title="水塘抽样" class="md-nav__link">
+      水塘抽样
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3">
+    
+    <label class="md-nav__link" for="nav-3">
+      Language
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-3">
+        Language
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-3-1" type="checkbox" id="nav-3-1">
+    
+    <label class="md-nav__link" for="nav-3-1">
+      Cpp
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
+      <label class="md-nav__title" for="nav-3-1">
+        Cpp
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Language/Cpp/ C++ Primer 12/" title="C++ Primer (12) - 动态内存" class="md-nav__link">
+      C++ Primer (12) - 动态内存
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Language/Cpp/ C++ Primer 6/" title="C++ Primer (6) - 函数" class="md-nav__link">
+      C++ Primer (6) - 函数
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Language/Cpp/C++ 100/" title="C++面试经典100题" class="md-nav__link">
+      C++面试经典100题
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Language/Cpp/Cpp static /" title="static用法" class="md-nav__link">
+      static用法
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Language/Cpp/EOF/" title="EOF" class="md-nav__link">
+      EOF
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Language/Cpp/STL Source Code Analysis/" title="STL源码剖析" class="md-nav__link">
+      STL源码剖析
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Language/Cpp/Vector<string>/" title="STL中的vector<string>总结" class="md-nav__link">
+      STL中的vector<string>总结
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-3-2" type="checkbox" id="nav-3-2">
+    
+    <label class="md-nav__link" for="nav-3-2">
+      Java
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
+      <label class="md-nav__title" for="nav-3-2">
+        Java
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Language/Java/native Keyword/" title="修饰词native" class="md-nav__link">
+      修饰词native
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Language/Java/record/" title="Java record" class="md-nav__link">
+      Java record
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-3-3" type="checkbox" id="nav-3-3">
+    
+    <label class="md-nav__link" for="nav-3-3">
+      Python
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
+      <label class="md-nav__title" for="nav-3-3">
+        Python
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Language/Python/Clone in Python/" title="谈谈Python中的拷贝" class="md-nav__link">
+      谈谈Python中的拷贝
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Language/Python/Records/" title="Records" class="md-nav__link">
+      Records
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Language/Python/python Quote/" title="Python引号" class="md-nav__link">
+      Python引号
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4">
+    
+    <label class="md-nav__link" for="nav-4">
+      Leetcode
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-4">
+        Leetcode
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/1. Two Sum/" title="1. Two Sum" class="md-nav__link">
+      1. Two Sum
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/10. Regular Expression Matching/" title="10. Regular Expression Matching" class="md-nav__link">
+      10. Regular Expression Matching
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/100. Same Tree/" title="100. Same Tree" class="md-nav__link">
+      100. Same Tree
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/101. Symmetric Tree/" title="101. Symmetric Tree" class="md-nav__link">
+      101. Symmetric Tree
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/102. Binary Tree Level Order Traversal/" title="102. Binary Tree Level Order Traversal" class="md-nav__link">
+      102. Binary Tree Level Order Traversal
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/103. Binary Tree Zigzag Level Order Traversal/" title="103. Binary Tree Zigzag Level Order Traversal" class="md-nav__link">
+      103. Binary Tree Zigzag Level Order Traversal
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/104. Maximum Depth of Binary Tree/" title="104. Maximum Depth of Binary Tree" class="md-nav__link">
+      104. Maximum Depth of Binary Tree
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/105. Construct Binary Tree from Preorder and Inorder Traversal/" title="105. Construct Binary Tree from Preorder and Inorder Traversal" class="md-nav__link">
+      105. Construct Binary Tree from Preorder and Inorder Traversal
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/107. Binary Tree Level Order Traversal II/" title="107. Binary Tree Level Order Traversal II" class="md-nav__link">
+      107. Binary Tree Level Order Traversal II
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/108. Convert Sorted Array to Binary Search Tree/" title="108. Convert Sorted Array to Binary Search Tree" class="md-nav__link">
+      108. Convert Sorted Array to Binary Search Tree
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/109. Convert Sorted List to Binary Search Tree/" title="109. Convert Sorted List to Binary Search Tree" class="md-nav__link">
+      109. Convert Sorted List to Binary Search Tree
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/11. Container With Most Water/" title="11. Container With Most Water" class="md-nav__link">
+      11. Container With Most Water
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/110. Balanced Binary Tree/" title="110. Balanced Binary Tree" class="md-nav__link">
+      110. Balanced Binary Tree
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/111. Minimum Depth of Binary Tree/" title="111. Minimum Depth of Binary Tree" class="md-nav__link">
+      111. Minimum Depth of Binary Tree
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/112. Path Sum/" title="112. Path Sum" class="md-nav__link">
+      112. Path Sum
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/113. Path Sum II/" title="113. Path Sum II" class="md-nav__link">
+      113. Path Sum II
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/114. Flatten Binary Tree to Linked List/" title="114. Flatten Binary Tree to Linked List" class="md-nav__link">
+      114. Flatten Binary Tree to Linked List
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/116. Populating Next Right Pointers in Each Node/" title="116. Populating Next Right Pointers in Each Node" class="md-nav__link">
+      116. Populating Next Right Pointers in Each Node
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/117. Populating Next Right Pointers in Each Node II/" title="117. Populating Next Right Pointers in Each Node II" class="md-nav__link">
+      117. Populating Next Right Pointers in Each Node II
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/118. Pascal's Triangle/" title="118. Pascal's Triangle" class="md-nav__link">
+      118. Pascal's Triangle
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/119. Pascal's Triangle II/" title="119. Pascal's Triangle II" class="md-nav__link">
+      119. Pascal's Triangle II
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/12. Integer to Roman/" title="12. Integer to Roman" class="md-nav__link">
+      12. Integer to Roman
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/120. Triangle/" title="120. Triangle" class="md-nav__link">
+      120. Triangle
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/121. Best Time to Buy and Sell Stock/" title="121. Best Time to Buy and Sell Stock" class="md-nav__link">
+      121. Best Time to Buy and Sell Stock
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/124. Binary Tree Maximum Path Sum/" title="124. Binary Tree Maximum Path Sum" class="md-nav__link">
+      124. Binary Tree Maximum Path Sum
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/125. Valid Palindrome/" title="125. Valid Palindrome" class="md-nav__link">
+      125. Valid Palindrome
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/127. Word Ladder/" title="127. Word Ladder" class="md-nav__link">
+      127. Word Ladder
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/128. Longest Consecutive Sequence/" title="128. Longest Consecutive Sequence" class="md-nav__link">
+      128. Longest Consecutive Sequence
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/129. Sum Root to Leaf Numbers/" title="129. Sum Root to Leaf Numbers" class="md-nav__link">
+      129. Sum Root to Leaf Numbers
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/130. Surrounded Regions/" title="130. Surrounded Regions" class="md-nav__link">
+      130. Surrounded Regions
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/131. Palindrome Partitioning/" title="131. Palindrome Partitioning" class="md-nav__link">
+      131. Palindrome Partitioning
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/132. Palindrome Partitioning II/" title="132. Palindrome Partitioning II" class="md-nav__link">
+      132. Palindrome Partitioning II
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/133. Clone Graph/" title="133. Clone Graph" class="md-nav__link">
+      133. Clone Graph
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/136. Single Number/" title="136 Single Number" class="md-nav__link">
+      136 Single Number
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/137. Single Number II/" title="137 Single Number II" class="md-nav__link">
+      137 Single Number II
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/138. Copy List with Random Pointer/" title="138. Copy List with Random Pointer" class="md-nav__link">
+      138. Copy List with Random Pointer
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/139. Word Break/" title="139. Word Break" class="md-nav__link">
+      139. Word Break
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/14. Longest Common Prefix/" title="14. Longest Common Prefix" class="md-nav__link">
+      14. Longest Common Prefix
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/141. Linked List Cycle/" title="141. Linked List Cycle" class="md-nav__link">
+      141. Linked List Cycle
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/142. Linked List Cycle II/" title="142. Linked List Cycle II" class="md-nav__link">
+      142. Linked List Cycle II
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/143. Reorder List/" title="143. Reorder List" class="md-nav__link">
+      143. Reorder List
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/144. Binary Tree Preorder Traversal/" title="144. Binary Tree Preorder Traversal" class="md-nav__link">
+      144. Binary Tree Preorder Traversal
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/145. Binary Tree Postorder Traversal/" title="145. Binary Tree Postorder Traversal" class="md-nav__link">
+      145. Binary Tree Postorder Traversal
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/146. LRU Cache/" title="146. LRU Cache" class="md-nav__link">
+      146. LRU Cache
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/147. Insertion Sort List/" title="147. Insertion Sort List" class="md-nav__link">
+      147. Insertion Sort List
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/148. Sort List/" title="148. Sort List" class="md-nav__link">
+      148. Sort List
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/149. Max Points on a Line/" title="149. Max Points on a Line" class="md-nav__link">
+      149. Max Points on a Line
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/15. 3 Sum/" title="15. 3Sum" class="md-nav__link">
+      15. 3Sum
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/150. Evaluate Reverse Polish Notation/" title="150. Evaluate Reverse Polish Notation" class="md-nav__link">
+      150. Evaluate Reverse Polish Notation
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/151. Reverse Words in a String/" title="151. Reverse Words in a String" class="md-nav__link">
+      151. Reverse Words in a String
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/152. Maximum Product Subarray/" title="152. Maximum Product Subarray" class="md-nav__link">
+      152. Maximum Product Subarray
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/153. Find Minimum in Rotated Sorted Array/" title="153. Find Minimum in Rotated Sorted Array" class="md-nav__link">
+      153. Find Minimum in Rotated Sorted Array
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/155. Min Stack/" title="155. Min Stack" class="md-nav__link">
+      155. Min Stack
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/16. 3 Sum Cloest/" title="16. 3Sum Closest" class="md-nav__link">
+      16. 3Sum Closest
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/160. Intersection of Two Linked Lists/" title="160. Intersection of Two Linked Lists" class="md-nav__link">
+      160. Intersection of Two Linked Lists
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/164. Maximum Gap/" title="164. Maximum Gap" class="md-nav__link">
+      164. Maximum Gap
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/166. Fraction to Recurring Decimal/" title="166. Fraction to Recurring Decimal" class="md-nav__link">
+      166. Fraction to Recurring Decimal
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/167. Two Sum II - Input array is sorted/" title="167. Two Sum II - Input array is sorted" class="md-nav__link">
+      167. Two Sum II - Input array is sorted
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/168. Excel Sheet Column Title/" title="168. Excel Sheet Column Title" class="md-nav__link">
+      168. Excel Sheet Column Title
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/169. Majority Element/" title="169. Majority Element" class="md-nav__link">
+      169. Majority Element
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/17. Letter Combinations of a Phone Number/" title="17. Letter Combinations of a Phone Number.md" class="md-nav__link">
+      17. Letter Combinations of a Phone Number.md
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/170. TwoSum III/" title="170. TwoSum III" class="md-nav__link">
+      170. TwoSum III
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/171. Excel Sheet Column Number/" title="171. Excel Sheet Column Number" class="md-nav__link">
+      171. Excel Sheet Column Number
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/172. Factorial Trailing Zeroes/" title="172. Factorial Trailing Zeroes" class="md-nav__link">
+      172. Factorial Trailing Zeroes
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/173. Binary Search Tree Iterator/" title="173. Binary Search Tree Iterator" class="md-nav__link">
+      173. Binary Search Tree Iterator
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/174. Dungeon Game/" title="174. Dungeon Game" class="md-nav__link">
+      174. Dungeon Game
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/179. Largest Number/" title="179. Largest Number" class="md-nav__link">
+      179. Largest Number
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/18. 4 Sum/" title="18. 4 Sum" class="md-nav__link">
+      18. 4 Sum
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/187. Repeated DNA Sequences/" title="187. Repeated DNA Sequences" class="md-nav__link">
+      187. Repeated DNA Sequences
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/19. Remove Nth Node From End of List/" title="19. Remove Nth Node From End of List" class="md-nav__link">
+      19. Remove Nth Node From End of List
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/190. Reverse Bits/" title="190. Reverse Bits" class="md-nav__link">
+      190. Reverse Bits
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/191. Number of 1 Bits/" title="191. Number of 1 Bits" class="md-nav__link">
+      191. Number of 1 Bits
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/198. House Robber/" title="198. House Robber" class="md-nav__link">
+      198. House Robber
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/199. Binary Tree Right Side View/" title="199. Binary Tree Right Side View" class="md-nav__link">
+      199. Binary Tree Right Side View
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/2. Add Two Numbers/" title="2. Add Two Numbers" class="md-nav__link">
+      2. Add Two Numbers
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/20 Valid Parentheses/" title="20. Valid Parentheses" class="md-nav__link">
+      20. Valid Parentheses
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/200. Number of Islands/" title="200. Number of Islands" class="md-nav__link">
+      200. Number of Islands
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/202. Happy Number/" title="202. Happy Number" class="md-nav__link">
+      202. Happy Number
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/203. Remove Linked List Elements/" title="203. Remove Linked List Elements" class="md-nav__link">
+      203. Remove Linked List Elements
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/204. Count Primes/" title="204. Count Primes" class="md-nav__link">
+      204. Count Primes
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/205. Isomorphic Strings/" title="205. Isomorphic Strings" class="md-nav__link">
+      205. Isomorphic Strings
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/206. Reverse Linked List/" title="206. Reverse Linked List" class="md-nav__link">
+      206. Reverse Linked List
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/207. Course Schedule/" title="207. Course Schedule" class="md-nav__link">
+      207. Course Schedule
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/209. Minimum Size Subarray Sum/" title="209. Minimum Size Subarray Sum" class="md-nav__link">
+      209. Minimum Size Subarray Sum
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/21. Merge Two Sorted Lists/" title="21. Merge Two Sorted Lists" class="md-nav__link">
+      21. Merge Two Sorted Lists
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/210. Course Schedule II/" title="210. Course Schedule II" class="md-nav__link">
+      210. Course Schedule II
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/213. House Robber II/" title="213. House Robber II" class="md-nav__link">
+      213. House Robber II
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/215. Kth Largest Element in an Array/" title="215. Kth Largest Element in an Array" class="md-nav__link">
+      215. Kth Largest Element in an Array
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/216. Combination Sum III/" title="216. Combination Sum III" class="md-nav__link">
+      216. Combination Sum III
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/22. Generate Parentheses/" title="22. Generate Parentheses" class="md-nav__link">
+      22. Generate Parentheses
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/221. Maximal Square/" title="221. Maximal Square" class="md-nav__link">
+      221. Maximal Square
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/222. Count Complete Tree Nodes/" title="222. Count Complete Tree Nodes" class="md-nav__link">
+      222. Count Complete Tree Nodes
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/224. Basic Calculator/" title="224. Basic Calculator" class="md-nav__link">
+      224. Basic Calculator
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/225.  mplementStackUsingQueues/" title="225. Implement Stack using Queues" class="md-nav__link">
+      225. Implement Stack using Queues
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/226. Invert Binary Tree/" title="226. Invert Binary Tree" class="md-nav__link">
+      226. Invert Binary Tree
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/229. Majority Element II/" title="229. Majority Element II" class="md-nav__link">
+      229. Majority Element II
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/23. Merge k Sorted Lists/" title="23. Merge k Sorted Lists" class="md-nav__link">
+      23. Merge k Sorted Lists
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/230. Kth Smallest Element in a BST/" title="230. Kth Smallest Element in a BST" class="md-nav__link">
+      230. Kth Smallest Element in a BST
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/231. Power of Two/" title="231. Power of Two" class="md-nav__link">
+      231. Power of Two
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/232. Implement Queue using Stacks/" title="232. Implement Queue using Stacks" class="md-nav__link">
+      232. Implement Queue using Stacks
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/234. Palindrome Linked List/" title="234. Palindrome Linked List" class="md-nav__link">
+      234. Palindrome Linked List
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/235. Lowest Common Ancestor of a Binary Search Tree/" title="235. Lowest Common Ancestor of a Binary Search Tree" class="md-nav__link">
+      235. Lowest Common Ancestor of a Binary Search Tree
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/236. Lowest Common Ancestor of a Binary Tree/" title="236. Lowest Common Ancestor of a Binary Tree" class="md-nav__link">
+      236. Lowest Common Ancestor of a Binary Tree
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/237. Delete Node in a Linked List/" title="237. Delete Node in a Linked List" class="md-nav__link">
+      237. Delete Node in a Linked List
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/24. Swap Nodes in Pairs/" title="24. Swap Nodes in Pairs" class="md-nav__link">
+      24. Swap Nodes in Pairs
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/240. Search a 2D Matrix II/" title="240. Search a 2D Matrix II" class="md-nav__link">
+      240. Search a 2D Matrix II
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/241. Different Ways to Add Parentheses/" title="241. Different Ways to Add Parentheses" class="md-nav__link">
+      241. Different Ways to Add Parentheses
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/242. Valid Anagram/" title="242. Valid Anagram" class="md-nav__link">
+      242. Valid Anagram
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/25. Reverse Nodes in k-Group/" title="25. Reverse Nodes in k-Group" class="md-nav__link">
+      25. Reverse Nodes in k-Group
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/252. Meeting Rooms/" title="252. Meeting Rooms" class="md-nav__link">
+      252. Meeting Rooms
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/253. Meeting Rooms II/" title="253. Meeting Rooms II" class="md-nav__link">
+      253. Meeting Rooms II
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/256. Paint House/" title="256. Paint House" class="md-nav__link">
+      256. Paint House
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/257. Binary Tree Paths/" title="257. Binary Tree Paths" class="md-nav__link">
+      257. Binary Tree Paths
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/258. Add Digits/" title="258. Add Digits" class="md-nav__link">
+      258. Add Digits
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/26. Remove Duplicates from Sorted Array/" title="26. Remove Duplicates from Sorted Array" class="md-nav__link">
+      26. Remove Duplicates from Sorted Array
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/260. Single Number III/" title="260. Single Number III" class="md-nav__link">
+      260. Single Number III
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/261. Graph Valid Tree/" title="261. Graph Valid Tree" class="md-nav__link">
+      261. Graph Valid Tree
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/263. Ugly Number/" title="263. Ugly Number" class="md-nav__link">
+      263. Ugly Number
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/264. Ugly Number II/" title="264. Ugly Number II" class="md-nav__link">
+      264. Ugly Number II
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/265. Paint House II/" title="265. Paint House II" class="md-nav__link">
+      265. Paint House II
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/268. Missing Number/" title="268. Missing Number" class="md-nav__link">
+      268. Missing Number
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/27. Remove Element/" title="27. Remove Element" class="md-nav__link">
+      27. Remove Element
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/270. Closest Binary Search Tree Value /" title="270. Closest Binary Search Tree Value" class="md-nav__link">
+      270. Closest Binary Search Tree Value
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/276. Paint Fence/" title="276. Paint Fence" class="md-nav__link">
+      276. Paint Fence
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/278. First Bad Version/" title="278. First Bad Version" class="md-nav__link">
+      278. First Bad Version
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/279. Perfect Squares/" title="279. Perfect Squares" class="md-nav__link">
+      279. Perfect Squares
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/28. Implement strStr()/" title="28. Implement strStr()" class="md-nav__link">
+      28. Implement strStr()
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/287. Find the Duplicate Number/" title="287. Find the Duplicate Number" class="md-nav__link">
+      287. Find the Duplicate Number
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/29. Divide Two Integers/" title="29. Divide Two Integers" class="md-nav__link">
+      29. Divide Two Integers
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/290. Word Pattern/" title="290. Word Pattern" class="md-nav__link">
+      290. Word Pattern
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/295. Find Median from Data Stream/" title="295. Find Median from Data Stream" class="md-nav__link">
+      295. Find Median from Data Stream
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/297. Serialize and Deserialize Binary Tree/" title="297. Serialize and Deserialize Binary Tree" class="md-nav__link">
+      297. Serialize and Deserialize Binary Tree
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/3. Longest Substring Without Repeating Characters/" title="3. Longest Substring Without Repeating Characters" class="md-nav__link">
+      3. Longest Substring Without Repeating Characters
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/30. Substring with Concatenation of All Words/" title="30. Substring with Concatenation of All Words" class="md-nav__link">
+      30. Substring with Concatenation of All Words
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/300. Longest Increasing Subsequence/" title="300. Longest Increasing Subsequence" class="md-nav__link">
+      300. Longest Increasing Subsequence
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/303. Range Sum Query - Immutable/" title="303. Range Sum Query - Immutable" class="md-nav__link">
+      303. Range Sum Query - Immutable
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/304. Range Sum Query 2D - Immutable/" title="304. Range Sum Query 2D - Immutable" class="md-nav__link">
+      304. Range Sum Query 2D - Immutable
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/309. Best Time to Buy and Sell Stock with Cooldown/" title="309. Best Time to Buy and Sell Stock with Cooldown" class="md-nav__link">
+      309. Best Time to Buy and Sell Stock with Cooldown
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/31. Next Permutation/" title="31. Next Permutation" class="md-nav__link">
+      31. Next Permutation
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/310. Minimum Height Trees/" title="310. Minimum Height Trees" class="md-nav__link">
+      310. Minimum Height Trees
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/32. Longest Valid Parentheses/" title="32. Longest Valid Parentheses" class="md-nav__link">
+      32. Longest Valid Parentheses
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/326. Power of Three/" title="326. Power of Three" class="md-nav__link">
+      326. Power of Three
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/328. Odd Even Linked List/" title="328. Odd Even Linked List" class="md-nav__link">
+      328. Odd Even Linked List
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/33. Search in Rotated Sorted Array/" title="33. Search in Rotated Sorted Array" class="md-nav__link">
+      33. Search in Rotated Sorted Array
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/331. Verity Preorder Serialization of a Binary Tree/" title="331. Verify Preorder Serialization of a Binary Tree" class="md-nav__link">
+      331. Verify Preorder Serialization of a Binary Tree
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/332. Reconstruct Itinerary/" title="332. Reconstruct Itinerary" class="md-nav__link">
+      332. Reconstruct Itinerary
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/337. House Robber III/" title="337. House Robber III" class="md-nav__link">
+      337. House Robber III
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/338. Counting Bits/" title="338. Counting Bits" class="md-nav__link">
+      338. Counting Bits
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/34. Search for a Range /" title="34. Find First and Last Position of Element in Sorted Array" class="md-nav__link">
+      34. Find First and Last Position of Element in Sorted Array
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/342. Power of Four/" title="342. Power of Four" class="md-nav__link">
+      342. Power of Four
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/344. Reverse String/" title="344. Reverse String" class="md-nav__link">
+      344. Reverse String
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/345. Reverse Vowels of a String/" title="345. Reverse Vowels of a String" class="md-nav__link">
+      345. Reverse Vowels of a String
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/347. Top K Frequent Elements/" title="347. Top K Frequent Elements" class="md-nav__link">
+      347. Top K Frequent Elements
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/349. Intersection of Two Arrays/" title="349. Intersection of Two Arrays" class="md-nav__link">
+      349. Intersection of Two Arrays
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/35. Search Insert Position/" title="35. Search Insert Position" class="md-nav__link">
+      35. Search Insert Position
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/350. Intersection of Two Arrays II/" title="350. Intersection of Two Arrays II" class="md-nav__link">
+      350. Intersection of Two Arrays II
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/359. Logger Rate Limiter/" title="359. Logger Rate Limiter" class="md-nav__link">
+      359. Logger Rate Limiter
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/36. Valid Sudoku/" title="36. Valid Sudoku" class="md-nav__link">
+      36. Valid Sudoku
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/366. Find Leaves of Binary Tree/" title="366. Find Leaves of Binary Tree" class="md-nav__link">
+      366. Find Leaves of Binary Tree
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/367. Valid Perfect Square/" title="367. Valid Perfect Square" class="md-nav__link">
+      367. Valid Perfect Square
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/37. Sudoku Solver/" title="37. Sudoku Solver" class="md-nav__link">
+      37. Sudoku Solver
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/370. Range Addition/" title="370. Range Addition" class="md-nav__link">
+      370. Range Addition
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/372. Super Pow/" title="372. Super Pow" class="md-nav__link">
+      372. Super Pow
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/373. Find K Pairs with Smallest Sums/" title="373. Find K Pairs with Smallest Sums" class="md-nav__link">
+      373. Find K Pairs with Smallest Sums
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/378. Kth Smallest Element in a Sorted Matrix/" title="378. Kth Smallest Element in a Sorted Matrix" class="md-nav__link">
+      378. Kth Smallest Element in a Sorted Matrix
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/38. Count and Say/" title="38. Count and Say" class="md-nav__link">
+      38. Count and Say
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/382. Linked List Random Node/" title="382. Linked List Random Node" class="md-nav__link">
+      382. Linked List Random Node
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/384. Shuffle an Array/" title="384. Shuffle an Array" class="md-nav__link">
+      384. Shuffle an Array
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/39. Combination Sum/" title="39. Combination Sum" class="md-nav__link">
+      39. Combination Sum
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/399. Evaluate Division/" title="399. Evaluate Division" class="md-nav__link">
+      399. Evaluate Division
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/4. Median of Two Sorted Arrays/" title="4. Median of Two Sorted Arrays" class="md-nav__link">
+      4. Median of Two Sorted Arrays
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/40. Combination Sum II/" title="40. Combination Sum II" class="md-nav__link">
+      40. Combination Sum II
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/401. Binary Watch/" title="401. Binary Watch" class="md-nav__link">
+      401. Binary Watch
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/404. Sum of Left Leaves/" title="404. Sum of Left Leaves" class="md-nav__link">
+      404. Sum of Left Leaves
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/409. Longest Palindrome/" title="409. Longest Palindrome" class="md-nav__link">
+      409. Longest Palindrome
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/415. Add Strings/" title="415. Add Strings" class="md-nav__link">
+      415. Add Strings
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/42. Trapping Rain Water/" title="42. Trapping Rain Water" class="md-nav__link">
+      42. Trapping Rain Water
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/426. Convert Binary Search Tree to Sorted Doubly Linked List/" title="426. Convert Binary Search Tree to Sorted Doubly Linked List" class="md-nav__link">
+      426. Convert Binary Search Tree to Sorted Doubly Linked List
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/429. N-ary Tree Level Order Traversal/" title="429. N-ary Tree Level Order Traversal" class="md-nav__link">
+      429. N-ary Tree Level Order Traversal
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/43. Multiply Strings/" title="43. Multiply Strings" class="md-nav__link">
+      43. Multiply Strings
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/437. Path Sum III/" title="437. Path Sum III" class="md-nav__link">
+      437. Path Sum III
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/438. Find All Anagrams in a String/" title="438. Find All Anagrams in a String" class="md-nav__link">
+      438. Find All Anagrams in a String
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/46. Permutations /" title="46. Permutations" class="md-nav__link">
+      46. Permutations
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/463. Island Perimeter/" title="463. Island Perimeter" class="md-nav__link">
+      463. Island Perimeter
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/47. Permutations II /" title="47. Permutations II" class="md-nav__link">
+      47. Permutations II
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/49. Group Anagrams/" title="49. Group Anagrams" class="md-nav__link">
+      49. Group Anagrams
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/5. Longest Palindromic Substring/" title="5. Longest Palindromic Substring" class="md-nav__link">
+      5. Longest Palindromic Substring
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/50. Pow(x, n)/" title="50. Pow(x, n)" class="md-nav__link">
+      50. Pow(x, n)
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/500. Keyboard Row/" title="500. Keyboard Row" class="md-nav__link">
+      500. Keyboard Row
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/507. Perfect Number/" title="507. Perfect Number" class="md-nav__link">
+      507. Perfect Number
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/51. N-Queens/" title="51. N-Queens" class="md-nav__link">
+      51. N-Queens
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/52. N-Queens II/" title="52. N-Queens II" class="md-nav__link">
+      52. N-Queens II
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/53. Maximum Subarray/" title="53. Maximum Subarray" class="md-nav__link">
+      53. Maximum Subarray
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/538. Convert BST to Greater Tree/" title="538. Convert BST to Greater Tree" class="md-nav__link">
+      538. Convert BST to Greater Tree
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/559. Maximum Depth of N-ary Tree/" title="559. Maximum Depth of N-ary Tree" class="md-nav__link">
+      559. Maximum Depth of N-ary Tree
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/56. Merge Intervals/" title="56. Merge Intervals" class="md-nav__link">
+      56. Merge Intervals
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/57. Insert Interval/" title="57. Insert Interval" class="md-nav__link">
+      57. Insert Interval
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/58. Length of Last Word/" title="58. Length of Last Word" class="md-nav__link">
+      58. Length of Last Word
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/590. N-ary Tree Postorder Traversal/" title="590. N-ary Tree Postorder Traversal" class="md-nav__link">
+      590. N-ary Tree Postorder Traversal
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/599. Minimum Index Sum of Two Lists/" title="599. Minimum Index Sum of Two Lists" class="md-nav__link">
+      599. Minimum Index Sum of Two Lists
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/6. ZigZag Conversion/" title="6. ZigZag Conversion" class="md-nav__link">
+      6. ZigZag Conversion
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/60.Permutation Sequence/" title="60. Permutation Sequence" class="md-nav__link">
+      60. Permutation Sequence
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/606. Construct String from Binary Tree/" title="606. Construct String from Binary Tree" class="md-nav__link">
+      606. Construct String from Binary Tree
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/61. Rotate List/" title="61. Rotate List" class="md-nav__link">
+      61. Rotate List
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/62. Unique Paths/" title="62. Unique Paths" class="md-nav__link">
+      62. Unique Paths
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/63. Unique Paths II/" title="63. Unique Paths II" class="md-nav__link">
+      63. Unique Paths II
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/633. Sum of Square Numbers/" title="633. Sum of Square Numbers" class="md-nav__link">
+      633. Sum of Square Numbers
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/637. Average of Levels in Binary Tree/" title="637. Average of Levels in Binary Tree" class="md-nav__link">
+      637. Average of Levels in Binary Tree
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/64. Minimum Path Sum/" title="64. Minimum Path Sum" class="md-nav__link">
+      64. Minimum Path Sum
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/66. Plus One/" title="66. Plus One" class="md-nav__link">
+      66. Plus One
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/67. Add Binary/" title="67. Add Binary" class="md-nav__link">
+      67. Add Binary
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/671. Second Minimum Node In a Binary Tree/" title="671. Second Minimum Node In a Binary Tree" class="md-nav__link">
+      671. Second Minimum Node In a Binary Tree
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/684. Redundant Connection/" title="684. Redundant Connection" class="md-nav__link">
+      684. Redundant Connection
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/685. Redundant Connection II/" title="685. Redundant Connection II" class="md-nav__link">
+      685. Redundant Connection II
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/687. Longest Univalue Path/" title="687. Longest Univalue Path" class="md-nav__link">
+      687. Longest Univalue Path
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/69. Sqrt(x)/" title="69. Sqrt(x)" class="md-nav__link">
+      69. Sqrt(x)
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/7. Reverse Integer/" title="7. Reverse Integer" class="md-nav__link">
+      7. Reverse Integer
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/70. Climbing Stairs/" title="70. Climbing Stairs" class="md-nav__link">
+      70. Climbing Stairs
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/703. Kth Largest Element in a Stream/" title="703. Kth Largest Element in a Stream" class="md-nav__link">
+      703. Kth Largest Element in a Stream
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/71. Simplify Path/" title="71. Simplify Path" class="md-nav__link">
+      71. Simplify Path
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/716. Max Stack/" title="716. Max Stack" class="md-nav__link">
+      716. Max Stack
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/728. Self Dividing Numbers/" title="728. Self Dividing Numbers" class="md-nav__link">
+      728. Self Dividing Numbers
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/74. Search a 2D Matrix/" title="74. Search a 2D Matrix" class="md-nav__link">
+      74. Search a 2D Matrix
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/741. Cherry Pickup/" title="741. Cherry Pickup" class="md-nav__link">
+      741. Cherry Pickup
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/743. Network Delay Time/" title="743. Network Delay Time" class="md-nav__link">
+      743. Network Delay Time
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/746. Min Cost Climbing Stairs/" title="746. Min Cost Climbing Stairs" class="md-nav__link">
+      746. Min Cost Climbing Stairs
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/75. Sort Colors/" title="75. Sort Colors" class="md-nav__link">
+      75. Sort Colors
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/76. Minimum Window Substring/" title="76. Minimum Window Substring" class="md-nav__link">
+      76. Minimum Window Substring
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/760. Find Anagram Mappings/" title="760. Find Anagram Mappings" class="md-nav__link">
+      760. Find Anagram Mappings
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/77. Combinations/" title="77. Combinations" class="md-nav__link">
+      77. Combinations
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/78. Subsets. md/" title="78. Subsets" class="md-nav__link">
+      78. Subsets
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/783. Minimum Distance Between BST Nodes/" title="783. Minimum Distance Between BST Nodes" class="md-nav__link">
+      783. Minimum Distance Between BST Nodes
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/784. Letter Case Permutation/" title="784. Letter Case Permutation" class="md-nav__link">
+      784. Letter Case Permutation
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/785. Is Graph Bipartite?/" title="785. Is Graph Bipartite?" class="md-nav__link">
+      785. Is Graph Bipartite?
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/79. Word Search/" title="79. Word Search" class="md-nav__link">
+      79. Word Search
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/8. String to Integer (atoi)/" title="8. String to Integer (atoi)" class="md-nav__link">
+      8. String to Integer (atoi)
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/81. Search in Rotated Sorted Array II/" title="81. Search in Rotated Sorted Array II" class="md-nav__link">
+      81. Search in Rotated Sorted Array II
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/82. Remove Duplicates from Sorted List II/" title="82. Remove Duplicates from Sorted List II" class="md-nav__link">
+      82. Remove Duplicates from Sorted List II
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/83. Remove Duplicates from Sorted List/" title="83. Remove Duplicates from Sorted List" class="md-nav__link">
+      83. Remove Duplicates from Sorted List
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/84. Largest Rectangle in Histogram/" title="84. Largest Rectangle in Histogram" class="md-nav__link">
+      84. Largest Rectangle in Histogram
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/841. Keys and Rooms/" title="841. Keys and Rooms" class="md-nav__link">
+      841. Keys and Rooms
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/85. Maximal Rectangle/" title="85. Maximal Rectangle" class="md-nav__link">
+      85. Maximal Rectangle
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/86. Partition List/" title="86. Partition List" class="md-nav__link">
+      86. Partition List
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/867. Transpose Matrix/" title="867. Transpose Matrix" class="md-nav__link">
+      867. Transpose Matrix
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/873. Length of Longest Fibonacci Subsequence/" title="873. Length of Longest Fibonacci Subsequence" class="md-nav__link">
+      873. Length of Longest Fibonacci Subsequence
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/876. Middle of the Linked List/" title="876. Middle of the Linked List" class="md-nav__link">
+      876. Middle of the Linked List
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/88. Merge Sorted Array/" title="88. Merge Sorted Array" class="md-nav__link">
+      88. Merge Sorted Array
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/89. Gray Code /" title="89. Gray Code" class="md-nav__link">
+      89. Gray Code
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/9. Palindrome Number/" title="9. Palindrome Number" class="md-nav__link">
+      9. Palindrome Number
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/90. Subsets II/" title="90. Subsets II" class="md-nav__link">
+      90. Subsets II
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/91. Decode Ways/" title="91. Decode Ways" class="md-nav__link">
+      91. Decode Ways
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/92. Reverse Linked List II/" title="92. Reverse Linked List II" class="md-nav__link">
+      92. Reverse Linked List II
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/93. Restore IP Addresses/" title="93. Restore IP Addresses" class="md-nav__link">
+      93. Restore IP Addresses
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/93. Restore IP Adress/" title="93. Restore IP Adress" class="md-nav__link">
+      93. Restore IP Adress
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/94. Binary Tree Inorder Traversal/" title="94. Binary Tree Inorder Traversal" class="md-nav__link">
+      94. Binary Tree Inorder Traversal
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/941. Valid Mountain Array/" title="941. Valid Mountain Array" class="md-nav__link">
+      941. Valid Mountain Array
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/95. Unique Binary Search Trees II/" title="95. Unique Binary Search Trees II" class="md-nav__link">
+      95. Unique Binary Search Trees II
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/96. Unique Binary Search Trees/" title="96. Unique Binary Search Trees" class="md-nav__link">
+      96. Unique Binary Search Trees
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/98. Validate Binary Search Tree/" title="98. Validate Binary Search Tree" class="md-nav__link">
+      98. Validate Binary Search Tree
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/99. Recover Binary Search Tree/" title="99. Recover Binary Search Tree" class="md-nav__link">
+      99. Recover Binary Search Tree
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4-261" type="checkbox" id="nav-4-261">
+    
+    <label class="md-nav__link" for="nav-4-261">
+      LintCode
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
+      <label class="md-nav__title" for="nav-4-261">
+        LintCode
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/LintCode/464. Sort Integers II/" title="464. Sort Integers II" class="md-nav__link">
+      464. Sort Integers II
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Leetcode/LintCode/77. Longest Common Subsequence/" title="77. Longest Common Subsequence" class="md-nav__link">
+      77. Longest Common Subsequence
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5">
+    
+    <label class="md-nav__link" for="nav-5">
+      Miscellaneous
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-5">
+        Miscellaneous
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Miscellaneous/Clion/" title="Clion" class="md-nav__link">
+      Clion
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Miscellaneous/GCC/" title="GCC" class="md-nav__link">
+      GCC
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Miscellaneous/Git/" title="Git" class="md-nav__link">
+      Git
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Miscellaneous/LLDB/" title="LLDB使用" class="md-nav__link">
+      LLDB使用
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Miscellaneous/Maven/" title="Maven" class="md-nav__link">
+      Maven
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Miscellaneous/Python Configuration/" title="Python配置" class="md-nav__link">
+      Python配置
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Miscellaneous/Site Journal/" title="建站日志" class="md-nav__link">
+      建站日志
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Miscellaneous/VIM/" title="VIM技巧" class="md-nav__link">
+      VIM技巧
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Miscellaneous/VSCODE/" title="VSCode" class="md-nav__link">
+      VSCode
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-5-10" type="checkbox" id="nav-5-10">
+    
+    <label class="md-nav__link" for="nav-5-10">
+      TensorFlow
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
+      <label class="md-nav__title" for="nav-5-10">
+        TensorFlow
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Miscellaneous/TensorFlow/1 TF系统框架/" title="1 TF系统框架" class="md-nav__link">
+      1 TF系统框架
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Miscellaneous/TensorFlow/2 核心概念/" title="2 TF核心概念" class="md-nav__link">
+      2 TF核心概念
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Miscellaneous/TensorFlow/3 代码分析初步/" title="3 TF代码分析初步" class="md-nav__link">
+      3 TF代码分析初步
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Miscellaneous/TensorFlow/4 OpKernels简介 /" title="4 TF OpKernels简介" class="md-nav__link">
+      4 TF OpKernels简介
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Miscellaneous/TensorFlow/5 TF - Graph模块/" title="5 TF - Graph模块" class="md-nav__link">
+      5 TF - Graph模块
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Miscellaneous/TensorFlow/TF会话生命周期/" title="TF会话生命周期" class="md-nav__link">
+      TF会话生命周期
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-5-11" type="checkbox" id="nav-5-11">
+    
+    <label class="md-nav__link" for="nav-5-11">
+      awesome Install
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
+      <label class="md-nav__title" for="nav-5-11">
+        awesome Install
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Miscellaneous/awesome Install/Intel Parallel Studio XE/" title="Intel Parallel Studio XE" class="md-nav__link">
+      Intel Parallel Studio XE
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Miscellaneous/awesome Install/Mac环境下搭建Hadoop家族产品/" title="Mac环境下搭建Hadoop家族产品" class="md-nav__link">
+      Mac环境下搭建Hadoop家族产品
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Miscellaneous/awesome Install/Youtube/" title="Youtube" class="md-nav__link">
+      Youtube
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Miscellaneous/awesome Install/git/" title="git" class="md-nav__link">
+      git
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Miscellaneous/awesome Install/nasm/" title="Nasm" class="md-nav__link">
+      Nasm
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Miscellaneous/awesome Install/octave/" title="Octave" class="md-nav__link">
+      Octave
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Miscellaneous/awesome Install/shadowsocks/" title="搭建shadowsocks" class="md-nav__link">
+      搭建shadowsocks
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Miscellaneous/awesome Install/vagrant搭建ubuntu/" title="vagrant搭建ubuntu" class="md-nav__link">
+      vagrant搭建ubuntu
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6" checked>
+    
+    <label class="md-nav__link" for="nav-6">
+      OS
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-6">
+        OS
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../POSIX/" title="POSIX" class="md-nav__link">
+      POSIX
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-6-2" type="checkbox" id="nav-6-2" checked>
+    
+    <label class="md-nav__link" for="nav-6-2">
+      CSAPP Lab
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
+      <label class="md-nav__title" for="nav-6-2">
+        CSAPP Lab
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Attack Lab/" title="Lab3 Attack Lab" class="md-nav__link">
+      Lab3 Attack Lab
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Lab4 Cache Lab
+      </label>
+    
+    <a href="./" title="Lab4 Cache Lab" class="md-nav__link md-nav__link--active">
+      Lab4 Cache Lab
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#part-a" title="Part A" class="md-nav__link">
+    Part A
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trance-file" title="Trance File" class="md-nav__link">
+    Trance File
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_1" title="命令行参数" class="md-nav__link">
+    命令行参数
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_2" title="读取文件" class="md-nav__link">
+    读取文件
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" title="模拟缓存" class="md-nav__link">
+    模拟缓存
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Data Lab/" title="Lab1 Data Lab" class="md-nav__link">
+      Lab1 Data Lab
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Malloc lab/" title="Lab6 Malloc Lab" class="md-nav__link">
+      Lab6 Malloc Lab
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Shell Lab/" title="Lab5 Shell Lab" class="md-nav__link">
+      Lab5 Shell Lab
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-6-3" type="checkbox" id="nav-6-3">
+    
+    <label class="md-nav__link" for="nav-6-3">
+      CSE521
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
+      <label class="md-nav__title" for="nav-6-3">
+        CSE521
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../CSE521/10 Introduction to scheduling/" title="Introduction to scheduling" class="md-nav__link">
+      Introduction to scheduling
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../CSE521/3. fork() and pipe()/" title="fork() and pipe()" class="md-nav__link">
+      fork() and pipe()
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../CSE521/4. Introduction to Synchronation/" title="Introduction to Synchronization" class="md-nav__link">
+      Introduction to Synchronization
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../CSE521/5. Synchronation Primitive/" title="Synchronization Primitives" class="md-nav__link">
+      Synchronization Primitives
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../CSE521/6 Deaklock and exec/" title="Deadlock and exec" class="md-nav__link">
+      Deadlock and exec
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../CSE521/7 Interrupt and Exception Handling/" title="Interrupt and Exception Handling" class="md-nav__link">
+      Interrupt and Exception Handling
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../CSE521/8 contect switching/" title="context switching" class="md-nav__link">
+      context switching
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../CSE521/9 Threads and Thread Implementations/" title="Threads and Thread Implementations" class="md-nav__link">
+      Threads and Thread Implementations
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-7" type="checkbox" id="nav-7">
+    
+    <label class="md-nav__link" for="nav-7">
+      Tags
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-7">
+        Tags
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../tags/Array/" title="Array" class="md-nav__link">
+      Array
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../tags/Backtracking/" title="Backtracking" class="md-nav__link">
+      Backtracking
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../tags/Binary Search Tree/" title="Binary Search Tree" class="md-nav__link">
+      Binary Search Tree
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../tags/Binary Search/" title="Binary Search" class="md-nav__link">
+      Binary Search
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../tags/Bit Manipulation/" title="Bit Manipulation" class="md-nav__link">
+      Bit Manipulation
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../tags/Bit-Manipulation/" title="Bit Manipulation" class="md-nav__link">
+      Bit Manipulation
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../tags/Breadth-first Search/" title="Breadth first Search" class="md-nav__link">
+      Breadth first Search
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../tags/Breath-first Search/" title="Breath first Search" class="md-nav__link">
+      Breath first Search
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../tags/C++/" title="C++" class="md-nav__link">
+      C++
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../tags/C/" title="C" class="md-nav__link">
+      C
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../tags/CSAPP/" title="CSAPP" class="md-nav__link">
+      CSAPP
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../tags/Classic/" title="Classic" class="md-nav__link">
+      Classic
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../tags/Copy/" title="Copy" class="md-nav__link">
+      Copy
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../tags/Cpp/" title="Cpp" class="md-nav__link">
+      Cpp
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../tags/Depth-first Search/" title="Depth first Search" class="md-nav__link">
+      Depth first Search
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../tags/Design/" title="Design" class="md-nav__link">
+      Design
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../tags/Divide and Conquer/" title="Divide and Conquer" class="md-nav__link">
+      Divide and Conquer
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../tags/Dynamic Programming/" title="Dynamic Programming" class="md-nav__link">
+      Dynamic Programming
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../tags/Editor/" title="Editor" class="md-nav__link">
+      Editor
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../tags/Git/" title="Git" class="md-nav__link">
+      Git
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../tags/Graph/" title="Graph" class="md-nav__link">
+      Graph
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../tags/Greedy/" title="Greedy" class="md-nav__link">
+      Greedy
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../tags/Hadoop/" title="Hadoop" class="md-nav__link">
+      Hadoop
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../tags/Hash Table/" title="Hash Table" class="md-nav__link">
+      Hash Table
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../tags/HashMap/" title="HashMap" class="md-nav__link">
+      HashMap
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../tags/HashTable/" title="HashTable" class="md-nav__link">
+      HashTable
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../tags/Heap/" title="Heap" class="md-nav__link">
+      Heap
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../tags/IFORT/" title="IFORT" class="md-nav__link">
+      IFORT
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../tags/Java/" title="Java" class="md-nav__link">
+      Java
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../tags/LLDB/" title="LLDB" class="md-nav__link">
+      LLDB
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../tags/Leetcode/" title="Leetcode" class="md-nav__link">
+      Leetcode
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../tags/Linked List/" title="Linked List" class="md-nav__link">
+      Linked List
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../tags/LinkedList/" title="LinkedList" class="md-nav__link">
+      LinkedList
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../tags/LintCode/" title="LintCode" class="md-nav__link">
+      LintCode
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../tags/Math/" title="Math" class="md-nav__link">
+      Math
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../tags/Memory/" title="Memory" class="md-nav__link">
+      Memory
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../tags/Merge Sort/" title="Merge Sort" class="md-nav__link">
+      Merge Sort
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../tags/OS/" title="OS" class="md-nav__link">
+      OS
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../tags/Python/" title="Python" class="md-nav__link">
+      Python
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../tags/Quick Sort/" title="Quick Sort" class="md-nav__link">
+      Quick Sort
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../tags/Recursion/" title="Recursion" class="md-nav__link">
+      Recursion
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../tags/Reservoir Sampling/" title="Reservoir Sampling" class="md-nav__link">
+      Reservoir Sampling
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../tags/STL/" title="STL" class="md-nav__link">
+      STL
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../tags/Sort/" title="Sort" class="md-nav__link">
+      Sort
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../tags/Stack/" title="Stack" class="md-nav__link">
+      Stack
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../tags/String/" title="String" class="md-nav__link">
+      String
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../tags/Topological Sort/" title="Topological Sort" class="md-nav__link">
+      Topological Sort
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../tags/Tree/" title="Tree" class="md-nav__link">
+      Tree
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../tags/Two Pointers/" title="Two Pointers" class="md-nav__link">
+      Two Pointers
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../tags/Two Points/" title="Two Points" class="md-nav__link">
+      Two Points
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../tags/Union Find/" title="Union Find" class="md-nav__link">
+      Union Find
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../tags/VIM/" title="VIM" class="md-nav__link">
+      VIM
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../tags/Youtube/" title="Youtube" class="md-nav__link">
+      Youtube
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../tags/gcc/" title="Gcc" class="md-nav__link">
+      Gcc
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../tags/greedy algorithm/" title="Greedy algorithm" class="md-nav__link">
+      Greedy algorithm
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../tags/mac/" title="Mac" class="md-nav__link">
+      Mac
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../tags/ss/" title="Ss" class="md-nav__link">
+      Ss
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../tags/static/" title="Static" class="md-nav__link">
+      Static
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../tags/tensorflow/" title="Tensorflow" class="md-nav__link">
+      Tensorflow
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../tags/ubuntu/" title="Ubuntu" class="md-nav__link">
+      Ubuntu
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../tags/vagrant/" title="Vagrant" class="md-nav__link">
+      Vagrant
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../tags/website/" title="Website" class="md-nav__link">
+      Website
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#part-a" title="Part A" class="md-nav__link">
+    Part A
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trance-file" title="Trance File" class="md-nav__link">
+    Trance File
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_1" title="命令行参数" class="md-nav__link">
+    命令行参数
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_2" title="读取文件" class="md-nav__link">
+    读取文件
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" title="模拟缓存" class="md-nav__link">
+    模拟缓存
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                  <h1>Lab4 Cache Lab</h1>
+                
+
+
+	 <a href="tags/CSAPP" style="color:white" class="tag" > CSAPP </a>
+
+
+                <p>CMU 15-213 Lab4 Cache Lab</p>
+<ul>
+<li><a href="http://csapp.cs.cmu.edu/3e/labs.html">Lab 下载地址</a></li>
+<li><a href="https://scs.hosted.panopto.com/Panopto/Pages/Sessions/List.aspx#folderID=%22b96d90ae-9871-4fae-91e2-b1627b43e25e%22">Recitation讲解</a></li>
+</ul>
+<p>Cache Lab可以帮助理解缓存对C程序的影响。Lab包括两部分，第一部分用C语言写一个缓存模拟器，第二部分写一个小型矩阵的转置函数，使缓存不命中降到最低。</p>
+<h2 id="part-a">Part A<a class="headerlink" href="#part-a" title="Permanent link">&para;</a></h2>
+<p>Part A的任务是写一个C语言缓存模拟器，输入Valgrind的<code>trace file</code>，输出缓存命中次数hit_count，缓存不命中次数miss_count,驱逐次数eviction_count.</p>
+<h3 id="trance-file">Trance File<a class="headerlink" href="#trance-file" title="Permanent link">&para;</a></h3>
+<p>要写这样一个缓存模拟器，我们肯定首先要了解输入的内容。Valgrind的<code>--trace-mem=yes</code>选项可以追踪内存：</p>
+<div class="codehilite"><pre><span></span>$ valgrind --log-fd<span class="o">=</span><span class="m">1</span> --tool<span class="o">=</span>lackey -v --trace-mem<span class="o">=</span>yes ls -l
+
+ L <span class="m">04224488</span>,4
+I  0400a0ab,8
+ S ffefffdf8,8
+I  0400a0b3,5
+ M ffefffd48,8
+</pre></div>
+
+<p>上面这个命令用valgrind打印出了在执行<code>ls -l</code>过程中内存的使用情况。输出的格式是</p>
+<p><div class="codehilite"><pre><span></span>[空格] 操作符(I/L/S/M) 地址, 字节大小
+[space] operator(I/L/S/M) address, size
+</pre></div>
+操作符有四种I/L/S/M，分别代表指令加载(I)/数据加载(L)/数据存储(S)/M(数据修改)。其中指令加载(I)前面没有空格。</p>
+<h3 id="_1">命令行参数<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h3>
+<p>接下来还需要了解命令行参数，缓存模拟器可以根据命令行参数设置成不同的规格。例如：</p>
+<div class="codehilite"><pre><span></span>./csim-ref -s <span class="m">4</span> -E <span class="m">1</span> -b <span class="m">4</span>
+</pre></div>
+
+<p>其中<code>-s, -E, -b</code>分别表示：</p>
+<ul>
+<li><code>-s &lt;s&gt;</code> 有<span><span class="MathJax_Preview">S=2^s</span><script type="math/tex">S=2^s</script></span>个组，</li>
+<li><code>-E &lt;E&gt;</code> E个相联度，即每组E行</li>
+<li><code>-b &lt;b&gt;</code> 每一行是由一个<span><span class="MathJax_Preview">B=2^b</span><script type="math/tex">B=2^b</script></span>字节的数据块组成。</li>
+</ul>
+<p>所以<code>-s 4 -E 1 -b 4</code>表示，高速缓存有16个组，每组1行，每一行是由一个16个字节的数据块组成的。</p>
+<p>解析命令行参数可以使用<code>getopt</code>函数，在使用时包含<code>unistd.h</code>头文件。可使用<code>man 3 getopt</code>查询函数用法和示例。</p>
+<div class="codehilite"><pre><span></span>getopt -- get option character from command line argument list
+getopt(int argc, char * const argv[], const char *optstring);
+</pre></div>
+
+<p>字符串<code>optstring</code>可以下列元素，</p>
+<ul>
+<li>单个字符，表示选项，</li>
+<li>单个字符后接一个冒号：表示该选项后必须跟一个参数。参数紧跟在选项后或者以空格隔开。该参数的指针赋给optarg。</li>
+<li>单个字符后跟两个冒号, 这时选项的参数是可选的(可有可无)。有参数时，参数与选项之间不能有空格</li>
+</ul>
+<p>所以输入时的处理可以如下：</p>
+<div class="codehilite"><pre><span></span>while((opt=getopt(argc, argv, &quot;s:E:b:t:v::&quot;)) != -1)
+{
+    printf(&quot;-%c %s &quot;, opt, optarg);
+    switch (opt)
+    {
+        case &#39;s&#39;:
+            s = atoi(optarg);
+            break;
+        case &#39;E&#39;:
+            E = atoi(optarg);
+            break;
+        case &#39;b&#39;:
+            b = atoi(optarg);
+            break;
+        case &#39;t&#39;:
+            filename = optarg;
+            break;
+        default:
+            printf(&quot;Wrong argumet \n&quot;);
+            break;
+    }
+}
+</pre></div>
+
+<h3 id="_2">读取文件<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h3>
+<p>用<code>getopt()</code>函数处理完命令行参数，也就知道了需要模拟的高速缓存的具体细节。下一步就是读取Valgrind文本文件，进行处理。 使用<code>fscanf()</code>函数可以很方便的从文件中读取内容。同样的用<code>man 3 fscanf</code>可以查询<code>fscanf()</code>的具体用法：</p>
+<div class="codehilite"><pre><span></span><span class="kt">int</span> <span class="nf">fscanf</span><span class="p">(</span><span class="kt">FILE</span> <span class="o">*</span><span class="n">stream</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">format</span><span class="p">,</span> <span class="p">...);</span>
+</pre></div>
+
+<p><code>fscanf()</code>依次输入<code>trace file</code>中的<code>[space]operator/address/size</code>。由于地址的长度大小不一定，所以用<code>malloc()</code>动态分配。<code>fscanf()</code>中的<code>%[^,]</code>表示读入任意多的字符，直到遇到逗号(<code>,</code>)为止。</p>
+<div class="codehilite"><pre><span></span><span class="k">while</span><span class="p">(</span><span class="n">fscanf</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="s">&quot; %c %[^,],%c&quot;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">operator</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">size</span><span class="p">)</span><span class="o">==</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+
+<p>注意在调用<code>fscanf()</code>函数时，要确认函数返回值是否等于要赋值的参数数量<code>fscanf()==3</code>。</p>
+<h3 id="_3">模拟缓存<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h3>
+<p>前面的几步都是为了这一步做好准备，现在知道了缓存的细节，读取了<code>trace file</code>, 下一步就是要构造一个缓存了。可以用一个多维数组构造缓存，其中一维表示组，一维表示行，另一维表示块。其实它也就是一个二维的缓存行，每一行有<span><span class="MathJax_Preview">B</span><script type="math/tex">B</script></span>字节，有<span><span class="MathJax_Preview">S</span><script type="math/tex">S</script></span>组，每组<span><span class="MathJax_Preview">E</span><script type="math/tex">E</script></span>行，一共有<span><span class="MathJax_Preview">S\times E</span><script type="math/tex">S\times E</script></span>行。那么，我们先构造一个缓存行，然后再构造一个<span><span class="MathJax_Preview">S\times E</span><script type="math/tex">S\times E</script></span>行的数组。</p>
+<div class="codehilite"><pre><span></span>struct cacheline {
+     int valid_bit; // if 1, valid
+     unsigned tag; // tag
+
+}
+struct cache_line cache[S][E]
+</pre></div>
+
+<p>接下来的一个难点是如何部署LRU(Least Recently Used replacement policy)策略。一个好的方法是使用队列, 在节点中存放地址。</p>
+<div class="codehilite"><pre><span></span><span class="cp">#define QUEUE_TYPE cacheline</span>
+
+<span class="cm">/* define node of queue*/</span>
+<span class="k">typedef</span> <span class="k">struct</span> <span class="n">queue_node</span> <span class="p">{</span>
+    <span class="n">QUEUE_TYPE</span><span class="o">*</span> <span class="n">value</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">queue_node</span><span class="o">*</span> <span class="n">next</span><span class="p">;</span>
+<span class="p">}</span> <span class="n">node</span><span class="p">;</span>
+
+
+<span class="cm">/* define a queue */</span>
+<span class="k">typedef</span> <span class="k">struct</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">size</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">full_size</span><span class="p">;</span>
+    <span class="n">node</span> <span class="o">*</span><span class="n">head</span><span class="p">;</span>
+    <span class="n">node</span> <span class="o">*</span><span class="n">tail</span><span class="p">;</span>
+<span class="p">}</span> <span class="n">queue</span><span class="p">;</span>
+
+<span class="cm">/* create a queue */</span>
+<span class="n">queue</span><span class="o">*</span> <span class="nf">create_queue</span><span class="p">(</span><span class="n">queue</span><span class="o">*</span> <span class="n">q</span><span class="p">,</span> <span class="kt">int</span> <span class="n">full_size</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">queue</span><span class="p">));</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">q</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Memory error&quot;</span><span class="p">);</span>
+        <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="n">q</span><span class="o">-&gt;</span><span class="n">size</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">q</span><span class="o">-&gt;</span><span class="n">full_size</span> <span class="o">=</span> <span class="n">full_size</span><span class="p">;</span>
+    <span class="k">return</span> <span class="n">q</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="cm">/* pop_queue */</span>
+<span class="n">QUEUE_TYPE</span><span class="o">*</span> <span class="nf">pop</span><span class="p">(</span><span class="n">queue</span> <span class="o">*</span><span class="n">q</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">node</span> <span class="o">*</span><span class="n">old_head</span><span class="p">;</span>
+    <span class="n">QUEUE_TYPE</span><span class="o">*</span> <span class="n">old_value</span><span class="p">;</span> 
+    <span class="n">old_head</span> <span class="o">=</span> <span class="n">q</span><span class="o">-&gt;</span><span class="n">head</span><span class="p">;</span>
+    <span class="n">q</span><span class="o">-&gt;</span><span class="n">head</span> <span class="o">=</span> <span class="n">q</span><span class="o">-&gt;</span><span class="n">head</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+    <span class="n">q</span><span class="o">-&gt;</span><span class="n">size</span> <span class="o">-=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="n">old_value</span> <span class="o">=</span> <span class="n">old_head</span><span class="o">-&gt;</span><span class="n">value</span><span class="p">;</span>
+    <span class="n">free</span><span class="p">(</span><span class="n">old_head</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">old_value</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+<span class="cm">/* queue is empty */</span>
+<span class="kt">int</span> <span class="nf">is_empty</span><span class="p">(</span><span class="n">queue</span> <span class="o">*</span><span class="n">q</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">q</span><span class="o">-&gt;</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">);</span> 
+<span class="p">}</span>
+
+<span class="cm">/* queue is full */</span>
+<span class="kt">int</span> <span class="nf">is_full</span><span class="p">(</span><span class="n">queue</span> <span class="o">*</span><span class="n">q</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">q</span><span class="o">-&gt;</span><span class="n">size</span> <span class="o">==</span> <span class="n">q</span><span class="o">-&gt;</span><span class="n">full_size</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="cm">/* destory_queue */</span>
+<span class="kt">void</span> <span class="nf">destroy</span><span class="p">(</span><span class="n">queue</span> <span class="o">*</span><span class="n">q</span><span class="p">)</span>
+<span class="p">{</span>   
+    <span class="k">while</span> <span class="p">(</span><span class="o">!</span><span class="n">is_empty</span><span class="p">(</span><span class="n">q</span><span class="p">))</span>
+        <span class="n">pop</span><span class="p">(</span><span class="n">q</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="cm">/* push_queuq */</span>
+<span class="n">QUEUE_TYPE</span><span class="o">*</span> <span class="nf">push</span><span class="p">(</span><span class="n">queue</span> <span class="o">*</span><span class="n">q</span><span class="p">,</span> <span class="n">QUEUE_TYPE</span><span class="o">*</span> <span class="n">value</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="cm">/* create a new node */</span>
+    <span class="n">node</span> <span class="o">*</span><span class="n">new_node</span><span class="p">;</span>
+    <span class="n">new_node</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">node</span><span class="p">));</span>
+    <span class="n">new_node</span><span class="o">-&gt;</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">is_empty</span><span class="p">(</span><span class="n">q</span><span class="p">))</span>
+    <span class="p">{</span>
+        <span class="n">q</span><span class="o">-&gt;</span><span class="n">head</span> <span class="o">=</span> <span class="n">new_node</span><span class="p">;</span>
+        <span class="n">q</span><span class="o">-&gt;</span><span class="n">tail</span> <span class="o">=</span> <span class="n">new_node</span><span class="p">;</span>
+        <span class="n">q</span><span class="o">-&gt;</span><span class="n">size</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+        <span class="k">return</span> <span class="n">value</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span>
+    <span class="p">{</span>
+        <span class="n">q</span><span class="o">-&gt;</span><span class="n">tail</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="n">new_node</span><span class="p">;</span>
+        <span class="n">q</span><span class="o">-&gt;</span><span class="n">tail</span> <span class="o">=</span> <span class="n">new_node</span><span class="p">;</span>
+        <span class="n">q</span><span class="o">-&gt;</span><span class="n">size</span> <span class="o">=</span> <span class="n">q</span><span class="o">-&gt;</span><span class="n">size</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+        <span class="k">if</span> <span class="p">((</span><span class="n">q</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">)</span> <span class="o">&gt;</span> <span class="p">(</span><span class="n">q</span><span class="o">-&gt;</span><span class="n">full_size</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">pop</span><span class="p">(</span><span class="n">q</span><span class="p">);</span>
+    <span class="p">}</span> 
+<span class="p">}</span>
+</pre></div>
+
+<p>下面就是细节的处理了，包括内存分配，从地址中提取标记，组索引，块偏移，把输入的16进制字符串转化为数字。这些都非常简单，最终主程序如下：</p>
+<div class="codehilite"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;unistd.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;string.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;queue.h&quot;</span><span class="cp"></span>
+
+<span class="cm">/* 将十六进制字符串转换为十进制整数 */</span>
+<span class="kt">int</span> <span class="nf">hexstr2int</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span> <span class="n">HexStr</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">int</span> <span class="n">iResult</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">iCycle</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+
+    <span class="c1">//判断字符串是否合法</span>
+    <span class="k">if</span><span class="p">(</span> <span class="o">!</span><span class="n">strlen</span><span class="p">(</span> <span class="n">HexStr</span> <span class="p">)</span> <span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="c1">//指针变量p指向字符串的末尾</span>
+    <span class="kt">char</span> <span class="o">*</span> <span class="n">p</span> <span class="o">=</span> <span class="n">HexStr</span> <span class="o">+</span> <span class="n">strlen</span><span class="p">(</span> <span class="n">HexStr</span> <span class="p">);</span>
+
+    <span class="k">while</span><span class="p">(</span> <span class="p">(</span><span class="o">--</span><span class="n">p</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">!=</span> <span class="n">HexStr</span> <span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span> <span class="o">*</span><span class="n">p</span> <span class="o">&gt;=</span> <span class="sc">&#39;0&#39;</span> <span class="o">&amp;&amp;</span> <span class="o">*</span><span class="n">p</span> <span class="o">&lt;=</span> <span class="sc">&#39;9&#39;</span> <span class="p">)</span>
+            <span class="n">iResult</span> <span class="o">+=</span> <span class="p">(</span> <span class="o">*</span><span class="n">p</span> <span class="o">-</span> <span class="sc">&#39;0&#39;</span> <span class="p">)</span><span class="o">*</span><span class="n">iCycle</span><span class="p">;</span>
+        <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="o">*</span><span class="n">p</span> <span class="o">&gt;=</span> <span class="sc">&#39;A&#39;</span> <span class="o">&amp;&amp;</span> <span class="o">*</span><span class="n">p</span> <span class="o">&lt;=</span> <span class="sc">&#39;F&#39;</span> <span class="p">)</span>
+            <span class="n">iResult</span> <span class="o">+=</span> <span class="p">(</span> <span class="o">*</span><span class="n">p</span> <span class="o">-</span> <span class="sc">&#39;A&#39;</span> <span class="o">+</span> <span class="mi">10</span> <span class="p">)</span><span class="o">*</span><span class="n">iCycle</span><span class="p">;</span>
+        <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="o">*</span><span class="n">p</span> <span class="o">&gt;=</span> <span class="sc">&#39;a&#39;</span> <span class="o">&amp;&amp;</span> <span class="o">*</span><span class="n">p</span> <span class="o">&lt;=</span> <span class="sc">&#39;f&#39;</span> <span class="p">)</span>
+            <span class="n">iResult</span> <span class="o">+=</span> <span class="p">(</span> <span class="o">*</span><span class="n">p</span> <span class="o">-</span> <span class="sc">&#39;a&#39;</span> <span class="o">+</span> <span class="mi">10</span> <span class="p">)</span><span class="o">*</span><span class="n">iCycle</span><span class="p">;</span>
+        <span class="n">iCycle</span> <span class="o">&lt;&lt;=</span> <span class="mi">4</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">iResult</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span>
+<span class="p">{</span>
+    <span class="kt">int</span> <span class="n">opt</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">s</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">b</span><span class="p">;</span> <span class="cm">/* cache parameter */</span>
+    <span class="kt">int</span> <span class="n">S</span><span class="p">,</span> <span class="n">B</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">miss</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">hit</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">eviction</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="cm">/* count on miss/hit/eviction */</span>
+    <span class="kt">int</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">flag</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="cm">/* dummy variable */</span>
+    <span class="kt">char</span> <span class="o">*</span><span class="n">filename</span><span class="p">;</span>
+    <span class="n">queue</span> <span class="o">*</span><span class="n">q</span><span class="p">,</span> <span class="o">*</span><span class="n">qi</span><span class="p">;</span> 
+
+    <span class="n">cacheline</span> <span class="o">**</span><span class="n">cache</span><span class="p">;</span> <span class="c1">// every cache has S set, every set has E lines</span>
+    <span class="n">cacheline</span> <span class="n">cacheij</span><span class="p">,</span> <span class="o">*</span><span class="n">cacheij_address</span><span class="p">;</span> <span class="c1">//dummy variable</span>
+
+    <span class="kt">FILE</span> <span class="o">*</span><span class="n">fp</span><span class="p">;</span>
+    <span class="kt">char</span> <span class="n">operator</span><span class="p">,</span> <span class="o">*</span><span class="n">address</span><span class="p">,</span> <span class="n">size</span><span class="p">;</span>
+    <span class="kt">unsigned</span> <span class="n">d_address</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">set</span><span class="p">,</span> <span class="n">bit</span><span class="p">;</span> <span class="c1">// 地址，标记(t)，组索引(s)，块偏移(b) </span>
+
+    <span class="k">while</span><span class="p">((</span><span class="n">opt</span><span class="o">=</span><span class="n">getopt</span><span class="p">(</span><span class="n">argc</span><span class="p">,</span> <span class="n">argv</span><span class="p">,</span> <span class="s">&quot;s:E:b:t:v::&quot;</span><span class="p">))</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;-%c %s &quot;</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">optarg</span><span class="p">);</span>
+        <span class="k">switch</span> <span class="p">(</span><span class="n">opt</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="k">case</span> <span class="sc">&#39;s&#39;</span><span class="o">:</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">atoi</span><span class="p">(</span><span class="n">optarg</span><span class="p">);</span>
+            <span class="k">break</span><span class="p">;</span>
+            <span class="k">case</span> <span class="sc">&#39;E&#39;</span><span class="o">:</span>
+            <span class="n">E</span> <span class="o">=</span> <span class="n">atoi</span><span class="p">(</span><span class="n">optarg</span><span class="p">);</span>
+            <span class="k">break</span><span class="p">;</span>
+            <span class="k">case</span> <span class="sc">&#39;b&#39;</span><span class="o">:</span>
+            <span class="n">b</span> <span class="o">=</span> <span class="n">atoi</span><span class="p">(</span><span class="n">optarg</span><span class="p">);</span>
+            <span class="k">break</span><span class="p">;</span>
+            <span class="k">case</span> <span class="sc">&#39;t&#39;</span><span class="o">:</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="n">optarg</span><span class="p">;</span>
+            <span class="k">break</span><span class="p">;</span>
+            <span class="k">default</span><span class="o">:</span>
+            <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Wrong argumet </span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+
+    <span class="n">S</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">&lt;&lt;</span> <span class="n">s</span><span class="p">;</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">&lt;&lt;</span> <span class="n">b</span><span class="p">;</span>
+
+    <span class="cm">/* allocate memory */</span>
+    <span class="n">cache</span> <span class="o">=</span> <span class="p">(</span><span class="n">cacheline</span> <span class="o">**</span><span class="p">)</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">cacheline</span><span class="o">*</span><span class="p">)</span> <span class="o">*</span><span class="n">S</span><span class="p">);</span>
+    <span class="n">address</span> <span class="o">=</span> <span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">char</span><span class="p">)</span> <span class="o">*</span> <span class="mi">16</span><span class="p">);</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="p">(</span><span class="n">queue</span> <span class="o">*</span><span class="p">)</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">queue</span><span class="p">)</span> <span class="o">*</span> <span class="n">S</span><span class="p">);</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">qi</span><span class="o">=</span><span class="n">q</span><span class="p">,</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">S</span><span class="p">;</span> <span class="n">qi</span><span class="o">++</span><span class="p">,</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">cache</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">cacheline</span> <span class="o">*</span><span class="p">)</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">cacheline</span><span class="p">)</span> <span class="o">*</span><span class="n">E</span><span class="p">);</span> <span class="cm">/* 每一个缓存组都有E个缓存行 */</span>
+        <span class="n">qi</span><span class="o">-&gt;</span><span class="n">full_size</span> <span class="o">=</span> <span class="n">E</span><span class="p">;</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">j</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">j</span><span class="o">&lt;</span> <span class="n">E</span><span class="p">;</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="cm">/* 设定缓存行 */</span>
+            <span class="n">cacheij</span> <span class="o">=</span> <span class="n">cache</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">];</span>
+            <span class="n">cacheij</span><span class="p">.</span><span class="n">valid_bit</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+            <span class="n">cacheij</span><span class="p">.</span><span class="n">tag</span> <span class="o">=</span> <span class="n">i</span><span class="o">*</span><span class="n">E</span><span class="o">+</span><span class="n">j</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="cm">/* open file */</span>
+    <span class="n">fp</span> <span class="o">=</span> <span class="n">fopen</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&quot;r&quot;</span><span class="p">);</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">fp</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Open filefailure!&quot;</span><span class="p">);</span>
+        <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">else</span>
+    <span class="p">{</span>
+        <span class="cm">/* read trace data */</span>
+        <span class="k">while</span><span class="p">(</span><span class="n">fscanf</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="s">&quot; %c %[^,],%c&quot;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">operator</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">size</span><span class="p">)</span><span class="o">==</span><span class="mi">3</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%c %s,%c &quot;</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span> <span class="n">size</span><span class="p">);</span>
+
+            <span class="cm">/* process address */</span>
+            <span class="n">d_address</span> <span class="o">=</span> <span class="n">hexstr2int</span><span class="p">(</span><span class="n">address</span><span class="p">);</span>
+            <span class="n">tag</span> <span class="o">=</span> <span class="n">d_address</span> <span class="o">&gt;&gt;</span> <span class="p">(</span><span class="n">b</span><span class="o">+</span><span class="n">s</span><span class="p">);</span> <span class="cm">/* 标记t */</span>
+            <span class="n">set</span> <span class="o">=</span> <span class="p">(</span><span class="n">d_address</span> <span class="o">&amp;</span> <span class="p">((</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="p">(</span><span class="n">b</span><span class="o">+</span><span class="n">s</span><span class="p">))</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span> <span class="o">&gt;&gt;</span> <span class="n">b</span><span class="p">;</span> <span class="cm">/* 组索引s */</span>
+            <span class="n">bit</span> <span class="o">=</span> <span class="p">(</span><span class="n">d_address</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">((</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="n">b</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">);</span> <span class="cm">/* 块偏移b, 其实模拟时没用，但还是写上 */</span>
+            <span class="n">printf</span><span class="p">(</span><span class="s">&quot;     address: %x, tag:%d, set:%d, bit:%d     &quot;</span><span class="p">,</span> <span class="n">d_address</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">set</span><span class="p">,</span> <span class="n">bit</span><span class="p">);</span>
+
+            <span class="cm">/* 找到缓存行，根据操作符（I，L，S，M)，进行操作 */</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">operator</span> <span class="o">==</span> <span class="sc">&#39;L&#39;</span> <span class="o">||</span> <span class="n">operator</span> <span class="o">==</span> <span class="sc">&#39;S&#39;</span> <span class="o">||</span> <span class="n">operator</span> <span class="o">==</span> <span class="sc">&#39;M&#39;</span><span class="p">)</span>
+            <span class="p">{</span>
+                    <span class="cm">/* 首先根据标记，找到行 */</span>
+                    <span class="n">flag</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="cm">/* if flag=0, we didn&#39;t find it */</span>
+                <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">E</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+                <span class="p">{</span>
+                    <span class="n">cacheij_address</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">cache</span><span class="p">[</span><span class="n">set</span><span class="p">][</span><span class="n">i</span><span class="p">];</span>
+                    <span class="k">if</span> <span class="p">((</span><span class="n">cacheij_address</span><span class="o">-&gt;</span><span class="n">tag</span> <span class="o">==</span> <span class="n">tag</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">cacheij_address</span><span class="o">-&gt;</span><span class="n">valid_bit</span><span class="p">))</span>
+                        <span class="cm">/* OK, find it */</span>
+                    <span class="p">{</span>
+                        <span class="n">flag</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+                        <span class="n">hit</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+                        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;hit &quot;</span><span class="p">);</span>
+                        <span class="k">break</span><span class="p">;</span>
+                    <span class="p">}</span>
+                <span class="p">}</span>
+                <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">flag</span><span class="p">)</span>
+                <span class="p">{</span>
+                    <span class="cm">/* we can&#39;t find it! */</span>
+                    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;miss &quot;</span><span class="p">);</span>
+                    <span class="n">miss</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+                        <span class="cm">/* set is full or not */</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">is_full</span><span class="p">(</span><span class="o">&amp;</span><span class="n">q</span><span class="p">[</span><span class="n">set</span><span class="p">]))</span>
+                    <span class="p">{</span>
+                            <span class="cm">/* it&#39;s full, pop a cache_line, fill in and push it */</span>
+                        <span class="n">cacheij_address</span> <span class="o">=</span> <span class="n">pop</span><span class="p">(</span><span class="o">&amp;</span><span class="n">q</span><span class="p">[</span><span class="n">set</span><span class="p">]);</span>
+                        <span class="n">cacheij_address</span><span class="o">-&gt;</span><span class="n">tag</span> <span class="o">=</span> <span class="n">tag</span><span class="p">;</span>
+                        <span class="n">push</span><span class="p">(</span><span class="o">&amp;</span><span class="n">q</span><span class="p">[</span><span class="n">set</span><span class="p">],</span> <span class="n">cacheij_address</span><span class="p">);</span>
+                        <span class="n">eviction</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+                        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;eviction &quot;</span><span class="p">);</span>
+                    <span class="p">}</span>
+                    <span class="k">else</span>
+                    <span class="p">{</span>
+                            <span class="cm">/* find the uncached cache_line, and fill in */</span>
+                        <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">E</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+                        <span class="p">{</span>
+                            <span class="n">cacheij_address</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">cache</span><span class="p">[</span><span class="n">set</span><span class="p">][</span><span class="n">i</span><span class="p">];</span>
+                            <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">cacheij_address</span><span class="o">-&gt;</span><span class="n">valid_bit</span><span class="p">)</span>
+                            <span class="p">{</span>
+                                <span class="n">cacheij_address</span><span class="o">-&gt;</span><span class="n">tag</span> <span class="o">=</span> <span class="n">tag</span><span class="p">;</span>
+                                <span class="n">cacheij_address</span><span class="o">-&gt;</span><span class="n">valid_bit</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+                                <span class="n">push</span><span class="p">(</span><span class="o">&amp;</span><span class="n">q</span><span class="p">[</span><span class="n">set</span><span class="p">],</span> <span class="n">cacheij_address</span><span class="p">);</span>
+                                <span class="k">break</span><span class="p">;</span>
+                            <span class="p">}</span>
+                        <span class="p">}</span>
+                    <span class="p">}</span>
+
+                <span class="p">}</span>
+                    <span class="cm">/* if &quot;M&quot; */</span>
+                <span class="k">if</span>  <span class="p">(</span><span class="n">operator</span> <span class="o">==</span> <span class="sc">&#39;M&#39;</span><span class="p">)</span>
+                <span class="p">{</span>
+                    <span class="n">hit</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+                    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;hit &quot;</span><span class="p">);</span>
+                <span class="p">}</span>       
+            <span class="p">}</span>
+            <span class="n">printf</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;hits:%d misses:%d evictions:%d&quot;</span><span class="p">,</span> <span class="n">hit</span><span class="p">,</span> <span class="n">miss</span><span class="p">,</span> <span class="n">eviction</span><span class="p">);</span>
+    <span class="c1">//free the memory of cache</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">S</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+        <span class="n">free</span><span class="p">(</span><span class="n">cache</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+    <span class="n">free</span><span class="p">(</span><span class="n">address</span><span class="p">);</span>
+    <span class="n">fclose</span><span class="p">(</span><span class="n">fp</span><span class="p">);</span>
+
+    <span class="c1">//printSummary(0, 0, 0);</span>
+    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+                
+                  
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+<!--
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+        
+          <a href="../Attack Lab/" title="Lab3 Attack Lab" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+            </div>
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Lab3 Attack Lab
+              </span>
+            </div>
+          </a>
+        
+        
+          <a href="../Data Lab/" title="Lab1 Data Lab" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Lab1 Data Lab
+              </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        powered by
+        <a href="https://www.mkdocs.org">MkDocs</a>
+        and
+        <a href="https://squidfunk.github.io/mkdocs-material/">
+          Material for MkDocs</a>
+      </div>
+      
+        
+      
+    </div>
+  </div>
+</footer>
+      
+-->
+    </div>
+    
+      <script src="../../../assets/javascripts/application.9e1f3b71.js"></script>
+      
+        
+        
+          
+          <script src="../../../assets/javascripts/lunr/lunr.stemmer.support.js"></script>
+          
+            
+          
+            
+              
+                <script src="../../../assets/javascripts/lunr/tinyseg.js"></script>
+              
+              
+                <script src="../../../assets/javascripts/lunr/lunr.jp.js"></script>
+              
+            
+          
+          
+            <script src="../../../assets/javascripts/lunr/lunr.multi.js"></script>
+          
+        
+      
+      <script>app.initialize({version:"1.0.4",url:{base:"../../.."}})</script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+      
+    
+    
+      
+    
+
+  </body>
+</html>
