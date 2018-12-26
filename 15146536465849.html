@@ -1,0 +1,544 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+    
+  CSAPP - x86-64汇编 - techlarry
+  
+  </title>
+  
+  
+  <link href="atom.xml" rel="alternate" title="techlarry" type="application/atom+xml">
+    <link rel="stylesheet" href="asset/css/foundation.min.css" />
+    <link rel="stylesheet" href="asset/css/docs.css" />
+    <script src="asset/js/vendor/modernizr.js"></script>
+    <script src="asset/js/vendor/jquery.js"></script>
+  <script src="asset/highlightjs/highlight.pack.js"></script>
+  <link href="asset/highlightjs/styles/github.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+  function before_search(){
+    var searchVal = 'site:larryim.cc ' + document.getElementById('search_input').value;
+    document.getElementById('search_q').value = searchVal;
+    return true;
+  }
+</script>
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?fdc936c9f5a3b72177541183cdeb8cb3";
+      var s = document.getElementsByTagName("script")[0]; 
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+  </head>
+  <body class="antialiased hide-extras">
+    
+    <div class="marketing off-canvas-wrap" data-offcanvas>
+      <div class="inner-wrap">
+
+
+<nav class="top-bar docs-bar hide-for-small" data-topbar>
+
+
+  <section class="top-bar-section">
+  <div class="row">
+      <div style="position: relative;width:100%;"><div style="position: absolute; width:100%;">
+        <ul id="main-menu" class="left">
+        
+        <li id=""><a target="_self" href="archives.html">Archives</a></li>
+        
+        <li id=""><a target="_blank" href="wiki">WIKI</a></li>
+        
+        <li id=""><a target="_blank" href="note-os">NOTE-OS</a></li>
+        
+        </ul>
+
+        <ul class="right" id="search-wrap">
+          <li>
+<form target="_blank" onsubmit="return before_search();" action="http://google.com/search" method="get">
+    <input type="hidden" id="search_q" name="q" value="" />
+    <input tabindex="1" type="search" id="search_input"  placeholder="Search"/>
+</form>
+</li>
+          </ul>
+      </div></div>
+  </div>
+  </section>
+
+</nav>
+
+        <nav class="tab-bar show-for-small">
+  <a href="javascript:void(0)" class="left-off-canvas-toggle menu-icon">
+    <span> &nbsp; techlarry</span>
+  </a>
+</nav>
+
+<aside class="left-off-canvas-menu">
+      <ul class="off-canvas-list">
+        
+        <li><a target="_self" href="archives.html">Archives</a></li>
+        
+        <li><a target="_blank" href="wiki">WIKI</a></li>
+        
+        <li><a target="_blank" href="note-os">NOTE-OS</a></li>
+        
+
+    <li><label>Categories</label></li>
+
+        
+            <li><a href="Leetcode.html">Leetcode</a></li>
+        
+            <li><a href="programming_language.html">编程语言</a></li>
+        
+            <li><a href="data_structure_and_algorithm.html">数据结构和算法</a></li>
+        
+            <li><a href="Python%E7%89%B9%E6%80%A7.html">Python特性</a></li>
+        
+            <li><a href="%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html">机器学习</a></li>
+        
+            <li><a href="Computer%20System.html">Computer System</a></li>
+        
+            <li><a href="Deep%20Learning.html">Deep Learning</a></li>
+        
+            <li><a href="Linux%20%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B.html">Linux 系统编程</a></li>
+        
+            <li><a href="%E6%95%B0%E6%8D%AE%E5%BA%93.html">数据库</a></li>
+        
+            <li><a href="Tensorflow.html">Tensorflow</a></li>
+        
+            <li><a href="Big%20Data.html">Big Data</a></li>
+        
+            <li><a href="%E6%96%87%E7%8C%AE%E9%98%85%E8%AF%BB.html">文献阅读</a></li>
+        
+            <li><a href="Tools.html">Tools</a></li>
+         
+
+      </ul>
+    </aside>
+
+<a class="exit-off-canvas" href="#"></a>
+
+
+        <section id="main-content" role="main" class="scroll-container">
+        
+       
+
+ <script type="text/javascript">
+  $(function(){
+    $('#menu_item_index').addClass('is_active');
+  });
+</script>
+<div class="row">
+  <div class="large-8 medium-8 columns">
+      <div class="markdown-body article-wrap">
+       <div class="article">
+          
+          <h1>CSAPP - x86-64汇编</h1>
+     
+        <div class="read-more clearfix">
+          <span class="date">2017/12/31</span>
+
+          <span>posted in&nbsp;</span> 
+          
+              <span class="posted-in"><a href='Computer%20System.html'>Computer System</a></span>
+           
+         
+          <span class="comments">
+            
+
+            
+          </span>
+
+        </div>
+      </div><!-- article -->
+
+      <div class="article-content">
+      <h2 id="toc_0">汇编代码格式</h2>
+
+<p>现在主要存在<code>ATT</code>和<code>Intel</code>两种汇编代码格式。<code>ATT</code>格式是<code>GCC</code>、 <code>OBJDUMP</code>常用工具的默认格式。其他的诸如Microsoft的工具和来自Intel的文档都是<code>Intel</code>格式的。本文使用<code>ATT</code>格式。</p>
+
+<p><code>ATT</code>汇编格式的注释格式有两种</p>
+
+<pre><code class="language-text"># this is a comment
+/* this is a comment */
+</code></pre>
+
+<h2 id="toc_1">寄存器</h2>
+
+<p><code>x86-64</code>体系结构广泛存在于个人电脑中。它拥有16个整数寄存器，分别存储64位的值。这些寄存器可以存储地址或整数数据，其分布如下：</p>
+
+<p><img src="media/15146536465849/sfd.png" alt="sfd"/></p>
+
+<p>根据惯例，寄存器%rbx, %rbp和%r12~%r15被划分为<strong>被调用者保存寄存器</strong>。所有其他的寄存器，除了栈指针%rsp都分类为<strong>调用者保存寄存器</strong>。</p>
+
+<ul>
+<li>在函数被调用时，不能改变<strong>被</strong>调用者寄存器；</li>
+<li>如果要改变的话，只能把<strong>被</strong>调用者寄存器的值压入栈中，在使用后，从栈中恢复<strong>被</strong>调用者寄存器。</li>
+</ul>
+
+<h3 id="toc_2">rip 寄存器与PC相对寻址</h3>
+
+<p>%rip 的名称来自于(instruction pointer register，指令指针寄存器)。%rip其实就是<strong>程序计数器</strong>(Program Counter, PC), <u><em>存放着下一条指令的地址</em></u> 。不可以直接修改%rip。</p>
+
+<p>-&gt; <code>instruction pointer = program counter = %rip</code></p>
+
+<p>%rip的其他很重要的一个用法就是RIP/<strong>PC相对寻址</strong>(RIP/PC relative addressing)。即<code>%rip + displacement</code>的用法。</p>
+
+<p>例如，</p>
+
+<pre><code class="language-assembly">mov    0x202a62(%rip),%rdi        # 6044d0 &lt;infile&gt;  rdi = infile
+</code></pre>
+
+<p>表示传输%rip+0x202a62的地址对应的内存上的内容到%rdi。</p>
+
+<p>下面说说它是怎么进行PC相对寻址的。</p>
+
+<ul>
+<li>源文件经过预处理器、编译器、汇编器处理，输出<strong>可重定位目标文件</strong></li>
+<li>再经过<strong>符号解析</strong>(Symbol resolution)把代码中的每个符号引用和一个符号定义关联起来之后，要完成<strong>重定位</strong>(Relocation)任务，最终输出<strong>可执行目标文件</strong>。
+<ul>
+<li>在<strong>重定位</strong>阶段，ELF(可重定位目标文件在LINUX系统上的一种格式)文件中的<code>R_X86_64_PC32</code>重定位类型重定位了一个使用32位PC相对地址的引用。</li>
+<li>当CPU执行一条使用PC相对寻址的指令时，它就将在指令中编码的32位值加上PC的当前运行时值，得到<strong>有效地址</strong>。</li>
+</ul></li>
+</ul>
+
+<h2 id="toc_3">指令</h2>
+
+<p>指令主要有<code>mov</code>数据传送指令，<code>push</code>、<code>pop</code>压入和压出栈数据，<code>add</code>,<code>sub</code>等算数操作指令，<code>ret</code>, <code>call</code>等转移控制指令。</p>
+
+<h3 id="toc_4">数据传送指令</h3>
+
+<table>
+<thead>
+<tr>
+<th>指令</th>
+<th>效果</th>
+<th>描述</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>MOV S, D</td>
+<td>将S中数据传送到D中</td>
+<td>传送</td>
+</tr>
+<tr>
+<td>movb</td>
+<td>传送字节</td>
+<td></td>
+</tr>
+<tr>
+<td>movw</td>
+<td>传送字(双字节)</td>
+<td></td>
+</tr>
+<tr>
+<td>movl</td>
+<td>传送双字(四字节)</td>
+<td></td>
+</tr>
+<tr>
+<td>MOVS S, D</td>
+<td>将S中数据传送到D，过程中做了符号扩展处理 传送需要符号扩展的字节</td>
+<td></td>
+</tr>
+<tr>
+<td>movsbw</td>
+<td>将做了符号扩展的字节传送到字</td>
+<td></td>
+</tr>
+<tr>
+<td>movsbl</td>
+<td>将做了符号扩展的字节传送到双字</td>
+<td></td>
+</tr>
+<tr>
+<td>movswl</td>
+<td>将做了符号扩展的字传送到双字</td>
+<td></td>
+</tr>
+<tr>
+<td>MOVZ S, D</td>
+<td>将S中数据传送到D，过程中做了零扩展处理</td>
+<td>传送需要零扩展的字节</td>
+</tr>
+<tr>
+<td>movzbw</td>
+<td>将做了零扩展的字节传送到</td>
+<td></td>
+</tr>
+<tr>
+<td>movzbl</td>
+<td>将做了零扩展的字节传送到双字</td>
+<td></td>
+</tr>
+<tr>
+<td>movzwl</td>
+<td>将做了零扩展的字传送到双字</td>
+<td></td>
+</tr>
+<tr>
+<td>pushl S</td>
+<td>R[%esp] &lt;- R[%esp] - 4; M[R[%esp]] &lt;- S;</td>
+<td>将双字压栈</td>
+</tr>
+<tr>
+<td>popl D</td>
+<td>D &lt;- M[R[%esp]]; R[%esp] &lt;- R[%esp] + 4;</td>
+<td>将双字出栈</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="toc_5">ret, call指令</h3>
+
+<p>在x86-64上，<code>ret</code>指令，相当于从栈中弹出地址A，然后把PC设置为A。<br/>
+<code>pop %rip</code><br/>
+而<code>call</code>指令，刚好相反，把%rip 压入栈中，然后跳到函数对应的地址。</p>
+
+
+    
+
+      </div>
+
+      <div class="row">
+        <div class="large-6 columns">
+        <p class="text-left" style="padding:15px 0px;">
+      
+          <a href="overhead.html" 
+          title="Previous Post: Overhead">&laquo; Overhead</a>
+      
+        </p>
+        </div>
+        <div class="large-6 columns">
+      <p class="text-right" style="padding:15px 0px;">
+      
+          <a  href="objdump_disassembler.html" 
+          title="Next Post: Objdump 反汇编">Objdump 反汇编 &raquo;</a>
+      
+      </p>
+        </div>
+      </div>
+      <div class="comments-wrap">
+        <div class="share-comments">
+          <div id="disqus_thread"></div>
+<script>
+
+/**
+*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+/*
+var disqus_config = function () {
+this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+};
+*/
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = 'https://techlarry-1.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+                                
+
+          
+
+          
+        </div>
+      </div>
+    </div><!-- article-wrap -->
+  </div><!-- large 8 -->
+
+
+
+
+ <div class="large-4 medium-4 columns">
+  <div class="hide-for-small">
+    <div id="sidebar" class="sidebar">
+          <div id="site-info" class="site-info">
+            
+                <div class="site-a-logo"><img src="http://or9a8nskt.bkt.clouddn.com/figure.jpeg" /></div>
+            
+                <h1>techlarry</h1>
+                <div class="site-des">他山之石，可以攻玉</div>
+                <div class="social">
+
+
+
+
+
+
+
+
+
+<a target="_blank" class="github" target="_blank" href="https://github.com/techlarry" title="GitHub">GitHub</a>
+<a target="_blank" class="email" href="mailto:wang.zhen.hua.larry@gmail.com" title="Email">Email</a>
+  <a target="_blank" class="rss" href="atom.xml" title="RSS">RSS</a>
+                
+              	 </div>
+          	</div>
+
+             
+
+              <div id="site-categories" class="side-item ">
+                <div class="side-header">
+                  <h2>Categories</h2>
+                </div>
+                <div class="side-content">
+
+      	<p class="cat-list">
+        
+            <a href="Leetcode.html"><strong>Leetcode</strong></a>
+        
+            <a href="programming_language.html"><strong>编程语言</strong></a>
+        
+            <a href="data_structure_and_algorithm.html"><strong>数据结构和算法</strong></a>
+        
+            <a href="Python%E7%89%B9%E6%80%A7.html"><strong>Python特性</strong></a>
+        
+            <a href="%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html"><strong>机器学习</strong></a>
+        
+            <a href="Computer%20System.html"><strong>Computer System</strong></a>
+        
+            <a href="Deep%20Learning.html"><strong>Deep Learning</strong></a>
+        
+            <a href="Linux%20%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B.html"><strong>Linux 系统编程</strong></a>
+        
+            <a href="%E6%95%B0%E6%8D%AE%E5%BA%93.html"><strong>数据库</strong></a>
+        
+            <a href="Tensorflow.html"><strong>Tensorflow</strong></a>
+        
+            <a href="Big%20Data.html"><strong>Big Data</strong></a>
+        
+            <a href="%E6%96%87%E7%8C%AE%E9%98%85%E8%AF%BB.html"><strong>文献阅读</strong></a>
+        
+            <a href="Tools.html"><strong>Tools</strong></a>
+         
+        </p>
+
+
+                </div>
+              </div>
+
+              <div id="site-categories" class="side-item">
+                <div class="side-header">
+                  <h2>Recent Posts</h2>
+                </div>
+                <div class="side-content">
+                <ul class="posts-list">
+	      
+		      
+			      <li class="post">
+			        <a href="bit_manipulation.html">Bit manipulation</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="scrapy_top100.html">Scrapy爬取猫眼TOP100榜</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="scrapy_movielens.html">Scrapy爬取MovieLens</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15046649572570.html">Pandas</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="diagrammatize_TCP_IP.html">图解TCP/IP</a>
+			      </li>
+		     
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		   
+		  		</ul>
+                </div>
+              </div>
+        </div><!-- sidebar -->
+      </div><!-- hide for small -->
+</div><!-- large 4 -->
+
+</div><!-- row -->
+
+ <div class="page-bottom clearfix">
+  <div class="row">
+   <p class="copyright">Copyright &copy; 2015
+Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
+Theme used <a target="_blank" href="http://github.com">GitHub CSS</a>.</p>
+  </div>
+</div>
+
+        </section>
+      </div>
+    </div>
+
+  
+    
+
+    <script src="asset/js/foundation.min.js"></script>
+    <script>
+      $(document).foundation();
+      function fixSidebarHeight(){
+        var w1 = $('.markdown-body').height();
+          var w2 = $('#sidebar').height();
+          if (w1 > w2) { $('#sidebar').height(w1); };
+      }
+      $(function(){
+        fixSidebarHeight();
+      })
+      $(window).load(function(){
+          fixSidebarHeight();
+      });
+     
+    </script>
+
+    
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({TeX: { equationNumbers: { autoNumber: "AMS" } }});</script>
+
+
+  </body>
+</html>

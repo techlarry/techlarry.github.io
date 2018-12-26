@@ -1,0 +1,507 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+    
+  CSAPP - 存储器层次结构 - techlarry
+  
+  </title>
+  
+  
+  <link href="atom.xml" rel="alternate" title="techlarry" type="application/atom+xml">
+    <link rel="stylesheet" href="asset/css/foundation.min.css" />
+    <link rel="stylesheet" href="asset/css/docs.css" />
+    <script src="asset/js/vendor/modernizr.js"></script>
+    <script src="asset/js/vendor/jquery.js"></script>
+  <script src="asset/highlightjs/highlight.pack.js"></script>
+  <link href="asset/highlightjs/styles/github.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+  function before_search(){
+    var searchVal = 'site:larryim.cc ' + document.getElementById('search_input').value;
+    document.getElementById('search_q').value = searchVal;
+    return true;
+  }
+</script>
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?fdc936c9f5a3b72177541183cdeb8cb3";
+      var s = document.getElementsByTagName("script")[0]; 
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+  </head>
+  <body class="antialiased hide-extras">
+    
+    <div class="marketing off-canvas-wrap" data-offcanvas>
+      <div class="inner-wrap">
+
+
+<nav class="top-bar docs-bar hide-for-small" data-topbar>
+
+
+  <section class="top-bar-section">
+  <div class="row">
+      <div style="position: relative;width:100%;"><div style="position: absolute; width:100%;">
+        <ul id="main-menu" class="left">
+        
+        <li id=""><a target="_self" href="archives.html">Archives</a></li>
+        
+        <li id=""><a target="_blank" href="wiki">WIKI</a></li>
+        
+        <li id=""><a target="_blank" href="note-os">NOTE-OS</a></li>
+        
+        </ul>
+
+        <ul class="right" id="search-wrap">
+          <li>
+<form target="_blank" onsubmit="return before_search();" action="http://google.com/search" method="get">
+    <input type="hidden" id="search_q" name="q" value="" />
+    <input tabindex="1" type="search" id="search_input"  placeholder="Search"/>
+</form>
+</li>
+          </ul>
+      </div></div>
+  </div>
+  </section>
+
+</nav>
+
+        <nav class="tab-bar show-for-small">
+  <a href="javascript:void(0)" class="left-off-canvas-toggle menu-icon">
+    <span> &nbsp; techlarry</span>
+  </a>
+</nav>
+
+<aside class="left-off-canvas-menu">
+      <ul class="off-canvas-list">
+        
+        <li><a target="_self" href="archives.html">Archives</a></li>
+        
+        <li><a target="_blank" href="wiki">WIKI</a></li>
+        
+        <li><a target="_blank" href="note-os">NOTE-OS</a></li>
+        
+
+    <li><label>Categories</label></li>
+
+        
+            <li><a href="Leetcode.html">Leetcode</a></li>
+        
+            <li><a href="programming_language.html">编程语言</a></li>
+        
+            <li><a href="data_structure_and_algorithm.html">数据结构和算法</a></li>
+        
+            <li><a href="Python%E7%89%B9%E6%80%A7.html">Python特性</a></li>
+        
+            <li><a href="%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html">机器学习</a></li>
+        
+            <li><a href="Computer%20System.html">Computer System</a></li>
+        
+            <li><a href="Deep%20Learning.html">Deep Learning</a></li>
+        
+            <li><a href="Linux%20%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B.html">Linux 系统编程</a></li>
+        
+            <li><a href="%E6%95%B0%E6%8D%AE%E5%BA%93.html">数据库</a></li>
+        
+            <li><a href="Tensorflow.html">Tensorflow</a></li>
+        
+            <li><a href="Big%20Data.html">Big Data</a></li>
+        
+            <li><a href="%E6%96%87%E7%8C%AE%E9%98%85%E8%AF%BB.html">文献阅读</a></li>
+        
+            <li><a href="Tools.html">Tools</a></li>
+         
+
+      </ul>
+    </aside>
+
+<a class="exit-off-canvas" href="#"></a>
+
+
+        <section id="main-content" role="main" class="scroll-container">
+        
+       
+
+ <script type="text/javascript">
+  $(function(){
+    $('#menu_item_index').addClass('is_active');
+  });
+</script>
+<div class="row">
+  <div class="large-8 medium-8 columns">
+      <div class="markdown-body article-wrap">
+       <div class="article">
+          
+          <h1>CSAPP - 存储器层次结构</h1>
+     
+        <div class="read-more clearfix">
+          <span class="date">2017/10/25</span>
+
+          <span>posted in&nbsp;</span> 
+          
+              <span class="posted-in"><a href='Computer%20System.html'>Computer System</a></span>
+           
+         
+          <span class="comments">
+            
+
+            
+          </span>
+
+        </div>
+      </div><!-- article -->
+
+      <div class="article-content">
+      <p>存储器系统(memory system)是一个具有不同 <u>容量</u> 、 <u>成本</u> 和 <u>访问时间</u> 的存储设备的层次结构。</p>
+
+<p><strong>局部性</strong>(locality)：具有良好局部性的程序倾向于一次又一次地访问相同的数据项集合，或是倾向于访问邻近的数据项集合。</p>
+
+<h2 id="toc_0">1 存储技术</h2>
+
+<h3 id="toc_1">1.1 RAM</h3>
+
+<p>随机访问存储器(Random-Access Memory, RAM)分为两类：静态(SRAM)和动态(DRAM)的。SRAM比DRAM更快，但也贵得多。</p>
+
+<h3 id="toc_2">1.2 磁盘</h3>
+
+<p>磁盘是由盘片(platter)构成的。每个盘片如同切西瓜一样被“切”成一块一块的扇面，同时沿着半径的方向被划分成了一组同心圆(磁道, track)，每条磁道被扇面切成很多的扇形区域叫做扇区（sector, 扇区是从磁盘读出和写入信息的最小单位，包含相等数量的数据位，通常为512字节），不同盘片上的同半径磁道组成了柱面。</p>
+
+<p><img src="media/15089188725996/15312767746205.jpg" alt=""/></p>
+
+<p>磁盘的容量： 磁头数 × 磁道数 × 每道扇区数 × 每扇区字节数</p>
+
+<h2 id="toc_3">2 局部性</h2>
+
+<p>一个编写良好的计算机程序常常具有良好的局部性(locality)。也就是，它们倾向于引用邻近于其他最近引用过的数据项的数据项(空间局部性)，或者最近引用过的数据项本身(时间局部性)。</p>
+
+<p>现代计算机系统的各个层次，从硬件到操作系统、再到应用程序，它们的设计都利用了局部性。</p>
+
+<h2 id="toc_4">3 存储器层次结构 Memory Hierarchy</h2>
+
+<p>一般而言，从高层往低层走，存储设备变得更慢、更便宜和更大。</p>
+
+<p><img src="media/15128019428341/15128077150126.png" alt="存储器层次结构"/></p>
+
+<h2 id="toc_5">虚拟内存 Virtual Memory</h2>
+
+<p>虚拟内存(<code>Virtual Memory</code>)是一个抽象概念。它为每个进程提供了假象，即每个进程都在独占地使用内存。每个进程看到的内存都是一致的，称为虚拟地址空间<code>Virtual Address Space</code>.</p>
+
+<p>虚拟内存在不同操作系统上有区别，以Linux系统为例,下面是<code>Linux  x86-64运行时的内存映像</code>。</p>
+
+<p><img src="media/15089188725996/linux_virtual_memory.png" alt="linux_virtual_memory"/></p>
+
+<p>虚拟地址空间由如下几部分组成：</p>
+
+<ul>
+<li>代码（<code>.text</code>）: 这里存放的是CPU要执行的指令。代码段是可共享的，相同的代码在内存中只会有一个拷贝，同时这个段是只读的，防止程序由于错误而修改自身的指令。</li>
+<li>初始化数据段（<code>.data</code>）: 这里存放的是程序中需要明确赋初始值的变量，例如位于所有函数之外的全局变量：<code>int val=&quot;100</code>。需要强调的是，以上两段都是位于程序的可执行文件中，内核在调用<code>exec</code>函数启动该程序时从源程序文件中读入。</li>
+<li>未初始化数据段（<code>.bss</code>）: 位于这一段中的数据，内核在执行该程序前，将其初始化为0或者<code>null</code>。例如出现在任何函数之外的全局变量：int sum;</li>
+<li>堆（<code>Heap</code>）: 这个段用于在程序中进行动态内存申请，例如经常用到的<code>malloc</code>，<code>new</code>系列函数就是从这个段中申请内存。</li>
+<li>共享库(<code>Shared Library</code>): 用来存放像C标准库和数学哭这样的共享库的代码和数据的区域。</li>
+<li>栈（<code>Stack</code>）: 函数中的局部变量以及在函数调用过程中产生的临时变量都保存在此段中，具体见下面一节。</li>
+<li>内核虚拟内存：包含内核中的代码和数据结构。</li>
+</ul>
+
+<p>注意：</p>
+
+<ul>
+<li>底部内存地址是最小的，越往上地址越大。</li>
+<li>堆(正向增长)和栈(反向增长)的生长方向(箭头➡️所指方向)是相反的。</li>
+</ul>
+
+<p>下面是程序示意：</p>
+
+<pre><code class="language-c"> #include&lt;stdio.h&gt;    
+ #include &lt;malloc.h&gt;    
+     
+ void print(char *,int);    
+ int main()    
+{    
+      char *s1 = &quot;abcde&quot;;  //&quot;abcde&quot;作为字符串常量存储在常量区 s1、s2、s5拥有相同的地址  
+      char *s2 = &quot;abcde&quot;;    
+      char s3[] = &quot;abcd&quot;;    
+      long int *s4[100];    
+      char *s5 = &quot;abcde&quot;;    
+      int a = 5;    
+      int b =6;//a,b在栈上，&amp;a&gt;&amp;b地址反向增长    
+     
+     printf(&quot;variables address in main function: s1=%p  s2=%p s3=%p s4=%p s5=%p a=%p b=%p \n&quot;,     
+             s1,s2,s3,s4,s5,&amp;a,&amp;b);   
+     printf(&quot;variables address in processcall:n&quot;);    
+        print(&quot;ddddddddd&quot;,5);//参数入栈从右至左进行,p先进栈,str后进 &amp;p&gt;&amp;str    
+     printf(&quot;main=%p print=%p \n&quot;,main,print);    
+     //打印代码段中主函数和子函数的地址，编译时先编译的地址低，后编译的地址高main&lt;print    
+ }    
+  
+ void print(char *str,int p)    
+{    
+     char *s1 = &quot;abcde&quot;;  //abcde在常量区，s1在栈上    
+     char *s2 = &quot;abcde&quot;;  //abcde在常量区，s2在栈上 s2-s1=6可能等于0，编译器优化了相同的常量，只在内存保存一份    
+     //而&amp;s1&gt;&amp;s2    
+     char s3[] = &quot;abcdeee&quot;;//abcdeee在常量区，s3在栈上，数组保存的内容为abcdeee的一份拷贝    
+     long int *s4[100];    
+     char *s5 = &quot;abcde&quot;;    
+     int a = 5;    
+     int b =6;    
+     int c;    
+     int d;           //a,b,c,d均在栈上，&amp;a&gt;&amp;b&gt;&amp;c&gt;&amp;d地址反向增长    
+     char *q=str;   
+     int m=p;           
+     char *r=(char *)malloc(1);    
+     char *w=(char *)malloc(1) ;  // r&lt;w 堆正向增长    
+    
+     printf(&quot;s1=%p s2=%p s3=%p s4=%p s5=%p a=%p b=%p c=%p d=%p str=%p q=%p p=%p m=%p r=%p w=%p \n&quot;,    
+            s1,s2,s3,s4,s5,&amp;a,&amp;b,&amp;c,&amp;d,&amp;str,q,&amp;p,&amp;m,r,w);   
+     /* 栈和堆是在程序运行时候动态分配的，局部变量均在栈上分配。 
+        栈是反向增长的，地址递减；malloc等分配的内存空间在堆空间。堆是正向增长的，地址递增。   
+        r,w变量在栈上(则&amp;r&gt;&amp;w)，r,w所指内容在堆中(即r&lt;w)。*/   
+ }    
+   
+</code></pre>
+
+
+    
+
+      </div>
+
+      <div class="row">
+        <div class="large-6 columns">
+        <p class="text-left" style="padding:15px 0px;">
+      
+          <a href="virtual_memory_and_dynamic_memory_allocate.html" 
+          title="Previous Post: CSAPP - 虚拟内存">&laquo; CSAPP - 虚拟内存</a>
+      
+        </p>
+        </div>
+        <div class="large-6 columns">
+      <p class="text-right" style="padding:15px 0px;">
+      
+          <a  href="memory_alignment.html" 
+          title="Next Post: 内存对齐">内存对齐 &raquo;</a>
+      
+      </p>
+        </div>
+      </div>
+      <div class="comments-wrap">
+        <div class="share-comments">
+          <div id="disqus_thread"></div>
+<script>
+
+/**
+*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+/*
+var disqus_config = function () {
+this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+};
+*/
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = 'https://techlarry-1.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+                                
+
+          
+
+          
+        </div>
+      </div>
+    </div><!-- article-wrap -->
+  </div><!-- large 8 -->
+
+
+
+
+ <div class="large-4 medium-4 columns">
+  <div class="hide-for-small">
+    <div id="sidebar" class="sidebar">
+          <div id="site-info" class="site-info">
+            
+                <div class="site-a-logo"><img src="http://or9a8nskt.bkt.clouddn.com/figure.jpeg" /></div>
+            
+                <h1>techlarry</h1>
+                <div class="site-des">他山之石，可以攻玉</div>
+                <div class="social">
+
+
+
+
+
+
+
+
+
+<a target="_blank" class="github" target="_blank" href="https://github.com/techlarry" title="GitHub">GitHub</a>
+<a target="_blank" class="email" href="mailto:wang.zhen.hua.larry@gmail.com" title="Email">Email</a>
+  <a target="_blank" class="rss" href="atom.xml" title="RSS">RSS</a>
+                
+              	 </div>
+          	</div>
+
+             
+
+              <div id="site-categories" class="side-item ">
+                <div class="side-header">
+                  <h2>Categories</h2>
+                </div>
+                <div class="side-content">
+
+      	<p class="cat-list">
+        
+            <a href="Leetcode.html"><strong>Leetcode</strong></a>
+        
+            <a href="programming_language.html"><strong>编程语言</strong></a>
+        
+            <a href="data_structure_and_algorithm.html"><strong>数据结构和算法</strong></a>
+        
+            <a href="Python%E7%89%B9%E6%80%A7.html"><strong>Python特性</strong></a>
+        
+            <a href="%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html"><strong>机器学习</strong></a>
+        
+            <a href="Computer%20System.html"><strong>Computer System</strong></a>
+        
+            <a href="Deep%20Learning.html"><strong>Deep Learning</strong></a>
+        
+            <a href="Linux%20%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B.html"><strong>Linux 系统编程</strong></a>
+        
+            <a href="%E6%95%B0%E6%8D%AE%E5%BA%93.html"><strong>数据库</strong></a>
+        
+            <a href="Tensorflow.html"><strong>Tensorflow</strong></a>
+        
+            <a href="Big%20Data.html"><strong>Big Data</strong></a>
+        
+            <a href="%E6%96%87%E7%8C%AE%E9%98%85%E8%AF%BB.html"><strong>文献阅读</strong></a>
+        
+            <a href="Tools.html"><strong>Tools</strong></a>
+         
+        </p>
+
+
+                </div>
+              </div>
+
+              <div id="site-categories" class="side-item">
+                <div class="side-header">
+                  <h2>Recent Posts</h2>
+                </div>
+                <div class="side-content">
+                <ul class="posts-list">
+	      
+		      
+			      <li class="post">
+			        <a href="bit_manipulation.html">Bit manipulation</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="scrapy_top100.html">Scrapy爬取猫眼TOP100榜</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="scrapy_movielens.html">Scrapy爬取MovieLens</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15046649572570.html">Pandas</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="diagrammatize_TCP_IP.html">图解TCP/IP</a>
+			      </li>
+		     
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		   
+		  		</ul>
+                </div>
+              </div>
+        </div><!-- sidebar -->
+      </div><!-- hide for small -->
+</div><!-- large 4 -->
+
+</div><!-- row -->
+
+ <div class="page-bottom clearfix">
+  <div class="row">
+   <p class="copyright">Copyright &copy; 2015
+Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
+Theme used <a target="_blank" href="http://github.com">GitHub CSS</a>.</p>
+  </div>
+</div>
+
+        </section>
+      </div>
+    </div>
+
+  
+    
+
+    <script src="asset/js/foundation.min.js"></script>
+    <script>
+      $(document).foundation();
+      function fixSidebarHeight(){
+        var w1 = $('.markdown-body').height();
+          var w2 = $('#sidebar').height();
+          if (w1 > w2) { $('#sidebar').height(w1); };
+      }
+      $(function(){
+        fixSidebarHeight();
+      })
+      $(window).load(function(){
+          fixSidebarHeight();
+      });
+     
+    </script>
+
+    
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({TeX: { equationNumbers: { autoNumber: "AMS" } }});</script>
+
+
+  </body>
+</html>
